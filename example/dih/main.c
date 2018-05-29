@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <he/err.h>
-#include <he/macro.h>
-#include <he/read.h>
+#include <he/he.h>
 
 int main() {
-    HeRead *read;
-    he_read_ini("/dev/stdin", &read);
-    he_info(read, stdout);
-    he_read_fin(read);
+    He *he;
+    he_file_ini("/dev/stdin", &he);
+
+    MSG("%d %d %d %d", he_nv(he), he_nt(he), he_ne(he), he_nh(he));
+    
+    he_fin(he);
 }

@@ -18,7 +18,7 @@ struct T {
     int magic;
 };
 
-int he_ini_file(const char *path, T **pq) {
+int he_file_ini(const char *path, T **pq) {
     HeRead *read;
     if (he_read_ini(path, &read) != HE_OK)
         ERR(HE_IO, "he_read_ini failed");
@@ -34,10 +34,10 @@ int he_ini(HeRead *r, T **pq) {
     int *hdg_ver, *hdg_edg, *hdg_tri;
     MALLOC(1, &q);
 
-    nv = he_read_nv(r);
-    nt = he_read_nt(r);
-    ne = he_read_ne(r);
-    nh = he_read_nh(r);    
+    nv = q->nv = he_read_nv(r);
+    nt = q->nt = he_read_nt(r);
+    ne = q->ne = he_read_ne(r);
+    nh = q->nh = he_read_nh(r);    
 
     MALLOC(nh, &q->nxt); MALLOC(nh, &q->flp);
     MALLOC(nh, &q->ver); MALLOC(nh, &q->tri); MALLOC(nh, &q->edg);
@@ -75,7 +75,6 @@ int he_fin(T *q) {
     FREE(q->hdg_ver);
     FREE(q->hdg_edg);
     FREE(q->hdg_tri);
-    FREE(q);
     FREE(q);
     return HE_OK;
 }
