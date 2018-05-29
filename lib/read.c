@@ -27,7 +27,7 @@ int he_read_ini(const char *path, T **pq) {
     FILE *f;
     char line[SIZE];
     int i, cnt;
-    int nt, nv, ne, nh;
+    int nv, nt, ne, nh;
     int *nxt, *flp, *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
 
