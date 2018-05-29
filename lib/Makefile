@@ -25,4 +25,6 @@ install: $(LIB) $(HFILES) $(PC)
 	cp $(HFILES) $(PREFIX)/include/$(TRG)
 
 clean:; rm -f $(OFILES) $(LIB) $(PC)
-.PHONY: clean install
+test:
+
+.PHONY: clean install test

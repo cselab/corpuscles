@@ -17,4 +17,8 @@ conf: conf.in
 	sed "s,@PREFIX@,$(PREFIX),g" $< > $@
 	chmod +x $@
 
+test:
+
 clean:; rm -f conf
+
+.PHONY: clean install test

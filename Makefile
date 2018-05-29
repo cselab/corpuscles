@@ -1,6 +1,10 @@
-D = tool lib
+D = tool lib example/punto
+
 include make/dir.mk
+install: dir
+test: dir
+clean: dir
 
-test:; atest test/*
+#test:; atest test/*
 
-.PHONY: test
+.PHONY: test install clean

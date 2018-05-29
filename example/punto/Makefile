@@ -6,6 +6,7 @@ $M: $M.o; $(CC) $< $(LDFLAGS) $(TRI_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLGAS) $(TRI_CFLAGS) $< -c -o $@
 
 test: $M; atest test/*
+install:
 
-.PHONY: clean test
+.PHONY: clean test install
 clean:; rm -f $M.o $M
