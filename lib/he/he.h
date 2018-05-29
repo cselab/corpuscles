@@ -6,14 +6,22 @@ typedef struct HeRead HeRead;
 int he_ini(HeRead*, T**);
 int he_fin(T*);
 
-int he_nxt(T*);
-int he_flp(T*);
-int he_ver(T*);
-int he_tri(T*);
-int he_edg(T*);
+int he_nv(T*); /* vert, triangle, edg, half-edg */
+int he_nt(T*);
+int he_ne(T*);
+int he_nh(T*);
 
-int he_hdg_ver(T*);
-int he_hdg_edg(T*);
-int he_hdg_tri(T*);
+int he_nxt(T*, int h); /* return half-edg */
+int he_flp(T*, int h);
+
+int he_ver(T*, int h); /* return object */
+int he_tri(T*, int h);
+int he_edg(T*, int h);
+
+int he_hdg_ver(T*, int v); /* return object */
+int he_hdg_edg(T*, int e);
+int he_hdg_tri(T*, int t);
+
+int he_bnd(T*, int h); /* 1 for boundary */
 
 #undef T
