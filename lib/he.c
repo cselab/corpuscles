@@ -45,8 +45,6 @@ int he_ini(HeRead *r, T **pq) {
     he_read_hdg_ver(r, &hdg_ver);
     he_read_hdg_edg(r, &hdg_edg);
     he_read_hdg_tri(r, &hdg_tri);
-    
-    
 
     q->magic = MAGIC;
     
