@@ -18,5 +18,6 @@ int he_read_tri(T*, int**);
 int he_read_edg(T*, int**);
 
 int he_read_validate(T*);
+int he_info(T*, FILE*);
 
 #undef T

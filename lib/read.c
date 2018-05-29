@@ -11,13 +11,14 @@
 #define T HeRead
 #define SIZE (MAX_STRING_SIZE)
 #define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__);
+#define MAGIC (42)
 
 struct T {
     int nv, nt, ne, nh;
     int *next, *flip;
     int *ver, *tri, *edg;
-
     int *hdg_ver, *hdg_edg, *hdg_tri;
+    int magic;
 };
 
 int he_read_ini(const char *path, T **pq) {
@@ -32,7 +33,6 @@ int he_read_ini(const char *path, T **pq) {
 #   define NXT() if (util_fgets(line, f) == NULL)  \
         E("fail to read '%s'", path)
     MALLOC(1, &q);
-    *pq = q;
     f = fopen(path, "r");
     if (f == NULL) E("fail to open '%s'", path);
     NXT();
@@ -50,6 +50,7 @@ int he_read_ini(const char *path, T **pq) {
     MALLOC(nv, &hdg_ver);
     MALLOC(ne, &hdg_edg);
     MALLOC(nt, &hdg_tri);
+
     for (i = 0; i < nh; i++) {
         NXT();
         cnt = sscanf(line, "%d %d  %d %d %d",
@@ -73,5 +74,70 @@ int he_read_ini(const char *path, T **pq) {
     }
     if (fclose(f) != 0)
         E("fail to close file '%s'", path);
+
+    q->nv = nv; q->nt = nt; q->ne = ne; q->nh = nh;
+
+    q->next = next; q->flip = flip;
+    q->ver = ver; q->tri = tri; q->edg = edg;
+
+    q->hdg_ver = hdg_ver;
+    q->hdg_edg = hdg_edg;
+    q->hdg_tri = hdg_tri;
+    q->magic = MAGIC;
+
+    *pq = q;
+    return HE_OK;
+}
+
+int he_read_fin(T *q) {
+    if (q->magic != MAGIC)
+        ERR(HE_MEMORY, "wrong fin() call");
+    FREE(q->next); FREE(q->flip);
+    FREE(q->ver); FREE(q->tri); FREE(q->edg);
+    FREE(q->hdg_ver);
+    FREE(q->hdg_edg);
+    FREE(q->hdg_tri);
+    FREE(q);
+    return HE_OK;
+}
+
+int he_info(T *q, FILE *f) {
+    int r;
+    int nv, nt, ne, nh;
+    int *next, *flip, *ver, *tri, *edg;
+    int *hdg_ver, *hdg_edg, *hdg_tri;
+
+    nv = q->nv; nt = q->nt; ne = q->ne; nh = q->nh;
+    next = q->next; flip = q->flip;
+    ver = q->ver; tri = q->tri; edg = q->edg;
+    hdg_ver = q->hdg_ver;
+    hdg_edg = q->hdg_edg;
+    hdg_tri = q->hdg_tri;
+
+    r = fprintf(f, "%d %d %d %d\n", nv, nt, ne, nh);
+    if (r <= 0)
+        ERR(HE_IO, "fprintf() failed");
+
+    fprintf(f, "[nh=%d lines]\n", nh);
+    fprintf(f, "%d %d %d %d %d\n",
+            next[0], flip[0], ver[0], tri[0], edg[0]);
+    fputs("...\n", f);
+    fprintf(f, "%d %d %d %d %d\n",
+            next[nh-1], flip[nh-1], ver[nh-1], tri[nh-1], edg[nh-1]);
+    fprintf(f, "[nv=%d lines]\n", nv);
+    fprintf(f, "%d\n", hdg_ver[0]);
+    fputs("...\n", f);
+    fprintf(f, "%d\n", hdg_ver[nv-1]);
+
+    fprintf(f, "[ne=%d lines]\n", ne);
+    fprintf(f, "%d\n", hdg_edg[0]);
+    fputs("...\n", f);
+    fprintf(f, "%d\n", hdg_edg[ne-1]);
+
+    fprintf(f, "[nt=%d lines]\n", nt);
+    fprintf(f, "%d\n", hdg_tri[0]);
+    fputs("...\n", f);
+    fprintf(f, "%d\n", hdg_tri[nt-1]);
+
     return HE_OK;
 }
