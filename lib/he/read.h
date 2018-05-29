@@ -12,12 +12,14 @@ int he_read_nh(T*);
 
 int he_read_next(T*, int**);
 int he_read_flip(T*, int**);
-
 int he_read_ver(T*, int**);
 int he_read_tri(T*, int**);
 int he_read_edg(T*, int**);
 
-int he_read_validate(T*);
+int he_read_hdg_ver(T*, int**);
+int he_read_hdg_edg(T*, int**);
+int he_read_hdg_tri(T*, int**);
+
 int he_info(T*, FILE*);
 
 #undef T

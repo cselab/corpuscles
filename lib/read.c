@@ -141,3 +141,18 @@ int he_info(T *q, FILE *f) {
 
     return HE_OK;
 }
+
+int he_read_nv(T *q) { return q->nv; }
+int he_read_nt(T *q) { return q->nt; }
+int he_read_ne(T *q) { return q->ne; }
+int he_read_nh(T *q) { return q->nh; }
+
+int he_read_next(T *q, int **p) { *p = q->next; return HE_OK; };
+int he_read_flip(T *q, int **p) { *p = q->flip; return HE_OK; };
+int he_read_ver(T *q,  int **p) { *p = q->ver; return HE_OK; };
+int he_read_tri(T *q,  int **p) { *p = q->tri; return HE_OK; };
+int he_read_edg(T *q,  int **p) { *p = q->edg; return HE_OK; };
+
+int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return HE_OK; };
+int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; };
+int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; };
