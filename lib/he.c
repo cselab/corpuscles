@@ -70,3 +70,22 @@ int he_fin(T *q) {
     FREE(q);
     return HE_OK;
 }
+
+int he_fin(T*);
+
+int he_nv(T *q) { return q->nv; }
+int he_nt(T *q) { return q->nt; }
+int he_ne(T *q) { return q->ne; }
+int he_nh(T *q) { return q->nh; }
+
+int he_nxt(T *q, int h) { return q->nxt[h]; }
+int he_flp(T *q, int h) { return q->flp[h]; }
+
+int he_ver(T *q, int h) { return q->ver[h]; }
+int he_tri(T *q, int h) { return q->tri[h]; }
+int he_edg(T *q, int h) { return q->edg[h]; }
+
+int he_hdg_ver(T *q, int v) { return q->hdg_ver[v]; }
+int he_hdg_edg(T *q, int e) { return q->hdg_edg[e]; }
+int he_hdg_tri(T *q, int t) { return q->hdg_tri[t]; }
+int he_bnd(T *q, int h)     { return q->flp[h] == -1; }
