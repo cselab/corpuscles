@@ -1,4 +1,4 @@
-D = tool
+D = tool lib
 include make/dir.mk
 
 test:; atest test/*

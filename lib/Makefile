@@ -5,16 +5,14 @@ PREFIX = $(HOME)
 TRG = he
 LIB = lib$(TRG).a
 PC  = $(TRG).pc
-HE_CFLAGS = -Wall -Wextra -O3 -g
+HE_CFLAGS = -Wall -Wextra -O2 -g
 SED = sed
 
 $(LIB): $(OFILES); ar rv $@ $(OFILES) && ranlib $@
 $(OFILES) : $(HFILES)
-
 %.o: %.c; $(CC) $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<
-kernel.o: kernel/main.h kernel/quintic.h kernel/wendland6.h kernel/yang.h
 
-$(PC): tri.pc.in
+$(PC): $(PC).in
 	$(SED) -e "s,@PREFIX@,$(PREFIX),g" \
                -e "s,@LIB@,$(LIB),g" \
                -e "s,@TRG@,$(TRG),g" \
