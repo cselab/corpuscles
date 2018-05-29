@@ -18,6 +18,15 @@ struct T {
     int magic;
 };
 
+int he_ini_file(const char *path, T **pq) {
+    HeRead *read;
+    if (he_read_ini(path, &read) != HE_OK)
+        ERR(HE_IO, "he_read_ini failed");
+    he_ini(read, /**/ pq);
+    he_read_fin(read);
+    return HE_OK;
+}
+
 int he_ini(HeRead *r, T **pq) {
     T *q;
     int nv, nt, ne, nh;

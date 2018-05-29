@@ -4,6 +4,7 @@ typedef struct T T;
 typedef struct HeRead HeRead;
 
 int he_ini(HeRead*, T**);
+int he_ini_file(const char *path, T**);
 int he_fin(T*);
 
 int he_nv(T*); /* vert, triangle, edg, half-edg */
