@@ -10,4 +10,4 @@ void he_err(int code, const char *file, int line, const char *fmt, ...);
 void he_msg(const char *file, int line, const char *fmt, ...);
 
 /* error codes */
-enum {HE_OK, HE_READ};
+enum {HE_OK, HE_IO, HE_MEMORY};

@@ -3,14 +3,16 @@
 #include "he/err.h"
 #include "he/memory.h"
 
-void he_malloc(int size, /**/ void **pq) {
+int he_malloc(int size, /**/ void **pq) {
     void *q;
     q = malloc(size);
-    if (q == NULL) ERR("malloc failed for size=%ld", size);
+    if (q == NULL) ERR(HE_MEMORY, "malloc failed for size=%ld", size);
     *pq = q;
+    return HE_OK;
 }
 
-void he_free(void *q) {
+int he_free(void *q) {
     free(q);
     q = NULL;
+    return HE_OK;
 }

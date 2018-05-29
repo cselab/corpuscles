@@ -17,8 +17,15 @@ struct T {
 
 int he_read_ini(const char *path, T **pq) {
     T *q;
+    FILE *f;
     MALLOC(1, &q);
     *pq = q;
+
+    f = fopen(path, "r");
+    if (f == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);
+
+    fscanf(f, "%s", &line);
 
     return HE_OK;
 }

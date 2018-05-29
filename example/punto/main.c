@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #include <he/err.h>
 #include <he/punto.h>
 #include <he/macro.h>
@@ -14,11 +15,11 @@ int main(__UNUSED int argc, const char *argv[]) {
     const char *i, *o;
     int n;
     if (argv[1] == NULL)
-        ERR("needs FILE.in");
+        ERR(HE_IO, "needs FILE.in");
     i = argv[1]; argv++;
 
     if (argv[1] == NULL)
-        ERR("needs FILE.out");
+        ERR(HE_IO, "needs FILE.out");
     o = argv[1]; argv++;
     
     punto_read(i, /**/ &n, queue);

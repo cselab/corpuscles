@@ -25,5 +25,3 @@ void he_msg(const char *file, int line, const char *fmt, ...) {
     va_end(ap);
     fprintf(stderr, "%s:%d: %s\n", file, line, msg);
 }
-
-
