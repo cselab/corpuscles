@@ -1,0 +1,10 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: @TRG@
+Version: 0.1
+Description: tri libs
+Libs: -L${libdir} -l@TRG@ -lm
+Cflags: -I${includedir}
