@@ -9,7 +9,7 @@ flip = -1: indicate missing flip half-edge
 "HE"
 nv nt ne nh
 [nh lines]
-next flip ver tri edg
+nxt flp ver tri edg
 ...
 [nv lines]
 hdg_ver

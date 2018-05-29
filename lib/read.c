@@ -15,7 +15,7 @@
 
 struct T {
     int nv, nt, ne, nh;
-    int *next, *flip;
+    int *nxt, *flp;
     int *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
     int magic;
@@ -27,7 +27,7 @@ int he_read_ini(const char *path, T **pq) {
     char line[SIZE];
     int i, cnt;
     int nt, nv, ne, nh;
-    int *next, *flip, *ver, *tri, *edg;
+    int *nxt, *flp, *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
 
 #   define NXT() if (util_fgets(line, f) == NULL)  \
@@ -45,7 +45,7 @@ int he_read_ini(const char *path, T **pq) {
     if (nv <= 0 || nt <= 0 || ne <= 0 || nh <= 0)
         E("wrong sizes '%s' in '%s'", line, path);
 
-    MALLOC(nh, &next); MALLOC(nh, &flip);
+    MALLOC(nh, &nxt); MALLOC(nh, &flp);
     MALLOC(nh, &ver); MALLOC(nh, &tri); MALLOC(nh, &edg);
     MALLOC(nv, &hdg_ver);
     MALLOC(ne, &hdg_edg);
@@ -54,7 +54,7 @@ int he_read_ini(const char *path, T **pq) {
     for (i = 0; i < nh; i++) {
         NXT();
         cnt = sscanf(line, "%d %d  %d %d %d",
-                     &next[i], &flip[i], &ver[i], &tri[i], &edg[i]);
+                     &nxt[i], &flp[i], &ver[i], &tri[i], &edg[i]);
         if (cnt != 5) E("wrong half-edg line '%s' in '%s'", line, path);
     }
     for (i = 0; i < nv; i++) {
@@ -77,7 +77,7 @@ int he_read_ini(const char *path, T **pq) {
 
     q->nv = nv; q->nt = nt; q->ne = ne; q->nh = nh;
 
-    q->next = next; q->flip = flip;
+    q->nxt = nxt; q->flp = flp;
     q->ver = ver; q->tri = tri; q->edg = edg;
 
     q->hdg_ver = hdg_ver;
@@ -92,7 +92,7 @@ int he_read_ini(const char *path, T **pq) {
 int he_read_fin(T *q) {
     if (q->magic != MAGIC)
         ERR(HE_MEMORY, "wrong fin() call");
-    FREE(q->next); FREE(q->flip);
+    FREE(q->nxt); FREE(q->flp);
     FREE(q->ver); FREE(q->tri); FREE(q->edg);
     FREE(q->hdg_ver);
     FREE(q->hdg_edg);
@@ -104,11 +104,11 @@ int he_read_fin(T *q) {
 int he_info(T *q, FILE *f) {
     int r;
     int nv, nt, ne, nh;
-    int *next, *flip, *ver, *tri, *edg;
+    int *nxt, *flp, *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
 
     nv = q->nv; nt = q->nt; ne = q->ne; nh = q->nh;
-    next = q->next; flip = q->flip;
+    nxt = q->nxt; flp = q->flp;
     ver = q->ver; tri = q->tri; edg = q->edg;
     hdg_ver = q->hdg_ver;
     hdg_edg = q->hdg_edg;
@@ -120,10 +120,10 @@ int he_info(T *q, FILE *f) {
 
     fprintf(f, "[nh=%d lines]\n", nh);
     fprintf(f, "%d %d %d %d %d\n",
-            next[0], flip[0], ver[0], tri[0], edg[0]);
+            nxt[0], flp[0], ver[0], tri[0], edg[0]);
     fputs("...\n", f);
     fprintf(f, "%d %d %d %d %d\n",
-            next[nh-1], flip[nh-1], ver[nh-1], tri[nh-1], edg[nh-1]);
+            nxt[nh-1], flp[nh-1], ver[nh-1], tri[nh-1], edg[nh-1]);
     fprintf(f, "[nv=%d lines]\n", nv);
     fprintf(f, "%d\n", hdg_ver[0]);
     fputs("...\n", f);
@@ -147,8 +147,8 @@ int he_read_nt(T *q) { return q->nt; }
 int he_read_ne(T *q) { return q->ne; }
 int he_read_nh(T *q) { return q->nh; }
 
-int he_read_next(T *q, int **p) { *p = q->next; return HE_OK; };
-int he_read_flip(T *q, int **p) { *p = q->flip; return HE_OK; };
+int he_read_nxt(T *q, int **p) { *p = q->nxt; return HE_OK; };
+int he_read_flp(T *q, int **p) { *p = q->flp; return HE_OK; };
 int he_read_ver(T *q,  int **p) { *p = q->ver; return HE_OK; };
 int he_read_tri(T *q,  int **p) { *p = q->tri; return HE_OK; };
 int he_read_edg(T *q,  int **p) { *p = q->edg; return HE_OK; };
