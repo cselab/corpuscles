@@ -46,6 +46,12 @@ int he_ini(HeRead *r, T **pq) {
     he_read_hdg_edg(r, &hdg_edg);
     he_read_hdg_tri(r, &hdg_tri);
 
+    MEMCPY(nh, nxt, &q->nxt); MEMCPY(nh, flp, &q->flp);
+    MEMCPY(nh, ver, &q->ver); MEMCPY(nh, tri, &q->tri); MEMCPY(nh, edg, &q->edg);
+    MEMCPY(nv, hdg_ver, &q->hdg_ver);
+    MEMCPY(ne, hdg_edg, &q->hdg_edg);
+    MEMCPY(nt, hdg_tri, &q->hdg_tri);
+
     q->magic = MAGIC;
     
     *pq = q;
