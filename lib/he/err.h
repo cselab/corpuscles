@@ -3,3 +3,6 @@
 
 void he_err(const char *file, int line, const char *fmt, ...);
 void he_msg(const char *file, int line, const char *fmt, ...);
+
+/* error codes */
+enum {HE_OK, HE_READ};
