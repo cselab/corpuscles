@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "inc/def.h"
 #include "he/macro.h"
 #include "he/err.h"
 
-#define SIZE (2048)
+#define SIZE (MAX_STRING_SIZE)
 
 void he_err(__UNUSED int code, const char *file, int line, const char *fmt, ...) {
     char msg[SIZE];

@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <string.h>
+#include "inc/def.h"
 #include "he/err.h"
 
 #define FMT "%e"
-#define SIZE 4096
+#define SIZE (MAX_STRING_SIZE)
 
-void punto_write(int n, double *queue[], /**/ const char *path) {
+int punto_write(int n, double *queue[], /**/ const char *path) {
     FILE *f;
     int i;
     double **q;
     if ((f = fopen(path, "w")) == NULL)
-        ERR("fail to open '%s'", path);
+        ERR(HE_IO, "fail to open '%s'", path);
     for (i = 0; i < n; i++) {
         q = queue;
         for (;;) {
@@ -23,7 +24,8 @@ void punto_write(int n, double *queue[], /**/ const char *path) {
         }
     }
     if (fclose(f) != 0)
-        ERR("fail to close '%s'", path);
+        ERR(HE_IO, "fail to close '%s'", path);
+    return HE_OK;
 }
 
 enum {OK, FAIL};
@@ -47,22 +49,20 @@ static int blank(const char *s) {
     return 1;
 }
 
-void punto_read(const char *path, /**/ int *pn, double *queue[]) {
+int punto_read(const char *path, /**/ int *pn, double *queue[]) {
     FILE *f;
     int n;
     char s[SIZE];
-    
     if ((f = fopen(path, "r")) == NULL)
-        ERR("fail to open '%s'", path);
-
+        ERR(HE_IO, "fail to open '%s'", path);
     n = 0;
     while (fgets(s, SIZE, f) != NULL  && !blank(s)) {
         if (read(s, n++, queue) != OK)
-            ERR("wrong line '%s' in file '%s'", s, path);
+            ERR(HE_IO, "wrong line '%s' in file '%s'", s, path);
     }
     
     if (fclose(f) != 0)
-        ERR("fail to close '%s'", path);
-
+        ERR(HE_IO, "fail to close '%s'", path);
     *pn = n;
+    return HE_OK;
 }

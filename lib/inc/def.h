@@ -1,0 +1,1 @@
+#define MAX_STRING_SIZE (4096)

@@ -1,14 +1,31 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "he/err.h"
 #include "he/util.h"
 
-#define SIZE (4096)
+#include "inc/def.h"
 
-void util_mkdir(const char *path) {
+#define SIZE (MAX_STRING_SIZE)
+
+int util_mkdir(const char *path) {
     char command[SIZE];
     snprintf(command, SIZE, "mkdir -p '%s'", path);
     if (system(command) != 0)
-        ERR("comamnd <%s> faild", command);
+        ERR(HE_SYS, "comamnd <%s> faild", command);
+    return HE_OK;
+}
+
+int util_eq(const char *a, const char *b) {
+    return strncmp(a, b, SIZE) == 0;
+}
+
+char *util_fgets(char *s, FILE *stream) {
+    char *c;
+    if (fgets(s, SIZE, stream) == NULL)
+        return NULL;
+    if ((c = strchr(s, '\n')) != NULL)
+        *c = '\0';
+    return s;
 }

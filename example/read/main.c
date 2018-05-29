@@ -5,5 +5,5 @@
 
 int main() {
     HeRead *read;
-    he_read_ini("fjds", &read);
+    he_read_ini("/dev/stdin", &read);
 }

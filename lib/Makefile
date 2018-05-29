@@ -1,5 +1,6 @@
 OFILES = err.o memory.o punto.o vec.o util.o read.o
 HFILES = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h
+DFILES = inc/def.h
 
 PREFIX = $(HOME)
 TRG = he
@@ -9,7 +10,7 @@ HE_CFLAGS = -Wall -Wextra -O2 -g
 SED = sed
 
 $(LIB): $(OFILES); ar rv $@ $(OFILES) && ranlib $@
-$(OFILES) : $(HFILES)
+$(OFILES) : $(HFILES) $(DFILES)
 %.o: %.c; $(CC) $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<
 
 $(PC): $(PC).in

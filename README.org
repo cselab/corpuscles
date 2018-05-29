@@ -1,0 +1,20 @@
+* he data format
+
+nv, nt, ne, nh: number elements
+hdg, next flip: half-edg indexes
+ver, tri, edg: indexes of elements
+flip = -1: indicate missing flip half-edge
+
+#+BEGIN_EXAMPLE
+"HE"
+nv nt ne nh
+[nh lines]
+next flip ver tri edg
+...
+[nv lines]
+...
+[ne lines]
+...
+[nt lines]
+...
+#+END_EXAMPLE
