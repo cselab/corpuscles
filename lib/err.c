@@ -5,7 +5,7 @@
 
 #define SIZE (2048)
 
-void tri_err(const char *file, int line, const char *fmt, ...) {
+void he_err(const char *file, int line, const char *fmt, ...) {
     char msg[SIZE];
     va_list ap;
     va_start(ap, fmt);
@@ -15,7 +15,7 @@ void tri_err(const char *file, int line, const char *fmt, ...) {
     exit(2);
 }
 
-void tri_msg(const char *file, int line, const char *fmt, ...) {
+void he_msg(const char *file, int line, const char *fmt, ...) {
     char msg[SIZE];
     va_list ap;
     va_start(ap, fmt);

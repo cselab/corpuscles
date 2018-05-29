@@ -5,6 +5,6 @@ includedir=${prefix}/include
 
 Name: @TRG@
 Version: 0.1
-Description: tri libs
+Description: he libraries
 Libs: -L${libdir} -l@TRG@ -lm
 Cflags: -I${includedir}

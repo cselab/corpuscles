@@ -1,4 +1,4 @@
-#define MALLOC(n, pp) tri_malloc((n)*sizeof(**(pp)), (void**)(pp))
-#define FREE(p) tri_free(p)
-void tri_malloc(int, void**);
-void tri_free(void *ptr);
+#define MALLOC(n, pp) he_malloc((n)*sizeof(**(pp)), (void**)(pp))
+#define FREE(p) he_free(p)
+void he_malloc(int, void**);
+void he_free(void *ptr);

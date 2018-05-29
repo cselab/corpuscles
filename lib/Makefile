@@ -2,7 +2,7 @@ OFILES = err.o memory.o punto.o vec.o util.o
 HFILES = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h
 
 PREFIX = $(HOME)
-TRG = tri
+TRG = he
 LIB = lib$(TRG).a
 PC  = $(TRG).pc
 HE_CFLAGS = -Wall -Wextra -O3 -g
