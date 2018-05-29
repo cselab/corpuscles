@@ -1,5 +1,5 @@
-OFILES = err.o memory.o punto.o vec.o util.o read.o
-HFILES = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h
+OFILES = err.o memory.o punto.o vec.o util.o read.o he.o
+HFILES = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h he/he.h
 DFILES = inc/def.h
 
 PREFIX = $(HOME)

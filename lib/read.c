@@ -4,9 +4,10 @@
 #include "inc/def.h"
 #include "he/err.h"
 #include "he/memory.h"
-#include "he/read.h"
 #include "he/macro.h"
 #include "he/util.h"
+
+#include "he/read.h"
 
 #define T HeRead
 #define SIZE (MAX_STRING_SIZE)
