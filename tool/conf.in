@@ -1,6 +1,6 @@
-. tri.util
+. he.util
 
-prog=tri.conf
+prog=he.conf
 PREFIX=@PREFIX@
 : ${PKG_CONFIG=pkg-config}
 
@@ -30,4 +30,4 @@ esac
 
 PKG_CONFIG_PATH=$PREFIX/pkgconfig:$PKG_CONFIG_PATH
 export PKG_CONFIG_PATH
-e "$PKG_CONFIG" "$a" tri
+e "$PKG_CONFIG" "$a" he
