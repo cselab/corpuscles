@@ -22,6 +22,20 @@ struct T {
     int magic;
 };
 
+
+enum {OK, FAIL};
+static int valid(int n, int *a, int *b) {
+    int i, i0;
+    for (i = 0; i < n; i++) {
+        i0 = b[a[i]];
+        if (i != i0) {
+            MSG("i=%d a[i]=%d i0=%d ", i, a[i], i0);
+            return FAIL;
+        }
+    }
+    return OK;
+}
+
 int he_read_ini(const char *path, T **pq) {
     T *q;
     FILE *f;
@@ -40,7 +54,7 @@ int he_read_ini(const char *path, T **pq) {
     if (!util_eq(line, "HE"))
         E("'%s' is not a he file", path);
     NXT()
-    cnt = sscanf(line, "%d %d %d %d", &nv, &nt, &ne, &nh);
+    cnt = sscanf(line, "%d %d %d %d", &nv, &ne, &nt, &nh);
     if (cnt != 4)
         E("'%s' != [nv nt ne nh] in '%s'", line, path);
     if (nv <= 0 || nt <= 0 || ne <= 0 || nh <= 0)
@@ -55,7 +69,7 @@ int he_read_ini(const char *path, T **pq) {
     for (i = 0; i < nh; i++) {
         NXT();
         cnt = sscanf(line, "%d %d  %d %d %d",
-                     &nxt[i], &flp[i], &ver[i], &tri[i], &edg[i]);
+                     &nxt[i], &flp[i], &ver[i], &edg[i], &tri[i]);
         if (cnt != 5) E("wrong half-edg line '%s' in '%s'", line, path);
     }
     for (i = 0; i < nv; i++) {
@@ -86,6 +100,13 @@ int he_read_ini(const char *path, T **pq) {
     q->hdg_tri = hdg_tri;
     q->magic = MAGIC;
 
+    if (valid(nv, hdg_ver, ver) != OK)
+        E("invalid ver references");
+    if (valid(ne, hdg_edg, edg) != OK)
+        E("invalid edg references");
+    if (valid(nt, hdg_tri, tri) != OK)
+        E("invalid tri references");    
+    
     *pq = q;
     return HE_OK;
 }
@@ -115,7 +136,7 @@ int he_info(T *q, FILE *f) {
     hdg_edg = q->hdg_edg;
     hdg_tri = q->hdg_tri;
 
-    r = fprintf(f, "%d %d %d %d\n", nv, nt, ne, nh);
+    r = fprintf(f, "%d %d %d %d\n", nv, ne, nt, nh);
     if (r <= 0)
         ERR(HE_IO, "fprintf() failed");
 

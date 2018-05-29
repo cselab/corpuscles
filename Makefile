@@ -1,4 +1,4 @@
-D = tool lib example/punto
+D = tool lib example/punto example/valid
 
 install: dir
 test: dir

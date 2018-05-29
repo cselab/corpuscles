@@ -9,7 +9,7 @@ static void ini()      { he_file_ini("/dev/stdin", &he); }
 static void fin()      { he_fin(he); }
 
 static int  nxt(int h) { return he_nxt(he, h); }
-static int  flp(int h) { return he_flp(he, h); }
+//static int  flp(int h) { return he_flp(he, h); }
 
 static int  ver(int h) { return he_ver(he, h); }
 static int  edg(int h) { return he_edg(he, h); }
@@ -22,8 +22,8 @@ static int  hdg_tri(int t) { return he_hdg_tri(he, t); }
 static int bnd(int h) { return he_bnd(he, h); }
 
 int main() {
-    int v, v0, e, e0, e1, t, t0, t1, t2;
-    int f, h, h0;
+    int v, v0, e, e0, t, t0;
+    int h, h0;
     ini();
     MSG("%d %d %d %d", nv = he_nv(he), nt = he_nt(he), ne = he_ne(he), he_nh(he));
 
@@ -35,20 +35,17 @@ int main() {
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
         if (bnd(h)) continue;
-        f = flp(h);
         e0 = edg(h);
-        e1 = edg(f);
-        if (e != e0 && e != e1) ERR(HE_IO, "%d is not in [%d %d]", e, e0, e1);
+        if (e != e0) ERR(HE_IO, "%d != %d", e, e0);
     }
 
     for (t = 0; t < nt; t++) {
-        t0 = tri(hdg_tri(t));
-        t1 = tri(hdg_tri(t));
-        t2 = tri(hdg_tri(t));
-        if (t != t0 && t != t1 && t != t2)
-            ERR(HE_IO, "%d is not in [%d %d %d]", t, t0, t1, t2);
+        h = hdg_tri(t);
+        t0 = tri(h);
+        MSG("t: %d %d", t, t0);
+        //      if (t != t0) ERR(HE_IO, "%d != %d", t, t0);
     }
-    
+
     for (v = 0; v < nv; v++) {
         h0 = h = hdg_ver(v);
         do {
