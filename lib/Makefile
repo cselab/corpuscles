@@ -1,6 +1,6 @@
 OFILES = err.o memory.o punto.o vec.o util.o read.o he.o x.o
 HFILES = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h he/he.h he/x.h \
-he/prec/single.h he/prec/double.h
+he/single/real.h he/double/real.h
 # subdirectories in HFILES
 DIRS   = prec
 DFILES = inc/def.h
