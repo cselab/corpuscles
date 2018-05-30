@@ -1,16 +1,16 @@
-void vec_ini(double x, double y, double z, /**/ double[3]);
-void vec_coord(double[3], double *x, double *y, double *z);
+void vec_ini(real x, real y, real z, /**/ real[3]);
+void vec_coord(real[3], real *x, real *y, real *z);
 
-void vec_plus(double[3], double[3], /**/ double[3]);
-void vec_minus(double[3], double[3], /**/ double[3]);
+void vec_plus(real[3], real[3], /**/ real[3]);
+void vec_minus(real[3], real[3], /**/ real[3]);
 
-void vec_scalar(double[3], double, /**/ double[3]);
-void vec_append(double[3], /**/ double *x, double *y, double *z);
-void vec_append_direction(double[3], double s, /**/ double *x, double *y, double *z);
+void vec_scalar(real[3], real, /**/ real[3]);
+void vec_append(real[3], /**/ real *x, real *y, real *z);
+void vec_append_direction(real[3], real s, /**/ real *x, real *y, real *z);
 
-double vec_dot(double[3], double[3]);
-double vec_abs(double[3]);
-void vec_cross(double[3], double[3], /**/ double[3]);
+real vec_dot(real[3], real[3]);
+real vec_abs(real[3]);
+void vec_cross(real[3], real[3], /**/ real[3]);
 
-void vec_norm(double[3], /**/ double[3]);
-int vec_printf(double a[3], FILE *f, const char *fmt);
+void vec_norm(real[3], /**/ real[3]);
+int vec_printf(real a[3], FILE *f, const char *fmt);

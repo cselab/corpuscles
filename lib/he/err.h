@@ -3,7 +3,6 @@ enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX};
 
 /* for user code */
 #define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
-
 #define ERR(code, fmt, ...)                                             \
     do {                                                                \
         he_err(code, __FILE__, __LINE__, (fmt), ##__VA_ARGS__);         \
