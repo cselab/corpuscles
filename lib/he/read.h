@@ -24,6 +24,6 @@ int he_read_hdg_ver(T*, int**);
 int he_read_hdg_edg(T*, int**);
 int he_read_hdg_tri(T*, int**);
 
-int he_info(T*, FILE*);
+int he_read_info(T*, FILE*);
 
 #undef T

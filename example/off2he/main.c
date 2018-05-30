@@ -12,7 +12,7 @@ void ini() {
     int nv, nt, *tri;
     he_off_ini("/dev/stdin", &off);
 
-    nv = he_off_nt(off);
+    nv = he_off_nv(off);
     nt = he_off_nt(off);
 
     he_off_tri(off, &tri);

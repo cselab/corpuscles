@@ -41,6 +41,8 @@ int he_off_ini(const char *path, T **pq) {
         E("'%s' is not an off file", path);
     NXT();
     cnt = sscanf(line, "%d %d %*d", &nv, &nt);
+    if (3*nt < nv)
+        E("3*(nt=%d)   <   nv=%d", nt, nv);
 
     MALLOC(3*nv, &q->ver); ver = q->ver;
     MALLOC(3*nt, &q->tri); tri = q->tri;

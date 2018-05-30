@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include "inc/def.h"
 #include "he/err.h"
@@ -97,6 +98,7 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     he_edg_ini(nv, &hdg);
     for (tri = tri0, t = h = 0; t < nt; t++) {
         i = *tri++; j = *tri++; k = *tri++;
+        assert(i < nv); assert(j < nv); assert(k < nv);
         setup_hdg(q, hdg, hi = h++, t, i, j);
         setup_hdg(q, hdg, hj = h++, t, j, k);
         setup_hdg(q, hdg, hk = h++, t, k, i);
@@ -116,7 +118,6 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
         setup_edg(q, hdg, j, k,  &ne);
         setup_edg(q, hdg, k, i,  &ne);
     }
-    MSG("ne = %d", ne);
     alloc_edg(ne, q);
     for (h = 0; h < nh; h++) {
         e = q->edg[h];
@@ -126,8 +127,13 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     q->nv = nv; q->ne = ne; q->nt = nt; q->nh = nh;
     q->magic = MAGIC;
 
+    he_read_inf
     if (valid(nv, q->hdg_ver, q->ver) != OK)
         E("invalid ver references");
+    if (valid(ne, q->hdg_edg, q->edg) != OK)
+        E("invalid edg references");
+    if (valid(nt, q->hdg_tri, q->tri) != OK)
+        E("invalid tri references");
 
     *pq = q;
     he_edg_fin(hdg);
@@ -204,7 +210,7 @@ int he_read_fin(T *q) {
     return HE_OK;
 }
 
-int he_info(T *q, FILE *f) {
+int he_read_info(T *q, FILE *f) {
     int r;
     int nv, nt, ne, nh;
     int *nxt, *flp, *ver, *tri, *edg;
