@@ -3,6 +3,8 @@
 typedef struct T T;
 
 int he_read_ini(const char *path, T**);
+int he_read_off_ini(const char *path, T**);
+
 int he_read_fin(T*);
 
 int he_read_nv(T*);
