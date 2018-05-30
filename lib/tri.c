@@ -28,6 +28,16 @@ void tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
     vec_norm(n,   e);
 }
 
+real tri_ctan0(real a[3], real b[3], real c[3]) { /* at `b' */
+    real x, y, u[3], v[3];
+    y = 2 * tri_area(a, b, c);
+    vec_minus(a, b, u);
+    vec_minus(c, b, v);
+    x = vec_dot(u, v);
+    return x/y; /* TODO: */
+}
+
+
 /* bc is an edge */
 real tri_dih(real a[3], real b[3], real c[3], real d[3]) {
     real x, y, ang, n[3], k[3], nk[3], e[3];
