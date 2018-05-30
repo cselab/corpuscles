@@ -60,7 +60,18 @@ static int afree(T *q) {
     return HE_OK;
 }
 
-static void setup_edg(T *q, HeEdg *hdg, int h, int t, int i, int j) {
+static void setup_edg(T *q, HeEdg *hdg, int i, int j,  int *pe) {
+    int h, f, e;
+    h = he_edg_get(hdg, i, j);
+    if (h == -1) return;
+    e = *pe;
+    q->edg[h] = e;
+    if ((f = he_edg_get(hdg, j, i)) != -1)
+        q->edg[f] = e;
+    e++;
+    *pe = e;
+}
+static void setup_hdg(T *q, HeEdg *hdg, int h, int t, int i, int j) {
     he_edg_set(hdg, i, j, h);
     q->hdg_tri[t] = q->hdg_ver[i] = h;
     q->ver[h] = i; q->tri[h] = t;
@@ -73,7 +84,7 @@ static void setup_flip(T *q, HeEdg *hdg, int i, int j) {
 }
 int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     int ne, nh;
-    int t, i, j, k;
+    int e, t, i, j, k;
     int h, hi, hj, hk;
     int *tri;
     T *q;
@@ -86,25 +97,38 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     he_edg_ini(nv, &hdg);
     for (tri = tri0, t = h = 0; t < nt; t++) {
         i = *tri++; j = *tri++; k = *tri++;
-        setup_edg(q, hdg, hi = h++, t, i, j);
-        setup_edg(q, hdg, hj = h++, t, j, k);
-        setup_edg(q, hdg, hk = h++, t, k, i);
+        setup_hdg(q, hdg, hi = h++, t, i, j);
+        setup_hdg(q, hdg, hj = h++, t, j, k);
+        setup_hdg(q, hdg, hk = h++, t, k, i);
         q->nxt[hi] = hj; q->nxt[hj] = hk; q->nxt[hk] = hi;
     }
 
     for (tri = tri0, t = h = 0; t < nt; t++) {
-        i = *tri++; j = *tri++; k = *tri++;        
+        i = *tri++; j = *tri++; k = *tri++;
         setup_flip(q, hdg, i, j);
         setup_flip(q, hdg, j, k);
         setup_flip(q, hdg, k, i);
     }
 
+    for (tri = tri0, ne = t = h = 0; t < nt; t++) {
+        i = *tri++; j = *tri++; k = *tri++;
+        setup_edg(q, hdg, i, j,  &ne);
+        setup_edg(q, hdg, j, k,  &ne);
+        setup_edg(q, hdg, k, i,  &ne);
+    }
+    MSG("ne = %d", ne);
+    alloc_edg(ne, q);
+    for (h = 0; h < nh; h++) {
+        e = q->edg[h];
+        q->hdg_edg[e] = h;
+    }
+
     q->nv = nv; q->ne = ne; q->nt = nt; q->nh = nh;
     q->magic = MAGIC;
-    
+
     if (valid(nv, q->hdg_ver, q->ver) != OK)
         E("invalid ver references");
-    
+
     *pq = q;
     he_edg_fin(hdg);
     return HE_OK;
