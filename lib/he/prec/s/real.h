@@ -1,2 +1,2 @@
 typedef float real;
-#define XE_REAL_FMT ("%f")
+#define XE_REAL_IN "%f"

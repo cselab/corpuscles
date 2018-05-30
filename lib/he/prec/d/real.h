@@ -1,2 +1,2 @@
 typedef double real;
-#define XE_REAL_FMT ("%lf")
+#define XE_REAL_IN "%lf"
