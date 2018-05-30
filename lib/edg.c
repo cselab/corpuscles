@@ -56,7 +56,7 @@ int he_edg_set(T *q, int i, int j, int v) {
     prv = q->node[i];
     while (prv != NULL) {
         if (prv->j == j) {
-            MSG("reset [%d %d] to %d", i, j, v);
+            prv->v = v;
             return HE_OK;
         }
         nxt = prv->nxt;

@@ -1,7 +1,7 @@
 int nv, ne, nt, nh;
 
-void ini(const char *path);
-void fin();
+int ini(const char *path);
+int fin();
 int  nxt(int h);
 int  flp(int h);
 

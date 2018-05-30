@@ -1,14 +1,37 @@
+#include <stdio.h>
+
+#include "real.h"
+#include "he/read.h"
+#include "he/off.h"
+#include "he/err.h"
 #include "he/he.h"
+#include "he/x.h"
 
 static He *he;
+
 extern int nv, ne, nt, nh;
 
-void ini(const char *path) {
-    he_file_ini(path, &he);
+int ini(const char *path) {
+    int nv, nt, *tri;
+    HeOff *off;
+    HeRead *read;
+    
+    he_off_ini(path, &off);
+
+    nv = he_off_nv(off);
+    nt = he_off_nt(off);
+
+    he_off_tri(off, &tri);
+    he_read_tri_ini(nv, nt, tri, &read);
+    
+    he_ini(read, &he);
     nv = he_nv(he); nt = he_nt(he); ne = he_ne(he); nh = he_nh(he);
+
+    he_read_fin(read);
+    he_off_fin(off);
 }
 
-void fin()      { he_fin(he); }
+int  fin()      { he_fin(he); return HE_OK; }
 int  nxt(int h) { return he_nxt(he, h); }
 int  flp(int h) { return he_flp(he, h); }
 

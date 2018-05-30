@@ -66,9 +66,14 @@ static void setup_edg(T *q, HeEdg *hdg, int i, int j,  int *pe) {
     h = he_edg_get(hdg, i, j);
     if (h == -1) return;
     e = *pe;
+    
     q->edg[h] = e;
     if ((f = he_edg_get(hdg, j, i)) != -1)
         q->edg[f] = e;
+
+    he_edg_set(hdg, i, j, -1); /* counted it */
+    he_edg_set(hdg, j, i, -1);
+    
     e++;
     *pe = e;
 }
@@ -118,6 +123,8 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
         setup_edg(q, hdg, j, k,  &ne);
         setup_edg(q, hdg, k, i,  &ne);
     }
+    he_edg_fin(hdg);
+    
     alloc_edg(ne, q);
     for (h = 0; h < nh; h++) {
         e = q->edg[h];
@@ -127,7 +134,7 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     q->nv = nv; q->ne = ne; q->nt = nt; q->nh = nh;
     q->magic = MAGIC;
 
-    he_read_inf
+    he_read_info(q, stderr);
     if (valid(nv, q->hdg_ver, q->ver) != OK)
         E("invalid ver references");
     if (valid(ne, q->hdg_edg, q->edg) != OK)
@@ -136,7 +143,6 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
         E("invalid tri references");
 
     *pq = q;
-    he_edg_fin(hdg);
     return HE_OK;
 }
 

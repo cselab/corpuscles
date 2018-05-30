@@ -15,7 +15,7 @@ int main() {
     for (e = 0; e < ne; e++) { /* from edg and back */
         h = hdg_edg(e);
         e0 = edg(h);
-        if (e != e0) ER("%d != %d", e, e0);
+        if (e != e0) ER("e=%d h=%d e0=%d", e, h, e0);
     }
 
     for (t = 0; t < nt; t++) { /* from tri and back */
