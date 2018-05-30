@@ -1,4 +1,4 @@
-#define T He
+#define T HeEdg
 
 typedef struct T T;
 
