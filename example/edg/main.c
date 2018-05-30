@@ -10,13 +10,13 @@ static void ini(int n) { he_edg_ini(n, &edg); }
 static void fin() { he_edg_fin(edg); }
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 static void set(int i, int j, int v) {
-    MSG("set %d %d %d", i, j, v);
+    printf("set %d %d %d\n", i, j, v);
     he_edg_set(edg, i, j, v);
 }
 static void get(int i, int j) {
     int v;
     v = he_edg_get(edg, i, j);
-    MSG("get %d %d %d", i, j, v);
+    printf("get %d %d %d\n", i, j, v);
 }
 
 int main() {
