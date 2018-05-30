@@ -54,7 +54,9 @@ static int afree(T *q) {
 }
 
 
-int he_read_off_ini(const char *path, T **q) {
+int he_read_tri_ini(int *tri, T **pq) {
+    T *q;
+    MALLOC(1, &q);
     return HE_OK;
 }
 
