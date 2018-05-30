@@ -1,1 +1,1 @@
-enum {MAX_STRING_SIZE = 4096};
+#define  MAX_STRING_SIZE (4096)

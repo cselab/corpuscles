@@ -1,7 +1,7 @@
 O_S = off.s.o
 O_D = off.d.o
 O = err.o memory.o punto.o vec.o util.o read.o he.o x.o
-H = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h he/he.h he/x.h \
+H = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h he/off.h he/he.h he/x.h \
 he/prec/s/real.h he/prec/d/real.h
 I = inc/def.h
 

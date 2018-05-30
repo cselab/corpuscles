@@ -1,13 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "he/err.h"
 #include "he/util.h"
 
 #include "inc/def.h"
 
-#define SIZE (MAX_STRING_SIZE)
+#define  SIZE (MAX_STRING_SIZE)
 
 int util_mkdir(const char *path) {
     char command[SIZE];
@@ -27,5 +28,20 @@ char *util_fgets(char *s, FILE *stream) {
         return NULL;
     if ((c = strchr(s, '\n')) != NULL)
         *c = '\0';
+    return s;
+}
+
+enum {NO, YES};
+static int commentp(const char *s) {
+    while (*(s++) != '\0') {
+        if    (*s == '#') return YES;
+        if (!isblank(*s)) return NO;
+    }
+    return YES;
+}
+char *util_comment_fgets(char *s, FILE *stream) {
+    do if (util_fgets(s, stream) == NULL)
+           return NULL;
+    while (commentp(s) == YES);
     return s;
 }

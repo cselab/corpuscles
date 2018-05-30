@@ -53,7 +53,7 @@ int he_read_ini(const char *path, T **pq) {
     NXT();
     if (!util_eq(line, "HE"))
         E("'%s' is not a he file", path);
-    NXT()
+    NXT();
     cnt = sscanf(line, "%d %d %d %d", &nv, &ne, &nt, &nh);
     if (cnt != 4)
         E("'%s' != [nv nt ne nh] in '%s'", line, path);

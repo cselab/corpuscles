@@ -1,6 +1,6 @@
 M = main
 PREC = d
-TRI_CFLAGS = -Wall -Wextra -O0 -g `he.conf --cflags $(PREC)`
+TRI_CFLAGS = -Wall -Wextra -O2 -g `he.conf --cflags $(PREC)`
 TRI_LDFLAGS = `he.conf --libs $(PREC)`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(TRI_LDFLAGS) -o $@

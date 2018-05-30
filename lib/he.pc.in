@@ -7,4 +7,4 @@ Name: he_@PREC@
 Version: 0.1
 Description: he libraries
 Libs: -L${libdir} -lhe_@PREC@ -lm
-Cflags: -I${includedir} -I${includedir}/prec/@PREC@
+Cflags: -I${includedir} -I${includedir}/he/prec/@PREC@
