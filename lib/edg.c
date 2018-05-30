@@ -18,7 +18,7 @@ int he_edg_ini(int n, T **pq) {
     T *q;
     int i;
     MALLOC(1, &q);
-    MALLOC(n, &q->node);
+    MALLOC(q->n = n, &q->node);
     for (i = 0; i < n; i++)
         q->node[i] = NULL;
     *pq = q;
