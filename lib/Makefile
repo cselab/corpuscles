@@ -1,8 +1,6 @@
 OFILES = err.o memory.o punto.o vec.o util.o read.o he.o x.o
 HFILES = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h he/he.h he/x.h \
 he/single/real.h he/double/real.h
-# subdirectories in HFILES
-DIRS   = prec
 DFILES = inc/def.h
 
 PREFIX = $(HOME)
@@ -22,18 +20,18 @@ $(PC): $(PC).in
                -e "s,@TRG@,$(TRG),g" \
         $< > $@
 
-dir:
-	mkdir -p $(PREFIX)/lib $(PREFIX)/include/$(TRG) $(PREFIX)/pkgconfig
-	for d in $(DIRS); \
-        do mkdir -p $(PREFIX)/include/$(TRG)/"$$d"; \
-        done
-
-install: $(LIB) $(HFILES) $(PC) dir
+install: $(LIB) $(HFILES) $(PC)
 	cp $(LIB)    $(PREFIX)/lib
 	cp $(PC)     $(PREFIX)/pkgconfig
-	cp $(HFILES) $(PREFIX)/include/$(TRG)
+	for f in $(HFILES)           ; \
+	do d=`dirname "$$f"`         ; \
+	   d=$(PREFIX)/include/"$$d" ; \
+           t=$(PREFIX)/include/"$$f" ; \
+	   mkdir -p -- "$$d"         ; \
+	   cp -- "$$f" "$$t"         ; \
+	done
 
 clean:; rm -f $(OFILES) $(LIB) $(PC)
 test:
 
-.PHONY: clean install test dir
+.PHONY: clean install test
