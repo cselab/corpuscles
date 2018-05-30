@@ -59,8 +59,12 @@ void vec_cross(real a[3], real b[3], /**/ real c[3]) {
    c[Y] = b[X]*a[Z]-a[X]*b[Z];
    c[Z] = a[X]*b[Y]-b[X]*a[Y];
 }
-
 real vec_abs(real a[3]) { return sqrt(vec_dot(a, a)); }
+
+real vec_cylindrical_r(real a[3]) {
+    enum {X, Y};
+    return sqrt(a[X]*a[X] + a[Y]*a[Y]);
+}
 
 static int small(real s) {
     const real eps = 1e-12;
