@@ -1,5 +1,8 @@
 /* error codes */
-enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS};
+enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER};
+
+/* for user code */
+#define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
 
 #define ERR(code, fmt, ...)                                             \
     do {                                                                \
