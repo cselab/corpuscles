@@ -1,31 +1,11 @@
 #include <stdio.h>
 #include <he/err.h>
-#include <he/he.h>
-
-static He *he;
-static void ini()      { he_file_ini("/dev/stdin", &he); }
-static void fin()      { he_fin(he); }
-
-static int  nxt(int h) { return he_nxt(he, h); }
-static int  flp(int h) { return he_flp(he, h); }
-
-static int  ver(int h) { return he_ver(he, h); }
-static int  edg(int h) { return he_edg(he, h); }
-static int  tri(int h) { return he_tri(he, h); }
-
-static int  hdg_ver(int v) { return he_hdg_ver(he, v); }
-static int  hdg_edg(int e) { return he_hdg_edg(he, e); }
-static int  hdg_tri(int t) { return he_hdg_tri(he, t); }
-static int bnd(int h) { return he_bnd(he, h); }
+#include <he/x.h>
 
 int main() {
-    int nv, ne, nt, nh;
-
     int v, v0, e, e0, t, t0;
     int h, h0, f, cnt;
-
-    ini();
-    MSG("%d %d %d %d", nv = he_nv(he), nt = he_nt(he), ne = he_ne(he), nh = he_nh(he));
+    ini("/dev/stdin");
 
     for (v = 0; v < nv; v++) { /* from vert and back */
         v0 = ver(hdg_ver(v));
@@ -61,6 +41,6 @@ int main() {
         if (h != h0) ER("%d != %d", h, h0);
     }
     fin();
-
-    flp(111111);
+    MSG("ok");
+    return(HE_OK);
 }
