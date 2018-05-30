@@ -5,7 +5,7 @@ typedef struct T T;
 int he_read_ini(const char *path, T**);
 /* tri = [t0, t1, t2] [t0, t2, t2], ... */
 
-int he_read_tri_ini(int nt, int *tri, T**);
+int he_read_tri_ini(int nv, int nt, int *tri, T**);
 
 int he_read_fin(T*);
 

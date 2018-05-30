@@ -6,6 +6,7 @@
 #include "he/memory.h"
 #include "he/macro.h"
 #include "he/util.h"
+#include "he/edg.h"
 
 #include "he/read.h"
 
@@ -35,12 +36,18 @@ static int valid(int n, int *a, int *b) {
     }
     return OK;
 }
-static int alloc(T *q, int nv, int ne, int nt, int nh) {
+
+static int alloc_hdg(int nh, T *q) {
     MALLOC(nh, &q->nxt); MALLOC(nh, &q->flp);
     MALLOC(nh, &q->ver); MALLOC(nh, &q->tri); MALLOC(nh, &q->edg);
-    MALLOC(nv, &q->hdg_ver);
-    MALLOC(ne, &q->hdg_edg);
-    MALLOC(nt, &q->hdg_tri);
+    return HE_OK;
+}
+static int alloc_ver(int nv, T *q) { MALLOC(nv, &q->hdg_ver); return HE_OK; }
+static int alloc_edg(int ne, T *q) { MALLOC(ne, &q->hdg_edg); return HE_OK; }
+static int alloc_tri(int nt, T *q) { MALLOC(nt, &q->hdg_tri); return HE_OK; }
+static int alloc(int nv, int ne, int nt, int nh, T *q) {
+    alloc_hdg(nh, q);
+    alloc_ver(nv, q); alloc_edg(ne, q); alloc_tri(nt, q);
     return HE_OK;
 }
 
@@ -53,13 +60,53 @@ static int afree(T *q) {
     return HE_OK;
 }
 
-
-int he_read_tri_ini(int nt, int *tri, T **pq) {
+static void setup_edg(T *q, HeEdg *hdg, int h, int t, int i, int j) {
+    he_edg_set(hdg, i, j, h);
+    q->hdg_tri[t] = q->hdg_ver[i] = h;
+    q->ver[h] = i; q->tri[h] = t;
+}
+static void setup_flip(T *q, HeEdg *hdg, int i, int j) {
+    int h, f;
+    h = he_edg_get(hdg, i, j);
+    f = he_edg_get(hdg, j, i);
+    q->flp[h] = f;
+}
+int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
+    int ne, nh;
+    int t, i, j, k;
+    int h, hi, hj, hk;
+    int *tri;
     T *q;
+    HeEdg *hdg; /* will maps [i, j] to half-edg */
     MALLOC(1, &q);
-    q->magic = MAGIC;
 
+    alloc_ver(nv,        q);
+    alloc_tri(nt,        q);
+    alloc_hdg(nh = 3*nt, q);
+    he_edg_ini(nv, &hdg);
+    for (tri = tri0, t = h = 0; t < nt; t++) {
+        i = *tri++; j = *tri++; k = *tri++;
+        setup_edg(q, hdg, hi = h++, t, i, j);
+        setup_edg(q, hdg, hj = h++, t, j, k);
+        setup_edg(q, hdg, hk = h++, t, k, i);
+        q->nxt[hi] = hj; q->nxt[hj] = hk; q->nxt[hk] = hi;
+    }
+
+    for (tri = tri0, t = h = 0; t < nt; t++) {
+        i = *tri++; j = *tri++; k = *tri++;        
+        setup_flip(q, hdg, i, j);
+        setup_flip(q, hdg, j, k);
+        setup_flip(q, hdg, k, i);
+    }
+
+    q->nv = nv; q->ne = ne; q->nt = nt; q->nh = nh;
+    q->magic = MAGIC;
+    
+    if (valid(nv, q->hdg_ver, q->ver) != OK)
+        E("invalid ver references");
+    
     *pq = q;
+    he_edg_fin(hdg);
     return HE_OK;
 }
 
@@ -85,7 +132,7 @@ int he_read_ini(const char *path, T **pq) {
     if (nv <= 0 || nt <= 0 || ne <= 0 || nh <= 0)
         E("wrong sizes '%s' in '%s'", line, path);
 
-    alloc(q, nv, ne, nt, nh);
+    alloc(nv, ne, nt, nh, /**/ q);
 
     for (i = 0; i < nh; i++) {
         NXT();
@@ -119,8 +166,8 @@ int he_read_ini(const char *path, T **pq) {
     if (valid(ne, q->hdg_edg, q->edg) != OK)
         E("invalid edg references");
     if (valid(nt, q->hdg_tri, q->tri) != OK)
-        E("invalid tri references");    
-    
+        E("invalid tri references");
+
     *pq = q;
     return HE_OK;
 }
