@@ -1,5 +1,5 @@
 O_S = off.s.o
-O_S = off.d.o
+O_D = off.d.o
 O = err.o memory.o punto.o vec.o util.o read.o he.o x.o
 H = he/err.h he/memory.h he/punto.h he/vec.h he/macro.h he/util.h he/read.h he/he.h he/x.h \
 he/prec/s/real.h he/prec/d/real.h
@@ -16,15 +16,15 @@ install: $L $H $P
 	mkdir -p -- $(PREFIX)/lib $(PREFIX)/lib
 	cp $L    $(PREFIX)/lib
 	cp $P    $(PREFIX)/pkgconfig
-	for f in $H           ; \
+	for f in $H                  ; \
 	do d=`dirname "$$f"`         ; \
 	   d=$(PREFIX)/include/"$$d" ; \
-           t=$(PREFIX)/include/"$$f" ; \
+	   t=$(PREFIX)/include/"$$f" ; \
 	   mkdir -p -- "$$d"         ; \
 	   cp -- "$$f" "$$t"         ; \
 	done
-libhe_s.a: $O $(O_S); ar rv $@ $< && ranlib $@
-libhe_d.a: $O $(O_D); ar rv $@ $< && ranlib $@
+libhe_s.a: $O $(O_S); ar rv $@ $O $(O_S) && ranlib $@
+libhe_d.a: $O $(O_D); ar rv $@ $O $(O_D) && ranlib $@
 $O : $H $I
 %.o:   %.c; $(CC)                 $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<
 %.s.o: %.c; $(CC) -I$(TRG)/prec/s $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<
