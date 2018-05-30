@@ -57,6 +57,9 @@ static int afree(T *q) {
 int he_read_tri_ini(int nt, int *tri, T **pq) {
     T *q;
     MALLOC(1, &q);
+    q->magic = MAGIC;
+
+    *pq = q;
     return HE_OK;
 }
 
