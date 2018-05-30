@@ -34,7 +34,6 @@ int main() {
 
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
-        if (bnd(h)) continue;
         e0 = edg(h);
         if (e != e0) ERR(HE_IO, "%d != %d", e, e0);
     }
@@ -42,8 +41,7 @@ int main() {
     for (t = 0; t < nt; t++) {
         h = hdg_tri(t);
         t0 = tri(h);
-        MSG("t: %d %d", t, t0);
-        //      if (t != t0) ERR(HE_IO, "%d != %d", t, t0);
+        if (t != t0) ERR(HE_IO, "%d != %d", t, t0);
     }
 
     for (v = 0; v < nv; v++) {
@@ -54,5 +52,6 @@ int main() {
         } while (h != h0);
         puts("");
     }
+    
     fin();
 }
