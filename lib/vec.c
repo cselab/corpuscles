@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "real.h"
 #include "he/vec.h"
 
 void vec_ini(real x, real y, real z, /**/ real a[3]) {
