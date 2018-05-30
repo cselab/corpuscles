@@ -7,7 +7,7 @@ flip = -1: indicate missing flip half-edge
 
 #+BEGIN_EXAMPLE
 "HE"
-nv nt ne nh
+nv ne nt nh
 [nh lines]
 nxt flp ver edg tri
 ...
