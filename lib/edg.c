@@ -25,7 +25,6 @@ int he_edg_ini(int n, T **pq) {
     return HE_OK;
 }
 
-
 static void free_node(Node *p) {
     Node *n;
     while (p != NULL) {
