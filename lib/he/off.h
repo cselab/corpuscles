@@ -9,3 +9,5 @@ int he_off_nt(T*);
 int he_off_nv(T*);
 int he_off_xyz(T*, real**);
 int he_off_tri(T*, int**);
+
+#undef T
