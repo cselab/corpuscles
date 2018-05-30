@@ -9,6 +9,11 @@ void vec_ini(real x, real y, real z, /**/ real a[3]) {
     a[X] = x; a[Y] = y; a[Z] = z;
 }
 
+void vec_get(int i, real x[], real y[], real z[], /**/ real a[3]) {
+    enum {X, Y, Z};
+    a[X] = x[i]; a[Y] = y[i]; a[Z] = z[i];
+}
+
 void vec_coord(real a[3], /**/ real *px, real *py, real *pz) {
     enum {X, Y, Z};
     *px = a[X]; *py = a[Y]; *pz = a[Z];
@@ -41,13 +46,6 @@ void vec_scalar(real a[3], real s, real b[3]) {
 void vec_append(real a[3], /**/ real *x, real *y, real *z) {
    enum {X, Y, Z};
    *x += a[X]; *y += a[Y]; *z += a[Z];
-}
-
-void vec_append_direction(real a[3], real s, /**/ real *x, real *y, real *z) {
-    real e[3], b[3];
-    vec_norm(a, /**/ e);
-    vec_scalar(e, s, /**/ b);
-    vec_append(b, /**/ x, y, z);
 }
 
 real vec_dot(real a[3], real b[3]) {
