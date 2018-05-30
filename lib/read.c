@@ -133,15 +133,6 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
 
     q->nv = nv; q->ne = ne; q->nt = nt; q->nh = nh;
     q->magic = MAGIC;
-
-    he_read_info(q, stderr);
-    if (valid(nv, q->hdg_ver, q->ver) != OK)
-        E("invalid ver references");
-    if (valid(ne, q->hdg_edg, q->edg) != OK)
-        E("invalid edg references");
-    if (valid(nt, q->hdg_tri, q->tri) != OK)
-        E("invalid tri references");
-
     *pq = q;
     return HE_OK;
 }
