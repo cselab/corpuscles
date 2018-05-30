@@ -46,7 +46,7 @@ int he_read_ini(const char *path, T **pq) {
     int *hdg_ver, *hdg_edg, *hdg_tri;
 
 #   define NXT() if (util_fgets(line, f) == NULL)  \
-        E("fail to read '%s'", path)
+        E("unexpected EOF in '%s'", path)
     MALLOC(1, &q);
     f = fopen(path, "r");
     if (f == NULL) E("fail to open '%s'", path);

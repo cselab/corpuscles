@@ -18,12 +18,11 @@ static int  tri(int h) { return he_tri(he, h); }
 static int  hdg_ver(int v) { return he_hdg_ver(he, v); }
 static int  hdg_edg(int e) { return he_hdg_edg(he, e); }
 static int  hdg_tri(int t) { return he_hdg_tri(he, t); }
-
-static int bnd(int h) { return he_bnd(he, h); }
+/* static int bnd(int h) { return he_bnd(he, h); } */
 
 int main() {
     int v, v0, e, e0, t, t0;
-    int h, h0;
+    int h, h0, cnt;
     ini();
     MSG("%d %d %d %d", nv = he_nv(he), nt = he_nt(he), ne = he_ne(he), he_nh(he));
 
@@ -45,13 +44,13 @@ int main() {
     }
 
     for (v = 0; v < nv; v++) {
+        cnt = 0;
         h0 = h = hdg_ver(v);
         do {
-            printf("%d ", ver(h));
+            cnt++;
             h = nxt(h);
         } while (h != h0);
-        puts("");
+        if (cnt != 3) ERR(HE_IO, "%d != 3", cnt);
     }
-    
     fin();
 }
