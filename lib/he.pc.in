@@ -3,8 +3,8 @@ exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 
-Name: @TRG@
+Name: he_@PREC@
 Version: 0.1
 Description: he libraries
-Libs: -L${libdir} -l@TRG@ -lm
-Cflags: -I${includedir}
+Libs: -L${libdir} -lhe_@PREC@ -lm
+Cflags: -I${includedir} -I${includedir}/prec/@PREC@

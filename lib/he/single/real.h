@@ -1,1 +1,0 @@
-typedef real float
