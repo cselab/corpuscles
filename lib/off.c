@@ -64,6 +64,7 @@ int he_off_ini(const char *path, T **pq) {
         if (np != 3)
             E("not a triangle '%s' in '%s'", line, path);
     }
+    q->nv = nv; q->nt = nt;
     *pq = q;
     return HE_OK;
 }
@@ -73,3 +74,8 @@ int he_off_fin(T *q) {
     FREE(q);
     return HE_OK;
 }
+
+int he_off_nt(T *q) { return q->nt; };
+int he_off_nv(T *q) { return q->nv; };
+int he_off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
+int he_off_tri(T *q, int  **p) { *p = q->tri; return HE_OK; }
