@@ -9,33 +9,33 @@ enum {X, Y, Z};
 enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};
 enum {SIZE = MAX_STRING_SIZE};
 
-void ten_dyadic(real a[3], real b[3], /**/ Ten T) {
+void ten_dyadic(real a[3], real b[3], /**/ Ten *T) {
     real *t;
-    t = T.t;
+    t = T->t;
     t[XX] = a[X]*b[X]; t[XY] = a[X]*b[Y]; t[XZ] = a[X]*b[Z];
     t[YX] = a[Y]*b[X]; t[YY] = a[Y]*b[Y]; t[YZ] = a[Y]*b[Z];
     t[ZX] = a[Z]*b[X]; t[ZY] = a[Z]*b[Y]; t[ZZ] = a[Z]*b[Z];
 }
 
-void ten_plus(Ten P, Ten R, /**/ Ten T) {
+void ten_plus(Ten P, Ten R, /**/ Ten *T) {
     real *p, *r, *t;
-    p = P.t; r = R.t; t = T.t;
+    p = P.t; r = R.t; t = T->t;
     t[XX] = p[XX] + r[XX]; t[XY] = p[XY] + r[XY]; t[XZ] = p[XZ] + r[XZ];
     t[YX] = p[YX] + r[YX]; t[YY] = p[YY] + r[YY]; t[YZ] = p[YZ] + r[YZ];
     t[ZX] = p[ZX] + r[ZX]; t[ZY] = p[ZY] + r[ZY]; t[ZZ] = p[ZZ] + r[ZZ];
 }
 
-void ten_minus(Ten P, Ten R, /**/ Ten T) {
+void ten_minus(Ten P, Ten R, /**/ Ten *T) {
     real *p, *r, *t;
-    p = P.t; r = R.t; t = T.t;
+    p = P.t; r = R.t; t = T->t;
     t[XX] = p[XX] - r[XX]; t[XY] = p[XY] - r[XY]; t[XZ] = p[XZ] - r[XZ];
     t[YX] = p[YX] - r[YX]; t[YY] = p[YY] - r[YY]; t[YZ] = p[YZ] - r[YZ];
     t[ZX] = p[ZX] - r[ZX]; t[ZY] = p[ZY] - r[ZY]; t[ZZ] = p[ZZ] - r[ZZ];
 }
 
-void ten_scalar(Ten P, real s, /**/ Ten T) {
+void ten_scalar(Ten P, real s, /**/ Ten *T) {
    real *p, *t;
-   p = P.t; t = T.t;
+   p = P.t; t = T->t;
    t[XX] = s*p[XX]; t[XY] = s*p[XY]; t[XZ] = s*p[XZ];
    t[YX] = s*p[YX]; t[YY] = s*p[YY]; t[YZ] = s*p[YZ];
    t[ZX] = s*p[ZX]; t[ZY] = s*p[ZY]; t[ZZ] = s*p[ZZ];
@@ -49,41 +49,41 @@ void ten_vec(Ten T, real a[3], /**/ real b[3]) {
     b[Z] = t[ZX]*a[XZ] + t[ZY]*a[YZ] + t[ZZ]*a[ZZ];
 }
 
-void ten_add(Ten R, Ten T) {
+void ten_add(Ten R, Ten *T) {
    real *r, *t;
-   r = R.t; t = T.t;
+   r = R.t; t = T->t;
    t[XX] += r[XX]; t[XY] += r[XY]; t[XZ] += r[XZ];
    t[YX] += r[YX]; t[YY] += r[YY]; t[YZ] += r[YZ];
    t[ZX] += r[ZX]; t[ZY] += r[ZY]; t[ZZ] += r[ZZ];
 }
 
-void ten_axpy(real s, Ten P, /*io*/ Ten T) {
+void ten_axpy(real s, Ten P, /*io*/ Ten *T) {
     real *p, *t;
-    p = P.t; t = T.t;
+    p = P.t; t = T->t;
     t[XX] += s*p[XX]; t[XY] += s*p[XY]; t[XZ] += s*p[XZ];
     t[YX] += s*p[YX]; t[YY] += s*p[YY]; t[YZ] += s*p[YZ];
     t[ZX] += s*p[ZX]; t[ZY] += s*p[ZY]; t[ZZ] += s*p[ZZ];
 }
 
-void ten_copy(Ten P, /**/ Ten T) {
+void ten_copy(Ten P, /**/ Ten *T) {
     real *p, *t;
-    p = P.t; t = T.t;
+    p = P.t; t = T->t;
     t[XX] = p[XX]; t[XY] = p[XY]; t[XZ] = p[XZ];
     t[YX] = p[YX]; t[YY] = p[YY]; t[YZ] = p[YZ];
     t[ZX] = p[ZX]; t[ZY] = p[ZY]; t[ZZ] = p[ZZ];
 }
 
-void ten_zero(Ten T) {
+void ten_zero(Ten *T) {
     real *t;
-    t = T.t;
+    t = T->t;
     t[XX] = t[XY] = t[XZ] = 0;
     t[YX] = t[YY] = t[YZ] = 0;
     t[ZX] = t[ZY] = t[ZZ] = 0;
 }
 
-void ten_one(Ten T) {
+void ten_one(Ten *T) {
     real *t;
-    t = T.t;
+    t = T->t;
     t[XX] = 1; t[XY] = 0; t[XZ] = 0;
     t[YX] = 0; t[YY] = 1; t[YZ] = 0;
     t[ZX] = 0; t[ZY] = 0; t[ZZ] = 1;
@@ -96,12 +96,11 @@ int ten_sprintf(Ten T, const char *fmt0, /**/ char *s) {
     t = T.t;
     r = snprintf(fmt, SIZE, "%s %s %s\n" "%s %s %s\n" "%s %s %s\n",
                  fmt0, fmt0, fmt0, fmt0, fmt0, fmt0, fmt0, fmt0, fmt0);
-    if (r != 3*3)
+    if (r < 0)
         ERR(HE_IO, "snprintf failed for fmt0='%s'", fmt0);
-    
     r = snprintf(s, SIZE, fmt,
                  t[XX], t[XY], t[XZ], t[YX], t[YY], t[YZ], t[ZX], t[ZY], t[ZZ]);
-    if (r != 3*3)
+    if (r < 0)
         ERR(HE_IO, "snprintf failed for fmt='%s'", fmt);
     return HE_OK;
 }
