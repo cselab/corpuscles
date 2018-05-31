@@ -14,6 +14,11 @@ void vec_get(int i, real x[], real y[], real z[], /**/ real a[3]) {
     a[X] = x[i]; a[Y] = y[i]; a[Z] = z[i];
 }
 
+void vec_set(int i, real x[], real y[], real z[], /**/ real a[3]) {
+    enum {X, Y, Z};
+    x[i] = a[X]; y[i] = a[Y]; z[i] = a[Z];
+}
+
 void vec_coord(real a[3], /**/ real *px, real *py, real *pz) {
     enum {X, Y, Z};
     *px = a[X]; *py = a[Y]; *pz = a[Z];

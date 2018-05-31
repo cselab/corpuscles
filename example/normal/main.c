@@ -17,10 +17,10 @@ static void get3(int i, int j, int k, /**/
     vec_get(k, XX, YY, ZZ, c);
 }
 
-static void mean_ang(real *H) {
+static void mesh_ang(real *H) {
     int h, n, nn;
     int i, j, k;
-    real a[3], b[3], c[3];    
+    real a[3], b[3], c[3];
     for (h = 0; h < NH; h++) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
@@ -29,16 +29,44 @@ static void mean_ang(real *H) {
     }
 }
 
+static void mesh_tnormal(real *HX, real *HY, real *HZ) {
+    int h, n, nn;
+    int i, j, k;
+    real a[3], b[3], c[3], norm[3];
+    for (h = 0; h < NH; h++) {
+        n = nxt(h); nn = nxt(n);
+        i = ver(h); j = ver(n); k = ver(nn);
+        get3(i, j, k, a, b, c);
+        tri_normal(a, b, c, /**/ norm);
+        vec_set(norm, h, /**/ HX, HY, HZ);
+    }
+}
+
+static void mesh_vnormal(real *HX, real *HY, real *HZ) {
+    int h, n, nn;
+    int i, j, k;
+    real a[3], b[3], c[3], norm[3];
+    for (h = 0; h < NH; h++) {
+        n = nxt(h); nn = nxt(n);
+        i = ver(h); j = ver(n); k = ver(nn);
+        get3(i, j, k, a, b, c);
+        tri_normal(a, b, c, /**/ norm);
+        vec_set(norm, h, /**/ HX, HY, HZ);
+    }
+}
+
 static void main0() {
     real *ang;
     real *tx, *ty, *tz;  /* tri normal */
     real *vx, *vy, *vz; /* ver normal */
-    
+
     RZERO(NH, &ang);
     RZERO(NH, &tx); RZERO(NH, &ty); RZERO(NH, &tz);
     RZERO(NV, &vx); RZERO(NV, &vy); RZERO(NV, &vz);
 
-    mean_ang(ang);
+    mesh_ang(ang);
+    mesh_tnormal(/**/ tx, ty, tz);
+    mesh_vnormal(tx, ty, tz, /**/ vx, vy, vz);
 
     FREE(ang);
     FREE(tx); FREE(ty); FREE(tz);
