@@ -1,0 +1,8 @@
+{
+    print "{ x = $1; y = $2;"
+    print "  printf ", $0
+    print "  if (NR == 3 || NR == 6 || NR == 9) s = \"\\n\""
+    print "  else s = \" \""
+    print "  printf \"%s\", s"
+    print "}"
+}
