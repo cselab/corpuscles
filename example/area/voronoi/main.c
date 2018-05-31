@@ -18,7 +18,7 @@ void get4(int i, int j, int k, int l, /**/
 
 void main0() {
     enum {X, Y, Z};
-    int v, e;
+    int v;
     int i, j, k, l;
     int h0, h, n, nn, fnn;
     real a[3], b[3], c[3], d[3], u[3], u2, ci, cl;
