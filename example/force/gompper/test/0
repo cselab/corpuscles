@@ -1,2 +1,3 @@
 # TEST: 0
+make clean && make
 ./main < ../../../data/rbc/icosahedron/0.off > gompper.out.txt

@@ -1,9 +1,9 @@
 static void main0() {
     real *cot, *l2, *A, *T, *LX, *LY, *LZ;
 
-    RZERO(NH, &cot);
-    RZERO(NH, &l2); RZERO(NH, &T);
-    RZERO(NV, &A); RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
+    RZERO(NH, &cot, &l2); RZERO(NH, &T);
+    RZERO(NV, &A);
+    RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
 
     real *queue[] = {RR, LX, LY, LZ, NULL};
 
@@ -19,8 +19,8 @@ static void main0() {
     MSG("%g", sum(NV, A));
     punto_write(NV, queue, "/dev/stdout");
 
-    FREE(cot);
-    FREE(l2); FREE(T); FREE(A);
+    FREE(cot); FREE(l2); FREE(T);
+    FREE(A);
     FREE(LX); FREE(LY); FREE(LZ);
 }
 

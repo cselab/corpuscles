@@ -20,23 +20,24 @@ void main0() {
     enum {X, Y, Z};
     int v, e;
     int i, j, k, l;
-    int h0, h;
+    int h0, h, n, nn, fnn;
     real a[3], b[3], c[3], d[3], u[3], u2, ci, cl;
-    real A;
+    real A, A0;
 
     A = 0;
     for (v = 0; v < NV; v++) {
-        h0 = h = ver(v);
+        h0 = h = hdg_ver(v);
         do {
             if (bnd(h)) break;
-            e = edg(h);
-            i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+            n = nxt(h); nn = nxt(nxt(h)); fnn = nxt(nxt(flp(h)));
+            j = ver(h); k = ver(n); i = ver(nn); l = ver(fnn);
             get4(i, j, k, l, /**/ a, b, c, d);
             ci = tri_cot(a, b, c);
             cl = tri_cot(d, c, b);
             vec_minus(b, c,  u);
             u2 = vec_dot(u, u);
-            A += (ci + cl) * u2;
+            A0 = (ci + cl) * u2;
+            A += A0;
             h = nxt(flp(h));
         } while (h != h0);
     }
