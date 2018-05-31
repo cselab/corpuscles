@@ -1,11 +1,12 @@
 * rbc.txt :: shape relatate quantities for equilibrium "RBC"
 
 Columns
-x, z, phi, c1, c2, H, K, laplace(H), force
+x, z, phi, c1, c2, H, K, laplace(H), force, nx, ny, nz
 
 - phi :: phi: acos(z/sqrt(x^2 + y^2 + z^2))
 - c1, c2 :: curvatures
 - force  :: signed force for bending energy = H^2
+- n[xyz] :: noraml
 
 see maxima/rbc/force, normals are from inside to outside --- a
 curvatue of a sphere is negative.
