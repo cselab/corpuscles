@@ -5,7 +5,7 @@ TRI_LDFLAGS = `he.conf --libs $(PREC)`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(TRI_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLGAS) $(TRI_CFLAGS) $< -c -o $@
-$M.o: inc/main.h  inc/mesh.h  inc/uti.h  inc/util.h
+$M.o: inc/main.h  inc/mesh.h  inc/util.h
 
 test: $M; atest test/*
 install:

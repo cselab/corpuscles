@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdarg.h>
 
 #include "real.h"
 #include "he/read.h"
@@ -29,12 +30,23 @@ int  hdg_edg(int e) { return he_hdg_edg(he, e); }
 int  hdg_tri(int t) { return he_hdg_tri(he, t); }
 int  bnd(int h)     { return he_bnd(he, h); }
 
-int RZERO(int n, real **pq) {
+static int rzero(int n, real **pq) {
     int i;
     real *q;
     MALLOC(n, &q);
     for (i = 0; i < n; i++) q[i] = 0;
     *pq = q;
+    return HE_OK;
+}
+int RZERO(int n, ...) {
+    int r;
+    real **pq;
+    va_list ap;
+    va_start(ap, n);
+    pq = va_arg(ap, real**);
+    if ((r = rzero(n, pq)) != HE_OK)
+        return r;
+    va_end(ap);
     return HE_OK;
 }
 
@@ -100,4 +112,3 @@ int  fin()      {
     he_fin(he);
     return HE_OK;
 }
-
