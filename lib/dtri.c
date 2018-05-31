@@ -7,6 +7,6 @@
 #include "he/tri.h"
 #include "he/dtri.h"
 
-int dtri_ctan(real[3], real b[3], real[3], /**/
-              real[3], real[3], real[3]) {
+int dtri_ctan(real  a[3], real  b[3], real  c[3], /**/
+              real da[3], real db[3], real dc[3]) {
 }
