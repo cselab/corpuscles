@@ -1,0 +1,1 @@
+"b[%s] = t[%sX]*a[X%s] + t[%sY]*a[Y%s] + t[Z%s]*a[Z%s];", x, x, x, x, x, x, x

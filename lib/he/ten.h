@@ -13,4 +13,5 @@ void ten_add(Ten x, /*io*/ Ten y);
 /* y += a*x */
 void ten_axpy(real a, Ten x, /*io*/ Ten y);
 void ten_copy(Ten, /**/ Ten);
-
+void ten_zero(/**/ Ten);
+void ten_one(/**/ Ten);
