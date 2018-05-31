@@ -103,6 +103,8 @@ static void main0() {
 
     MSG("%g", sum(NV, A));
 
+    punto_write(NV, 
+
     FREE(cot);
     FREE(l2); FREE(T); FREE(A);
     FREE(LX); FREE(LY); FREE(LZ);

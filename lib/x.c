@@ -3,6 +3,7 @@
 #include "real.h"
 #include "he/read.h"
 #include "he/off.h"
+#include "he/vec.h"
 #include "he/err.h"
 #include "he/he.h"
 #include "he/memory.h"
@@ -14,6 +15,7 @@ int NV, NE, NT, NH;
 int *T0, *T1, *T2;
 int *D0, *D1, *D2, *D3;
 real *XX, *YY, *ZZ;
+real *RR;
 
 int  nxt(int h) { return he_nxt(he, h); }
 int  flp(int h) { return he_flp(he, h); }
@@ -40,6 +42,7 @@ int ini(const char *path) {
     int i, j, k, l, h, e, n, nn, nnf;
     int *tri, *tri0;
     real *xyz, *xyz0;
+    real r[3];
     HeOff *off;
     HeRead *read;
 
@@ -57,11 +60,16 @@ int ini(const char *path) {
     NE = he_ne(he); NH = he_nh(he);
 
     MALLOC(NV, &XX); MALLOC(NV, &YY); MALLOC(NV, &ZZ);
+    MALLOC(NV, &RR);
     MALLOC(NT, &T0); MALLOC(NT, &T1); MALLOC(NT, &T2);
     MALLOC(NE, &D0); MALLOC(NE, &D1); MALLOC(NE, &D2); MALLOC(NE, &D3);
 
     for (xyz = xyz0, i = 0; i < NV; i++) {
         XX[i] = *xyz++; YY[i] = *xyz++; ZZ[i] = *xyz++;
+    }
+    for (i = 0; i < NV; i++) {
+        vec_get(i, XX, YY, ZZ, r);
+        RR[i] = vec_cylindrical_r(r);
     }
 
     for (tri = tri0, i = 0; i < NT; i++) {
