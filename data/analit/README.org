@@ -1,0 +1,25 @@
+* rbc.txt :: shape relatate quantities for equilibrium "RBC"
+
+Columns
+x, z, phi, c1, c2, H, K, laplace(H), force
+
+- phi :: phi: acos(z/sqrt(x^2 + y^2 + z^2))
+- c1, c2 :: curvatures
+- force  :: signed force for bending energy = H^2
+
+see maxima/rbc/force, normals are from inside to outside --- a
+curvatue of a sphere is negative.
+
+
+* gnuplot
+
+Profile
+#+BEGIN_SRC
+set size sq
+plot [0:1][0:1] "rbc.txt" u 1:2
+#+END_SRC
+
+Absolute force vs phi
+#+BEGIN_SRC
+plot "rbc.txt" u 1:(abs($9))
+#+END_SRC
