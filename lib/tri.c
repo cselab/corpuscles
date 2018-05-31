@@ -29,7 +29,7 @@ void tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
     vec_norm(n,   e);
 }
 
-real tri_angle(real a[3], real b[3], real c[3]) {
+real tri_angle(real a[3], real b[3], real c[3]) { /* at `b' */
     real u[3], v[3];
     vec_minus(a, b, u);
     vec_minus(c, b, v);
