@@ -1,7 +1,7 @@
 . he.util
 
 prog=he.conf
-PREFIX=/home/lisergey
+PREFIX='@PREFIX@'
 : ${PKG_CONFIG=pkg-config}
 
 usg () {
@@ -33,6 +33,6 @@ case "$p" in
     *) err "unknown PRECISION '$a'" ;;
 esac
 
-PKG_CONFIG_PATH=$PREFIX/pkgconfig:$PKG_CONFIG_PATH
-export PKG_CONFIG_PATH
+e PKG_CONFIG_PATH="$PREFIX/pkgconfig:$PKG_CONFIG_PATH"
+e export PKG_CONFIG_PATH
 e "$PKG_CONFIG" "$a" he_$p
