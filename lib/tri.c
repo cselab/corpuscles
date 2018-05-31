@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "he/err.h"
 #include "he/vec.h"
 #include "he/tri.h"
 

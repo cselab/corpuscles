@@ -42,17 +42,16 @@ static void mesh_tnormal(real *HX, real *HY, real *HZ) {
     }
 }
 
-static void mesh_vnormal(real *HX, real *HY, real *HZ) {
-    int h, n, nn;
-    int i, j, k;
-    real a[3], b[3], c[3], norm[3];
+static void mesh_vnormal(real *ang, real *tx, real *ty, real *tz,  /**/ real *vx, real *vy, real *vz) {
+    int h, i;
+    real tt[3];
     for (h = 0; h < NH; h++) {
-        n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);
-        get3(i, j, k, a, b, c);
-        tri_normal(a, b, c, /**/ norm);
-        vec_set(norm, h, /**/ HX, HY, HZ);
-    }
+        i = ver(h);
+        vec_get(h, tx, ty, tz, /**/ tt);
+        vx[i] += ang[h]*tx[h];
+        vy[i] += ang[h]*ty[h];
+        vz[i] += ang[h]*tz[h];
+    }    
 }
 
 static void main0() {
@@ -64,9 +63,13 @@ static void main0() {
     RZERO(NH, &tx); RZERO(NH, &ty); RZERO(NH, &tz);
     RZERO(NV, &vx); RZERO(NV, &vy); RZERO(NV, &vz);
 
+    real *queue[] = {RR, vx, vy, vz, NULL};
+
     mesh_ang(ang);
     mesh_tnormal(/**/ tx, ty, tz);
-    mesh_vnormal(tx, ty, tz, /**/ vx, vy, vz);
+    mesh_vnormal(ang,   tx, ty, tz, /**/ vx, vy, vz);
+
+    punto_write(NV, queue, "/dev/stdout");
 
     FREE(ang);
     FREE(tx); FREE(ty); FREE(tz);

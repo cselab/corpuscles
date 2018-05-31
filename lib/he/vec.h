@@ -1,6 +1,6 @@
 void vec_ini(real, real, real, /**/ real[3]);
 void vec_get(int, real[], real[], real[], /**/ real[3]);
-void vec_set(int, real[], real[], real[], /**/ real[3]);
+void vec_set(real[3], int, /**/ real[], real[], real[]);
 
 void vec_coord(real[3], real*, real*, real*);
 

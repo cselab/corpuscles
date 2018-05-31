@@ -3,6 +3,7 @@
 
 #include "real.h"
 #include "he/vec.h"
+#include "he/err.h"
 
 void vec_ini(real x, real y, real z, /**/ real a[3]) {
     enum {X, Y, Z};
@@ -14,7 +15,7 @@ void vec_get(int i, real x[], real y[], real z[], /**/ real a[3]) {
     a[X] = x[i]; a[Y] = y[i]; a[Z] = z[i];
 }
 
-void vec_set(int i, real x[], real y[], real z[], /**/ real a[3]) {
+void vec_set(real a[3], int i, /**/ real x[], real y[], real z[]) {
     enum {X, Y, Z};
     x[i] = a[X]; y[i] = a[Y]; z[i] = a[Z];
 }
@@ -58,15 +59,14 @@ real vec_dot(real a[3], real b[3]) {
    return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
 }
 
-static real atan2_pi(real y, real x) {
-    return fabs(atan2(y, x));
-}
 real vec_angle(real a[3], real b[3]) {
-    real y, x, n[3];
+    real ang, y, x, n[3];
     vec_cross(a, b, n);
     y = vec_abs(n);
     x = vec_dot(a, b);
-    return atan2_pi(y, x);
+    ang = atan2(y, x);
+    if (ang < 0) ang = -ang;
+    return ang;
 }
 
 void vec_cross(real a[3], real b[3], /**/ real c[3]) {
