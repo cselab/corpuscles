@@ -1,4 +1,4 @@
-D = tool lib example/punto example/valid
+D = tool lib example/punto example/valid example/area example/volume
 
 install: dir
 test: dir
