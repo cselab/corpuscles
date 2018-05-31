@@ -53,6 +53,17 @@ real vec_dot(real a[3], real b[3]) {
    return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
 }
 
+static real atan2_pi(real y, real x) {
+    return fabs(atan2(y, x));
+}
+real vec_angle(real a[3], real b[3]) {
+    real y, x, n[3];
+    vec_cross(a, b, n);
+    y = vec_abs(n);
+    x = vec_dot(a, b);
+    return atan2_pi(y, x);
+}
+
 void vec_cross(real a[3], real b[3], /**/ real c[3]) {
    enum {X, Y, Z};    
    c[X] = a[Y]*b[Z]-b[Y]*a[Z];
