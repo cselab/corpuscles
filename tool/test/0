@@ -1,0 +1,7 @@
+# TEST: 0
+he.conf --libs s
+echo $? > status.out.txt
+
+# TEST: 1
+he.conf --libs d
+echo $? > status.out.txt
