@@ -1,5 +1,5 @@
-# cTEST: 0
+# TEST: 0
 ./main data/0 /dev/stdout > punto.out.txt
 
-# cTEST: 1
+# TEST: 1
 ./main data/1 /dev/stdout > punto.out.txt
