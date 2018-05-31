@@ -1,4 +1,3 @@
-enum {xx, xy, xz,    yx, yy, yz,   zx, zy, zz};
 typedef struct Ten { real t[3*3]; } Ten;
 
 void ten_dyadic(real[3], real[3], /**/ Ten);
