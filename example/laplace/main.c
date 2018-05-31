@@ -72,7 +72,7 @@ static void mesh_laplace(real *V0, real *T, real *A, /**/ real *V1) {
     for (h = 0; h < NH; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        V1[i] = T[h]*(V0[i] - V0[j])/2;
+        V1[i] += T[h]*(V0[i] - V0[j])/2;
     }
     for (i = 0; i < NV; i++)
         V1[i] /= A[i];
@@ -88,9 +88,12 @@ static real sum(int n, real *a) {
 
 static void main0() {
     real *cot, *l2, *A, *T, *LX, *LY, *LZ;
+
     RZERO(NH, &cot);
     RZERO(NH, &l2); RZERO(NH, &T);
     RZERO(NV, &A); RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
+
+    real *queue[] = {RR, LX, LY, LZ, NULL};
 
     mesh_cot(cot);
     mesh_T(cot, /**/ T);
@@ -102,8 +105,7 @@ static void main0() {
     mesh_laplace(ZZ, T, A, /**/ LZ);
 
     MSG("%g", sum(NV, A));
-
-    punto_write(NV, 
+    punto_write(NV, queue, "/dev/stdout");
 
     FREE(cot);
     FREE(l2); FREE(T); FREE(A);
