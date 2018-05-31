@@ -59,38 +59,38 @@ static void mesh_l2(real *H) {
     }
 }
 
-static void mesh_voronoi(real *T, real *l2, /**/ real *H) {
-    int h;
-    for (h = 0; h < NH; h++)
-        H[h] = T[h]*l2[h]/4;
+static void mesh_voronoi(real *T, real *l2, /**/ real *V) {
+    int h, i;
+    for (h = 0; h < NH; h++) {
+        i = ver(h);
+        V[i] += T[h]*l2[h]/4;
+    }
 }
 
-static void mesh_laplace(real *V, real *T, real *A, /**/ real *H) {
+static void mesh_laplace(real *V0, real *T, real *A, /**/ real *V1) {
     int h, n, i, j;
     for (h = 0; h < NH; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        H[h] = T[h]*(V[i] - V[j])/2;
+        V1[i] = T[h]*(V0[i] - V0[j])/2;
     }
-    for (h = 0; h < NH; h++)
-        H[h] /= A[h];
+    for (i = 0; i < NV; i++)
+        V1[i] /= A[i];
 }
 
 static real sum(int n, real *a) {
     int i;
     real s;
-    for (i = 0, s = 0; i < n; i++, s += a[i]);
+    for (i = 0, s = 0; i < n; i++)
+        s += a[i];
     return s;
 }
 
 static void main0() {
     real *cot, *l2, *A, *T, *LX, *LY, *LZ;
     RZERO(NH, &cot);
-    RZERO(NH, &l2);
-    RZERO(NH, &T);
-    RZERO(NH, &A);
-    
-    RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
+    RZERO(NH, &l2); RZERO(NH, &T);
+    RZERO(NV, &A); RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
 
     mesh_cot(cot);
     mesh_T(cot, /**/ T);
@@ -101,7 +101,7 @@ static void main0() {
     mesh_laplace(YY, T, A, /**/ LY);
     mesh_laplace(ZZ, T, A, /**/ LZ);
 
-    MSG("%g", sum(NH, A));
+    MSG("%g", sum(NV, A));
 
     FREE(cot);
     FREE(l2); FREE(T); FREE(A);
