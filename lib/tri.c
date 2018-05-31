@@ -28,7 +28,7 @@ void tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
     vec_norm(n,   e);
 }
 
-real tri_ctan0(real a[3], real b[3], real c[3]) { /* at `b' */
+real tri_cot(real a[3], real b[3], real c[3]) { /* at `b' */
     real x, y, u[3], v[3];
     y = 2 * tri_area(a, b, c);
     vec_minus(a, b, u);

@@ -32,8 +32,8 @@ void main0() {
             e = edg(h);
             i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
             get4(i, j, k, l, /**/ a, b, c, d);
-            ci = tri_ctan0(a, b, c);
-            cl = tri_ctan0(d, c, b);
+            ci = tri_cot(a, b, c);
+            cl = tri_cot(d, c, b);
             vec_minus(b, c,  u);
             u2 = vec_dot(u, u);
             A += (ci + cl) * u2;
