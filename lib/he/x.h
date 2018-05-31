@@ -15,4 +15,9 @@ int  tri(int h);
 int  hdg_ver(int v);
 int  hdg_edg(int e);
 int  hdg_tri(int t);
+
+/* is bondary? */
 int  bnd(int h);
+
+/* alloca and zero */
+int RZERO(int n, real **pq);

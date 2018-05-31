@@ -8,6 +8,7 @@
 #include "he/memory.h"
 #include "he/x.h"
 
+
 static He *he;
 int NV, NE, NT, NH;
 int *T0, *T1, *T2;
@@ -25,6 +26,15 @@ int  hdg_ver(int v) { return he_hdg_ver(he, v); }
 int  hdg_edg(int e) { return he_hdg_edg(he, e); }
 int  hdg_tri(int t) { return he_hdg_tri(he, t); }
 int  bnd(int h)     { return he_bnd(he, h); }
+
+int RZERO(int n, real **pq) {
+    int i;
+    real *q;
+    MALLOC(n, &q);
+    for (i = 0; i < n; i++) q[i] = 0;
+    *pq = q;
+    return HE_OK;
+}
 
 int ini(const char *path) {
     int i, j, k, l, h, e, n, nn, nnf;
@@ -82,3 +92,4 @@ int  fin()      {
     he_fin(he);
     return HE_OK;
 }
+

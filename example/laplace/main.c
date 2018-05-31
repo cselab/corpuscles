@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include <real.h>
@@ -20,6 +21,17 @@ static void get_edg(int i, int j, real r[3]) {
     vec_get(i, XX, YY, ZZ, a);
     vec_get(j, XX, YY, ZZ, b);
     vec_minus(a, b, r);
+}
+
+static void mesh_T(real *cot, /**/ real *H) {
+    int h, f;
+    real T;
+    for (h = 0; h < NH; h++) {
+        T  = cot[h];
+        if ((f = flp(h)) != -1)
+            T += cot[f];
+        H[h] = T;
+    }
 }
 
 static void mesh_cot(real *H) {
@@ -46,10 +58,10 @@ static void mesh_l2(real *H) {
     }
 }
 
-static void mesh_voronoi(real *cot, real *l2, real *H) {
+static void mesh_voronoi(real *T, real *l2, /**/ real *H) {
     int h;
     for (h = 0; h < NH; h++)
-	H[h] = cot[h]*l2[h]/4;
+	H[h] = T[h]*l2[h]/4;
 }
 
 static real sum(int n, real *a) {
@@ -60,20 +72,20 @@ static real sum(int n, real *a) {
 }
 
 static void main0() {
-    real *cot, *l2, *A;
-    MALLOC(NH, &cot);
-    MALLOC(NH, &l2);
-    MALLOC(NH, &A);
-    
+    real *cot, *l2, *A, *T;
+    RZERO(NH, &cot);
+    RZERO(NH, &l2);
+    RZERO(NH, &T);
+    RZERO(NH, &A);
     
     mesh_cot(cot);
+    mesh_T(cot, /**/ T);
     mesh_l2(l2);
     mesh_voronoi(cot, l2, /**/ A);
+    MSG("%g", sum(NH, A));
     
     FREE(cot);
-    FREE(l2); FREE(A);
-
-    MSG("%g", sum(NH, A));
+    FREE(l2); FREE(A); FREE(T);
 }
 
 int main() {
