@@ -1,4 +1,4 @@
-D = lib tool example/punto example/valid example/area example/volume
+D = lib tool example/punto example/valid example/area/voronoi example/area/tri example/volume
 
 install: dir
 test: dir

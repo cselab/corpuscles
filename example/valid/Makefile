@@ -6,7 +6,7 @@ TRI_LDFLAGS = `he.conf --libs $(PREC)`
 $M: $M.o; $(CC) $< $(LDFLAGS) $(TRI_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLGAS) $(TRI_CFLAGS) $< -c -o $@
 
-test: $M; atest test/*
+test: $M
 install:
 
 .PHONY: clean test install
