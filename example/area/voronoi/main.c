@@ -32,8 +32,8 @@ void main0() {
             n = nxt(h); nn = nxt(nxt(h)); fnn = nxt(nxt(flp(h)));
             j = ver(h); k = ver(n); i = ver(nn); l = ver(fnn);
             get4(i, j, k, l, /**/ a, b, c, d);
-            ci = tri_cot(a, b, c);
-            cl = tri_cot(d, c, b);
+            ci = tri_cot(c, a, b);
+            cl = tri_cot(b, d, c);
             vec_minus(b, c,  u);
             u2 = vec_dot(u, u);
             A0 = (ci + cl) * u2;
