@@ -8,6 +8,7 @@
 #include <he/vec.h>
 #include <he/tri.h>
 #include <he/memory.h>
+#include <he/punto.h>
 
 static void get3(int i, int j, int k, /**/
           real a[3], real b[3], real c[3]) {
@@ -40,9 +41,9 @@ static void mesh_cot(real *H) {
     real a[3], b[3], c[3];
     for (h = 0; h < NH; h++) {
         n = nxt(h); nn = nxt(n);
-	i = ver(h); j = ver(n); k = ver(nn);
+        i = ver(h); j = ver(n); k = ver(nn);
         get3(i, j, k, /**/ a, b, c);
-	H[h] = tri_cot(a, b, c);
+        H[h] = tri_cot(a, b, c);
     }
 }
 
@@ -52,16 +53,27 @@ static void mesh_l2(real *H) {
     real r[3];
     for (h = 0; h < NH; h++) {
         n = nxt(h);
-	i = ver(h); j = ver(n);
+        i = ver(h); j = ver(n);
         get_edg(i, j, /**/ r);
-	H[h] = vec_dot(r, r);
+        H[h] = vec_dot(r, r);
     }
 }
 
 static void mesh_voronoi(real *T, real *l2, /**/ real *H) {
     int h;
     for (h = 0; h < NH; h++)
-	H[h] = T[h]*l2[h]/4;
+        H[h] = T[h]*l2[h]/4;
+}
+
+static void mesh_laplace(real *V, real *T, real *A, /**/ real *H) {
+    int h, n, i, j;
+    for (h = 0; h < NH; h++) {
+        n = nxt(h);
+        i = ver(h); j = ver(n);
+        H[h] = T[h]*(V[i] - V[j])/2;
+    }
+    for (h = 0; h < NH; h++)
+        H[h] /= A[h];
 }
 
 static real sum(int n, real *a) {
@@ -72,20 +84,28 @@ static real sum(int n, real *a) {
 }
 
 static void main0() {
-    real *cot, *l2, *A, *T;
+    real *cot, *l2, *A, *T, *LX, *LY, *LZ;
     RZERO(NH, &cot);
     RZERO(NH, &l2);
     RZERO(NH, &T);
     RZERO(NH, &A);
     
+    RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
+
     mesh_cot(cot);
     mesh_T(cot, /**/ T);
     mesh_l2(l2);
     mesh_voronoi(cot, l2, /**/ A);
+
+    mesh_laplace(XX, T, A, /**/ LX);
+    mesh_laplace(YY, T, A, /**/ LY);
+    mesh_laplace(ZZ, T, A, /**/ LZ);
+
     MSG("%g", sum(NH, A));
-    
+
     FREE(cot);
-    FREE(l2); FREE(A); FREE(T);
+    FREE(l2); FREE(T); FREE(A);
+    FREE(LX); FREE(LY); FREE(LZ);
 }
 
 int main() {
