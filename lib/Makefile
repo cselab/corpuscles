@@ -13,7 +13,7 @@ HE_CFLAGS = -Wall -Wextra -O2 -g
 SED = sed
 
 install: $L $H $P
-	mkdir -p -- $(PREFIX)/lib $(PREFIX)/lib
+	mkdir -p -- $(PREFIX)/lib $(PREFIX)/lib $(PREFIX)/pkgconfig
 	cp $L    $(PREFIX)/lib
 	cp $P    $(PREFIX)/pkgconfig
 	for f in $H                  ; \
