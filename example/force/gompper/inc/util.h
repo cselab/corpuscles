@@ -1,0 +1,13 @@
+static void get3(int i, int j, int k, /**/
+          real a[3], real b[3], real c[3]) {
+    vec_get(i, XX, YY, ZZ, a);
+    vec_get(j, XX, YY, ZZ, b);
+    vec_get(k, XX, YY, ZZ, c);
+}
+
+static void get_edg(int i, int j, real r[3]) {
+    real a[3], b[3];
+    vec_get(i, XX, YY, ZZ, a);
+    vec_get(j, XX, YY, ZZ, b);
+    vec_minus(a, b, r);
+}
