@@ -15,3 +15,7 @@ void ten_axpy(real a, Ten x, /*io*/ Ten y);
 void ten_copy(Ten, /**/ Ten);
 void ten_zero(/**/ Ten);
 void ten_one(/**/ Ten);
+
+int ten_sprintf(Ten T, const char *fmt, /**/ char *s);
+int ten_fprintf(Ten T, FILE*, const char *fmt);
+int ten_printf(Ten T, const char *fmt);
