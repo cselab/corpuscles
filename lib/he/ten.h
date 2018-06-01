@@ -16,6 +16,7 @@ void ten_copy(Ten, /**/ Ten*);
 void ten_zero(/**/ Ten*);
 void ten_one(/**/ Ten*);
 
-int ten_sprintf(Ten T, const char *fmt, /**/ char *s);
-int ten_fprintf(Ten T, FILE*, const char *fmt);
-int ten_printf(Ten T, const char *fmt);
+int ten_sprintf(Ten, const char *fmt, /**/ char *s);
+int ten_fprintf(Ten, FILE*, const char *fmt);
+int ten_printf(Ten, const char *fmt);
+int ten_fscanf(FILE*, /**/ Ten*);
