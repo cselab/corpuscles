@@ -16,3 +16,7 @@ d="$1"; shift
 for i; do shift; set -- "$@" "$d"; d="$i"; done
 for i; do if test ! -f "$i"; then err "not a file '$i'"; fi; done
 
+for i
+do d=`dirname -- "$i"`
+   mkdir0
+done
