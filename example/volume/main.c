@@ -21,7 +21,7 @@ void main0() {
         get3(i, j, k, a, b, c);
         V += tri_volume(a, b, c);
     }
-    printf("%g\n", V);
+    printf("NT = %i, %g\n", NT, V);
 }
 
 int main() {
