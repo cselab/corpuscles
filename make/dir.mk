@@ -7,6 +7,10 @@ dir:
 	@install0 () ( cd "$$d" && $(MAKE) PREFIX=$(PREFIX) S=$S $(MAKECMDGOALS) ); \
 	for d in $D; \
 	do install0; \
+	if test $$? -eq 0; \
+	then printf >&2 "[dir.mk] make failed in '$$d'\n"; \
+	     exit 2; \
+	fi; \
 	echo dir "'$$d'"; \
 	done
 
