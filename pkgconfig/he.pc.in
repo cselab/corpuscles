@@ -1,0 +1,10 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: he_@PREC@
+Version: 0.1
+Description: he libraries
+Libs: -L${libdir} -lhe_@PREC@ -lm
+Cflags: -I${includedir} -I${includedir}/he/prec/@PREC@
