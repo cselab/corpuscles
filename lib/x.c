@@ -10,14 +10,14 @@
 #include "he/memory.h"
 #include "he/x.h"
 
-
-static He *he;
+const real pi = 3.141592653589793115997964;
 int NV, NE, NT, NH;
 int *T0, *T1, *T2;
 int *D0, *D1, *D2, *D3;
 real *XX, *YY, *ZZ;
 real *RR, *TH;
 
+static He *he;
 int  nxt(int h) { return he_nxt(he, h); }
 int  flp(int h) { return he_flp(he, h); }
 

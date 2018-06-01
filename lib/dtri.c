@@ -28,7 +28,7 @@ int dtri_angle(real a[3], real b[3], real c[3],   real da[3], real db[3], real d
     return HE_OK;
 }
 
-int dtri_ctan(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[3]) {
+int dtri_cot(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[3]) {
     real ang, s, da0[3], db0[3], dc0[3];
     ang = tri_angle(a, b, c);
     s = sin(ang);

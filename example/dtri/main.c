@@ -29,9 +29,9 @@ int main(__UNUSED int argc, const char **v) {
         vec_printf(da, "%g");
         vec_printf(db, "%g");
         vec_printf(dc, "%g");
-    } else if (eq(op, "ctan")) {
+    } else if (eq(op, "cot")) {
         vec(a); vec(b); vec(c);
-        dtri_ctan(a, b, c, da, db, dc);
+        dtri_cot(a, b, c, da, db, dc);
         vec_printf(da, "%g");
         vec_printf(db, "%g");
         vec_printf(dc, "%g");
