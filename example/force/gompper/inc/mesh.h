@@ -17,7 +17,7 @@ static void mesh_cot(real *H) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
         get3(i, j, k, /**/ a, b, c);
-        H[h] = tri_cot(a, b, c);
+        H[h] = tri_cot(b, c, a);
     }
 }
 
