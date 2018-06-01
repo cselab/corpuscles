@@ -17,6 +17,7 @@ void get4(int i, int j, int k, int l, /**/
 }
 
 void main0() {
+  /*This applies halfedge to traverse*/
     enum {X, Y, Z};
     int v;
     int i, j, k, l;
@@ -43,12 +44,40 @@ void main0() {
     }
     A /= 8;
 
-    printf("%g\n", A);
+    printf("NT=%i, traverse halfedge A = %g\n", NT, A);
 }
+
+void main1() {
+    /*This utilize edge/diheral to traverse*/
+    int e;
+    int i, j, k, l;
+    real a[3], b[3], c[3], d[3], u[3], u2, ci, cl;
+    real A, A0;
+
+    A = 0;
+    for (e = 0; e < NE; e++) {
+      if (bnd(e)) continue;
+
+      i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+      
+      get4(i, j, k, l, /**/ a, b, c, d);
+      ci = tri_cot(c, a, b);
+      cl = tri_cot(b, d, c);
+      vec_minus(b, c,  u);
+      u2 = vec_dot(u, u);
+      A0 = (ci + cl) * u2;
+      A += 2*A0;
+    }
+    A /= 8;
+
+    printf("NT=%i, traverse edge     A = %g\n", NT, A);
+}
+
 
 int main() {
     ini("/dev/stdin");
     main0();
+    main1();
     fin();
     return HE_OK;
 }
