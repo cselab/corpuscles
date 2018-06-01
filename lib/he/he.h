@@ -19,7 +19,7 @@ int he_ver(T*, int h); /* return object */
 int he_tri(T*, int h);
 int he_edg(T*, int h);
 
-int he_hdg_ver(T*, int v); /* return object */
+int he_hdg_ver(T*, int v); /* return half-edg */
 int he_hdg_edg(T*, int e);
 int he_hdg_tri(T*, int t);
 
