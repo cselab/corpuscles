@@ -1,5 +1,26 @@
-# cTEST: 0
+# TEST: 0
 ./main dyadic 1 2 3 1 10 100  > ten.out.txt
 
-# cTEST: 1
-./main plus 1 2 3 4 5 6 7 8 9        10 20 30 40 50 60 70 80 90  > ten.out.txt
+# TEST: 1
+./main plus 1 2 3 4 5 6 7 8 9    10 20 30 40 50 60 70 80 90  > ten.out.txt
+
+# TEST: 2
+./main minus 1 2 3 4 5 6 7 8 9   10 20 30 40 50 60 70 80 90 > ten.out.txt
+
+# TEST: 3
+./main scalar 1 2 3 4 5 6 7 8 9   1000                        > ten.out.txt
+
+# TEST: 4
+./main vec 1 2 3 4 5 6 7 8 9   1 10 100                       > ten.out.txt
+
+# TEST: 5
+./main add 1 2 3 4 5 6 7 8 9   10 20 30 40 50 60 70 80 90   > ten.out.txt
+
+# TEST: 6
+./main  axpy 2   1 2 3 4 5 6 7 8 9   10 20 30 40 50 60 70 80 90 > ten.out.txt
+
+# TEST: 7
+./main  zero > ten.out.txt
+
+# TEST: 8
+./main  one > ten.out.txt

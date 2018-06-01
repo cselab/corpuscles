@@ -1,7 +1,7 @@
 static void main0() {
     real *cot, *l2, *A, *T, *LX, *LY, *LZ;
 
-    RZERO(NH, &cot, &l2); RZERO(NH, &T);
+    RZERO(NH, &cot); RZERO(NH, &l2); RZERO(NH, &T);
     RZERO(NV, &A);
     RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
 

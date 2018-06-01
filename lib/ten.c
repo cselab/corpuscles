@@ -45,9 +45,9 @@ void ten_scalar(Ten P, real s, /**/ Ten *T) {
 void ten_vec(Ten T, real a[3], /**/ real b[3]) {
     real *t;
     t = T.t;
-    b[X] = t[XX]*a[XX] + t[XY]*a[YX] + t[ZX]*a[ZX];
-    b[Y] = t[YX]*a[XY] + t[YY]*a[YY] + t[ZY]*a[ZY];
-    b[Z] = t[ZX]*a[XZ] + t[ZY]*a[YZ] + t[ZZ]*a[ZZ];
+    b[X] = t[XX]*a[X] + t[XY]*a[Y] + t[XZ]*a[Z];
+    b[Y] = t[YX]*a[X] + t[YY]*a[Y] + t[YZ]*a[Z];
+    b[Z] = t[ZX]*a[X] + t[ZY]*a[Y] + t[ZZ]*a[Z];
 }
 
 void ten_add(Ten R, Ten *T) {
@@ -133,7 +133,6 @@ int ten_fscanf(FILE *stream, Ten *T) {
 #   undef NXT
     if (!ok) ERR(HE_IO, "fscanf failed");
     return HE_OK;
-
 }
 
 static int nxt(const char *a, real *p) {
