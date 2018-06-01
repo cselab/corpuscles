@@ -8,6 +8,7 @@
 enum {X, Y, Z};
 enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};
 enum {SIZE = MAX_STRING_SIZE};
+#define FMT_IN   XE_REAL_IN
 
 void ten_dyadic(real a[3], real b[3], /**/ Ten *T) {
     real *t;
@@ -117,5 +118,43 @@ int ten_fprintf(Ten T, FILE *stream, const char *fmt0) {
 int ten_printf(Ten T, const char *fmt0) {
     if (ten_fprintf(T, stdout, fmt0) != HE_OK)
         ERR(HE_IO, "ten_fprintf failed");
+    return HE_OK;
+}
+
+int ten_fscanf(FILE *stream, Ten *T) {
+    real *t;
+    int ok;
+    t = T->t;
+    ok = 1;
+#   define NXT(d) if (ok) ok = (fscanf(stream, FMT_IN, &t[d]) == 1)
+    NXT(XX); NXT(XY); NXT(XZ);
+    NXT(YX); NXT(YY); NXT(YZ);
+    NXT(ZX); NXT(ZY); NXT(ZZ);
+#   undef NXT
+    if (!ok) ERR(HE_IO, "fscanf failed");
+    return HE_OK;
+
+}
+
+static int nxt(const char *a, real *p) {
+    return sscanf(a, FMT_IN, p) == 1;
+}
+int ten_argv(const char **pq[], /**/ Ten *T) {
+    const char **q;
+    real *t;
+    q = *pq;
+    t = T->t;
+#   define NXT(d)                                                       \
+    do {                                                                \
+        if (q == NULL) ERR(HE_IO, "not enough args");                   \
+        if (!nxt(*q, &t[d]))                                            \
+            ERR(HE_IO, "not a number '%s", *q);                         \
+        q++;                                                            \
+    } while (0);
+    NXT(XX); NXT(XY); NXT(XZ);
+    NXT(YX); NXT(YY); NXT(YZ);
+    NXT(ZX); NXT(ZY); NXT(ZZ);
+# undef NXT
+    *pq = q;
     return HE_OK;
 }

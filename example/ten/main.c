@@ -6,13 +6,20 @@
 #include <he/err.h>
 #include <he/vec.h>
 #include <he/ten.h>
+#include <he/macro.h>
 
-int main() {
+int main(__UNUSED int argc, const char *argv[]) {
     real a[3] = {1, 2, 3}, b[3] = {10, 20, 30};
-    Ten T, R, P;
+    Ten T, R, P, Q;
     ten_dyadic(a, b, &T);
     ten_one(&R);
     ten_plus(T, T, &P);
     ten_printf(P, "%-6.2f");
+
+    //ten_fscanf(stdin, &Q);
+    argv++;
+    ten_argv(&argv, &Q);
+    ten_printf(Q, "%-6.2f");
+
     return 0;
 }

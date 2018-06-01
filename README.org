@@ -24,7 +24,7 @@ prec/s/real.h :: single
            API:
 	   =int i, j, k;=
            =ini(n); v = set(i, j); get(i,j)=
-	   
+           =get(i,j)= return -1 if =(i,j)= was not set
 ** IO
 - off.h :: read OFF files
 - punto.h :: read/write "punto" files
