@@ -73,7 +73,7 @@ real vec_abs(real a[3]) { return sqrt(vec_dot(a, a)); }
 
 real vec_cylindrical_r(real a[3]) { return sqrt(a[X]*a[X] + a[Y]*a[Y]); }
 real vec_spherical_theta(real a[3]) {
-    real r, z, ang;
+    real r, z;
     z = a[Z];
     r = sqrt(a[X]*a[X] + a[Y]*a[Y]);
     return atan2(r, z);
