@@ -2,10 +2,13 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "inc/def.h"
 #include "he/err.h"
 #include "he/vec.h"
 
 enum {X, Y, Z};
+#define FMT_IN   XE_REAL_IN
+enum {SIZE = MAX_STRING_SIZE};
 
 void vec_ini(real x, real y, real z, /**/ real a[3]) {
     a[X] = x; a[Y] = y; a[Z] = z;
@@ -85,8 +88,36 @@ void vec_norm(real a[3], /**/ real b[3]) {
     else vec_copy(a, b);
 }
 
-int vec_printf(real a[3], FILE *f, const char *fmt) {
-    int n;
-    n = fprintf(f, fmt, a[X], a[Y], a[Z]);
-    return n == 3;
+int vec_printf(real a[3], const char *fmt) {
+    return vec_fprintf(a, stdout, fmt);
+}
+
+int vec_fprintf(real a[3], FILE *f, const char *fmt0) {
+    char fmt[SIZE];
+    int r;
+    r = snprintf(fmt, SIZE, "%s %s %s\n", fmt0, fmt0, fmt0);
+    if (r < 0)
+        ERR(HE_IO, "snprintf failed for fmt0='%s'", fmt0);    
+
+    r = fprintf(f, fmt, a[X], a[Y], a[Z]);
+    return r < 0 ? HE_IO : HE_OK;
+}
+
+static int nxt(const char *a, real *p) {
+    return sscanf(a, FMT_IN, p) == 1;
+}
+int vec_argv(const char **pq[], /**/ real a[3]) {
+    const char **q;
+    q = *pq;
+#   define NXT(d)                                                       \
+    do {                                                                \
+        if (*q == NULL) ERR(HE_IO, "not enough args");                  \
+        if (!nxt(*q, &a[d]))                                            \
+            ERR(HE_IO, "not a number '%s", *q);                         \
+        q++;                                                            \
+    } while (0);
+    NXT(X); NXT(Y); NXT(Z);
+#   undef NXT
+    *pq = q;
+    return HE_OK;
 }

@@ -7,19 +7,24 @@
 #include <he/vec.h>
 #include <he/ten.h>
 #include <he/macro.h>
+#include <he/util.h>
 
-int main(__UNUSED int argc, const char *argv[]) {
-    real a[3] = {1, 2, 3}, b[3] = {10, 20, 30};
+int eq(const char *a, const char *b) { return util_eq(a, b); }
+int main(__UNUSED int c, const char *v[]) {
+    real a[3], b[3];
     Ten T, R, P, Q;
-    ten_dyadic(a, b, &T);
-    ten_one(&R);
-    ten_plus(T, T, &P);
-    ten_printf(P, "%-6.2f");
 
-    //ten_fscanf(stdin, &Q);
-    argv++;
-    ten_argv(&argv, &Q);
-    ten_printf(Q, "%-6.2f");
-
+    v++; vec_argv(&v, a);
+    vec_printf(a, "%-.6g");
+    return 0;
+    
+    v++;
+    if (v[0] == NULL) ER("mssing OP");
+    
+    if (eq(v[0], "dyadic")) {
+        v++; vec_argv(&v, a);
+    } else
+        ER("unknown operation '%s'", v[0]);
+    
     return 0;
 }

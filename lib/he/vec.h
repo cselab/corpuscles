@@ -20,4 +20,7 @@ void vec_cross(real[3], real[3], /**/ real[3]);
 real vec_cylindrical_r(real[3]);
 
 void vec_norm(real[3], /**/ real[3]);
-int vec_printf(real a[3], FILE *f, const char *fmt);
+int vec_fprintf(real a[3], FILE *f, const char *fmt);
+int vec_printf(real a[3], const char *fmt);
+
+int vec_argv(const char **pq[], /**/ real[3]);
