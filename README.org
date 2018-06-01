@@ -18,7 +18,7 @@ Half-edg related
 - he.h  :: main half edg data structure (provides half-edg API)
 
 - edg.h  :: stores value `v` for a pair
-            of `(i, j)` i must be in range [0, n)
+            of `(i, j)`, i must be in range [0, n)
 	    int i, j, k;
 	    API: ini(n); v = set(i, j); get(i, j)
 IO
