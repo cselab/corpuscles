@@ -21,7 +21,7 @@ void main0() {
         get3(i, j, k, a, b, c);
         A += tri_area(a, b, c);
     }
-    printf("%g\n", A);
+    printf("NT = %i %g\n", NT, A);
 }
 
 int main() {
