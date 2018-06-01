@@ -1,30 +1,34 @@
 * lib
 
-Math
+** Precision
+prec/d/real.h :: double
+prec/s/real.h :: single
+
+** Math
 - dtri.h ::  derivates for triangles (dtri_area,...)
 - tri.h :: formulars for trianls
 - ten.h :: tensor
 - vec.h :: vectors
 
-Utility
+** Utility
 - err.h :: error handling
 - macro.h :: macros
 - memory.h :: memory related
 - util.h  :: uncategorazed
 
-Half-edg related
+** Half-edg related
 - read.h :: read half-edg to intermediate structure HeRead, used to
 	    initialize *he.h*
 - he.h  :: main half edg data structure (provides half-edg API)
-- edg.h  :: stores value `v` for a pair
-            of `(i, j)`, i must be in range [0, n)
-	    int i, j, k;
-	    API: ini(n); v = set(i, j); get(i, j)
-IO
+- edg.h  :: stores value =v= for a pair
+            of =(i, j)=, =i= must be in range =[0, n)=
+	    =int i, j, k=;
+	    API: =ini(n); v = set(i, j); get(i, j)=
+** IO
 - off.h :: read OFF files
 - punto.h :: read/write "punto" files
 
-X
+** X
 - x.h :: simplifyied interface for X
 
 
