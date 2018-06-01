@@ -144,10 +144,11 @@ int ten_argv(const char **pq[], /**/ Ten *T) {
     real *t;
     q = *pq;
     t = T->t;
-#   define NXT(d) \
-    do {                                                     \
-        if (q == NULL) ERR(HE_IO, "not enough args");        \
-        if (!nxt(*q, &t[XX])) ERR(HE_IO, "not a number '%s", q);        \
+#   define NXT(d)                                                       \
+    do {                                                                \
+        if (q == NULL) ERR(HE_IO, "not enough args");                   \
+        if (!nxt(*q, &t[d]))                                            \
+            ERR(HE_IO, "not a number '%s", *q);                         \
         q++;                                                            \
     } while (0);
     NXT(XX); NXT(XY); NXT(XZ);

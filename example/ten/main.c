@@ -17,6 +17,7 @@ int main(__UNUSED int argc, const char *argv[]) {
     ten_printf(P, "%-6.2f");
 
     //ten_fscanf(stdin, &Q);
+    argv++;
     ten_argv(&argv, &Q);
     ten_printf(Q, "%-6.2f");
 
