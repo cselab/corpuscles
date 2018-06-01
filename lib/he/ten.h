@@ -21,5 +21,6 @@ int ten_fprintf(Ten, FILE*, const char *fmt);
 int ten_printf(Ten, const char *fmt);
 
 int ten_fscanf(FILE*, /**/ Ten*);
+
 /* read from argument list */
 int ten_argv(const char **pargv[], /**/ Ten*);

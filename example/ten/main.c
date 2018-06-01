@@ -17,6 +17,6 @@ int main() {
 
     ten_fscanf(stdin, &Q);
     ten_printf(Q, "%-6.2f");
-    
+
     return 0;
 }
