@@ -16,20 +16,16 @@ Half-edg related
 - read.h :: read half-edg to intermediate structure HeRead, used to
 	    initialize *he.h*
 - he.h  :: main half edg data structure (provides half-edg API)
-- edg.h  :: associative map for two integers (i, j),
-	    support `set(i, j, v)` and `v = get(i, j)`
 
+- edg.h  :: stores value `v` for a pair
+            of `(i, j)` i must be in range [0, n)
+	    int i, j, k;
+	    API: ini(n); v = set(i, j); get(i, j)
 IO
 - off.h :: read OFF files
 - punto.h :: read/write "punto" files
 
-
-
-
-
-
-
-
+X
 - x.h :: simplifyied interface for X
 
 
