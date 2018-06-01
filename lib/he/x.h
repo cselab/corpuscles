@@ -21,4 +21,4 @@ int  hdg_tri(int t);
 int  bnd(int h);
 
 /* alloca and zero */
-int RZERO(int n, ...);
+int RZERO(int, real**);

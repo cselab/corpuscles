@@ -30,23 +30,12 @@ int  hdg_edg(int e) { return he_hdg_edg(he, e); }
 int  hdg_tri(int t) { return he_hdg_tri(he, t); }
 int  bnd(int h)     { return he_bnd(he, h); }
 
-static int rzero(int n, real **pq) {
+int RZERO(int n, real **pq) { /* alloc and make zero */
     int i;
     real *q;
     MALLOC(n, &q);
     for (i = 0; i < n; i++) q[i] = 0;
     *pq = q;
-    return HE_OK;
-}
-int RZERO(int n, ...) {
-    int r;
-    real **pq;
-    va_list ap;
-    va_start(ap, n);
-    pq = va_arg(ap, real**);
-    if ((r = rzero(n, pq)) != HE_OK)
-        return r;
-    va_end(ap);
     return HE_OK;
 }
 
