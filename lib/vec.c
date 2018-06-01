@@ -71,8 +71,11 @@ void vec_cross(real a[3], real b[3], /**/ real c[3]) {
 }
 real vec_abs(real a[3]) { return sqrt(vec_dot(a, a)); }
 
-real vec_cylindrical_r(real a[3]) {
-    return sqrt(a[X]*a[X] + a[Y]*a[Y]);
+real vec_cylindrical_r(real a[3]) { return sqrt(a[X]*a[X] + a[Y]*a[Y]); }
+real vec_spherical_theta(real a[3]) {
+    real r;
+    r = vec_abs(a);
+    return acos(a[Z]/r);
 }
 
 static int small(real s) {

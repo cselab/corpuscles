@@ -93,7 +93,7 @@ static void main0() {
     RZERO(NH, &l2); RZERO(NH, &T);
     RZERO(NV, &A); RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
 
-    real *queue[] = {RR, LX, LY, LZ, NULL};
+    real *queue[] = {RR, TH, LX, LY, LZ, NULL};
 
     mesh_cot(cot);
     mesh_T(cot, /**/ T);

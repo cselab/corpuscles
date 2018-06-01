@@ -2,7 +2,8 @@ extern int NV, NE, NT, NH;
 extern int *T0, *T1, *T2;
 extern int *D0, *D1, *D2, *D3;
 extern real *XX, *YY, *ZZ;
-extern real *RR;
+extern real *RR; /* sqrt(x^2 + y^2 + z^2) */
+extern real *TH; /* acos(z/r) */
 
 int ini(const char *path);
 int fin();
