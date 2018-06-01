@@ -11,3 +11,11 @@ static void get_edg(int i, int j, real r[3]) {
     vec_get(j, XX, YY, ZZ, b);
     vec_minus(a, b, r);
 }
+
+static real sum(int n, real *a) {
+    int i;
+    real s;
+    for (i = 0, s = 0; i < n; i++)
+        s += a[i];
+    return s;
+}

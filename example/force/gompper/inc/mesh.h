@@ -51,11 +51,3 @@ static void mesh_laplace(real *V0, real *T, real *A, /**/ real *V1) {
     for (i = 0; i < NV; i++)
         V1[i] /= A[i];
 }
-
-static real sum(int n, real *a) {
-    int i;
-    real s;
-    for (i = 0, s = 0; i < n; i++)
-        s += a[i];
-    return s;
-}
