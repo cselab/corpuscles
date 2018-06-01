@@ -18,12 +18,24 @@ static int angle0(real a[3], real b[3], real n[3],
     return HE_OK;
 }
 
-int dtri_angle0(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[3]) {
-    real ab[3], ac[3], n[3], nda[3];
+int dtri_angle(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[3]) {
+    real n[3], nda[3];
     tri_normal(b, c, a,   n);
     angle0(c, b, n,   dc);
     angle0(b, a, n,   da);
     vec_plus(dc, da,  nda);
-    vec_negative(nda,    db);
+    vec_scalar(nda, -1,   db);
+    return HE_OK;
+}
+
+int dtri_ctan(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[3]) {
+    real ang, s, da0[3], db0[3], dc0[3];
+    ang = tri_angle(a, b, c);
+    s = sin(ang);
+    s = -1/(s*s);
+    dtri_angle(a, b, c,   da0, db0, dc0);
+    vec_scalar(da0, s,   da);
+    vec_scalar(db0, s,   db);
+    vec_scalar(dc0, s,   dc);
     return HE_OK;
 }
