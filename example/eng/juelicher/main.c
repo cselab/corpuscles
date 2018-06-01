@@ -26,11 +26,11 @@ void energy_juelicher() {
     enum {X, Y, Z};
     int v, e, h, t;
     int i, j, k, l;
-    real r0, ang, a[3], b[3], c[3], d[3], r[3];
+    real a[3], b[3], c[3], d[3], u[3], coord[3];
     real *curva_mean, *energy, *area;
-    real len, len2, are;
-
-      
+    real cur, len, len2, are;
+    real theta, rxy, phi;
+    
     MALLOC(NV, &curva_mean);
     MALLOC(NV, &energy);
     MALLOC(NV, &area);
@@ -50,22 +50,23 @@ void energy_juelicher() {
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
 	
         get4(i, j, k, l, /**/ a, b, c, d);
-
-	ang = tri_dih(a, b, c, d);
-
-	vec_minus(b,c,r);
-	len2 = vec_dot(r, r);
+	
+	theta = tri_dih(a, b, c, d);
+	
+	vec_minus(b, c, u);
+	len2 = vec_dot(u, u);
 	len  = sqrt(len2);
 
-	curva_mean[j] += len*ang/4;
-	curva_mean[k] += len*ang/4;
+	cur = len*theta/4;
+	curva_mean[j] += cur;
+	curva_mean[k] += cur;
 	  
     }
-
+    
     for (t = 0; t < NT; t++) {
-
+      
       i = T0[t]; j = T1[t]; k = T2[t];
-
+      
       get3(i, j, k, a, b, c);
       are = tri_area(a, b, c);
 
@@ -75,15 +76,21 @@ void energy_juelicher() {
       
     }
 
-    printf("#1 axis dist; 2 curvature mean; 3 enegy; 4 energy density\n");
+    printf("#1azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean\n");
     for (v = 0; v < NV; v++) {
       
       curva_mean[v] /= area[v];
       energy[v] = 2 * curva_mean[v]*curva_mean[v]*area[v];
-      
-      vec_get(v, XX, YY, ZZ, r);
-      r0 = vec_cylindrical_r(r);
-      printf("%g %g %g %g\n", r0, curva_mean[v], energy[v], energy[v]/area[v]);
+
+      vec_get(v, XX, YY, ZZ, coord);
+      rxy = vec_cylindrical_r(coord);
+
+      phi = TH[v];
+      if ( phi > pi / 2) {
+	phi = pi - phi;
+      }
+           
+      printf("%g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], curva_mean[v]);
       
     }
 
