@@ -16,7 +16,7 @@ void get4(int i, int j, int k, int l, /**/
     vec_get(l, XX, YY, ZZ, d);
 }
 
-void main1() {
+void main0() {
   /*This applies halfedge to traverse*/
     enum {X, Y, Z};
     int v;
@@ -47,7 +47,7 @@ void main1() {
     printf("NT=%i, traverse halfedge A = %g\n", NT, A);
 }
 
-void main2() {
+void main1() {
     /*This utilize edge/diheral to traverse*/
     int e;
     int i, j, k, l;
@@ -76,8 +76,8 @@ void main2() {
 
 int main() {
     ini("/dev/stdin");
+    main0();
     main1();
-    main2();
     fin();
     return HE_OK;
 }

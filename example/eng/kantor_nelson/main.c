@@ -18,30 +18,57 @@ void get4(int i, int j, int k, int l, /**/
 
 void energy_kantor_nelson() {
     enum {X, Y, Z};
-    int v, e;
+    int v, e, h;
     int i, j, k, l;
-    real r0, ang, eng, a[3], b[3], c[3], d[3], r[3];
-    real *E;
+    real a[3], b[3], c[3], d[3], coord[3];
+    real *energy;
     real coef;
+    real theta, eng, rxy, phi;
 
     coef = 2.0*sqrt(3.0);
       
-    MALLOC(NV, &E);
-    for (v = 0; v < NV; v++) E[v] = 0;
+    MALLOC(NV, &energy);
+    
+    for (v = 0; v < NV; v++) energy[v] = 0;
+    
     for (e = 0; e < NE; e++) {
-        i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+
+      h = hdg_edg(e);
+
+      if ( bnd(h) ) continue;
+      
+      i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+      
         get4(i, j, k, l, /**/ a, b, c, d);
-        ang = tri_dih(a, b, c, d);
-        eng = coef*(1 - cos(ang));
+	
+        theta = tri_dih(a, b, c, d);
+        eng = coef*(1 - cos(theta));
         eng /= 4;
-        E[i] += eng; E[j] += eng; E[k] += eng; E[l] += eng;
+        energy[i] += eng;
+	energy[j] += eng;
+	energy[k] += eng;
+	energy[l] += eng;
     }
+
+    printf("#1azimuth angle 2 axis dist; 3 enegy;\n");
+
     for (v = 0; v < NV; v++) {
-        vec_get(v, XX, YY, ZZ, r);
-        r0 = vec_cylindrical_r(r);
-        printf("%g %g\n", r0, E[v]);
+      
+      vec_get(v, XX, YY, ZZ, coord);
+
+      vec_get(v, XX, YY, ZZ, coord);
+      rxy = vec_cylindrical_r(coord);
+
+      phi = TH[v];
+      if ( phi > pi / 2) {
+	phi = pi - phi;
+      }
+      
+      printf("%g %g %g\n", phi, rxy, energy[v]);
+      
     }
-    FREE(E);
+    
+    FREE(energy);
 }
 
 int main() {
