@@ -7,7 +7,7 @@ int he_ini(HeRead*, T**);
 int he_file_ini(const char *path, T**);
 int he_fin(T*);
 
-int he_nv(T*); /* vert, triangle, edg, half-edg */
+int he_nv(T*); /* number of vert, edg, edg, hdg */
 int he_nt(T*);
 int he_ne(T*);
 int he_nh(T*);
@@ -15,7 +15,7 @@ int he_nh(T*);
 int he_nxt(T*, int h); /* return half-edg */
 int he_flp(T*, int h);
 
-int he_ver(T*, int h); /* return object */
+int he_ver(T*, int h); /* return ver, tri, or edg */
 int he_tri(T*, int h);
 int he_edg(T*, int h);
 
