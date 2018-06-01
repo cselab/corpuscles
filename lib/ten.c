@@ -126,10 +126,34 @@ int ten_fscanf(FILE *stream, Ten *T) {
     int ok;
     t = T->t;
     ok = 1;
-#define NXT(d) if (ok) ok = (fscanf(stream, FMT_IN, &t[d]) == 1);
+#   define NXT(d) if (ok) ok = (fscanf(stream, FMT_IN, &t[d]) == 1)
     NXT(XX); NXT(XY); NXT(XZ);
     NXT(YX); NXT(YY); NXT(YZ);
     NXT(ZX); NXT(ZY); NXT(ZZ);
+#   undef NXT
     if (!ok) ERR(HE_IO, "fscanf failed");
+    return HE_OK;
+
+}
+
+static int nxt(const char *a, real *p) {
+    return sscanf(a, FMT_IN, p) == 1;
+}
+int ten_argv(const char **pq[], /**/ Ten *T) {
+    const char **q;
+    real *t;
+    q = *pq;
+    t = T->t;
+#   define NXT(d) \
+    do {                                                     \
+        if (q == NULL) ERR(HE_IO, "not enough args");        \
+        if (!nxt(*q, &t[XX])) ERR(HE_IO, "not a number '%s", q);        \
+        q++;                                                            \
+    } while (0);
+    NXT(XX); NXT(XY); NXT(XZ);
+    NXT(YX); NXT(YY); NXT(YZ);
+    NXT(ZX); NXT(ZY); NXT(ZZ);
+# undef NXT
+    *pq = q;
     return HE_OK;
 }
