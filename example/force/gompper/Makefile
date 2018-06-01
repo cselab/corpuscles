@@ -1,9 +1,9 @@
 M = main
 PREC = s
 HE_CFLGAS = -Wall -Wextra -O0 -g `he.conf --cflags $(PREC)`
-TRI_LDFLAGS = `he.conf --libs $(PREC)`
+HE_LDFLAGS = `he.conf --libs $(PREC)`
 
-$M: $M.o; $(CC) $< $(LDFLAGS) $(TRI_LDFLAGS) -o $@
+$M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLGAS) $(HE_CFLGAS) $< -c -o $@
 $M.o: inc/main.h  inc/mesh.h  inc/util.h
 
