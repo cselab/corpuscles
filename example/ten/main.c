@@ -60,8 +60,18 @@ int main(__UNUSED int c, const char **v) {
     } else if (eq(op, "axpy")) {
         scl(&s); ten(&P); ten(&T);
         ten_axpy(s, P, &T);
-        ten_printf(T, "%g");        
+        ten_printf(T, "%g");
+    } else if (eq(op, "copy")) {
+        ten(&T);
+        ten_copy(T, &P);
+        ten_printf(P, "%g");
+    } else if (eq(op, "zero")) {
+        ten_zero(&T);
+        ten_printf(T, "%g");
+    } else if (eq(op, "one")) {
+        ten_one(&T);
+        ten_printf(T, "%g");
     } else
-        ER("unknown operation '%s'", v[0]);
+        ER("unknown operation '%s'", op);
     return 0;
 }
