@@ -133,7 +133,6 @@ int ten_fscanf(FILE *stream, Ten *T) {
 #   undef NXT
     if (!ok) ERR(HE_IO, "fscanf failed");
     return HE_OK;
-
 }
 
 static int nxt(const char *a, real *p) {
