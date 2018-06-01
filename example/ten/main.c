@@ -52,7 +52,15 @@ int main(__UNUSED int c, const char **v) {
     } else if (eq(op, "vec")) {
         ten(&T); vec(a);
         ten_vec(T, a, b);
-        vec_printf(b, "%g");        
+        vec_printf(b, "%g");
+    } else if (eq(op, "add")) {
+        ten(&T); ten(&R);
+        ten_add(R, &T);
+        ten_printf(T, "%g");
+    } else if (eq(op, "axpy")) {
+        scl(&s); ten(&P); ten(&T);
+        ten_axpy(s, P, &T);
+        ten_printf(T, "%g");        
     } else
         ER("unknown operation '%s'", v[0]);
     return 0;
