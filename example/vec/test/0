@@ -1,0 +1,5 @@
+# TEST: 0
+./main cross 1 2 3 4 5 7 > vec.out.txt
+
+# TEST: 1
+./main norm 1 2 3 > vec.out.txt
