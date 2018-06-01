@@ -33,6 +33,6 @@ case "$p" in
     *) err "unknown PRECISION '$a'" ;;
 esac
 
-e PKG_CONFIG_PATH="$PREFIX/pkgconfig:$PKG_CONFIG_PATH"
+e PKG_CONFIG_PATH="$PREFIX/share/pkgconfig:$PKG_CONFIG_PATH"
 e export PKG_CONFIG_PATH
 e "$PKG_CONFIG" "$a" he_$p
