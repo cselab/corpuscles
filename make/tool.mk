@@ -1,5 +1,5 @@
 install: $M
-	@mkdir -p $B
+	@mkdir -p -- $B
 	@for f in $M; \
          do t="$B/$P.$$f"; \
 	    cp "$$f" "$$t"; \

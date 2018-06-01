@@ -4,7 +4,7 @@ P = he_s.pc he_d.pc
 SED = sed
 
 install: $P
-	mkdir -p "$(PREFIX)/share/pkgconfig"
+	mkdir -p -- "$(PREFIX)/share/pkgconfig"
 	cp $P "$(PREFIX)/share/pkgconfig"
 
 he_s.pc: $(TRG).pc.in
