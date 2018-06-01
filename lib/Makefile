@@ -11,15 +11,9 @@ TRG = he
 L = libhe_s.a libhe_d.a
 
 install: $L $H
-	mkdir -p -- $(PREFIX)/lib $(PREFIX)/lib
-	cp $L    $(PREFIX)/lib
-	for f in $H                  ; \
-	do d=`dirname "$$f"`         ; \
-	   d=$(PREFIX)/include/"$$d" ; \
-	   t=$(PREFIX)/include/"$$f" ; \
-	   mkdir -p -- "$$d"         ; \
-	   cp -- "$$f" "$$t"         ; \
-	done
+	he.install $L $(PREFIX)/lib
+	he.install $H $(PREFIX)/include
+
 libhe_s.a: $O $(O_S); ar rv $@ $O $(O_S) && ranlib $@
 libhe_d.a: $O $(O_D); ar rv $@ $O $(O_D) && ranlib $@
 $O : $H $I
