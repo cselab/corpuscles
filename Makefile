@@ -1,4 +1,4 @@
-D = tool lib pkgconfig example/punto example/valid example/area/voronoi example/area/tri example/volume example/ten
+D = tool lib pkgconfig example/punto example/valid example/area/voronoi example/area/tri example/volume example/vec example/ten
 
 install: dir
 test: dir

@@ -45,7 +45,6 @@ real tri_cot(real a[3], real b[3], real c[3]) { /* at `b' */
     return x/y; /* TODO: */
 }
 
-
 /* bc is an edge */
 real tri_dih(real a[3], real b[3], real c[3], real d[3]) {
     real x, y, ang, n[3], k[3], nk[3], e[3];
