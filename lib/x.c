@@ -72,7 +72,6 @@ int ini(const char *path) {
         vec_get(i, XX, YY, ZZ, r);
         RR[i] = vec_cylindrical_r(r);
         TH[i] = vec_spherical_theta(r);
-        MSG("%g", TH[i]);
     }
 
     for (tri = tri0, i = 0; i < NT; i++) {
