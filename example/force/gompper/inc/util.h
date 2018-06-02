@@ -25,3 +25,9 @@ static real sum_sq(int n, real *a) {
     for (i = 0, s = 0; i < n; i++) s += a[i]*a[i];
     return s;
 }
+
+static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
+    int i;
+    for (i = 0; i < n; i++)
+        r[i] = sqrt(x[i]*x[i] + y[i]*y[i] + z[i]*z[i]);
+}

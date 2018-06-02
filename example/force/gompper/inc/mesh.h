@@ -53,7 +53,7 @@ static void mesh_force_t(real *T, real *lx, real *ly, real *lz, /**/
 	get_edg(i, j,   r);
 	vec_get(i, lx, ly, lz, ll);
 	l2 = vec_dot(ll, ll);
-	vec_linear_combination(-T0/2, ll, T0*l2/8, r,  df);
+	vec_linear_combination(T0/2, ll, -T0*l2/8, r,  df);
 	vec_append(df, i, /**/ fx, fy, fz);
 	vec_substr(df, j, /**/ fx, fy, fz);
     }
