@@ -12,20 +12,6 @@ static void get_edg(int i, int j, real r[3]) {
     vec_minus(a, b, r);
 }
 
-static real sum(int n, real *a) {
-    int i;
-    real s;
-    for (i = 0, s = 0; i < n; i++) s += a[i];
-    return s;
-}
-
-static real sum_sq(int n, real *a) {
-    int i;
-    real s;
-    for (i = 0, s = 0; i < n; i++) s += a[i]*a[i];
-    return s;
-}
-
 static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
     int i;
     for (i = 0; i < n; i++)
