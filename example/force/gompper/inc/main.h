@@ -8,8 +8,6 @@ static void main0() {
     RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
     RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ); RZERO(NV, &FM);
 
-    real *queue[] = {RR, ZZ, FM, A, NULL};
-
     mesh_t(/**/ T);
     mesh_l2(l2);
     mesh_voronoi(T, l2, /**/ A);
@@ -21,6 +19,8 @@ static void main0() {
     mesh_force_t (T, LX, LY, LZ, /**/ FX, FY, FZ);
     mesh_force_dt(   LX, LY, LZ, /**/ FX, FY, FZ);
     vabs(NV, FX, FY, FZ, /**/ FM);
+
+    real *queue[] = {RR, ZZ, FM, A, NULL};
     punto_write(NV, queue, "/dev/stdout");
 
     FREE(l2); FREE(T);
