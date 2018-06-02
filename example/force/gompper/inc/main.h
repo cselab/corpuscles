@@ -15,7 +15,7 @@ static void main0() {
     mesh_laplace(XX, T, A, /**/ LX);
     mesh_laplace(YY, T, A, /**/ LY);
     mesh_laplace(ZZ, T, A, /**/ LZ);
-    
+
     mesh_force_t (T, LX, LY, LZ, /**/ FX, FY, FZ);
     mesh_force_dt(   LX, LY, LZ, /**/ FX, FY, FZ);
     vabs(NV, FX, FY, FZ, /**/ FM);

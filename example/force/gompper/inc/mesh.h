@@ -42,6 +42,7 @@ static void mesh_laplace(real *V0, real *T, real *A, /**/ real *V1) {
     for (i = 0; i < NV; i++) V1[i] /= A[i];
 }
 
+/* forces ~T */
 static void mesh_force_t(real *T, real *lx, real *ly, real *lz, /**/
                          real *fx, real *fy, real *fz) {
     int h, n;
@@ -60,6 +61,7 @@ static void mesh_force_t(real *T, real *lx, real *ly, real *lz, /**/
     }
 }
 
+/* forces  ~  diff(T, r), where vector r = ri - rj */
 static void mesh_force_dt(real *lx, real *ly, real *lz, /**/
                           real *fx, real *fy, real *fz) {
     int h, n, nn;
