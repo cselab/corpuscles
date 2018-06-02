@@ -48,6 +48,5 @@ static void mesh_laplace(real *V0, real *T, real *A, /**/ real *V1) {
         i = ver(h); j = ver(n);
         V1[i] += T[h]*(V0[i] - V0[j])/2;
     }
-    for (i = 0; i < NV; i++)
-        V1[i] /= A[i];
+    for (i = 0; i < NV; i++) V1[i] /= A[i];
 }
