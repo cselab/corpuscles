@@ -1,13 +1,14 @@
 static void mesh_t(real *H) {
     int h, n, f, nn;
     int i, j, k;
-    real a[3], b[3], c[3];
+    real a[3], b[3], c[3], cot;
     for (h = 0; h < NH; h++) {
         n = nxt(h); nn = nxt(n); f = flp(h);
         i = ver(h); j = ver(n); k = ver(nn);
         get3(i, j, k, /**/ a, b, c);
-        H[h] += tri_cot(b, c, a);
-        H[f] += tri_cot(b, c, a);
+        cot = tri_cot(b, c, a);
+        H[h] += cot;
+        H[f] += cot;
     }
 }
 
