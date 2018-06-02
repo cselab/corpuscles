@@ -50,6 +50,10 @@ void vec_append(real a[3], /**/ real *x, real *y, real *z) {
    *x += a[X]; *y += a[Y]; *z += a[Z];
 }
 
+void vec_substr(real a[3], /**/ real *x, real *y, real *z) {
+   *x -= a[X]; *y -= a[Y]; *z -= a[Z];
+}
+
 real vec_dot(real a[3], real b[3]) {
    return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
 }
