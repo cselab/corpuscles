@@ -61,7 +61,7 @@ void vec_substr(real a[3], int i, /**/ real *x, real *y, real *z) {
    x[i] -= a[X]; y[i] -= a[Y]; z[i] -= a[Z];
 }
 
-void vec_scalar_append(real a[3], int i, real s, /**/ real *x, real *y, real *z) {
+void vec_scalar_append(real a[3], real s, int i, /**/ real *x, real *y, real *z) {
     x[i] += s*a[X]; y[i] += s*a[Y]; z[i] += s*a[Z];
 }
 

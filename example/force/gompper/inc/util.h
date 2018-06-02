@@ -15,7 +15,13 @@ static void get_edg(int i, int j, real r[3]) {
 static real sum(int n, real *a) {
     int i;
     real s;
-    for (i = 0, s = 0; i < n; i++)
-        s += a[i];
+    for (i = 0, s = 0; i < n; i++) s += a[i];
+    return s;
+}
+
+static real sum_sq(int n, real *a) {
+    int i;
+    real s;
+    for (i = 0, s = 0; i < n; i++) s += a[i]*a[i];
     return s;
 }
