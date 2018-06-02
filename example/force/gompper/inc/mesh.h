@@ -81,8 +81,8 @@ static void mesh_force_dt(real *lx, real *ly, real *lz, /**/
 	dl = vec_dot(lk, lk) + vec_dot(li, li);
 	dd = vec_dot(li, r)  - vec_dot(lk, r);
 	C = dd/2 - r2*dl/16;
-	vec_scalar_append(da,  C,  i, fx, fy, fz);
-	vec_scalar_append(db,  C,  j, fx, fy, fz);
-	vec_scalar_append(dc,  C,  k, fx, fy, fz);
+	vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
+	vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
+	vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
     }
 }
