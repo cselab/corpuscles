@@ -7,8 +7,7 @@ static void mesh_t(real *H) {
         i = ver(h); j = ver(n); k = ver(nn);
         get3(i, j, k, /**/ a, b, c);
         cot = tri_cot(b, c, a);
-        H[h] += cot;
-        H[f] += cot;
+        H[h] += cot; H[f] += cot;
     }
 }
 
