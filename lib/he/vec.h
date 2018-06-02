@@ -12,9 +12,9 @@ void vec_linear_combination(real, real[3], real, real[3], /**/ real[3]);
 
 void vec_scalar(real[3], real, /**/ real[3]);
 
-void vec_append(real[3],  /**/ real*, real*, real*);
-void vec_substr(real [3], /**/ real*, real*, real*);
-void vec_scalar_append(real[3], real, /**/ real*, real*, real*);
+void vec_append(real[3],  int, /**/ real*, real*, real*);
+void vec_substr(real [3], int, /**/ real*, real*, real*);
+void vec_scalar_append(real[3], int, real, /**/ real*, real*, real*);
 
 real vec_dot(real[3], real[3]);
 real vec_angle(real[3], real[3]);

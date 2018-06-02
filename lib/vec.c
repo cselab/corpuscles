@@ -53,16 +53,16 @@ void vec_scalar(real a[3], real s, real b[3]) {
     b[X] = s*a[X]; b[Y] = s*a[Y]; b[Z] = s*a[Z];
 }
 
-void vec_append(real a[3], /**/ real *x, real *y, real *z) {
-   *x += a[X]; *y += a[Y]; *z += a[Z];
+void vec_append(real a[3], int i, /**/ real *x, real *y, real *z) {
+   x[i] += a[X]; y[i] += a[Y]; z[i] += a[Z];
 }
 
-void vec_substr(real a[3], /**/ real *x, real *y, real *z) {
-   *x -= a[X]; *y -= a[Y]; *z -= a[Z];
+void vec_substr(real a[3], int i, /**/ real *x, real *y, real *z) {
+   x[i] -= a[X]; y[i] -= a[Y]; z[i] -= a[Z];
 }
 
-void vec_scalar_append(real a[3], real s, /**/ real *x, real *y, real *z) {
-    *x += (s*a[X]); *y += (s*a[Y]); *z += (s*a[Z]);
+void vec_scalar_append(real a[3], int i, real s, /**/ real *x, real *y, real *z) {
+    x[i] += s*a[X]; y[i] += s*a[Y]; z[i] += s*a[Z];
 }
 
 real vec_dot(real a[3], real b[3]) {
