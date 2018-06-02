@@ -1,12 +1,27 @@
+static void write(real *fx, real *fy, real *fz,
+                  real *lx, real *ly, real *lz,
+                  real *A) {
+    real *fm, *lm;
+    RZERO(NV, &fm); RZERO(NV, &lm);
+
+    vabs(NV, fx, fy, fz, /**/ fm);
+    vabs(NV, lx, ly, lz, /**/ lm);
+
+    real *queue[] = {RR, ZZ, fm, A, lm, NULL};
+    punto_write(NV, queue, "/dev/stdout");
+
+    FREE(lm);  FREE(fm);
+}
+
 static void main0() {
     real *l2, *A, *T;
-    real *LX, *LY, *LZ, *LM;
-    real *FX, *FY, *FZ, *FM;
+    real *LX, *LY, *LZ;
+    real *FX, *FY, *FZ;
 
     RZERO(NH, &l2); RZERO(NH, &T);
     RZERO(NV, &A);
-    RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ); RZERO(NV, &LM);
-    RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ); RZERO(NV, &FM);
+    RZERO(NV, &LX); RZERO(NV, &LY); RZERO(NV, &LZ);
+    RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
 
     mesh_t(/**/ T);
     mesh_l2(l2);
@@ -18,16 +33,13 @@ static void main0() {
 
     mesh_force_t (T, LX, LY, LZ, /**/ FX, FY, FZ);
     mesh_force_dt(   LX, LY, LZ, /**/ FX, FY, FZ);
-    vabs(NV, FX, FY, FZ, /**/ FM);
-    vabs(NV, LX, LY, LZ, /**/ LM);
 
-    real *queue[] = {RR, ZZ, FM, A, LM, NULL};
-    punto_write(NV, queue, "/dev/stdout");
+    write(FX, FY, FZ, LX, LY, LZ, A);
 
     FREE(l2); FREE(T);
     FREE(A);
-    FREE(LX); FREE(LY); FREE(LZ); FREE(LM);
-    FREE(FX); FREE(FY); FREE(FZ); FREE(FM);
+    FREE(LX); FREE(LY); FREE(LZ);
+    FREE(FX); FREE(FY); FREE(FZ);
 }
 
 int main() {
