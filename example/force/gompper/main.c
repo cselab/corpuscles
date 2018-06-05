@@ -6,7 +6,9 @@
 #include <he/err.h>
 #include <he/x.h>
 #include <he/vec.h>
+#include <he/ten.h>
 #include <he/tri.h>
+#include <he/dtri.h>
 #include <he/memory.h>
 #include <he/punto.h>
 

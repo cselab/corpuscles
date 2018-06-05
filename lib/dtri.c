@@ -14,7 +14,7 @@ static int angle0(real a[3], real b[3], real n[3],
     vec_minus(b, a,  v);
     vec_cross(n, v, nv);
     v0 = vec_dot(v, v);
-    if (v0 == 0) ERR(HE_NUM, "s = v0");    
+    if (v0 == 0) ERR(HE_NUM, "s = v0");
     vec_scalar(nv, 1/v0,  da);
     return HE_OK;
 }

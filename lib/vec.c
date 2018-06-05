@@ -42,12 +42,27 @@ void vec_minus(real a[3], real b[3], /**/ real c[3]) {
     c[Z] = a[Z] - b[Z];
 }
 
+void vec_linear_combination(real al, real a[3], real be, real b[3],
+                            /**/ real c[3]) {
+    c[X] = al*a[X] + be*b[X];
+    c[Y] = al*a[Y] + be*b[Y];
+    c[Z] = al*a[Z] + be*b[Z];
+}
+
 void vec_scalar(real a[3], real s, real b[3]) {
     b[X] = s*a[X]; b[Y] = s*a[Y]; b[Z] = s*a[Z];
 }
 
-void vec_append(real a[3], /**/ real *x, real *y, real *z) {
-   *x += a[X]; *y += a[Y]; *z += a[Z];
+void vec_append(real a[3], int i, /**/ real *x, real *y, real *z) {
+   x[i] += a[X]; y[i] += a[Y]; z[i] += a[Z];
+}
+
+void vec_substr(real a[3], int i, /**/ real *x, real *y, real *z) {
+   x[i] -= a[X]; y[i] -= a[Y]; z[i] -= a[Z];
+}
+
+void vec_scalar_append(real a[3], real s, int i, /**/ real *x, real *y, real *z) {
+    x[i] += s*a[X]; y[i] += s*a[Y]; z[i] += s*a[Z];
 }
 
 real vec_dot(real a[3], real b[3]) {
