@@ -28,7 +28,7 @@ void get4(int i, int j, int k, int l, /**/
 
 void energy_gompper_kroll1() {
    /*This routine calculates bending energy
-    according to Gompper and Kroll, J. Phys. I, Franc 1996
+    according to Gompper and Kroll, J. Phys. I France 1996
     
     It traverses each vertex and its associated halfedge 
     to calculate energy and area.
@@ -276,8 +276,8 @@ void energy_gompper_kroll2() {
     
   }
 
-  printf("#NT, area_tot_tri, area_tot_voronoi, energy_tot\n");
-  printf("#%i %g %g %g\n", NT, area_tot_tri, area_tot_voronoi, energy_tot);
+  printf("###NT, area_tot_tri, area_tot_voronoi, energy_tot\n");
+  printf("##%i %g %g %g\n", NT, area_tot_tri, area_tot_voronoi, energy_tot);
 
   FREE(lbx);
   FREE(lby);

@@ -179,7 +179,7 @@ void energy_meyer_et_al1() {
     
   }
 
-    area_tot_mix = 0;
+  area_tot_mix = 0;
   energy_tot   = 0;
   
   printf("#1 azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area\n");
@@ -217,9 +217,16 @@ void energy_meyer_et_al1() {
     
   }
 
-  printf("#NT, area_tot_tri, area_tot_mix, energy_tot\n");
-  printf("#%i %g %g %g\n", NT, area_tot_tri, area_tot_mix, energy_tot);
+  printf("###NT, area_tot_tri, area_tot_mix, energy_tot\n");
+  printf("##%i %g %g %g\n", NT, area_tot_tri, area_tot_mix, energy_tot);
 
+  FREE(lbx);
+  FREE(lby);
+  FREE(lbz);
+  FREE(curva_mean);
+  FREE(energy);
+  FREE(area);
+  
 }
 
 void energy_meyer_et_al2() {

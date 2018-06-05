@@ -64,7 +64,7 @@ void energy_kantor_nelson() {
 
   energy_tot = 0;
 
-  printf("#1azimuth angle 2 axis dist; 3 enegy;\n");
+  printf("#1 azimuth angle 2 axis dist; 3 enegy;\n");
   
   for (v = 0; v < NV; v++) {
 
@@ -85,8 +85,8 @@ void energy_kantor_nelson() {
     
     }
 
-  printf("#NT, energy_tot\n");
-  printf("#%i %g\n", NT, energy_tot);
+  printf("###NT, energy_tot\n");
+  printf("##%i %g\n", NT, energy_tot);
 
     FREE(energy);
 }
