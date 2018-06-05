@@ -9,20 +9,32 @@
 #include <he/memory.h>
 
 void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
+
   vec_get(i, XX, YY, ZZ, a);
   vec_get(j, XX, YY, ZZ, b);
   vec_get(k, XX, YY, ZZ, c);
+  
 }
 
 void get4(int i, int j, int k, int l, /**/
           real a[3], real b[3], real c[3], real d[3]) {
+  
   vec_get(i, XX, YY, ZZ, a);
   vec_get(j, XX, YY, ZZ, b);
   vec_get(k, XX, YY, ZZ, c);
-  vec_get(l, XX, YY, ZZ, d);    
+  vec_get(l, XX, YY, ZZ, d);
+  
 }
 
 void energy_juelicher() {
+    /*This routine calculates bending energy
+      according to Juelicher, J. Phys. II Franc, 1996
+    
+    It traverses each edge/dihedral to calculate energy.
+    It traverses each vertex to calculate area.
+    
+    Version: Xin Bian, 05 June 2018 @CSE Lab, ETH Zurich*/
+  
   enum {X, Y, Z};
   int v, e, h, t;
   int i, j, k, l;
@@ -30,6 +42,8 @@ void energy_juelicher() {
   real *curva_mean, *energy, *area;
   real cur, len, len2, area0;
   real theta, rxy, phi;
+  real area_tot_tri, area_tot_split;
+  real energy_tot;
   
   MALLOC(NV, &curva_mean);
   MALLOC(NV, &energy);
@@ -62,7 +76,9 @@ void energy_juelicher() {
     curva_mean[k] += cur;
     
   }
-    
+
+  area_tot_tri = 0;
+
   for (t = 0; t < NT; t++) {
       
     i = T0[t]; j = T1[t]; k = T2[t];
@@ -73,14 +89,24 @@ void energy_juelicher() {
     area[i] += area0/3;
     area[j] += area0/3;
     area[k] += area0/3;
+
+    area_tot_tri += area0;
     
   }
+
+  area_tot_split = 0;
+  energy_tot     = 0;
   
-  printf("#1azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean\n");
+  printf("#1 azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area\n");
+
   for (v = 0; v < NV; v++) {
       
     curva_mean[v] /= area[v];
     energy[v] = 2 * curva_mean[v]*curva_mean[v]*area[v];
+
+    /*for verification*/
+    area_tot_split += area[v];
+    energy_tot     += energy[v];
     
     vec_get(v, XX, YY, ZZ, coord);
     rxy = vec_cylindrical_r(coord);
@@ -90,13 +116,17 @@ void energy_juelicher() {
       phi = pi - phi;
     }
     
-    printf("%g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], curva_mean[v]);
+    printf("%g %g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], curva_mean[v], area[v]);
     
   }
+
+  printf("#NT, area_tot_tri, area_tot_split, energy_tot\n");
+  printf("#%i %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot);
+
+  FREE(curva_mean);
+  FREE(energy);
+  FREE(area);
   
-    FREE(curva_mean);
-    FREE(energy);
-    FREE(area);
 }
 
 int main() {
