@@ -9,7 +9,7 @@
 #include <he/memory.h>
 
 void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
-
+  
   vec_get(i, XX, YY, ZZ, a);
   vec_get(j, XX, YY, ZZ, b);
   vec_get(k, XX, YY, ZZ, c);
@@ -26,15 +26,18 @@ void get4(int i, int j, int k, int l, /**/
   
 }
 
-void energy_juelicher() {
-    /*This routine calculates bending energy
-      according to Juelicher, J. Phys. II France, 1996
+void energy_juelicher_ext() {
+  /*This routine calculates bending energy
+    according to Juelicher, J. Phys. II France, 1996
     
     It traverses each edge/dihedral to calculate energy.
     It traverses each vertex to calculate area.
+
+    The energy due to spontaneous curvature is considered.
+    The energy due to area-difference elasticity is considered.
     
     Version: Xin Bian, 05 June 2018 @CSE Lab, ETH Zurich*/
-  
+
   enum {X, Y, Z};
   int v, e, h, t;
   int i, j, k, l;
@@ -43,16 +46,28 @@ void energy_juelicher() {
   real cur, len, len2, area0;
   real theta, rxy, phi;
   real area_tot_tri, area_tot_split;
-  real energy_tot;
+  
+  real kB, kA, H0, C0, D, Delta_A0, Delta_a0, Delta_A;
+  real energy_tot_hel, energy_tot_ade, energy_tot;
+
+  
+  kB  = 1.0;
+  kA  = 2*kB/pi;
+  C0  = -1.0;
+  H0  = C0/2.0;
+  D   = 4.0e-3/3.91;
+  Delta_a0 = (1+kB/pi/kA)*D*C0;
   
   MALLOC(NV, &curva_mean);
   MALLOC(NV, &energy);
   MALLOC(NV, &area);
   
   for (v = 0; v < NV; v++) {
+    
     curva_mean[v] = 0;
     energy[v]     = 0;
     area[v]       = 0;
+    
   }
   
   for (e = 0; e < NE; e++) {
@@ -95,18 +110,23 @@ void energy_juelicher() {
   }
 
   area_tot_split = 0;
-  energy_tot     = 0;
-  
+  energy_tot_hel = 0;
+
+  Delta_A  = 0;
+
   printf("#1 azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area\n");
 
   for (v = 0; v < NV; v++) {
       
     curva_mean[v] /= area[v];
-    energy[v] = 2 * curva_mean[v]*curva_mean[v]*area[v];
+    energy[v] = 2 * (curva_mean[v]-H0) * (curva_mean[v]-H0) * area[v];
 
+    /*calculating area difference*/
+    Delta_A += curva_mean[v] * area[v];
+      
     /*for verification*/
     area_tot_split += area[v];
-    energy_tot     += energy[v];
+    energy_tot_hel += energy[v];
     
     vec_get(v, XX, YY, ZZ, coord);
     rxy = vec_cylindrical_r(coord);
@@ -120,9 +140,16 @@ void energy_juelicher() {
     
   }
 
-  printf("###NT, area_tot_tri, area_tot_split, energy_tot\n");
-  printf("##%i %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot);
-
+  printf("Integral of H:%g\n", Delta_A);
+  Delta_A *= 2 * D;
+  Delta_A0 = 2 * D * H0 * area_tot_tri;
+  energy_tot_ade = (Delta_A - Delta_A0)*(Delta_A - Delta_A0)*pi*kA/2/area_tot_tri/D/D;
+  
+  energy_tot = energy_tot_hel + energy_tot_ade;
+  
+  printf("###NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot\n");
+  printf("##%i %g %g %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot);
+  
   FREE(curva_mean);
   FREE(energy);
   FREE(area);
@@ -131,7 +158,7 @@ void energy_juelicher() {
 
 int main() {
   ini("/dev/stdin");
-  energy_juelicher();
+  energy_juelicher_ext();
   fin();
   return HE_OK;
 }
