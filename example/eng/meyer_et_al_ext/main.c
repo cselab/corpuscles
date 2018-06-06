@@ -229,7 +229,7 @@ void energy_meyer_et_al() {
 
   Delta_A  = 0;
 
-  printf("#1 azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area\n");
+  printf("#1 azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area; 7 curvature gauss\n");
   for ( v = 0; v < NV; v++ ) {
     
     lbx[v] /=area[v];
@@ -273,7 +273,7 @@ void energy_meyer_et_al() {
       phi = pi - phi;
     }
     
-    printf("%g %g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], curva_mean[v], area[v]);
+    printf("%g %g %g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], curva_mean[v], area[v], curva_gauss[v]);
     
   }
 

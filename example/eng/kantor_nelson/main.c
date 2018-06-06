@@ -8,6 +8,14 @@
 #include <he/tri.h>
 #include <he/memory.h>
 
+void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
+
+  vec_get(i, XX, YY, ZZ, a);
+  vec_get(j, XX, YY, ZZ, b);
+  vec_get(k, XX, YY, ZZ, c);
+  
+}
+
 void get4(int i, int j, int k, int l, /**/
           real a[3], real b[3], real c[3], real d[3]) {
   
@@ -29,19 +37,26 @@ void energy_kantor_nelson() {
     Version: Xin Bian, 05 June 2018 @CSE Lab, ETH Zurich*/
 
   enum {X, Y, Z};
-  int v, e, h;
+  int v, e, h, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3], coord[3];
-  real *energy;
-  real coef;
+  real *energy, *area;
+  real coef, area0;
   real theta, eng, rxy, phi;
+  real area_tot_tri, area_tot_split;
   real energy_tot;
 
   coef = 2.0*sqrt(3.0);
   
   MALLOC(NV, &energy);
-  
-  for (v = 0; v < NV; v++) energy[v] = 0;
+  MALLOC(NV, &area);
+
+  for (v = 0; v < NV; v++) {
+
+    energy[v] = 0;
+    area[v]   = 0;
+    
+  }
   
   for (e = 0; e < NE; e++) {
     
@@ -62,15 +77,34 @@ void energy_kantor_nelson() {
     energy[l] += eng;
   }
 
-  energy_tot = 0;
+  area_tot_tri = 0;
 
-  printf("#1 azimuth angle 2 axis dist; 3 enegy;\n");
+  for (t = 0; t < NT; t++) {
+      
+    i = T0[t]; j = T1[t]; k = T2[t];
+      
+    get3(i, j, k, a, b, c);
+    area0 = tri_area(a, b, c);
+
+    area[i] += area0/3;
+    area[j] += area0/3;
+    area[k] += area0/3;
+
+    area_tot_tri += area0;
+    
+  }
+
+  area_tot_split = 0;
+  energy_tot     = 0;
+
+  printf("#1 azimuth angle 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area\n");
   
   for (v = 0; v < NV; v++) {
 
     /*for verification*/
+    area_tot_split += area[v];
     energy_tot     += energy[v];
-
+    
     vec_get(v, XX, YY, ZZ, coord);
     
     vec_get(v, XX, YY, ZZ, coord);
@@ -81,14 +115,16 @@ void energy_kantor_nelson() {
       phi = pi - phi;
     }
     
-    printf("%g %g %g\n", phi, rxy, energy[v]);
+    printf("%g %g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], 0.0, area[v]);
     
-    }
+  }
 
-  printf("###NT, energy_tot\n");
-  printf("##%i %g\n", NT, energy_tot);
+  printf("###NT, area_tot_tri, area_tot_split, energy_tot\n");
+  printf("##%i %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot);
+  
+  FREE(energy);
+  FREE(area);
 
-    FREE(energy);
 }
 
 int main() {

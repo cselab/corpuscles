@@ -40,7 +40,9 @@ void energy_gompper_kroll1() {
   int i, j, k, l;
   int h0, h, n, nn, fnn;
   real a[3], b[3], c[3], d[3], u[3], coord[3], ci, cl, cil;
-  real *lbx, *lby, *lbz, *curva_mean, *energy, *area;
+  real *lbx, *lby, *lbz;
+  real *curva_mean;
+  real *energy, *area;
   real len, len2, area0;
   real rxy, phi;
   real area_tot_tri, area_tot_voronoi;
