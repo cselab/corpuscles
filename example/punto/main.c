@@ -19,12 +19,16 @@ int main(__UNUSED int argc, const char *argv[]) {
         ERR(HE_IO, "needs FILE.in");
     i = argv[1]; argv++;
 
-    if (argv[1] == NULL)
-        ERR(HE_IO, "needs FILE.out");
-    o = argv[1]; argv++;
+    o = NULL;
+    if (argv[1] != NULL) {
+        o = argv[1]; argv++;
+    }
     
     punto_read(i, /**/ &n, queue);
     MSG("n = %d", n);
-    MSG("writing: '%s'", o);
-    punto_write(n, queue, o);
+
+    if (o == NULL) 
+        punto_fwrite(n, queue, stdout);
+    else
+        punto_write(n, queue, o);
 }
