@@ -10,16 +10,14 @@
 
 #define SIZE (MAX_STRING_SIZE)
 
-int punto_write(int n, real *queue[], /**/ const char *path) {
-    FILE *f;
-    int i;
+int punto_fwrite(int n, real *queue[], /**/ FILE *f) {
+    int i, r;
     real **q;
-    if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
     for (i = 0; i < n; i++) {
         q = queue;
         for (;;) {
-            fprintf(f, FMT_OUT, (*q)[i]); q++;
+            r = fprintf(f, FMT_OUT, (*q)[i]); q++;
+            if (r < 0) ERR(HE_IO, "fail to write");
             if (*q != NULL) fputc(' ', f);
             else {
                 fputc('\n', f);
@@ -27,6 +25,15 @@ int punto_write(int n, real *queue[], /**/ const char *path) {
             }
         }
     }
+    return HE_OK;
+}
+
+int punto_write(int n, real *queue[], /**/ const char *path) {
+    FILE *f;
+    if ((f = fopen(path, "w")) == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);
+    if (punto_fwrite(n, queue, f) != HE_OK)
+        ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
