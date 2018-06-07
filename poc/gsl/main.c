@@ -15,15 +15,20 @@ int func (__UNUSED double t, const double y[], double f[], void *params) {
 int main (void) {
     double mu = 10;
     gsl_odeiv2_system sys = {func, NULL, 2, &mu};
-    gsl_odeiv2_driver * d =
-        gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk8pd,
-                                       1e-6, 1e-6, 0.0);
+    gsl_odeiv2_driver *d;
     int i;
     double t = 0.0, t1 = 100.0;
     double y[2] = { 1.0, 0.0 };
     double ti;
     int status;
+    double istep, rel, abs;
 
+    istep = 1e-6; /* initial step size */
+    rel = 1e-6;
+    abs = 0.0;
+
+    d = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk8pd,
+                                       istep, rel, abs);
     for (i = 1; i <= 100; i++)
     {
         ti = i * t1 / 100.0;
