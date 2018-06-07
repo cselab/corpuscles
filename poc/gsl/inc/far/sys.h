@@ -15,6 +15,7 @@ static void ini(void) {
     q[0] = 0.0; q[1] = q[2] = 0.01;
 }
 
+
 static double sq(double x) { return x*x; }
 static int f(__UNUSED double t, const double q[], double f[], __UNUSED void *vparam) {
     double al, om, la, be;

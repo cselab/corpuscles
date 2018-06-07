@@ -1,6 +1,6 @@
 #!/bin/sh
 
-${AWK-awk} -v d=1.5 '
+${AWK-awk} -v d=0.05 '
 {
     i = 0
     t = $++i

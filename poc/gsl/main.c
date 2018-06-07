@@ -20,13 +20,13 @@ int main(void) {
     double istep, rel, abs;
 
     istep = 1e-6; /* initial step size */
-    rel = 1e-8;
+    rel = 1e-14;
     abs = 0.0;
-    n = 1500;
-    t = 0.0, t1 = 5.0;
+    n = 10000;
+    t = 0.0, t1 = 1200.0;
     ini();
     
-    driver = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk8pd,
+    driver = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rkck,
                                        istep, rel, abs);
     for (i = 1; i <= n; i++) {
         ti = i * t1 / n;
