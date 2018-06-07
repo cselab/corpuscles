@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <gsl/gsl_errno.h>
-#include <gsl/gsl_matrix.h>
 #include <gsl/gsl_odeiv2.h>
 
 #include <he/macro.h>
@@ -13,31 +12,9 @@ int func (__UNUSED double t, const double y[], double f[], void *params) {
     return GSL_SUCCESS;
 }
 
-int jac (__UNUSED double t, const double y[], double *dfdy, double dfdt[], void *params) {
-    double mu; 
-    gsl_matrix_view dfdy_mat;
-    gsl_matrix *m;
-
-    dfdy_mat = gsl_matrix_view_array (dfdy, 2, 2);    
-    m =  &dfdy_mat.matrix;
-    mu = *(double*)params;
-    
-    gsl_matrix_set (m, 0, 0, 0.0);
-    gsl_matrix_set (m, 0, 1, 1.0);
-    mu = *(double*)params;
-    
-    gsl_matrix_set (m, 0, 0, 0.0);
-    gsl_matrix_set (m, 0, 1, 1.0);
-    gsl_matrix_set (m, 1, 0, -2.0*mu*y[0]*y[1] - 1.0);
-    gsl_matrix_set (m, 1, 1, -mu*(y[0]*y[0] - 1.0));
-    dfdt[0] = 0.0;
-    dfdt[1] = 0.0;
-    return GSL_SUCCESS;
-}
-
 int main (void) {
     double mu = 10;
-    gsl_odeiv2_system sys = {func, jac, 2, &mu};
+    gsl_odeiv2_system sys = {func, NULL, 2, &mu};
     gsl_odeiv2_driver * d =
         gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk8pd,
                                        1e-6, 1e-6, 0.0);
