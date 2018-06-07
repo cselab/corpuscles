@@ -20,8 +20,8 @@ int main(void) {
     istep = 1e-6; /* initial step size */
     rel = 1e-6;
     abs = 0.0;
-    n = 200000;
-    t = 0.0, t1 = 2000.0;
+    n = 20000;
+    t = 0.0, t1 = 200.0;
     ini();
     
     driver = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk8pd,

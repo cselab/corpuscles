@@ -8,9 +8,9 @@ GSL_LDFLAGS = `gsl-config --libs`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) $(GSL_LDFLAGS) -o $@
 $M.o: $M.c
-	$(CC) $(CFLGAS) -Iinc/far $(HE_CFLGAS) $(GSL_CFLGAS) $< -c -o $@
+	$(CC) $(CFLGAS) -Iinc/wolf $(HE_CFLGAS) $(GSL_CFLGAS) $< -c -o $@
 
-$M.o: inc/far/sys.h inc/lor/sys.h
+$M.o: inc/far/sys.h inc/lor/sys.h inc/wolf/sys.h
 test: $M; atest test/*
 install:
 
