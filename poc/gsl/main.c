@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <assert.h>
+#include <math.h>
 
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv2.h>
 
 #include <he/err.h>
 #include <he/macro.h>
+
 #include "sys.h"
 
 int main(void) {
@@ -18,10 +20,10 @@ int main(void) {
     double istep, rel, abs;
 
     istep = 1e-6; /* initial step size */
-    rel = 1e-6;
+    rel = 1e-8;
     abs = 0.0;
-    n = 20000;
-    t = 0.0, t1 = 200.0;
+    n = 1500;
+    t = 0.0, t1 = 5.0;
     ini();
     
     driver = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk8pd,
@@ -33,6 +35,7 @@ int main(void) {
             printf ("error, return value=%d\n", status);
             break;
         }
+        norm3(/**/ q + 3);
         printf("%.5e ", t);
         print(stdout, "%.5e");
         putc('\n', stdout);
