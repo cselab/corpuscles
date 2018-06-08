@@ -35,7 +35,7 @@ int main(void) {
             printf ("error, return value=%d\n", status);
             break;
         }
-        norm3(/**/ q + 3);
+        //norm3(/**/ q + 3);
         printf("%.5e ", t);
         print(stdout, "%.5e");
         putc('\n', stdout);

@@ -5,16 +5,6 @@ struct Param { double al, om, la, be;};
 static Param param;
 static double q[DIM];
 
-static void norm3(double a[3]) {
-    enum {X, Y, Z};
-    double r, eps;
-    eps = 1e-20;
-    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
-    if (r < eps) return;
-    r = sqrt(r);
-    a[X] /= r; a[Y] /= r; a[Z] /= r;
-}
-
 static int fp(const double q[], const double p[], double f[]) {
     enum {X, Y, Z};
     double al, om, la, be;
