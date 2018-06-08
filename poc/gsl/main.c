@@ -19,23 +19,20 @@ int main(void) {
     int n, status;
     double istep, rel, abs;
 
-    istep = 1e-6; /* initial step size */
-    rel = 1e-14;
-    abs = 0.0;
-    n = 10000;
+    istep = 1e-12; /* initial step size */
+    rel = 1e-16;
+    abs = 1e-20;
+    n = 40000;
     t = 0.0, t1 = 1200.0;
     ini();
     
-    driver = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rkck,
+    driver = gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rkf45,
                                        istep, rel, abs);
     for (i = 1; i <= n; i++) {
         ti = i * t1 / n;
         status = gsl_odeiv2_driver_apply(driver, &t, ti, q);
-        if (status != GSL_SUCCESS) {
-            printf ("error, return value=%d\n", status);
-            break;
-        }
-        //norm3(/**/ q + 3);
+        if (status != GSL_SUCCESS)
+            ER("[gsl] error, return value=%d\n", status);
         printf("%.5e ", t);
         print(stdout, "%.5e");
         putc('\n', stdout);
