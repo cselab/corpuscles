@@ -9,3 +9,4 @@ L = libhe_s.a libhe_d.a
 
 include make/obj.mk
 include make/rules.mk
+include make/dep.mk
