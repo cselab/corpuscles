@@ -6,7 +6,8 @@ HE_LDFLAGS = `he.conf --libs $(PREC)`
 GSL_CFLGAS  = `gsl-config --cflags`
 GSL_LDFLAGS = `gsl-config --libs`
 
-$M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) $(GSL_LDFLAGS) -o $@
+$M: $M.o
+	$(CC) $< $(LDFLAGS) $(HE_LDFLAGS) $(GSL_LDFLAGS) -o $@
 $M.o: $M.c
 	$(CC) $(CFLGAS) $(HE_CFLGAS) $(GSL_CFLGAS) $< -c -o $@
 
