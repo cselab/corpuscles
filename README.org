@@ -32,6 +32,11 @@
 ** X
 - x.h :: simplifyied interface for X
 
+* min
+
+E(x_1, ..., x_n)
+
+An iterface for gsl [1] minimization routines
 
 * half-edg data format
 
@@ -56,3 +61,8 @@ hdg_edg
 hdg_tri
 ...
 #+END_EXAMPLE
+
+* references
+
+[1] http://www.gnu.org/software/gsl
+
