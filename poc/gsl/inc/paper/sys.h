@@ -43,7 +43,7 @@ static int fp(const double q[], const double p[], double f[]) {
      -zp*(((la+be)*x+la)*zp+(la+be)*xp*z)
      +yp*(al*(2*x+1)*yp+xp*(2*al*y-om*(2*x+1))))
            -(2*z*zp+om*(2*x+1)*yp+xp*(2*om*y+al*(2*x+1))));
-    
+
     dy = -(yp*(xp*(2*z*zp+om*(2*x+1)*yp+xp*(2*om*y+al*(2*x+1)))
      -zp*(((la+be)*x+la)*zp+(la+be)*xp*z)
      +yp*(al*(2*x+1)*yp+xp*(2*al*y-om*(2*x+1))))
@@ -93,6 +93,14 @@ static int f(__UNUSED double t, const double Q[], double dQ[], __UNUSED void *vp
     return GSL_SUCCESS;
 }
 
+static void flip(void) {
+    double *p0;
+    enum {X, Y, Z};
+    p0 = q + 3;
+    p0[Z] += 1e-6;
+    norm3(p0);
+}
+
 static void ini(void) {
     enum {X, Y, Z};
     double *q0, *p0;
@@ -106,12 +114,10 @@ static void ini(void) {
     p0 = q + 3;
 
     q0[X] = 0.0; q0[Y] = 0.01; q0[Z] = 0.01;
-    
-    //p0[X] = p0[Y] = 1/sqrt(2); p0[Z] = 0; norm3(p0);
-    p0[X] = p0[Y] = 0; p0[Z] = 1;
-    fq(q0, /**/ p0);
+
+    p0[X] = p0[Y] = 1; p0[Z] = 0;
+    //  fq(q0, /**/ p0);
     norm3(p0);
-    
 }
 
 static int print(FILE *f, const char *fmt) {

@@ -1,8 +1,8 @@
 * lib
 
 ** Precision
-prec/d/real.h :: double
-prec/s/real.h :: single
+- prec/d/real.h :: double
+- prec/s/real.h :: single
 
 ** Math
 - dtri.h ::  derivates for triangles (dtri_area,...)
