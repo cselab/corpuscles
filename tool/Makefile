@@ -5,7 +5,6 @@ B = $(PREFIX)/bin
 P = he
 
 M = conf util install
-L = $(PREFIX)/lib/he
 
 include $S/make/tool.mk
 conf: conf.in
