@@ -4,6 +4,8 @@
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
+#include "he/vec.h"
+#include "he/tri.h"
 
 #include "he/f/area.h"
 
@@ -11,7 +13,7 @@
 
 struct T {
     int n;
-    real *a, *da;
+    real *area, *darea;
 
     real a0, k;
 };
@@ -22,8 +24,8 @@ int he_f_area_ini(real a0, real k, He *he, T **pq) {
     MALLOC(1, &q);
     n = he_nt(he);
 
-    MALLOC(n, &q->da);
-    MALLOC(n, &q->a);
+    MALLOC(n, &q->darea);
+    MALLOC(n, &q->area);
 
     q->n = n;
     q->a0 = a0;
@@ -34,16 +36,51 @@ int he_f_area_ini(real a0, real k, He *he, T **pq) {
 }
 
 int he_f_area_fin(T *q) {
-    FREE(q->a); FREE(q->da); FREE(q);
+    FREE(q->area); FREE(q->darea); FREE(q);
     return HE_OK;
 }
 
 int he_f_area_a(T *q, /**/ real  **pa) {
-    *pa = q->a;
+    *pa = q->area;
     return HE_OK;
 }
 
 int he_f_area_da(T *q, /**/ real  **pa) {
-    *pa = q->da;
+    *pa = q->darea;
+    return HE_OK;
+}
+
+static void get(int t, He *he,
+                real x[], real y[], real z[], /**/
+                real a[3], real b[3], real c[3]) {
+    int h, n, nn, i, j, k;
+    h = he_hdg_tri(he, t);
+    n = he_nxt(he, h);
+    nn = he_nxt(he, n);
+
+    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+}
+int he_f_area_compute(T *q, He *he,
+                      real *x, real *y, real *z, /**/
+                      real *fx, real *fy, real *fz) {
+    int t, n;
+    real *area, *darea, area_one, a0, a[3], b[3], c[3];
+    n = q->n;
+    area = q->area;
+    darea = q->darea;
+    a0 = q->a0;
+    
+    if (he_nt(he) != n)
+        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+
+    for (t = 0; t < n; t++) {
+        get(t, he, x, y, z, /**/ a, b, c);
+        area[t] = area_one = tri_area(a, b, c);
+        darea[t] = area_one - a0;
+    }
+    
     return HE_OK;
 }
