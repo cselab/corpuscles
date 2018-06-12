@@ -1,6 +1,7 @@
 #define T HeFArea
 
 typedef struct He He;
+typedef struct T T;
 
 int he_f_area_ini(real a0, real k, He*, T**);
 int he_f_area_fin(T*);
