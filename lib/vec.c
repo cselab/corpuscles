@@ -14,7 +14,7 @@ void vec_ini(real x, real y, real z, /**/ real a[3]) {
     a[X] = x; a[Y] = y; a[Z] = z;
 }
 
-void vec_get(int i, real x[], real y[], real z[], /**/ real a[3]) {
+void vec_get(int i, const real x[], const real y[], const real z[], /**/ real a[3]) {
     a[X] = x[i]; a[Y] = y[i]; a[Z] = z[i];
 }
 
