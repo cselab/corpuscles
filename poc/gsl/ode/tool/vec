@@ -1,0 +1,17 @@
+#!/bin/sh
+
+${AWK-awk} -v d=0.05 '
+{
+    i = 0
+    t = $++i
+    x0 = $++i; y0 = $++i; z0 = $++i
+    vx = $++i; vy = $++i; vz = $++i
+    
+    x1 = x0 + d*vx
+    y1 = y0 + d*vy
+    z1 = z0 + d*vz
+    print x0, y0, z0
+    print x1, y1, z1
+    printf "\n\n"
+}
+' "$@"
