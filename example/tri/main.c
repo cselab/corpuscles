@@ -16,7 +16,7 @@ void vec(/**/ real a[3]) { vec_argv(&argv, a); }
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
-    real a[3], b[3], c[3], da[3], db[3], dc[3];
+    real a[3], b[3], c[3], d[3], n[3];
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -24,23 +24,24 @@ int main(__UNUSED int argc, const char **v) {
     op = *argv++;
     if (eq(op, "angle")) {
         vec(a); vec(b); vec(c);
-        dtri_angle(a, b, c, da, db, dc);
-        vec_printf(da, "%g");
-        vec_printf(db, "%g");
-        vec_printf(dc, "%g");
-    } else if (eq(op, "cot")) {
-        vec(a); vec(b); vec(c);
-        dtri_cot(a, b, c, da, db, dc);
-        vec_printf(da, "%g");
-        vec_printf(db, "%g");
-        vec_printf(dc, "%g");
+        printf("%g\n", tri_angle(a, b, c));
     } else if (eq(op, "area")) {
         vec(a); vec(b); vec(c);
-        dtri_area(a, b, c, da, db, dc);
-        vec_printf(da, "%g");
-        vec_printf(db, "%g");
-        vec_printf(dc, "%g");        
-    } else        
+        printf("%g\n", tri_area(a, b, c));
+    } else if (eq(op, "cot")) {
+        vec(a); vec(b); vec(c);
+        printf("%g\n", tri_cot(a, b, c));
+    } else if (eq(op, "dih")) {
+        vec(a); vec(b); vec(c); vec(d);
+        printf("%g\n", tri_dih(a, b, c, d));
+    } else if (eq(op, "volume")) {
+        vec(a); vec(b); vec(c);
+        printf("%g\n", tri_volume(a, b, c));
+    } else if (eq(op, "normal")) {
+        vec(a); vec(b); vec(c);
+        tri_normal(a, b, c, /**/ n);
+        vec_printf(n, "%g");
+    } else
         ER("unknown operation '%s'", op);
     return 0;
 }
