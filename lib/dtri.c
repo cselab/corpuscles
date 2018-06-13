@@ -53,6 +53,18 @@ int dtri_area(real a[3], real b[3], real c[3],  /**/ real da[3], real db[3], rea
     return HE_OK;
 }
 
-int dtri_volume(real a[3], real b[3], real c[3],  /**/ real da[3], real db[3], real dc[3]) {
+static int dvolume(real a[3], real b[3], real c[3], /**/ real dd[3]) {
+    real n[3], area;
+    tri_normal(a, b, c, /**/ n);
+    area = tri_area(a, b, c);
+    vec_scalar(n, area/3, /**/ dd);
+    return HE_OK;
+}
+int dtri_volume(real a[3], real b[3], real c[3], /**/ real da[3], real db[3], real dc[3]) {
+    real z[3];
+    vec_zero(z);
+    dvolume(z, a, b, /**/ dc);
+    dvolume(z, b, c, /**/ da);
+    dvolume(z, c, a, /**/ db);
     return HE_OK;
 }
