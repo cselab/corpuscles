@@ -31,7 +31,7 @@ int he_f_area_ini(real a0, real K, He *he, T **pq) {
     q->n = n;
     q->a0 = a0;
     q->K = K;
-    
+
     *pq = q;
     return HE_OK;
 }
@@ -70,7 +70,7 @@ static void get(int t, He *he,
 }
 
 static void compute_area(real a0, He *he, real *x, real *y, real *z, /**/ real *area, real *darea) {
-    real one, delta, a[3], b[3], c[3];    
+    real one, delta, a[3], b[3], c[3];
     int n, t;
     n = he_nt(he);
     for (t = 0; t < n; t++) {
@@ -80,10 +80,10 @@ static void compute_area(real a0, He *he, real *x, real *y, real *z, /**/ real *
     }
 }
 
-void compute_force(real K, real *darea, He *he, real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz) {
+static void compute_force(real K, real *darea, He *he, real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz) {
     int n, t, i, j, k;
     real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
-    n = he_nt(he);    
+    n = he_nt(he);
     for (t = 0; t < n; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         vec_get(i, x, y, z, /**/ a);
@@ -94,10 +94,10 @@ void compute_force(real K, real *darea, He *he, real *x, real *y, real *z, /**/ 
         coeff = 2*K*darea[t];
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
-        vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);        
+        vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
     }
 }
-    
+
 int he_f_area_force(T *q, He *he,
                       real *x, real *y, real *z, /**/
                       real *fx, real *fy, real *fz) {
@@ -108,12 +108,40 @@ int he_f_area_force(T *q, He *he,
     darea = q->darea;
     a0 = q->a0;
     K  = q->K;
-    
+
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(a0, he, x, y, z, /**/ area, darea);
     compute_force(K, darea, he, x, y, z, /**/ fx, fy, fz);
-    
+
     return HE_OK;
+}
+
+static real compute_energy(real K, real *darea, int n) {
+    int t;
+    real da, e;
+    e = 0;
+    for (t = 0; t < n; t++) {
+        da = darea[t];
+        e += da * da;
+    }
+    return K * e;
+}
+
+real he_f_area_energy(T *q, He *he,
+                      real *x, real *y, real *z) {
+    int n;
+    real *area, *darea, a0, K;
+    n = q->n;
+    area = q->area;
+    darea = q->darea;
+    a0 = q->a0;
+    K  = q->K;
+
+    if (he_nt(he) != n)
+        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+
+    compute_area(a0, he, x, y, z, /**/ area, darea);
+    return compute_energy(K, darea, n);
 }
