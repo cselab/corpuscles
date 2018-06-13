@@ -21,12 +21,13 @@ real tri_volume(real a[3], real b[3], real c[3]) {
     return vec_dot(c, n)/6;
 }
 
-void tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
+int tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
     real u[3], v[3], n[3];
     vec_minus(b, a,   u);
     vec_minus(c, a,   v);
     vec_cross(u, v,   n);
     vec_norm(n,   e);
+    return HE_OK;
 }
 
 real tri_angle(real a[3], real b[3], real c[3]) { /* at `b' */

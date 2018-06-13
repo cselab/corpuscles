@@ -3,6 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
+/* E = sum_{tri} K * (area_t - area0)^2 */
 int he_f_area_ini(real a0, real k, He*, T**);
 int he_f_area_fin(T*);
 

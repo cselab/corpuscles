@@ -8,6 +8,7 @@
 #include "he/err.h"
 #include "he/he.h"
 #include "he/memory.h"
+#include "he/f/area.h"
 #include "he/x.h"
 
 const real pi = 3.141592653589793115997964;
@@ -17,7 +18,9 @@ int *D0, *D1, *D2, *D3;
 real *XX, *YY, *ZZ;
 real *RR, *TH;
 
-static He *he;
+static He      *he;
+static HeFArea *f_area;
+
 int  nxt(int h) { return he_nxt(he, h); }
 int  flp(int h) { return he_flp(he, h); }
 
@@ -102,4 +105,22 @@ int  fin()      {
 
     he_fin(he);
     return HE_OK;
+}
+
+int f_area_ini(real a0, real K) {
+    he_f_area_ini(a0, K, he, /**/ &f_area);
+    return HE_OK;    
+}
+
+int f_area_fin() {
+    he_f_area_fin(f_area);
+    return HE_OK;
+}
+
+real f_area_energy(real *x, real *y, real *z) {
+    return he_f_area_energy(f_area, he, x, y, z);
+}
+
+int f_area_force(real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
 }

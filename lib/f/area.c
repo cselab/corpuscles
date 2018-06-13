@@ -15,7 +15,6 @@
 struct T {
     int n;
     real *area, *darea;
-
     real a0, K;
 };
 
@@ -68,7 +67,6 @@ static void get(int t, He *he,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
 }
-
 static void compute_area(real a0, He *he, real *x, real *y, real *z, /**/ real *area, real *darea) {
     real one, delta, a[3], b[3], c[3];
     int n, t;
