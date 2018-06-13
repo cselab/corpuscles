@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "he/memory.h"
 #include "he/err.h"
-#include "he/edg.h"
+#include "he/hash.h"
 
-#define T HeEdg
+#define T HeHash
 #define E(fmt, ...) ERR(HE_INDEX, fmt, ##__VA_ARGS__);
 
 typedef struct Node Node;
@@ -17,7 +17,7 @@ struct T {
     Node **node;
 };
 
-int he_edg_ini(int n, T **pq) {
+int he_hash_ini(int n, T **pq) {
     T *q;
     int i;
     MALLOC(1, &q);
@@ -36,7 +36,7 @@ static void free_node(Node *p) {
         p = n;
     }
 }
-int he_edg_fin(T *q) {
+int he_hash_fin(T *q) {
     int n, i;
     n = q->n;
     for (i = 0; i < n; i++)
@@ -46,7 +46,7 @@ int he_edg_fin(T *q) {
     return HE_OK;
 }
 
-int he_edg_set(T *q, int i, int j, int v) {
+int he_hash_set(T *q, int i, int j, int v) {
     int n;
     Node *nxt, *prv, *new;
     n = q->n;
@@ -73,7 +73,7 @@ int he_edg_set(T *q, int i, int j, int v) {
     return HE_OK;
 }
 
-int he_edg_get(T *q, int i, int j) {
+int he_hash_get(T *q, int i, int j) {
     int n;
     Node *node;
     n = q->n;
