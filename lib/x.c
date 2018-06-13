@@ -15,6 +15,7 @@ int NV, NE, NT, NH;
 int *T0, *T1, *T2;
 int *D0, *D1, *D2, *D3;
 real *XX, *YY, *ZZ;
+real *VX, *VY, *VZ;
 real *RR, *TH;
 
 static He *he;
@@ -61,6 +62,7 @@ int ini(const char *path) {
     NE = he_ne(he); NH = he_nh(he);
 
     MALLOC(NV, &XX); MALLOC(NV, &YY); MALLOC(NV, &ZZ);
+    MALLOC(NV, &VX); MALLOC(NV, &VY); MALLOC(NV, &VZ);
     MALLOC(NV, &RR); MALLOC(NV, &TH);
     MALLOC(NT, &T0); MALLOC(NT, &T1); MALLOC(NT, &T2);
     MALLOC(NE, &D0); MALLOC(NE, &D1); MALLOC(NE, &D2); MALLOC(NE, &D3);
@@ -96,6 +98,7 @@ int ini(const char *path) {
 
 int  fin()      {
     FREE(XX); FREE(YY); FREE(ZZ);
+    FREE(VX); FREE(VY); FREE(VZ);
     FREE(RR); FREE(TH);
     FREE(T0); FREE(T1); FREE(T2);
     FREE(D0); FREE(D1); FREE(D2); FREE(D3);
