@@ -84,7 +84,7 @@ static void compute_force(real v0, real K, real v,
     int n, t, i, j, k;
     real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
     n = he_nt(he);
-    coeff = 2*K/v0*(v0 - v);
+    coeff = 2*K/v0*(v - v0);
     for (t = 0; t < n; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         vec_get(i, x, y, z, /**/ a);

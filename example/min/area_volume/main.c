@@ -13,10 +13,9 @@
 
 real Energy(const real *x, const real *y, const real *z) {
     real a, v;
-    MSG("x[0]: %g", x[0]);
     v = f_volume_energy(x, y, z);
     a = f_area_energy(x, y, z);
-    MSG("av: %g %g", a, v);
+    MSG("ab: %g %g", a, v);
     return a + v;
 }
 
@@ -33,29 +32,30 @@ void Force(const real *x, const real *y, const real *z, /**/
 
 static void main0() {
     int i;
-//    real *queue[] = {XX, YY, ZZ, NULL};
-//    punto_fwrite(NV, queue, stdout);
-//    printf("\n");
-    for (i = 0; i < 10; i++) {
+    real *queue[] = {XX, YY, ZZ, NULL};
+    punto_fwrite(NV, queue, stdout);
+    printf("\n");
+    for (i = 0; i < 1000000; i++) {
         min_position(/**/ XX, YY, ZZ);
-//        punto_fwrite(NV, queue, stdout);
-//        printf("\n");
+        if (i % 100 == 0) {
+            punto_fwrite(NV, queue, stdout);
+            printf("\n");
+            MSG("%.16e", min_energy());
+        }
         min_iterate();
-        MSG("%.16e", min_energy());
     }
-
 }
 
 int main() {
     real v0, Kv, a0, Ka;
     ini("/dev/stdin");
 
-    a0 = 0.006809515625;  Ka = 1;
-    v0 = 1.5606;          Kv = 1;
+    a0 = 0.006809515625;  Ka =  1.0;
+    v0 = 1.5606;          Kv =  1.0;
 
     f_volume_ini(v0, Kv);
     f_area_ini(a0, Ka);
-    min_ini(STEEPEST_DESCENT);
+    min_ini(VECTOR_BFGS2);
 
     main0();
 

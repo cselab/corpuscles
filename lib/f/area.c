@@ -68,13 +68,13 @@ static void get(int t, He *he,
     vec_get(k, x, y, z, /**/ c);
 }
 static void compute_area(real a0, He *he, const real *x, const real *y, const real *z, /**/ real *area, real *darea) {
-    real one, delta, a[3], b[3], c[3];
+    real one, a[3], b[3], c[3];
     int n, t;
     n = he_nt(he);
     for (t = 0; t < n; t++) {
         get(t, he, x, y, z, /**/ a, b, c);
         area[t]  = one   = tri_area(a, b, c);
-        darea[t] = delta = a0 - one;
+        darea[t] = one - a0;
     }
 }
 
