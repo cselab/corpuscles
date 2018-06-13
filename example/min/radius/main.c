@@ -8,6 +8,7 @@
 #include <he/punto.h>
 
 #include <he/x.h>
+#include <alg/min.h>
 #include <alg/x.h>
 
 static real R0 = 1.0;
@@ -50,7 +51,7 @@ static void main0() {
 
 int main() {
     ini("/dev/stdin");
-    min_ini();
+    min_ini(STEEPEST_DESCENT);
 
     main0();
 
