@@ -51,7 +51,7 @@ int main() {
     ini("/dev/stdin");
 
     a0 = 0.006809515625;  Ka =  1.0;
-    v0 = 1.5606;          Kv =  0.0;
+    v0 = 1.5606;          Kv =  1.0;
 
     f_volume_ini(v0, Kv);
     f_area_ini(a0, Ka);
