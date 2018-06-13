@@ -44,3 +44,19 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
         r[i] = sqrt(x[i]*x[i] + y[i]*y[i] + z[i]*z[i]);
     
 }
+
+static void data_copy(real *a, real *b, int num) {
+  /*Given 1D array of data stored in a[],
+    copy them into b[].
+
+  note that we do not check if dimensions are valid,
+  which should be improved.*/
+  
+  int i;
+  
+  for (i=0; i < num; i ++ )  {
+    b[i] = a[i];
+  }
+  
+}
+
