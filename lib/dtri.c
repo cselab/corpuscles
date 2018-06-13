@@ -41,3 +41,14 @@ int dtri_cot(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[
     vec_scalar(dc0, s,   dc);
     return HE_OK;
 }
+
+int dtri_area(real a[3], real b[3], real c[3],  /**/ real da[3], real db[3], real dc[3]) {
+    real n[3], n2[3], ab[3], bc[3], ca[3];
+    tri_normal(a, b, c,   n);
+    vec_scalar(n, 0.5,   n2);
+    tri_edg(a, b, c,   ab, bc, ca);
+    vec_cross(n2, bc,   da);
+    vec_cross(n2, ca,   db);
+    vec_cross(n2, ab,   dc);
+    return HE_OK;
+}

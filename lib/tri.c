@@ -21,12 +21,13 @@ real tri_volume(real a[3], real b[3], real c[3]) {
     return vec_dot(c, n)/6;
 }
 
-void tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
+int tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
     real u[3], v[3], n[3];
     vec_minus(b, a,   u);
     vec_minus(c, a,   v);
     vec_cross(u, v,   n);
     vec_norm(n,   e);
+    return HE_OK;
 }
 
 real tri_angle(real a[3], real b[3], real c[3]) { /* at `b' */
@@ -56,6 +57,13 @@ real tri_dih(real a[3], real b[3], real c[3], real d[3]) {
     ang = atan2(y, x);
     vec_minus(c, b, e);
     if (vec_dot(e, nk) < 0)
-	ang = - ang;
+        ang = - ang;
     return ang;
+}
+
+int tri_edg(real a[3], real b[3], real c[3], /**/ real ab[3], real bc[3], real ca[3]) {
+    vec_minus(b, a,   ab);
+    vec_minus(c, b,   bc);
+    vec_minus(a, c,   ca);
+    return HE_OK;
 }
