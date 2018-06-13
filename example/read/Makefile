@@ -1,6 +1,7 @@
+PREC = s
 M = main
-HE_CFLGAS = -Wall -Wextra -O0 -g `he.conf --cflags`
-HE_LDFLAGS = `he.conf --libs`
+HE_CFLGAS = -Wall -Wextra -O0 -g `he.conf --cflags $(PREC)`
+HE_LDFLAGS = `he.conf --libs $(PREC)`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLGAS) $(HE_CFLGAS) $< -c -o $@
