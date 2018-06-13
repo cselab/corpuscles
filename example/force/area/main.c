@@ -4,19 +4,21 @@
 #include <real.h>
 #include <he/f/area.h>
 #include <he/memory.h>
+#include <he/punto.h>
 #include <he/x.h>
 
 static real *FX, *FY, *FZ;
 
-void main0() {
-    printf("%g\n", f_area_energy(XX, YY, ZZ));
+static void main0() {
+    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, NULL};
+    fprintf(stderr, "eng: %g\n", f_area_energy(XX, YY, ZZ));
     f_area_force(XX, YY, ZZ,   FX, FY, FZ);
-    printf("[%g %g %g]\n", FX[NV - 2], FY[NV - 2], FZ[NV - 2]);
+    punto_fwrite(NV, queue, stdout);
 }
 
 int main() {
     real a0, K;
-    a0 = 100; K = 1;
+    a0 = 0.1; K = 1;
     ini("/dev/stdin");
     f_area_ini(a0, K);
 
