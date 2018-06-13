@@ -36,41 +36,42 @@ int main(__UNUSED int c, const char **v) {
         vec(a);
         vec(b);
         ten_dyadic(a, b, &T);
-        ten_printf(T, "%g");
+        ten_printf(&T, "%g");
     } else if (eq(op, "plus")) {
         ten(&T); ten(&R);
-        ten_plus(T, R, &P);
-        ten_printf(P, "%g");
+        ten_plus(&T, &R, &P);
+        ten_printf(&P, "%g");
     } else if (eq(op, "minus")) {
         ten(&T); ten(&R);
-        ten_minus(T, R, &P);
-        ten_printf(P, "%g");
+        ten_minus(&T, &R, &P);
+        ten_printf(&P, "%g");
     } else if (eq(op, "scalar")) {
         ten(&T); scl(&s);
-        ten_scalar(T, s, &R);
-        ten_printf(R, "%g");
+        MSG("s = %g", s);
+        ten_scalar(&T, s, &R);
+        ten_printf(&R, "%g");
     } else if (eq(op, "vec")) {
         ten(&T); vec(a);
-        ten_vec(T, a, b);
+        ten_vec(&T, a, b);
         vec_printf(b, "%g");
     } else if (eq(op, "add")) {
         ten(&T); ten(&R);
-        ten_add(R, &T);
-        ten_printf(T, "%g");
+        ten_add(&R, &T);
+        ten_printf(&T, "%g");
     } else if (eq(op, "axpy")) {
         scl(&s); ten(&P); ten(&T);
-        ten_axpy(s, P, &T);
-        ten_printf(T, "%g");
+        ten_axpy(s, &P, &T);
+        ten_printf(&T, "%g");
     } else if (eq(op, "copy")) {
         ten(&T);
-        ten_copy(T, &P);
-        ten_printf(P, "%g");
+        ten_copy(&T, &P);
+        ten_printf(&P, "%g");
     } else if (eq(op, "zero")) {
         ten_zero(&T);
-        ten_printf(T, "%g");
+        ten_printf(&T, "%g");
     } else if (eq(op, "one")) {
         ten_one(&T);
-        ten_printf(T, "%g");
+        ten_printf(&T, "%g");
     } else
         ER("unknown operation '%s'", op);
     return 0;
