@@ -15,10 +15,10 @@ struct T {
     int n;
     real *area, *darea;
 
-    real a0, k;
+    real a0, K;
 };
 
-int he_f_area_ini(real a0, real k, He *he, T **pq) {
+int he_f_area_ini(real a0, real K, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
@@ -29,7 +29,7 @@ int he_f_area_ini(real a0, real k, He *he, T **pq) {
 
     q->n = n;
     q->a0 = a0;
-    q->k = k;
+    q->K = K;
     
     *pq = q;
     return HE_OK;
@@ -63,24 +63,44 @@ static void get(int t, He *he,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
 }
-int he_f_area_compute(T *q, He *he,
+
+static void compute_area(real a0, He *he, real *x, real *y, real *z, /**/ real *area, real *darea) {
+    real one, delta, a[3], b[3], c[3];    
+    int n, t;
+    n = he_nt(he);
+    for (t = 0; t < n; t++) {
+        get(t, he, x, y, z, /**/ a, b, c);
+        area[t]  = one   = tri_area(a, b, c);
+        darea[t] = delta = one - a0;
+    }
+}
+
+void compute_force(real K, real *da, He *he, real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz) {
+    int n, t;
+    real a[3], b[3], c[3];
+    n = he_nt(he);    
+    for (t = 0; t < n; t++) {
+        get(t, he, x, y, z, /**/ a, b, c);
+        
+    }
+}
+    
+int he_f_area_force(T *q, He *he,
                       real *x, real *y, real *z, /**/
                       real *fx, real *fy, real *fz) {
-    int t, n;
-    real *area, *darea, area_one, a0, a[3], b[3], c[3];
+    int n;
+    real *area, *darea, a0, K;
     n = q->n;
     area = q->area;
     darea = q->darea;
     a0 = q->a0;
+    K  = q->K;
     
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
-    for (t = 0; t < n; t++) {
-        get(t, he, x, y, z, /**/ a, b, c);
-        area[t] = area_one = tri_area(a, b, c);
-        darea[t] = area_one - a0;
-    }
+    compute_area(a0, he, x, y, z, /**/ area, darea);
+    compute_force(K, darea, he, x, y, z, /**/ fx, fy, fz);
     
     return HE_OK;
 }
