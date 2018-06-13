@@ -1,3 +1,3 @@
-O_S = off.s.o x.s.o vec.s.o tri.s.o dtri.s.o punto.s.o ten.s.o real.s.o f/area.s.o f/volume.s.o f/harmonic.s.o
-O_D = off.d.o x.d.o vec.d.o tri.d.o dtri.d.o punto.d.o ten.d.o real.d.o f/area.d.o f/volume.d.o f/harmonic.d.o
-O = edg.o err.o memory.o util.o read.o he.o
+O_S = dtri.d.o f/area.d.o f/harmonic.d.o f/volume.d.o off.d.o punto.d.o real.d.o ten.d.o tri.d.o vec.d.o x.d.o
+O_D = dtri.s.o f/area.s.o f/harmonic.s.o f/volume.s.o off.s.o punto.s.o real.s.o ten.s.o tri.s.o vec.s.o x.s.o
+O = edg.o err.o he.o memory.o read.o util.o
