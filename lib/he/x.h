@@ -29,5 +29,9 @@ int RZERO(int, real**);
 int f_area_ini(real a0, real K);
 int f_area_fin();
 real f_area_energy(real *x, real *y, real *z);
-int  f_area_force(real *x, real *y, real *z, /**/
-                  real *fx, real *fy, real *fz);
+int  f_area_force(real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz);
+
+int f_volume_ini(real a0, real K);
+int f_volume_fin();
+real f_volume_energy(real *x, real *y, real *z);
+int  f_volume_force(real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz);
