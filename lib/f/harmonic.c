@@ -8,30 +8,30 @@
 #include "he/tri.h"
 #include "he/dtri.h"
 
-#include "he/f/volume.h"
+#include "he/f/harmonic.h"
 
-#define T HeFVolume
+#define T HeFHarmonic
 
 struct T {
     int n;
-    real *volume;
+    real *harmonic;
     real v0, K;
 };
 
-static real sum(int n, real *volume) {
+static real sum(int n, real *harmonic) {
     int t;
     real v;
     v = 0;
-    for (t = 0; t < n; t++) v += volume[t];
+    for (t = 0; t < n; t++) v += harmonic[t];
     return v;
 }
-int he_f_volume_ini(real v0, real K, He *he, T **pq) {
+int he_f_harmonic_ini(real v0, real K, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
     n = he_nt(he);
 
-    MALLOC(n, &q->volume);
+    MALLOC(n, &q->harmonic);
 
     q->n = n;
     q->v0 = v0;
@@ -41,13 +41,13 @@ int he_f_volume_ini(real v0, real K, He *he, T **pq) {
     return HE_OK;
 }
 
-int he_f_volume_fin(T *q) {
-    FREE(q->volume); FREE(q);
+int he_f_harmonic_fin(T *q) {
+    FREE(q->harmonic); FREE(q);
     return HE_OK;
 }
 
-int he_f_volume_v(T *q, /**/ real  **pa) {
-    *pa = q->volume;
+int he_f_harmonic_v(T *q, /**/ real  **pa) {
+    *pa = q->harmonic;
     return HE_OK;
 }
 
@@ -68,13 +68,13 @@ static void get(int t, He *he,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
 }
-static void compute_volume(He *he, const real *x, const real *y, const real *z, /**/ real *volume) {
+static void compute_harmonic(He *he, const real *x, const real *y, const real *z, /**/ real *harmonic) {
     real a[3], b[3], c[3];
     int n, t;
     n = he_nt(he);
     for (t = 0; t < n; t++) {
         get(t, he, x, y, z, /**/ a, b, c);
-        volume[t]  = tri_volume(a, b, c);
+        harmonic[t]  = tri_harmonic(a, b, c);
     }
 }
 
@@ -90,44 +90,44 @@ static void compute_force(real v0, real K, real v,
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
-        dtri_volume(a, b, c, /**/ da, db, dc);
+        dtri_harmonic(a, b, c, /**/ da, db, dc);
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
         vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
     }
 }
 
-int he_f_volume_force(T *q, He *he,
+int he_f_harmonic_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *volume, v0, K, v;
+    real *harmonic, v0, K, v;
     n = q->n;
-    volume = q->volume;
+    harmonic = q->harmonic;
     K  = q->K;
     v0 = q->v0;
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
-    compute_volume(he, x, y, z, /**/ volume);
-    v = sum(n, volume);
+    compute_harmonic(he, x, y, z, /**/ harmonic);
+    v = sum(n, harmonic);
     compute_force(v0, K, v, he, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 
-real he_f_volume_energy(T *q, He *he,
+real he_f_harmonic_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
-    real *volume, v0, v, K;
+    real *harmonic, v0, v, K;
     n = q->n;
-    volume = q->volume;
+    harmonic = q->harmonic;
     v0 = q->v0;
     K  = q->K;
 
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
-    compute_volume(he, x, y, z, /**/ volume);
-    v = sum(n, volume);
+    compute_harmonic(he, x, y, z, /**/ harmonic);
+    v = sum(n, harmonic);
 
     return K/v0*(v - v0)*(v - v0);
 }
