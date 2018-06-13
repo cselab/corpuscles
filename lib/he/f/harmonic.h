@@ -1,16 +1,16 @@
-#define T HeFVolume
+#define T HeFHarmonic
 
 typedef struct He He;
 typedef struct T T;
 
-/* E = K * (volume - volume0)^2 */
-int he_f_volume_ini(real v0, real K, He*, T**);
-int he_f_volume_fin(T*);
+/* E = K * sum_{edg} (edg - edg0)^2 */
+int he_f_harmonic_ini(real v0, real K, He*, T**);
+int he_f_harmonic_fin(T*);
 
-int he_f_volume_force(T*, He*,
+int he_f_harmonic_force(T*, He*,
                     const real *x, const real *y, const real *z, /**/
                     real *fx, real *fy, real *fz);
-real he_f_volume_energy(T*, He*, const real *x, const real *y, const real *z);
-int he_f_volume_v(T*, /**/ real  **v);
+real he_f_harmonic_energy(T*, He*, const real *x, const real *y, const real *z);
+int he_f_harmonic_v(T*, /**/ real  **v);
 
 #undef T
