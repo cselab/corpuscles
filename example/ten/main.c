@@ -47,7 +47,6 @@ int main(__UNUSED int c, const char **v) {
         ten_printf(&P, "%g");
     } else if (eq(op, "scalar")) {
         ten(&T); scl(&s);
-        MSG("s = %g", s);
         ten_scalar(&T, s, &R);
         ten_printf(&R, "%g");
     } else if (eq(op, "vec")) {
