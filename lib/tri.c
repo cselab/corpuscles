@@ -56,6 +56,13 @@ real tri_dih(real a[3], real b[3], real c[3], real d[3]) {
     ang = atan2(y, x);
     vec_minus(c, b, e);
     if (vec_dot(e, nk) < 0)
-	ang = - ang;
+        ang = - ang;
     return ang;
+}
+
+int tri_edg(real a[3], real b[3], real c[3], /**/ real ab[3], real bc[3], real ca[3]) {
+    vec_minus(b, a,   ab);
+    vec_minus(c, b,   bc);
+    vec_minus(a, c,   ca);
+    return HE_OK;
 }
