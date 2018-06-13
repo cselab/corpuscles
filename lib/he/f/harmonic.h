@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-/* E = K * sum_{edg} (edg - edg0)^2 */
+/* E = K/edg0 * sum_{edg} (edg - edg0)^2 */
 int he_f_harmonic_ini(real v0, real K, He*, T**);
 int he_f_harmonic_fin(T*);
 
