@@ -46,7 +46,7 @@ int he_f_harmonic_fin(T *q) {
     return HE_OK;
 }
 
-int he_f_harmonic_v(T *q, /**/ real  **pa) {
+int he_f_harmonic_e(T *q, /**/ real  **pa) {
     *pa = q->harmonic;
     return HE_OK;
 }

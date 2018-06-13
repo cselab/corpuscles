@@ -11,6 +11,6 @@ int he_f_harmonic_force(T*, He*,
                     const real *x, const real *y, const real *z, /**/
                     real *fx, real *fy, real *fz);
 real he_f_harmonic_energy(T*, He*, const real *x, const real *y, const real *z);
-int he_f_harmonic_v(T*, /**/ real  **v);
+int he_f_harmonic_e(T*, /**/ real  **v);
 
 #undef T
