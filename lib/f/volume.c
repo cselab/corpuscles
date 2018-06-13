@@ -8,45 +8,46 @@
 #include "he/tri.h"
 #include "he/dtri.h"
 
-#include "he/f/area.h"
+#include "he/f/volume.h"
 
-#define T HeFArea
+#define T HeFVolume
 
 struct T {
     int n;
-    real *area, *darea;
-    real a0, K;
+    real *volume;
+    real v0, K;
 };
 
-int he_f_area_ini(real a0, real K, He *he, T **pq) {
+static real sum(int n, real *volume) {
+    int t;
+    real v;
+    v = 0;
+    for (t = 0; t < n; t++) v += volume[t];
+    return v;
+}
+int he_f_volume_ini(real v0, real K, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
     n = he_nt(he);
 
-    MALLOC(n, &q->darea);
-    MALLOC(n, &q->area);
+    MALLOC(n, &q->volume);
 
     q->n = n;
-    q->a0 = a0;
+    q->v0 = v0;
     q->K = K;
 
     *pq = q;
     return HE_OK;
 }
 
-int he_f_area_fin(T *q) {
-    FREE(q->area); FREE(q->darea); FREE(q);
+int he_f_volume_fin(T *q) {
+    FREE(q->volume); FREE(q);
     return HE_OK;
 }
 
-int he_f_area_a(T *q, /**/ real  **pa) {
-    *pa = q->area;
-    return HE_OK;
-}
-
-int he_f_area_da(T *q, /**/ real  **pa) {
-    *pa = q->darea;
+int he_f_volume_v(T *q, /**/ real  **pa) {
+    *pa = q->volume;
     return HE_OK;
 }
 
@@ -67,80 +68,66 @@ static void get(int t, He *he,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
 }
-static void compute_area(real a0, He *he, const real *x, const real *y, const real *z, /**/ real *area, real *darea) {
-    real one, a[3], b[3], c[3];
+static void compute_volume(He *he, const real *x, const real *y, const real *z, /**/ real *volume) {
+    real a[3], b[3], c[3];
     int n, t;
     n = he_nt(he);
     for (t = 0; t < n; t++) {
         get(t, he, x, y, z, /**/ a, b, c);
-        area[t]  = one   = tri_area(a, b, c);
-        darea[t] = one - a0;
+        volume[t]  = tri_volume(a, b, c);
     }
 }
 
-static void compute_force(real K, real a0, real *darea, He *he, const real *x, const real *y, const real *z,
-                          /**/ real *fx, real *fy, real *fz) {
+static void compute_force(real v0, real K, real v,
+                          He *he, const real *x, const real *y, const real *z, /**/
+                          real *fx, real *fy, real *fz) {
     int n, t, i, j, k;
     real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
     n = he_nt(he);
+    coeff = 2*K/v0*(v - v0);
     for (t = 0; t < n; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
-
-        dtri_area(a, b, c, /**/ da, db, dc);
-        coeff = 2*K*darea[t]/a0;
+        dtri_volume(a, b, c, /**/ da, db, dc);
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
         vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
     }
 }
 
-int he_f_area_force(T *q, He *he,
+int he_f_volume_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *area, *darea, a0, K;
+    real *volume, v0, K, v;
     n = q->n;
-    area = q->area;
-    darea = q->darea;
-    a0 = q->a0;
+    volume = q->volume;
     K  = q->K;
-
+    v0 = q->v0;
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
-
-    compute_area(a0, he, x, y, z, /**/ area, darea);
-    compute_force(K, a0, darea, he, x, y, z, /**/ fx, fy, fz);
-
+    compute_volume(he, x, y, z, /**/ volume);
+    v = sum(n, volume);
+    compute_force(v0, K, v, he, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 
-static real compute_energy(real K, real a0, real *darea, int n) {
-    int t;
-    real da, e;
-    e = 0;
-    for (t = 0; t < n; t++) {
-        da = darea[t];
-        e += da * da;
-    }
-    return K*e/a0;
-}
-
-real he_f_area_energy(T *q, He *he,
+real he_f_volume_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
-    real *area, *darea, a0, K;
+    real *volume, v0, v, K;
     n = q->n;
-    area = q->area;
-    darea = q->darea;
-    a0 = q->a0;
+    volume = q->volume;
+    v0 = q->v0;
     K  = q->K;
 
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
-    compute_area(a0, he, x, y, z, /**/ area, darea);
-    return compute_energy(K, a0, darea, n);
+    compute_volume(he, x, y, z, /**/ volume);
+    v = sum(n, volume);
+
+    return K/v0*(v - v0)*(v - v0);
 }

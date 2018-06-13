@@ -140,3 +140,8 @@ int vec_argv(const char **pq[], /**/ real a[3]) {
     *pq = q;
     return HE_OK;
 }
+
+int vec_zero(real a[3]) {
+    vec_ini(0, 0, 0, /**/ a);
+    return HE_OK;
+}
