@@ -18,7 +18,7 @@ static void main0() {
 
 int main() {
     real v0, K;
-    v0 = 0.0; K = 1;
+    v0 = 1.5606; K = 1;
     ini("/dev/stdin");
     f_volume_ini(v0, K);
 
