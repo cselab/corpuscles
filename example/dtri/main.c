@@ -39,8 +39,13 @@ int main(__UNUSED int argc, const char **v) {
         dtri_area(a, b, c, da, db, dc);
         vec_printf(da, "%g");
         vec_printf(db, "%g");
-        vec_printf(dc, "%g");        
-    } else        
+    } else if (eq(op, "volume")) {
+        vec(a); vec(b); vec(c);
+        dtri_volume(a, b, c, da, db, dc);
+        vec_printf(da, "%g");
+        vec_printf(db, "%g");
+        vec_printf(dc, "%g");
+    } else
         ER("unknown operation '%s'", op);
     return 0;
 }
