@@ -119,11 +119,11 @@ int f_area_fin() {
     return HE_OK;
 }
 
-real f_area_energy(real *x, real *y, real *z) {
+real f_area_energy(const real *x, const real *y, const real *z) {
     return he_f_area_energy(f_area, he, x, y, z);
 }
 
-int f_area_force(real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz) {
+int f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
 }
 
@@ -137,10 +137,10 @@ int f_volume_fin() {
     return HE_OK;
 }
 
-real f_volume_energy(real *x, real *y, real *z) {
+real f_volume_energy(const real *x, const real *y, const real *z) {
     return he_f_volume_energy(f_volume, he, x, y, z);
 }
 
-int f_volume_force(real *x, real *y, real *z, /**/ real *fx, real *fy, real *fz) {
+int f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_volume_force(f_volume, he, x, y, z, /**/ fx, fy, fz);
 }

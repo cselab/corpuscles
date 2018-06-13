@@ -9,52 +9,59 @@
 
 #include <he/x.h>
 #include <alg/x.h>
+#include <alg/min.h>
 
-static real R0 = 1.0;
-
-static real sq(real x) { return x*x; }
-real Energy(const real *xx, const real *yy, const real *zz) {
-    real e, r[3];
-    int i;
-    e = 0;
-    for (i = 0; i < NV; i++) {
-        vec_get(i, xx, yy, zz, r);
-        e += sq(vec_dot(r, r) - R0);
-    }
-    return e;
+real Energy(const real *x, const real *y, const real *z) {
+    real a, v;
+    MSG("x[0]: %g", x[0]);
+    v = f_volume_energy(x, y, z);
+    a = f_area_energy(x, y, z);
+    MSG("av: %g %g", a, v);
+    return a + v;
 }
 
-void Force(const real *xx, const real *yy, const real *zz, /**/
-           real *fx, real *fy, real *fz) {
-    real r[3], r2, f[3];
+static void zero(int n, real *a) {
     int i;
-    for (i = 0; i < NV; i++) {
-        vec_get(i, xx, yy, zz, r);
-        r2 = vec_dot(r, r);
-        vec_scalar(r, 4*(r2 - R0), f);
-        vec_set(f, i, /**/ fx, fy, fz);
-    }
+    for (i = 0; i < n; i++) a[i] = 0;
+}
+void Force(const real *x, const real *y, const real *z, /**/
+           real *fx, real *fy, real *fz) {
+    zero(NV, fx); zero(NV, fy); zero(NV, fz);
+    f_area_force(x, y, z, /**/ fx, fy, fz);
+    f_volume_force(x, y, z, /**/ fx, fy, fz);
 }
 
 static void main0() {
-    real *queue[] = {XX, YY, ZZ, NULL};
-    do {
-        min_iterate();
-        fprintf(stderr, "%.16e\n", min_energy());
+    int i;
+//    real *queue[] = {XX, YY, ZZ, NULL};
+//    punto_fwrite(NV, queue, stdout);
+//    printf("\n");
+    for (i = 0; i < 10; i++) {
         min_position(/**/ XX, YY, ZZ);
-        punto_fwrite(NV, queue, stdout);
-        printf("\n");
-    } while (!min_end());
+//        punto_fwrite(NV, queue, stdout);
+//        printf("\n");
+        min_iterate();
+        MSG("%.16e", min_energy());
+    }
 
 }
 
 int main() {
+    real v0, Kv, a0, Ka;
     ini("/dev/stdin");
-    min_ini();
+
+    a0 = 0.006809515625;  Ka = 1;
+    v0 = 1.5606;          Kv = 1;
+
+    f_volume_ini(v0, Kv);
+    f_area_ini(a0, Ka);
+    min_ini(STEEPEST_DESCENT);
 
     main0();
 
     min_fin();
+    f_volume_fin();
+    f_area_fin();
     fin();
     return 0;
 }

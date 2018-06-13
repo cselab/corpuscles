@@ -60,7 +60,7 @@ static void get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
     *pi = i; *pj = j; *pk = k;
 }
 static void get(int t, He *he,
-                real *x, real *y, real *z, /**/
+                const real *x, const real *y, const real *z, /**/
                 real a[3], real b[3], real c[3]) {
     int i, j, k;
     get_ijk(t, he, &i, &j, &k);
@@ -68,7 +68,7 @@ static void get(int t, He *he,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
 }
-static void compute_volume(He *he, real *x, real *y, real *z, /**/ real *volume) {
+static void compute_volume(He *he, const real *x, const real *y, const real *z, /**/ real *volume) {
     real a[3], b[3], c[3];
     int n, t;
     n = he_nt(he);
@@ -79,12 +79,12 @@ static void compute_volume(He *he, real *x, real *y, real *z, /**/ real *volume)
 }
 
 static void compute_force(real v0, real K, real v,
-                          He *he, real *x, real *y, real *z, /**/
+                          He *he, const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
     int n, t, i, j, k;
     real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
     n = he_nt(he);
-    coeff = 2*K*(v0 - v);
+    coeff = 2*K/v0*(v0 - v);
     for (t = 0; t < n; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         vec_get(i, x, y, z, /**/ a);
@@ -98,7 +98,7 @@ static void compute_force(real v0, real K, real v,
 }
 
 int he_f_volume_force(T *q, He *he,
-                      real *x, real *y, real *z, /**/
+                      const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
     real *volume, v0, K, v;
@@ -115,7 +115,7 @@ int he_f_volume_force(T *q, He *he,
 }
 
 real he_f_volume_energy(T *q, He *he,
-                      real *x, real *y, real *z) {
+                      const real *x, const real *y, const real *z) {
     int n;
     real *volume, v0, v, K;
     n = q->n;
@@ -129,5 +129,5 @@ real he_f_volume_energy(T *q, He *he,
     compute_volume(he, x, y, z, /**/ volume);
     v = sum(n, volume);
 
-    return K*(v - v0)*(v - v0);
+    return K/v0*(v - v0)*(v - v0);
 }
