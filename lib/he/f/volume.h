@@ -11,8 +11,6 @@ int he_f_volume_force(T*, He*,
                     real *x, real *y, real *z, /**/
                     real *fx, real *fy, real *fz);
 real he_f_volume_energy(T*, He*, real *x, real *y, real *z);
-
-int he_f_volume_a(T*, /**/ real  **a);
-int he_f_volume_da(T*, /**/ real **da);
+int he_f_volume_v(T*, /**/ real  **v);
 
 #undef T
