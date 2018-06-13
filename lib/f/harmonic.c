@@ -15,7 +15,7 @@
 struct T {
     int n;
     real *edg, *dedg;
-    real v0, K;
+    real e0, K;
 };
 
 static real sum_sq(int n, real *a) {
@@ -25,7 +25,7 @@ static real sum_sq(int n, real *a) {
     for (i = 0; i < n; i++) v += a[i]*a[i];
     return v;
 }
-int he_f_harmonic_ini(real v0, real K, He *he, T **pq) {
+int he_f_harmonic_ini(real e0, real K, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
@@ -35,7 +35,7 @@ int he_f_harmonic_ini(real v0, real K, He *he, T **pq) {
     MALLOC(n, &q->dedg);
 
     q->n = n;
-    q->v0 = v0;
+    q->e0 = e0;
     q->K = K;
 
     *pq = q;
@@ -98,28 +98,28 @@ int he_f_harmonic_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *edg, *dedg, v0, K, v;
+    real *edg, *dedg, e0, K, v;
     n = q->n;
     edg = q->edg;
     dedg = q->dedg;
     K  = q->K;
-    v0 = q->v0;
+    e0 = q->e0;
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
     compute_edg(he, x, y, z, /**/ edg, dedg);
     v = sum_sq(n, dedg);
-    compute_force(v0, K, v, he, x, y, z, /**/ fx, fy, fz);
+    compute_force(e0, K, v, he, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 
 real he_f_harmonic_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
-    real *edg, *dedg, v0, v, K;
+    real *edg, *dedg, e0, v, K;
     n = q->n;
     edg = q->edg;
     dedg = q->dedg;    
-    v0 = q->v0;
+    e0 = q->e0;
     K  = q->K;
 
     if (he_nt(he) != n)
