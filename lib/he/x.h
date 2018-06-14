@@ -31,7 +31,12 @@ int f_area_fin();
 real f_area_energy(const real *x, const real *y, const real *z);
 int  f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
-int f_volume_ini(real a0, real K);
+int f_volume_ini(real v0, real K);
 int f_volume_fin();
 real f_volume_energy(const real *x, const real *y, const real *z);
 int  f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+
+int f_harmonic_ini(real e0, real K);
+int f_harmonic_fin();
+real f_harmonic_energy(const real *x, const real *y, const real *z);
+int  f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);

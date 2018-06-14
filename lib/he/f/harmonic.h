@@ -4,7 +4,7 @@ typedef struct He He;
 typedef struct T T;
 
 /* E = K/edg0 * sum_{edg} (edg - edg0)^2 */
-int he_f_harmonic_ini(real v0, real K, He*, T**);
+int he_f_harmonic_ini(real e0, real K, He*, T**);
 int he_f_harmonic_fin(T*);
 
 int he_f_harmonic_force(T*, He*,

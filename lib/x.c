@@ -10,6 +10,7 @@
 #include "he/memory.h"
 #include "he/f/area.h"
 #include "he/f/volume.h"
+#include "he/f/harmonic.h"
 #include "he/x.h"
 
 const real pi = 3.141592653589793115997964;
@@ -127,20 +128,34 @@ int f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, rea
     return he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
 }
 
+
 int f_volume_ini(real a0, real K) {
     he_f_volume_ini(a0, K, he, /**/ &f_volume);
     return HE_OK;    
 }
-
 int f_volume_fin() {
     he_f_volume_fin(f_volume);
     return HE_OK;
 }
-
 real f_volume_energy(const real *x, const real *y, const real *z) {
     return he_f_volume_energy(f_volume, he, x, y, z);
 }
-
 int f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_volume_force(f_volume, he, x, y, z, /**/ fx, fy, fz);
+}
+
+
+int f_harmonic_ini(real a0, real K) {
+    he_f_harmonic_ini(a0, K, he, /**/ &f_harmonic);
+    return HE_OK;    
+}
+int f_harmonic_fin() {
+    he_f_harmonic_fin(f_harmonic);
+    return HE_OK;
+}
+real f_harmonic_energy(const real *x, const real *y, const real *z) {
+    return he_f_harmonic_energy(f_harmonic, he, x, y, z);
+}
+int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_harmonic_force(f_harmonic, he, x, y, z, /**/ fx, fy, fz);
 }
