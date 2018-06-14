@@ -24,6 +24,7 @@ real *RR, *TH;
 static He      *he;
 static HeFArea *f_area;
 static HeFVolume *f_volume;
+static HeFHarmonic *f_harmonic;
 
 int  nxt(int h) { return he_nxt(he, h); }
 int  flp(int h) { return he_flp(he, h); }
@@ -146,7 +147,6 @@ real f_volume_energy(const real *x, const real *y, const real *z) {
 int f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_volume_force(f_volume, he, x, y, z, /**/ fx, fy, fz);
 }
-
 
 int f_harmonic_ini(real a0, real K) {
     he_f_harmonic_ini(a0, K, he, /**/ &f_harmonic);
