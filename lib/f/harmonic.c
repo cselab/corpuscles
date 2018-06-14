@@ -52,9 +52,9 @@ int he_f_harmonic_e(T *q, /**/ real  **pa) {
     return HE_OK;
 }
 
-static void get_ij(int t, He *he, /**/ int *pi, int *pj) {
+static void get_ij(int m, He *he, /**/ int *pi, int *pj) {
     int h, n, i, j;
-    h = he_hdg_tri(he, t);
+    h = he_hdg_edg(he, m);
     n = he_nxt(he, h);
     i = he_ver(he, h); j = he_ver(he, n);
     *pi = i; *pj = j;
@@ -70,7 +70,7 @@ static void get(int t, He *he,
 static void compute_edg(He *he, real e0, const real *x, const real *y, const real *z, /**/ real *edg, real *dedg) {
     real one, a[3], b[3];
     int n, m;
-    n = he_nt(he);
+    n = he_ne(he);
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b);
         edg[m]  = one = edg_abs(a, b);
@@ -83,7 +83,7 @@ static void compute_force(real e0, real K, real *dedg,
                           real *fx, real *fy, real *fz) {
     int n, m, i, j;
     real a[3], b[3], da[3], db[3], coeff;
-    n = he_nt(he);
+    n = he_ne(he);
     for (m = 0; m < n; m++) {
         get_ij(m, he, /**/ &i, &j);
         vec_get(i, x, y, z, /**/ a);
@@ -107,8 +107,8 @@ int he_f_harmonic_force(T *q, He *he,
     dedg = q->dedg;
     K  = q->K;
     e0 = q->e0;
-    if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+    if (he_ne(he) != n)
+        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     compute_force(e0, K, dedg, he, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
@@ -124,8 +124,8 @@ real he_f_harmonic_energy(T *q, He *he,
     e0 = q->e0;
     K  = q->K;
 
-    if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+    if (he_ne(he) != n)
+        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     v = sum_sq(n, dedg);
