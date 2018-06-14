@@ -82,6 +82,6 @@ int he_off_nv(T *q) { return q->nv; };
 int he_off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
 int he_off_tri(T *q, int  **p) { *p = q->tri; return HE_OK; }
 
-int he_off_fwrite(T *q, real *x, real *y, real *z, /**/ FILE *f) {
+int he_off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) {
     return HE_OK;
 }
