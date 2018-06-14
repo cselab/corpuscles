@@ -83,5 +83,30 @@ int he_off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
 int he_off_tri(T *q, int  **p) { *p = q->tri; return HE_OK; }
 
 int he_off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) {
+    int nv, nt, ne, npv, *tri, m, i, j, k;
+    if (fputs("OFF\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+    nv = q->nv; nt = q->nt; ne = 0; npv = 3;
+    tri = q->tri;
+    
+    fprintf(f, "%d %d %d\n", nv, nt, ne);
+    for (m = 0; m < nv; m++)
+        fprintf(f, "%.16e %.16e %.16e\n", x[m], y[m], z[m]);
+    
+    for (m = 0; m < nt; m++) {
+        i = *tri++; j = *tri++; k = *tri++;
+        fprintf(f, "%d %d %d %d\n", npv, i, j, k);
+    }
+    return HE_OK;
+}
+
+int he_off_write(T *q, const real *x, const real *y, const real *z, /**/ const char *path) {
+    FILE *f;
+    if ((f = fopen(path, "w")) == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);
+    if (he_off_fwrite(q, x, y, z, f) != HE_OK)
+        ERR(HE_IO, "fail to write to '%s", path);
+    if (fclose(f) != 0)
+        ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }

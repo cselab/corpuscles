@@ -10,6 +10,7 @@ int he_off_nv(T*);
 int he_off_ver(T*, real**);
 int he_off_tri(T*, int**);
 
-int he_off_fwrite(T*, const real *x, const real *y, const real *z, FILE *f);
+int he_off_fwrite(T*, const real*, const real*, const real*, FILE*);
+int he_off_write(T*, const real*, const real*, const real*, /**/ const char*);
 
 #undef T

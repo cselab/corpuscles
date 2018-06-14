@@ -42,6 +42,8 @@ static void main0() {
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("%.16e", min_energy());
+
+            off_write(XX, YY, ZZ, "q.off");
         }
         min_iterate();
     }

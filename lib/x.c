@@ -25,6 +25,7 @@ static He      *he;
 static HeFArea *f_area;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
+static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
 int  flp(int h) { return he_flp(he, h); }
@@ -37,6 +38,10 @@ int  hdg_ver(int v) { return he_hdg_ver(he, v); }
 int  hdg_edg(int e) { return he_hdg_edg(he, e); }
 int  hdg_tri(int t) { return he_hdg_tri(he, t); }
 int  bnd(int h)     { return he_bnd(he, h); }
+
+int off_write(const real *x, const real *y, const real *z, const char *path) {
+    return he_off_write(off, x, y, z, path);
+}
 
 int RZERO(int n, real **pq) { /* alloc and make zero */
     int i;
@@ -52,7 +57,6 @@ int ini(const char *path) {
     int *tri, *tri0;
     real *xyz, *xyz0;
     real r[3];
-    HeOff *off;
     HeRead *read;
 
     he_off_ini(path, &off);
@@ -98,7 +102,6 @@ int ini(const char *path) {
     }
 
     he_read_fin(read);
-    he_off_fin(off);
 
     return HE_OK;
 }
@@ -110,6 +113,7 @@ int  fin()      {
     FREE(T0); FREE(T1); FREE(T2);
     FREE(D0); FREE(D1); FREE(D2); FREE(D3);
 
+    he_off_fin(off);
     he_fin(he);
     return HE_OK;
 }
