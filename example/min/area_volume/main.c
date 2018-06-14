@@ -61,7 +61,7 @@ int main() {
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
 
-    min_ini(STEEPEST_DESCENT);
+    min_ini(VECTOR_BFGS2);
 
     main0();
 
