@@ -1,0 +1,31 @@
+. he.util
+
+prog=he.dep
+
+usg () {
+    msg "$prog [-Idir].. [FILE]..."
+    msg 'dump dependencies as multiline regord'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+for i
+do if ! test -f "$i"; then err "not a file '$i'"; fi
+done
+
+First=1
+for i
+do if test $First -eq 1; then First=0; else echo; fi
+   echo $i
+   "$AWK" '
+   /^[\t ]*#[\t ]*include[\t ]*/ {
+       s = $0
+       match(s = $0, /^[\t ]*#[\t ]*include[\t ]*/)
+       s = substr(s, RSTART + RLENGTH)
+       if (match(s, /^</)) next
+       gsub(/"/, "", s)
+       print s
+   }
+' "$i"
+done

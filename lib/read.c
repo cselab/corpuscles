@@ -7,7 +7,7 @@
 #include "he/memory.h"
 #include "he/macro.h"
 #include "he/util.h"
-#include "he/edg.h"
+#include "he/hash.h"
 
 #include "he/read.h"
 
@@ -61,31 +61,31 @@ static int afree(T *q) {
     return HE_OK;
 }
 
-static void setup_edg(T *q, HeEdg *hdg, int i, int j,  int *pe) {
+static void setup_edg(T *q, HeHash *hdg, int i, int j,  int *pe) {
     int h, f, e;
-    h = he_edg_get(hdg, i, j);
+    h = he_hash_get(hdg, i, j);
     if (h == -1) return;
     e = *pe;
     
     q->edg[h] = e;
-    if ((f = he_edg_get(hdg, j, i)) != -1)
+    if ((f = he_hash_get(hdg, j, i)) != -1)
         q->edg[f] = e;
 
-    he_edg_set(hdg, i, j, -1); /* counted it */
-    he_edg_set(hdg, j, i, -1);
+    he_hash_set(hdg, i, j, -1); /* counted it */
+    he_hash_set(hdg, j, i, -1);
     
     e++;
     *pe = e;
 }
-static void setup_hdg(T *q, HeEdg *hdg, int h, int t, int i, int j) {
-    he_edg_set(hdg, i, j, h);
+static void setup_hdg(T *q, HeHash *hdg, int h, int t, int i, int j) {
+    he_hash_set(hdg, i, j, h);
     q->hdg_tri[t] = q->hdg_ver[i] = h;
     q->ver[h] = i; q->tri[h] = t;
 }
-static void setup_flip(T *q, HeEdg *hdg, int i, int j) {
+static void setup_flip(T *q, HeHash *hdg, int i, int j) {
     int h, f;
-    h = he_edg_get(hdg, i, j);
-    f = he_edg_get(hdg, j, i);
+    h = he_hash_get(hdg, i, j);
+    f = he_hash_get(hdg, j, i);
     q->flp[h] = f;
 }
 int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
@@ -94,13 +94,13 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     int h, hi, hj, hk;
     int *tri;
     T *q;
-    HeEdg *hdg; /* will maps [i, j] to half-edg */
+    HeHash *hdg; /* will maps [i, j] to half-edg */
     MALLOC(1, &q);
 
     alloc_ver(nv,        q);
     alloc_tri(nt,        q);
     alloc_hdg(nh = 3*nt, q);
-    he_edg_ini(nv, &hdg);
+    he_hash_ini(nv, &hdg);
     for (tri = tri0, t = h = 0; t < nt; t++) {
         i = *tri++; j = *tri++; k = *tri++;
         assert(i < nv); assert(j < nv); assert(k < nv);
@@ -123,7 +123,7 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
         setup_edg(q, hdg, j, k,  &ne);
         setup_edg(q, hdg, k, i,  &ne);
     }
-    he_edg_fin(hdg);
+    he_hash_fin(hdg);
     
     alloc_edg(ne, q);
     for (h = 0; h < nh; h++) {

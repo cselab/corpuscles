@@ -1,41 +1,39 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 
+#include <real.h>
 #include <he/err.h>
-#include <he/edg.h>
+#include <he/vec.h>
+#include <he/macro.h>
 #include <he/util.h>
 
-static HeEdg *edg;
+#include <he/edg.h>
+#include <he/dedg.h>
 
-static void ini(int n) { he_edg_ini(n, &edg); }
-static void fin() { he_edg_fin(edg); }
-static int eq(const char *a, const char *b) { return util_eq(a, b); }
-static void set(int i, int j, int v) {
-    printf("set %d %d %d\n", i, j, v);
-    he_edg_set(edg, i, j, v);
-}
-static void get(int i, int j) {
-    int v;
-    v = he_edg_get(edg, i, j);
-    printf("get %d %d %d\n", i, j, v);
-}
 
-int main() {
-    const char *path = "/dev/stdin";
-    FILE *f;
-    char cmd[2048], line[2048];
-    int i, j, v, c, n;
-    f = fopen(path, "r");
-    if (util_fgets(line, f) == NULL)
-        ER("fail to read file '%s'", path);
-    if (sscanf(line, "%d", &n) != 1)
-        ER("wrong first line: '%s'", line);
-    ini(n);
-    while (util_fgets(line, f) != NULL) {
-        c = sscanf(line, "%s %d %d %d", cmd, &i, &j, &v);
-        if (eq(cmd, "set") && c == 4) set(i, j, v);
-        else if (eq(cmd, "get") && c == 3) get(i, j);
-        else ER("wrong line: '%s'", line);
-    }
-    fclose(f);
-    fin();
+static const char **argv;
+
+void vec(/**/ real a[3]) { vec_argv(&argv, a); }
+
+int eq(const char *a, const char *b) { return util_eq(a, b); }
+int main(__UNUSED int argc, const char **v) {
+    const char *op;
+    real a[3], b[3], da[3], db[3];
+    argv = v;
+    argv++;
+    if (*argv == NULL) ER("mssing OP");
+
+    op = *argv++;
+    if (eq(op, "abs")) {
+        vec(a); vec(b);
+        printf("%g\n", edg_abs(a, b));
+    } else if (eq(op, "dabs")) {
+        vec(a); vec(b);
+        dedg_abs(a, b, /**/ da, db);
+        vec_printf(da, "%g");
+        vec_printf(db, "%g");
+    } else
+        ER("unknown operation '%s'", op);
+    return 0;
 }

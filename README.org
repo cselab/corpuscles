@@ -20,7 +20,7 @@
 - read.h :: read half-edg to intermediate structure HeRead, used to
 	    initialize *he.h*
 - he.h  :: main half edg data structure (provides half-edg API)
-- edg.h :: stores =v= for a pair of =(i, j)=, =i= must be in =[0, n)=
+- hash.h :: stores =v= for a pair of =(i, j)=, =i= must be in =[0, n)=
            API:
 	   =int i, j, k;=
            =ini(n); v = set(i, j); get(i,j)=

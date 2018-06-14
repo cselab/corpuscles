@@ -4,7 +4,7 @@ S = ..
 B = $(PREFIX)/bin
 P = he
 
-M = conf util install
+M = conf dep util install
 
 include $S/make/tool.mk
 conf: conf.in

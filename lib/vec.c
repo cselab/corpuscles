@@ -10,59 +10,76 @@ enum {X, Y, Z};
 #define FMT_IN   XE_REAL_IN
 enum {SIZE = MAX_STRING_SIZE};
 
-void vec_ini(real x, real y, real z, /**/ real a[3]) {
+int vec_ini(real x, real y, real z, /**/ real a[3]) {
     a[X] = x; a[Y] = y; a[Z] = z;
+    return HE_OK;
 }
 
-void vec_get(int i, const real x[], const real y[], const real z[], /**/ real a[3]) {
+int vec_get(int i, const real x[], const real y[], const real z[], /**/ real a[3]) {
     a[X] = x[i]; a[Y] = y[i]; a[Z] = z[i];
+    return HE_OK;
 }
 
-void vec_set(real a[3], int i, /**/ real x[], real y[], real z[]) {
+int vec_set(real a[3], int i, /**/ real x[], real y[], real z[]) {
     x[i] = a[X]; y[i] = a[Y]; z[i] = a[Z];
+    return HE_OK;
 }
 
-void vec_coord(real a[3], /**/ real *px, real *py, real *pz) {
+int vec_coord(real a[3], /**/ real *px, real *py, real *pz) {
     *px = a[X]; *py = a[Y]; *pz = a[Z];
+    return HE_OK;
 }
 
-void vec_copy(real a[3], real b[3]) {
+int vec_copy(real a[3], real b[3]) {
     b[X] = a[X]; b[Y] = a[Y]; b[Z] = a[Z];
+    return HE_OK;
 }
 
-void vec_plus(real a[3], real b[3], /**/ real c[3]) {
+int vec_plus(real a[3], real b[3], /**/ real c[3]) {
     c[X] = a[X] + b[X];
     c[Y] = a[Y] + b[Y];
     c[Z] = a[Z] + b[Z];
+    return HE_OK;
 }
 
-void vec_minus(real a[3], real b[3], /**/ real c[3]) {
+int vec_minus(real a[3], real b[3], /**/ real c[3]) {
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
     c[Z] = a[Z] - b[Z];
+    return HE_OK;    
 }
 
-void vec_linear_combination(real al, real a[3], real be, real b[3],
+int vec_linear_combination(real al, real a[3], real be, real b[3],
                             /**/ real c[3]) {
     c[X] = al*a[X] + be*b[X];
     c[Y] = al*a[Y] + be*b[Y];
     c[Z] = al*a[Z] + be*b[Z];
+    return HE_OK;    
 }
 
-void vec_scalar(real a[3], real s, real b[3]) {
+int vec_scalar(real a[3], real s, /**/ real b[3]) {
     b[X] = s*a[X]; b[Y] = s*a[Y]; b[Z] = s*a[Z];
+    return HE_OK;
 }
 
-void vec_append(real a[3], int i, /**/ real *x, real *y, real *z) {
+int vec_negative(real a[3], /**/ real b[3]) {
+    b[X] = -a[X]; b[Y] = -a[Y]; b[Z] = -a[Z];
+    return HE_OK;
+}
+
+int vec_append(real a[3], int i, /**/ real *x, real *y, real *z) {
    x[i] += a[X]; y[i] += a[Y]; z[i] += a[Z];
+   return HE_OK;
 }
 
-void vec_substr(real a[3], int i, /**/ real *x, real *y, real *z) {
+int vec_substr(real a[3], int i, /**/ real *x, real *y, real *z) {
    x[i] -= a[X]; y[i] -= a[Y]; z[i] -= a[Z];
+   return HE_OK;
 }
 
-void vec_scalar_append(real a[3], real s, int i, /**/ real *x, real *y, real *z) {
+int vec_scalar_append(real a[3], real s, int i, /**/ real *x, real *y, real *z) {
     x[i] += s*a[X]; y[i] += s*a[Y]; z[i] += s*a[Z];
+    return HE_OK;
 }
 
 real vec_dot(real a[3], real b[3]) {
@@ -79,10 +96,11 @@ real vec_angle(real a[3], real b[3]) {
     return ang;
 }
 
-void vec_cross(real a[3], real b[3], /**/ real c[3]) {
+int vec_cross(real a[3], real b[3], /**/ real c[3]) {
    c[X] = a[Y]*b[Z]-b[Y]*a[Z];
    c[Y] = b[X]*a[Z]-a[X]*b[Z];
    c[Z] = a[X]*b[Y]-b[X]*a[Y];
+   return HE_OK;
 }
 real vec_abs(real a[3]) { return sqrt(vec_dot(a, a)); }
 
@@ -100,11 +118,12 @@ static int small(real s) {
     else if (s < -eps) return 0;
     else               return 1;
 }
-void vec_norm(real a[3], /**/ real b[3]) {
+int vec_norm(real a[3], /**/ real b[3]) {
     real s;
     s = vec_abs(a);
     if (!small(s)) vec_scalar(a, 1/s, /**/ b);
     else vec_copy(a, b);
+    return HE_OK;
 }
 
 int vec_printf(real a[3], const char *fmt) {
@@ -116,7 +135,7 @@ int vec_fprintf(real a[3], FILE *f, const char *fmt0) {
     int r;
     r = snprintf(fmt, SIZE, "%s %s %s\n", fmt0, fmt0, fmt0);
     if (r < 0)
-        ERR(HE_IO, "snprintf failed for fmt0='%s'", fmt0);    
+        ERR(HE_IO, "snprintf failed for fmt0='%s'", fmt0);
 
     r = fprintf(f, fmt, a[X], a[Y], a[Z]);
     return r < 0 ? HE_IO : HE_OK;
