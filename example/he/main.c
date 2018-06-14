@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+#include <real.h>
+#include <he/err.h>
+#include <he/off.h>
+#include <he/read.h>
+#include <he/he.h>
+
+int main() {
+    He      *he;
+    HeOff *off;
+    HeRead *read;
+    int *tri;
+    int nv, nt, nh;
+    int h, f, i, j;
+    const char path[] = "/dev/stdin";
+
+    he_off_ini(path, &off);
+
+    nv = he_off_nv(off);
+    nt = he_off_nt(off);
+
+    he_off_tri(off, &tri);
+    he_read_tri_ini(nv, nt, tri, &read);
+    he_ini(read, &he);
+
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        if (he_bnd(he, h)) continue;
+        f = he_flp(he, h);
+
+        i = he_ver(he, h);
+        j = he_ver(he, f);
+        printf("%d %d\n", i, j);
+    }
+
+    he_read_fin(read);
+    he_off_fin(off);
+    he_fin(he);
+
+    return HE_OK;
+}

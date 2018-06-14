@@ -12,6 +12,7 @@ int vec_linear_combination(real, real[3], real, real[3], /**/ real[3]);
 
 int vec_scalar(real[3], real, /**/ real[3]);
 int vec_negative(real[3], /**/ real[3]);
+int vec_copy(real[3], /**/ real[3]);
 
 int vec_append(real[3],  int, /**/ real*, real*, real*);
 int vec_substr(real [3], int, /**/ real*, real*, real*);
