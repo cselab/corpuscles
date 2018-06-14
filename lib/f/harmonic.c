@@ -59,11 +59,11 @@ static void get_ij(int m, He *he, /**/ int *pi, int *pj) {
     i = he_ver(he, h); j = he_ver(he, n);
     *pi = i; *pj = j;
 }
-static void get(int t, He *he,
+static void get(int m, He *he,
                 const real *x, const real *y, const real *z, /**/
                 real a[3], real b[3]) {
     int i, j;
-    get_ij(t, he, &i, &j);
+    get_ij(m, he, &i, &j);
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
 }
@@ -130,5 +130,5 @@ real he_f_harmonic_energy(T *q, He *he,
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     v = sum_sq(n, dedg);
 
-    return K*v;
+    return K/e0*v;
 }
