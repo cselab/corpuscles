@@ -21,8 +21,8 @@ struct T {
 static real compute_energy(int n, real *acos) {
     int m;
     real v;
-    for (m = 0; m < n; m++)
-        v += 1 - acos[m];
+    v = 0;
+    for (m = 0; m < n; m++) v += 1 - acos[m];
     return v;
 }
 int he_f_kantor_ini(real K, He *he, T **pq) {
@@ -49,24 +49,40 @@ int he_f_kantor_cos(T *q, /**/ real  **pa) {
     *pa = q->acos;
     return HE_OK;
 }
-static void get_ijkl(int t, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
-    int h, n, nn, i, j, k, l;
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
+
+enum {BULK, BND};
+static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
+#    define  nxt(h)     he_nxt(he, h)
+#    define  flp(h)     he_flp(he, h)
+#    define  ver(h)     he_ver(he, h)
+#    define  hdg_ver(v) he_hdg_ver(he, v)
+#    define  hdg_edg(e) he_hdg_edg(he, e)
+#    define  bnd(h)     he_bnd(he, h)
+    int h, n, nn, nnf, i, j, k, l;
+    h = he_hdg_edg(he, e);
+    if (bnd(h)) return BND;
+
+    h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
+    nnf = nxt(nxt(flp(h)));
+    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
+
     *pi = i; *pj = j; *pk = k; *pl = l;
+    return BULK;
 }
-static void get(int t, He *he,
-                const real *x, const real *y, const real *z, /**/
-                real a[3], real b[3], real c[3], real d[3]) {
-    int i, j, k, l;
-    get_ijkl(t, he, &i, &j, &k, &l);
+
+static int get(int e, He *he, const real *x, const real *y, const real *z,
+               /**/ real a[3], real b[3], real c[3], real d[3]) {
+    int status, i, j, k, l;
+    status = get_ijkl(e, he, /**/ &i, &j, &k, &l);
+    if (status == BND) return BND;
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
     vec_get(l, x, y, z, /**/ d);
+    return BULK;
 }
+
+
 static void compute_cos(He *he, const real *x, const real *y, const real *z, /**/ real *acos) {
     real a[3], b[3], c[3], d[3];
     int n, m;
@@ -77,23 +93,22 @@ static void compute_cos(He *he, const real *x, const real *y, const real *z, /**
     }
 }
 
-static void compute_force(real v0, real K, real v,
+static void compute_force(real K,
                           He *he, const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
     int n, t, i, j, k, l;
-    real a[3], b[3], c[3], d[3], da[3], db[3], dc[3], dd[3], coeff;
+    real a[3], b[3], c[3], d[3], da[3], db[3], dc[3], dd[3];
     n = he_ne(he);
-    coeff = 2*K/v0*(v - v0);
     for (t = 0; t < n; t++) {
         get_ijkl(t, he, /**/ &i, &j, &k, &l);
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
         ddih_cos(a, b, c, d, /**/ da, db, dc, dd);
-        vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
-        vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
-        vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
-        vec_scalar_append(dd, coeff, l, /**/ fx, fy, fz);
+        vec_scalar_append(da, -2*K, i, /**/ fx, fy, fz);
+        vec_scalar_append(db, -2*K, j, /**/ fx, fy, fz);
+        vec_scalar_append(dc, -2*K, k, /**/ fx, fy, fz);
+        vec_scalar_append(dd, -2*K, l, /**/ fx, fy, fz);
     }
 }
 
@@ -101,14 +116,14 @@ int he_f_kantor_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *acos, v0, K, v;
+    real *acos, K;
     n = q->n;
     acos = q->acos;
     K  = q->K;
     if (he_ne(he) != n)
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
     compute_cos(he, x, y, z, /**/ acos);
-    compute_force(v0, K, v, he, x, y, z, /**/ fx, fy, fz);
+    compute_force(K, he, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 

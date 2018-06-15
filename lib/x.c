@@ -29,8 +29,8 @@ static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
 int  flp(int h) { return he_flp(he, h); }
-
 int  ver(int h) { return he_ver(he, h); }
+
 int  edg(int h) { return he_edg(he, h); }
 int  tri(int h) { return he_tri(he, h); }
 
