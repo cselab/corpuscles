@@ -21,5 +21,3 @@ real dih_angle(real a[3], real b[3], real c[3], real d[3]) {
         ang = - ang;
     return ang;
 }
-
-
