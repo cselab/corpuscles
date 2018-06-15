@@ -106,10 +106,10 @@ static void compute_force(real K,
         vec_get(k, x, y, z, /**/ c);
         vec_get(l, x, y, z, /**/ d);
         ddih_cos(a, b, c, d, /**/ da, db, dc, dd);
-        vec_scalar_append(da, -2*K, i, /**/ fx, fy, fz);
-        vec_scalar_append(db, -2*K, j, /**/ fx, fy, fz);
-        vec_scalar_append(dc, -2*K, k, /**/ fx, fy, fz);
-        vec_scalar_append(dd, -2*K, l, /**/ fx, fy, fz);
+        vec_scalar_append(da, 2*K, i, /**/ fx, fy, fz);
+        vec_scalar_append(db, 2*K, j, /**/ fx, fy, fz);
+        vec_scalar_append(dc, 2*K, k, /**/ fx, fy, fz);
+        vec_scalar_append(dd, 2*K, l, /**/ fx, fy, fz);
     }
 }
 
