@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 #include "real.h"
 #include "he/err.h"
@@ -36,6 +37,26 @@ int ddih_angle(real  a[3], real  b[3], real  c[3], real  d[3], /**/
 
     vec_linear_combination(-bn/e, n, -bk/e, k,    dc);
     vec_linear_combination(-cn/e, n, -ck/e, k,    db);
+
+    return HE_OK;
+}
+
+int ddih_cos(real  a[3], real  b[3], real  c[3], real  d[3], /**/
+               real da[3], real db[3], real dc[3], real dd[3]) {
+    int status;
+    real ang, coef, da0[3], db0[3], dc0[3], dd0[3];
+
+    status = ddih_angle(a, b, c, d, /**/ da0, db0, dc0, dd0);
+    if (status != HE_OK)
+        ERR(HE_NUM, "ddih_angle failed");
+
+    ang  =  dih_angle(a, b, c, d);
+    coef = -sin(ang);
+
+    vec_scalar(da0, coef, da);
+    vec_scalar(db0, coef, db);
+    vec_scalar(dc0, coef, dc);
+    vec_scalar(dd0, coef, dd);
 
     return HE_OK;
 }
