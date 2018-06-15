@@ -23,7 +23,7 @@ int ddih_angle(real  a[3], real  b[3], real  c[3], real  d[3], /**/
     if (An == 0) ERR(HE_NUM, "An == 0");
 
     Ak = tri_area(c, b, d);
-    if (Ak == 0) ERR(HE_NUM, "An == 0");
+    if (Ak == 0) ERR(HE_NUM, "Ak == 0");
 
     vec_scalar(n, e/(2*An),   da);
     vec_scalar(k, e/(2*Ak),   dd);
