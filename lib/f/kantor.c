@@ -89,7 +89,7 @@ static void compute_force(real v0, real K, real v,
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
-        dtri_kantor(a, b, c, /**/ da, db, dc);
+        ddih_cos(a, b, c, d, /**/ da, db, dc, dd);
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
         vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
