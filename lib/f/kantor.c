@@ -25,16 +25,15 @@ static real sum(int n, real *kantor) {
     for (t = 0; t < n; t++) v += kantor[t];
     return v;
 }
-int he_f_kantor_ini(real v0, real K, He *he, T **pq) {
+int he_f_kantor_ini(real K, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
-    n = he_nt(he);
+    n = he_ne(he);
 
-    MALLOC(n, &q->kantor);
+    MALLOC(n, &q->acos);
 
     q->n = n;
-    q->v0 = v0;
     q->K = K;
 
     *pq = q;
@@ -42,12 +41,12 @@ int he_f_kantor_ini(real v0, real K, He *he, T **pq) {
 }
 
 int he_f_kantor_fin(T *q) {
-    FREE(q->kantor); FREE(q);
+    FREE(q->acos); FREE(q);
     return HE_OK;
 }
 
-int he_f_kantor_v(T *q, /**/ real  **pa) {
-    *pa = q->kantor;
+int he_f_kantor_cos(T *q, /**/ real  **pa) {
+    *pa = q->acos;
     return HE_OK;
 }
 
@@ -71,7 +70,7 @@ static void get(int t, He *he,
 static void compute_kantor(He *he, const real *x, const real *y, const real *z, /**/ real *kantor) {
     real a[3], b[3], c[3];
     int n, t;
-    n = he_nt(he);
+    n = he_ne(he);
     for (t = 0; t < n; t++) {
         get(t, he, x, y, z, /**/ a, b, c);
         kantor[t]  = tri_kantor(a, b, c);
@@ -83,7 +82,7 @@ static void compute_force(real v0, real K, real v,
                           real *fx, real *fy, real *fz) {
     int n, t, i, j, k;
     real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
-    n = he_nt(he);
+    n = he_ne(he);
     coeff = 2*K/v0*(v - v0);
     for (t = 0; t < n; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
@@ -106,8 +105,8 @@ int he_f_kantor_force(T *q, He *he,
     kantor = q->kantor;
     K  = q->K;
     v0 = q->v0;
-    if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+    if (he_ne(he) != n)
+        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
     compute_kantor(he, x, y, z, /**/ kantor);
     v = sum(n, kantor);
     compute_force(v0, K, v, he, x, y, z, /**/ fx, fy, fz);
@@ -123,8 +122,8 @@ real he_f_kantor_energy(T *q, He *he,
     v0 = q->v0;
     K  = q->K;
 
-    if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+    if (he_ne(he) != n)
+        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_kantor(he, x, y, z, /**/ kantor);
     v = sum(n, kantor);
