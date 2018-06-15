@@ -14,8 +14,8 @@
 
 struct T {
     int n;
-    real *kantor;
-    real v0, K;
+    real *acos;
+    real K;
 };
 
 static real sum(int n, real *kantor) {
