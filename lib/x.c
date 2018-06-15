@@ -11,6 +11,7 @@
 #include "he/f/area.h"
 #include "he/f/volume.h"
 #include "he/f/harmonic.h"
+#include "he/f/kantor.h"
 #include "he/x.h"
 
 const real pi = 3.141592653589793115997964;
@@ -25,6 +26,7 @@ static He      *he;
 static HeFArea *f_area;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
+static HeFKantor *f_kantor;
 static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
@@ -165,4 +167,19 @@ real f_harmonic_energy(const real *x, const real *y, const real *z) {
 }
 int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_harmonic_force(f_harmonic, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_kantor_ini(real K) {
+    he_f_kantor_ini(K, he, /**/ &f_kantor);
+    return HE_OK;    
+}
+int f_kantor_fin() {
+    he_f_kantor_fin(f_kantor);
+    return HE_OK;
+}
+real f_kantor_energy(const real *x, const real *y, const real *z) {
+    return he_f_kantor_energy(f_kantor, he, x, y, z);
+}
+int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
 }
