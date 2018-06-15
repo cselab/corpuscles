@@ -93,6 +93,7 @@ static void compute_force(real v0, real K, real v,
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
         vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
+        vec_scalar_append(dd, coeff, l, /**/ fx, fy, fz);
     }
 }
 
