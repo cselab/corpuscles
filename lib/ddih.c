@@ -53,10 +53,10 @@ int ddih_cos(real  a[3], real  b[3], real  c[3], real  d[3], /**/
     ang  =  dih_angle(a, b, c, d);
     coef = -sin(ang);
 
-    vec_scalar(da0, coef, da);
-    vec_scalar(db0, coef, db);
-    vec_scalar(dc0, coef, dc);
-    vec_scalar(dd0, coef, dd);
+    vec_scalar(da0, coef,   da);
+    vec_scalar(db0, coef,   db);
+    vec_scalar(dc0, coef,   dc);
+    vec_scalar(dd0, coef,   dd);
 
     return HE_OK;
 }
