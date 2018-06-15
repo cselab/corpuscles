@@ -6,17 +6,17 @@
 #include "he/tri.h"
 
 #include "he/dih.h"
+#include "he/edg.h"
 
 int ddih_angle(real  a[3], real  b[3], real  c[3], real  d[3], /**/
                real da[3], real db[3], real dc[3], real dd[3]) {
-    real n[3], k[3], bc[3];
+    real n[3], k[3];
     real e, An, Ak, cn, bn, bk, ck;
 
     tri_normal(a, b, c,   n);
     tri_normal(c, b, d,   k);
 
-    vec_minus(c, b,   bc);
-    e = vec_abs(bc);
+    e = edg_abs(c, b);
 
     An = tri_area(a, b, c);
     Ak = tri_area(c, b, d);
