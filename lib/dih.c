@@ -21,3 +21,9 @@ real dih_angle(real a[3], real b[3], real c[3], real d[3]) {
         ang = - ang;
     return ang;
 }
+
+real dih_cos(real a[3], real b[3], real c[3], real d[3]) {
+    real ang;
+    ang = dih_angle(a, b, c, d);
+    return cos(ang);
+}
