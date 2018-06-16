@@ -42,21 +42,27 @@ static void main0() {
         if (i % 10 == 0) {
             punto_fwrite(NV, queue, stdout);
             printf("\n");
-            MSG("%.16e", min_energy());
+            MSG("eng: %g", min_energy());
             off_write(XX, YY, ZZ, "q.off");
         }
         min_iterate();
     }
 }
 
+static real eq_tri_edg(real area) {
+    /* area = sqrt(3)/4 * edg^2 */
+    return 2*sqrt(area)/pow(3, 0.25);
+}
+
 int main() {
     real v0, Kv, a0, Ka, e0, Ke, Kb;
     ini("/dev/stdin");
 
-    a0 = 0.006809515625;  Ka =  500.0;
-    v0 = 1.5606;          Kv =  500.0;
-    e0 = 0.1;             Ke =    2.0;
-    Kb = 1;
+    a0 = area()/NT;      Ka = 100.0;
+    v0 = volume();       Kv = 100.0;
+    e0 = eq_tri_edg(a0); Ke =   0.0;
+    Kb = 0.01;
+    MSG("area, volume, edg: %g %g %g", a0, v0, e0);
 
     f_volume_ini(v0, Kv);
     f_area_ini(a0, Ka);
