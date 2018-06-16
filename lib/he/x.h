@@ -24,6 +24,7 @@ int  hdg_tri(int t);
 int  bnd(int h);
 
 real area();
+real volume();
 
 int off_write(const real*, const real*, const real*, const char*);
 
