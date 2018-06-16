@@ -88,10 +88,7 @@ int main(int __UNUSED argc, const char *v[]) {
     arg();
 
     ini("/dev/stdin");
-    a0 = area()/NT;      Ka = 100.0;
-    v0 = volume();       Kv = 100.0;
-    e0 = eq_tri_edg(a0); Ke =   0.0;
-    Kb = 0.01;
+    a0 = area()/NT; v0 = volume(); e0 = eq_tri_edg(a0);
     MSG("area, volume, edg: %g %g %g", a0, v0, e0);
 
     f_volume_ini(v0, Kv);
