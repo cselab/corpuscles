@@ -7,6 +7,8 @@
 #include "he/vec.h"
 #include "he/tri.h"
 
+#include "he/area.h"
+
 static void get(int t, He *he,
                 const real *x, const real *y, const real *z,
                 /**/ real a[3], real b[3], real c[3]) {
