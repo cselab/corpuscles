@@ -12,6 +12,7 @@
 #include "he/f/volume.h"
 #include "he/f/harmonic.h"
 #include "he/f/kantor.h"
+#include "he/area.h"
 #include "he/x.h"
 
 const real pi = 3.141592653589793115997964;
@@ -40,6 +41,8 @@ int  hdg_ver(int v) { return he_hdg_ver(he, v); }
 int  hdg_edg(int e) { return he_hdg_edg(he, e); }
 int  hdg_tri(int t) { return he_hdg_tri(he, t); }
 int  bnd(int h)     { return he_bnd(he, h); }
+
+real area() { return he_area_tri(he, XX, YY, ZZ); }
 
 int off_write(const real *x, const real *y, const real *z, const char *path) {
     return he_off_write(off, x, y, z, path);

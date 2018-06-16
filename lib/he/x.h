@@ -23,6 +23,8 @@ int  hdg_tri(int t);
 /* is bondary? */
 int  bnd(int h);
 
+real area();
+
 int off_write(const real*, const real*, const real*, const char*);
 
 /* allocate and zero */
