@@ -6,7 +6,7 @@
 
 #include "he/edg.h"
 
-real edg_abs(real a[3], real b[3]) {
+real edg_abs(const real a[3], const real b[3]) {
     real u[3];
     vec_minus(b, a, u);
     return vec_abs(u);

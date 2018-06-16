@@ -8,7 +8,7 @@
 
 #include "he/dih.h"
 
-real dih_angle(real a[3], real b[3], real c[3], real d[3]) {
+real dih_angle(const real a[3], const real b[3], const real c[3], const real d[3]) {
     real x, y, ang, n[3], k[3], nk[3], e[3];
     tri_normal(b, c, a,   n);
     tri_normal(c, b, d,   k);
@@ -22,7 +22,7 @@ real dih_angle(real a[3], real b[3], real c[3], real d[3]) {
     return ang;
 }
 
-real dih_cos(real a[3], real b[3], real c[3], real d[3]) {
+real dih_cos(const real a[3], const real b[3], const real c[3], const real d[3]) {
     real ang;
     ang = dih_angle(a, b, c, d);
     return cos(ang);

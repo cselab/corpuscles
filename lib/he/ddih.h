@@ -1,5 +1,5 @@
 /* bc is an edge */
-int ddih_angle(real[3], real  b[3], real  c[3], real[3], /**/
+int ddih_angle(const real[3], const real b[3], const real  c[3], const real[3], /**/
                real[3], real [3], real[3], real[3]);
-int ddih_cos(real[3], real  b[3], real  c[3], real[3], /**/
+int ddih_cos(const real[3], const real b[3], const real c[3], const real[3], /**/
                real[3], real [3], real[3], real[3]);

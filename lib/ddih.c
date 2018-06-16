@@ -9,7 +9,7 @@
 #include "he/dih.h"
 #include "he/edg.h"
 
-int ddih_angle(real  a[3], real  b[3], real  c[3], real  d[3], /**/
+int ddih_angle(const real a[3], const real b[3], const real c[3], const real d[3], /**/
                real da[3], real db[3], real dc[3], real dd[3]) {
     real n[3], k[3];
     real e, An, Ak, cn, bn, bk, ck;
@@ -41,8 +41,8 @@ int ddih_angle(real  a[3], real  b[3], real  c[3], real  d[3], /**/
     return HE_OK;
 }
 
-int ddih_cos(real  a[3], real  b[3], real  c[3], real  d[3], /**/
-               real da[3], real db[3], real dc[3], real dd[3]) {
+int ddih_cos(const real a[3], const real b[3], const real c[3], const real d[3], /**/
+             real da[3], real db[3], real dc[3], real dd[3]) {
     int status;
     real ang, coef, da0[3], db0[3], dc0[3], dd0[3];
 

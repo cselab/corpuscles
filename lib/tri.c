@@ -6,7 +6,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 
-real tri_area(real a[3], real b[3], real c[3]) {
+real tri_area(const real a[3], const real b[3], const real c[3]) {
     real u[3], v[3], n[3];
     vec_minus(b, a, u);
     vec_minus(c, a, v);
@@ -15,13 +15,13 @@ real tri_area(real a[3], real b[3], real c[3]) {
 }
 
 /* oriented volume of tetrahedral [0, a, b, c] */
-real tri_volume(real a[3], real b[3], real c[3]) {
+real tri_volume(const real a[3], const real b[3], const real c[3]) {
     real n[3];
     vec_cross(a, b,   n);
     return vec_dot(c, n)/6;
 }
 
-int tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
+int tri_normal(const real a[3], const real b[3], const real c[3], /**/ real e[3]) {
     real u[3], v[3], n[3];
     vec_minus(b, a,   u);
     vec_minus(c, a,   v);
@@ -30,14 +30,14 @@ int tri_normal(real a[3], real b[3], real c[3], /**/ real e[3]) {
     return HE_OK;
 }
 
-real tri_angle(real a[3], real b[3], real c[3]) { /* at `b' */
+real tri_angle(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     real u[3], v[3];
     vec_minus(a, b, u);
     vec_minus(c, b, v);
     return vec_angle(u, v);
 }
 
-real tri_cot(real a[3], real b[3], real c[3]) { /* at `b' */
+real tri_cot(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     real x, y, u[3], v[3];
     y = 2 * tri_area(a, b, c);
     vec_minus(a, b, u);
@@ -47,7 +47,7 @@ real tri_cot(real a[3], real b[3], real c[3]) { /* at `b' */
 }
 
 /* bc is an edge */
-real tri_dih(real a[3], real b[3], real c[3], real d[3]) {
+real tri_dih(const real a[3], const real b[3], const real c[3], const real d[3]) {
     real x, y, ang, n[3], k[3], nk[3], e[3];
     tri_normal(b, c, a,   n);
     tri_normal(c, b, d,   k);
@@ -61,7 +61,7 @@ real tri_dih(real a[3], real b[3], real c[3], real d[3]) {
     return ang;
 }
 
-int tri_edg(real a[3], real b[3], real c[3], /**/ real ab[3], real bc[3], real ca[3]) {
+int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], real bc[3], real ca[3]) {
     vec_minus(b, a,   ab);
     vec_minus(c, b,   bc);
     vec_minus(a, c,   ca);
