@@ -1,14 +1,41 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include <real.h>
 
 #include <he/err.h>
 #include <he/punto.h>
-
+#include <he/macro.h>
+#include <he/util.h>
 #include <he/x.h>
+
 #include <alg/x.h>
 #include <alg/min.h>
+
+#define FMT_IN   XE_REAL_IN
+
+static real Ka, Kv, Ke, Kb;
+static const char **argv;
+static const char *me = "min/kantor";
+
+static void usg() {
+    fprintf(stderr, "%s Ka Kv Kb Ke < OFF > PUNTO\n", me);
+    exit(0);
+}
+
+int eq(const char *a, const char *b) { return util_eq(a, b); }
+int scl(/**/ real *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, FMT_IN, p) != 1)
+        ER("not a number '%s'", *argv);
+    argv++;
+    return HE_OK;
+}
+static void arg() {
+    if (*argv != NULL && eq(*argv, "-h")) usg();
+    scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
+}
 
 real Energy(const real *x, const real *y, const real *z) {
     real a, v, e, b;
@@ -39,11 +66,12 @@ static void main0() {
     printf("\n");
     for (i = 0; i < 1000000; i++) {
         min_position(/**/ XX, YY, ZZ);
-        if (i % 10 == 0) {
+        if (i % 100 == 0) {
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("eng: %g", min_energy());
             off_write(XX, YY, ZZ, "q.off");
+            MSG("dump: q.off");
         }
         min_iterate();
     }
@@ -54,10 +82,12 @@ static real eq_tri_edg(real area) {
     return 2*sqrt(area)/pow(3, 0.25);
 }
 
-int main() {
-    real v0, Kv, a0, Ka, e0, Ke, Kb;
-    ini("/dev/stdin");
+int main(int __UNUSED argc, const char *v[]) {
+    real v0, a0, e0;
+    argv = v; argv++;
+    arg();
 
+    ini("/dev/stdin");
     a0 = area()/NT;      Ka = 100.0;
     v0 = volume();       Kv = 100.0;
     e0 = eq_tri_edg(a0); Ke =   0.0;
