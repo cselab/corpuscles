@@ -16,6 +16,8 @@ struct T {
     int n;
     real *area;
     real *lx, *ly, *lz;
+
+    real *l2, *t;
     real K;
 };
 
@@ -26,8 +28,12 @@ int he_f_gompper_ini(real K, He *he, T **pq) {
     n = he_nv(he);
 
     MALLOC(n, &q->area);
+    MALLOC(n, &q->l2);
+    MALLOC(n, &q->t);
+
     MALLOC(n, &q->lx);
     MALLOC(n, &q->ly);
+    MALLOC(n, &q->lz);
     MALLOC(n, &q->lz);
 
     q->n = n;
@@ -40,6 +46,7 @@ int he_f_gompper_ini(real K, He *he, T **pq) {
 int he_f_gompper_fin(T *q) {
     FREE(q->area);
     FREE(q->lx); FREE(q->ly); FREE(q->lz);
+    FREE(q->t); FREE(q->l2);
     FREE(q);
     return HE_OK;
 }
