@@ -205,3 +205,9 @@ real f_gompper_energy(const real *x, const real *y, const real *z) {
 int f_gompper_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_gompper_force(f_gompper, he, x, y, z, /**/ fx, fy, fz);
 }
+int f_gompper_energy_ver(real **p) {
+   return he_f_gompper_energy_ver(f_gompper, p);    
+}
+int f_gompper_area(real **p) {
+   return he_f_gompper_area(f_gompper, p);    
+}

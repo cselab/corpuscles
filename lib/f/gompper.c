@@ -235,12 +235,12 @@ int he_f_gompper_force(T *q, He *he,
 
 void compute_energy(int n, const real *area, const real *lx, const real *ly, const real *lz, /**/ real *energy) {
     int i;
-    real area0, curv, l[3];
+    real area0, curv_sq, l[3];
     for (i = 0; i < n; i++) {
         area0 = area[i];
         vec_get(i, lx, ly, lz, /**/ l);
-        curv = vec_abs(l);
-        energy[i] = curv * area0;
+        curv_sq = vec_dot(l, l);
+        energy[i] = curv_sq * area0;
     }
 }
 
