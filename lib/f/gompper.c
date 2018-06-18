@@ -178,6 +178,19 @@ static void compute_area(He *he, const real *l2, const real *t, /**/ real *V) {
     }
 }
 
+static void compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
+    int h, n, nv, nh, i, j;
+    nv = he_nv(he);
+    zero(nv, V1);
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        n = nxt(h);
+        i = ver(h); j = ver(n);
+        V1[i] += t[h]*(V0[i] - V0[j])/2;
+    }
+    for (i = 0; i < nv; i++) V1[i] /= area[i];
+}
+
 int he_f_gompper_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
@@ -190,6 +203,9 @@ int he_f_gompper_force(T *q, He *he,
     compute_l2(he, x, y, z, /**/ q->l2);
     compute_t(he, x, y, z, /**/ q->t);
     compute_area(he, q->l2, q->t, /**/ q->area);
+    compute_laplace(he, x, q->t, q->area, /**/ q->lx);
+    compute_laplace(he, y, q->t, q->area, /**/ q->ly);
+    compute_laplace(he, z, q->t, q->area, /**/ q->lz);
 
     compute_force(K, he, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
