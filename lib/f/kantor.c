@@ -85,10 +85,11 @@ static int get(int e, He *he, const real *x, const real *y, const real *z,
 
 static void compute_cos(He *he, const real *x, const real *y, const real *z, /**/ real *acos) {
     real a[3], b[3], c[3], d[3];
-    int n, m;
+    int status, n, m;
     n = he_ne(he);
     for (m = 0; m < n; m++) {
-        get(m, he, x, y, z, /**/ a, b, c, d);
+        status = get(m, he, x, y, z, /**/ a, b, c, d);
+        if (status == BND) continue;
         acos[m]  = dih_cos(a, b, c, d);
     }
 }
@@ -96,11 +97,12 @@ static void compute_cos(He *he, const real *x, const real *y, const real *z, /**
 static void compute_force(real K,
                           He *he, const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
-    int n, t, i, j, k, l;
+    int status, n, t, i, j, k, l;
     real a[3], b[3], c[3], d[3], da[3], db[3], dc[3], dd[3];
     n = he_ne(he);
     for (t = 0; t < n; t++) {
-        get_ijkl(t, he, /**/ &i, &j, &k, &l);
+        status = get_ijkl(t, he, /**/ &i, &j, &k, &l);
+        if (status == BND) continue;
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
