@@ -21,7 +21,7 @@
 
 
 struct T {
-    int n;
+    int nv;
     real *area;
     real *lx, *ly, *lz;
 
@@ -31,21 +31,21 @@ struct T {
 
 int he_f_gompper_ini(real K, He *he, T **pq) {
     T *q;
-    int n, nh;
+    int nv, nh;
     MALLOC(1, &q);
 
     nh = he_nh(he);
     MALLOC(nh, &q->l2);
     MALLOC(nh, &q->t);
 
-    n = he_nv(he);
-    MALLOC(n, &q->area);
-    MALLOC(n, &q->lx);
-    MALLOC(n, &q->ly);
-    MALLOC(n, &q->lz);
-    MALLOC(n, &q->lz);
+    nv = he_nv(he);
+    MALLOC(nv, &q->area);
+    MALLOC(nv, &q->lx);
+    MALLOC(nv, &q->ly);
+    MALLOC(nv, &q->lz);
+    MALLOC(nv, &q->lz);
 
-    q->n = n;
+    q->nv = nv;
     q->K = K;
 
     *pq = q;
@@ -193,7 +193,7 @@ static void compute_force_dt(real K, He *he, const real *x, const real *y, const
 int he_f_gompper_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
-    int n;
+    int nv;
     real K;
     real *l2, *t, *area, *lx, *ly, *lz;
 
@@ -201,10 +201,10 @@ int he_f_gompper_force(T *q, He *he,
     l2 = q->l2; t = q->t;
     lx = q->lx; ly = q->ly; lz = q->lz;
 
-    n = q->n;
+    nv = q->nv;
     K  = q->K;
-    if (he_nv(he) != n)
-        ERR(HE_INDEX, "he_nv(he)=%d != n = %d", he_nv(he), n);
+    if (he_nv(he) != nv)
+        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
     compute_l2(he, x, y, z, /**/ l2);
     compute_t(he, x, y, z, /**/ t);
     compute_area(he, l2, t, /**/ area);
@@ -221,23 +221,25 @@ int he_f_gompper_force(T *q, He *he,
 
 real he_f_gompper_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
-    int n;
+    int nv;
     real K;
     real *l2, *t, *area, *lx, *ly, *lz;
 
     area = q->area;    
     l2 = q->l2; t = q->t;
     lx = q->lx; ly = q->ly; lz = q->lz;
-    n = q->n;
+    nv = q->nv;
     K  = q->K;
-    if (he_nv(he) != n)
-        ERR(HE_INDEX, "he_nv(he)=%d != n = %d", he_nv(he), n);
+    if (he_nv(he) != nv)
+        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
     compute_l2(he, x, y, z, /**/ l2);
     compute_t(he, x, y, z, /**/ t);
     compute_area(he, l2, t, /**/ area);
     compute_laplace(he, x, t, area, /**/ lx);
     compute_laplace(he, y, t, area, /**/ ly);
     compute_laplace(he, z, t, area, /**/ lz);
+
+//    compute_energy(
 
     return 2*K;
 }
