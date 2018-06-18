@@ -239,7 +239,5 @@ real he_f_gompper_energy(T *q, He *he,
     compute_laplace(he, y, t, area, /**/ ly);
     compute_laplace(he, z, t, area, /**/ lz);
 
-//    compute_energy(
-
-    return 2*K;
+    return 2*K*compute_energy(nv, area, lx, ly, lz);
 }
