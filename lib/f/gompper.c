@@ -219,6 +219,19 @@ int he_f_gompper_force(T *q, He *he,
     return HE_OK;
 }
 
+real compute_energy(int n, const real *area, const real *lx, const real *ly, const real *lz) {
+    int i;
+    real v, area0, curv, l[3];
+    v = 0;
+    for (i = 0; i < n; i++) {
+        area0 = area[i];
+        vec_get(i, lx, ly, lz, /**/ l);
+        curv = vec_abs(l);
+        v += curv * area0;
+    }
+    return v;
+}
+
 real he_f_gompper_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int nv;
@@ -239,5 +252,5 @@ real he_f_gompper_energy(T *q, He *he,
     compute_laplace(he, y, t, area, /**/ ly);
     compute_laplace(he, z, t, area, /**/ lz);
 
-    return 2*K*compute_energy(nv, area, lx, ly, lz);
+    return K*compute_energy(nv, area, lx, ly, lz);
 }
