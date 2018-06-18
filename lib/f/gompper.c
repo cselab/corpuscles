@@ -91,11 +91,12 @@ static void zero(int n, real *a) {
     for (i = 0; i < n; i++) a[i] = 0;
 }
 static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
+    int nh;
     int h, n;
     int i, j;
     real r[3];
-    n = he_nh(he);
-    for (h = 0; h < n; h++) {
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
         get_edg(i, j, x, y, z, /**/ r);
@@ -140,7 +141,8 @@ static void compute_laplace(He *he, const real *V0, const real *t, const real *a
         i = ver(h); j = ver(n);
         V1[i] += t[h]*(V0[i] - V0[j])/2;
     }
-    for (i = 0; i < nv; i++) V1[i] /= area[i];
+    for (i = 0; i < nv; i++)
+        V1[i] /= area[i];
 }
 
 static void compute_force_t(real K, He *he, const real *x, const real *y, const real *z, const real *t, const real *lx, const real *ly, const real *lz, /**/ real *fx, real *fy, real *fz) {
@@ -243,6 +245,7 @@ real he_f_gompper_energy(T *q, He *he,
     lx = q->lx; ly = q->ly; lz = q->lz;
     nv = q->nv;
     K  = q->K;
+    
     if (he_nv(he) != nv)
         ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
     compute_l2(he, x, y, z, /**/ l2);
