@@ -23,6 +23,7 @@
 struct T {
     int nv;
     real *area;
+    real *energy;
     real *lx, *ly, *lz;
 
     real *l2, *t;
@@ -39,6 +40,7 @@ int he_f_gompper_ini(real K, He *he, T **pq) {
     MALLOC(nh, &q->t);
 
     nv = he_nv(he);
+    MALLOC(nv, &q->energy);
     MALLOC(nv, &q->area);
     MALLOC(nv, &q->lx);
     MALLOC(nv, &q->ly);
@@ -52,15 +54,19 @@ int he_f_gompper_ini(real K, He *he, T **pq) {
 }
 
 int he_f_gompper_fin(T *q) {
-    FREE(q->area);
-    FREE(q->lx); FREE(q->ly); FREE(q->lz);
     FREE(q->t); FREE(q->l2);
+    FREE(q->energy); FREE(q->area); FREE(q->lx); FREE(q->ly); FREE(q->lz);
     FREE(q);
     return HE_OK;
 }
 
 int he_f_gompper_area(T *q, /**/ real **pa) {
     *pa = q->area;
+    return HE_OK;
+}
+
+int he_f_gompper_energy_ver(T *q, /**/ real**pa) {
+    *pa = q->energy;
     return HE_OK;
 }
 
@@ -71,6 +77,13 @@ int he_f_gompper_laplace(T *q, /**/ real **px, real **py, real **pz ) {
     return HE_OK;
 }
 
+static real sum(int n, real *volume) {
+    int t;
+    real v;
+    v = 0;
+    for (t = 0; t < n; t++) v += volume[t];
+    return v;
+}
 static void get_edg(int i, int j, const real *x, const real *y, const real *z, /**/ real r[3]) {
     real a[3], b[3];
     vec_get(i, x, y, z, a);
@@ -220,31 +233,29 @@ int he_f_gompper_force(T *q, He *he,
     return HE_OK;
 }
 
-real compute_energy(int n, const real *area, const real *lx, const real *ly, const real *lz) {
+void compute_energy(int n, const real *area, const real *lx, const real *ly, const real *lz, /**/ real *energy) {
     int i;
-    real v, area0, curv, l[3];
-    v = 0;
+    real area0, curv, l[3];
     for (i = 0; i < n; i++) {
         area0 = area[i];
         vec_get(i, lx, ly, lz, /**/ l);
         curv = vec_abs(l);
-        v += curv * area0;
+        energy[i] = curv * area0;
     }
-    return v;
 }
 
 real he_f_gompper_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int nv;
     real K;
-    real *l2, *t, *area, *lx, *ly, *lz;
+    real *l2, *t, *area, *energy, *lx, *ly, *lz;
 
-    area = q->area;    
+    area = q->area; energy = q->energy;
     l2 = q->l2; t = q->t;
     lx = q->lx; ly = q->ly; lz = q->lz;
     nv = q->nv;
     K  = q->K;
-    
+
     if (he_nv(he) != nv)
         ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
     compute_l2(he, x, y, z, /**/ l2);
@@ -253,6 +264,7 @@ real he_f_gompper_energy(T *q, He *he,
     compute_laplace(he, x, t, area, /**/ lx);
     compute_laplace(he, y, t, area, /**/ ly);
     compute_laplace(he, z, t, area, /**/ lz);
+    compute_energy(nv, area, lx, ly, lz, /**/ energy);
 
-    return 2*K*compute_energy(nv, area, lx, ly, lz);
+    return 2*K*sum(nv, energy);
 }

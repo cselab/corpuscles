@@ -38,11 +38,16 @@ static void arg() {
 }
 
 real Energy(const real *x, const real *y, const real *z) {
-    real a, v, e, b;
+    real a, v, e, b, go, ka;
     a = f_area_energy(x, y, z);
     v = f_volume_energy(x, y, z);
     e = f_harmonic_energy(x, y, z);
-    b = f_gompper_energy(x, y, z);
+
+    go = f_gompper_energy(x, y, z);
+    ka = f_kantor_energy(x, y, z);
+    MSG("gk %g %g", go, ka);
+    b = ka;
+        
     return a + v + e + b;
 }
 
@@ -56,7 +61,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_harmonic_force(x, y, z, /**/ fx, fy, fz);
-    f_gompper_force(x, y, z, /**/ fx, fy, fz);
+    f_kantor_force(x, y, z, /**/ fx, fy, fz);
 }
 
 static void main0() {
@@ -95,14 +100,16 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
     f_gompper_ini(Kb);
+    f_kantor_ini(Kb);
 
-    min_ini(STEEPEST_DESCENT);
+    min_ini(VECTOR_BFGS2);
 
     main0();
     min_fin();
 
     f_gompper_fin();
     f_harmonic_fin();
+    f_kantor_fin();
     f_volume_fin();
     f_area_fin();
     fin();

@@ -12,6 +12,9 @@ int he_f_gompper_force(T*, He*,
                       real *fx, real *fy, real *fz);
 real he_f_gompper_energy(T*, He*, const real *x, const real *y, const real *z);
 
+ /* "energy without constant" : energy/(2*K) */
+int he_f_gompper_energy_ver(T*, /**/ real**);
+
 int he_f_gompper_area(T*, /**/ real**);
 int he_f_gompper_laplace(T*, /**/ real**, real**, real**);
 
