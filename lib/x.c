@@ -12,6 +12,7 @@
 #include "he/f/volume.h"
 #include "he/f/harmonic.h"
 #include "he/f/kantor.h"
+#include "he/f/gompper.h"
 #include "he/area.h"
 #include "he/volume.h"
 #include "he/x.h"
@@ -29,6 +30,7 @@ static HeFArea *f_area;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
 static HeFKantor *f_kantor;
+static HeFGompper *f_gompper;
 static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
@@ -187,4 +189,19 @@ real f_kantor_energy(const real *x, const real *y, const real *z) {
 }
 int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_gompper_ini(real K) {
+    he_f_gompper_ini(K, he, /**/ &f_gompper);
+    return HE_OK;    
+}
+int f_gompper_fin() {
+    he_f_gompper_fin(f_gompper);
+    return HE_OK;
+}
+real f_gompper_energy(const real *x, const real *y, const real *z) {
+    return he_f_gompper_energy(f_gompper, he, x, y, z);
+}
+int f_gompper_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_gompper_force(f_gompper, he, x, y, z, /**/ fx, fy, fz);
 }
