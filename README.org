@@ -32,37 +32,4 @@
 ** X
 - x.h :: simplifyied interface for X
 
-* min
-
-E(x_1, ..., x_n)
-
-An iterface for gsl [1] minimization routines
-
-* half-edg data format
-
-nv, nt, ne, nh: number elements
-hdg, next flip: half-edg indexes
-ver, tri, edg: indexes of elements
-flip = -1: indicate missing flip half-edge
-
-#+BEGIN_EXAMPLE
-"HE"
-nv ne nt nh
-[nh lines]
-nxt flp ver edg tri
-...
-[nv lines]
-hdg_ver
-...
-[ne lines]
-hdg_edg
-...
-[nt lines]
-hdg_tri
-...
-#+END_EXAMPLE
-
-* references
-
-[1] http://www.gnu.org/software/gsl
 
