@@ -72,32 +72,6 @@ int he_f_gompper_laplace(T *q, /**/ real **px, real **py, real **pz ) {
     return HE_OK;
 }
 
-enum {BULK, BND};
-static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
-    int h, n, nn, nnf, i, j, k, l;
-    h = he_hdg_edg(he, e);
-    if (bnd(h)) return BND;
-
-    h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
-    nnf = nxt(nxt(flp(h)));
-    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
-
-    *pi = i; *pj = j; *pk = k; *pl = l;
-    return BULK;
-}
-
-static int get(int e, He *he, const real *x, const real *y, const real *z,
-               /**/ real a[3], real b[3], real c[3], real d[3]) {
-    int status, i, j, k, l;
-    status = get_ijkl(e, he, /**/ &i, &j, &k, &l);
-    if (status == BND) return BND;
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
-    vec_get(k, x, y, z, /**/ c);
-    vec_get(l, x, y, z, /**/ d);
-    return BULK;
-}
-
 static void get_edg(int i, int j, const real *x, const real *y, const real *z, /**/ real r[3]) {
     real a[3], b[3];
     vec_get(i, x, y, z, a);
@@ -199,21 +173,21 @@ static void compute_force_dt(real K, He *he, const real *x, const real *y, const
     real dl, dd, r2, C;
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
-	n = nxt(h); nn = nxt(n);
-	i = ver(h); j = ver(n); k = ver(nn);
-	get3(i, j, k, x, y, z,    a, b, c);
-	dtri_cot(a, b, c, /**/ da, db, dc);
-	get_edg(i, k, x, y, z, /**/ r);
-	vec_get(k, lx, ly, lz, /**/ lk);
-	vec_get(i, lx, ly, lz, /**/ li);
-	r2 = vec_dot(r, r);
-	dl = vec_dot(lk, lk) + vec_dot(li, li);
-	dd = vec_dot(li, r)  - vec_dot(lk, r);
-	C = K*dd/2 - K*r2*dl/16;
-	vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
-	vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
-	vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
-    }    
+        n = nxt(h); nn = nxt(n);
+        i = ver(h); j = ver(n); k = ver(nn);
+        get3(i, j, k, x, y, z,    a, b, c);
+        dtri_cot(a, b, c, /**/ da, db, dc);
+        get_edg(i, k, x, y, z, /**/ r);
+        vec_get(k, lx, ly, lz, /**/ lk);
+        vec_get(i, lx, ly, lz, /**/ li);
+        r2 = vec_dot(r, r);
+        dl = vec_dot(lk, lk) + vec_dot(li, li);
+        dd = vec_dot(li, r)  - vec_dot(lk, r);
+        C = K*dd/2 - K*r2*dl/16;
+        vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
+        vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
+        vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
+    }
 }
 
 int he_f_gompper_force(T *q, He *he,
@@ -221,20 +195,26 @@ int he_f_gompper_force(T *q, He *he,
                       real *fx, real *fy, real *fz) {
     int n;
     real K;
+    real *l2, *t, *area, *lx, *ly, *lz;
+
+    area = q->area;
+    l2 = q->l2; t = q->t;
+    lx = q->lx; ly = q->ly; lz = q->lz;
+
     n = q->n;
     K  = q->K;
     if (he_nv(he) != n)
         ERR(HE_INDEX, "he_nv(he)=%d != n = %d", he_nv(he), n);
-    compute_l2(he, x, y, z, /**/ q->l2);
-    compute_t(he, x, y, z, /**/ q->t);
-    compute_area(he, q->l2, q->t, /**/ q->area);
-    compute_laplace(he, x, q->t, q->area, /**/ q->lx);
-    compute_laplace(he, y, q->t, q->area, /**/ q->ly);
-    compute_laplace(he, z, q->t, q->area, /**/ q->lz);
+    compute_l2(he, x, y, z, /**/ l2);
+    compute_t(he, x, y, z, /**/ t);
+    compute_area(he, l2, t, /**/ area);
+    compute_laplace(he, x, t, area, /**/ lx);
+    compute_laplace(he, y, t, area, /**/ ly);
+    compute_laplace(he, z, t, area, /**/ lz);
 
-    compute_force_t(K, he, x, y, z, q->t, q->lx, q->ly, q->lz,
+    compute_force_t(K, he, x, y, z, t, lx, ly, lz,
                     /**/ fx, fy, fz);
-    compute_force_dt(K, he, x, y, z, q->lx, q->ly, q->lz,
+    compute_force_dt(K, he, x, y, z, lx, ly, lz,
                      /**/ fx, fy, fz);
     return HE_OK;
 }
@@ -243,10 +223,21 @@ real he_f_gompper_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
     real K;
+    real *l2, *t, *area, *lx, *ly, *lz;
+
+    area = q->area;    
+    l2 = q->l2; t = q->t;
+    lx = q->lx; ly = q->ly; lz = q->lz;
     n = q->n;
     K  = q->K;
-
     if (he_nv(he) != n)
         ERR(HE_INDEX, "he_nv(he)=%d != n = %d", he_nv(he), n);
+    compute_l2(he, x, y, z, /**/ l2);
+    compute_t(he, x, y, z, /**/ t);
+    compute_area(he, l2, t, /**/ area);
+    compute_laplace(he, x, t, area, /**/ lx);
+    compute_laplace(he, y, t, area, /**/ ly);
+    compute_laplace(he, z, t, area, /**/ lz);
+
     return 2*K;
 }
