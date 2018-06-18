@@ -99,27 +99,6 @@ static int get(int e, He *he, const real *x, const real *y, const real *z,
     return BULK;
 }
 
-static void compute_force(real K,
-                          He *he, const real *x, const real *y, const real *z, /**/
-                          real *fx, real *fy, real *fz) {
-    int status, n, t, i, j, k, l;
-    real a[3], b[3], c[3], d[3], da[3], db[3], dc[3], dd[3];
-    n = he_nv(he);
-    for (t = 0; t < n; t++) {
-        status = get_ijkl(t, he, /**/ &i, &j, &k, &l);
-        if (status == BND) continue;
-        vec_get(i, x, y, z, /**/ a);
-        vec_get(j, x, y, z, /**/ b);
-        vec_get(k, x, y, z, /**/ c);
-        vec_get(l, x, y, z, /**/ d);
-        ddih_cos(a, b, c, d, /**/ da, db, dc, dd);
-        vec_scalar_append(da, 2*K, i, /**/ fx, fy, fz);
-        vec_scalar_append(db, 2*K, j, /**/ fx, fy, fz);
-        vec_scalar_append(dc, 2*K, k, /**/ fx, fy, fz);
-        vec_scalar_append(dd, 2*K, l, /**/ fx, fy, fz);
-    }
-}
-
 static void get_edg(int i, int j, const real *x, const real *y, const real *z, /**/ real r[3]) {
     real a[3], b[3];
     vec_get(i, x, y, z, a);
@@ -191,6 +170,25 @@ static void compute_laplace(He *he, const real *V0, const real *t, const real *a
     for (i = 0; i < nv; i++) V1[i] /= area[i];
 }
 
+static void compute_force_t(real K, He *he, const real *x, const real *y, const real *z, const real *t, const real *lx, const real *ly, const real *lz, /**/ real *fx, real *fy, real *fz) {
+    int nh;
+    int h, n;
+    int i, j;
+    real r[3], ll[3], df[3];
+    real t0, l2;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        n = nxt(h); i = ver(h); j = ver(n);
+        t0 = t[h];
+        get_edg(i, j, x, y, z, /**/  r);
+        vec_get(i, lx, ly, lz, ll);
+        l2 = vec_dot(ll, ll);
+        vec_linear_combination(K*t0/2, ll, -K*t0*l2/8, r,  df);
+        vec_append(df, i, /**/ fx, fy, fz);
+        vec_substr(df, j, /**/ fx, fy, fz);
+    }
+}
+
 int he_f_gompper_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
@@ -207,7 +205,8 @@ int he_f_gompper_force(T *q, He *he,
     compute_laplace(he, y, q->t, q->area, /**/ q->ly);
     compute_laplace(he, z, q->t, q->area, /**/ q->lz);
 
-    compute_force(K, he, x, y, z, /**/ fx, fy, fz);
+    compute_force_t(K, he, x, y, z, q->t, q->lx, q->ly, q->lz,
+                    /**/ fx, fy, fz);
     return HE_OK;
 }
 
