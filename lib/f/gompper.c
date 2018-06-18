@@ -43,7 +43,6 @@ int he_f_gompper_ini(real K, He *he, T **pq) {
     MALLOC(nv, &q->lx);
     MALLOC(nv, &q->ly);
     MALLOC(nv, &q->lz);
-    MALLOC(nv, &q->lz);
 
     q->nv = nv;
     q->K = K;
@@ -255,5 +254,5 @@ real he_f_gompper_energy(T *q, He *he,
     compute_laplace(he, y, t, area, /**/ ly);
     compute_laplace(he, z, t, area, /**/ lz);
 
-    return K*compute_energy(nv, area, lx, ly, lz);
+    return 2*K*compute_energy(nv, area, lx, ly, lz);
 }

@@ -146,7 +146,6 @@ real he_f_kantor_energy(T *q, He *he,
 
     if (he_ne(he) != n)
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
-
     compute_cos(he, x, y, z, /**/ acos);
     return 2*K*compute_energy(he, acos);
 }
