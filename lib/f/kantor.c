@@ -18,11 +18,17 @@ struct T {
     real K;
 };
 
-static real compute_energy(int n, real *acos) {
-    int m;
+static real compute_energy(He *he, real *acos) {
+    int n, m, h;
     real v;
+
+    n = he_ne(he);
     v = 0;
-    for (m = 0; m < n; m++) v += 1 - acos[m];
+    for (m = 0; m < n; m++) {
+        h = he_hdg_edg(he, m);
+        if (he_bnd(he, h)) continue;
+        v += 1 - acos[m];
+    }
     return v;
 }
 int he_f_kantor_ini(real K, He *he, T **pq) {
@@ -142,5 +148,5 @@ real he_f_kantor_energy(T *q, He *he,
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_cos(he, x, y, z, /**/ acos);
-    return 2*K*compute_energy(n, acos);
+    return 2*K*compute_energy(he, acos);
 }
