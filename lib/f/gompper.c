@@ -6,8 +6,7 @@
 #include "he/he.h"
 #include "he/vec.h"
 #include "he/tri.h"
-#include "he/dih.h"
-#include "he/ddih.h"
+#include "he/dtri.h"
 
 #include "he/f/gompper.h"
 
@@ -189,6 +188,34 @@ static void compute_force_t(real K, He *he, const real *x, const real *y, const 
     }
 }
 
+static void compute_force_dt(real K, He *he, const real *x, const real *y, const real *z,
+                             const real *lx, const real *ly, const real *lz,
+                             /**/ real *fx, real *fy, real *fz) {
+    int nh;
+    int h, n, nn;
+    int i, j, k;
+    real r[3], a[3], b[3], c[3], da[3], db[3], dc[3];
+    real li[3], lk[3];
+    real dl, dd, r2, C;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+	n = nxt(h); nn = nxt(n);
+	i = ver(h); j = ver(n); k = ver(nn);
+	get3(i, j, k, x, y, z,    a, b, c);
+	dtri_cot(a, b, c, /**/ da, db, dc);
+	get_edg(i, k, x, y, z, /**/ r);
+	vec_get(k, lx, ly, lz, /**/ lk);
+	vec_get(i, lx, ly, lz, /**/ li);
+	r2 = vec_dot(r, r);
+	dl = vec_dot(lk, lk) + vec_dot(li, li);
+	dd = vec_dot(li, r)  - vec_dot(lk, r);
+	C = K*dd/2 - K*r2*dl/16;
+	vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
+	vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
+	vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
+    }    
+}
+
 int he_f_gompper_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
@@ -207,6 +234,8 @@ int he_f_gompper_force(T *q, He *he,
 
     compute_force_t(K, he, x, y, z, q->t, q->lx, q->ly, q->lz,
                     /**/ fx, fy, fz);
+    compute_force_dt(K, he, x, y, z, q->lx, q->ly, q->lz,
+                     /**/ fx, fy, fz);
     return HE_OK;
 }
 
