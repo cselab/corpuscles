@@ -16,6 +16,7 @@
 #define FMT_IN   XE_REAL_IN
 
 static real Ka, Kv, Ke, Kb;
+static real A0, V0;
 static const char **argv;
 static const char *me = "min/gompper";
 
@@ -71,6 +72,7 @@ static void main0() {
             printf("\n");
             MSG("eng: %.16e", min_energy());
             off_write(XX, YY, ZZ, "q.off");
+            MSG("%g %g", volume()/V0, area()/A0);
             MSG("dump: q.off");
         }
         min_iterate();
@@ -82,16 +84,22 @@ static real eq_tri_edg(real area) {
     return 2*sqrt(area)/pow(3, 0.25);
 }
 
+static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
+
 int main(int __UNUSED argc, const char *v[]) {
-    real v0, a0, e0;
+    real a0, e0;
     argv = v; argv++;
     arg();
 
     ini("/dev/stdin");
-    a0 = area()/NT; v0 = volume(); e0 = eq_tri_edg(a0);
-    MSG("area, volume, edg: %g %g %g", a0, v0, e0);
+    A0 = area();
+    a0 = A0/NT;   V0 = area2volume(A0); e0 = eq_tri_edg(a0);
+    MSG("v0/volume(): %g", V0/volume());
 
-    f_volume_ini(v0, Kv);
+    MSG("K[vaeb] %g %g %g %g", Ka, Kv, Ke, Kb);
+    MSG("[Vae]0  %g %g %g", V0, a0, e0);
+
+    f_volume_ini(V0, Kv);
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
     f_gompper_ini(Kb);

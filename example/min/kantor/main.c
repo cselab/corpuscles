@@ -82,13 +82,17 @@ static real eq_tri_edg(real area) {
     return 2*sqrt(area)/pow(3, 0.25);
 }
 
+static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
+
 int main(int __UNUSED argc, const char *v[]) {
-    real v0, a0, e0;
+    real A0, v0, a0, e0;
     argv = v; argv++;
     arg();
 
     ini("/dev/stdin");
-    a0 = area()/NT; v0 = volume(); e0 = eq_tri_edg(a0);
+    A0 = area();
+    a0 = A0/NT;   v0 = area2volume(A0); e0 = eq_tri_edg(a0);
+    MSG("v0/volume(): %g", v0/volume());
     MSG("area, volume, edg: %g %g %g", a0, v0, e0);
 
     f_volume_ini(v0, Kv);

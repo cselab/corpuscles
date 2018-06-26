@@ -35,11 +35,11 @@ static void update() {
     real d;
     int i;
 
-    d = 1e-4;
+    d = 1e-3;
     for (i = 0; i < NV; i++) {
-        XX[i] += d*FX[i];
-        YY[i] += d*FY[i];
-        ZZ[i] += d*FZ[i];
+        XX[i] -= d*FX[i];
+        YY[i] -= d*FY[i];
+        ZZ[i] -= d*FZ[i];
     }
 }
 
