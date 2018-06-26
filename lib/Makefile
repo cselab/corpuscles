@@ -1,7 +1,5 @@
 include ../conf.mk
 
-PREFIX = $(HOME)
-
 I = inc/def.h
 TRG = he
 L = libhe_s.a libhe_d.a
