@@ -1,5 +1,6 @@
+include ../conf.mk
+
 PREFIX = $(HOME)
-HE_CFLAGS = -Wall -Wextra -O2 -g
 
 I = inc/def.h
 TRG = he
