@@ -1,3 +1,4 @@
+include ../../conf.mk
 PREC = s
 M = main
 HE_CFLGAS = -Wall -Wextra -O0 -g `he.conf --cflags $(PREC)`

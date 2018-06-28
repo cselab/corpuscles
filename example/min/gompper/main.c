@@ -5,7 +5,6 @@
 #include <real.h>
 
 #include <he/err.h>
-#include <he/punto.h>
 #include <he/macro.h>
 #include <he/util.h>
 #include <he/x.h>
@@ -21,7 +20,7 @@ static const char **argv;
 static const char *me = "min/gompper";
 
 static void usg() {
-    fprintf(stderr, "%s Ka Kv Kb Ke < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s Ka Kv Kb Ke < OFF\n", me);
     exit(0);
 }
 
@@ -61,18 +60,14 @@ void Force(const real *x, const real *y, const real *z, /**/
 }
 
 static void main0() {
-    int i;
-    real *queue[] = {XX, YY, ZZ, NULL};
-    punto_fwrite(NV, queue, stdout);
-    printf("\n");
-    for (i = 0; i < 1000; i++) {
+    int n, i;
+    n = 500;
+    for (i = 0; i < n; i++) {
         min_position(/**/ XX, YY, ZZ);
-        if (i % 10 == 0) {
-            punto_fwrite(NV, queue, stdout);
-            printf("\n");
+        if (i % 1 == 0) {
             MSG("eng: %.16e", min_energy());
             off_write(XX, YY, ZZ, "q.off");
-            MSG("%g %g", volume()/V0, area()/A0);
+            MSG("%g %g", area()/A0, volume()/V0);
             MSG("dump: q.off");
         }
         min_iterate();
@@ -96,7 +91,7 @@ int main(int __UNUSED argc, const char *v[]) {
     a0 = A0/NT;   V0 = area2volume(A0); e0 = eq_tri_edg(a0);
     MSG("v0/volume(): %g", V0/volume());
 
-    MSG("K[vaeb] %g %g %g %g", Ka, Kv, Ke, Kb);
+    MSG("K[vabe] %g %g %g %g", Ka, Kv, Kb, Ke);
     MSG("[Vae]0  %g %g %g", V0, a0, e0);
 
     f_volume_ini(V0, Kv);

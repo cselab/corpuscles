@@ -2,7 +2,7 @@ include ../../../conf.mk
 
 M = main
 PREC = d
-HE_CFLGAS = -Wall -Wextra -O2 -g `alg.conf --cflags $(PREC)`
+HE_CFLGAS = `alg.conf --cflags $(PREC)`
 HE_LDFLAGS = `alg.conf --libs $(PREC)`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
