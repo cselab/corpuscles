@@ -1,3 +1,14 @@
+* Introduction
+
+A library for the modelling of surfaces shaped by various forces and
+constraints.
+
+* Installation
+
+#+BEGIN_SRC sh
+make PREFIX=$HOME
+#+END_SRC
+
 * lib
 
 ** Precision
