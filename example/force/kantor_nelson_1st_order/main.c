@@ -116,7 +116,7 @@ void force_kantor_nelson() {
     
     theta = tri_dih(a, b, c, d);
 
-    coef1 = ( sin(theta) * cos(theta0) - cos(theta) * sin(theta0) );
+    coef1 = ( theta - theta0 );
 
     vec_minus(c, b, u);
     vec_minus(a, b, v);

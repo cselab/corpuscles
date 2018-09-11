@@ -46,7 +46,7 @@ void energy_kantor_nelson() {
   real area_tot_tri, area_tot_split;
   real energy_tot;
   real theta0;
-
+  
   coef   = 2.0*sqrt(3.0);
   theta0 = 0.0;
   
@@ -71,7 +71,7 @@ void energy_kantor_nelson() {
     get4(i, j, k, l, /**/ a, b, c, d);
     
     theta = tri_dih(a, b, c, d);
-    eng = coef*(1 - cos(theta-theta0));
+    eng = coef*(theta-theta0)*(theta-theta0)/2.0;
     eng /= 4;
     energy[i] += eng;
     energy[j] += eng;
