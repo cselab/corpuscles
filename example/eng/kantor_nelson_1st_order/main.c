@@ -30,11 +30,11 @@ void energy_kantor_nelson() {
   /*This routine calculates bending energy
     according to Kantor and Nelson, Phys. Rev. A 1987
     
-    It traverses each edge/dihedral to calculate energy.
+    It traverses each edge, which has a dihedral angle, to calculate energy.
     Splitting energy of each dihedral to vertices has ambiguity and
-    we simply split equaly 4 times to each vertex involved.
+    we simply split equaly 1/4 to each vertex involved.
 
-    Version: Xin Bian, 05 June 2018 @CSE Lab, ETH Zurich*/
+    Version: Xin Bian, 17 September 2018 @CSE Lab, ETH Zurich*/
 
   enum {X, Y, Z};
   int v, e, h, t;

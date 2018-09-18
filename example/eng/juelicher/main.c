@@ -13,7 +13,7 @@ void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
   vec_get(i, XX, YY, ZZ, a);
   vec_get(j, XX, YY, ZZ, b);
   vec_get(k, XX, YY, ZZ, c);
-  
+
 }
 
 void get4(int i, int j, int k, int l, /**/
@@ -44,10 +44,16 @@ void energy_juelicher() {
   real theta, rxy, phi;
   real area_tot_tri, area_tot_split;
   real energy_tot;
+
+  real C0, H0;
   
   MALLOC(NV, &curva_mean);
   MALLOC(NV, &energy);
   MALLOC(NV, &area);
+
+
+  C0=0;
+  H0=C0/2.0;
   
   for (v = 0; v < NV; v++) {
     curva_mean[v] = 0;
@@ -102,7 +108,7 @@ void energy_juelicher() {
   for (v = 0; v < NV; v++) {
       
     curva_mean[v] /= area[v];
-    energy[v] = 2 * curva_mean[v]*curva_mean[v]*area[v];
+    energy[v] = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
 
     /*for verification*/
     area_tot_split += area[v];

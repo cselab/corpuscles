@@ -48,6 +48,8 @@ void energy_gompper_kroll1() {
   real area_tot_tri, area_tot_voronoi;
   real energy_tot;
 
+  real C0, H0;
+  
   MALLOC(NV, &lbx);
   MALLOC(NV, &lby);
   MALLOC(NV, &lbz);
@@ -55,6 +57,9 @@ void energy_gompper_kroll1() {
   MALLOC(NV, &energy);
   MALLOC(NV, &area);
 
+  C0=0;
+  H0=C0/2.0;
+  
   for (v = 0; v < NV; v++) {
     
     lbx[v] = 0;
@@ -133,7 +138,7 @@ void energy_gompper_kroll1() {
     curva_mean[v] /= len;
     curva_mean[v] /= 2;
     
-    energy[v] = 2 * curva_mean[v]* curva_mean[v] * area[v];
+    energy[v] = 2 * ( curva_mean[v] - H0) * ( curva_mean[v] - H0) * area[v];
 
     /*for verification, to be deleted*/
     area_tot_voronoi += area[v];
@@ -178,6 +183,8 @@ void energy_gompper_kroll2() {
   real rxy, phi;
   real area_tot_tri, area_tot_voronoi;
   real energy_tot;
+
+  real C0, H0;
   
   MALLOC(NV, &lbx);
   MALLOC(NV, &lby);
@@ -185,6 +192,10 @@ void energy_gompper_kroll2() {
   MALLOC(NV, &curva_mean);
   MALLOC(NV, &energy);
   MALLOC(NV, &area);
+
+
+  C0 = 0;
+  H0 = C0/2.0;
   
   for (v = 0; v < NV; v++) {
     
@@ -260,7 +271,7 @@ void energy_gompper_kroll2() {
     curva_mean[v] /= len;
     curva_mean[v] /= 2;
     
-    energy[v] = 2 * curva_mean[v]* curva_mean[v] * area[v];
+    energy[v] = 2 * ( curva_mean[v] - H0) * ( curva_mean[v] - H0)  * area[v];
 
     /*for verification, to be deleted*/
     area_tot_voronoi += area[v];
