@@ -7,6 +7,7 @@
 #include <he/util.h>
 #include <he/x.h>
 #include <he/vec.h>
+#include <he/ddih.h>
 #include <he/tri.h>
 #include <he/dtri.h>
 #include <he/memory.h>
