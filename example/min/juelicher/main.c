@@ -73,11 +73,7 @@ static real energy(const real *xx, const real *yy, const real *zz) {
 
   C0=0;
   H0=C0/2.0;
-  for (v = 0; v < NV; v++) {
-    curva_mean[v] = 0;
-    ENERGY[v]     = 0;
-    AREA[v]       = 0;
-  }
+  zero(NV, curva_mean); zero(NV, ENERGY); zero(NV, AREA);
 
   for (e = 0; e < NE; e++) {
 
@@ -142,8 +138,7 @@ static void force(const real *xx, const real *yy, const real *zz,
                   /**/ real *fx, real *fy, real *fz) {
   enum {X, Y, Z};
 
-  real C0, H0;
-  int e, he, t;
+  int e, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
   real u[3], v[3], w[3], g[3], h[3], f[3];
@@ -159,22 +154,11 @@ static void force(const real *xx, const real *yy, const real *zz,
   real len0, theta0, lentheta0, area0;
   real aream, arean;
   real coef, coef1;
-  C0 = 0;
-  H0 = C0/2.0;
 
-  for (i = 0; i < NV; i++) {
-
-    lentheta[i] = 0;
-    AREA[i]     = 0;
-  }
+  zero(NV, lentheta); zero(NV, AREA);
 
   //1st loop;
   for (e = 0; e < NE; e++) {
-
-    he = hdg_edg(e);
-
-    if ( bnd(he) ) continue;
-
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
 
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
@@ -208,11 +192,6 @@ static void force(const real *xx, const real *yy, const real *zz,
 
   //3rd loop;
   for (e = 0; e < NE; e++) {
-
-    he = hdg_edg(e);
-
-    if ( bnd(he) ) continue;
-
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
 
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
@@ -223,11 +202,11 @@ static void force(const real *xx, const real *yy, const real *zz,
 
     vec_norm(u, unorm);
 
-    coef = -(lentheta[j]/AREA[j]/4.0 - H0) * theta0;
+    coef = -(lentheta[j]/AREA[j]/4.0) * theta0;
     vec_scalar_append(unorm, -Kb*coef, j, fx, fy, fz);
     vec_scalar_append(unorm, Kb*coef, k, fx, fy, fz);
 
-    coef = -(lentheta[k]/AREA[k]/4.0 - H0) * theta0;
+    coef = -(lentheta[k]/AREA[k]/4.0) * theta0;
     vec_scalar_append(unorm, -Kb*coef, j, fx, fy, fz);
     vec_scalar_append(unorm, Kb*coef, k, fx, fy, fz);
 
@@ -260,7 +239,7 @@ static void force(const real *xx, const real *yy, const real *zz,
     vec_norm(nmnm, temp_vec);
     vec_negative(temp_vec, nmnm);
 
-    coef =  -(lentheta[j]/AREA[j]/4.0 - H0) * len0 ;
+    coef =  -(lentheta[j]/AREA[j]/4.0) * len0 ;
 
     vec_cross(g, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
@@ -286,7 +265,7 @@ static void force(const real *xx, const real *yy, const real *zz,
     coef1 = coef / arean / 2.0;
     vec_scalar_append(theta_der, Kb*coef1, l, fx, fy, fz);
 
-    coef =  -(lentheta[k]/AREA[k]/4.0 - H0) * len0 ;
+    coef =  -(lentheta[k]/AREA[k]/4.0) * len0 ;
 
     vec_cross(g, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
@@ -331,15 +310,15 @@ static void force(const real *xx, const real *yy, const real *zz,
 
     coef = 1.0/area0/4.0/3.0;
 
-    coef1 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i] - 2.0*H0*H0) * coef;
+    coef1 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i]) * coef;
     vec_cross(w, n, f);
     vec_scalar_append(f, Kb*coef1, i, fx, fy, fz);
 
-    coef1 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j] - 2.0*H0*H0) * coef;
+    coef1 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j]) * coef;
     vec_cross(v, n, f);
     vec_scalar_append(f, Kb*coef1, j, fx, fy, fz);
 
-    coef1 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k] - 2.0*H0*H0) * coef;
+    coef1 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k]) * coef;
     vec_cross(n, u, f);
     vec_scalar_append(f, Kb*coef1, k, fx, fy, fz);
 
@@ -440,7 +419,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     force(XX, YY, ZZ, fx, fy, fz);
     write(/*i*/ fx, fy, fz);
-    printf("%g\n", energy(XX, YY, ZZ));
+    //printf("%g\n", energy(XX, YY, ZZ));
 
     FREE(fx); FREE(fy); FREE(fz);
 
