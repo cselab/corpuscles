@@ -20,8 +20,7 @@
 static real *lentheta, *AREA;
 static real *curva_mean, *ENERGY;
 
-static real Ka, Kv, Ke, Kb;
-static real A0, V0;
+static real Ka, Kv, Ke;
 static const char **argv;
 static const char *me = "min/gompper";
 
@@ -34,7 +33,7 @@ static int scl(/**/ real *p) {
     return HE_OK;
 }
 static void usg() {
-    fprintf(stderr, "%s Ka Kv Kb Ke < OFF\n", me);
+    fprintf(stderr, "%s Ka Kv Ke < OFF\n", me);
     exit(0);
 }
 
@@ -412,7 +411,7 @@ static void energy_fin() {
 
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
-    scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
+    scl(&Ka); scl(&Kv); scl(&Ke);
 }
 
 static real eq_tri_edg(real area) {
@@ -424,6 +423,7 @@ static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); 
 int main(int __UNUSED argc, const char *v[]) {
     real A0, v0, a0, e0;
     real *fx, *fy, *fz;
+    int i;
 
     argv = v; argv++;
     arg();
@@ -444,6 +444,19 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
     min_ini(VECTOR_BFGS2);
+    real *queue[] = {XX, YY, ZZ, NULL};    
+
+    for (i = 0; i < 0; i++) {
+        min_position(/**/ XX, YY, ZZ);
+        if (i % 10 == 0) {
+            punto_fwrite(NV, queue, stdout);
+            printf("\n");
+            MSG("eng: %g", min_energy());
+            off_write(XX, YY, ZZ, "q.off");
+            MSG("dump: q.off");
+        }
+        min_iterate();
+    }
 
     force(XX, YY, ZZ, fx, fy, fz);
     write(/*i*/ fx, fy, fz, AREA);
