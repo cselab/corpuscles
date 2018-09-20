@@ -45,14 +45,13 @@ static void write(real *fx, real *fy, real *fz,
   RZERO(NV, &fm);
   vabs(NV, fx, fy, fz, /**/ fm);
   
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 area; \n");
   real *queue[] = {TH, RR, ZZ, fm, A, NULL};
   punto_fwrite(NV, queue, stdout);
   
   FREE(fm);
   
 }
-void force_juelicher() {
+void force() {
     /*This routine calculates bending force
       according to Juelicher, J. Phys. II France, 1996
     
@@ -304,7 +303,7 @@ void force_juelicher() {
 
 int main() {
   ini("/dev/stdin");
-  force_juelicher();
+  force();
   fin();
   return HE_OK;
 }
