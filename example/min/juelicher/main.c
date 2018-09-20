@@ -178,13 +178,13 @@ static void force(const real *xx, const real *yy, const real *zz,
 
     dedg_abs(c, b, /**/ dc, db);
 
-    coef = -(lentheta[j]/AREA[j]/4.0) * theta0;
-    vec_scalar_append(db, Kb*coef, j, fx, fy, fz);
-    vec_scalar_append(dc, Kb*coef, k, fx, fy, fz);
+    coef = -(lentheta[j]/AREA[j]/4.0) * theta0 * Kb;
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
 
     coef = -(lentheta[k]/AREA[k]/4.0) * theta0;
-    vec_scalar_append(db, Kb*coef, j, fx, fy, fz);
-    vec_scalar_append(dc, Kb*coef, k, fx, fy, fz);
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
   }
 
 
@@ -296,7 +296,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_volume_ini(v0, Kv);
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
-    min_ini(STEEPEST_DESCENT);
+    min_ini(VECTOR_BFGS2);
     real *queue[] = {XX, YY, ZZ, NULL};
 
     for (i = 0; i < 10000; i++) {
