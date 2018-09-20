@@ -95,14 +95,6 @@ static void write(real *fx, real *fy, real *fz,
 }
 
 static real energy() {
-    /*This routine calculates bending energy
-      according to Juelicher, J. Phys. II France, 1996
-
-    It traverses each edge/dihedral to calculate energy.
-    It traverses each vertex to calculate area.
-
-    Version: Xin Bian, 05 June 2018 @CSE Lab, ETH Zurich*/
-
   enum {X, Y, Z};
   int v, e, h, t;
   int i, j, k, l;
@@ -182,22 +174,6 @@ static real energy() {
 
 static void force(const real *xx, const real *yy, const real *zz,
                   /**/ real *fx, real *fy, real *fz) {
-    /*This routine calculates bending force
-      according to Juelicher, J. Phys. II France, 1996
-
-    1st loop;
-    it traverses each edge, which has a dihedral angle,
-    to calculate bond length, dihedral angle and their product.
-    2nd loop;
-    it traverses each triangle to calculate its area and split it
-    1/3 into each of its vertex.
-    3rd lopp;
-    it traverses each edge again, to calculate derivatives.
-    4th lopp;
-    it traverses each triangle again, to calculate derivatives.
-
-    Version: Xin Bian, 14 September 2018 @CSE Lab, ETH Zurich*/
-
   enum {X, Y, Z};
 
   real C0, H0;
