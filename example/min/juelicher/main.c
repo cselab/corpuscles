@@ -1,16 +1,42 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include <real.h>
 #include <he/err.h>
+#include <he/util.h>
 #include <he/x.h>
 #include <he/vec.h>
 #include <he/tri.h>
 #include <he/memory.h>
+#include <he/macro.h>
 #include <he/punto.h>
+
+#include <alg/x.h>
+#include <alg/min.h>
+
+#define FMT_IN   (XE_REAL_IN)
 
 static real *lentheta, *AREA;
 static real *curva_mean, *ENERGY;
+
+static real Ka, Kv, Ke, Kb;
+static real A0, V0;
+static const char **argv;
+static const char *me = "min/gompper";
+
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
+static int scl(/**/ real *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, FMT_IN, p) != 1)
+        ER("not a number '%s'", *argv);
+    argv++;
+    return HE_OK;
+}
+static void usg() {
+    fprintf(stderr, "%s Ka Kv Kb Ke < OFF\n", me);
+    exit(0);
+}
 
 static void zero(int n, real *a) {
     int i;
@@ -392,7 +418,16 @@ static void energy_fin() {
     FREE(ENERGY);
 }
 
-int main() {
+static void arg() {
+    if (*argv != NULL && eq(*argv, "-h")) usg();
+    scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
+}
+
+int main(int __UNUSED argc, const char *v[]) {
+    real a0, e0;
+    argv = v; argv++;
+    arg();
+    
   real *fx, *fy, *fz;
     
   ini("/dev/stdin");
