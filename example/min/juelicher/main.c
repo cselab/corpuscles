@@ -60,17 +60,6 @@ static void get4(const real *xx, const real *yy, const real *zz,
   vec_get(l, xx, yy, zz, d);
 }
 
-static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
-  /*Given n vectors with x, y, z components,
-    calculate the absolute value/Euclidean length for each vector.*/
-
-    int i;
-
-    for (i = 0; i < n; i++)
-        r[i] = sqrt(x[i]*x[i] + y[i]*y[i] + z[i]*z[i]);
-
-}
-
 static real energy(const real *xx, const real *yy, const real *zz) {
   enum {X, Y, Z};
   int v, e, h, t;
@@ -375,18 +364,9 @@ void Force(const real *x, const real *y, const real *z,
     force(x, y, z, /**/ fx, fy, fz);
 }
 
-static void write(real *fx, real *fy, real *fz,
-                  real *A) {
-
-  real *fm;;
-  RZERO(NV, &fm);
-  vabs(NV, fx, fy, fz, /**/ fm);
-
-  real *queue[] = {TH, RR, ZZ, fm, A, NULL};
+static void write(real *fx, real *fy, real *fz) {
+  real *queue[] = {TH, RR, ZZ, fx, fy, fz, NULL};
   punto_fwrite(NV, queue, stdout);
-
-  FREE(fm);
-
 }
 
 static void force_ini() {
@@ -459,7 +439,7 @@ int main(int __UNUSED argc, const char *v[]) {
     }
 
     force(XX, YY, ZZ, fx, fy, fz);
-    write(/*i*/ fx, fy, fz, AREA);
+    write(/*i*/ fx, fy, fz);
     printf("%g\n", energy(XX, YY, ZZ));
 
     FREE(fx); FREE(fy); FREE(fz);
