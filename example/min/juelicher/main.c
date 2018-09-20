@@ -423,27 +423,38 @@ static void arg() {
     scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
+static real eq_tri_edg(real area) {
+    /* area = sqrt(3)/4 * edg^2 */
+    return 2*sqrt(area)/pow(3, 0.25);
+}
+static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
+
 int main(int __UNUSED argc, const char *v[]) {
-    real a0, e0;
+    real A0, v0, a0, e0;    
+    real *fx, *fy, *fz;
+    
     argv = v; argv++;
     arg();
+    ini("/dev/stdin");
 
-  real *fx, *fy, *fz;
+    A0 = area();
+    a0 = A0/NT;   v0 = area2volume(A0); e0 = eq_tri_edg(a0);
+    MSG("v0/volume(): %g", v0/volume());
+    MSG("area, volume, edg: %g %g %g", a0, v0, e0);    
+    
+    force_ini();
+    energy_ini();
 
-  ini("/dev/stdin");
-  force_ini();
-  energy_ini();
+    MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+    zero(NV, fx); zero(NV, fy); zero(NV, fz);
+    force(XX, YY, ZZ, fx, fy, fz);
+    write(/*i*/ fx, fy, fz, AREA);
+    printf("%g\n", energy());
 
-  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
-  zero(NV, fx); zero(NV, fy); zero(NV, fz);
-  force(XX, YY, ZZ, fx, fy, fz);
-  write(/*i*/ fx, fy, fz, AREA);
-  printf("%g\n", energy());
+    FREE(fx); FREE(fy); FREE(fz);
 
-  FREE(fx); FREE(fy); FREE(fz);
-
-  energy_fin();
-  force_fin();
-  fin();
-  return HE_OK;
+    energy_fin();
+    force_fin();
+    fin();
+    return HE_OK;
 }
