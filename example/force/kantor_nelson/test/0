@@ -1,0 +1,2 @@
+# nTEST: 0
+./main < ../../../data/rbc/laplace/0.off > force.out.txt
