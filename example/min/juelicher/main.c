@@ -166,9 +166,7 @@ static void force(const real *xx, const real *yy, const real *zz,
     theta0 = tri_dih(a, b, c, d);
 
     vec_minus(c, b, u);
-    len0 = vec_dot(u, u);
-    len0 = sqrt(len0);
-
+    len0 = vec_abs(u);
     lentheta0    = len0*theta0;
     lentheta[j] += lentheta0;
     lentheta[k] += lentheta0;
