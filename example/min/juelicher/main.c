@@ -12,6 +12,11 @@
 static real *lentheta, *AREA;
 static real *curva_mean, *ENERGY;
 
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
+}
+
 static void get3(const real *xx, const real *yy, const real *zz,
                  int i, int j, int k,
                  /**/ real a[3], real b[3], real c[3]) {
@@ -187,14 +192,8 @@ static void force(const real *xx, const real *yy, const real *zz,
 
     lentheta[i] = 0;
     AREA[i]     = 0;
-
-    fx[i]  = 0;
-    fy[i]  = 0;
-    fz[i]  = 0;
-
   }
-
-
+  
   //1st loop;
   for (e = 0; e < NE; e++) {
 
@@ -401,7 +400,7 @@ int main() {
   energy_ini();
   
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
-  
+  zero(NV, fx); zero(NV, fy); zero(NV, fz);  
   force(XX, YY, ZZ, fx, fy, fz);
   write(/*i*/ fx, fy, fz, AREA);
   printf("%g\n", energy());
