@@ -154,7 +154,7 @@ static void force(const real *xx, const real *yy, const real *zz,
   real temp_vec[3];
   real theta_der[3];
 
-  real len0, theta0, lentheta0, area0;
+  real lentheta0, area0, theta0, len0;
   real aream, arean;
   real coef, coef1, coef2;
 
@@ -164,10 +164,8 @@ static void force(const real *xx, const real *yy, const real *zz,
   for (e = 0; e < NE; e++) {
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-    theta0 = tri_dih(a, b, c, d);
     vec_minus(c, b, u);
-    len0 = vec_abs(u);
-    lentheta0    = len0*theta0;
+    lentheta0    = vec_abs(u) * tri_dih(a, b, c, d);
     lentheta[j] += lentheta0;
     lentheta[k] += lentheta0;
   }
