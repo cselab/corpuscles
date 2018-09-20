@@ -9,7 +9,6 @@
 #include <he/memory.h>
 #include <he/punto.h>
 
-static real *fx, *fy, *fz;
 static real *lentheta, *AREA;
 static real *curva_mean, *ENERGY;
 
@@ -377,17 +376,11 @@ static void force(const real *xx, const real *yy, const real *zz,
 static void force_ini() {
   MALLOC(NV, &lentheta);
   MALLOC(NV, &AREA);
-  MALLOC(NV, &fx);
-  MALLOC(NV, &fy);
-  MALLOC(NV, &fz);
 }
 
 static void force_fin() {
   FREE(lentheta);
   FREE(AREA);
-  FREE(fx);
-  FREE(fy);
-  FREE(fz);
 }
 
 static void energy_ini() {
@@ -401,13 +394,19 @@ static void energy_fin() {
 }
 
 int main() {
+  real *fx, *fy, *fz;
+    
   ini("/dev/stdin");
   force_ini();
   energy_ini();
-
+  
+  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+  
   force(XX, YY, ZZ, fx, fy, fz);
   write(/*i*/ fx, fy, fz, AREA);
   printf("%g\n", energy());
+
+  FREE(fx); FREE(fy); FREE(fz);
 
   energy_fin();
   force_fin();
