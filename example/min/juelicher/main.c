@@ -9,10 +9,10 @@
 #include <he/memory.h>
 #include <he/punto.h>
 
-real *fx, *fy, *fz;
-real *lentheta, *AREA;
+static real *fx, *fy, *fz;
+static real *lentheta, *AREA;
 
-void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
+static void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
 
   vec_get(i, XX, YY, ZZ, a);
   vec_get(j, XX, YY, ZZ, b);
@@ -20,7 +20,7 @@ void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
 
 }
 
-void get4(int i, int j, int k, int l, /**/
+static void get4(int i, int j, int k, int l, /**/
           real a[3], real b[3], real c[3], real d[3]) {
   
   vec_get(i, XX, YY, ZZ, a);
@@ -54,7 +54,8 @@ static void write(real *fx, real *fy, real *fz,
   FREE(fm);
   
 }
-void force() {
+
+static void force() {
     /*This routine calculates bending force
       according to Juelicher, J. Phys. II France, 1996
     
@@ -90,13 +91,6 @@ void force() {
   real len0, theta0, lentheta0, area0;
   real aream, arean;
   real coef, coef1;
-  MALLOC(NV, &lentheta);
-  MALLOC(NV, &AREA);
-
-  MALLOC(NV, &fx);
-  MALLOC(NV, &fy);
-  MALLOC(NV, &fz);
-
   C0 = 0;
   H0 = C0/2.0;
   
@@ -290,19 +284,29 @@ void force() {
   }
   
   write(/*i*/ fx, fy, fz, AREA);
+}
 
-  
+static void force_ini() {
+  MALLOC(NV, &lentheta);
+  MALLOC(NV, &AREA);
+  MALLOC(NV, &fx);
+  MALLOC(NV, &fy);
+  MALLOC(NV, &fz);    
+}
+
+static void force_fin() {
   FREE(lentheta);
   FREE(AREA);
   FREE(fx);
   FREE(fy);
   FREE(fz);
-    
 }
 
 int main() {
   ini("/dev/stdin");
+  force_ini();
   force();
+  force_ini();
   fin();
   return HE_OK;
 }
