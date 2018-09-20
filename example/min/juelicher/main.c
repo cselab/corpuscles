@@ -72,6 +72,14 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
 
 }
 
+real Energy(const real *xx, const real *yy, const real *zz) {
+    return 0.0;
+}
+
+void Force(const real *xx, const real *yy, const real *zz,
+           /**/ real *fx, real *fy, real *fz) {
+}
+
 static void write(real *fx, real *fy, real *fz,
                   real *A) {
 
@@ -100,7 +108,7 @@ static real energy() {
   int i, j, k, l;
   real a[3], b[3], c[3], d[3], u[3], coord[3];
   real cur, len, len2, area0;
-  real theta, rxy, phi;
+  real theta, phi;
   real area_tot_tri, area_tot_split;
   real energy_tot;
   real C0, H0;
@@ -162,9 +170,7 @@ static real energy() {
     /*for verification*/
     area_tot_split += AREA[v];
     energy_tot     += ENERGY[v];
-
     vec_get(v, XX, YY, ZZ, coord);
-    rxy = vec_cylindrical_r(coord);
 
     phi = TH[v];
     if ( phi > pi / 2) {
@@ -447,12 +453,23 @@ int main(int __UNUSED argc, const char *v[]) {
 
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
+
+    f_volume_ini(v0, Kv);
+    f_area_ini(a0, Ka);
+    f_harmonic_ini(e0, Ke);
+    min_ini(VECTOR_BFGS2);    
+    
     force(XX, YY, ZZ, fx, fy, fz);
     write(/*i*/ fx, fy, fz, AREA);
     printf("%g\n", energy());
 
     FREE(fx); FREE(fy); FREE(fz);
 
+    min_fin();
+    f_harmonic_fin();
+    f_volume_fin();
+    f_area_fin();
+    
     energy_fin();
     force_fin();
     fin();
