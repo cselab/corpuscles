@@ -12,21 +12,22 @@
 static real *fx, *fy, *fz;
 static real *lentheta, *AREA;
 
-static void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
+static void get3(const real *xx, const real *yy, const real *zz,
+                 int i, int j, int k,
+                 /**/ real a[3], real b[3], real c[3]) {
 
-  vec_get(i, XX, YY, ZZ, a);
-  vec_get(j, XX, YY, ZZ, b);
-  vec_get(k, XX, YY, ZZ, c);
-
+  vec_get(i, xx, yy, zz, a);
+  vec_get(j, xx, yy, zz, b);
+  vec_get(k, xx, yy, zz, c);
 }
 
-static void get4(int i, int j, int k, int l, /**/
-          real a[3], real b[3], real c[3], real d[3]) {
-  
-  vec_get(i, XX, YY, ZZ, a);
-  vec_get(j, XX, YY, ZZ, b);
-  vec_get(k, XX, YY, ZZ, c);
-  vec_get(l, XX, YY, ZZ, d);
+static void get4(const real *xx, const real *yy, const real *zz,
+                 int i, int j, int k, int l, /**/
+                 real a[3], real b[3], real c[3], real d[3]) {
+  vec_get(i, xx, yy, zz, a);
+  vec_get(j, xx, yy, zz, b);
+  vec_get(k, xx, yy, zz, c);
+  vec_get(l, xx, yy, zz, d);
   
 }
 
@@ -55,7 +56,7 @@ static void write(real *fx, real *fy, real *fz,
   
 }
 
-static void force(const real *XX, const real *YY, const real *ZZ,
+static void force(const real *xx, const real *yy, const real *zz,
                   /**/ real *fx, real *fy, real *fz) {
     /*This routine calculates bending force
       according to Juelicher, J. Phys. II France, 1996
@@ -116,7 +117,7 @@ static void force(const real *XX, const real *YY, const real *ZZ,
     
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     
-    get4(i, j, k, l, /**/ a, b, c, d);
+    get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
     
     theta0 = tri_dih(a, b, c, d);
     
@@ -135,7 +136,7 @@ static void force(const real *XX, const real *YY, const real *ZZ,
       
     i = T0[t]; j = T1[t]; k = T2[t];
       
-    get3(i, j, k, a, b, c);
+    get3(xx, yy, zz, i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
 
     AREA[i] += area0/3;
@@ -154,7 +155,7 @@ static void force(const real *XX, const real *YY, const real *ZZ,
     
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     
-    get4(i, j, k, l, /**/ a, b, c, d);
+    get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
 
     theta0 = tri_dih(a, b, c, d);
 
@@ -258,7 +259,7 @@ static void force(const real *XX, const real *YY, const real *ZZ,
       
     i = T0[t]; j = T1[t]; k = T2[t];
       
-    get3(i, j, k, a, b, c);
+    get3(xx, yy, zz, i, j, k, a, b, c);
 
     area0 = tri_area(a, b, c);
 
