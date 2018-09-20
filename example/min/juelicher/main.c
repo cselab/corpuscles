@@ -145,17 +145,9 @@ static void force(const real *xx, const real *yy, const real *zz,
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
   real da[3], db[3], dc[3], dd[3];
-  real u[3], v[3], w[3], g[3], h[3], f[3];
-
-  real mm[3], nn[3];
-  real m[3], n[3];
-  real mndot;
-  real mnmn[3], nmnm[3];
-  real temp_vec[3];
-  real q[3];
+  real u[3];
 
   real lentheta0, area0, theta0, len0;
-  real aream, arean;
   real coef;
 
   zero(NV, lentheta); zero(NV, AREA);
@@ -307,9 +299,9 @@ int main(int __UNUSED argc, const char *v[]) {
     min_ini(STEEPEST_DESCENT);
     real *queue[] = {XX, YY, ZZ, NULL};
 
-    for (i = 0; i < 0; i++) {
+    for (i = 0; i < 10000; i++) {
         min_position(/**/ XX, YY, ZZ);
-        if (i % 10 == 0) {
+        if (i % 100 == 0) {
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("eng: %g", min_energy());
