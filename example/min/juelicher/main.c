@@ -152,7 +152,7 @@ static void force(const real *xx, const real *yy, const real *zz,
   real mndot;
   real mnmn[3], nmnm[3];
   real temp_vec[3];
-  real theta_der[3];
+  real q[3];
 
   real lentheta0, area0, theta0, len0;
   real aream, arean;
@@ -230,57 +230,33 @@ static void force(const real *xx, const real *yy, const real *zz,
     vec_norm(nmnm, temp_vec);
     vec_negative(temp_vec, nmnm);
 
-    coef =  -(lentheta[j]/AREA[j]/4.0) * len0 * Kb;
+    coef =
+        -(lentheta[j]/AREA[j]/4.0) * len0 * Kb
+        -(lentheta[k]/AREA[k]/4.0) * len0 * Kb;
 
-    vec_cross(g, nmnm, theta_der);
+    vec_cross(g, nmnm, q);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, i, fx, fy, fz);
+    vec_scalar_append(q, coef1, i, fx, fy, fz);
 
-    vec_cross(h, mnmn, theta_der);
+    vec_cross(h, mnmn, q);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
+    vec_scalar_append(q, coef1, j, fx, fy, fz);
 
-    vec_cross(w, nmnm, theta_der);
+    vec_cross(w, nmnm, q);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
+    vec_scalar_append(q, coef1, j, fx, fy, fz);
 
-    vec_cross(f, mnmn, theta_der);
+    vec_cross(f, mnmn, q);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
+    vec_scalar_append(q, coef1, k, fx, fy, fz);
 
-    vec_cross(v, nmnm, theta_der);
+    vec_cross(v, nmnm, q);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
+    vec_scalar_append(q, coef1, k, fx, fy, fz);
 
-    vec_cross(u, mnmn, theta_der);
+    vec_cross(u, mnmn, q);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, l, fx, fy, fz);
-
-    coef =  -(lentheta[k]/AREA[k]/4.0) * len0 * Kb;
-
-    vec_cross(g, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, i, fx, fy, fz);
-
-    vec_cross(h, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
-
-    vec_cross(w, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
-
-    vec_cross(f, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
-
-    vec_cross(v, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
-
-    vec_cross(u, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, l, fx, fy, fz);
+    vec_scalar_append(q, coef1, l, fx, fy, fz);
 
   }
 
