@@ -142,7 +142,7 @@ static void force(const real *xx, const real *yy, const real *zz,
   int e, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
-  real da[3], db[3], dc[3];
+  real da[3], db[3], dc[3], dd[3];
   real u[3], v[3], w[3], g[3], h[3], f[3];
 
   real unorm[3];
@@ -200,6 +200,8 @@ static void force(const real *xx, const real *yy, const real *zz,
 
     len0 = vec_dot(u, u);
     len0 = sqrt(len0);
+
+    ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
 
     aream = tri_area(a, b, c);
     arean = tri_area(d, c, b);
@@ -283,38 +285,15 @@ static void force(const real *xx, const real *yy, const real *zz,
 
   //4th loop
   for (t = 0; t < NT; t++) {
-
     i = T0[t]; j = T1[t]; k = T2[t];
-
     get3(xx, yy, zz, i, j, k, a, b, c);
-
-    area0 = tri_area(a, b, c);
-
-    vec_minus(b, a, u);
-    vec_minus(c, a, v);
-    vec_minus(b, c, w);
-
     dtri_area(a, b, c, /**/ da, db, dc);
-
-    vec_cross(u, v, n);
-
-    coef = 1.0/area0/4.0;
-
     coef2 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i]);
-    coef1 =  coef2 * coef;
-    vec_cross(w, n, f);
     vec_scalar_append(da, Kb*coef2/3.0, i, fx, fy, fz);
-
     coef2 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j]);
-    coef1 = coef2 * coef;
-    vec_cross(v, n, f);
     vec_scalar_append(db, Kb*coef2/3.0, j, fx, fy, fz);
-
     coef2 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k]);
-    coef1 = coef2 * coef;    
-    vec_cross(n, u, f);
     vec_scalar_append(dc, Kb*coef2/3.0, k, fx, fy, fz);
-
   }
 }
 
