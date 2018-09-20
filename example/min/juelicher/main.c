@@ -156,7 +156,7 @@ static void force(const real *xx, const real *yy, const real *zz,
 
   real lentheta0, area0, theta0, len0;
   real aream, arean;
-  real coef, coef1, coef2;
+  real coef, coef1;
 
   zero(NV, lentheta); zero(NV, AREA);
 
@@ -289,12 +289,12 @@ static void force(const real *xx, const real *yy, const real *zz,
     i = T0[t]; j = T1[t]; k = T2[t];
     get3(xx, yy, zz, i, j, k, a, b, c);
     dtri_area(a, b, c, /**/ da, db, dc);
-    coef2 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i]);
-    vec_scalar_append(da, Kb*coef2/3.0, i, fx, fy, fz);
-    coef2 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j]);
-    vec_scalar_append(db, Kb*coef2/3.0, j, fx, fy, fz);
-    coef2 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k]);
-    vec_scalar_append(dc, Kb*coef2/3.0, k, fx, fy, fz);
+    coef = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i]);
+    vec_scalar_append(da, Kb*coef/3.0, i, fx, fy, fz);
+    coef = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j]);
+    vec_scalar_append(db, Kb*coef/3.0, j, fx, fy, fz);
+    coef = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k]);
+    vec_scalar_append(dc, Kb*coef/3.0, k, fx, fy, fz);
   }
 }
 
