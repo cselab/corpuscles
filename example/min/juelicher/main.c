@@ -72,29 +72,7 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
 
 }
 
-real Energy(const real *xx, const real *yy, const real *zz) {
-    return 0.0;
-}
-
-void Force(const real *xx, const real *yy, const real *zz,
-           /**/ real *fx, real *fy, real *fz) {
-}
-
-static void write(real *fx, real *fy, real *fz,
-                  real *A) {
-
-  real *fm;;
-  RZERO(NV, &fm);
-  vabs(NV, fx, fy, fz, /**/ fm);
-
-  real *queue[] = {TH, RR, ZZ, fm, A, NULL};
-  punto_fwrite(NV, queue, stdout);
-
-  FREE(fm);
-
-}
-
-static real energy() {
+static real energy(const real *xx, const real *yy, const real *zz) {
   enum {X, Y, Z};
   int v, e, h, t;
   int i, j, k, l;
@@ -121,7 +99,7 @@ static real energy() {
 
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
 
-    get4(XX, YY, ZZ, i, j, k, l, /**/ a, b, c, d);
+    get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
 
     theta = tri_dih(a, b, c, d);
 
@@ -141,7 +119,7 @@ static real energy() {
 
     i = T0[t]; j = T1[t]; k = T2[t];
 
-    get3(XX, YY, ZZ, i, j, k, a, b, c);
+    get3(xx, yy, zz, i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
 
     AREA[i] += area0/3;
@@ -380,6 +358,38 @@ static void force(const real *xx, const real *yy, const real *zz,
   }
 }
 
+real Energy(const real *x, const real *y, const real *z) {
+    real a, v, e, b;
+    a = f_area_energy(x, y, z);
+    v = f_volume_energy(x, y, z);
+    e = f_harmonic_energy(x, y, z);
+    b = energy(x, y, z);
+    return a + v + e + b;
+}
+
+void Force(const real *x, const real *y, const real *z,
+           /**/ real *fx, real *fy, real *fz) {
+    zero(NV, fx); zero(NV, fy); zero(NV, fz);
+    f_area_force(x, y, z, /**/ fx, fy, fz);
+    f_volume_force(x, y, z, /**/ fx, fy, fz);
+    f_harmonic_force(x, y, z, /**/ fx, fy, fz);
+    force(x, y, z, /**/ fx, fy, fz);
+}
+
+static void write(real *fx, real *fy, real *fz,
+                  real *A) {
+
+  real *fm;;
+  RZERO(NV, &fm);
+  vabs(NV, fx, fy, fz, /**/ fm);
+
+  real *queue[] = {TH, RR, ZZ, fm, A, NULL};
+  punto_fwrite(NV, queue, stdout);
+
+  FREE(fm);
+
+}
+
 static void force_ini() {
   MALLOC(NV, &lentheta);
   MALLOC(NV, &AREA);
@@ -412,9 +422,9 @@ static real eq_tri_edg(real area) {
 static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real A0, v0, a0, e0;    
+    real A0, v0, a0, e0;
     real *fx, *fy, *fz;
-    
+
     argv = v; argv++;
     arg();
     ini("/dev/stdin");
@@ -422,8 +432,8 @@ int main(int __UNUSED argc, const char *v[]) {
     A0 = area();
     a0 = A0/NT;   v0 = area2volume(A0); e0 = eq_tri_edg(a0);
     MSG("v0/volume(): %g", v0/volume());
-    MSG("area, volume, edg: %g %g %g", a0, v0, e0);    
-    
+    MSG("area, volume, edg: %g %g %g", a0, v0, e0);
+
     force_ini();
     energy_ini();
 
@@ -433,11 +443,11 @@ int main(int __UNUSED argc, const char *v[]) {
     f_volume_ini(v0, Kv);
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
-    min_ini(VECTOR_BFGS2);    
-    
+    min_ini(VECTOR_BFGS2);
+
     force(XX, YY, ZZ, fx, fy, fz);
     write(/*i*/ fx, fy, fz, AREA);
-    printf("%g\n", energy());
+    printf("%g\n", energy(XX, YY, ZZ));
 
     FREE(fx); FREE(fy); FREE(fz);
 
@@ -445,7 +455,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_harmonic_fin();
     f_volume_fin();
     f_area_fin();
-    
+
     energy_fin();
     force_fin();
     fin();
