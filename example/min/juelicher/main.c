@@ -160,7 +160,6 @@ static void force(const real *xx, const real *yy, const real *zz,
 
   zero(NV, lentheta); zero(NV, AREA);
 
-  //1st loop;
   for (e = 0; e < NE; e++) {
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
@@ -170,7 +169,6 @@ static void force(const real *xx, const real *yy, const real *zz,
     lentheta[k] += lentheta0;
   }
 
-  //2nd loop;
   for (t = 0; t < NT; t++) {
     i = T0[t]; j = T1[t]; k = T2[t];
     get3(xx, yy, zz, i, j, k, a, b, c);
@@ -181,7 +179,6 @@ static void force(const real *xx, const real *yy, const real *zz,
   }
 
 
-  //3rd loop;
   for (e = 0; e < NE; e++) {
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
@@ -196,11 +193,14 @@ static void force(const real *xx, const real *yy, const real *zz,
     coef = -(lentheta[k]/AREA[k]/4.0) * theta0;
     vec_scalar_append(db, Kb*coef, j, fx, fy, fz);
     vec_scalar_append(dc, Kb*coef, k, fx, fy, fz);
+  }
 
 
+  for (e = 0; e < NE; e++) {
+    i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+    get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
     ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
 
-    
     aream = tri_area(a, b, c);
     arean = tri_area(d, c, b);
 
@@ -376,7 +376,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
     min_ini(STEEPEST_DESCENT);
-    real *queue[] = {XX, YY, ZZ, NULL};    
+    real *queue[] = {XX, YY, ZZ, NULL};
 
     for (i = 0; i < 0; i++) {
         min_position(/**/ XX, YY, ZZ);
