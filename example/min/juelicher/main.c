@@ -307,8 +307,7 @@ int main() {
   force_ini();
   force(XX, YY, ZZ, fx, fy, fz);
   write(/*i*/ fx, fy, fz, AREA);
-  
-  force_ini();
+  force_fin();
   fin();
   return HE_OK;
 }
