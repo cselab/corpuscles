@@ -28,7 +28,6 @@ static void get4(const real *xx, const real *yy, const real *zz,
   vec_get(j, xx, yy, zz, b);
   vec_get(k, xx, yy, zz, c);
   vec_get(l, xx, yy, zz, d);
-  
 }
 
 static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
@@ -54,6 +53,105 @@ static void write(real *fx, real *fy, real *fz,
   
   FREE(fm);
   
+}
+
+static void energy() {
+    /*This routine calculates bending energy
+      according to Juelicher, J. Phys. II France, 1996
+    
+    It traverses each edge/dihedral to calculate energy.
+    It traverses each vertex to calculate area.
+    
+    Version: Xin Bian, 05 June 2018 @CSE Lab, ETH Zurich*/
+  
+  enum {X, Y, Z};
+  int v, e, h, t;
+  int i, j, k, l;
+  real a[3], b[3], c[3], d[3], u[3], coord[3];
+  real *curva_mean, *energy;
+  real cur, len, len2, area0;
+  real theta, rxy, phi;
+  real area_tot_tri, area_tot_split;
+  real energy_tot;
+
+  real C0, H0;
+  
+  MALLOC(NV, &curva_mean);
+  MALLOC(NV, &energy);
+
+  C0=0;
+  H0=C0/2.0;
+  
+  for (v = 0; v < NV; v++) {
+    curva_mean[v] = 0;
+    energy[v]     = 0;
+    AREA[v]       = 0;
+  }
+  
+  for (e = 0; e < NE; e++) {
+    
+    h = hdg_edg(e);
+    
+    if ( bnd(h) ) continue;      
+    
+    i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+    
+    get4(XX, YY, ZZ, i, j, k, l, /**/ a, b, c, d);
+    
+    theta = tri_dih(a, b, c, d);
+    
+    vec_minus(b, c, u);
+    len2 = vec_dot(u, u);
+    len  = sqrt(len2);
+    
+    cur = len*theta/4;
+    curva_mean[j] += cur;
+    curva_mean[k] += cur;
+    
+  }
+
+  area_tot_tri = 0;
+
+  for (t = 0; t < NT; t++) {
+      
+    i = T0[t]; j = T1[t]; k = T2[t];
+      
+    get3(XX, YY, ZZ, i, j, k, a, b, c);
+    area0 = tri_area(a, b, c);
+
+    AREA[i] += area0/3;
+    AREA[j] += area0/3;
+    AREA[k] += area0/3;
+
+    area_tot_tri += area0;
+    
+  }
+
+  area_tot_split = 0;
+  energy_tot     = 0;
+  
+  for (v = 0; v < NV; v++) {
+      
+    curva_mean[v] /= AREA[v];
+    energy[v] = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*AREA[v];
+
+    /*for verification*/
+    area_tot_split += AREA[v];
+    energy_tot     += energy[v];
+    
+    vec_get(v, XX, YY, ZZ, coord);
+    rxy = vec_cylindrical_r(coord);
+    
+    phi = TH[v];
+    if ( phi > pi / 2) {
+      phi = pi - phi;
+    }
+  }
+
+  printf("%g\n", energy_tot);
+
+  FREE(curva_mean);
+  FREE(energy);
 }
 
 static void force(const real *xx, const real *yy, const real *zz,
@@ -305,8 +403,11 @@ static void force_fin() {
 int main() {
   ini("/dev/stdin");
   force_ini();
+  
   force(XX, YY, ZZ, fx, fy, fz);
   write(/*i*/ fx, fy, fz, AREA);
+  energy();
+  
   force_fin();
   fin();
   return HE_OK;
