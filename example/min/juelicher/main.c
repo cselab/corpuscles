@@ -219,7 +219,7 @@ static void force(const real *xx, const real *yy, const real *zz,
     lentheta[i] = 0;
     AREA[i]     = 0;
   }
-  
+
   //1st loop;
   for (e = 0; e < NE; e++) {
 
@@ -427,15 +427,15 @@ int main(int __UNUSED argc, const char *v[]) {
     real a0, e0;
     argv = v; argv++;
     arg();
-    
+
   real *fx, *fy, *fz;
-    
+
   ini("/dev/stdin");
   force_ini();
   energy_ini();
-  
+
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
-  zero(NV, fx); zero(NV, fy); zero(NV, fz);  
+  zero(NV, fx); zero(NV, fy); zero(NV, fz);
   force(XX, YY, ZZ, fx, fy, fz);
   write(/*i*/ fx, fy, fz, AREA);
   printf("%g\n", energy());
