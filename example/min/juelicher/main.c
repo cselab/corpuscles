@@ -13,6 +13,7 @@
 #include <he/memory.h>
 #include <he/macro.h>
 #include <he/punto.h>
+#include <he/dedg.h>
 
 #include <alg/x.h>
 #include <alg/min.h>
@@ -146,7 +147,6 @@ static void force(const real *xx, const real *yy, const real *zz,
   real da[3], db[3], dc[3], dd[3];
   real u[3], v[3], w[3], g[3], h[3], f[3];
 
-  real unorm[3];
   real mm[3], nn[3];
   real m[3], n[3];
   real mndot;
@@ -186,25 +186,25 @@ static void force(const real *xx, const real *yy, const real *zz,
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
     theta0 = tri_dih(a, b, c, d);
-    vec_minus(c, b, u);
-    vec_norm(u, unorm);
+
+    dedg_abs(c, b, /**/ dc, db);
 
     coef = -(lentheta[j]/AREA[j]/4.0) * theta0;
-    vec_scalar_append(unorm, -Kb*coef, j, fx, fy, fz);
-    vec_scalar_append(unorm, Kb*coef, k, fx, fy, fz);
+    vec_scalar_append(db, Kb*coef, j, fx, fy, fz);
+    vec_scalar_append(dc, Kb*coef, k, fx, fy, fz);
 
     coef = -(lentheta[k]/AREA[k]/4.0) * theta0;
-    vec_scalar_append(unorm, -Kb*coef, j, fx, fy, fz);
-    vec_scalar_append(unorm, Kb*coef, k, fx, fy, fz);
+    vec_scalar_append(db, Kb*coef, j, fx, fy, fz);
+    vec_scalar_append(dc, Kb*coef, k, fx, fy, fz);
 
-    len0 = vec_dot(u, u);
-    len0 = sqrt(len0);
 
     ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
 
+    
     aream = tri_area(a, b, c);
     arean = tri_area(d, c, b);
 
+    vec_minus(c, b, u);
     vec_minus(a, b, v);
     vec_minus(c, a, w);
 
@@ -218,6 +218,8 @@ static void force(const real *xx, const real *yy, const real *zz,
     vec_norm(mm, m);
     vec_norm(nn, n);
 
+    len0 = vec_dot(u, u);
+    len0 = sqrt(len0);
     mndot = vec_dot(m,n);
 
     vec_linear_combination(1.0, m, -mndot, n, mnmn);
