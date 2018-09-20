@@ -8,6 +8,7 @@
 #include <he/x.h>
 #include <he/vec.h>
 #include <he/tri.h>
+#include <he/dtri.h>
 #include <he/memory.h>
 #include <he/macro.h>
 #include <he/punto.h>
@@ -141,6 +142,7 @@ static void force(const real *xx, const real *yy, const real *zz,
   int e, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
+  real da[3], db[3], dc[3];
   real u[3], v[3], w[3], g[3], h[3], f[3];
 
   real unorm[3];
@@ -153,7 +155,7 @@ static void force(const real *xx, const real *yy, const real *zz,
 
   real len0, theta0, lentheta0, area0;
   real aream, arean;
-  real coef, coef1;
+  real coef, coef1, coef2;
 
   zero(NV, lentheta); zero(NV, AREA);
 
@@ -292,21 +294,26 @@ static void force(const real *xx, const real *yy, const real *zz,
     vec_minus(c, a, v);
     vec_minus(b, c, w);
 
+    dtri_area(a, b, c, /**/ da, db, dc);
+
     vec_cross(u, v, n);
 
-    coef = 1.0/area0/4.0/3.0;
+    coef = 1.0/area0/4.0;
 
-    coef1 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i]) * coef;
+    coef2 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i]);
+    coef1 =  coef2 * coef;
     vec_cross(w, n, f);
-    vec_scalar_append(f, Kb*coef1, i, fx, fy, fz);
+    vec_scalar_append(da, Kb*coef2/3.0, i, fx, fy, fz);
 
-    coef1 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j]) * coef;
+    coef2 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j]);
+    coef1 = coef2 * coef;
     vec_cross(v, n, f);
-    vec_scalar_append(f, Kb*coef1, j, fx, fy, fz);
+    vec_scalar_append(db, Kb*coef2/3.0, j, fx, fy, fz);
 
-    coef1 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k]) * coef;
+    coef2 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k]);
+    coef1 = coef2 * coef;    
     vec_cross(n, u, f);
-    vec_scalar_append(f, Kb*coef1, k, fx, fy, fz);
+    vec_scalar_append(dc, Kb*coef2/3.0, k, fx, fy, fz);
 
   }
 }

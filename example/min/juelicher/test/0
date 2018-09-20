@@ -1,3 +1,3 @@
-# TEST: 0
+# nTEST: 0
 a=1 v=1 b=1 e=1
 ./main $a $v $b $e < ../../../data/rbc/laplace/0.off > force.out.txt
