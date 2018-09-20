@@ -160,44 +160,32 @@ static void force(const real *xx, const real *yy, const real *zz,
   //1st loop;
   for (e = 0; e < NE; e++) {
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
-
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-
     theta0 = tri_dih(a, b, c, d);
-
     vec_minus(c, b, u);
     len0 = vec_abs(u);
     lentheta0    = len0*theta0;
     lentheta[j] += lentheta0;
     lentheta[k] += lentheta0;
-
   }
 
   //2nd loop;
   for (t = 0; t < NT; t++) {
-
     i = T0[t]; j = T1[t]; k = T2[t];
-
     get3(xx, yy, zz, i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
-
     AREA[i] += area0/3;
     AREA[j] += area0/3;
     AREA[k] += area0/3;
-
   }
 
 
   //3rd loop;
   for (e = 0; e < NE; e++) {
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
-
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-
     theta0 = tri_dih(a, b, c, d);
-
     vec_minus(c, b, u);
-
     vec_norm(u, unorm);
 
     coef = -(lentheta[j]/AREA[j]/4.0) * theta0;
