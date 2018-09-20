@@ -9,6 +9,9 @@
 #include <he/memory.h>
 #include <he/punto.h>
 
+real *fx, *fy, *fz;
+real *lentheta, *AREA;
+
 void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
 
   vec_get(i, XX, YY, ZZ, a);
@@ -84,15 +87,11 @@ void force() {
   real temp_vec[3];
   real theta_der[3];
 
-  real *lentheta, *area;
   real len0, theta0, lentheta0, area0;
   real aream, arean;
   real coef, coef1;
-  real *fx, *fy, *fz;
-
-  
   MALLOC(NV, &lentheta);
-  MALLOC(NV, &area);
+  MALLOC(NV, &AREA);
 
   MALLOC(NV, &fx);
   MALLOC(NV, &fy);
@@ -104,7 +103,7 @@ void force() {
   for (i = 0; i < NV; i++) {
 
     lentheta[i] = 0;
-    area[i]     = 0;
+    AREA[i]     = 0;
 
     fx[i]  = 0;
     fy[i]  = 0;
@@ -144,9 +143,9 @@ void force() {
     get3(i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
 
-    area[i] += area0/3;
-    area[j] += area0/3;
-    area[k] += area0/3;
+    AREA[i] += area0/3;
+    AREA[j] += area0/3;
+    AREA[k] += area0/3;
 
   }
 
@@ -168,11 +167,11 @@ void force() {
 
     vec_norm(u, unorm);
     
-    coef = -(lentheta[j]/area[j]/4.0 - H0) * theta0;
+    coef = -(lentheta[j]/AREA[j]/4.0 - H0) * theta0;
     vec_scalar_append(unorm, -coef, j, fx, fy, fz);
     vec_scalar_append(unorm, coef, k, fx, fy, fz);
     
-    coef = -(lentheta[k]/area[k]/4.0 - H0) * theta0;
+    coef = -(lentheta[k]/AREA[k]/4.0 - H0) * theta0;
     vec_scalar_append(unorm, -coef, j, fx, fy, fz);
     vec_scalar_append(unorm, coef, k, fx, fy, fz);
     
@@ -205,7 +204,7 @@ void force() {
     vec_norm(nmnm, temp_vec);
     vec_negative(temp_vec, nmnm);
     
-    coef =  -(lentheta[j]/area[j]/4.0 - H0) * len0 ;
+    coef =  -(lentheta[j]/AREA[j]/4.0 - H0) * len0 ;
 
     vec_cross(g, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
@@ -231,7 +230,7 @@ void force() {
     coef1 = coef / arean / 2.0;
     vec_scalar_append(theta_der, coef1, l, fx, fy, fz);
 
-    coef =  -(lentheta[k]/area[k]/4.0 - H0) * len0 ;
+    coef =  -(lentheta[k]/AREA[k]/4.0 - H0) * len0 ;
 
     vec_cross(g, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
@@ -276,25 +275,25 @@ void force() {
 
     coef = 1.0/area0/4.0/3.0;
 
-    coef1 = (lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0) * coef;
+    coef1 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i] - 2.0*H0*H0) * coef;
     vec_cross(w, n, f);
     vec_scalar_append(f, coef1, i, fx, fy, fz);
     
-    coef1 = (lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0) * coef;
+    coef1 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j] - 2.0*H0*H0) * coef;
     vec_cross(v, n, f);
     vec_scalar_append(f, coef1, j, fx, fy, fz);
     
-    coef1 = (lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0) * coef;    
+    coef1 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k] - 2.0*H0*H0) * coef;    
     vec_cross(n, u, f);
     vec_scalar_append(f, coef1, k, fx, fy, fz);
 
   }
   
-  write(/*i*/ fx, fy, fz, area);
+  write(/*i*/ fx, fy, fz, AREA);
 
   
   FREE(lentheta);
-  FREE(area);
+  FREE(AREA);
   FREE(fx);
   FREE(fy);
   FREE(fz);
