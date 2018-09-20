@@ -55,7 +55,8 @@ static void write(real *fx, real *fy, real *fz,
   
 }
 
-static void force() {
+static void force(const real *XX, const real *YY, const real *ZZ,
+                  /**/ real *fx, real *fy, real *fz) {
     /*This routine calculates bending force
       according to Juelicher, J. Phys. II France, 1996
     
@@ -282,8 +283,6 @@ static void force() {
     vec_scalar_append(f, coef1, k, fx, fy, fz);
 
   }
-  
-  write(/*i*/ fx, fy, fz, AREA);
 }
 
 static void force_ini() {
@@ -305,7 +304,9 @@ static void force_fin() {
 int main() {
   ini("/dev/stdin");
   force_ini();
-  force();
+  force(XX, YY, ZZ, fx, fy, fz);
+  write(/*i*/ fx, fy, fz, AREA);
+  
   force_ini();
   fin();
   return HE_OK;
