@@ -20,7 +20,7 @@
 static real *lentheta, *AREA;
 static real *curva_mean, *ENERGY;
 
-static real Ka, Kv, Ke;
+static real Ka, Kv, Kb, Ke;
 static const char **argv;
 static const char *me = "min/gompper";
 
@@ -33,7 +33,7 @@ static int scl(/**/ real *p) {
     return HE_OK;
 }
 static void usg() {
-    fprintf(stderr, "%s Ka Kv Ke < OFF\n", me);
+    fprintf(stderr, "%s Ka Kv Kb Ke < OFF\n", me);
     exit(0);
 }
 
@@ -146,7 +146,7 @@ static real energy(const real *xx, const real *yy, const real *zz) {
       phi = pi - phi;
     }
   }
-  return energy_tot;
+  return Kb*energy_tot;
 }
 
 static void force(const real *xx, const real *yy, const real *zz,
@@ -235,12 +235,12 @@ static void force(const real *xx, const real *yy, const real *zz,
     vec_norm(u, unorm);
 
     coef = -(lentheta[j]/AREA[j]/4.0 - H0) * theta0;
-    vec_scalar_append(unorm, -coef, j, fx, fy, fz);
-    vec_scalar_append(unorm, coef, k, fx, fy, fz);
+    vec_scalar_append(unorm, -Kb*coef, j, fx, fy, fz);
+    vec_scalar_append(unorm, Kb*coef, k, fx, fy, fz);
 
     coef = -(lentheta[k]/AREA[k]/4.0 - H0) * theta0;
-    vec_scalar_append(unorm, -coef, j, fx, fy, fz);
-    vec_scalar_append(unorm, coef, k, fx, fy, fz);
+    vec_scalar_append(unorm, -Kb*coef, j, fx, fy, fz);
+    vec_scalar_append(unorm, Kb*coef, k, fx, fy, fz);
 
     len0 = vec_dot(u, u);
     len0 = sqrt(len0);
@@ -275,53 +275,53 @@ static void force(const real *xx, const real *yy, const real *zz,
 
     vec_cross(g, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, i, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, i, fx, fy, fz);
 
     vec_cross(h, mnmn, theta_der);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, j, fx, fy, fz);
 
     vec_cross(w, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, j, fx, fy, fz);
 
     vec_cross(f, mnmn, theta_der);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, k, fx, fy, fz);
 
     vec_cross(v, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, k, fx, fy, fz);
 
     vec_cross(u, mnmn, theta_der);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, l, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, l, fx, fy, fz);
 
     coef =  -(lentheta[k]/AREA[k]/4.0 - H0) * len0 ;
 
     vec_cross(g, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, i, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, i, fx, fy, fz);
 
     vec_cross(h, mnmn, theta_der);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, j, fx, fy, fz);
 
     vec_cross(w, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, j, fx, fy, fz);
 
     vec_cross(f, mnmn, theta_der);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, k, fx, fy, fz);
 
     vec_cross(v, nmnm, theta_der);
     coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, k, fx, fy, fz);
 
     vec_cross(u, mnmn, theta_der);
     coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, l, fx, fy, fz);
+    vec_scalar_append(theta_der, Kb*coef1, l, fx, fy, fz);
 
   }
 
@@ -344,15 +344,15 @@ static void force(const real *xx, const real *yy, const real *zz,
 
     coef1 = (lentheta[i]*lentheta[i]/8.0/AREA[i]/AREA[i] - 2.0*H0*H0) * coef;
     vec_cross(w, n, f);
-    vec_scalar_append(f, coef1, i, fx, fy, fz);
+    vec_scalar_append(f, Kb*coef1, i, fx, fy, fz);
 
     coef1 = (lentheta[j]*lentheta[j]/8.0/AREA[j]/AREA[j] - 2.0*H0*H0) * coef;
     vec_cross(v, n, f);
-    vec_scalar_append(f, coef1, j, fx, fy, fz);
+    vec_scalar_append(f, Kb*coef1, j, fx, fy, fz);
 
     coef1 = (lentheta[k]*lentheta[k]/8.0/AREA[k]/AREA[k] - 2.0*H0*H0) * coef;
     vec_cross(n, u, f);
-    vec_scalar_append(f, coef1, k, fx, fy, fz);
+    vec_scalar_append(f, Kb*coef1, k, fx, fy, fz);
 
   }
 }
@@ -411,7 +411,7 @@ static void energy_fin() {
 
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
-    scl(&Ka); scl(&Kv); scl(&Ke);
+    scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
 static real eq_tri_edg(real area) {
@@ -443,7 +443,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_volume_ini(v0, Kv);
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
-    min_ini(VECTOR_BFGS2);
+    min_ini(STEEPEST_DESCENT);
     real *queue[] = {XX, YY, ZZ, NULL};    
 
     for (i = 0; i < 0; i++) {
