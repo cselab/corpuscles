@@ -200,60 +200,20 @@ static void force(const real *xx, const real *yy, const real *zz,
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
     ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
-
-    aream = tri_area(a, b, c);
-    arean = tri_area(d, c, b);
-
     vec_minus(c, b, u);
-    vec_minus(a, b, v);
-    vec_minus(c, a, w);
-
-    vec_minus(b, d, f);
-    vec_minus(b, c, g);
-    vec_minus(d, c, h);
-
-    vec_cross(u, v, mm);
-    vec_cross(g, h, nn);
-
-    vec_norm(mm, m);
-    vec_norm(nn, n);
-
     len0 = vec_dot(u, u);
     len0 = sqrt(len0);
-    mndot = vec_dot(m,n);
-
-    vec_linear_combination(1.0, m, -mndot, n, mnmn);
-    vec_norm(mnmn, temp_vec);
-    vec_negative(temp_vec, mnmn);
-
-    vec_linear_combination(1.0, n, -mndot, m, nmnm);
-    vec_norm(nmnm, temp_vec);
-    vec_negative(temp_vec, nmnm);
 
     coef =
         -(lentheta[j]/AREA[j]/4.0) * len0 * Kb
         -(lentheta[k]/AREA[k]/4.0) * len0 * Kb;
 
-    vec_cross(g, nmnm, q);
-    vec_scalar_append(q, coef/aream/2.0, i, fx, fy, fz);
-
-    vec_cross(h, mnmn, q);
-    vec_scalar_append(q, coef/arean/2.0, j, fx, fy, fz);
-
-    vec_cross(w, nmnm, q);
-    vec_scalar_append(q, coef/aream/2.0, j, fx, fy, fz);
-
-    vec_cross(f, mnmn, q);
-    vec_scalar_append(q, coef/arean/2.0, k, fx, fy, fz);
-
-    vec_cross(v, nmnm, q);
-    vec_scalar_append(q, coef/aream/2.0, k, fx, fy, fz);
-
-    vec_cross(u, mnmn, q);
-    vec_scalar_append(q, coef/arean/2.0, l, fx, fy, fz);
+    vec_scalar_append(da, coef, i, fx, fy, fz);
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
+    vec_scalar_append(dd, coef, l, fx, fy, fz);
   }
 
-  //4th loop
   for (t = 0; t < NT; t++) {
     i = T0[t]; j = T1[t]; k = T2[t];
     get3(xx, yy, zz, i, j, k, a, b, c);
