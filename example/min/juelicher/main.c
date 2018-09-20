@@ -365,8 +365,8 @@ void Force(const real *x, const real *y, const real *z,
 }
 
 static void write(real *fx, real *fy, real *fz) {
-  real *queue[] = {TH, RR, ZZ, fx, fy, fz, NULL};
-  punto_fwrite(NV, queue, stdout);
+    real *queue[] = {XX, YY, ZZ, fx, fy, fz, NULL};
+    punto_fwrite(NV, queue, stdout);
 }
 
 static void force_ini() {
