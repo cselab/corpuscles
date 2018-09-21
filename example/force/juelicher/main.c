@@ -44,9 +44,10 @@ static void write(real *fx, real *fy, real *fz,
   real *fm;;
   RZERO(NV, &fm);
   vabs(NV, fx, fy, fz, /**/ fm);
-  
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, A, NULL};
+
+  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 fx; 6 fy; 7 fz; 8 area; \n");
+  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, A, NULL};
+
   punto_fwrite(NV, queue, stdout);
   
   FREE(fm);
