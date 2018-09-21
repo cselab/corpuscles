@@ -299,7 +299,7 @@ int main(int __UNUSED argc, const char *v[]) {
     min_ini(VECTOR_BFGS2);
     real *queue[] = {XX, YY, ZZ, NULL};
 
-    for (i = 0; i < 10000; i++) {
+    for (i = 0; i < 0; i++) {
         min_position(/**/ XX, YY, ZZ);
         if (i % 100 == 0) {
             punto_fwrite(NV, queue, stdout);
@@ -313,7 +313,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     force(XX, YY, ZZ, fx, fy, fz);
     write(/*i*/ fx, fy, fz);
-    //printf("%g\n", energy(XX, YY, ZZ));
+    printf("%g\n", energy(XX, YY, ZZ));
 
     FREE(fx); FREE(fy); FREE(fz);
 
