@@ -68,7 +68,7 @@ static real energy(const real *xx, const real *yy, const real *zz) {
   int v, e, h, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3], u[3], coord[3];
-  real cur, len, len2, area0;
+  real cur, len, area0;
   real theta, phi;
   real area_tot_tri, area_tot_split;
   real energy_tot;
@@ -91,8 +91,7 @@ static real energy(const real *xx, const real *yy, const real *zz) {
     theta = tri_dih(a, b, c, d);
 
     vec_minus(b, c, u);
-    len2 = vec_dot(u, u);
-    len  = sqrt(len2);
+    len = vec_abs(u);
 
     cur = len*theta/4;
     curva_mean[j] += cur;
