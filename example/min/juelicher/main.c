@@ -70,7 +70,6 @@ static real energy(const real *xx, const real *yy, const real *zz) {
   real a[3], b[3], c[3], d[3], u[3];
   real cur, len, area0;
   real theta;
-  real area_tot_tri;
   real energy_tot;
   real C0, H0;
 
@@ -79,42 +78,29 @@ static real energy(const real *xx, const real *yy, const real *zz) {
   zero(NV, curva_mean); zero(NV, ENERGY); zero(NV, AREA);
 
   for (e = 0; e < NE; e++) {
-
     h = hdg_edg(e);
-
     if ( bnd(h) ) continue;
-
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
-
     get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-
     theta = tri_dih(a, b, c, d);
-
     vec_minus(b, c, u);
     len = vec_abs(u);
-
     cur = len*theta/4;
     curva_mean[j] += cur;
     curva_mean[k] += cur;
 
   }
 
-  area_tot_tri = 0;
-
   for (t = 0; t < NT; t++) {
-
     i = T0[t]; j = T1[t]; k = T2[t];
-
     get3(xx, yy, zz, i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
-
     AREA[i] += area0/3;
     AREA[j] += area0/3;
     AREA[k] += area0/3;
 
-    area_tot_tri += area0;
-
   }
+  
   energy_tot     = 0;
   for (v = 0; v < NV; v++) {
     curva_mean[v] /= AREA[v];
