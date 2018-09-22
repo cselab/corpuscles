@@ -279,7 +279,7 @@ int main(int __UNUSED argc, const char *v[]) {
     }
 
     force(XX, YY, ZZ, fx, fy, fz);
-    write(/*i*/ fx, fy, fz);
+    write(fx, fy, fz);
     printf("%g\n", energy(XX, YY, ZZ));
 
     FREE(fx); FREE(fy); FREE(fz);
