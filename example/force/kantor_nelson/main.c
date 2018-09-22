@@ -8,6 +8,7 @@
 #include <he/tri.h>
 #include <he/memory.h>
 #include <he/punto.h>
+#include <he/ddih.h>
 
 
 void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
@@ -47,11 +48,65 @@ static void write(real *fx, real *fy, real *fz,
   RZERO(NV, &fm);
   vabs(NV, fx, fy, fz, /**/ fm);
   
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, A, NULL};
+  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 fx; 6 fy; 7 fz; 8 area; \n");
+  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, A, NULL};
   punto_fwrite(NV, queue, stdout);
   
   FREE(fm);
+  
+}
+
+
+void dihedral_derivative(const real a[3], const real b[3], const real c[3], const real d[3],
+			 /**/ real da[3], real db[3], real dc[3], real dd[3]){
+
+  real aream, arean;
+  real u[3], v[3], w[3], g[3], h[3], f[3];
+  real mm[3], nn[3];
+  real m[3], n[3];
+  real mndot;
+  real mnmn[3], nmnm[3];
+  real tvec1[3], tvec2[3];
+  real coef;
+
+  aream = tri_area(a, b, c);
+  arean = tri_area(d, c, b);
+  
+  vec_minus(c, b, u);
+  vec_minus(a, b, v);
+  vec_minus(c, a, w);
+  
+  vec_minus(b, d, f);
+  vec_minus(b, c, g);
+  vec_minus(d, c, h);
+  
+  vec_cross(u, v, mm);
+  vec_cross(g, h, nn);
+  
+  vec_norm(mm, m);
+  vec_norm(nn, n);
+  
+  mndot = vec_dot(m,n);
+
+  vec_linear_combination(1.0, m, -mndot, n, tvec1);
+  vec_norm(tvec1, mnmn);
+  
+  vec_linear_combination(1.0, n, -mndot, m, tvec2);
+  vec_norm(tvec2, nmnm);
+  
+  vec_cross(g, nmnm, tvec1);
+  vec_scalar(tvec1, 1.0/aream/2.0, da);
+  
+  vec_cross(h, mnmn, tvec1);
+  vec_cross(w, nmnm, tvec2);
+  vec_linear_combination(1.0/arean/2.0, tvec1, 1.0/aream/2.0, tvec2, db);
+
+  vec_cross(f, mnmn, tvec1);
+  vec_cross(v, nmnm, tvec2);
+  vec_linear_combination(1.0/arean/2.0, tvec1, 1.0/aream/2.0, tvec2, dc);
+
+  vec_cross(u, mnmn, tvec1);
+  vec_scalar(tvec1, 1.0/arean/2.0, dd);
   
 }
 
@@ -67,23 +122,16 @@ void force_kantor_nelson() {
   int e, hedge, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
-  real u[3], v[3], w[3], g[3], h[3], f[3];
-
-  real mm[3], nn[3];
-  real m[3], n[3];
-  real mndot;
-  real mnmn[3], nmnm[3];
-  real temp_vec[3];
-  real theta_der[3];
-  
+  real da[3], db[3], dc[3], dd[3];   
   real *area;
   real *fx, *fy, *fz;
   real coef, coef1, coef2;
   real theta0, area0, aream, arean;
   real theta;
 
- 
-  coef   = 2.0*sqrt(3.0);
+  
+  //coef1   = 2.0*sqrt(3.0);
+  coef1   = 2.0;
   theta0 = 0;
   
   MALLOC(NV, &area);
@@ -111,61 +159,27 @@ void force_kantor_nelson() {
 
     get4(i, j, k, l, /**/ a, b, c, d);
 
-    aream = tri_area(a, b, c);
-    arean = tri_area(d, c, b);
-    
+    /*If the angle theta between the two normal vectors
+    is greater than pi/2, it returns a negative value theta
+    instead of (pi-theta)*/
     theta = tri_dih(a, b, c, d);
 
-    coef1 = -(sin(theta)*cos(theta0) - cos(theta)*sin(theta0));
+    //printf("%f\n", theta);
 
-    vec_minus(c, b, u);
-    vec_minus(a, b, v);
-    vec_minus(c, a, w);
+    coef2 = -(sin(theta)*cos(theta0) - cos(theta)*sin(theta0));
+
+    /*dihedral_derivative(a,b,c,d, da, db, dc, dd);
+    printf("%f %f %f\n", a[0], a[1], a[2]);
+    printf("%f %f %f\n", da[0], da[1], da[2]);*/
+    ddih_angle(a,b,c,d, da, db, dc, dd);
+    //printf("%f %f %f\n\n", da[0], da[1], da[2]);
     
-    vec_minus(b, d, f);
-    vec_minus(b, c, g);
-    vec_minus(d, c, h);
+    coef = coef1 * coef2 ;
 
-    vec_cross(u, v, mm);
-    vec_cross(g, h, nn);
-
-    vec_norm(mm, m);
-    vec_norm(nn, n);
-    
-    mndot = vec_dot(m,n);
-
-    vec_linear_combination(1.0, m, -mndot, n, mnmn);
-    vec_norm(mnmn, temp_vec);
-    vec_negative(temp_vec, mnmn);
-    
-    vec_linear_combination(1.0, n, -mndot, m, nmnm);
-    vec_norm(nmnm, temp_vec);
-    vec_negative(temp_vec, nmnm);
-
-
-    vec_cross(g, nmnm, theta_der);
-    coef2 = coef * coef1 / aream / 2.0;
-    vec_scalar_append(theta_der, coef2, i, fx, fy, fz);
-
-    vec_cross(h, mnmn, theta_der);
-    coef2 = coef * coef1 / arean / 2.0;
-    vec_scalar_append(theta_der, coef2, j, fx, fy, fz);
-    
-    vec_cross(w, nmnm, theta_der);
-    coef2 = coef * coef1 / aream / 2.0;
-    vec_scalar_append(theta_der, coef2, j, fx, fy, fz);
-    
-    vec_cross(f, mnmn, theta_der);
-    coef2 = coef * coef1 / arean / 2.0;
-    vec_scalar_append(theta_der, coef2, k, fx, fy, fz);
-    
-    vec_cross(v, nmnm, theta_der);
-    coef2 = coef * coef1 / aream / 2.0;
-    vec_scalar_append(theta_der, coef2, k, fx, fy, fz);
-
-    vec_cross(u, mnmn, theta_der);
-    coef2 = coef * coef1 / arean / 2.0;
-    vec_scalar_append(theta_der, coef2, l, fx, fy, fz);
+    vec_scalar_append(da, coef, i, fx, fy, fz);
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
+    vec_scalar_append(dd, coef, l, fx, fy, fz);
 
   }
 
