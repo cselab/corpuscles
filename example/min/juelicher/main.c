@@ -20,9 +20,7 @@
 
 #define FMT_IN   (XE_REAL_IN)
 
-static real *lentheta, *AREA;
-static real *curva_mean, *ENERGY;
-
+static real *lentheta, *AREA, *curva_mean;
 static real Ka, Kv, Kb, Ke;
 static const char **argv;
 static const char *me = "min/gompper";
@@ -227,13 +225,9 @@ static void force_fin() {
 
 static void energy_ini() {
     MALLOC(NV, &curva_mean);
-    MALLOC(NV, &ENERGY);
 }
 
-static void energy_fin() {
-    FREE(curva_mean);
-    FREE(ENERGY);
-}
+static void energy_fin() { FREE(curva_mean); }
 
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
