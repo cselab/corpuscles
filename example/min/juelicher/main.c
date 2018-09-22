@@ -67,10 +67,10 @@ static real energy(const real *xx, const real *yy, const real *zz) {
   enum {X, Y, Z};
   int v, e, h, t;
   int i, j, k, l;
-  real a[3], b[3], c[3], d[3], u[3], coord[3];
+  real a[3], b[3], c[3], d[3], u[3];
   real cur, len, area0;
-  real theta, phi;
-  real area_tot_tri, area_tot_split;
+  real theta;
+  real area_tot_tri;
   real energy_tot;
   real C0, H0;
 
@@ -115,23 +115,11 @@ static real energy(const real *xx, const real *yy, const real *zz) {
     area_tot_tri += area0;
 
   }
-
-  area_tot_split = 0;
   energy_tot     = 0;
-
   for (v = 0; v < NV; v++) {
-
     curva_mean[v] /= AREA[v];
     ENERGY[v] = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*AREA[v];
-    /*for verification*/
-    area_tot_split += AREA[v];
     energy_tot     += ENERGY[v];
-    vec_get(v, XX, YY, ZZ, coord);
-
-    phi = TH[v];
-    if ( phi > pi / 2) {
-      phi = pi - phi;
-    }
   }
   return Kb*energy_tot;
 }
