@@ -39,6 +39,7 @@ int  f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, re
 
 int f_volume_ini(real v0, real K);
 int f_volume_fin();
+int f_volume_set_v(real v);
 real f_volume_energy(const real *x, const real *y, const real *z);
 int  f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
