@@ -70,12 +70,12 @@ static real energy(const real *xx, const real *yy, const real *zz) {
   real a[3], b[3], c[3], d[3], u[3];
   real cur, len, area0;
   real theta;
-  real energy_tot;
+  real en, e0;
   real C0, H0;
 
   C0=0;
   H0=C0/2.0;
-  zero(NV, curva_mean); zero(NV, ENERGY); zero(NV, AREA);
+  zero(NV, curva_mean); zero(NV, AREA);
 
   for (e = 0; e < NE; e++) {
     h = hdg_edg(e);
@@ -101,13 +101,13 @@ static real energy(const real *xx, const real *yy, const real *zz) {
 
   }
   
-  energy_tot     = 0;
+  en  = 0;
   for (v = 0; v < NV; v++) {
     curva_mean[v] /= AREA[v];
-    ENERGY[v] = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*AREA[v];
-    energy_tot     += ENERGY[v];
+    e0 = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*AREA[v];
+    en  += e0;
   }
-  return Kb*energy_tot;
+  return Kb*en;
 }
 
 static void force(const real *xx, const real *yy, const real *zz,
