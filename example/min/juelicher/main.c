@@ -241,7 +241,7 @@ static real eq_tri_edg(real area) {
 static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real A0, v0, a0, e0;
+    real A0, v0, vt, a0, e0;
     real *fx, *fy, *fz;
     int i;
 
@@ -249,10 +249,10 @@ int main(int __UNUSED argc, const char *v[]) {
     arg();
     ini("/dev/stdin");
 
-    A0 = area();
-    a0 = A0/NT;   v0 = area2volume(A0); e0 = eq_tri_edg(a0);
-    MSG("v0/volume(): %g", v0/volume());
-    MSG("area, volume, edg: %g %g %g", a0, v0, e0);
+    A0 = area(); v0 = volume();
+    a0 = A0/NT;   vt = area2volume(A0); e0 = eq_tri_edg(a0);
+    MSG("vt/v0: %g", vt/v0);
+    MSG("area, volume, edg: %g %g %g", a0, vt, e0);
 
     force_ini();
     energy_ini();
@@ -266,16 +266,20 @@ int main(int __UNUSED argc, const char *v[]) {
     min_ini(VECTOR_BFGS2);
     real *queue[] = {XX, YY, ZZ, NULL};
 
-    for (i = 0; i < 0; i++) {
-        min_position(/**/ XX, YY, ZZ);
-        if (i % 100 == 0) {
-            punto_fwrite(NV, queue, stdout);
-            printf("\n");
-            MSG("eng: %g", min_energy());
-            off_write(XX, YY, ZZ, "q.off");
-            MSG("dump: q.off");
+    while (v0 > vt) {
+        for (i = 0; i < 100; i++) {
+            min_position(/**/ XX, YY, ZZ);
+            if (i % 10 == 0) {
+                punto_fwrite(NV, queue, stdout);
+                printf("\n");
+                MSG("eng: %g", min_energy());
+                off_write(XX, YY, ZZ, "q.off");
+                MSG("dump: q.off");
+            }
+            min_iterate();
         }
-        min_iterate();
+        v0 -= vt *  0.02;
+        f_volume_set_v(v0);
     }
 
     force(XX, YY, ZZ, fx, fy, fz);
