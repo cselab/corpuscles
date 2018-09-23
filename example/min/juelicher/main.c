@@ -153,7 +153,7 @@ static void force(const real *xx, const real *yy, const real *zz,
     vec_scalar_append(db, coef, j, fx, fy, fz);
     vec_scalar_append(dc, coef, k, fx, fy, fz);
 
-    coef = -(lentheta[k]/AREA[k]/4.0) * theta0;
+    coef = -(lentheta[k]/AREA[k]/4.0) * theta0 * Kb;
     vec_scalar_append(db, coef, j, fx, fy, fz);
     vec_scalar_append(dc, coef, k, fx, fy, fz);
   }
@@ -205,7 +205,9 @@ void Force(const real *x, const real *y, const real *z,
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_harmonic_force(x, y, z, /**/ fx, fy, fz);
+    MSG("b: %g %g %g", fx[0], fy[0], fz[0]);
     force(x, y, z, /**/ fx, fy, fz);
+    MSG("a: %g %g %g", fx[0], fy[0], fz[0]);
 }
 
 static void write(real *fx, real *fy, real *fz) {
@@ -259,12 +261,12 @@ int main(int __UNUSED argc, const char *v[]) {
 
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
     real *queue[] = {XX, YY, ZZ, NULL};
 
     while (v0 > vt) {
+        v0 -= vt *  0.01;
         f_volume_ini(v0, Kv);
         min_ini(STEEPEST_DESCENT);
         for (i = 0; i < 100; i++) {
@@ -279,7 +281,6 @@ int main(int __UNUSED argc, const char *v[]) {
         }
         f_volume_fin();
         min_fin();
-        v0 -= vt *  0.1;
     }
 
     force(XX, YY, ZZ, fx, fy, fz);
