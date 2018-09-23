@@ -195,8 +195,6 @@ void Force(const real *x, const real *y, const real *z,
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_harmonic_force(x, y, z, /**/ fx, fy, fz);
     force(x, y, z, /**/ fx, fy, fz);
-    MSG("%g %g %g", fx[0], fy[0], fz[0]);
-    exit(0);
 }
 
 static void write(real *fx, real *fy, real *fz) {
@@ -254,19 +252,18 @@ int main(int __UNUSED argc, const char *v[]) {
 
     for (;;) {
         f_volume_ini(v0, Kv);
-        min_ini(VECTOR_BFGS2);
-        MSG("eng: %g", min_energy());
-        for (i = 0; i < 400; i++) {
+        min_ini(VECTOR_BFGS);
+        for (i = 0; i < 1000; i++) {
             min_position(/**/ XX, YY, ZZ);
             min_iterate();
         }
         MSG("a/a0 = %g v/v0 = %g", area()/a0/NT, volume()/v0);
+        MSG("eng: %g", min_energy());
         punto_fwrite(NV, queue, stdout);
         off_write(XX, YY, ZZ, "q.off");
         f_volume_fin();
         min_fin();
-        v0 -= vt/10;
-        if (v0 < vt) break;
+        if (v0 > vt) v0 -= vt/100;
     }
 
     force(XX, YY, ZZ, fx, fy, fz);
