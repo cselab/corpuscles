@@ -260,26 +260,26 @@ int main(int __UNUSED argc, const char *v[]) {
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
 
-    f_volume_ini(v0, Kv);
     f_area_ini(a0, Ka);
     f_harmonic_ini(e0, Ke);
     real *queue[] = {XX, YY, ZZ, NULL};
 
     while (v0 > vt) {
+        f_volume_ini(v0, Kv);
         min_ini(STEEPEST_DESCENT);
-        f_volume_set_v(v0);
         for (i = 0; i < 100; i++) {
             min_position(/**/ XX, YY, ZZ);
-            if (i % 10 == 0) {
+            if (i % 1 == 0) {
                 punto_fwrite(NV, queue, stdout);
-                printf("\n");
+                MSG("v/v0 = %g", volume()/v0);
                 MSG("eng: %g", min_energy());
                 off_write(XX, YY, ZZ, "q.off");
             }
             min_iterate();
         }
-        v0 -= vt *  0.1;
+        f_volume_fin();
         min_fin();
+        v0 -= vt *  0.1;
     }
 
     force(XX, YY, ZZ, fx, fy, fz);
@@ -289,7 +289,6 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(fx); FREE(fy); FREE(fz);
 
     f_harmonic_fin();
-    f_volume_fin();
     f_area_fin();
 
     energy_fin();
