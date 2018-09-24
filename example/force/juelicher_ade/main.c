@@ -40,18 +40,42 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
 }
 
 static void write(real *fx, real *fy, real *fz,
+                  real *fxad, real *fyad, real *fzad,
                   real *A) {
 
-  real *fm;;
+  real *fm, *fmad;
   RZERO(NV, &fm);
+  RZERO(NV, &fmad);
   vabs(NV, fx, fy, fz, /**/ fm);
+  vabs(NV, fxad, fyad, fzad, /**/ fmad);
 
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 fx; 6 fy; 7 fz; 8 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, A, NULL};
+  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 Fx; 6 Fy; 7 Fz; 8 |Fad|; 9 fxad, 10 fyad, 11 fzad, 12 area; \n");
+  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, fmad, fxad, fyad, fzad, A, NULL};
 
   punto_fwrite(NV, queue, stdout);
   
   FREE(fm);
+  
+}
+
+static real mesh_area_total() {
+  /*traverse each triangle to calculate the total area.*/
+
+  int i, j, k, t;
+  real a[3], b[3], c[3];
+  real area;
+  
+  area = 0;
+  
+  for ( t = 0; t < NT; t++ ) {
+    
+    i = T0[t]; j = T1[t]; k = T2[t];
+    get3(i, j, k, a, b, c);
+    area += tri_area(a, b, c);
+    
+  }
+  
+  return area;
   
 }
 
@@ -169,7 +193,8 @@ void force_juelicher() {
   
   enum {X, Y, Z};
 
-  real C0, H0;
+  real kb, C0, H0, kad, D, alpha, Delta_a0;
+  real area_tot, curva_mean_area_tot;
   int e, he, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
@@ -190,6 +215,7 @@ void force_juelicher() {
   real aream, arean;
   real coef, coef1, coef2;
   real *fx, *fy, *fz;
+  real *fxad, *fyad, *fzad;
 
   
   MALLOC(NV, &lentheta);
@@ -199,22 +225,37 @@ void force_juelicher() {
   MALLOC(NV, &fy);
   MALLOC(NV, &fz);
 
-  C0 = 0;
+  MALLOC(NV, &fxad);
+  MALLOC(NV, &fyad);
+  MALLOC(NV, &fzad);
+
+
+  area_tot = mesh_area_total();
+  kb = 1.0;
+  C0 = -1.0;
   H0 = C0/2.0;
+  kad= 2.0 * kb / pi;
+  D  = 4.0e-3/3.91;
+
   
   for (i = 0; i < NV; i++) {
 
     lentheta[i] = 0;
     area[i]     = 0;
 
-    fx[i]  = 0;
-    fy[i]  = 0;
-    fz[i]  = 0;
+    fx[i] = 0;
+    fy[i] = 0;
+    fz[i] = 0;
+
+    fxad[i] = 0;
+    fyad[i] = 0;
+    fzad[i] = 0;
     
   }
 
 
   //1st loop;
+  curva_mean_area_tot = 0;  
   for (e = 0; e < NE; e++) {
     
     he = hdg_edg(e);
@@ -232,10 +273,13 @@ void force_juelicher() {
     lentheta0    = len0*theta0;
     lentheta[j] += lentheta0;
     lentheta[k] += lentheta0;
+
+    curva_mean_area_tot += lentheta0/2.0;
     
   }
 
   //2nd loop;
+  area_tot = 0;
   for (t = 0; t < NT; t++) {
       
     i = T0[t]; j = T1[t]; k = T2[t];
@@ -247,9 +291,13 @@ void force_juelicher() {
     area[j] += area0/3;
     area[k] += area0/3;
 
+    area_tot+= area0;
+
   }
 
-  
+  curva_mean_area_tot -= H0 *area_tot;
+  curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot);
+    
   //3rd loop; force due to edge length and dihedral angle
   for (e = 0; e < NE; e++) {
     
@@ -263,8 +311,6 @@ void force_juelicher() {
 
     theta0 = tri_dih(a, b, c, d);
 
-
-
     /*calculate force from derivative of edge length*/
     
     coef = - ( (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * theta0;
@@ -274,10 +320,14 @@ void force_juelicher() {
     vec_scalar_append(db, coef, j, fx, fy, fz);
     vec_scalar_append(dc, coef, k, fx, fy, fz);
 
-    vec_minus(c, b, u);
-    len0 = vec_abs(u);
 
+    /*this part is due to area-difference elasticity*/
 
+    coef = -curva_mean_area_tot/4.0 * theta0;
+
+    vec_scalar_append(db, coef, j, fxad, fyad, fzad);
+    vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
+    
     /*calculate force from derivative of dihedral angle*/
     
     /*dihedral_derivative(a, b, c, d, da, db, dc, dd);
@@ -286,13 +336,25 @@ void force_juelicher() {
     ddih_angle(a, b, c, d, da, db, dc, dd);
     //printf("%f %f %f\n\n", da[0], da[1], da[2]);
 
+    vec_minus(c, b, u);
+    len0 = vec_abs(u);
+
     coef =  -(  (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * len0 ;
 
     vec_scalar_append(da, coef, i, fx, fy, fz);
     vec_scalar_append(db, coef, j, fx, fy, fz);
     vec_scalar_append(dc, coef, k, fx, fy, fz);
     vec_scalar_append(dd, coef, l, fx, fy, fz);    
-    
+
+    /*this part is due to area-difference elasticity*/
+
+    coef = -curva_mean_area_tot/4.0 *len0;
+      
+    vec_scalar_append(da, coef, i, fxad, fyad, fzad);
+    vec_scalar_append(db, coef, j, fxad, fyad, fzad);
+    vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
+    vec_scalar_append(dd, coef, l, fxad, fyad, fzad);    
+
   }
   
   //4th loop; 
@@ -301,7 +363,6 @@ void force_juelicher() {
     i = T0[t]; j = T1[t]; k = T2[t];
       
     get3(i, j, k, a, b, c);
-
 
     /* calculate force due to derivative of area*/
     area_derivative(a, b, c, da, db, dc);
@@ -322,14 +383,16 @@ void force_juelicher() {
 
   }
   
-  write(/*i*/ fx, fy, fz, area);
+  write(/*i*/ fx, fy, fz, fxad, fyad, fzad, area);
 
-  
   FREE(lentheta);
   FREE(area);
   FREE(fx);
   FREE(fy);
   FREE(fz);
+  FREE(fxad);
+  FREE(fyad);
+  FREE(fzad);
     
 }
 
