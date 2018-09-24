@@ -183,7 +183,7 @@ real Energy(const real *x, const real *y, const real *z) {
     real a, v, e, b;
     a = f_area_energy(x, y, z);
     v = f_volume_energy(x, y, z);
-    e = f_harmonic_energy(x, y, z);
+    e = f_harmonic_ref_energy(x, y, z);
     b = energy(x, y, z);
     return a + v + e + b;
 }
@@ -193,7 +193,7 @@ void Force(const real *x, const real *y, const real *z,
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
-    f_harmonic_force(x, y, z, /**/ fx, fy, fz);
+    f_harmonic_ref_force(x, y, z, /**/ fx, fy, fz);
     force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -223,14 +223,10 @@ static void arg() {
     scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
-static real eq_tri_edg(real area) {
-    /* area = sqrt(3)/4 * edg^2 */
-    return 2*sqrt(area)/pow(3, 0.25);
-}
 static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real A0, v0, vt, a0, e0;
+    real A0, v0, vt, a0;
     real *fx, *fy, *fz;
     int i;
 
@@ -239,7 +235,7 @@ int main(int __UNUSED argc, const char *v[]) {
     ini("/dev/stdin");
 
     A0 = area(); v0 = volume();
-    a0 = A0/NT;   vt = area2volume(A0); e0 = eq_tri_edg(a0);
+    a0 = A0/NT;   vt = area2volume(A0);
 
     force_ini();
     energy_ini();
@@ -247,13 +243,13 @@ int main(int __UNUSED argc, const char *v[]) {
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_ini(a0, Ka);
-    f_harmonic_ini(e0, Ke);
+    f_harmonic_ref_ini(Ke, XX, YY, ZZ);
     real *queue[] = {XX, YY, ZZ, NULL};
 
     for (;;) {
         f_volume_ini(v0, Kv);
         min_ini(VECTOR_BFGS);
-        for (i = 0; i < 1000; i++) {
+        for (i = 0; i < 100; i++) {
             min_position(/**/ XX, YY, ZZ);
             min_iterate();
         }
@@ -263,7 +259,7 @@ int main(int __UNUSED argc, const char *v[]) {
         off_write(XX, YY, ZZ, "q.off");
         f_volume_fin();
         min_fin();
-        if (v0 > vt) v0 -= vt/100;
+        if (v0 > vt) v0 -= vt/10;
     }
 
     force(XX, YY, ZZ, fx, fy, fz);
@@ -272,7 +268,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     FREE(fx); FREE(fy); FREE(fz);
 
-    f_harmonic_fin();
+    f_harmonic_ref_fin();
     f_area_fin();
 
     energy_fin();

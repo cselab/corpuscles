@@ -183,8 +183,8 @@ int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx,
     return he_f_harmonic_force(f_harmonic, he, x, y, z, /**/ fx, fy, fz);
 }
 
-int f_harmonic_ref_ini(real a0, real K) {
-    he_f_harmonic_ref_ini(a0, K, he, /**/ &f_harmonic_ref);
+int f_harmonic_ref_ini(real K, const real *x, const real *y, const real *z) {
+    he_f_harmonic_ref_ini(K, x, y, z, he, /**/ &f_harmonic_ref);
     return HE_OK;
 }
 int f_harmonic_ref_fin() {

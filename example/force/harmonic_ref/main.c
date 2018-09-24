@@ -20,7 +20,7 @@ int main() {
     real a0, K;
     a0 = 0.1; K = 1;
     ini("/dev/stdin");
-    f_harmonic_ref_ini(a0, K);
+    f_harmonic_ref_ini(K, XX, YY, ZZ);
 
     RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
     main0();

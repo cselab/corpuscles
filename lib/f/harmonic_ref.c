@@ -15,42 +15,9 @@
 struct T {
     int n;
     real *edg, *dedg;
-    real e0, K;
+    real *e0;
+    real K;
 };
-
-static real sum_sq(int n, real *a) {
-    int i;
-    real v;
-    v = 0;
-    for (i = 0; i < n; i++) v += a[i]*a[i];
-    return v;
-}
-int he_f_harmonic_ref_ini(real e0, real K, He *he, T **pq) {
-    T *q;
-    int n;
-    MALLOC(1, &q);
-    n = he_ne(he);
-
-    MALLOC(n, &q->edg);
-    MALLOC(n, &q->dedg);
-
-    q->n = n;
-    q->e0 = e0;
-    q->K = K;
-
-    *pq = q;
-    return HE_OK;
-}
-
-int he_f_harmonic_ref_fin(T *q) {
-    FREE(q->edg); FREE(q->dedg); FREE(q);
-    return HE_OK;
-}
-
-int he_f_harmonic_ref_e(T *q, /**/ real  **pa) {
-    *pa = q->edg;
-    return HE_OK;
-}
 
 static void get_ij(int m, He *he, /**/ int *pi, int *pj) {
     int h, n, i, j;
@@ -67,18 +34,62 @@ static void get(int m, He *he,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
 }
-static void compute_edg(He *he, real e0, const real *x, const real *y, const real *z, /**/ real *edg, real *dedg) {
+
+static real sum_sq_norm(int n, real *a, const real *e0) {
+    int i;
+    real v;
+    v = 0;
+    for (i = 0; i < n; i++) v += a[i]*a[i]/e0[i];
+    return v;
+}
+int he_f_harmonic_ref_ini(real K, const real *x, const real *y, const real *z, He *he, T **pq) {
+    T *q;
+    int n, m;
+    real a[3], b[3];
+    real *e0;
+
+    MALLOC(1, &q);
+    n = he_ne(he);
+
+    MALLOC(n, &q->edg);
+    MALLOC(n, &q->dedg);
+    MALLOC(n, &q->e0);
+
+    q->n = n;
+    q->K = K;
+    e0 = q->e0;
+    for (m = 0; m < n; m++) {
+        get(m, he, x, y, z, /**/ a, b);
+        e0[m]  = edg_abs(a, b);
+    }
+
+    *pq = q;
+    return HE_OK;
+}
+
+int he_f_harmonic_ref_fin(T *q) {
+    FREE(q->edg); FREE(q->dedg); FREE(q->e0);
+    FREE(q);
+    return HE_OK;
+}
+
+int he_f_harmonic_ref_e(T *q, /**/ real  **pa) {
+    *pa = q->edg;
+    return HE_OK;
+}
+
+static void compute_edg(He *he, const real *e0, const real *x, const real *y, const real *z, /**/ real *edg, real *dedg) {
     real one, a[3], b[3];
     int n, m;
     n = he_ne(he);
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b);
         edg[m]  = one = edg_abs(a, b);
-        dedg[m] = one - e0;
+        dedg[m] = one - e0[m];
     }
 }
 
-static void compute_force(real e0, real K, real *dedg,
+static void compute_force(const real *e0, real K, real *dedg,
                           He *he, const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
     int n, m, i, j;
@@ -90,18 +101,18 @@ static void compute_force(real e0, real K, real *dedg,
         vec_get(j, x, y, z, /**/ b);
         dedg_abs(a, b, /**/ da, db);
 
-        coeff = 2*K*dedg[m]/e0;
-        
+        coeff = 2*K*dedg[m]/e0[m];
+
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
     }
 }
 
 int he_f_harmonic_ref_force(T *q, He *he,
-                      const real *x, const real *y, const real *z, /**/
-                      real *fx, real *fy, real *fz) {
+                            const real *x, const real *y, const real *z, /**/
+                            real *fx, real *fy, real *fz) {
     int n;
-    real *edg, *dedg, e0, K;
+    real *edg, *dedg, *e0, K;
     n = q->n;
     edg = q->edg;
     dedg = q->dedg;
@@ -115,12 +126,12 @@ int he_f_harmonic_ref_force(T *q, He *he,
 }
 
 real he_f_harmonic_ref_energy(T *q, He *he,
-                      const real *x, const real *y, const real *z) {
+                              const real *x, const real *y, const real *z) {
     int n;
-    real *edg, *dedg, e0, v, K;
+    real *edg, *dedg, *e0, v, K;
     n = q->n;
     edg = q->edg;
-    dedg = q->dedg;    
+    dedg = q->dedg;
     e0 = q->e0;
     K  = q->K;
 
@@ -128,7 +139,7 @@ real he_f_harmonic_ref_energy(T *q, He *he,
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
-    v = sum_sq(n, dedg);
+    v = sum_sq_norm(n, dedg, e0);
 
-    return K/e0*v;
+    return K*v;
 }
