@@ -46,6 +46,11 @@ int he_f_volume_fin(T *q) {
     return HE_OK;
 }
 
+int he_f_volume_set_v(T *q, real v0) {
+    q->v0 = v0;
+    return HE_OK;
+}
+
 int he_f_volume_v(T *q, /**/ real  **pa) {
     *pa = q->volume;
     return HE_OK;

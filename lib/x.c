@@ -129,7 +129,7 @@ int  fin()      {
 
 int f_area_ini(real a0, real K) {
     he_f_area_ini(a0, K, he, /**/ &f_area);
-    return HE_OK;    
+    return HE_OK;
 }
 
 int f_area_fin() {
@@ -148,12 +148,17 @@ int f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, rea
 
 int f_volume_ini(real a0, real K) {
     he_f_volume_ini(a0, K, he, /**/ &f_volume);
-    return HE_OK;    
+    return HE_OK;
+}
+int f_volume_set_v(real v) {
+    he_f_volume_set_v(f_volume, v);
+    return HE_OK;
 }
 int f_volume_fin() {
     he_f_volume_fin(f_volume);
     return HE_OK;
 }
+
 real f_volume_energy(const real *x, const real *y, const real *z) {
     return he_f_volume_energy(f_volume, he, x, y, z);
 }
@@ -163,7 +168,7 @@ int f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, r
 
 int f_harmonic_ini(real a0, real K) {
     he_f_harmonic_ini(a0, K, he, /**/ &f_harmonic);
-    return HE_OK;    
+    return HE_OK;
 }
 int f_harmonic_fin() {
     he_f_harmonic_fin(f_harmonic);
@@ -178,7 +183,7 @@ int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx,
 
 int f_kantor_ini(real K) {
     he_f_kantor_ini(K, he, /**/ &f_kantor);
-    return HE_OK;    
+    return HE_OK;
 }
 int f_kantor_fin() {
     he_f_kantor_fin(f_kantor);
@@ -193,7 +198,7 @@ int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, r
 
 int f_gompper_ini(real K) {
     he_f_gompper_ini(K, he, /**/ &f_gompper);
-    return HE_OK;    
+    return HE_OK;
 }
 int f_gompper_fin() {
     he_f_gompper_fin(f_gompper);
@@ -206,8 +211,8 @@ int f_gompper_force(const real *x, const real *y, const real *z, /**/ real *fx, 
     return he_f_gompper_force(f_gompper, he, x, y, z, /**/ fx, fy, fz);
 }
 int f_gompper_energy_ver(real **p) {
-   return he_f_gompper_energy_ver(f_gompper, p);    
+   return he_f_gompper_energy_ver(f_gompper, p);
 }
 int f_gompper_area(real **p) {
-   return he_f_gompper_area(f_gompper, p);    
+   return he_f_gompper_area(f_gompper, p);
 }
