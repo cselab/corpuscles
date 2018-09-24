@@ -11,6 +11,7 @@
 #include "he/f/area.h"
 #include "he/f/volume.h"
 #include "he/f/harmonic.h"
+#include "he/f/harmonic_ref.h"
 #include "he/f/kantor.h"
 #include "he/f/gompper.h"
 #include "he/area.h"
@@ -29,6 +30,7 @@ static He      *he;
 static HeFArea *f_area;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
+static HeFHarmonicRef *f_harmonic_ref;
 static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
 static HeOff *off;
@@ -179,6 +181,21 @@ real f_harmonic_energy(const real *x, const real *y, const real *z) {
 }
 int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_harmonic_force(f_harmonic, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_harmonic_ref_ini(real a0, real K) {
+    he_f_harmonic_ref_ini(a0, K, he, /**/ &f_harmonic_ref);
+    return HE_OK;
+}
+int f_harmonic_ref_fin() {
+    he_f_harmonic_ref_fin(f_harmonic_ref);
+    return HE_OK;
+}
+real f_harmonic_ref_energy(const real *x, const real *y, const real *z) {
+    return he_f_harmonic_ref_energy(f_harmonic_ref, he, x, y, z);
+}
+int f_harmonic_ref_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_harmonic_ref_force(f_harmonic_ref, he, x, y, z, /**/ fx, fy, fz);
 }
 
 int f_kantor_ini(real K) {
