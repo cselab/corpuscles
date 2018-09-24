@@ -8,6 +8,7 @@
 #include <he/tri.h>
 #include <he/memory.h>
 #include <he/punto.h>
+#include <he/ddih.h>
 
 void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
 
@@ -44,14 +45,132 @@ static void write(real *fx, real *fy, real *fz,
   real *fm;;
   RZERO(NV, &fm);
   vabs(NV, fx, fy, fz, /**/ fm);
-  
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, A, NULL};
+
+  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 fx; 6 fy; 7 fz; 8 area; \n");
+  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, A, NULL};
+
   punto_fwrite(NV, queue, stdout);
   
   FREE(fm);
   
 }
+
+static real mesh_area_total() {
+  /*traverse each triangle to calculate the total area.*/
+
+  int i, j, k, t;
+  real a[3], b[3], c[3];
+  real area;
+  
+  area = 0;
+  
+  for ( t = 0; t < NT; t++ ) {
+    
+    i = T0[t]; j = T1[t]; k = T2[t];
+    get3(i, j, k, a, b, c);
+    area += tri_area(a, b, c);
+    
+  }
+  
+  return area;
+  
+}
+
+void dihedral_derivative(const real a[3], const real b[3], const real c[3], const real d[3],
+			 /**/ real da[3], real db[3], real dc[3], real dd[3]){
+
+  real aream, arean;
+  real u[3], v[3], w[3], g[3], h[3], f[3];
+  real mm[3], nn[3];
+  real m[3], n[3];
+  real mndot;
+  real mnmn[3], nmnm[3];
+  real tvec1[3], tvec2[3];
+  real coef;
+
+  aream = tri_area(a, b, c);
+  arean = tri_area(d, c, b);
+  
+  vec_minus(c, b, u);
+  vec_minus(a, b, v);
+  vec_minus(c, a, w);
+  
+  vec_minus(b, d, f);
+  vec_minus(b, c, g);
+  vec_minus(d, c, h);
+  
+  vec_cross(u, v, mm);
+  vec_cross(g, h, nn);
+  
+  vec_norm(mm, m);
+  vec_norm(nn, n);
+  
+  mndot = vec_dot(m,n);
+
+  vec_linear_combination(1.0, m, -mndot, n, tvec1);
+  vec_norm(tvec1, mnmn);
+  
+  vec_linear_combination(1.0, n, -mndot, m, tvec2);
+  vec_norm(tvec2, nmnm);
+  
+  vec_cross(g, nmnm, tvec1);
+  vec_scalar(tvec1, 1.0/aream/2.0, da);
+  
+  vec_cross(h, mnmn, tvec1);
+  vec_cross(w, nmnm, tvec2);
+  vec_linear_combination(1.0/arean/2.0, tvec1, 1.0/aream/2.0, tvec2, db);
+
+  vec_cross(f, mnmn, tvec1);
+  vec_cross(v, nmnm, tvec2);
+  vec_linear_combination(1.0/arean/2.0, tvec1, 1.0/aream/2.0, tvec2, dc);
+
+  vec_cross(u, mnmn, tvec1);
+  vec_scalar(tvec1, 1.0/arean/2.0, dd);
+  
+}
+
+
+void edge_length_derivative(const real a[3], const real b[3],
+			    /**/ real da[3], real db[3]){
+
+  real u[3], e[3];
+  real len0;
+  
+  vec_minus(a, b, u);
+  vec_norm(u, e);
+
+  vec_copy(e, da);
+  vec_negative(e, db);
+
+}
+void area_derivative(const real a[3], const real b[3], const real c[3],
+		     /**/ real da[3], real db[3], real dc[3]){
+
+
+  real area0, coef;
+  real u[3], v[3], w[3], n[3], f[3];
+  
+  area0 = tri_area(a, b, c);
+  
+  vec_minus(b, a, u);
+  vec_minus(c, a, v);
+  vec_minus(b, c, w);
+  
+  vec_cross(u, v, n);
+
+  coef = 1.0/area0/4.0;
+
+  vec_cross(w, n, f);
+  vec_scalar(f, coef, da);
+    
+  vec_cross(v, n, f);
+  vec_scalar(f, coef, db);
+    
+  vec_cross(n, u, f);
+  vec_scalar(f, coef, dc);  
+
+}
+
 void force_juelicher() {
     /*This routine calculates bending force
       according to Juelicher, J. Phys. II France, 1996
@@ -71,11 +190,14 @@ void force_juelicher() {
   
   enum {X, Y, Z};
 
-  real C0, H0;
+  real kb, C0, H0, kad, D, alpha, Delta_a0;
+  real area_tot, curva_mean_area_tot;
   int e, he, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
-  real u[3], v[3], w[3], g[3], h[3], f[3];
+  real da[3], db[3], dc[3], dd[3];
+  real u[3];
+  //real v[3], w[3], g[3], h[3], f[3];
 
   real unorm[3];
   real mm[3], nn[3];
@@ -88,7 +210,7 @@ void force_juelicher() {
   real *lentheta, *area;
   real len0, theta0, lentheta0, area0;
   real aream, arean;
-  real coef, coef1;
+  real coef, coef1, coef2;
   real *fx, *fy, *fz;
 
   
@@ -99,8 +221,16 @@ void force_juelicher() {
   MALLOC(NV, &fy);
   MALLOC(NV, &fz);
 
-  C0 = 0;
+
+  area_tot = mesh_area_total();
+  kb = 1.0;
+  C0 = -1.0;
+  /*C0 = 0.0;*/
   H0 = C0/2.0;
+  /*kad= 2.0 * kb / pi;*/
+  kad = 0;
+  D  = 4.0e-3/3.91;
+
   
   for (i = 0; i < NV; i++) {
 
@@ -115,6 +245,7 @@ void force_juelicher() {
 
 
   //1st loop;
+  curva_mean_area_tot = 0;  
   for (e = 0; e < NE; e++) {
     
     he = hdg_edg(e);
@@ -126,18 +257,19 @@ void force_juelicher() {
     get4(i, j, k, l, /**/ a, b, c, d);
     
     theta0 = tri_dih(a, b, c, d);
-    
     vec_minus(c, b, u);
-    len0 = vec_dot(u, u);
-    len0 = sqrt(len0);
+    len0 = vec_abs(u);
 
     lentheta0    = len0*theta0;
     lentheta[j] += lentheta0;
     lentheta[k] += lentheta0;
+
+    curva_mean_area_tot += lentheta0/2.0;
     
   }
 
   //2nd loop;
+  area_tot = 0;
   for (t = 0; t < NT; t++) {
       
     i = T0[t]; j = T1[t]; k = T2[t];
@@ -149,10 +281,15 @@ void force_juelicher() {
     area[j] += area0/3;
     area[k] += area0/3;
 
+    area_tot+= area0;
+
   }
 
+  curva_mean_area_tot -= H0 *area_tot;
+  curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot);
   
-  //3rd loop;
+  
+  //3rd loop; force due to edge length and dihedral angle
   for (e = 0; e < NE; e++) {
     
     he = hdg_edg(e);
@@ -165,129 +302,79 @@ void force_juelicher() {
 
     theta0 = tri_dih(a, b, c, d);
 
+
+
+    /*calculate force from derivative of edge length*/
+    
+    coef = - ( (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * theta0;
+
+    edge_length_derivative(b,c, db, dc);
+    
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
+
+
+    /*this part is due to area-difference elasticity*/
+
+    coef = -curva_mean_area_tot/4.0 * theta0;
+
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
+
+    
+    /*calculate force from derivative of dihedral angle*/
+    
+    /*dihedral_derivative(a, b, c, d, da, db, dc, dd);
+    printf("%f %f %f\n", a[0], a[1], a[2]);
+    printf("%f %f %f\n", da[0], da[1], da[2]);*/
+    ddih_angle(a, b, c, d, da, db, dc, dd);
+    //printf("%f %f %f\n\n", da[0], da[1], da[2]);
+
     vec_minus(c, b, u);
+    len0 = vec_abs(u);
 
-    vec_norm(u, unorm);
-    
-    coef = -(lentheta[j]/area[j]/4.0 - H0) * theta0;
-    vec_scalar_append(unorm, -coef, j, fx, fy, fz);
-    vec_scalar_append(unorm, coef, k, fx, fy, fz);
-    
-    coef = -(lentheta[k]/area[k]/4.0 - H0) * theta0;
-    vec_scalar_append(unorm, -coef, j, fx, fy, fz);
-    vec_scalar_append(unorm, coef, k, fx, fy, fz);
-    
-    len0 = vec_dot(u, u);
-    len0 = sqrt(len0);
+    coef =  -(  (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * len0 ;
 
-    aream = tri_area(a, b, c);
-    arean = tri_area(d, c, b);
-    
-    vec_minus(a, b, v);
-    vec_minus(c, a, w);
-    
-    vec_minus(b, d, f);
-    vec_minus(b, c, g);
-    vec_minus(d, c, h);
+    vec_scalar_append(da, coef, i, fx, fy, fz);
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
+    vec_scalar_append(dd, coef, l, fx, fy, fz);    
 
-    vec_cross(u, v, mm);
-    vec_cross(g, h, nn);
+    /*this part is due to area-difference elasticity*/
 
-    vec_norm(mm, m);
-    vec_norm(nn, n);
-    
-    mndot = vec_dot(m,n);
-
-    vec_linear_combination(1.0, m, -mndot, n, mnmn);
-    vec_norm(mnmn, temp_vec);
-    vec_negative(temp_vec, mnmn);
-    
-    vec_linear_combination(1.0, n, -mndot, m, nmnm);
-    vec_norm(nmnm, temp_vec);
-    vec_negative(temp_vec, nmnm);
-    
-    coef =  -(lentheta[j]/area[j]/4.0 - H0) * len0 ;
-
-    vec_cross(g, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, i, fx, fy, fz);
-
-    vec_cross(h, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
-    
-    vec_cross(w, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
-    
-    vec_cross(f, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
-    
-    vec_cross(v, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
-
-    vec_cross(u, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, l, fx, fy, fz);
-
-    coef =  -(lentheta[k]/area[k]/4.0 - H0) * len0 ;
-
-    vec_cross(g, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, i, fx, fy, fz);
-
-    vec_cross(h, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
-    
-    vec_cross(w, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, j, fx, fy, fz);
-    
-    vec_cross(f, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
-    
-    vec_cross(v, nmnm, theta_der);
-    coef1 = coef / aream / 2.0;
-    vec_scalar_append(theta_der, coef1, k, fx, fy, fz);
-
-    vec_cross(u, mnmn, theta_der);
-    coef1 = coef / arean / 2.0;
-    vec_scalar_append(theta_der, coef1, l, fx, fy, fz);
-  
-  }
-
-  //4th loop
-  for (t = 0; t < NT; t++) {
+    coef = -curva_mean_area_tot/4.0 *len0;
       
+    vec_scalar_append(da, coef, i, fx, fy, fz);
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
+    vec_scalar_append(dd, coef, l, fx, fy, fz);    
+
+  }
+  
+  //4th loop; 
+  for (t = 0; t < NT; t++) {
+    
     i = T0[t]; j = T1[t]; k = T2[t];
       
     get3(i, j, k, a, b, c);
 
-    area0 = tri_area(a, b, c);
 
-    vec_minus(b, a, u);
-    vec_minus(c, a, v);
-    vec_minus(b, c, w);
-
-    vec_cross(u, v, n);
-
-    coef = 1.0/area0/4.0/3.0;
-
-    coef1 = (lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0) * coef;
-    vec_cross(w, n, f);
-    vec_scalar_append(f, coef1, i, fx, fy, fz);
+    /* calculate force due to derivative of area*/
+    area_derivative(a, b, c, da, db, dc);
     
-    coef1 = (lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0) * coef;
-    vec_cross(v, n, f);
-    vec_scalar_append(f, coef1, j, fx, fy, fz);
+    coef1 = 1.0/3.0;
     
-    coef1 = (lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0) * coef;    
-    vec_cross(n, u, f);
-    vec_scalar_append(f, coef1, k, fx, fy, fz);
+    coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(da, coef, i, fx, fy, fz);
+    
+    coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(db, coef, j, fx, fy, fz);
+    
+    coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0;
+    coef = coef1 * coef2;
+    vec_scalar_append(dc, coef, k, fx, fy, fz);
 
   }
   
