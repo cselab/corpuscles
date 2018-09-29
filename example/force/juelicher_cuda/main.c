@@ -76,55 +76,7 @@ static real mesh_area_total() {
 
 void dihedral_derivative(const real a[3], const real b[3], const real c[3], const real d[3],
                          /**/ real da[3], real db[3], real dc[3], real dd[3]){
-
-  real aream, arean;
-  real u[3], v[3], w[3], g[3], h[3], f[3];
-  real mm[3], nn[3];
-  real m[3], n[3];
-  real mndot;
-  real mnmn[3], nmnm[3];
-  real tvec1[3], tvec2[3];
-  real coef;
-
-  aream = tri_area(a, b, c);
-  arean = tri_area(d, c, b);
-
-  vec_minus(c, b, u);
-  vec_minus(a, b, v);
-  vec_minus(c, a, w);
-
-  vec_minus(b, d, f);
-  vec_minus(b, c, g);
-  vec_minus(d, c, h);
-
-  vec_cross(u, v, mm);
-  vec_cross(g, h, nn);
-
-  vec_norm(mm, m);
-  vec_norm(nn, n);
-
-  mndot = vec_dot(m,n);
-
-  vec_linear_combination(1.0, m, -mndot, n, tvec1);
-  vec_norm(tvec1, mnmn);
-
-  vec_linear_combination(1.0, n, -mndot, m, tvec2);
-  vec_norm(tvec2, nmnm);
-
-  vec_cross(g, nmnm, tvec1);
-  vec_scalar(tvec1, 1.0/aream/2.0, da);
-
-  vec_cross(h, mnmn, tvec1);
-  vec_cross(w, nmnm, tvec2);
-  vec_linear_combination(1.0/arean/2.0, tvec1, 1.0/aream/2.0, tvec2, db);
-
-  vec_cross(f, mnmn, tvec1);
-  vec_cross(v, nmnm, tvec2);
-  vec_linear_combination(1.0/arean/2.0, tvec1, 1.0/aream/2.0, tvec2, dc);
-
-  vec_cross(u, mnmn, tvec1);
-  vec_scalar(tvec1, 1.0/arean/2.0, dd);
-
+    ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
 }
 
 
@@ -132,7 +84,6 @@ void edge_length_derivative(const real a[3], const real b[3],
                             /**/ real da[3], real db[3]){
 
   real u[3], e[3];
-  real len0;
 
   vec_minus(a, b, u);
   vec_norm(u, e);
@@ -188,26 +139,15 @@ void force_juelicher() {
 
   enum {X, Y, Z};
 
-  real kb, C0, H0, kad, D, alpha, Delta_a0;
+  real kb, C0, H0, kad;
   real area_tot, curva_mean_area_tot;
   int e, he, t;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
   real da[3], db[3], dc[3], dd[3];
   real u[3];
-  //real v[3], w[3], g[3], h[3], f[3];
-
-  real unorm[3];
-  real mm[3], nn[3];
-  real m[3], n[3];
-  real mndot;
-  real mnmn[3], nmnm[3];
-  real temp_vec[3];
-  real theta_der[3];
-
   real *lentheta, *area;
   real len0, theta0, lentheta0, area0;
-  real aream, arean;
   real coef, coef1, coef2;
   real *fx, *fy, *fz;
   real *fxad, *fyad, *fzad;
@@ -230,7 +170,6 @@ void force_juelicher() {
   C0 = -1.0;
   H0 = C0/2.0;
   kad= 2.0 * kb / pi;
-  D  = 4.0e-3/3.91;
 
   for (i = 0; i < NV; i++) {
 
