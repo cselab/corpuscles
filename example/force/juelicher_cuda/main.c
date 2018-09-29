@@ -18,6 +18,11 @@ void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
   vec_get(k, XX, YY, ZZ, c);
 }
 
+void get2(int i, int j, /**/ real a[3], real b[3]) {
+  vec_get(i, XX, YY, ZZ, a);
+  vec_get(j, XX, YY, ZZ, b);
+}
+
 void get4(int i, int j, int k, int l, /**/
           real a[3], real b[3], real c[3], real d[3]) {
   vec_get(i, XX, YY, ZZ, a);
