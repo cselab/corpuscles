@@ -47,16 +47,14 @@ static void write(real *fx, real *fy, real *fz,
 }
 
 static void compute_theta_len(/**/ real *theta, real *lentheta, real *plentheta_tot) {
-    int e, he, t;
+    int e, he;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3], u[3];
-    real len0, theta0, lentheta0, area0;
+    real len0, theta0, lentheta0;
     real lentheta_tot;
 
     lentheta_tot = 0;
     for (e = 0; e < NE; e++) {
-        he = hdg_edg(e);
-        if ( bnd(he) ) continue;
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
         get4(i, j, k, l, /**/ a, b, c, d);
         theta[e] = theta0 = tri_dih(a, b, c, d);
@@ -73,7 +71,7 @@ static void compute_theta_len(/**/ real *theta, real *lentheta, real *plentheta_
 static void compute_area(/**/ real *area, real *parea_tot) {
     int t, i, j, k;
     real area0;
-    real a[3], b[3], c[3], d[3];
+    real a[3], b[3], c[3];
     real area_tot;
 
     area_tot = 0;
@@ -104,12 +102,11 @@ static void compute_mean_curv(real H0, real kb, real lentheta, real area, /**/ r
 static void force_edg(real H0, real curva_mean_area_tot, const real *theta,  const real *lentheta, const real *area,  /**/
                       real *fx, real *fy, real *fz,
                       real *fxad, real *fyad, real *fzad) {
-    int e, he, j, k;
+    int e, j, k;
     real theta0, coef;
     real b[3], c[3], db[3], dc[3];
 
     for (e = 0; e < NE; e++) {
-        he = hdg_edg(e);
         j = D1[e]; k = D2[e];
         get2(j, k, /**/ b, c);
         dedg_abs(b, c, db, dc);
@@ -127,14 +124,13 @@ static void force_edg(real H0, real curva_mean_area_tot, const real *theta,  con
 static void force_lentheta(real H0, real curva_mean_area_tot, const real *lentheta, const real *area,
                            real *fx, real *fy, real *fz,
                            real *fxad, real *fyad, real *fzad) {
-    int e, he;
+    int e;
     int i, j, k, l;
     real len0, coef;
     real a[3], b[3], c[3], d[3];
     real da[3], db[3], dc[3], dd[3], u[3];
 
     for (e = 0; e < NE; e++) {
-        he = hdg_edg(e);
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
         get4(i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
@@ -188,7 +184,7 @@ static void force_area(real H0, const real *lentheta, const real *area,
 }
 
 void force_juelicher() {
-    real kb, C0, H0, kad;
+    real kb, C0, H0;
     real area_tot, lentheta_tot, curva_mean_area_tot;
     real *lentheta, *area;
     real *theta;
@@ -211,7 +207,6 @@ void force_juelicher() {
     kb  = 1.0;
     C0  = -1.0;
     H0  = C0/2.0;
-    kad = 2.0 * kb / pi;
 
     compute_theta_len(/**/ theta, lentheta, &lentheta_tot);
     compute_area(/**/ area, &area_tot);
