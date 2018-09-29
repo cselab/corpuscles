@@ -26,10 +26,13 @@ void get4(int i, int j, int k, int l, /**/
   vec_get(l, XX, YY, ZZ, d);
 }
 
-static void write(real *fx, real *fy, real *fz) {
-  real *queue[] = {XX, YY, ZZ, fx, fy, fz, NULL};
+static void write(real *fx, real *fy, real *fz,
+                  real *fxad, real *fyad, real *fzad,
+                  real *area) {
+  real *queue[] = {XX, YY, ZZ, fx, fy, fz, fxad, fyad, fzad, area, NULL};
   punto_fwrite(NV, queue, stdout);
 }
+
 
 void force_juelicher() {
   enum {X, Y, Z};
@@ -147,7 +150,7 @@ void force_juelicher() {
     vec_scalar_append(dc, coef, k, fx, fy, fz);
   }
 
-  write(fx, fy, fz);
+  write(fx, fy, fz, fxad, fyad, fzad, area);
 
   FREE(lentheta);
   FREE(area);
