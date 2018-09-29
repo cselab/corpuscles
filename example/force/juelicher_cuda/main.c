@@ -26,6 +26,15 @@ void get4(int i, int j, int k, int l, /**/
   vec_get(l, XX, YY, ZZ, d);
 }
 
+static real sum(int n, real *a) {
+    real s;
+    int i;
+    s = 0.0;
+    for (i = 0; i < n; i++)
+        s += a[i];
+    return s;
+}
+
 static void write(real *fx, real *fy, real *fz,
                   real *fxad, real *fyad, real *fzad,
                   real *area) {
@@ -67,7 +76,6 @@ void force_juelicher() {
   H0  = C0/2.0;
   kad = 2.0 * kb / pi;
 
-  curva_mean_area_tot = 0;
   for (e = 0; e < NE; e++) {
     he = hdg_edg(e);
     if ( bnd(he) ) continue;
@@ -79,11 +87,8 @@ void force_juelicher() {
     lentheta0    = len0*theta0;
     lentheta[j] += lentheta0;
     lentheta[k] += lentheta0;
-    curva_mean_area_tot += lentheta0/2.0;
   }
 
-  //2nd loop;
-  area_tot = 0;
   for (t = 0; t < NT; t++) {
     i = T0[t]; j = T1[t]; k = T2[t];
     get3(i, j, k, a, b, c);
@@ -91,9 +96,10 @@ void force_juelicher() {
     area[i] += area0/3;
     area[j] += area0/3;
     area[k] += area0/3;
-    area_tot+= area0;
   }
-
+  area_tot = sum(NV, area);
+  curva_mean_area_tot = sum(NV, lentheta)/6;
+  
   curva_mean_area_tot -= H0 *area_tot;
   curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot);
 
