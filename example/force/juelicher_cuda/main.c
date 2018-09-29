@@ -104,17 +104,73 @@ static void force_edg(real H0, real curva_mean_area_tot, const real *theta,  con
     }
 }
 
+static void force_lentheta(real H0, real curva_mean_area_tot, const real *lentheta, const real *area,
+                           real *fx, real *fy, real *fz,
+                           real *fxad, real *fyad, real *fzad) {
+    int e, he;
+    int i, j, k, l;
+    real len0, coef;
+    real a[3], b[3], c[3], d[3];
+    real da[3], db[3], dc[3], dd[3], u[3];
+    
+    for (e = 0; e < NE; e++) {
+        he = hdg_edg(e);
+        i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+        get4(i, j, k, l, /**/ a, b, c, d);
+        ddih_angle(a, b, c, d, da, db, dc, dd);
+        vec_minus(c, b, u);
+        len0 = vec_abs(u);
+
+        coef =  -(  (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * len0 ;
+
+        vec_scalar_append(da, coef, i, fx, fy, fz);
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
+        vec_scalar_append(dd, coef, l, fx, fy, fz);
+
+        coef = -curva_mean_area_tot/4.0 *len0;
+        vec_scalar_append(da, coef, i, fxad, fyad, fzad);
+        vec_scalar_append(db, coef, j, fxad, fyad, fzad);
+        vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
+        vec_scalar_append(dd, coef, l, fxad, fyad, fzad);
+
+    }    
+}
+
+static void force_area(real H0, const real *lentheta, const real *area,
+                       real *fx, real *fy, real *fz,
+                       real *fxad, real *fyad, real *fzad) {
+    int t, i, j, k;
+    real a[3], b[3], c[3];
+    real da[3], db[3], dc[3];
+    real coef1, coef2, coef;
+    
+    for (t = 0; t < NT; t++) {
+        i = T0[t]; j = T1[t]; k = T2[t];
+        
+        get3(i, j, k, a, b, c);
+        dtri_area(a, b, c, da, db, dc);
+
+        coef1 = 1.0/3.0;
+
+        coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0;
+        coef = coef1 * coef2;
+        vec_scalar_append(da, coef, i, fx, fy, fz);
+
+        coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0;
+        coef = coef1 * coef2;
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+
+        coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0;
+        coef = coef1 * coef2;
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
+    }
+}
+
 void force_juelicher() {
     real kb, C0, H0, kad;
     real area_tot, curva_mean_area_tot;
-    int e, he, t;
-    int i, j, k, l;
-    real a[3], b[3], c[3], d[3];
-    real da[3], db[3], dc[3], dd[3];
-    real u[3];
     real *lentheta, *area;
-    real len0, theta0, lentheta0, area0;
-    real coef, coef1, coef2;
     real *theta;
     real *fx, *fy, *fz;
     real *fxad, *fyad, *fzad;
@@ -145,54 +201,12 @@ void force_juelicher() {
     curva_mean_area_tot -= H0 *area_tot;
     curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot);
 
-    force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /**/
-              fx, fy, fz,
-              fxad, fyad, fzad);
-
-    for (e = 0; e < NE; e++) {
-        he = hdg_edg(e);
-        i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
-        get4(i, j, k, l, /**/ a, b, c, d);
-        ddih_angle(a, b, c, d, da, db, dc, dd);
-        vec_minus(c, b, u);
-        len0 = vec_abs(u);
-
-        coef =  -(  (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * len0 ;
-
-        vec_scalar_append(da, coef, i, fx, fy, fz);
-        vec_scalar_append(db, coef, j, fx, fy, fz);
-        vec_scalar_append(dc, coef, k, fx, fy, fz);
-        vec_scalar_append(dd, coef, l, fx, fy, fz);
-
-        coef = -curva_mean_area_tot/4.0 *len0;
-        vec_scalar_append(da, coef, i, fxad, fyad, fzad);
-        vec_scalar_append(db, coef, j, fxad, fyad, fzad);
-        vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
-        vec_scalar_append(dd, coef, l, fxad, fyad, fzad);
-
-    }
-
-    for (t = 0; t < NT; t++) {
-        i = T0[t]; j = T1[t]; k = T2[t];
-
-        get3(i, j, k, a, b, c);
-        dtri_area(a, b, c, da, db, dc);
-
-        coef1 = 1.0/3.0;
-
-        coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0;
-        coef = coef1 * coef2;
-        vec_scalar_append(da, coef, i, fx, fy, fz);
-
-        coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0;
-        coef = coef1 * coef2;
-        vec_scalar_append(db, coef, j, fx, fy, fz);
-
-        coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0;
-        coef = coef1 * coef2;
-        vec_scalar_append(dc, coef, k, fx, fy, fz);
-    }
-
+    force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/
+              fx, fy, fz, fxad, fyad, fzad);
+    force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/
+                   fx, fy, fz, fxad, fyad, fzad);
+    force_area(H0, lentheta, area, /*io*/
+               fx, fy, fz, fxad, fyad, fzad);
     write(fx, fy, fz, fxad, fyad, fzad, area);
 
     FREE(lentheta);
