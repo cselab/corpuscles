@@ -82,6 +82,17 @@ static void compute_area(/**/ real *area, real *parea_tot) {
     *parea_tot = area_tot;
 }
 
+static void compute_mean_curv(real H0, real kb, real lentheta, real area, /**/ real *pmean) {
+    real mean;
+    real kad;
+
+    kad = 2.0 * kb / pi;
+    mean = lentheta - H0 *area;
+    mean = mean * (4 * kad * pi / area);
+
+    *pmean = mean;
+}
+
 static void force_edg(real H0, real curva_mean_area_tot, const real *theta,  const real *lentheta, const real *area,  /**/
                       real *fx, real *fy, real *fz,
                       real *fxad, real *fyad, real *fzad) {
@@ -113,7 +124,7 @@ static void force_lentheta(real H0, real curva_mean_area_tot, const real *lenthe
     real len0, coef;
     real a[3], b[3], c[3], d[3];
     real da[3], db[3], dc[3], dd[3], u[3];
-    
+
     for (e = 0; e < NE; e++) {
         he = hdg_edg(e);
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
@@ -135,7 +146,7 @@ static void force_lentheta(real H0, real curva_mean_area_tot, const real *lenthe
         vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
         vec_scalar_append(dd, coef, l, fxad, fyad, fzad);
 
-    }    
+    }
 }
 
 static void force_area(real H0, const real *lentheta, const real *area,
@@ -145,10 +156,10 @@ static void force_area(real H0, const real *lentheta, const real *area,
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
     real coef1, coef2, coef;
-    
+
     for (t = 0; t < NT; t++) {
         i = T0[t]; j = T1[t]; k = T2[t];
-        
+
         get3(i, j, k, a, b, c);
         dtri_area(a, b, c, da, db, dc);
 
@@ -197,8 +208,7 @@ void force_juelicher() {
     compute_theta_len(/**/ theta, lentheta, &lentheta_tot);
     compute_area(/**/ area, &area_tot);
 
-    curva_mean_area_tot = lentheta_tot - H0 *area_tot;
-    curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot);
+    compute_mean_curv(H0, kb, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
 
     force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/ fx, fy, fz, fxad, fyad, fzad);
     force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
