@@ -51,7 +51,7 @@ static void compute_theta_len(/**/ real *theta, real *lentheta) {
     int i, j, k, l;
     real a[3], b[3], c[3], d[3], u[3];
     real len0, theta0, lentheta0, area0;
-    
+
     for (e = 0; e < NE; e++) {
         he = hdg_edg(e);
         if ( bnd(he) ) continue;
@@ -63,6 +63,21 @@ static void compute_theta_len(/**/ real *theta, real *lentheta) {
         lentheta0    = len0*theta0;
         lentheta[j] += lentheta0;
         lentheta[k] += lentheta0;
+    }
+}
+
+static void compute_area(/**/ real *area) {
+    int t, i, j, k;
+    real area0;
+    real a[3], b[3], c[3], d[3];
+
+    for (t = 0; t < NT; t++) {
+        i = T0[t]; j = T1[t]; k = T2[t];
+        get3(i, j, k, a, b, c);
+        area0 = tri_area(a, b, c);
+        area[i] += area0/3;
+        area[j] += area0/3;
+        area[k] += area0/3;
     }
 }
 
@@ -100,15 +115,8 @@ void force_juelicher() {
     kad = 2.0 * kb / pi;
 
     compute_theta_len(/**/ theta, lentheta);
+    compute_area(/**/ area);
 
-    for (t = 0; t < NT; t++) {
-        i = T0[t]; j = T1[t]; k = T2[t];
-        get3(i, j, k, a, b, c);
-        area0 = tri_area(a, b, c);
-        area[i] += area0/3;
-        area[j] += area0/3;
-        area[k] += area0/3;
-    }
     area_tot = sum(NV, area);
     curva_mean_area_tot = sum(NV, lentheta)/6;
     curva_mean_area_tot -= H0 *area_tot;
