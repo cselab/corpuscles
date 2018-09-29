@@ -99,23 +99,27 @@ void force_juelicher() {
   }
   area_tot = sum(NV, area);
   curva_mean_area_tot = sum(NV, lentheta)/6;
-  
   curva_mean_area_tot -= H0 *area_tot;
   curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot);
 
   for (e = 0; e < NE; e++) {
+      he = hdg_edg(e);
+      i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+      get4(i, j, k, l, /**/ a, b, c, d);
+      theta0 = tri_dih(a, b, c, d);
+      coef = - ( (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * theta0;
+      dedg_abs(b,c, db, dc);
+      vec_scalar_append(db, coef, j, fx, fy, fz);
+      vec_scalar_append(dc, coef, k, fx, fy, fz);
+      coef = -curva_mean_area_tot/4.0 * theta0;
+      vec_scalar_append(db, coef, j, fxad, fyad, fzad);
+      vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
+  }
+
+  for (e = 0; e < NE; e++) {
     he = hdg_edg(e);
-    if ( bnd(he) ) continue;
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     get4(i, j, k, l, /**/ a, b, c, d);
-    theta0 = tri_dih(a, b, c, d);
-    coef = - ( (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * theta0;
-    dedg_abs(b,c, db, dc);
-    vec_scalar_append(db, coef, j, fx, fy, fz);
-    vec_scalar_append(dc, coef, k, fx, fy, fz);
-    coef = -curva_mean_area_tot/4.0 * theta0;
-    vec_scalar_append(db, coef, j, fxad, fyad, fzad);
-    vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
     
     ddih_angle(a, b, c, d, da, db, dc, dd);
     vec_minus(c, b, u);
