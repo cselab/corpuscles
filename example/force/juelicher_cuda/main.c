@@ -35,8 +35,7 @@ static real sum(int n, real *a) {
     real s;
     int i;
     s = 0.0;
-    for (i = 0; i < n; i++)
-        s += a[i];
+    for (i = 0; i < n; i++) s += a[i];
     return s;
 }
 
