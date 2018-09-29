@@ -46,14 +46,11 @@ static void write(real *fx, real *fy, real *fz,
     punto_fwrite(NV, queue, stdout);
 }
 
-static void compute_theta_len(/**/ real *theta, real *lentheta, real *plentheta_tot) {
-    int e, he;
+static void compute_theta_len(/**/ real *theta, real *lentheta) {
+    int e;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3], u[3];
     real len0, theta0, lentheta0;
-    real lentheta_tot;
-
-    lentheta_tot = 0;
     for (e = 0; e < NE; e++) {
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
         get4(i, j, k, l, /**/ a, b, c, d);
@@ -63,18 +60,13 @@ static void compute_theta_len(/**/ real *theta, real *lentheta, real *plentheta_
         lentheta0    = len0*theta0;
         lentheta[j] += lentheta0;
         lentheta[k] += lentheta0;
-        lentheta_tot += lentheta0;
     }
-    *plentheta_tot = lentheta_tot/2;
 }
 
-static void compute_area(/**/ real *area, real *parea_tot) {
+static void compute_area(/**/ real *area) {
     int t, i, j, k;
     real area0;
     real a[3], b[3], c[3];
-    real area_tot;
-
-    area_tot = 0;
     for (t = 0; t < NT; t++) {
         i = T0[t]; j = T1[t]; k = T2[t];
         get3(i, j, k, a, b, c);
@@ -82,20 +74,14 @@ static void compute_area(/**/ real *area, real *parea_tot) {
         area[i] += area0/3;
         area[j] += area0/3;
         area[k] += area0/3;
-        area_tot += area0;
     }
-
-    *parea_tot = area_tot;
 }
 
 static void compute_mean_curv(real H0, real kb, real lentheta, real area, /**/ real *pmean) {
     real mean;
     real kad;
-
-    kad = 2.0 * kb / pi;
-    mean = lentheta - H0 *area;
-    mean = mean * (4 * kad * pi / area);
-
+    kad = 2*kb/pi;
+    mean = (lentheta/4 - H0 *area)*(4*kad*pi/area);
     *pmean = mean;
 }
 
@@ -208,9 +194,12 @@ void force_juelicher() {
     C0  = -1.0;
     H0  = C0/2.0;
 
-    compute_theta_len(/**/ theta, lentheta, &lentheta_tot);
-    compute_area(/**/ area, &area_tot);
-
+    compute_theta_len(/**/ theta, lentheta);
+    lentheta_tot = sum(NE, lentheta);
+    
+    compute_area(/**/ area);
+    area_tot = sum(NT, area);
+    
     compute_mean_curv(H0, kb, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
 
     force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/ fx, fy, fz, fxad, fyad, fzad);
