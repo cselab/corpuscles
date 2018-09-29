@@ -113,9 +113,10 @@ void force_juelicher() {
         he = hdg_edg(e);
         j = D1[e]; k = D2[e];
         get2(j, k, /**/ b, c);
+        dedg_abs(b,c, db, dc);
+
         theta0 = theta[e];
         coef = - ( (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * theta0;
-        dedg_abs(b,c, db, dc);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
         coef = -curva_mean_area_tot/4.0 * theta0;
@@ -127,10 +128,10 @@ void force_juelicher() {
         he = hdg_edg(e);
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
         get4(i, j, k, l, /**/ a, b, c, d);
-    
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
         len0 = vec_abs(u);
+
         coef =  -(  (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * len0 ;
 
         vec_scalar_append(da, coef, i, fx, fy, fz);
