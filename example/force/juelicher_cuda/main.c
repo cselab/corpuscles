@@ -61,9 +61,9 @@ void force_juelicher() {
   real *lentheta, *area;
   real len0, theta0, lentheta0, area0;
   real coef, coef1, coef2;
+  real *theta;
   real *fx, *fy, *fz;
   real *fxad, *fyad, *fzad;
-
 
   RZERO(NV, &lentheta);
   RZERO(NV, &area);
@@ -76,6 +76,8 @@ void force_juelicher() {
   RZERO(NV, &fyad);
   RZERO(NV, &fzad);
 
+  RZERO(NE, &theta);
+
   kb  = 1.0;
   C0  = -1.0;
   H0  = C0/2.0;
@@ -86,7 +88,7 @@ void force_juelicher() {
     if ( bnd(he) ) continue;
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
     get4(i, j, k, l, /**/ a, b, c, d);
-    theta0 = tri_dih(a, b, c, d);
+    theta[e] = theta0 = tri_dih(a, b, c, d);
     vec_minus(c, b, u);
     len0 = vec_abs(u);
     lentheta0    = len0*theta0;
@@ -109,9 +111,9 @@ void force_juelicher() {
 
   for (e = 0; e < NE; e++) {
       he = hdg_edg(e);
-      i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
-      get4(i, j, k, l, /**/ a, b, c, d);
-      theta0 = tri_dih(a, b, c, d);
+      j = D1[e]; k = D2[e];
+      get2(j, k, /**/ b, c);
+      theta0 = theta[e];
       coef = - ( (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * theta0;
       dedg_abs(b,c, db, dc);
       vec_scalar_append(db, coef, j, fx, fy, fz);
@@ -175,7 +177,7 @@ void force_juelicher() {
   FREE(fxad);
   FREE(fyad);
   FREE(fzad);
-
+  FREE(theta);
 }
 
 int main() {
