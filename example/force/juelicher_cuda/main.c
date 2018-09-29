@@ -59,7 +59,7 @@ static void compute_theta_len(/**/ real *theta, real *lentheta, real *plentheta_
         lentheta[k] += lentheta0;
         lentheta_tot += lentheta0;
     }
-    *plentheta_tot = lentheta_tot;
+    *plentheta_tot = lentheta_tot/2;
 }
 
 static void compute_area(/**/ real *area, real *parea_tot) {
@@ -197,15 +197,12 @@ void force_juelicher() {
     compute_theta_len(/**/ theta, lentheta, &lentheta_tot);
     compute_area(/**/ area, &area_tot);
 
-    curva_mean_area_tot -= H0 *area_tot;
-    curva_mean_area_tot = lentheta_tot * (4 * kad * pi / area_tot);
+    curva_mean_area_tot = lentheta_tot - H0 *area_tot;
+    curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot);
 
-    force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/
-              fx, fy, fz, fxad, fyad, fzad);
-    force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/
-                   fx, fy, fz, fxad, fyad, fzad);
-    force_area(H0, lentheta, area, /*io*/
-               fx, fy, fz, fxad, fyad, fzad);
+    force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/ fx, fy, fz, fxad, fyad, fzad);
+    force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
+    force_area(H0, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
     write(fx, fy, fz, fxad, fyad, fzad, area);
 
     FREE(lentheta);
