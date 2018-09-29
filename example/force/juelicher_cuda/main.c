@@ -92,7 +92,7 @@ static void force_edg(real H0, real curva_mean_area_tot, const real *theta,  con
         he = hdg_edg(e);
         j = D1[e]; k = D2[e];
         get2(j, k, /**/ b, c);
-        dedg_abs(b,c, db, dc);
+        dedg_abs(b, c, db, dc);
 
         theta0 = theta[e];
         coef = - ( (lentheta[j]/area[j]/4.0 - H0) + (lentheta[k]/area[k]/4.0 - H0) ) * theta0;
