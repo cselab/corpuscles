@@ -46,10 +46,27 @@ static void write(real *fx, real *fy, real *fz,
     punto_fwrite(NV, queue, stdout);
 }
 
+static void compute_theta_len(/**/ real *theta, real *lentheta) {
+    int e, he, t;
+    int i, j, k, l;
+    real a[3], b[3], c[3], d[3], u[3];
+    real len0, theta0, lentheta0, area0;
+    
+    for (e = 0; e < NE; e++) {
+        he = hdg_edg(e);
+        if ( bnd(he) ) continue;
+        i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+        get4(i, j, k, l, /**/ a, b, c, d);
+        theta[e] = theta0 = tri_dih(a, b, c, d);
+        vec_minus(c, b, u);
+        len0 = vec_abs(u);
+        lentheta0    = len0*theta0;
+        lentheta[j] += lentheta0;
+        lentheta[k] += lentheta0;
+    }
+}
 
 void force_juelicher() {
-    enum {X, Y, Z};
-
     real kb, C0, H0, kad;
     real area_tot, curva_mean_area_tot;
     int e, he, t;
@@ -82,18 +99,7 @@ void force_juelicher() {
     H0  = C0/2.0;
     kad = 2.0 * kb / pi;
 
-    for (e = 0; e < NE; e++) {
-        he = hdg_edg(e);
-        if ( bnd(he) ) continue;
-        i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
-        get4(i, j, k, l, /**/ a, b, c, d);
-        theta[e] = theta0 = tri_dih(a, b, c, d);
-        vec_minus(c, b, u);
-        len0 = vec_abs(u);
-        lentheta0    = len0*theta0;
-        lentheta[j] += lentheta0;
-        lentheta[k] += lentheta0;
-    }
+    compute_theta_len(/**/ theta, lentheta);
 
     for (t = 0; t < NT; t++) {
         i = T0[t]; j = T1[t]; k = T2[t];
