@@ -31,6 +31,14 @@ void get4(int i, int j, int k, int l, /**/
     vec_get(l, XX, YY, ZZ, d);
 }
 
+static real sum(int n, real *a) {
+    real s;
+    int i;
+    s = 0.0;
+    for (i = 0; i < n; i++) s += a[i];
+    return s;
+}
+
 static void write(real *fx, real *fy, real *fz,
                   real *fxad, real *fyad, real *fzad,
                   real *area) {
