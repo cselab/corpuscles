@@ -70,10 +70,10 @@ static void compute_area(/**/ real *area) {
     for (t = 0; t < NT; t++) {
         i = T0[t]; j = T1[t]; k = T2[t];
         get3(i, j, k, a, b, c);
-        area0 = tri_area(a, b, c);
-        area[i] += area0/3;
-        area[j] += area0/3;
-        area[k] += area0/3;
+        area0 = tri_area(a, b, c)/3;
+        area[i] += area0;
+        area[j] += area0;
+        area[k] += area0;
     }
 }
 
@@ -196,11 +196,14 @@ void force_juelicher() {
 
     compute_area(/**/ area);
     compute_theta_len(/**/ theta, lentheta);
-    
+
     lentheta_tot = sum(NV, lentheta);
+    MSG("lentheta_tot: %g", lentheta_tot);
+
     area_tot = sum(NV, area);
-    
+
     compute_mean_curv(H0, kb, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
+    MSG("curva_mean_area_tot: %g", curva_mean_area_tot);
 
     force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/ fx, fy, fz, fxad, fyad, fzad);
     force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
