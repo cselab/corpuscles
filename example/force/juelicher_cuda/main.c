@@ -194,11 +194,11 @@ void force_juelicher() {
     C0  = -1.0;
     H0  = C0/2.0;
 
-    compute_theta_len(/**/ theta, lentheta);
-    lentheta_tot = sum(NE, lentheta);
-    
     compute_area(/**/ area);
-    area_tot = sum(NT, area);
+    compute_theta_len(/**/ theta, lentheta);
+    
+    lentheta_tot = sum(NV, lentheta);
+    area_tot = sum(NV, area);
     
     compute_mean_curv(H0, kb, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
 
