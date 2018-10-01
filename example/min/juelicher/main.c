@@ -86,7 +86,6 @@ static real energy(const real *xx, const real *yy, const real *zz) {
         cur = len*theta/4;
         curva_mean[j] += cur;
         curva_mean[k] += cur;
-
     }
 
     for (t = 0; t < NT; t++) {
@@ -220,7 +219,8 @@ static void arg() {
     scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
-static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
+static real rbc(real area) { return 0.06064602170131934*pow(area, 1.5); }
+static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real A0, V0, a0;
@@ -238,7 +238,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     A0 = area(); 
     a0 = A0/NT;
-    V0 = area2volume(A0);
+    V0 = rbc(A0);
     
     f_volume_ini(V0, Kv);    
     f_area_ini(a0, Ka);

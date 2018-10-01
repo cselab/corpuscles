@@ -104,10 +104,10 @@ void Force(const real *x, const real *y, const real *z, /**/
 static void main0() {
     int i;
     real *queue[] = {XX, YY, ZZ, NULL};
-    punto_fwrite(NV, queue, stdout);
-    printf("\n");
+//    punto_fwrite(NV, queue, stdout);
+//    printf("\n");
     i = 0;
-    while (!min_end()) {
+    for (;;) {
         i++;
         min_position(/**/ XX, YY, ZZ);
         if (i % 100 == 0) {
@@ -117,6 +117,7 @@ static void main0() {
             MSG("%g %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
             MSG("dump: q.off");
+            if (min_end()) break;
         }
         min_iterate();
     }
