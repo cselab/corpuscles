@@ -21,7 +21,7 @@
 #define FMT_IN   (XE_REAL_IN)
 
 static real *lentheta, *AREA, *curva_mean;
-static real Ka, Kv, Kb, Ke;
+static real Ka, Kga, Kv, Kb, Ke;
 static const char **argv;
 static const char *me = "min/gompper";
 
@@ -34,7 +34,7 @@ static int scl(/**/ real *p) {
     return HE_OK;
 }
 static void usg() {
-    fprintf(stderr, "%s Ka Kv Kb Ke < OFF\n", me);
+    fprintf(stderr, "%s Ka Kga Kv Kb Ke < OFF\n", me);
     exit(0);
 }
 
@@ -170,36 +170,33 @@ static void force(const real *xx, const real *yy, const real *zz,
         c0 = Kb/24;
         c1 = lentheta[i]*lentheta[i]/AREA[i]/AREA[i] * c0;
         vec_scalar_append(da, c1, i, fx, fy, fz);
-    
+
         c1 = lentheta[j]*lentheta[j]/AREA[j]/AREA[j] * c0;
         vec_scalar_append(db, c1, j, fx, fy, fz);
-    
+
         c1 = lentheta[k]*lentheta[k]/AREA[k]/AREA[k] * c0;
         vec_scalar_append(dc, c1, k, fx, fy, fz);
     }
 }
 
 real Energy(const real *x, const real *y, const real *z) {
-    real a, v, e, b;
-    a = f_area_energy(x, y, z);
+    real a, ga, v, e, b;
+    a  = f_area_energy(x, y, z);
+    ga = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
     e = f_harmonic_ref_energy(x, y, z);
     b = energy(x, y, z);
-    return a + v + e + b;
+    return a + ga + v + e + b;
 }
 
 void Force(const real *x, const real *y, const real *z,
            /**/ real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
+    f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_harmonic_ref_force(x, y, z, /**/ fx, fy, fz);
     force(x, y, z, /**/ fx, fy, fz);
-}
-
-static void write(real *fx, real *fy, real *fz) {
-    real *queue[] = {XX, YY, ZZ, fx, fy, fz, NULL};
-    punto_fwrite(NV, queue, stdout);
 }
 
 static void force_ini() {
@@ -220,13 +217,13 @@ static void energy_fin() { FREE(curva_mean); }
 
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
-    scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
+    scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
 static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real A0, v0, vt, a0;
+    real A0, V0, a0;
     real *fx, *fy, *fz;
     int i;
 
@@ -234,42 +231,42 @@ int main(int __UNUSED argc, const char *v[]) {
     arg();
     ini("/dev/stdin");
 
-    A0 = area(); v0 = volume();
-    a0 = A0/NT;   vt = area2volume(A0);
-
     force_ini();
     energy_ini();
-
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
+
+    A0 = area(); 
+    a0 = A0/NT;
+    V0 = area2volume(A0);
+    
+    f_volume_ini(V0, Kv);    
     f_area_ini(a0, Ka);
+    f_garea_ini(A0, Kga);
     f_harmonic_ref_ini(Ke, XX, YY, ZZ);
     real *queue[] = {XX, YY, ZZ, NULL};
 
-    for (;;) {
-        f_volume_ini(v0, Kv);
-        min_ini(VECTOR_BFGS);
-        for (i = 0; i < 100; i++) {
-            min_position(/**/ XX, YY, ZZ);
-            min_iterate();
+    min_ini(VECTOR_BFGS);
+
+    i = 0;
+    while (!min_end()) {
+        i++;
+        min_position(/**/ XX, YY, ZZ);
+        if (i % 100 == 0) {
+            punto_fwrite(NV, queue, stdout);
+            printf("\n");
+            MSG("eng: %g", min_energy());
+            MSG("%g %g", area()/A0, volume()/V0);
+            off_write(XX, YY, ZZ, "q.off");
+            MSG("dump: q.off");
         }
-        MSG("a/a0 = %g v/v0 = %g", area()/a0/NT, volume()/v0);
-        MSG("eng: %g", min_energy());
-        punto_fwrite(NV, queue, stdout);
-        off_write(XX, YY, ZZ, "q.off");
-        f_volume_fin();
-        min_fin();
-        if (v0 > vt) v0 -= vt/10;
+        min_iterate();
     }
-
-    force(XX, YY, ZZ, fx, fy, fz);
-    write(fx, fy, fz);
-    printf("%g\n", energy(XX, YY, ZZ));
-
+    
     FREE(fx); FREE(fy); FREE(fz);
-
     f_harmonic_ref_fin();
     f_area_fin();
+    f_garea_fin();
 
     energy_fin();
     force_fin();
