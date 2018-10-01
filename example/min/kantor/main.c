@@ -15,12 +15,13 @@
 
 #define FMT_IN   XE_REAL_IN
 
-static real Ka, Kv, Ke, Kb;
+static real Ka, Kga, Kv, Ke, Kb;
+static real A0, V0;
 static const char **argv;
 static const char *me = "min/kantor";
 
 static void usg() {
-    fprintf(stderr, "%s Ka Kv Kb Ke < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -34,16 +35,17 @@ int scl(/**/ real *p) {
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
-    scl(&Ka); scl(&Kv); scl(&Kb); scl(&Ke);
+    scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
-    real a, v, e, b;
+    real a, ga, v, e, b;
     a = f_area_energy(x, y, z);
+    ga = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
     e = f_harmonic_energy(x, y, z);
     b = f_kantor_energy(x, y, z);
-    return a + v + e + b;
+    return a + ga + v + e + b;
 }
 
 static void zero(int n, real *a) {
@@ -54,6 +56,7 @@ void Force(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
+    f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_harmonic_force(x, y, z, /**/ fx, fy, fz);
     f_kantor_force(x, y, z, /**/ fx, fy, fz);
@@ -70,6 +73,7 @@ static void main0() {
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("eng: %g", min_energy());
+            MSG("%g %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
             MSG("dump: q.off");
         }
@@ -85,18 +89,20 @@ static real eq_tri_edg(real area) {
 static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real A0, v0, a0, e0;
+    real e0, a0;
     argv = v; argv++;
     arg();
 
     ini("/dev/stdin");
     A0 = area();
-    a0 = A0/NT;   v0 = area2volume(A0); e0 = eq_tri_edg(a0);
-    MSG("v0/volume(): %g", v0/volume());
-    MSG("area, volume, edg: %g %g %g", a0, v0, e0);
+    a0 = A0/NT;
+    V0 = area2volume(A0); e0 = eq_tri_edg(a0);
+    MSG("v0/volume(): %g", V0/volume());
+    MSG("area, volume, edg: %g %g %g", A0, V0, e0);
 
-    f_volume_ini(v0, Kv);
-    f_area_ini(a0, Ka);
+    f_area_ini(a0,  Ka);
+    f_garea_ini(A0, Kga);
+    f_volume_ini(V0, Kv);
     f_harmonic_ini(e0, Ke);
     f_kantor_ini(Kb);
 
@@ -109,6 +115,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_harmonic_fin();
     f_volume_fin();
     f_area_fin();
+    f_garea_fin();
     fin();
     return 0;
 }
