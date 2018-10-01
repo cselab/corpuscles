@@ -140,8 +140,7 @@ static void force_lentheta(real H0, real curva_mean_area_tot, const real *lenthe
 }
 
 static void force_area(real H0, const real *lentheta, const real *area,
-                       real *fx, real *fy, real *fz,
-                       real *fxad, real *fyad, real *fzad) {
+                       real *fx, real *fy, real *fz) {
     int t, i, j, k;
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
@@ -204,7 +203,7 @@ void force_juelicher() {
     compute_mean_curv(H0, kb, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
     force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/ fx, fy, fz, fxad, fyad, fzad);
     force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
-    force_area(H0, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
+    force_area(H0, lentheta, area, /*io*/ fx, fy, fz);
     write(fx, fy, fz, fxad, fyad, fzad, area);
 
     MSG("lentheta_tot: %g", lentheta_tot);
