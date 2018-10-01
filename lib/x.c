@@ -9,6 +9,7 @@
 #include "he/he.h"
 #include "he/memory.h"
 #include "he/f/area.h"
+#include "he/f/garea.h"
 #include "he/f/volume.h"
 #include "he/f/harmonic.h"
 #include "he/f/harmonic_ref.h"
@@ -28,6 +29,7 @@ real *RR, *TH;
 
 static He      *he;
 static HeFArea *f_area;
+static HeFGarea *f_garea;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
 static HeFHarmonicRef *f_harmonic_ref;
@@ -145,6 +147,24 @@ real f_area_energy(const real *x, const real *y, const real *z) {
 
 int f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_garea_ini(real a0, real K) {
+    he_f_garea_ini(a0, K, he, /**/ &f_garea);
+    return HE_OK;
+}
+
+int f_garea_fin() {
+    he_f_garea_fin(f_garea);
+    return HE_OK;
+}
+
+real f_garea_energy(const real *x, const real *y, const real *z) {
+    return he_f_garea_energy(f_garea, he, x, y, z);
+}
+
+int f_garea_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_garea_force(f_garea, he, x, y, z, /**/ fx, fy, fz);
 }
 
 

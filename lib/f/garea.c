@@ -23,7 +23,6 @@ int he_f_garea_ini(real A0, real K, He *he, T **pq) {
     int n;
     MALLOC(1, &q);
     n = he_nt(he);
-
     MALLOC(n, &q->area);
 
     q->n = n;
@@ -132,6 +131,7 @@ real he_f_garea_energy(T *q, He *he,
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
+    compute_area(he, x, y, z, /**/ area);    
     A = sum(n, area);
     return K/A0*(A - A0)*(A - A0);
 }
