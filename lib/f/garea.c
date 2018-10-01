@@ -110,21 +110,18 @@ int he_f_garea_force(T *q, He *he,
     return HE_OK;
 }
 
-static real compute_energy(real K, real a0, real *darea, int n) {
+static real sum(int n, real *a) {
     int t;
-    real da, e;
-    e = 0;
-    for (t = 0; t < n; t++) {
-        da = darea[t];
-        e += da * da;
-    }
-    return K*e/a0;
+    real s;
+    s = 0;
+    for (t = 0; t < n; t++)
+        s += a[t];
+    return s;
 }
-
 real he_f_garea_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
-    real *area, a0, K;
+    real *area, a0, a, K;
     n = q->n;
     area = q->area;
     a0 = q->a0;
@@ -133,6 +130,6 @@ real he_f_garea_energy(T *q, He *he,
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
-    compute_area(a0, he, x, y, z, /**/ area);
-    return compute_energy(K, a0, darea, n);
+    a = sum(n, area);
+    return K/a0 * (a - a0) * (a - a0);
 }
