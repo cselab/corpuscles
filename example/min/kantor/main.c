@@ -67,7 +67,9 @@ static void main0() {
     real *queue[] = {XX, YY, ZZ, NULL};
     punto_fwrite(NV, queue, stdout);
     printf("\n");
-    for (i = 0; i < 1000000; i++) {
+    i = 0;
+    while (!min_end()) {
+        i++;
         min_position(/**/ XX, YY, ZZ);
         if (i % 100 == 0) {
             punto_fwrite(NV, queue, stdout);
