@@ -48,6 +48,12 @@ int f_harmonic_fin();
 real f_harmonic_energy(const real *x, const real *y, const real *z);
 int  f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
+
+int f_harmonic_ref_ini(real K, const real *x, const real *y, const real *z);
+int f_harmonic_ref_fin();
+real f_harmonic_ref_energy(const real *x, const real *y, const real *z);
+int  f_harmonic_ref_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+
 int f_kantor_ini(real K);
 int f_kantor_fin();
 real f_kantor_energy(const real *x, const real *y, const real *z);
