@@ -13,6 +13,5 @@ int he_f_garea_force(T*, He*,
 real he_f_garea_energy(T*, He*, const real *x, const real *y, const real *z);
 
 int he_f_garea_a(T*, /**/ real  **a);
-int he_f_garea_da(T*, /**/ real **da);
 
 #undef T

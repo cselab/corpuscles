@@ -14,7 +14,7 @@
 
 struct T {
     int n;
-    real *area, *darea;
+    real *area;
     real a0, K;
 };
 
@@ -24,7 +24,6 @@ int he_f_garea_ini(real a0, real K, He *he, T **pq) {
     MALLOC(1, &q);
     n = he_nt(he);
 
-    MALLOC(n, &q->darea);
     MALLOC(n, &q->area);
 
     q->n = n;
@@ -36,17 +35,12 @@ int he_f_garea_ini(real a0, real K, He *he, T **pq) {
 }
 
 int he_f_garea_fin(T *q) {
-    FREE(q->area); FREE(q->darea); FREE(q);
+    FREE(q->area); FREE(q);
     return HE_OK;
 }
 
 int he_f_garea_a(T *q, /**/ real  **pa) {
     *pa = q->area;
-    return HE_OK;
-}
-
-int he_f_garea_da(T *q, /**/ real  **pa) {
-    *pa = q->darea;
     return HE_OK;
 }
 
@@ -104,7 +98,6 @@ int he_f_garea_force(T *q, He *he,
     real *area, *darea, a0, K;
     n = q->n;
     area = q->area;
-    darea = q->darea;
     a0 = q->a0;
     K  = q->K;
 
@@ -131,16 +124,15 @@ static real compute_energy(real K, real a0, real *darea, int n) {
 real he_f_garea_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
-    real *area, *darea, a0, K;
+    real *area, a0, K;
     n = q->n;
     area = q->area;
-    darea = q->darea;
     a0 = q->a0;
     K  = q->K;
 
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
-    compute_area(a0, he, x, y, z, /**/ area, darea);
+    compute_area(a0, he, x, y, z, /**/ area);
     return compute_energy(K, a0, darea, n);
 }
