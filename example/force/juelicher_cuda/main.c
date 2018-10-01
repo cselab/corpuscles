@@ -130,7 +130,7 @@ static void force_lentheta(real H0, real curva_mean_area_tot, const real *lenthe
         vec_scalar_append(dc, coef, k, fx, fy, fz);
         vec_scalar_append(dd, coef, l, fx, fy, fz);
 
-        coef = -curva_mean_area_tot/4.0 *len0;
+        coef = -curva_mean_area_tot/4.0*len0;
         vec_scalar_append(da, coef, i, fxad, fyad, fzad);
         vec_scalar_append(db, coef, j, fxad, fyad, fzad);
         vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
@@ -198,17 +198,20 @@ void force_juelicher() {
     compute_theta_len(/**/ theta, lentheta);
 
     lentheta_tot = sum(NV, lentheta);
-    MSG("lentheta_tot: %g", lentheta_tot);
 
     area_tot = sum(NV, area);
 
     compute_mean_curv(H0, kb, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
-    MSG("curva_mean_area_tot: %g", curva_mean_area_tot);
-
     force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/ fx, fy, fz, fxad, fyad, fzad);
     force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
     force_area(H0, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
     write(fx, fy, fz, fxad, fyad, fzad, area);
+
+    MSG("lentheta_tot: %g", lentheta_tot);
+    MSG("curva_mean_area_tot: %g", curva_mean_area_tot);
+    MSG("area: %g", area[0]);
+    MSG("fx: %g", fx[0]);
+    MSG("fad: %g", fxad[0]);
 
     FREE(lentheta);
     FREE(area);
