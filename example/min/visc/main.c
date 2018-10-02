@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #include <real.h>
 
@@ -12,9 +13,9 @@
 #include <he/util.h>
 #include <he/memory.h>
 #include <he/x.h>
-
 #include <alg/x.h>
 #include <alg/min.h>
+#include <stdlib.h>
 
 #define FMT_IN   XE_REAL_IN
 
@@ -63,7 +64,6 @@ static real f_bending_force(const real *x, const real *y, const real *z,
     }
     ER("unknown btype: %d", btype);
 }
-
 
 static void usg() {
     fprintf(stderr, "%s kantor/gompper Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
@@ -125,6 +125,17 @@ static void euler(real dt,
     }
 }
 
+static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
+    real r;
+    int i;
+    for (i = 0; i < NV; i++) {
+        r = rand()/(real)RAND_MAX - 0.5;
+        vx[i] += r * mag;
+        vy[i] += r * mag;
+        vz[i] += r * mag;
+    }
+}
+
 static void visc_lang(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
@@ -166,17 +177,20 @@ static real Kin(real *vx, real *vy, real *vz) {
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
     int i;
-    real dt, mu;
+    real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 1e-3;
-    mu = 100.0;
+    dt = 5e-4;
+    mu = 10.0;
+    rnd = 0.01;
+    
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
         i++;
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
 //        visc_lang(mu, vx, vy, vz, /**/
 //                  fx, fy, fz);
+        jigle(rnd, vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/
                   fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
@@ -205,6 +219,7 @@ int main(int __UNUSED argc, const char *v[]) {
     real *vx, *vy, *vz;
     argv = v; argv++;
     arg();
+    srand(time(NULL));
 
     ini("/dev/stdin");
     A0 = area();

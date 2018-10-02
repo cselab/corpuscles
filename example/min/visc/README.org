@@ -1,0 +1,2 @@
+./main gompper 100 5000  5000   10 0.1 < ~/0.off  > q
+./main gompper 1000   0  1000   10  10 < ~/0.off  > q
