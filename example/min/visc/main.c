@@ -7,6 +7,7 @@
 
 #include <he/err.h>
 #include <he/punto.h>
+#include <he/vec.h>
 #include <he/macro.h>
 #include <he/util.h>
 #include <he/memory.h>
@@ -125,7 +126,7 @@ static void euler(real dt,
 }
 
 static void visc_lang(real mu,
-                      real *vx, real *vy, real *vz, /*io*/
+                      const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
     int i;
     for (i = 0; i < NV; i++) {
@@ -135,27 +136,57 @@ static void visc_lang(real mu,
     }
 }
 
+static void visc_pair(real mu,
+                      const real *vx, const real *vy, const real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+    int e, i, j;
+    real a[3], b[3], u[3];
+    for (e = 0; e < NE; e++) {
+        i = D1[e]; j = D2[e];
+        vec_get(i, vx, vy, vz, a);
+        vec_get(j, vx, vy, vz, b);
+        vec_minus(a, b, u);
+        vec_scalar_append(u, -mu, i, fx, fy, fz);
+        vec_scalar_append(u,  mu, j, fx, fy, fz);
+    }
+}
+
+static real Kin(real *vx, real *vy, real *vz) {
+    int i;
+    real s;
+    s = 0;
+    for (i = 0; i < NV; i++) {
+        s += vx[i]*vx[i];
+        s += vy[i]*vy[i];
+        s += vz[i]*vz[i];
+    }
+    return s;
+}
+
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
     int i;
     real dt, mu;
-//    real *queue[] = {XX, YY, ZZ, NULL};
+    real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 1e-5;
-    mu = 1.0;
+    dt = 1e-3;
+    mu = 100.0;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
         i++;
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
-        visc_lang(mu, vx, vy, vz, /**/
+//        visc_lang(mu, vx, vy, vz, /**/
+//                  fx, fy, fz);
+        visc_pair(mu, vx, vy, vz, /**/
                   fx, fy, fz);
-        euler( dt, vx, vy, vz, /**/ XX, YY, ZZ);
-        euler(-dt, fx, fy, fz, /**/ vx, vy, vz);
+        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 100 == 0) {
-            MSG("eng: %g", Energy(XX, YY, ZZ));
-            MSG("%g %g", area()/A0, volume()/V0);
+            punto_fwrite(NV, queue, stdout);
+            printf("\n");
+            MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
+            MSG("area/vol: %g %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
-            MSG("dump: q.off");            
         }
     }
 }
