@@ -246,7 +246,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_harmonic_ref_ini(Ke, XX, YY, ZZ);
     real *queue[] = {XX, YY, ZZ, NULL};
 
-    min_ini(VECTOR_BFGS);
+    min_ini(CONJUGATE_PR);
 
     i = 0;
     while (!min_end()) {

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include <real.h>
 
@@ -18,19 +19,22 @@
 static real Ka, Kga, Kv, Ke, Kb;
 static real A0, V0;
 static const char **argv;
+static char bending[4048];
 static const char *me = "min/kantor";
 
 enum {KANTOR, GOMPPER};
 static int btype;
-static void f_bending_ini(int type, real K) {
-    switch (btype = type) {
-    case KANTOR:
+static int f_bending_ini(const char *bending, real K) {
+    if (util_eq(bending, "kantor")) {
+        btype = KANTOR;
         f_kantor_ini(K);
-        break;
-    case GOMPPER:
-        f_gompper_ini(K);
-        break;
     }
+    else if (util_eq(bending, "gompper")) {
+        btype = GOMPPER;
+        f_gompper_ini(K);
+    } else
+        ER("unknown bending type: %s", bending);
+    return HE_OK;
 }
 
 static int f_bending_fin() {
@@ -38,7 +42,7 @@ static int f_bending_fin() {
     case KANTOR: return f_kantor_fin();
     case GOMPPER: return f_gompper_fin();
     }
-    ER("unknown btype: %d", btype);        
+    ER("unknown btype: %d", btype);
 }
 
 static real f_bending_energy(const real *x, const real *y, const real *z) {
@@ -55,7 +59,7 @@ static real f_bending_force(const real *x, const real *y, const real *z,
     case KANTOR: return f_kantor_force(x, y, z, /**/ fx, fy, fz);
     case GOMPPER: return f_gompper_force(x, y, z, /**/ fx, fy, fz);
     }
-    ER("unknown btype: %d", btype);    
+    ER("unknown btype: %d", btype);
 }
 
 
@@ -72,8 +76,15 @@ int scl(/**/ real *p) {
     argv++;
     return HE_OK;
 }
+int str(/**/ char *p) {
+    if (*argv == NULL) ER("not enough args");
+    strncpy(p, *argv, 4048);
+    argv++;
+    return HE_OK;
+}
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
+    str(bending);
     scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
@@ -128,7 +139,8 @@ static real eq_tri_edg(real area) {
     return 2*sqrt(area)/pow(3, 0.25);
 }
 
-static real area2volume(real area) { return 0.06064602170131934*pow(area, 1.5); }
+static real rbc(real area) { return 0.06064602170131934*pow(area, 1.5); }
+static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
@@ -138,7 +150,7 @@ int main(int __UNUSED argc, const char *v[]) {
     ini("/dev/stdin");
     A0 = area();
     a0 = A0/NT;
-    V0 = area2volume(A0); e0 = eq_tri_edg(a0);
+    V0 = rbc(A0); e0 = eq_tri_edg(a0);
     MSG("v0/volume(): %g", V0/volume());
     MSG("area, volume, edg: %g %g %g", A0, V0, e0);
 
@@ -146,9 +158,9 @@ int main(int __UNUSED argc, const char *v[]) {
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
     f_harmonic_ini(e0, Ke);
-    f_bending_ini(KANTOR, Kb);
+    f_bending_ini(bending, Kb);
 
-    min_ini(VECTOR_BFGS2);
+    min_ini(CONJUGATE_PR);
 
     main0();
     min_fin();
