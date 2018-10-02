@@ -13,9 +13,12 @@
 #define T HeFJuelicher
 
 struct T {
-    int n;
-    real *acos;
-    real K;
+    int nv, ne, nt;
+    real K, kad, phi;
+
+    real *lentheta, *area;
+    real *fx, *fy, *fz;
+    real *fxad, *fyad, *fzad;
 };
 
 static real compute_energy(He *he, real *acos) {
@@ -23,7 +26,13 @@ static real compute_energy(He *he, real *acos) {
 
 int he_f_juelicher_ini(real K, He *he, T **pq) {
     T *q;
+    int nv, ne, nt;
     MALLOC(1, &q);
+
+    nv = he_nv(he);
+    ne = he_ne(he);
+    nt = he_nt(he);
+
     return HE_OK;
 }
 
