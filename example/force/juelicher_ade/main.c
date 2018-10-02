@@ -40,17 +40,17 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
 }
 
 static void write(real *fx, real *fy, real *fz,
-                  real *fxad, real *fyad, real *fzad,
+                  real *fxade, real *fyade, real *fzade,
                   real *A) {
 
-  real *fm, *fmad;
+  real *fm, *fmade;
   RZERO(NV, &fm);
-  RZERO(NV, &fmad);
+  RZERO(NV, &fmade);
   vabs(NV, fx, fy, fz, /**/ fm);
-  vabs(NV, fxad, fyad, fzad, /**/ fmad);
+  vabs(NV, fxade, fyade, fzade, /**/ fmade);
 
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 Fx; 6 Fy; 7 Fz; 8 |Fad|; 9 fxad, 10 fyad, 11 fzad, 12 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, fmad, fxad, fyad, fzad, A, NULL};
+  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 Fx; 6 Fy; 7 Fz; 8 |Fade|; 9 fxade, 10 fyade, 11 fzade, 12 area; \n");
+  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, fmade, fxade, fyade, fzade, A, NULL};
 
   punto_fwrite(NV, queue, stdout);
   
@@ -215,7 +215,7 @@ void force_juelicher() {
   real aream, arean;
   real coef, coef1, coef2;
   real *fx, *fy, *fz;
-  real *fxad, *fyad, *fzad;
+  real *fxade, *fyade, *fzade;
 
   
   MALLOC(NV, &lentheta);
@@ -225,9 +225,9 @@ void force_juelicher() {
   MALLOC(NV, &fy);
   MALLOC(NV, &fz);
 
-  MALLOC(NV, &fxad);
-  MALLOC(NV, &fyad);
-  MALLOC(NV, &fzad);
+  MALLOC(NV, &fxade);
+  MALLOC(NV, &fyade);
+  MALLOC(NV, &fzade);
 
 
   area_tot = mesh_area_total();
@@ -247,9 +247,9 @@ void force_juelicher() {
     fy[i] = 0;
     fz[i] = 0;
 
-    fxad[i] = 0;
-    fyad[i] = 0;
-    fzad[i] = 0;
+    fxade[i] = 0;
+    fyade[i] = 0;
+    fzade[i] = 0;
     
   }
 
@@ -325,8 +325,8 @@ void force_juelicher() {
 
     coef = -curva_mean_area_tot/4.0 * theta0;
 
-    vec_scalar_append(db, coef, j, fxad, fyad, fzad);
-    vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
+    vec_scalar_append(db, coef, j, fxade, fyade, fzade);
+    vec_scalar_append(dc, coef, k, fxade, fyade, fzade);
     
     /*calculate force from derivative of dihedral angle*/
     
@@ -350,10 +350,10 @@ void force_juelicher() {
 
     coef = -curva_mean_area_tot/4.0 *len0;
       
-    vec_scalar_append(da, coef, i, fxad, fyad, fzad);
-    vec_scalar_append(db, coef, j, fxad, fyad, fzad);
-    vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
-    vec_scalar_append(dd, coef, l, fxad, fyad, fzad);    
+    vec_scalar_append(da, coef, i, fxade, fyade, fzade);
+    vec_scalar_append(db, coef, j, fxade, fyade, fzade);
+    vec_scalar_append(dc, coef, k, fxade, fyade, fzade);
+    vec_scalar_append(dd, coef, l, fxade, fyade, fzade);    
 
   }
   
@@ -383,16 +383,16 @@ void force_juelicher() {
 
   }
   
-  write(/*i*/ fx, fy, fz, fxad, fyad, fzad, area);
+  write(/*i*/ fx, fy, fz, fxade, fyade, fzade, area);
 
   FREE(lentheta);
   FREE(area);
   FREE(fx);
   FREE(fy);
   FREE(fz);
-  FREE(fxad);
-  FREE(fyad);
-  FREE(fzad);
+  FREE(fxade);
+  FREE(fyade);
+  FREE(fzade);
     
 }
 
