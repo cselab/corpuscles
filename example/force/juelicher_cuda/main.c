@@ -213,12 +213,8 @@ void force_juelicher() {
 
     FREE(lentheta);
     FREE(area);
-    FREE(fx);
-    FREE(fy);
-    FREE(fz);
-    FREE(fxad);
-    FREE(fyad);
-    FREE(fzad);
+    FREE(fx); FREE(fy); FREE(fz);
+    FREE(fxad); FREE(fyad); FREE(fzad);
     FREE(theta);
 }
 
