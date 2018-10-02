@@ -9,6 +9,7 @@
 #include <he/punto.h>
 #include <he/macro.h>
 #include <he/util.h>
+#include <he/memory.h>
 #include <he/x.h>
 
 #include <alg/x.h>
@@ -112,25 +113,50 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 
-static void main0() {
+static void euler(real dt,
+                  const real *fx, const real *fy, const real *fz,
+                  real *vx, real *vy, real *vz) {
     int i;
-    real *queue[] = {XX, YY, ZZ, NULL};
-//    punto_fwrite(NV, queue, stdout);
-//    printf("\n");
+    for (i = 0; i < NV; i++) {
+        vx[i] += dt*fx[i];
+        vy[i] += dt*fy[i];
+        vz[i] += dt*fz[i];
+    }
+}
+
+static void visc_lang(real mu,
+                      real *vx, real *vy, real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+    int i;
+    for (i = 0; i < NV; i++) {
+        fx[i] -= mu*vx[i];
+        fy[i] -= mu*vy[i];
+        fz[i] -= mu*vz[i];
+    }
+}
+
+static void main0(real *vx, real *vy, real *vz,
+                  real *fx, real *fy, real *fz) {
+    int i;
+    real dt, mu;
+//    real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
+    dt = 1e-5;
+    mu = 1.0;
+    zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
         i++;
-        min_position(/**/ XX, YY, ZZ);
+        Force(XX, YY, ZZ, /**/ fx, fy, fz);
+        visc_lang(mu, vx, vy, vz, /**/
+                  fx, fy, fz);
+        euler( dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler(-dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 100 == 0) {
-            punto_fwrite(NV, queue, stdout);
-            printf("\n");
-            MSG("eng: %g", min_energy());
+            MSG("eng: %g", Energy(XX, YY, ZZ));
             MSG("%g %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
-            MSG("dump: q.off");
-            if (min_end()) break;
+            MSG("dump: q.off");            
         }
-        min_iterate();
     }
 }
 
@@ -144,6 +170,8 @@ static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
+    real *fx, *fy, *fz;
+    real *vx, *vy, *vz;
     argv = v; argv++;
     arg();
 
@@ -160,10 +188,13 @@ int main(int __UNUSED argc, const char *v[]) {
     f_harmonic_ini(e0, Ke);
     f_bending_ini(bending, Kb);
 
-    min_ini(CONJUGATE_PR);
+    MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+    MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
 
-    main0();
-    min_fin();
+    main0(vx, vy, vz, fx, fy, fz);
+
+    FREE(fx); FREE(fy); FREE(fz);
+    FREE(vx); FREE(vy); FREE(vz);
 
     f_bending_fin();
     f_harmonic_fin();
@@ -171,5 +202,6 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_fin();
     f_garea_fin();
     fin();
+
     return 0;
 }
