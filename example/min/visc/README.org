@@ -1,2 +1,9 @@
 ./main gompper 100 5000  5000   10 0.1 < ~/0.off  > q
 ./main gompper 1000   0  1000   10  10 < ~/0.off  > q
+
+./main kantor 5000 0 5000   10 0 < ~/1.off  > q
+./main kantor 5000 0 5000   10 0 < ~/1.off  > q
+
+main.c:201: eng: 1821.41 23.7728
+main.c:201: eng: 1795.72 0.374482
+
