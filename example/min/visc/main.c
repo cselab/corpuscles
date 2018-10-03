@@ -37,7 +37,7 @@ static const char **argv;
 static char bending[4048];
 static const char *me = "min/kantor";
 
-enum {KANTOR, GOMPPER};
+enum {KANTOR, GOMPPER, JUELICHER};
 static int btype;
 static int f_bending_ini(const char *bending, real K) {
     if (util_eq(bending, "kantor")) {
@@ -47,6 +47,9 @@ static int f_bending_ini(const char *bending, real K) {
     else if (util_eq(bending, "gompper")) {
         btype = GOMPPER;
         f_gompper_ini(K);
+    } else if (util_eq(bending, "juelicher")) {
+        btype = JUELICHER;
+        f_juelicher_ini(K);
     } else
         ER("unknown bending type: %s", bending);
     return HE_OK;
@@ -56,6 +59,7 @@ static int f_bending_fin() {
     switch (btype) {
     case KANTOR: return f_kantor_fin();
     case GOMPPER: return f_gompper_fin();
+    case JUELICHER: return f_juelicher_fin();
     }
     ER("unknown btype: %d", btype);
 }
@@ -64,6 +68,7 @@ static real f_bending_energy(const real *x, const real *y, const real *z) {
     switch (btype) {
     case KANTOR: return f_kantor_energy(x, y, z);
     case GOMPPER: return f_gompper_energy(x, y, z);
+    case JUELICHER: return f_juelicher_energy(x, y, z);
     }
     ER("unknown btype: %d", btype);
 }
@@ -73,12 +78,13 @@ static real f_bending_force(const real *x, const real *y, const real *z,
     switch (btype) {
     case KANTOR: return f_kantor_force(x, y, z, /**/ fx, fy, fz);
     case GOMPPER: return f_gompper_force(x, y, z, /**/ fx, fy, fz);
+    case JUELICHER: return f_juelicher_force(x, y, z, /**/ fx, fy, fz);
     }
     ER("unknown btype: %d", btype);
 }
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/juelicher Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -188,10 +194,10 @@ static void main0(real *vx, real *vy, real *vz,
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 2e-4;
+    dt = 5e-4;
     mu = 20.0;
-    rnd = 0.1;
-    
+    rnd = 0.00025;
+
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
         i++;
