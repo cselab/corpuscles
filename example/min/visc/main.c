@@ -180,8 +180,8 @@ static void main0(real *vx, real *vy, real *vz,
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 5e-4;
-    mu = 10.0;
+    dt = 2e-4;
+    mu = 20.0;
     rnd = 0.01;
     
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
