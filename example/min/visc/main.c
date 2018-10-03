@@ -194,9 +194,9 @@ static void main0(real *vx, real *vy, real *vz,
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 5e-4;
+    dt = 1e-4;
     mu = 20.0;
-    rnd = 0.00025;
+    rnd = 0.01;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
@@ -209,7 +209,7 @@ static void main0(real *vx, real *vy, real *vz,
                   fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        if (i % 100 == 0) {
+        if (i % 500 == 0) {
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
@@ -224,8 +224,9 @@ static real eq_tri_edg(real area) {
     return 2*sqrt(area)/pow(3, 0.25);
 }
 
-static real rbc(real area) { return 0.06064602170131934*pow(area, 1.5); }
+
 static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real rbc(real area) { return 0.66*sph(area); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
