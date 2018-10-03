@@ -130,8 +130,8 @@ void force_kantor_nelson() {
   real theta;
 
   
-  //coef1   = 2.0*sqrt(3.0);
-  coef1   = 2.0;
+  coef1   = 2.0*sqrt(3.0);
+  //coef1   = 2.0;
   theta0 = 0;
   
   MALLOC(NV, &area);
