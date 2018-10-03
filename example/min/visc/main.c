@@ -12,14 +12,26 @@
 #include <he/macro.h>
 #include <he/util.h>
 #include <he/memory.h>
+#include <he/tri.h>
+#include <he/dedg.h>
+#include <he/ddih.h>
+#include <he/dtri.h>
 #include <he/x.h>
 #include <alg/x.h>
 #include <alg/min.h>
 #include <stdlib.h>
 
+static real Kb;
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
+}
+
+#include "juelicher.h"
+
 #define FMT_IN   XE_REAL_IN
 
-static real Ka, Kga, Kv, Ke, Kb;
+static real Ka, Kga, Kv, Ke;
 static real A0, V0;
 static const char **argv;
 static char bending[4048];
@@ -100,10 +112,6 @@ real Energy(const real *x, const real *y, const real *z) {
     return a + ga + v + e + b;
 }
 
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++) a[i] = 0;
-}
 void Force(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
@@ -182,7 +190,7 @@ static void main0(real *vx, real *vy, real *vz,
     i = 0;
     dt = 2e-4;
     mu = 20.0;
-    rnd = 0.01;
+    rnd = 0.1;
     
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
