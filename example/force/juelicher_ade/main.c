@@ -321,9 +321,10 @@ void force_juelicher() {
     vec_scalar_append(dc, coef, k, fx, fy, fz);
 
 
-    /*this part is due to area-difference elasticity*/
+    /*this part is due to area-difference elasticity
+     the 2 factor due to looping over edge instead of vertex*/
 
-    coef = -curva_mean_area_tot/4.0 * theta0;
+    coef = -curva_mean_area_tot/4.0 * theta0 * 2.0;
 
     vec_scalar_append(db, coef, j, fxade, fyade, fzade);
     vec_scalar_append(dc, coef, k, fxade, fyade, fzade);
@@ -346,9 +347,10 @@ void force_juelicher() {
     vec_scalar_append(dc, coef, k, fx, fy, fz);
     vec_scalar_append(dd, coef, l, fx, fy, fz);    
 
-    /*this part is due to area-difference elasticity*/
+    /*this part is due to area-difference elasticity
+      the 2 factor due to looping over edge instead of vertex*/    
 
-    coef = -curva_mean_area_tot/4.0 *len0;
+    coef = -curva_mean_area_tot/4.0 *len0 * 2.0;
       
     vec_scalar_append(da, coef, i, fxade, fyade, fzade);
     vec_scalar_append(db, coef, j, fxade, fyade, fzade);
