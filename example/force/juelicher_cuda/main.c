@@ -77,10 +77,8 @@ static void compute_area(/**/ real *area) {
     }
 }
 
-static void compute_mean_curv(real H0, real kb, real lentheta, real area, /**/ real *pmean) {
+static void compute_mean_curv(real H0, real kad, real lentheta, real area, /**/ real *pmean) {
     real mean;
-    real kad;
-    kad = 2*kb/pi;
     mean = (lentheta/4 - H0 *area)*(4*kad*pi/area);
     *pmean = mean;
 }
@@ -169,7 +167,7 @@ static void force_area(real H0, const real *lentheta, const real *area,
 }
 
 void force_juelicher() {
-    real kb, C0, H0;
+    real kb, C0, H0, kad;
     real area_tot, lentheta_tot, curva_mean_area_tot;
     real *lentheta, *area;
     real *theta;
@@ -192,6 +190,7 @@ void force_juelicher() {
     kb  = 1.0;
     C0  = -1.0;
     H0  = C0/2.0;
+    kad = 2*kb/pi;
 
     compute_area(/**/ area);
     compute_theta_len(/**/ theta, lentheta);
@@ -200,7 +199,7 @@ void force_juelicher() {
 
     area_tot = sum(NV, area);
 
-    compute_mean_curv(H0, kb, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
+    compute_mean_curv(H0, kad, lentheta_tot, area_tot, /**/ &curva_mean_area_tot);
     force_edg(H0, curva_mean_area_tot,   theta,  lentheta, area,  /*io*/ fx, fy, fz, fxad, fyad, fzad);
     force_lentheta(H0, curva_mean_area_tot, lentheta, area, /*io*/ fx, fy, fz, fxad, fyad, fzad);
     force_area(H0, lentheta, area, /*io*/ fx, fy, fz);
@@ -214,12 +213,8 @@ void force_juelicher() {
 
     FREE(lentheta);
     FREE(area);
-    FREE(fx);
-    FREE(fy);
-    FREE(fz);
-    FREE(fxad);
-    FREE(fyad);
-    FREE(fzad);
+    FREE(fx); FREE(fy); FREE(fz);
+    FREE(fxad); FREE(fyad); FREE(fzad);
     FREE(theta);
 }
 

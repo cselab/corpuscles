@@ -2,17 +2,20 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #include <real.h>
 
 #include <he/err.h>
 #include <he/punto.h>
+#include <he/vec.h>
 #include <he/macro.h>
 #include <he/util.h>
+#include <he/memory.h>
 #include <he/x.h>
-
 #include <alg/x.h>
 #include <alg/min.h>
+#include <stdlib.h>
 
 #define FMT_IN   XE_REAL_IN
 
@@ -61,7 +64,6 @@ static real f_bending_force(const real *x, const real *y, const real *z,
     }
     ER("unknown btype: %d", btype);
 }
-
 
 static void usg() {
     fprintf(stderr, "%s kantor/gompper Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
@@ -112,25 +114,94 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 
-static void main0() {
+static void euler(real dt,
+                  const real *fx, const real *fy, const real *fz,
+                  real *vx, real *vy, real *vz) {
     int i;
+    for (i = 0; i < NV; i++) {
+        vx[i] += dt*fx[i];
+        vy[i] += dt*fy[i];
+        vz[i] += dt*fz[i];
+    }
+}
+
+static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
+    real r;
+    int i;
+    for (i = 0; i < NV; i++) {
+        r = rand()/(real)RAND_MAX - 0.5;
+        vx[i] += r * mag;
+        vy[i] += r * mag;
+        vz[i] += r * mag;
+    }
+}
+
+static void visc_lang(real mu,
+                      const real *vx, const real *vy, const real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+    int i;
+    for (i = 0; i < NV; i++) {
+        fx[i] -= mu*vx[i];
+        fy[i] -= mu*vy[i];
+        fz[i] -= mu*vz[i];
+    }
+}
+
+static void visc_pair(real mu,
+                      const real *vx, const real *vy, const real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+    int e, i, j;
+    real a[3], b[3], u[3];
+    for (e = 0; e < NE; e++) {
+        i = D1[e]; j = D2[e];
+        vec_get(i, vx, vy, vz, a);
+        vec_get(j, vx, vy, vz, b);
+        vec_minus(a, b, u);
+        vec_scalar_append(u, -mu, i, fx, fy, fz);
+        vec_scalar_append(u,  mu, j, fx, fy, fz);
+    }
+}
+
+static real Kin(real *vx, real *vy, real *vz) {
+    int i;
+    real s;
+    s = 0;
+    for (i = 0; i < NV; i++) {
+        s += vx[i]*vx[i];
+        s += vy[i]*vy[i];
+        s += vz[i]*vz[i];
+    }
+    return s;
+}
+
+static void main0(real *vx, real *vy, real *vz,
+                  real *fx, real *fy, real *fz) {
+    int i;
+    real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
-//    punto_fwrite(NV, queue, stdout);
-//    printf("\n");
     i = 0;
+    dt = 2e-4;
+    mu = 20.0;
+    rnd = 0.01;
+    
+    zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
         i++;
-        min_position(/**/ XX, YY, ZZ);
+        Force(XX, YY, ZZ, /**/ fx, fy, fz);
+//        visc_lang(mu, vx, vy, vz, /**/
+//                  fx, fy, fz);
+        jigle(rnd, vx, vy, vz);
+        visc_pair(mu, vx, vy, vz, /**/
+                  fx, fy, fz);
+        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 100 == 0) {
             punto_fwrite(NV, queue, stdout);
             printf("\n");
-            MSG("eng: %g", min_energy());
-            MSG("%g %g", area()/A0, volume()/V0);
+            MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
+            MSG("area/vol: %g %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
-            MSG("dump: q.off");
-            if (min_end()) break;
         }
-        min_iterate();
     }
 }
 
@@ -144,8 +215,11 @@ static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
+    real *fx, *fy, *fz;
+    real *vx, *vy, *vz;
     argv = v; argv++;
     arg();
+    srand(time(NULL));
 
     ini("/dev/stdin");
     A0 = area();
@@ -160,10 +234,13 @@ int main(int __UNUSED argc, const char *v[]) {
     f_harmonic_ini(e0, Ke);
     f_bending_ini(bending, Kb);
 
-    min_ini(CONJUGATE_PR);
+    MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+    MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
 
-    main0();
-    min_fin();
+    main0(vx, vy, vz, fx, fy, fz);
+
+    FREE(fx); FREE(fy); FREE(fz);
+    FREE(vx); FREE(vy); FREE(vz);
 
     f_bending_fin();
     f_harmonic_fin();
@@ -171,5 +248,6 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_fin();
     f_garea_fin();
     fin();
+
     return 0;
 }

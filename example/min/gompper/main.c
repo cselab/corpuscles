@@ -39,7 +39,7 @@ static void arg() {
 
 real Energy(const real *x, const real *y, const real *z) {
     real a, v, e, b;
-    a = f_area_energy(x, y, z);
+    a = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
     e = f_harmonic_energy(x, y, z);
     b = f_gompper_energy(x, y, z);
@@ -53,18 +53,19 @@ static void zero(int n, real *a) {
 void Force(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_area_force(x, y, z, /**/ fx, fy, fz);
+    f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_harmonic_force(x, y, z, /**/ fx, fy, fz);
     f_gompper_force(x, y, z, /**/ fx, fy, fz);
 }
 
 static void main0() {
-    int n, i;
-    n = 500;
-    for (i = 0; i < n; i++) {
+    int i;
+    i = 0;
+    while (!min_end()) {
+        i++;
         min_position(/**/ XX, YY, ZZ);
-        if (i % 1 == 0) {
+        if (i % 100 == 0) {
             MSG("eng: %.16e", min_energy());
             off_write(XX, YY, ZZ, "q.off");
             MSG("%g %g", area()/A0, volume()/V0);
@@ -95,7 +96,7 @@ int main(int __UNUSED argc, const char *v[]) {
     MSG("[Vae]0  %g %g %g", V0, a0, e0);
 
     f_volume_ini(V0, Kv);
-    f_area_ini(a0, Ka);
+    f_garea_ini(A0, Ka);
     f_harmonic_ini(e0, Ke);
     f_gompper_ini(Kb);
 
@@ -107,7 +108,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_gompper_fin();
     f_harmonic_fin();
     f_volume_fin();
-    f_area_fin();
+    f_garea_fin();
     fin();
     return 0;
 }
