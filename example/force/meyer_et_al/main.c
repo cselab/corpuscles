@@ -39,18 +39,14 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
 }
 
 static void write(real *fx, real *fy, real *fz,
-                  real *fxad, real *fyad, real *fzad,
                   real *A) {
 
-  real *fm, *fmad;
+  real *fm;;
   RZERO(NV, &fm);
-  RZERO(NV, &fmad);
   vabs(NV, fx, fy, fz, /**/ fm);
-  vabs(NV, fxad, fyad, fzad, /**/ fmad);
-
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 Fx; 6 Fy; 7 Fz; 8 |Fad|; 9 fxad, 10 fyad, 11 fzad, 12 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, fmad, fxad, fyad, fzad, A, NULL};
-
+  
+  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 fx; 6 fy; 7 fz; 8 area; \n");
+  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, A, NULL};
   punto_fwrite(NV, queue, stdout);
   
   FREE(fm);
@@ -78,16 +74,14 @@ void force_meyer_et_al() {
   real *nx, *ny, *nz;
   real fm;
   real *fx, *fy, *fz;
-  real *fxad, *fyad, *fzad;
   real area0;
   int  obtuse;
   real thetaa, thetab, thetac;
   real cota,cotb,cotc;
   real ab2, bc2, ca2;
-  real area_tot_tri, area_tot_mix, curva_mean_area_tot;
+  real area_tot_tri, area_tot_mix;
 
   real C0, H0;
-  real kb, kad, D;
   
   MALLOC(NV, &lbx);
   MALLOC(NV, &lby);
@@ -101,15 +95,9 @@ void force_meyer_et_al() {
   MALLOC(NV, &fx);
   MALLOC(NV, &fy);
   MALLOC(NV, &fz); 
-  MALLOC(NV, &fxad);
-  MALLOC(NV, &fyad);
-  MALLOC(NV, &fzad); 
 
-  kb = 1.0;
-  C0 = -1.0;
+  C0 = 0;
   H0 = C0/2.0;
-  kad= 2.0 * kb / pi;
-  D  = 4.0e-3/3.91;
   
   for (v = 0; v < NV; v++) {
     
@@ -125,13 +113,9 @@ void force_meyer_et_al() {
     fx[v] = 0;
     fy[v] = 0;
     fz[v] = 0;
-    fxad[v] = 0;
-    fyad[v] = 0;
-    fzad[v] = 0;
     
   }
-
-  /*1st loop, calculate numerator of the laplace*/
+  
   for (e = 0; e < NE; e++) {
     
     if (bnd(e)) continue;
@@ -156,10 +140,8 @@ void force_meyer_et_al() {
 
   }
 
-  /*2nd loop, calculate mixed area of each vertex;
-   calculate Gaussian curvature at each vertex (in part)*/
-  
   area_tot_tri = 0;
+  
   for ( t = 0; t < NT; t++ ) {
     
     /*At first, assume it is not an obtuse triangle*/
@@ -254,13 +236,7 @@ void force_meyer_et_al() {
 
   }
   
-  /*3rd loop, finalize the calculation of laplace at each vertex;
-    finalize the calculation of gauss curvature at each vertex;
-    calculate the normal at each vertex;
-    calculate the mean curvature at each vertex. */
-  
   area_tot_mix = 0;
-  curva_mean_area_tot =0;
   
   for ( v = 0; v < NV; v++ ) {
     
@@ -289,16 +265,13 @@ void force_meyer_et_al() {
     u[Z] = lbz[v];
     
     curva_mean[v] = vec_dot(u, n)/2;
-    
-    curva_mean_area_tot += curva_mean[v] * area[v];
-      
-    fm = 2*2*kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]-curva_gauss[v]+curva_mean[v]*H0);
+
+    fm = 2*2*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]-curva_gauss[v]+curva_mean[v]*H0);
     
     fx[v] += fm * nx[v];
     fy[v] += fm * ny[v];
     fz[v] += fm * nz[v];
 
-      
     /*test*/
     /*printf("lbx, lby, lbz = %f, %f, %f\n", lbx[v], lby[v], lbz[v]);
     printf("nx, ny, nz    = %f, %f, %f\n", nx[v], ny[v], nz[v]);
@@ -307,21 +280,6 @@ void force_meyer_et_al() {
     
   }
 
-  curva_mean_area_tot -= H0 *area_tot_tri;
-  curva_mean_area_tot = curva_mean_area_tot * (4 * kad * pi / area_tot_tri);
-
-  /*printf("curva_mean_area_tot = %f\n", curva_mean_area_tot);*/
-  /*4th loop, calculate force due to area-difference elasticity*/
-
-  for ( v = 0; v < NV; v++ ) {
-
-    fm = -curva_mean_area_tot * curva_gauss[v];
-    fxad[v] += fm * nx[v];
-    fyad[v] += fm * ny[v];
-    fzad[v] += fm * nz[v];
-    
-  }
-  /*5th loop*/
   for (e = 0; e < NE; e++) {
     
     if (bnd(e)) continue;
@@ -336,19 +294,19 @@ void force_meyer_et_al() {
     
     vec_minus(b, c,  u);
 
-    fm = kb*cotil * (curva_mean[j] - curva_mean[k]) / area[j];
+    fm = cotil * (curva_mean[j] - curva_mean[k]) / area[j];
     fx[j] += fm * nx[j];
     fy[j] += fm * ny[j];
     fz[j] += fm * nz[j];
 
-    fm = kb*cotil * (curva_mean[k] - curva_mean[j]) / area[k];
+    fm = cotil * (curva_mean[k] - curva_mean[j]) / area[k];
     fx[k] += fm * nx[k];
     fy[k] += fm * ny[k];
     fz[k] += fm * nz[k];
     
   }
-
-  write(/*i*/ fx, fy, fz, fxad, fyad, fzad, area);
+  
+  write(/*i*/ fx, fy, fz, area);
 
   FREE(lbx);
   FREE(lby);
@@ -358,13 +316,10 @@ void force_meyer_et_al() {
   FREE(nx);
   FREE(ny);
   FREE(nz);
-  FREE(area);
+  FREE(area); 
   FREE(fx);
   FREE(fy);
   FREE(fz);
-  FREE(fxad);
-  FREE(fyad);
-  FREE(fzad);
   
 }
 

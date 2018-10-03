@@ -166,7 +166,7 @@ void force_kantor_nelson() {
 
     //printf("%f\n", theta);
 
-    coef2 = -(sin(theta)*cos(theta0) - cos(theta)*sin(theta0));
+    coef2 = -(theta - theta0);
 
     /*dihedral_derivative(a,b,c,d, da, db, dc, dd);
     printf("%f %f %f\n", a[0], a[1], a[2]);

@@ -216,7 +216,8 @@ static void mesh_force(real *cot, real *area, real area_tot,
 		       real *lbx, real *lby, real *lbz,
 		       real *cm, real cm_intga, /*io*/
 		       real *fx, real *fy, real *fz,
-		       real *cm_dx, real *cm_dy, real *cm_dz) {
+		       real *cm_dx, real *cm_dy, real *cm_dz,
+		       real *fxad, real *fyad, real *fzad) {
   
   /*traverse each halfedge, we calculate force due to
     1) Helfrich (local) energy with spontaneous curvature
@@ -236,8 +237,7 @@ static void mesh_force(real *cot, real *area, real area_tot,
   real coef3;
 
   kB = 1.0;
-  /*C0 = -1.0;*/
-  C0 = 0.0;
+  C0 = -1.0;
   H0 = C0/2.0;
   kAD= 2.0 * kB / pi;
   D  = 4.0e-3/3.91;
@@ -297,8 +297,8 @@ static void mesh_force(real *cot, real *area, real area_tot,
     vec_scalar(lbisq_der, doef, df);
 
     /*accumulate the force on vertices i and j*/
-    vec_append(df, i, /**/ fx, fy, fz);
-    vec_substr(df, j, /**/ fx, fy, fz);
+    vec_append(df, i, /**/ fxad, fyad, fzad);
+    vec_substr(df, j, /**/ fxad, fyad, fzad);
 
     /*###################################
       ###################################
@@ -351,14 +351,14 @@ static void mesh_force(real *cot, real *area, real area_tot,
     doef *= (coef1 + coef2);
     
     /*accumulate the force on vertices i, j, k*/
-    vec_scalar_append(da1, doef, i, /**/ fx, fy, fz);
-    vec_scalar_append(db1, doef, j, /**/ fx, fy, fz);
-    vec_scalar_append(dc,  doef, k, /**/ fx, fy, fz);
+    vec_scalar_append(da1, doef, i, /**/ fxad, fyad, fzad);
+    vec_scalar_append(db1, doef, j, /**/ fxad, fyad, fzad);
+    vec_scalar_append(dc,  doef, k, /**/ fxad, fyad, fzad);
 
     /*accumulate the force on vertices i, j, l*/
-    vec_scalar_append(da2, doef, i, /**/ fx, fy, fz);
-    vec_scalar_append(db2, doef, j, /**/ fx, fy, fz);
-    vec_scalar_append(dd,  doef, l, /**/ fx, fy, fz);
+    vec_scalar_append(da2, doef, i, /**/ fxad, fyad, fzad);
+    vec_scalar_append(db2, doef, j, /**/ fxad, fyad, fzad);
+    vec_scalar_append(dd,  doef, l, /**/ fxad, fyad, fzad);
     
     /*###################################
       ###################################
@@ -401,121 +401,23 @@ static void mesh_force(real *cot, real *area, real area_tot,
     vec_scalar(r, doef1, df);
 
     /*accumulate the force on vertices i and j*/
-    vec_append(df, i, /**/ fx, fy, fz);
-    vec_substr(df, j, /**/ fx, fy, fz);    
+    vec_append(df, i, /**/ fxad, fyad, fzad);
+    vec_substr(df, j, /**/ fxad, fyad, fzad);    
 
     doef2 = doef * rsq / 8.0;
     
     /*accumulate the force on vertices i, j, k*/
-    vec_scalar_append(da1, doef2, i, /**/ fx, fy, fz);
-    vec_scalar_append(db1, doef2, j, /**/ fx, fy, fz);
-    vec_scalar_append(dc,  doef2, k, /**/ fx, fy, fz);
+    vec_scalar_append(da1, doef2, i, /**/ fxad, fyad, fzad);
+    vec_scalar_append(db1, doef2, j, /**/ fxad, fyad, fzad);
+    vec_scalar_append(dc,  doef2, k, /**/ fxad, fyad, fzad);
 
     /*accumulate the force on vertices i, j, l*/
-    vec_scalar_append(da2, doef2, i, /**/ fx, fy, fz);
-    vec_scalar_append(db2, doef2, j, /**/ fx, fy, fz);
-    vec_scalar_append(dd,  doef2, l, /**/ fx, fy, fz);
+    vec_scalar_append(da2, doef2, i, /**/ fxad, fyad, fzad);
+    vec_scalar_append(db2, doef2, j, /**/ fxad, fyad, fzad);
+    vec_scalar_append(dd,  doef2, l, /**/ fxad, fyad, fzad);
 
   
   }
     
-}
-
-static void mesh_force_area(real *area, real *area0,
-			    real area_tot, real area_tot0,
-			    /*io*/real *fx, real *fy, real *fz) {
-  /*traverse each triangle to calculate constraint force 
-    due to local area conservation.*/
-
-  int i, j, k, t;
-  real a[3], b[3], c[3];
-  real u[3], v[3], w[3];
-  real norm[3], cross[3]; 
-  real df[3];
-  real kA1, kA2;
-  real coef, coef1, coef2;
-
-  kA1 = 0.0;
-  kA2 = 1.0;
-
-  coef = 2.0 * kA1 * (area_tot - area_tot0) / area_tot0;
-  
-  for ( t = 0; t < NT; t++ ) {
-
-    i = T0[t]; j = T1[t]; k = T2[t];
-    
-    get3(i, j, k, a, b, c);
-    vec_minus(b, a, u);
-    vec_minus(c, a, v);
-    vec_minus(b, c, w);
-
-    
-    vec_cross(w, norm, cross);
-
-    coef1 = -coef / 4.0 / area[t];
-    coef2 = -2.0 * kA2 * (area[t] - area0[t]) / area0[t] / 4.0 / area[t];
-    
-    vec_scalar(cross, coef1, df); 
-    vec_append(df, i, /**/ fx, fy, fz);
-    vec_scalar(cross, coef2, df); 
-    vec_append(df, i, /**/ fx, fy, fz);
-
-    vec_cross(v, norm, cross);
-    
-    vec_scalar(cross, coef1, df); 
-    vec_append(df, j, /**/ fx, fy, fz);
-    vec_scalar(cross, coef2, df); 
-    vec_append(df, j, /**/ fx, fy, fz);
-
-    vec_cross(norm, u, cross);
-    
-    vec_scalar(cross, coef1, df); 
-    vec_append(df, k, /**/ fx, fy, fz);
-    vec_scalar(cross, coef2, df); 
-    vec_append(df, k, /**/ fx, fy, fz);
-    
-  }
-  
-}
-
-static void mesh_force_volume(real vol_tot, real vol_tot0,
-			      /*io*/real *fx, real *fy, real *fz) {
-  /*traverse each triangle to calculate constraint force 
-    due to global volume conservation.*/
-
-  int i, j, k, t;
-  real a[3], b[3], c[3];
-  real cross[3]; 
-  real df[3];
-  real kV;
-  real coef;
-
-  kV = 1.0;
-
-  coef = 2.0 * kV * (vol_tot - vol_tot0) / vol_tot0 / 6;
-  
-  for ( t = 0; t < NT; t++ ) {
-
-    i = T0[t]; j = T1[t]; k = T2[t];
-    
-    get3(i, j, k, a, b, c);
-    
-    vec_cross(b, c, cross);
-
-    vec_scalar(cross, coef, df); 
-    vec_append(df, i, /**/ fx, fy, fz);
-
-    vec_cross(c, a, cross);
-
-    vec_scalar(cross, coef, df); 
-    vec_append(df, j, /**/ fx, fy, fz);
-
-    vec_cross(a, b, cross);
-
-    vec_scalar(cross, coef, df); 
-    vec_append(df, k, /**/ fx, fy, fz);
-
-  }
-  
 }
 
