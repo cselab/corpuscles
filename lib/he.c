@@ -111,12 +111,14 @@ int he_edg_rotate(T *q, int e0) {
 #define  flp(h)     he_flp(q, (h))
 #define  ver(h)     he_ver(q, (h))
 #define  edg(h)     he_edg(q, (h))
+#define  tri(h)     he_tri(q, (h))
 #define  hdg_ver(v) he_hdg_ver(q, (v))
 #define  hdg_edg(e) he_hdg_edg(q, (e))
 #define  hdg_tri(t) he_hdg_tri(q, (t))
     int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
     int v0, v1, v2, v3;
     int e1, e2, e3, e4;
+    int t0, t1;
 
     h0 = hdg_edg(e0);
     h1 = nxt(h0);
@@ -139,7 +141,10 @@ int he_edg_rotate(T *q, int e0) {
     e1 = edg(h1);
     e2 = edg(h2);
     e3 = edg(h4); /* sic */
-    e4 = edg(h5); /* sic */
+    e4 = edg(h5);
+
+    t0 = tri(h0);
+    t1 = tri(h3);
 
     assert(v0 == ver(h4)); assert(v0 == ver(h7));
     assert(v1 == ver(h3)); assert(v1 == ver(h9));
@@ -151,6 +156,9 @@ int he_edg_rotate(T *q, int e0) {
     assert(e2 == edg(h7));
     assert(e3 == edg(h8));
     assert(e4 == edg(h9));
+
+    assert(t0 == tri(h1)); assert(t0 == tri(h2));
+    assert(t1 == tri(h4)); assert(t1 == tri(h5));
 
     return HE_OK;
 }
