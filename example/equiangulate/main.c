@@ -6,6 +6,9 @@
 #include <he/read.h>
 #include <he/he.h>
 #include <he/macro.h>
+#include <he/tri.h>
+
+static const real pi = 3.141592653589793;
 
 static HeOff *off;
 static HeRead *read;
@@ -21,6 +24,7 @@ static He *he;
 #define  hdg_ver(v) he_hdg_ver(he, (v))
 #define  hdg_edg(e) he_hdg_edg(he, (e))
 #define  hdg_tri(t) he_hdg_tri(he, (t))
+#define  bnd(h)     he_bnd(he, (h))
 
 static void ini() {
     he_off_ini("/dev/stdin", &off);
@@ -83,22 +87,58 @@ static int check_edg() {
     }
 }
 
-static int good(int e) {
-    int h;
+enum {BULK, BND};
+static int get_ijkl(int e, /**/ int *pi, int *pj, int *pk, int *pl) {
+    int h, n, nn, nnf, i, j, k, l;
     h = hdg_edg(e);
-
+    if (bnd(h)) return BND;
+    n = nxt(h); nn = nxt(nxt(h));
+    nnf = nxt(nxt(flp(h)));
+    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
+    *pi = i; *pj = j; *pk = k; *pl = l;
+    return BULK;
 }
 
-static int equiangulate0(int e) {
-    return HE_OK;
+static int get0(int i, /**/ real a[3]) {
+    enum {X, Y, Z};
+    a[X] = ver[3*i];
+    a[Y] = ver[3*i + 1];
+    a[Z] = ver[3*i + 2];
 }
+
+static int get(int e, /**/ real a[3], real b[3], real c[3], real d[3]) {
+    int status, i, j, k, l;
+    status = get_ijkl(e, /**/ &i, &j, &k, &l);
+    if (status == BND) return BND;
+    get0(i, /**/ a);
+    get0(j, /**/ b);
+    get0(k, /**/ c);
+    get0(l, /**/ d);
+    return BULK;
+}
+
+static int good(int e) {
+    real al, be;
+    real a[3], b[3], c[3], d[3];
+    get(e, /**/ a, b, c, d);
+    al = tri_angle(c, a, b);
+    be = tri_angle(b, d, c);
+    return al + be < pi;
+}
+
+static int equiangulate0(int e) { he_edg_rotate(he, e); }
 
 static void equiangulate() {
-    int e, ne;
+    int e, ne, cnt;
     ne = he_ne(he);
+    cnt = 0;
     for (e = 0; e < ne; e++) {
-        if (!good(e)) equiangulate0(e);
+        if (!good(e)) {
+            equiangulate0(e);
+            cnt++;
+        }
     }
+    MSG("cnt: %d", cnt);
 }
 
 static void main0() {
