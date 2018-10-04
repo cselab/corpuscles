@@ -29,8 +29,12 @@ static void fin() {
 
 static void main0() {
     int e;
-    e = 6;
+    e = 0;
     he_edg_rotate(he, e);
+
+    e = 1;
+    he_edg_rotate(he, e);
+
     he_off_he_write(off, he, "/dev/stdout");
 }
 

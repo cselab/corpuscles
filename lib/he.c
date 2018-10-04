@@ -188,12 +188,6 @@ int he_edg_rotate(T *q, int e0) {
     s_nxt(h3, h4);
     s_nxt(h4, h5);
     s_nxt(h5, h3);
-    s_nxt(h6, h9);
-    s_nxt(h7, h6);
-    s_nxt(h6, h9);
-    s_nxt(h7, h6);
-    s_nxt(h8, h7);
-    s_nxt(h9, h8);
 
     s_flp(h0, h3);
     s_flp(h1, h7);
@@ -245,6 +239,17 @@ int he_edg_rotate(T *q, int e0) {
 
     s_hdg_tri(t0, h0);
     s_hdg_tri(t1, h3);
+
+    assert(v0 == ver(h2)); assert(v0 == ver(h7));
+    assert(v1 == ver(h5)); assert(v1 == ver(h9));
+    assert(v2 == ver(h6));
+    assert(v3 == ver(h8));
+
+    assert(e0 == edg(h3));
+    assert(e1 == edg(h6));
+    assert(e2 == edg(h7));
+    assert(e3 == edg(h8));
+    assert(e4 == edg(h9));
 
     return HE_OK;
 }
