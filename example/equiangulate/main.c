@@ -84,7 +84,9 @@ static int check_edg() {
 }
 
 static int good(int e) {
-    return 1;
+    int h;
+    h = hdg_edg(e);
+
 }
 
 static int equiangulate0(int e) {
