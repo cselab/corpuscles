@@ -14,6 +14,6 @@ int he_off_fwrite(T*, const real*, const real*, const real*, FILE*);
 int he_off_write(T*, const real*, const real*, const real*, /**/ const char*);
 
 int he_off_tri_fwrite(T*, const int *tri, FILE*);
-int he_off_tri_write(T*, const int *tri /**/ const char*);
+int he_off_tri_write(T*, const int *tri, /**/ const char*);
 
 #undef T
