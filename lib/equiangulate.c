@@ -43,7 +43,7 @@ static int get(He *he, const real *x, const real *y, const real *z, int e,
     return BULK;
 }
 
-static int good(He *he, real *x, real *y, real *z, int e) {
+static int good(He *he, const real *x, const real *y, const real *z, int e) {
     real al, be;
     real a[3], b[3], c[3], d[3];
     get(he, x, y, z, e, /**/ a, b, c, d);
@@ -52,11 +52,11 @@ static int good(He *he, real *x, real *y, real *z, int e) {
     return al + be < pi;
 }
 
-static int equiangulate0(He *he, real *x, real *y, real *z, int e) {
+static int equiangulate0(He *he, const real *x, const real *y, const real *z, int e) {
     he_edg_rotate(he, e);
 }
 
-int he_equiangulate(He *he, real *x, real *y, real *z, /**/ int *pcnt) {
+int he_equiangulate(He *he, const real *x, const real *y, const real *z, /**/ int *pcnt) {
     int e, ne, cnt;
     ne = he_ne(he);
     cnt = 0;
