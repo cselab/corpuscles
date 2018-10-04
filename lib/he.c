@@ -126,14 +126,14 @@ int he_edg_rotate(T *q, int e0) {
 #define  hdg_edg(e) he_hdg_edg(q, (e))
 #define  hdg_tri(t) he_hdg_tri(q, (t))
 
-#define  s_nxt(h)     set_nxt(q, (h), (i))
-#define  s_flp(h)     set_flp(q, (h), (i))
-#define  s_ver(h)     set_ver(q, (h), (i))
-#define  s_edg(h)     set_edg(q, (h), (i))
-#define  s_tri(h)     set_tri(q, (h), (i))
-#define  s_hdg_ver(v) set_hdg_ver(q, (v), (i))
-#define  s_hdg_edg(e) set_hdg_edg(q, (e), (i))
-#define  s_hdg_tri(t) set_hdg_tri(q, (t), (i))
+#define  s_nxt(h, i)     set_nxt(q, (h), (i))
+#define  s_flp(h, i)     set_flp(q, (h), (i))
+#define  s_ver(h, i)     set_ver(q, (h), (i))
+#define  s_edg(h, i)     set_edg(q, (h), (i))
+#define  s_tri(h, i)     set_tri(q, (h), (i))
+#define  s_hdg_ver(v, i) set_hdg_ver(q, (v), (i))
+#define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
+#define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
 
     int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
     int v0, v1, v2, v3;
@@ -179,6 +179,8 @@ int he_edg_rotate(T *q, int e0) {
 
     assert(t0 == tri(h1)); assert(t0 == tri(h2));
     assert(t1 == tri(h4)); assert(t1 == tri(h5));
+
+    s_nxt(h0, h1);
 
     return HE_OK;
 }
