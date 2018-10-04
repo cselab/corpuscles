@@ -135,6 +135,8 @@ int he_edg_rotate(T *q, int e0) {
 #define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
 #define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
 
+    enum {END = -1};
+
     int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
     int v0, v1, v2, v3;
     int e1, e2, e3, e4;
@@ -209,11 +211,9 @@ int he_edg_rotate(T *q, int e0) {
     s_edg(h0, e0);
     s_edg(h1, e2);
     s_edg(h2, e3);
-
     s_edg(h3, e0);
     s_edg(h4, e4);
     s_edg(h5, e1);
-
     s_edg(h6, e1);
     s_edg(h7, e2);
     s_edg(h8, e3);
@@ -228,14 +228,14 @@ int he_edg_rotate(T *q, int e0) {
     s_tri(h5, t1);
 
     s_hdg_ver(v0, h2);
-    s_hdg_ver(v1, h9);
-    s_hdg_ver(v2, h6);
+    s_hdg_ver(v1, h5);
+    s_hdg_ver(v2, h1);
     s_hdg_ver(v3, h4);
 
     s_hdg_edg(e0, h0);
     s_hdg_edg(e1, h5);
     s_hdg_edg(e2, h1);
-    s_hdg_edg(v3, h2);
+    s_hdg_edg(e3, h2);
 
     s_hdg_tri(t0, h0);
     s_hdg_tri(t1, h3);

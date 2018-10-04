@@ -54,8 +54,18 @@ static int check_tri() {
     }
 }
 
+static int check_ver() {
+    int nv, v, h;
+    nv = he_nv(he);
+    for (v = 0; v < nv; v++) {
+        h = hdg_ver(v);
+        if (ver(h) != v)
+            ER("h=%d v=%d ver(h)=%d", h, v, ver(h));
+    }
+}
+
 static int check_edg() {
-    int nh, h, f, ff, e;
+    int nh, h, f, ff, e, q;
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         f = flp(h);
@@ -65,15 +75,20 @@ static int check_edg() {
         e = edg(h);
         if (e != edg(f))
             ER("h=%d f=%d edg(f)=%d", h, f, edg(f));
+
+        q = hdg_edg(e);
+        if (q != h && q != f)
+            ER("h=%d f=%d e=%d q=%d", h, f, e, q);
     }
 }
 
 static void main0() {
     int e;
-    for (e = 0; e < 4; e++) {
+    for (e = 0; e < 6; e++) {
         he_edg_rotate(he, e);
         check_tri();
         check_edg();
+        check_ver();
     }
     he_off_he_write(off, he, "/dev/stdout");
 }
