@@ -12,7 +12,6 @@ static HeRead *read;
 static real *ver;
 static int  nv, nt, *tri;
 static He *he;
-static const char **argv;
 
 #define  nxt(h)     he_nxt(he, (h))
 #define  flp(h)     he_flp(he, (h))
@@ -22,14 +21,6 @@ static const char **argv;
 #define  hdg_ver(v) he_hdg_ver(he, (v))
 #define  hdg_edg(e) he_hdg_edg(he, (e))
 #define  hdg_tri(t) he_hdg_tri(he, (t))
-
-static int num(/**/ int *p) {
-    if (*argv == NULL) ER("not enough args");
-    if (sscanf(*argv, "%d", p) != 1)
-        ER("not a number '%s'", *argv);
-    argv++;
-    return HE_OK;
-}
 
 static void ini() {
     he_off_ini("/dev/stdin", &off);
@@ -92,7 +83,9 @@ static int check_edg() {
     }
 }
 
-static void main0(int e) {
+static void main0() {
+    int e;
+    e = 0;
     he_edg_rotate(he, e);
     check_tri();
     check_edg();
@@ -100,11 +93,9 @@ static void main0(int e) {
     he_off_he_write(off, he, "/dev/stdout");
 }
 
-int main(int __UNUSED argc, const char *v[]) {
+int main() {
     int e;
-    argv = v; argv++;
-    num(&e);
     ini();
-    main0(e);
+    main0();
     fin();
 }
