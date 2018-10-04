@@ -1,6 +1,6 @@
 #define T HeOff
 
-struct He;
+typedef struct He He;
 
 typedef struct T T;
 
