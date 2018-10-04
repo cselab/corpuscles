@@ -106,6 +106,16 @@ int he_hdg_edg(T *q, int e) { V(e, q->ne); return q->hdg_edg[e]; }
 int he_hdg_tri(T *q, int t) { V(t, q->nt); return q->hdg_tri[t]; }
 int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 
+
+static int set_nxt(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->nxt[h] = i; return HE_OK;}
+static int set_flp(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->flp[h] = i; return HE_OK;}
+static int set_ver(T *q, int h, int i) { V(h, q->nh); V(i, q->nv); q->ver[h] = i; return HE_OK;}
+static int set_tri(T *q, int h, int i) { V(h, q->nh); V(i, q->nt); q->tri[h] = i; return HE_OK;}
+static int set_edg(T *q, int h, int i) { V(h, q->nh); V(i, q->ne); q->edg[h] = i; return HE_OK;}
+static int set_hdg_ver(T *q, int v, int i) { V(v, q->nv); V(i, q->nh); q->hdg_ver[v] = i; return HE_OK;}
+static int set_hdg_edg(T *q, int e, int i) { V(e, q->ne); V(i, q->nh); q->hdg_edg[e] = i; return HE_OK;}
+static int set_hdg_tri(T *q, int t, int i) { V(t, q->nt); V(i, q->nh); q->hdg_tri[t] = i; return HE_OK;}
+
 int he_edg_rotate(T *q, int e0) {
 #define  nxt(h)     he_nxt(q, (h))
 #define  flp(h)     he_flp(q, (h))
@@ -115,6 +125,7 @@ int he_edg_rotate(T *q, int e0) {
 #define  hdg_ver(v) he_hdg_ver(q, (v))
 #define  hdg_edg(e) he_hdg_edg(q, (e))
 #define  hdg_tri(t) he_hdg_tri(q, (t))
+
     int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
     int v0, v1, v2, v3;
     int e1, e2, e3, e4;
