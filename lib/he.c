@@ -146,5 +146,11 @@ int he_edg_rotate(T *q, int e0) {
     assert(v2 == ver(h6));
     assert(v3 == ver(h8));
 
+    assert(e0 == edg(h3));
+    assert(e1 == edg(h6));
+    assert(e2 == edg(h7));
+    assert(e3 == edg(h8));
+    assert(e4 == edg(h9));
+
     return HE_OK;
 }
