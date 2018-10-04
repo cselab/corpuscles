@@ -140,6 +140,8 @@ int he_edg_rotate(T *q, int e0) {
     int e1, e2, e3, e4;
     int t0, t1;
 
+    V(e0, q->ne);
+
     h0 = hdg_edg(e0);
     h1 = nxt(h0);
     h2 = nxt(h1);
