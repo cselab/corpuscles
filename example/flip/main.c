@@ -6,37 +6,34 @@
 #include <he/read.h>
 #include <he/he.h>
 
-int main() {
-    He      *he;
-    HeOff *off;
-    HeRead *read;
-    int *tri;
-    int nv, nt, nh;
-    int h, f, i, j;
-    const char path[] = "/dev/stdin";
+static HeOff *off;
+static HeRead *read;
+static real *ver;
+static int  nv, nt, *tri;
+static He *he;
 
-    he_off_ini(path, &off);
-
+static void ini() {
+    he_off_ini("/dev/stdin", &off);
     nv = he_off_nv(off);
     nt = he_off_nt(off);
-
+    he_off_ver(off, &ver);
     he_off_tri(off, &tri);
     he_read_tri_ini(nv, nt, tri, &read);
     he_ini(read, &he);
-
-    nh = he_nh(he);
-    for (h = 0; h < nh; h++) {
-        if (he_bnd(he, h)) continue;
-        f = he_flp(he, h);
-
-        i = he_ver(he, h);
-        j = he_ver(he, f);
-        printf("%d %d\n", i, j);
-    }
-
-    he_read_fin(read);
+}
+static void fin() {
     he_off_fin(off);
+    he_read_fin(read);
     he_fin(he);
+}
 
-    return HE_OK;
+static void main0() {
+    he_off_he_write(off, he, "/dev/stdout");
+}
+
+int main() {
+    enum {X, Y, Z};
+    ini();
+    main0();
+    fin();
 }
