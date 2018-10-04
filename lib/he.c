@@ -231,5 +231,18 @@ int he_edg_rotate(T *q, int e0) {
     s_tri(h4, t1);
     s_tri(h5, t1);
 
+    s_hdg_ver(v0, h2);
+    s_hdg_ver(v1, h9);
+    s_hdg_ver(v2, h6);
+    s_hdg_ver(v3, h4);
+
+    s_hdg_edg(e0, h0);
+    s_hdg_edg(e1, h5);
+    s_hdg_edg(e2, h1);
+    s_hdg_edg(v3, h2);
+
+    s_hdg_tri(t0, h0);
+    s_hdg_tri(t1, h3);
+
     return HE_OK;
 }
