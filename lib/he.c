@@ -37,7 +37,7 @@ int he_ini(HeRead *r, T **pq) {
     nv = q->nv = he_read_nv(r);
     nt = q->nt = he_read_nt(r);
     ne = q->ne = he_read_ne(r);
-    nh = q->nh = he_read_nh(r);    
+    nh = q->nh = he_read_nh(r);
 
     MALLOC(nh, &q->nxt); MALLOC(nh, &q->flp);
     MALLOC(nh, &q->ver); MALLOC(nh, &q->tri); MALLOC(nh, &q->edg);
@@ -62,9 +62,9 @@ int he_ini(HeRead *r, T **pq) {
     MEMCPY(nt, hdg_tri, q->hdg_tri);
 
     q->magic = MAGIC;
-    
+
     *pq = q;
-    return HE_OK;    
+    return HE_OK;
 }
 
 int he_fin(T *q) {
@@ -104,3 +104,28 @@ int he_hdg_ver(T *q, int v) { V(v, q->nv); return q->hdg_ver[v]; }
 int he_hdg_edg(T *q, int e) { V(e, q->ne); return q->hdg_edg[e]; }
 int he_hdg_tri(T *q, int t) { V(t, q->nt); return q->hdg_tri[t]; }
 int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
+
+int he_edg_rotate(T *q, int e) {
+#define  nxt(h)     q_nxt(q, (h))
+#define  flp(h)     q_flp(q, (h))
+#define  ver(h)     q_ver(q, (h))
+#define  hdg_ver(v) q_hdg_ver(q, (v))
+#define  hdg_edg(e) q_hdg_edg(q, (e))
+#define  hdg_tri(t) q_hdg_tri(q, (t))
+    int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
+
+    h0 = hdg_edg(e);
+    h1 = nxt(h0);
+    h2 = nxt(h1);
+
+    h3 = flp(h0);
+    h4 = nxt(h3);
+    h5 = nxt(h4);
+
+    h6 = flp(h1);
+    h7 = flp(h2);
+    h8 = flp(h3);
+    h9 = flp(h4);
+
+    return HE_OK;
+}
