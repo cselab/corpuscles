@@ -97,6 +97,7 @@ static void main0(int e) {
     check_tri();
     check_edg();
     check_ver();
+    he_off_he_write(off, he, "/dev/stdout");
 }
 
 int main(int __UNUSED argc, const char *v[]) {
