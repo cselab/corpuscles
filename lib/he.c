@@ -127,7 +127,7 @@ int he_edg_rotate(T *q, int e0) {
 #define  hdg_tri(t) he_hdg_tri(q, (t))
 
 #define  s_nxt(h, i)     set_nxt(q, (h), (i))
-#define  s_flp(h, i)     set_flp(q, (h), (i))
+#define  s_flp(h, i)     set_flp(q, (h), (i)), set_flp(q, (i), (h))
 #define  s_ver(h, i)     set_ver(q, (h), (i))
 #define  s_edg(h, i)     set_edg(q, (h), (i))
 #define  s_tri(h, i)     set_tri(q, (h), (i))
@@ -181,6 +181,23 @@ int he_edg_rotate(T *q, int e0) {
     assert(t1 == tri(h4)); assert(t1 == tri(h5));
 
     s_nxt(h0, h1);
+    s_nxt(h1, h2);
+    s_nxt(h2, h0);
+    s_nxt(h3, h4);
+    s_nxt(h4, h5);
+    s_nxt(h5, h3);
+    s_nxt(h6, h9);
+    s_nxt(h7, h6);
+    s_nxt(h6, h9);
+    s_nxt(h7, h6);
+    s_nxt(h8, h7);
+    s_nxt(h9, h8);
+
+    s_flp(h0, h3);
+    s_flp(h1, h7);
+    s_flp(h2, h8);
+    s_flp(h4, h9);
+    s_flp(h5, h6);
 
     return HE_OK;
 }
