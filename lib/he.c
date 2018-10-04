@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include "he/err.h"
 #include "he/memory.h"
@@ -105,16 +106,19 @@ int he_hdg_edg(T *q, int e) { V(e, q->ne); return q->hdg_edg[e]; }
 int he_hdg_tri(T *q, int t) { V(t, q->nt); return q->hdg_tri[t]; }
 int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 
-int he_edg_rotate(T *q, int e) {
-#define  nxt(h)     q_nxt(q, (h))
-#define  flp(h)     q_flp(q, (h))
-#define  ver(h)     q_ver(q, (h))
-#define  hdg_ver(v) q_hdg_ver(q, (v))
-#define  hdg_edg(e) q_hdg_edg(q, (e))
-#define  hdg_tri(t) q_hdg_tri(q, (t))
+int he_edg_rotate(T *q, int e0) {
+#define  nxt(h)     he_nxt(q, (h))
+#define  flp(h)     he_flp(q, (h))
+#define  ver(h)     he_ver(q, (h))
+#define  edg(h)     he_edg(q, (h))
+#define  hdg_ver(v) he_hdg_ver(q, (v))
+#define  hdg_edg(e) he_hdg_edg(q, (e))
+#define  hdg_tri(t) he_hdg_tri(q, (t))
     int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
+    int v0, v1, v2, v3;
+    int e1, e2, e3, e4;
 
-    h0 = hdg_edg(e);
+    h0 = hdg_edg(e0);
     h1 = nxt(h0);
     h2 = nxt(h1);
 
@@ -124,8 +128,23 @@ int he_edg_rotate(T *q, int e) {
 
     h6 = flp(h1);
     h7 = flp(h2);
-    h8 = flp(h3);
-    h9 = flp(h4);
+    h8 = flp(h4);
+    h9 = flp(h5);
+
+    v0 = ver(h0);
+    v1 = ver(h1);
+    v2 = ver(h2);
+    v3 = ver(h5); /* sic */
+
+    e1 = edg(h1);
+    e2 = edg(h2);
+    e3 = edg(h4); /* sic */
+    e4 = edg(h5); /* sic */
+
+    assert(v0 == ver(h4)); assert(v0 == ver(h7));
+    assert(v1 == ver(h3)); assert(v1 == ver(h9));
+    assert(v2 == ver(h6));
+    assert(v3 == ver(h8));
 
     return HE_OK;
 }
