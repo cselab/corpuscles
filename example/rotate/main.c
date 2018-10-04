@@ -12,6 +12,15 @@ static real *ver;
 static int  nv, nt, *tri;
 static He *he;
 
+#define  nxt(h)     he_nxt(he, (h))
+#define  flp(h)     he_flp(he, (h))
+#define  ver(h)     he_ver(he, (h))
+#define  edg(h)     he_edg(he, (h))
+#define  tri(h)     he_tri(he, (h))
+#define  hdg_ver(v) he_hdg_ver(he, (v))
+#define  hdg_edg(e) he_hdg_edg(he, (e))
+#define  hdg_tri(t) he_hdg_tri(he, (t))
+
 static void ini() {
     he_off_ini("/dev/stdin", &off);
     nv = he_off_nv(off);
@@ -27,14 +36,45 @@ static void fin() {
     he_fin(he);
 }
 
+static int check_tri() {
+    int h, nh, n, nn, nnn;
+    int t;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        n = nxt(h);
+        nn = nxt(n);
+        nnn = nxt(nn);
+        if (nnn != h)
+            ER("h=%d n=%d nn=%d nnn=%d", h, n, nn, nnn);
+        t = tri(h);
+        if (tri(n) != t)
+            ER("h=%d t=%d tri(n)=%d", h, t, tri(n));
+        if (tri(nn) != t)
+            ER("h=%d t=%d tri(nn)=%d", h, t, tri(nn));
+    }
+}
+
+static int check_edg() {
+    int nh, h, f, ff, e;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        f = flp(h);
+        ff = flp(f);
+        if (ff != h)
+            ER("h=%d f=%d ff=%d", h, f, ff);
+        e = edg(h);
+        if (e != edg(f))
+            ER("h=%d f=%d edg(f)=%d", h, f, edg(f));
+    }
+}
+
 static void main0() {
     int e;
-    e = 0;
-    he_edg_rotate(he, e);
-
-    e = 1;
-    he_edg_rotate(he, e);
-
+    for (e = 0; e < 4; e++) {
+        he_edg_rotate(he, e);
+        check_tri();
+        check_edg();
+    }
     he_off_he_write(off, he, "/dev/stdout");
 }
 
