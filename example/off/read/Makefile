@@ -1,4 +1,4 @@
-include ../../conf.mk
+include ../../../conf.mk
 M = main
 PREC = s
 HE_CFLAGS = -Wall -Wextra -O2 -g `he.conf --cflags $(PREC)`
