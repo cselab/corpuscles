@@ -199,5 +199,37 @@ int he_edg_rotate(T *q, int e0) {
     s_flp(h4, h9);
     s_flp(h5, h6);
 
+    s_ver(h0, v3);
+    s_ver(h1, v2);
+    s_ver(h2, v0);
+    s_ver(h3, v2);
+    s_ver(h4, v3);
+    s_ver(h5, v1);
+    s_ver(h6, v2);
+    s_ver(h7, v0);
+    s_ver(h8, v3);
+    s_ver(h9, v1);
+
+    s_edg(h0, e0);
+    s_edg(h1, e2);
+    s_edg(h2, e3);
+
+    s_edg(h3, e0);
+    s_edg(h4, e4);
+    s_edg(h5, e1);
+
+    s_edg(h6, e1);
+    s_edg(h7, e2);
+    s_edg(h8, e3);
+    s_edg(h9, e4);
+
+    s_tri(h0, t0);
+    s_tri(h1, t0);
+    s_tri(h2, t0);
+
+    s_tri(h3, t1);
+    s_tri(h4, t1);
+    s_tri(h5, t1);
+
     return HE_OK;
 }
