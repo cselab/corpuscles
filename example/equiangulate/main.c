@@ -83,10 +83,25 @@ static int check_edg() {
     }
 }
 
+static int good(int e) {
+    return 1;
+}
+
+static int equiangulate0(int e) {
+    return HE_OK;
+}
+
+static void equiangulate() {
+    int e, ne;
+    ne = he_ne(he);
+    for (e = 0; e < ne; e++) {
+        if (!good(e)) equiangulate0(e);
+    }
+}
+
 static void main0() {
-    int e;
-    e = 0;
-    he_edg_rotate(he, e);
+    equiangulate(ver, he);
+    // he_edg_rotate(he, e);
     check_tri();
     check_edg();
     check_ver();
