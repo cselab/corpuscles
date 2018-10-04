@@ -5,12 +5,14 @@
 #include <he/off.h>
 #include <he/read.h>
 #include <he/he.h>
+#include <he/macro.h>
 
 static HeOff *off;
 static HeRead *read;
 static real *ver;
 static int  nv, nt, *tri;
 static He *he;
+static const char **argv;
 
 #define  nxt(h)     he_nxt(he, (h))
 #define  flp(h)     he_flp(he, (h))
@@ -20,6 +22,14 @@ static He *he;
 #define  hdg_ver(v) he_hdg_ver(he, (v))
 #define  hdg_edg(e) he_hdg_edg(he, (e))
 #define  hdg_tri(t) he_hdg_tri(he, (t))
+
+static int num(/**/ int *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, "%d", p) != 1)
+        ER("not a number '%s'", *argv);
+    argv++;
+    return HE_OK;
+}
 
 static void ini() {
     he_off_ini("/dev/stdin", &off);
@@ -82,20 +92,18 @@ static int check_edg() {
     }
 }
 
-static void main0() {
-    int e;
-    for (e = 0; e < 6; e++) {
-        he_edg_rotate(he, e);
-        check_tri();
-        check_edg();
-        check_ver();
-    }
-    he_off_he_write(off, he, "/dev/stdout");
+static void main0(int e) {
+    he_edg_rotate(he, e);
+    check_tri();
+    check_edg();
+    check_ver();
 }
 
-int main() {
-    enum {X, Y, Z};
+int main(int __UNUSED argc, const char *v[]) {
+    int e;
+    argv = v; argv++;
+    num(&e);
     ini();
-    main0();
+    main0(e);
     fin();
 }
