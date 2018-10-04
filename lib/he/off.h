@@ -1,5 +1,7 @@
 #define T HeOff
 
+struct He;
+
 typedef struct T T;
 
 int he_off_ini(const char *path, T**);
@@ -15,5 +17,8 @@ int he_off_write(T*, const real*, const real*, const real*, /**/ const char*);
 
 int he_off_tri_fwrite(T*, const int *tri, FILE*);
 int he_off_tri_write(T*, const int *tri, /**/ const char*);
+
+int he_off_he_fwrite(T*, He*, FILE*);
+int he_off_he_write(T*, He*, /**/ const char*);
 
 #undef T
