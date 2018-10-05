@@ -194,7 +194,7 @@ static void main0(real *vx, real *vy, real *vz,
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 1e-4;
+    dt = 1e-3;
     mu = 20.0;
     rnd = 0.01;
 
@@ -226,7 +226,7 @@ static real eq_tri_edg(real area) {
 
 
 static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real rbc(real area) { return 0.66*sph(area); }
+static real rbc(real area) { return 0.58*sph(area); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
