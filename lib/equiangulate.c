@@ -53,7 +53,7 @@ static int good(He *he, const real *x, const real *y, const real *z, int e) {
     return al + be < pi;
 }
 
-static int eartest(He *he, int v, int v_new) {
+static int ear(He *he, int v, int v_new) {
     int h0, h, f, vc;
     h0 = h = hdg_ver(v);
     do {
@@ -66,7 +66,7 @@ static int eartest(He *he, int v, int v_new) {
     } while (h != h0);
     return 0;
 }
-int he_eartest(He *he, int e0) {
+int he_ear(He *he, int e0) {
     int h0, h2, h5, v2, v3;
     h0 = hdg_edg(e0);
     h2 = nxt(nxt(h0));
@@ -74,7 +74,7 @@ int he_eartest(He *he, int e0) {
 
     v2 = ver(h2);
     v3 = ver(h5);
-    return eartest(he, v2, v3);
+    return ear(he, v2, v3);
 }
 
 static int equiangulate0(He *he, const real *x, const real *y, const real *z, int e) {
@@ -85,7 +85,7 @@ int he_equiangulate(He *he, const real *x, const real *y, const real *z, /**/ in
     ne = he_ne(he);
     cnt = 0;
     for (e = 0; e < ne; e++) {
-        if (he_eartest(he, e)) continue;
+        if (he_ear(he, e)) continue;
         if (!good(he, x, y, z, e)) {
             equiangulate0(he, x, y, z, e);
             cnt++;

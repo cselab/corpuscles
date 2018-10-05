@@ -161,8 +161,8 @@ int he_edg_rotate(T *q, int e0) {
     h7 = flp(h2);
     h8 = flp(h4);
     h9 = flp(h5);
-    int set[] = {h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, END};
-    assert(distinct(set));
+    assert(h2 != h8);
+    assert(h4 != h7);
 
     v0 = ver(h0);
     v1 = ver(h1);
@@ -176,6 +176,17 @@ int he_edg_rotate(T *q, int e0) {
 
     t0 = tri(h0);
     t1 = tri(h3);
+
+    const int set[] = {h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, END};
+    if (!distinct(set)) {
+        MSG("v: %d %d %d %d", v0, v1, v2, v3);
+        MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
+        MSG("t: %d %d", t0, t1);
+        MSG("t: h2 = %d   h8 = %d", h2, h8);
+        MSG("t: h4 = %d   h7 = %d", h4, h7);
+        ERR(HE_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
+            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
+    }
 
     assert(v0 == ver(h4)); assert(v0 == ver(h7));
     assert(v1 == ver(h3)); assert(v1 == ver(h9));

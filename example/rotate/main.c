@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include <real.h>
 #include <he/err.h>
@@ -93,11 +94,45 @@ static int check_edg() {
     }
 }
 
+static int check_hdgA() {
+    int nh, h, n, f, nf;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        n = nxt(h);
+        f = flp(h);
+        nf = flp(nxt(h));
+        if (n == f)
+            ER("n=%d   ==   f=%d (h = %d)", n, f, h);
+        if (nf == h)
+            ER("nf=%d   ==   f=%d (h = %d)", nf, f, h);         }
+}
+
+static int check_hdgB() {
+    int nh;
+    int h0, h1, h2, h3, h4, h5, h6, h7, h8;    
+    nh = he_nh(he);
+    for (h0 = 0; h0 < nh; h0++) {
+        h1 = nxt(h0);
+        h2 = nxt(h1);
+        
+        h3 = flp(h0);
+        h4 = nxt(h3);
+        h5 = nxt(h4);
+        
+        h6 = flp(h1);
+        h7 = flp(h2);
+        h8 = flp(h4);
+        assert(h2 != h8);
+    }
+}
+
 static void main0(int e) {
-    if (!he_eartest(he, e)) {
+    if (!he_ear(he, e)) {
         MSG("rotated");
         he_edg_rotate(he, e);
     }
+    check_hdgA();
+    check_hdgB();
     check_tri();
     check_edg();
     check_ver();
