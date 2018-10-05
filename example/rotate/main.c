@@ -6,6 +6,7 @@
 #include <he/read.h>
 #include <he/he.h>
 #include <he/macro.h>
+#include <he/equiangulate.h>
 
 static HeOff *off;
 static HeRead *read;
@@ -93,7 +94,10 @@ static int check_edg() {
 }
 
 static void main0(int e) {
-    he_edg_rotate(he, e);
+    if (!he_eartest(he, e)) {
+        MSG("rotated");
+        he_edg_rotate(he, e);
+    }
     check_tri();
     check_edg();
     check_ver();
