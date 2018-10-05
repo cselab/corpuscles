@@ -109,16 +109,16 @@ static int check_hdgA() {
 
 static int check_hdgB() {
     int nh;
-    int h0, h1, h2, h3, h4, h5, h6, h7, h8;    
+    int h0, h1, h2, h3, h4, h5, h6, h7, h8;
     nh = he_nh(he);
     for (h0 = 0; h0 < nh; h0++) {
         h1 = nxt(h0);
         h2 = nxt(h1);
-        
+
         h3 = flp(h0);
         h4 = nxt(h3);
         h5 = nxt(h4);
-        
+
         h6 = flp(h1);
         h7 = flp(h2);
         h8 = flp(h4);
