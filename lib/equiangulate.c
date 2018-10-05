@@ -11,14 +11,15 @@
 
 static const real pi = 3.141592653589793;
 
-enum {BULK, BND};
-static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
 #    define  nxt(h)     he_nxt(he, h)
 #    define  flp(h)     he_flp(he, h)
 #    define  ver(h)     he_ver(he, h)
 #    define  hdg_ver(v) he_hdg_ver(he, v)
 #    define  hdg_edg(e) he_hdg_edg(he, e)
 #    define  bnd(h)     he_bnd(he, h)
+
+enum {BULK, BND};
+static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     int h, n, nn, nnf, i, j, k, l;
     h = he_hdg_edg(he, e);
     if (bnd(h)) return BND;
@@ -68,4 +69,24 @@ int he_equiangulate(He *he, const real *x, const real *y, const real *z, /**/ in
     }
     *pcnt = cnt;
     return HE_OK;
+}
+
+static int eartest(He *he, int v, int v_new) {
+    int h0, h;
+    h0 = h = hdg_ver(v);
+    do {
+        if (bnd(h)) return 0;
+        h = nxt(flp(h));
+    } while (h != h0);
+}
+
+int he_eartest(He *he, int e0) {
+    int h0, h2, h5, v2, v3;
+    h0 = hdg_edg(e0);
+    h2 = nxt(nxt(h0));
+    h5 = nxt(nxt(flp(h0)));
+
+    v2 = ver(h2);
+    v3 = ver(h5);
+    return eartest(he, v2, v3);
 }
