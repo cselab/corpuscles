@@ -194,8 +194,8 @@ int he_off_he_xyz_fwrite(T *q, He *he, const real *x, const real *y, const real 
         ERR(HE_INDEX, "q->nv=%d   !=   nv=%d", q->nv, nv);
 
     fprintf(f, "%d %d %d\n", nv, nt, ne);
-    for (i = m = 0; m < nv; m++) {
-        fprintf(f, "%.16e %.16e %.16e\n", x[i], y[i], z[i]);
+    for (m = 0; m < nv; m++) {
+        fprintf(f, "%.16e %.16e %.16e\n", x[m], y[m], z[m]);
     }
     for (m = 0; m < nt; m++) {
         h = he_hdg_tri(he, m);
