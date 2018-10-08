@@ -207,6 +207,7 @@ static void main0(real *vx, real *vy, real *vz,
         jigle(rnd, vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/
                   fx, fy, fz);
+        equiangulate();
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 500 == 0) {

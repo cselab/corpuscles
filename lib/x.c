@@ -17,6 +17,7 @@
 #include "he/f/gompper.h"
 #include "he/area.h"
 #include "he/volume.h"
+#include "he/equiangulate.h"
 #include "he/x.h"
 
 const real pi = 3.141592653589793115997964;
@@ -252,4 +253,8 @@ int f_gompper_energy_ver(real **p) {
 }
 int f_gompper_area(real **p) {
    return he_f_gompper_area(f_gompper, p);
+}
+
+int equiangulate(int *cnt) {
+    return he_equiangulate(he, XX, YY, ZZ, cnt);
 }

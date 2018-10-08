@@ -68,5 +68,7 @@ int f_gompper_ini(real K);
 int f_gompper_fin();
 real f_gompper_energy(const real *x, const real *y, const real *z);
 int  f_gompper_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
-int f_gompper_energy_ver(real **p);
-int f_gompper_area(real **p);
+int f_gompper_energy_ver(real**);
+int f_gompper_area(real**);
+
+int equiangulate(int *cnt);
