@@ -31,7 +31,7 @@ static void zero(int n, real *a) {
 
 #define FMT_IN   XE_REAL_IN
 
-static real Ka, Kga, Kv, Ke;
+static real rVolume, Ka, Kga, Kv, Ke;
 static real A0, V0;
 static const char **argv;
 static char bending[4048];
@@ -84,7 +84,7 @@ static real f_bending_force(const real *x, const real *y, const real *z,
 }
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/juelicher Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/juelicher rVolume Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -105,7 +105,7 @@ int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
+    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -210,8 +210,10 @@ static void main0(real *vx, real *vy, real *vz,
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 1500 == 0) {
-            equiangulate(&cnt);
-            if (cnt) MSG("cnt : %d", cnt);
+            do {
+                equiangulate(&cnt);
+                MSG("cnt : %d", cnt);
+            } while (cnt > 0);
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
@@ -227,8 +229,8 @@ static real eq_tri_edg(real area) {
 }
 
 
-static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real rbc(real area) { return 0.66*sph(area); }
+static real   sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real reduced_volume(real area, real v) { return v*sph(area); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
@@ -241,7 +243,7 @@ int main(int __UNUSED argc, const char *v[]) {
     ini("/dev/stdin");
     A0 = area();
     a0 = A0/NT;
-    V0 = rbc(A0); e0 = eq_tri_edg(a0);
+    V0 = reduced_volume(A0, rVolume); e0 = eq_tri_edg(a0);
     MSG("v0/volume(): %g", V0/volume());
     MSG("area, volume, edg: %g %g %g", A0, V0, e0);
 
