@@ -196,7 +196,7 @@ static void main0(real *vx, real *vy, real *vz,
     i = 0;
     dt = 1e-3;
     mu = 20.0;
-    rnd = 0.01;
+    rnd = 0.001;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
@@ -229,8 +229,8 @@ static real eq_tri_edg(real area) {
 }
 
 
-static real   sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real reduced_volume(real area, real v) { return v*sph(area); }
+static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real target_volume(real area, real v) { return v*sph_volume(area); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
@@ -243,7 +243,7 @@ int main(int __UNUSED argc, const char *v[]) {
     ini("/dev/stdin");
     A0 = area();
     a0 = A0/NT;
-    V0 = reduced_volume(A0, rVolume); e0 = eq_tri_edg(a0);
+    V0 = target_volume(A0, rVolume); e0 = eq_tri_edg(a0);
     MSG("v0/volume(): %g", V0/volume());
     MSG("area, volume, edg: %g %g %g", A0, V0, e0);
 

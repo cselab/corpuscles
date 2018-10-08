@@ -90,7 +90,7 @@ static void compute_force(real e0, real K, real *dedg,
         vec_get(j, x, y, z, /**/ b);
         dedg_abs(a, b, /**/ da, db);
 
-        coeff = 2*K*dedg[m]/e0;
+        coeff = (e0 == 0) ? 2*K*dedg[m] : 2*K*dedg[m]/e0;
         
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
@@ -130,5 +130,5 @@ real he_f_harmonic_energy(T *q, He *he,
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     v = sum_sq(n, dedg);
 
-    return K/e0*v;
+    return e0 == 0 ? K*v : K*v/e0;
 }
