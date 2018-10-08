@@ -21,4 +21,7 @@ int he_off_tri_write(T*, const int *tri, /**/ const char*);
 int he_off_he_fwrite(T*, He*, FILE*);
 int he_off_he_write(T*, He*, /**/ const char*);
 
+int he_off_he_xyz_fwrite(T*, He*, const real *x, const real *y, const real *z, /**/ FILE *f);
+int he_off_he_xyz_write(T*, He*, const real *x, const real *y, const real *z, /**/ const char*) {
+
 #undef T
