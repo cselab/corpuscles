@@ -190,7 +190,7 @@ static real Kin(real *vx, real *vy, real *vz) {
 
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int i;
+    int cnt, i;
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
@@ -207,7 +207,8 @@ static void main0(real *vx, real *vy, real *vz,
         jigle(rnd, vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/
                   fx, fy, fz);
-        equiangulate();
+        equiangulate(&cnt);
+        MSG("cnt : %d", cnt);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 500 == 0) {
