@@ -207,11 +207,11 @@ static void main0(real *vx, real *vy, real *vz,
         jigle(rnd, vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/
                   fx, fy, fz);
-        equiangulate(&cnt);
-        MSG("cnt : %d", cnt);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        if (i % 500 == 0) {
+        if (i % 1500 == 0) {
+            equiangulate(&cnt);
+            if (cnt) MSG("cnt : %d", cnt);
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
@@ -228,7 +228,7 @@ static real eq_tri_edg(real area) {
 
 
 static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real rbc(real area) { return 0.58*sph(area); }
+static real rbc(real area) { return 0.66*sph(area); }
 
 int main(int __UNUSED argc, const char *v[]) {
     real e0, a0;
