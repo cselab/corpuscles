@@ -128,7 +128,8 @@ int he_f_juelicher_force(T *q, He *he,
     return HE_OK;
 }
 
-static real compute_energy(T *q, He *he, const real *xx, const real *yy, const real *zz) {
+static real compute_energy(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
+                           real *curva_mean, real *area, real *energy) {
     enum {X, Y, Z};
     real Kb;
     int nv, ne, nt;
@@ -139,22 +140,13 @@ static real compute_energy(T *q, He *he, const real *xx, const real *yy, const r
     real theta;
     real en, e0;
     real C0, H0;
-    real *curva_mean, *area;
-    Param param;
-    Size size;
 
-    param = q->param;
     Kb = param.K;
     C0 = param.C0;
-
-    size = q->size;
 
     nv = size.nv;
     ne = size.ne;
     nt = size.nt;
-
-    curva_mean = q->curva_mean;
-    area = q->area;
 
     if (nv != he_nv(he))
         ERR(HE_INDEX, "nv=%d != he_nv(he)=%d", nv, he_nv(he));
@@ -198,7 +190,8 @@ static real compute_energy(T *q, He *he, const real *xx, const real *yy, const r
 real he_f_juelicher_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
 
-    return compute_energy(q, he, x, y, z);
+    return compute_energy(he, q->param, q->size, x, y, z,
+                          /**/ q->curva_mean, q->area, q->energy);
 }
 
 int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
