@@ -233,15 +233,21 @@ real he_f_juelicher_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     Size size;
     Param param;
-    real eng;
+    real eng, *area, *curva_mean, *energy;
     int nv;
 
     size = q->size;
     param = q->param;
+
+    area = q->area;
+    curva_mean = q->curva_mean;
+    energy = q->energy;
+
     nv = size.nv;
 
-    compute_energy0(he, q->param, q->size, x, y, z,
-                   /**/ q->curva_mean, q->area, q->energy);
+    compute_area(he, size, x, y, z, /**/ q->area);
+    compute_mean_curv(he, size, x, y, z, q->curva_mean);
+    compute_energy(he, param, size, x, y, z, area, curva_mean, /**/ energy);
     eng = sum(nv, q->energy);
     return eng;
 }
