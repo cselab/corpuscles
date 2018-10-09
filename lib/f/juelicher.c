@@ -442,22 +442,11 @@ int he_f_juelicher_force(T *q, He *he,
 
     force_edg(he, H0, size, curva_mean_area_tot,
               theta,  lentheta, area,
-              x, y, z, /**/
-              fx, fy, fz, fxad, fyad, fzad);
+              x, y, z, /**/ fx, fy, fz, fxad, fyad, fzad);
     force_lentheta(he, H0, size,
                    curva_mean_area_tot, lentheta, area,
-                   x, y, z, /**/
-                   fx, fy, fz, fxad, fyad, fzad);
-    force_area(he, H0, size, /**/
-               lentheta, area,
-               x, y, z, /**/ fx, fy, fz);
-
-    MSG("lentheta_tot: %g", lentheta_tot);
-    MSG("curva_mean_tot: %g", curva_mean_area_tot);
-    MSG("area_tot: %g", area_tot);
-    MSG("fx: %g %g", fx[0], fx[nv-1]);
-    MSG("fx: %g %g", fy[0], fy[nv-1]);
-
+                   x, y, z, /**/ fx, fy, fz, fxad, fyad, fzad);
+    force_area(he, H0, size, lentheta, area,  x, y, z, /**/ fx, fy, fz);
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
