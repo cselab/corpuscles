@@ -181,7 +181,23 @@ static int compute_mean_curv(He *he, Size size, const real *xx, const real *yy, 
     return HE_OK;
 }
 
-static int compute_energy(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
+static int compute_energy(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz,
+                          real *area, real *curva_mean, /**/ real *energy) {
+    int v, nv;
+    real K, H0, energy0;
+
+    K  = param.K;
+    H0 = param.C0/2;
+
+    nv = size.nv;
+    for (v = 0; v < nv; v++) {
+        curva_mean[v] /= area[v];
+        energy0 = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
+        energy[v] = K*energy0;
+    }
+}
+
+static int compute_energy0(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
                            real *curva_mean, real *area, real *energy) {
     enum {X, Y, Z};
     real Kb;
@@ -208,12 +224,8 @@ static int compute_energy(He *he, Param param, Size size, const real *xx, const 
 
     compute_area(he, size, xx, yy, zz, /**/ area);
     compute_mean_curv(he, size, xx, yy, zz, curva_mean);
+    compute_energy(he, param, size, xx, yy, zz, area, curva_mean, /**/ energy);
 
-    for (v = 0; v < nv; v++) {
-        curva_mean[v] /= area[v];
-        e0 = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
-        energy[v] = Kb*e0;
-    }
     return HE_OK;
 }
 
@@ -228,7 +240,7 @@ real he_f_juelicher_energy(T *q, He *he,
     param = q->param;
     nv = size.nv;
 
-    compute_energy(he, q->param, q->size, x, y, z,
+    compute_energy0(he, q->param, q->size, x, y, z,
                    /**/ q->curva_mean, q->area, q->energy);
     eng = sum(nv, q->energy);
     return eng;
