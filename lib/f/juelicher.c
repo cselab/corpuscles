@@ -143,7 +143,6 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
     real area0;
     nt = size.nt;
     nv = size.nv;
-
     zero(nv, area);
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, &i, &j, &k);
@@ -182,6 +181,7 @@ static int compute_energy(He *he, Param param, Size size, const real *xx, const 
         ERR(HE_INDEX, "nt=%d != he_nt(he)=%d", nt, he_nt(he));
 
     zero(nv, curva_mean);
+    compute_area(he, size, xx, yy, zz, /**/ area);
 
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
@@ -194,15 +194,6 @@ static int compute_energy(He *he, Param param, Size size, const real *xx, const 
         cur = len*theta/4;
         curva_mean[j] += cur;
         curva_mean[k] += cur;
-    }
-
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, &i, &j, &k);
-        get3(xx, yy, zz, i, j, k, a, b, c);
-        area0 = tri_area(a, b, c);
-        area[i] += area0/3;
-        area[j] += area0/3;
-        area[k] += area0/3;
     }
 
     for (v = 0; v < nv; v++) {
