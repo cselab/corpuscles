@@ -197,38 +197,6 @@ static int compute_energy(He *he, Param param, Size size, const real *xx, const 
     }
 }
 
-static int compute_energy0(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
-                           real *curva_mean, real *area, real *energy) {
-    enum {X, Y, Z};
-    real Kb;
-    int nv, ne, nt;
-    int v, e, h, t;
-    int i, j, k, l;
-    real a[3], b[3], c[3], d[3], u[3];
-    real cur, len, area0;
-    real theta;
-    real e0;
-    real C0, H0;
-
-    Kb = param.K;
-    C0 = param.C0;
-
-    nv = size.nv;
-    ne = size.ne;
-    nt = size.nt;
-
-    if (nv != he_nv(he))
-        ERR(HE_INDEX, "nv=%d != he_nv(he)=%d", nv, he_nv(he));
-    if (nt != he_nt(he))
-        ERR(HE_INDEX, "nt=%d != he_nt(he)=%d", nt, he_nt(he));
-
-    compute_area(he, size, xx, yy, zz, /**/ area);
-    compute_mean_curv(he, size, xx, yy, zz, curva_mean);
-    compute_energy(he, param, size, xx, yy, zz, area, curva_mean, /**/ energy);
-
-    return HE_OK;
-}
-
 real he_f_juelicher_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     Size size;
