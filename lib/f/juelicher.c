@@ -7,6 +7,7 @@
 #include "he/vec.h"
 #include "he/dih.h"
 #include "he/ddih.h"
+#include "he/dedg.h"
 #include "he/tri.h"
 
 #include "he/f/juelicher.h"
@@ -79,6 +80,9 @@ int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     MALLOC(ne, &q->len);
     MALLOC(ne, &q->lentheta);
 
+    MALLOC(nv, &q->fx); MALLOC(nv, &q->fy); MALLOC(nv, &q->fz);
+    MALLOC(nv, &q->fxad); MALLOC(nv, &q->fyad); MALLOC(nv, &q->fzad);
+
     *pq = q;
 
     return HE_OK;
@@ -90,6 +94,8 @@ int he_f_juelicher_fin(T *q) {
     FREE(q->energy);
     FREE(q->theta);
     FREE(q->len);
+    FREE(q->fx); FREE(q->fy); FREE(q->fz);
+    FREE(q->fxad); FREE(q->fyad); FREE(q->fzad);
     FREE(q);
     return HE_OK;
 }
@@ -286,21 +292,47 @@ static int compute_lentheta(He *he, Size size, const real *len, const real *thet
         lentheta[i] += lentheta0;
         lentheta[j] += lentheta0;
     }
-    
+
+    return HE_OK;
+}
+
+static int force_edg(He *he, real H0, Size size, real curva_mean_area_tot,
+                     const real *theta,  const real *lentheta, const real *area,
+                     const real *xx, const real *yy, const real *zz, /**/
+                     real *fx, real *fy, real *fz, real *fxad, real *fyad, real *fzad) {
+    int h, e, j, k;
+    int ne;
+    real theta0, coef;
+    real b[3], c[3], db[3], dc[3];
+    ne = size.ne;
+    for (e = 0; e < ne; e++) {
+        h = hdg_edg(e);
+        get_ij(h, he, /**/ &j, &k);
+        vec_get(j, xx, yy, zz, /**/ b);
+        vec_get(k, xx, yy, zz, /**/ c);
+        dedg_abs(b, c, db, dc);
+        theta0 = theta[e];
+        coef = - ( (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * theta0;
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
+        coef = -curva_mean_area_tot/4 * theta0;
+        vec_scalar_append(db, coef, j, fxad, fyad, fzad);
+        vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
+    }
     return HE_OK;
 }
 
 int he_f_juelicher_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
-                      real *fx, real *fy, real *fz) {
-
+                      real *fx_tot, real *fy_tot, real *fz_tot) {
     Size size;
     Param param;
+    int nv;
     real H0, Kad;
     real eng, *area, *curva_mean;
     real *energy, *theta, *len, *lentheta;
     real area_tot, lentheta_tot, curva_mean_tot;
-    int nv;
+    real *fx, *fy, *fz, *fxad, *fyad, *fzad;
     const real pi = 3.141592653589793115997964;
 
     size = q->size;
@@ -315,21 +347,26 @@ int he_f_juelicher_force(T *q, He *he,
     theta = q->theta;
     len = q->len;
     lentheta = q->lentheta;
+    fx = q->fx; fy = q->fy; fz = q->fz;
+    fxad = q->fxad; fyad = q->fyad; fzad = q->fzad;
+
+    nv = size.nv;
+    zero(nv, fx); zero(nv, fy); zero(nv, fz);
+    zero(nv, fxad); zero(nv, fyad); zero(nv, fzad);
 
     compute_area(he, size, x, y, z, /**/ area);
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
     compute_lentheta(he, size, len, theta, /**/ lentheta);
 
-    nv = size.nv;
     area_tot = sum(nv, area);
     lentheta_tot = sum(nv, lentheta);
     curva_mean_tot = (lentheta_tot/4 - H0*area_tot)*(4*Kad*pi/area_tot);
 
     MSG("lentheta_tot: %g", lentheta_tot);
-    MSG("curva_mean_tot: %g", curva_mean_tot);    
+    MSG("curva_mean_tot: %g", curva_mean_tot);
     MSG("area_tot: %g", area_tot);
-    
+
     return HE_OK;
 }
 
