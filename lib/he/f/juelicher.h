@@ -11,4 +11,6 @@ int he_f_juelicher_force(T*, He*,
                       real *fx, real *fy, real *fz);
 real he_f_juelicher_energy(T*, He*, const real *x, const real *y, const real *z);
 
+int he_f_juelicher_energy_ver(T*, /**/ real**);
+
 #undef T

@@ -24,7 +24,7 @@ struct T {
     int nv, ne, nt;
     real K, Kad, C0;
 
-    real *lentheta, *area, *curva_mean;
+    real *lentheta, *area, *curva_mean, *energy;
     real *fx, *fy, *fz;
     real *fxad, *fyad, *fzad;
 };
@@ -54,6 +54,7 @@ int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     MALLOC(nv, &q->lentheta);
     MALLOC(nv, &q->curva_mean);
     MALLOC(nv, &q->area);
+    MALLOC(nv, &q->energy);
 
     *pq = q;
 
@@ -64,6 +65,7 @@ int he_f_juelicher_fin(T *q) {
     FREE(q->lentheta);
     FREE(q->curva_mean);
     FREE(q->area);
+    FREE(q->energy);
     FREE(q);
     return HE_OK;
 }
@@ -140,7 +142,7 @@ static real compute_energy(T *q, He *he, const real *xx, const real *yy, const r
     if (nv != he_nv(he))
         ERR(HE_INDEX, "nv=%d != he_nv(he)=%d", nv, he_nv(he));
     if (nt != he_nt(he))
-        ERR(HE_INDEX, "nt=%d != he_nt(he)=%d", nt, he_nt(he));    
+        ERR(HE_INDEX, "nt=%d != he_nt(he)=%d", nt, he_nt(he));
 
     zero(nv, curva_mean);
     zero(nv, area);
@@ -180,4 +182,9 @@ real he_f_juelicher_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
 
     return compute_energy(q, he, x, y, z);
+}
+
+int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
+    *pa = q->energy;
+    return HE_OK;
 }
