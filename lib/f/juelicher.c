@@ -213,13 +213,19 @@ real he_f_juelicher_energy(T *q, He *he,
     return eng;
 }
 
-int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
-    *pa = q->energy;
-    return HE_OK;
-}
-
 int he_f_juelicher_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     return HE_OK;
 }
+
+int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
+    *pa = q->energy;
+    return HE_OK;
+}
+
+int he_f_juelicher_area_ver(T *q, /**/ real**pa) {
+    *pa = q->area;
+    return HE_OK;
+}
+
