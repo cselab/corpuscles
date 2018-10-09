@@ -27,7 +27,6 @@ static void zero(int n, real *a) {
     for (i = 0; i < n; i++) a[i] = 0;
 }
 
-#include "juelicher.h"
 
 #define FMT_IN   XE_REAL_IN
 
@@ -40,6 +39,7 @@ static const char *me = "min/visc";
 enum {KANTOR, GOMPPER, JUELICHER};
 static int btype;
 static int f_bending_ini(const char *bending, real K) {
+    real H0, Kad;
     if (util_eq(bending, "kantor")) {
         btype = KANTOR;
         f_kantor_ini(K);
@@ -49,7 +49,8 @@ static int f_bending_ini(const char *bending, real K) {
         f_gompper_ini(K);
     } else if (util_eq(bending, "juelicher")) {
         btype = JUELICHER;
-        f_juelicher_ini(K);
+        H0 = Kad = 0;
+        f_juelicher_ini(K, H0, Kad);
     } else
         ER("unknown bending type: %s", bending);
     return HE_OK;

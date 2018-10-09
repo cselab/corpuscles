@@ -7,7 +7,6 @@ HE_LDFLAGS = `alg.conf --libs $(PREC)`
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
 
-main.o: juelicher.h
 test: $M; atest test/*
 install:
 
