@@ -129,13 +129,6 @@ static int get4(const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
-
-int he_f_juelicher_force(T *q, He *he,
-                      const real *x, const real *y, const real *z, /**/
-                      real *fx, real *fy, real *fz) {
-    return HE_OK;
-}
-
 static int compute_area(He *he, Size size, const real *xx, const real *yy, const real *zz, /**/ real *area) {
     int t, i, j, k;
     int nv, nt;
@@ -222,5 +215,11 @@ real he_f_juelicher_energy(T *q, He *he,
 
 int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
+    return HE_OK;
+}
+
+int he_f_juelicher_force(T *q, He *he,
+                      const real *x, const real *y, const real *z, /**/
+                      real *fx, real *fy, real *fz) {
     return HE_OK;
 }

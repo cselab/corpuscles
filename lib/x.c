@@ -271,6 +271,9 @@ real f_juelicher_energy(const real *x, const real *y, const real *z) {
 int f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_juelicher_force(f_juelicher, he, x, y, z, /**/ fx, fy, fz);
 }
+int f_juelicher_energy_ver(real **p) {
+    return he_f_juelicher_energy_ver(f_juelicher, p);
+}
 
 int equiangulate(int *cnt) {
     return he_equiangulate(he, XX, YY, ZZ, cnt);

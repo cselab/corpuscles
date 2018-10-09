@@ -24,16 +24,19 @@ static void force() {
 }
 
 static real energy() { return f_juelicher_energy(XX, YY, ZZ); }
+static real energy_ver(real **p) { return f_juelicher_energy_ver(p); }
 
 static void main0() {
     int i, nstep;
     real e0;
-    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, NULL};
-    real *eng, *area0;
+    real *eng;
 
     e0 = energy();
     force();
+    f_juelicher_energy_ver(&eng);
+
     MSG("eng: %.5g", e0);
+    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, eng, NULL};
     punto_fwrite(NV, queue, stdout);
 }
 
@@ -47,10 +50,7 @@ int main() {
 
     RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ); RZERO(NV, &ENG); RZERO(NV, &AREA);
     main0();
-
     FREE(FX); FREE(FY); FREE(FZ); FREE(ENG); FREE(AREA);
-
-    
     f_juelicher_fin();
     fin();
     return 0;

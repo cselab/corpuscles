@@ -75,5 +75,6 @@ int f_juelicher_ini(real K, real C0, real Kad);
 int f_juelicher_fin();
 real f_juelicher_energy(const real *x, const real *y, const real *z);
 int  f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+int f_juelicher_energy_ver(/**/ real**);
 
 int equiangulate(int *cnt);
