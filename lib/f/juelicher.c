@@ -205,11 +205,12 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
 }
 
 static int compute_mean_curv(He *he, Size size, const real *xx, const real *yy, const real *zz,
+                             real *len, real *theta,
                              /**/ real *curva_mean) {
     int nv, ne, e, h;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3], u[3];
-    real theta, len, cur;
+    real theta0, len0, cur;
 
     nv = size.nv;
     ne = size.ne;
@@ -220,10 +221,10 @@ static int compute_mean_curv(He *he, Size size, const real *xx, const real *yy, 
         if (bnd(h)) continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        theta = tri_dih(a, b, c, d);
+        theta0 = theta[e];
         vec_minus(b, c, u);
-        len = vec_abs(u);
-        cur = len*theta/4;
+        len0 = len[e];
+        cur = len0*theta0/4;
         curva_mean[j] += cur;
         curva_mean[k] += cur;
     }
@@ -250,7 +251,7 @@ real he_f_juelicher_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     Size size;
     Param param;
-    real eng, *area, *curva_mean, *energy;
+    real eng, *area, *curva_mean, *energy, *theta, *len;
     int nv;
 
     size = q->size;
@@ -259,13 +260,17 @@ real he_f_juelicher_energy(T *q, He *he,
     area = q->area;
     curva_mean = q->curva_mean;
     energy = q->energy;
+    len = q->len;
+    theta = q->theta;
 
     nv = size.nv;
 
-    compute_area(he, size, x, y, z, /**/ q->area);
-    compute_mean_curv(he, size, x, y, z, q->curva_mean);
+    compute_area(he, size, x, y, z, /**/ area);
+    compute_len(he, size, x, y, z, /**/ len);
+    compute_theta(he, size, x, y, z, /**/ theta);
+    compute_mean_curv(he, size, x, y, z, len, theta, curva_mean);
     compute_energy(he, param, size, x, y, z, area, curva_mean, /**/ energy);
-    eng = sum(nv, q->energy);
+    eng = sum(nv, energy);
     return eng;
 }
 
