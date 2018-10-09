@@ -52,8 +52,9 @@ void energy_juelicher_ext() {
 
   
   kB  = 1.0;
-  kA  = 2*kB/pi;
-  C0  = -1.0;
+  //kA  = 2*kB/pi;
+  kA = 0.0;
+  C0  = 0.0;
   H0  = C0/2.0;
   D   = 4.0e-3/3.91;
   Delta_a0 = (1+kB/pi/kA)*D*C0;
@@ -148,6 +149,8 @@ void energy_juelicher_ext() {
   
   printf("###NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot, cm integ over area\n");
   printf("##%i %g %g %g %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot, cm_intga);
+
+  MSG("energy_tot: %g", energy_tot);
   
   FREE(curva_mean);
   FREE(energy);

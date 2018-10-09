@@ -33,8 +33,9 @@ static void main0() {
     real e0;
     real *eng, *area, *curv;
 
-    e0 = energy();
-    force();
+    e0 = energy(); force();
+    e0 = energy(); force(); /* test */
+
     energy_ver(&eng);
     area_ver(&area);
     curva_mean(&curv);
@@ -46,9 +47,9 @@ static void main0() {
 
 int main() {
     real K, C0, Kad;
-    K = 1;
-    C0 = -1.0;
-    Kad = 2*K/pi;
+    K = 1; C0 = 0.0; Kad = 0;
+    //Kad = 2*K/pi;
+
     ini("/dev/stdin");
     f_juelicher_ini(K, C0, Kad);
 
