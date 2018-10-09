@@ -23,8 +23,11 @@
 typedef struct Param Param;
 struct Param { real K, Kad, C0; };
 
+typedef struct Size Size;
+struct Size { int nv, ne, nt; };
+
 struct T {
-    int nv, ne, nt;
+    Size size;
     Param param;
 
     real *lentheta, *area, *curva_mean, *energy;
@@ -41,6 +44,7 @@ int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
     Param param;
+    Size size;
 
     MALLOC(1, &q);
 
@@ -51,11 +55,13 @@ int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     param.K = K;
     param.C0 = C0;
     param.Kad = Kad;
-    q->param = param;
 
-    q->nv = nv;
-    q->nt = nt;
-    q->ne = ne;
+    size.nv = nv;
+    size.nt = nt;
+    size.ne = ne;
+    
+    q->param = param;
+    q->size = size;
 
     MALLOC(nv, &q->lentheta);
     MALLOC(nv, &q->curva_mean);
@@ -135,14 +141,17 @@ static real compute_energy(T *q, He *he, const real *xx, const real *yy, const r
     real C0, H0;
     real *curva_mean, *area;
     Param param;
+    Size size;
 
     param = q->param;
     Kb = param.K;
     C0 = param.C0;
 
-    nv = q->nv;
-    ne = q->ne;
-    nt = q->nt;
+    size = q->size;
+
+    nv = size.nv;
+    ne = size.ne;
+    nt = size.nt;
 
     curva_mean = q->curva_mean;
     area = q->area;
