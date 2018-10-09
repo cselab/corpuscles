@@ -30,9 +30,8 @@ struct Size { int nv, ne, nt; };
 struct T {
     Size size;
     Param param;
-
     real *lentheta, *area, *curva_mean, *energy;
-    real *theta;
+    real *theta, *len;
     real *fx, *fy, *fz;
     real *fxad, *fyad, *fzad;
 };
@@ -78,7 +77,8 @@ int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     MALLOC(nv, &q->area);
     MALLOC(nv, &q->energy);
     MALLOC(ne, &q->theta);
-    
+    MALLOC(ne, &q->len);
+
     *pq = q;
 
     return HE_OK;
@@ -90,6 +90,7 @@ int he_f_juelicher_fin(T *q) {
     FREE(q->area);
     FREE(q->energy);
     FREE(q->theta);
+    FREE(q->len);
     FREE(q);
     return HE_OK;
 }
@@ -177,7 +178,7 @@ static int compute_len(He *he, Size size, const real *xx, const real *yy, const 
         if (bnd(h)) continue;
         get2(h, he, xx, yy, zz, /**/ c, b);
         vec_minus(c, b, /**/ u);
-        len[e] = vec_abs(u);        
+        len[e] = vec_abs(u);
     }
     return HE_OK;
 }
@@ -288,7 +289,7 @@ int he_f_juelicher_force(T *q, He *he,
 
     compute_area(he, size, x, y, z, /**/ q->area);
     compute_theta(he, size, x, y, z, /**/ theta);
-    
+
     return HE_OK;
 }
 
@@ -306,4 +307,3 @@ int he_f_juelicher_area_ver(T *q, /**/ real**pa) {
     *pa = q->area;
     return HE_OK;
 }
-
