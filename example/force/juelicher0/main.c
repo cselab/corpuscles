@@ -3,7 +3,7 @@
 
 #include <real.h>
 
-#include <he/f/gompper.h>
+#include <he/f/juelicher.h>
 
 #include <he/memory.h>
 #include <he/punto.h>
@@ -23,13 +23,10 @@ static void copy(int n, const real *a, real *b) {
 
 static void force() {
     zero(NV, FX); zero(NV, FY); zero(NV, FZ);
-    f_gompper_force(XX, YY, ZZ,   FX, FY, FZ);
+    f_juelicher_force(XX, YY, ZZ,   FX, FY, FZ);
 }
 
-static real energy() { return f_gompper_energy(XX, YY, ZZ); }
-
-static int energy_ver(real **pq) { return f_gompper_energy_ver(pq); }
-static int area_ver(real **pq) { return f_gompper_area(pq); }
+static real energy() { return f_juelicher_energy(XX, YY, ZZ); }
 
 static void update() {
     real d;
@@ -55,9 +52,6 @@ static void main0() {
         force();
         update();
         fprintf(stderr, "eng: %.5f\n", (energy() - e0)/e0);
-        energy_ver(&eng);  copy(NV, eng, ENG);
-        area_ver(&area0); copy(NV, area0, AREA);
-
         punto_fwrite(NV, queue, stdout);
         putchar('\n');
     }
@@ -67,13 +61,13 @@ int main() {
     real K;
     K = 1;
     ini("/dev/stdin");
-    f_gompper_ini(K);
+    f_juelicher_ini(K);
 
     RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ); RZERO(NV, &ENG); RZERO(NV, &AREA);
     main0();
 
     FREE(FX); FREE(FY); FREE(FZ); FREE(ENG); FREE(AREA);
-    f_gompper_fin();
+    f_juelicher_fin();
     fin();
     return 0;
 }
