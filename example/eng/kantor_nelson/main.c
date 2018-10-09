@@ -39,24 +39,33 @@ void energy_kantor_nelson() {
   enum {X, Y, Z};
   int v, e, h, t;
   int i, j, k, l;
-  real a[3], b[3], c[3], d[3], coord[3];
-  real *energy, *area;
+  int h0, n, nn, fnn;
+  real a[3], b[3], c[3], d[3], coord[3], u[3];
+  real *energy, *area1, *area2, *area3;
   real coef, area0;
   real theta, eng, rxy, phi;
-  real area_tot_tri, area_tot_split;
+  real area_tot_tri, area_tot_split1, area_tot_split2, area_tot_split3;
   real energy_tot;
-  real theta0;
-
+  real theta0, len2;
+  int  obtuse;
+  real ci, cl, cil;
+  real cota, cotb, cotc;
+  real ab2, bc2, ca2;
+  
   coef   = 2.0*sqrt(3.0);
   theta0 = 0.0;
   
   MALLOC(NV, &energy);
-  MALLOC(NV, &area);
+  MALLOC(NV, &area1);
+  MALLOC(NV, &area2);
+  MALLOC(NV, &area3);
 
   for (v = 0; v < NV; v++) {
 
     energy[v] = 0;
-    area[v]   = 0;
+    area1[v]  = 0;
+    area2[v]  = 0;
+    area3[v]  = 0;
     
   }
   
@@ -81,6 +90,7 @@ void energy_kantor_nelson() {
 
   area_tot_tri = 0;
 
+  //use Juelicher's way to calculate area
   for (t = 0; t < NT; t++) {
       
     i = T0[t]; j = T1[t]; k = T2[t];
@@ -88,24 +98,133 @@ void energy_kantor_nelson() {
     get3(i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
 
-    area[i] += area0/3;
-    area[j] += area0/3;
-    area[k] += area0/3;
+    area1[i] += area0/3;
+    area1[j] += area0/3;
+    area1[k] += area0/3;
 
     area_tot_tri += area0;
     
   }
 
-  area_tot_split = 0;
-  energy_tot     = 0;
+  //use Gompper and Kroll's way to calculate area  
+   for (v = 0; v < NV; v++) {
+    
+    h0 = h = hdg_ver(v);
+    
+    do {
 
-  printf("#1 azimuth angle 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area\n");
+      if (bnd(h)) break;
+
+      n = nxt(h); nn = nxt(n); fnn = nxt(nxt(flp(h)));
+      j = ver(h); k = ver(n); i = ver(nn); l = ver(fnn);
+
+      get4(i, j, k, l, /**/ a, b, c, d);
+      
+      ci  = tri_cot(c, a, b);
+      cl  = tri_cot(b, d, c);
+      cil = ci + cl;
+      
+      vec_minus(b, c,  u);
+      len2 = vec_dot(u, u);
+
+      area0    = cil * len2 / 8;
+      area2[j] += area0;
+            
+      h = nxt(flp(h));
+      
+    } while (h != h0);
+    
+  }
+
+   //use Meyer et al's way to calculate area
+   for ( t = 0; t < NT; t++ ) {
+    
+    /*At first, assume it is not an obtuse triangle*/
+    obtuse = 0;
+    
+    i = T0[t]; j = T1[t]; k = T2[t];
+    
+    get3(i, j, k, a, b, c);
+    area0 = tri_area(a, b, c);
+
+    cota = tri_cot(c, a, b);
+    cotb = tri_cot(a, b, c);
+    cotc = tri_cot(b, c, a);
+
+    vec_minus(a, b,  u);
+    ab2 = vec_dot(u, u);
+
+    vec_minus(b, c, u);
+    bc2 = vec_dot(u, u);
+
+    vec_minus(c, a,  u);
+    ca2 = vec_dot(u, u);
+
+    
+    /*check if angle a is obtuse*/
+    theta0 = tri_angle(c, a, b);
+    
+    if ( theta0 > pi/2.0 ) {
+      
+      area3[i] += area0/2;
+      area3[j] += area0/4;
+      area3[k] += area0/4;
+      
+      obtuse = 1;
+    }
+    else {
+      /*check if angle b is obtuse*/
+      theta0=tri_angle(a, b, c);
+      
+      if ( theta0 > pi/2.0 ) {
+	
+	area3[j] += area0/2;
+	area3[i] += area0/4;
+	area3[k] += area0/4;
+	
+	obtuse = 1;
+      }
+      else {
+	/*check if angle c is obtuse*/
+	theta0=tri_angle(b, c, a);
+	
+	if ( theta0 > pi/2.0 ) {
+	  
+	  area3[k] += area0/2;
+	  area3[i] += area0/4;
+	  area3[j] += area0/4;
+	  
+	  obtuse = 1;
+	}
+	
+      }
+      
+    }
+   
+    if ( obtuse == 0 ) {
+      
+      area3[i] += ( ab2*cotc + ca2*cotb ) / 8;
+      area3[j] += ( bc2*cota + ab2*cotc ) / 8;
+      area3[k] += ( ca2*cotb + bc2*cota ) / 8;
+      
+    }
+    
+  }
+    
+  area_tot_split1 = 0;
+  area_tot_split2 = 0;
+  area_tot_split3 = 0;
+  energy_tot      = 0;
+
+  printf("#1 azimuth angle 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area(J); 7 area(GK); 8 area(mix)\n");
   
   for (v = 0; v < NV; v++) {
 
     /*for verification*/
-    area_tot_split += area[v];
-    energy_tot     += energy[v];
+    area_tot_split1 += area1[v];
+    area_tot_split2 += area2[v];
+    area_tot_split3 += area3[v];
+    energy_tot      += energy[v];
     
     vec_get(v, XX, YY, ZZ, coord);
     
@@ -117,15 +236,17 @@ void energy_kantor_nelson() {
       phi = pi - phi;
     }
     
-    printf("%g %g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], 0.0, area[v]);
+    printf("%g %g %g %g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area1[v], 0.0, area1[v], area2[v], area3[v]);
     
   }
 
   printf("###NT, area_tot_tri, area_tot_split, energy_tot\n");
-  printf("##%i %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot);
+  printf("##%i %g %g %g %g %g\n", NT, area_tot_tri, area_tot_split1, energy_tot, area_tot_split2, area_tot_split3);
   
   FREE(energy);
-  FREE(area);
+  FREE(area1);
+  FREE(area2);
+  FREE(area3);
 
 }
 

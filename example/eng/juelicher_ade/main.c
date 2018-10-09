@@ -47,7 +47,7 @@ void energy_juelicher_ext() {
   real theta, rxy, phi;
   real area_tot_tri, area_tot_split;
   
-  real kB, kA, H0, C0, D, Delta_A0, Delta_a0, Delta_A;
+  real kB, kA, H0, C0, D, Delta_A0, Delta_a0, cm_intga, Delta_A;
   real energy_tot_hel, energy_tot_ade, energy_tot;
 
   
@@ -112,7 +112,7 @@ void energy_juelicher_ext() {
   area_tot_split = 0;
   energy_tot_hel = 0;
 
-  Delta_A  = 0;
+  cm_intga = 0;
 
   printf("#1 azimuth angle; 2 axis dist; 3 enegy; 4 energy density; 5 curvature mean; 6 area\n");
 
@@ -121,8 +121,8 @@ void energy_juelicher_ext() {
     curva_mean[v] /= area[v];
     energy[v] = 2 * (curva_mean[v]-H0) * (curva_mean[v]-H0) * area[v];
 
-    /*calculating area difference*/
-    Delta_A += curva_mean[v] * area[v];
+    /*calculat the integral of mean curvature over surface area*/
+    cm_intga += curva_mean[v] * area[v];
       
     /*for verification*/
     area_tot_split += area[v];
@@ -139,16 +139,15 @@ void energy_juelicher_ext() {
     printf("%g %g %g %g %g %g\n", phi, rxy, energy[v], energy[v]/area[v], curva_mean[v], area[v]);
     
   }
-
-  printf("Integral of H:%g\n", Delta_A);
-  Delta_A *= 2 * D;
+  
+  Delta_A  = 2 * D * cm_intga;
   Delta_A0 = 2 * D * H0 * area_tot_tri;
   energy_tot_ade = (Delta_A - Delta_A0)*(Delta_A - Delta_A0)*pi*kA/2/area_tot_tri/D/D;
   
   energy_tot = energy_tot_hel + energy_tot_ade;
   
-  printf("###NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot\n");
-  printf("##%i %g %g %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot);
+  printf("###NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot, cm integ over area\n");
+  printf("##%i %g %g %g %g %g %g\n", NT, area_tot_tri, area_tot_split, energy_tot_hel, energy_tot_ade, energy_tot, cm_intga);
   
   FREE(curva_mean);
   FREE(energy);
