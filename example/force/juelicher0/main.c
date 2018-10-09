@@ -29,14 +29,15 @@ static real energy_ver(real **p) { return f_juelicher_energy_ver(p); }
 static void main0() {
     int i, nstep;
     real e0;
-    real *eng;
+    real *eng, *area;
 
     e0 = energy();
     force();
     f_juelicher_energy_ver(&eng);
+    f_juelicher_area_ver(&area);
 
     MSG("eng: %.5g", e0);
-    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, eng, NULL};
+    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, area, eng, NULL};
     punto_fwrite(NV, queue, stdout);
 }
 
