@@ -458,17 +458,22 @@ int he_f_juelicher_force(T *q, He *he,
     return HE_OK;
 }
 
-int he_f_juelicher_curva_mean(T *q, /**/ real**pa) {
+int he_f_juelicher_curva_mean(T *q, /**/ real **pa) {
     *pa = q->curva_mean;
     return HE_OK;
 }
 
-int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
+int he_f_juelicher_energy_ver(T *q, /**/ real **pa) {
     *pa = q->energy;
     return HE_OK;
 }
 
-int he_f_juelicher_area_ver(T *q, /**/ real**pa) {
+int he_f_juelicher_area_ver(T *q, /**/ real **pa) {
     *pa = q->area;
+    return HE_OK;
+}
+
+int he_f_juelicher_fad(T *q, /**/ real **px, real **py, real **pz) {
+    *px = q->fxad; *py = q->fyad; *pz = q->fzad;
     return HE_OK;
 }

@@ -1,3 +1,3 @@
-# nTEST: 0
+# TEST: 0
 make
 ./main < ../../../data/rbc/laplace/1.off | uscale 100 > force.out.txt

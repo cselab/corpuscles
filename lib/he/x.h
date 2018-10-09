@@ -79,5 +79,6 @@ int  f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *f
 int f_juelicher_curva_mean(/**/ real**);
 int f_juelicher_energy_ver(/**/ real**);
 int f_juelicher_area_ver(/**/ real**);
+int f_juelicher_fad(/**/ real**, real**, real**);
 
 int equiangulate(int *cnt);

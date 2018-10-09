@@ -99,7 +99,7 @@ static void force_edg(real H0, real curva_mean_area_tot, const real *theta,  con
         coef = - ( (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * theta0;
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
-        coef = -curva_mean_area_tot/4 * theta0;
+        coef = -curva_mean_area_tot/2 * theta0;
         vec_scalar_append(db, coef, j, fxad, fyad, fzad);
         vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
     }
