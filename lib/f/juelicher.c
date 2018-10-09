@@ -20,9 +20,12 @@
 #    define  hdg_edg(e) he_hdg_edg(he, e)
 #    define  bnd(h)     he_bnd(he, h)
 
+typedef struct Param Param;
+struct Param { real K, Kad, C0; };
+
 struct T {
     int nv, ne, nt;
-    real K, Kad, C0;
+    Param param;
 
     real *lentheta, *area, *curva_mean, *energy;
     real *fx, *fy, *fz;
@@ -37,15 +40,18 @@ static void zero(int n, real *a) {
 int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
+    Param param;
+
     MALLOC(1, &q);
 
     nv = he_nv(he);
     ne = he_ne(he);
     nt = he_nt(he);
 
-    q->K = K;
-    q->C0 = C0;
-    q->Kad = Kad;
+    param.K = K;
+    param.C0 = C0;
+    param.Kad = Kad;
+    q->param = param;
 
     q->nv = nv;
     q->nt = nt;
@@ -128,9 +134,11 @@ static real compute_energy(T *q, He *he, const real *xx, const real *yy, const r
     real en, e0;
     real C0, H0;
     real *curva_mean, *area;
+    Param param;
 
-    Kb = q->K;
-    C0 = q->C0;
+    param = q->param;
+    Kb = param.K;
+    C0 = param.C0;
 
     nv = q->nv;
     ne = q->ne;
