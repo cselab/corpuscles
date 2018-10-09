@@ -31,7 +31,7 @@ struct T {
     Size size;
     Param param;
     real *area, *curva_mean, *energy;
-    real *theta, *len;
+    real *theta, *len, *lentheta;
     real *fx, *fy, *fz;
     real *fxad, *fyad, *fzad;
 };
@@ -41,12 +41,12 @@ static void zero(int n, real *a) {
     for (i = 0; i < n; i++) a[i] = 0;
 }
 
-static real sum(int n, real *volume) {
-    int t;
-    real v;
-    v = 0;
-    for (t = 0; t < n; t++) v += volume[t];
-    return v;
+static real sum(int n, real *a) {
+    int i;
+    real s;
+    s = 0;
+    for (i = 0; i < n; i++) s += a[i];
+    return s;
 }
 
 int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
@@ -77,6 +77,7 @@ int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     MALLOC(nv, &q->energy);
     MALLOC(ne, &q->theta);
     MALLOC(ne, &q->len);
+    MALLOC(ne, &q->lentheta);
 
     *pq = q;
 
@@ -178,7 +179,6 @@ static int compute_len(He *he, Size size, const real *xx, const real *yy, const 
     nv = size.nv;
     ne = size.ne;
 
-    zero(ne, len);
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
         if (bnd(h)) continue;
@@ -199,7 +199,6 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
     nv = size.nv;
     ne = size.ne;
 
-    zero(ne, theta); /* (sic) */
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
         if (bnd(h)) continue;
@@ -219,6 +218,7 @@ static int compute_mean_curv(He *he, Size size, const real *xx, const real *yy, 
 
     nv = size.nv;
     ne = size.ne;
+
     zero(nv, curva_mean);
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
@@ -273,26 +273,63 @@ real he_f_juelicher_energy(T *q, He *he,
     return eng;
 }
 
+static int compute_lentheta(He *he, Size size, const real *len, const real *theta, /**/ real *lentheta) {
+    int nv, ne, e, h, i, j;
+    real lentheta0;
+    nv = size.nv;
+    ne = size.ne;
+    zero(nv, lentheta);
+    for (e = 0; e < ne; e++) {
+        h = hdg_edg(e);
+        get_ij(h, he, /**/ &i, &j);
+        lentheta0 = len[e]*theta[e];
+        lentheta[i] += lentheta0;
+        lentheta[j] += lentheta0;
+    }
+    
+    return HE_OK;
+}
+
 int he_f_juelicher_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
 
     Size size;
     Param param;
+    real H0, Kad;
     real eng, *area, *curva_mean;
-    real *energy, *theta;
+    real *energy, *theta, *len, *lentheta;
+    real area_tot, lentheta_tot, curva_mean_tot;
+    int nv;
+    const real pi = 3.141592653589793115997964;
 
     size = q->size;
     param = q->param;
+
+    H0 = param.C0/2;
+    Kad = param.Kad;
 
     area = q->area;
     curva_mean = q->curva_mean;
     energy = q->energy;
     theta = q->theta;
+    len = q->len;
+    lentheta = q->lentheta;
 
-    compute_area(he, size, x, y, z, /**/ q->area);
+    compute_area(he, size, x, y, z, /**/ area);
+    compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
+    compute_lentheta(he, size, len, theta, /**/ lentheta);
 
+    nv = size.nv;
+    area_tot = sum(nv, area);
+    lentheta_tot = sum(nv, lentheta);
+    curva_mean_tot = (lentheta_tot/4 - H0*area_tot)*(4*Kad*pi/area_tot);
+
+    MSG("lentheta_tot: %g", lentheta_tot);
+    MSG("curva_mean_tot: %g", curva_mean_tot);    
+    MSG("area_tot: %g", area_tot);
+    
     return HE_OK;
 }
 
