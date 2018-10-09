@@ -40,6 +40,14 @@ static void zero(int n, real *a) {
     for (i = 0; i < n; i++) a[i] = 0;
 }
 
+static real sum(int n, real *volume) {
+    int t;
+    real v;
+    v = 0;
+    for (t = 0; t < n; t++) v += volume[t];
+    return v;
+}
+
 int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
@@ -128,7 +136,7 @@ int he_f_juelicher_force(T *q, He *he,
     return HE_OK;
 }
 
-static real compute_energy(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
+static int compute_energy(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
                            real *curva_mean, real *area, real *energy) {
     enum {X, Y, Z};
     real Kb;
@@ -138,7 +146,7 @@ static real compute_energy(He *he, Param param, Size size, const real *xx, const
     real a[3], b[3], c[3], d[3], u[3];
     real cur, len, area0;
     real theta;
-    real en, e0;
+    real e0;
     real C0, H0;
 
     Kb = param.K;
@@ -178,20 +186,29 @@ static real compute_energy(He *he, Param param, Size size, const real *xx, const
         area[k] += area0/3;
     }
 
-    en  = 0;
     for (v = 0; v < nv; v++) {
         curva_mean[v] /= area[v];
         e0 = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
-        en  += e0;
+        energy[v] = Kb*e0;
     }
-    return Kb*en;
+    return HE_OK;
 }
 
 real he_f_juelicher_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
+    Size size;
+    Param param;
+    real eng;
+    int nv;
 
-    return compute_energy(he, q->param, q->size, x, y, z,
-                          /**/ q->curva_mean, q->area, q->energy);
+    size = q->size;
+    param = q->param;
+    nv = size.nv;
+    
+    compute_energy(he, q->param, q->size, x, y, z,
+                   /**/ q->curva_mean, q->area, q->energy);
+    eng = sum(nv, q->energy);
+    return eng;
 }
 
 int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
