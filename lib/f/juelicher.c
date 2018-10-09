@@ -67,7 +67,7 @@ int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     size.nv = nv;
     size.nt = nt;
     size.ne = ne;
-    
+
     q->param = param;
     q->size = size;
 
@@ -136,6 +136,26 @@ int he_f_juelicher_force(T *q, He *he,
     return HE_OK;
 }
 
+static int compute_area(He *he, Size size, const real *xx, const real *yy, const real *zz, /**/ real *area) {
+    int t, i, j, k;
+    int nv, nt;
+    real a[3], b[3], c[3], d[3];
+    real area0;
+    nt = size.nt;
+    nv = size.nv;
+
+    zero(nv, area);
+    for (t = 0; t < nt; t++) {
+        get_ijk(t, he, &i, &j, &k);
+        get3(xx, yy, zz, i, j, k, a, b, c);
+        area0 = tri_area(a, b, c);
+        area[i] += area0/3;
+        area[j] += area0/3;
+        area[k] += area0/3;
+    }
+    return HE_OK;
+}
+
 static int compute_energy(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
                            real *curva_mean, real *area, real *energy) {
     enum {X, Y, Z};
@@ -162,7 +182,6 @@ static int compute_energy(He *he, Param param, Size size, const real *xx, const 
         ERR(HE_INDEX, "nt=%d != he_nt(he)=%d", nt, he_nt(he));
 
     zero(nv, curva_mean);
-    zero(nv, area);
 
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
@@ -204,7 +223,7 @@ real he_f_juelicher_energy(T *q, He *he,
     size = q->size;
     param = q->param;
     nv = size.nv;
-    
+
     compute_energy(he, q->param, q->size, x, y, z,
                    /**/ q->curva_mean, q->area, q->energy);
     eng = sum(nv, q->energy);
