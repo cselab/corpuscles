@@ -134,6 +134,14 @@ static int get_ijkl(int h, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     return BULK;
 }
 
+static int get_ij(int h, He *he, /**/ int *pi, int *pj) {
+    int f, i, j;
+    f = flp(h);
+    i = ver(h); j = ver(f);
+    *pi = i; *pj = j;
+    return HE_OK;
+}
+
 static int get4(const real *x, const real *y, const real *z,
                 int i, int j, int k, int l,
                /**/ real a[3], real b[3], real c[3], real d[3]) {
@@ -208,25 +216,18 @@ static int compute_mean_curv(He *he, Size size, const real *xx, const real *yy, 
                              real *len, real *theta,
                              /**/ real *curva_mean) {
     int nv, ne, e, h;
-    int i, j, k, l;
-    real a[3], b[3], c[3], d[3], u[3];
-    real theta0, len0, cur;
+    int i, j;
+    real cur;
 
     nv = size.nv;
     ne = size.ne;
-
     zero(nv, curva_mean);
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
-        if (bnd(h)) continue;
-        get_ijkl(h, he, /**/ &i, &j, &k, &l);
-        get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        theta0 = theta[e];
-        vec_minus(b, c, u);
-        len0 = len[e];
-        cur = len0*theta0/4;
+        get_ij(h, he, /**/ &i, &j);
+        cur = len[e]*theta[e]/4;
+        curva_mean[i] += cur;
         curva_mean[j] += cur;
-        curva_mean[k] += cur;
     }
     return HE_OK;
 }
@@ -268,7 +269,7 @@ real he_f_juelicher_energy(T *q, He *he,
     compute_area(he, size, x, y, z, /**/ area);
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
-    compute_mean_curv(he, size, x, y, z, len, theta, curva_mean);
+    compute_mean_curv(he, size, x, y, z, len, theta, /**/ curva_mean);
     compute_energy(he, param, size, x, y, z, area, curva_mean, /**/ energy);
     eng = sum(nv, energy);
     return eng;
