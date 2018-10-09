@@ -155,6 +155,32 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
     return HE_OK;
 }
 
+static int compute_mean_curv(He *he, Size size, const real *xx, const real *yy, const real *zz,
+                             /**/ real *curva_mean) {
+    int nv, ne, e, h;
+    int i, j, k, l;
+    real a[3], b[3], c[3], d[3], u[3];
+    real theta, len, cur;
+
+    nv = size.nv;
+    ne = size.ne;
+
+    zero(nv, curva_mean);
+    for (e = 0; e < ne; e++) {
+        h = hdg_edg(e);
+        if (bnd(h)) continue;
+        get_ijkl(h, he, /**/ &i, &j, &k, &l);
+        get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
+        theta = tri_dih(a, b, c, d);
+        vec_minus(b, c, u);
+        len = vec_abs(u);
+        cur = len*theta/4;
+        curva_mean[j] += cur;
+        curva_mean[k] += cur;
+    }
+    return HE_OK;
+}
+
 static int compute_energy(He *he, Param param, Size size, const real *xx, const real *yy, const real *zz, /**/
                            real *curva_mean, real *area, real *energy) {
     enum {X, Y, Z};
@@ -180,21 +206,8 @@ static int compute_energy(He *he, Param param, Size size, const real *xx, const 
     if (nt != he_nt(he))
         ERR(HE_INDEX, "nt=%d != he_nt(he)=%d", nt, he_nt(he));
 
-    zero(nv, curva_mean);
     compute_area(he, size, xx, yy, zz, /**/ area);
-
-    for (e = 0; e < ne; e++) {
-        h = hdg_edg(e);
-        if (bnd(h)) continue;
-        get_ijkl(h, he, /**/ &i, &j, &k, &l);
-        get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        theta = tri_dih(a, b, c, d);
-        vec_minus(b, c, u);
-        len = vec_abs(u);
-        cur = len*theta/4;
-        curva_mean[j] += cur;
-        curva_mean[k] += cur;
-    }
+    compute_mean_curv(he, size, xx, yy, zz, curva_mean);
 
     for (v = 0; v < nv; v++) {
         curva_mean[v] /= area[v];
