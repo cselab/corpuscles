@@ -185,7 +185,7 @@ static int compute_energy(He *he, Param param, Size size, const real *xx, const 
     nv = size.nv;
     for (v = 0; v < nv; v++) {
         curva_mean[v] /= area[v];
-        energy0 = 2 * (curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
+        energy0 = 2*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
         energy[v] = K*energy0;
     }
 }
