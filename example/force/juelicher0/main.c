@@ -11,7 +11,7 @@
 #include <he/err.h>
 #include <he/x.h>
 
-static real *FX, *FY, *FZ, *ENG, *AREA;
+static real *FX, *FY, *FZ;
 static const real Pi = 3.141592653589793115997964;
 
 static void zero(int n, real *a) {
@@ -48,9 +48,9 @@ int main() {
     ini("/dev/stdin");
     f_juelicher_ini(K, C0, Kad);
 
-    RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ); RZERO(NV, &ENG); RZERO(NV, &AREA);
+    RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
     main0();
-    FREE(FX); FREE(FY); FREE(FZ); FREE(ENG); FREE(AREA);
+    FREE(FX); FREE(FY); FREE(FZ);
     f_juelicher_fin();
     fin();
     return 0;
