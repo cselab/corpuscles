@@ -25,19 +25,22 @@ static void force() {
 
 static real energy() { return f_juelicher_energy(XX, YY, ZZ); }
 static real energy_ver(real **p) { return f_juelicher_energy_ver(p); }
+static real area_ver(real **p) { return f_juelicher_area_ver(p); }
+static real curva_mean(real **p) { return f_juelicher_curva_mean(p); }
 
 static void main0() {
     int i, nstep;
     real e0;
-    real *eng, *area;
+    real *eng, *area, *curv;
 
     e0 = energy();
     force();
-    f_juelicher_energy_ver(&eng);
-    f_juelicher_area_ver(&area);
+    energy_ver(&eng);
+    area_ver(&area);
+    curva_mean(&curv);
 
     MSG("eng: %.5g", e0);
-    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, area, eng, NULL};
+    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, area, eng, curv, NULL};
     punto_fwrite(NV, queue, stdout);
 }
 

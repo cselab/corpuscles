@@ -219,6 +219,11 @@ int he_f_juelicher_force(T *q, He *he,
     return HE_OK;
 }
 
+int he_f_juelicher_curva_mean(T *q, /**/ real**pa) {
+    *pa = q->curva_mean;
+    return HE_OK;
+}
+
 int he_f_juelicher_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
     return HE_OK;
