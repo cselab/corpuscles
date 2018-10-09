@@ -19,6 +19,16 @@ struct T {
     int magic;
 };
 
+enum {END = -1};
+static int distinct(const int a[]) {
+    int i, j;
+    i = 0;
+    for (i = 0; a[i] != END; i++)
+        for (j = i + 1; a[j] != END; j++)
+            if (a[i] == a[j]) return 0;
+    return 1;
+}
+
 int he_file_ini(const char *path, T **pq) {
     HeRead *read;
     if (he_read_ini(path, &read) != HE_OK)
@@ -79,9 +89,6 @@ int he_fin(T *q) {
     FREE(q);
     return HE_OK;
 }
-
-int he_fin(T*);
-
 int he_nv(T *q) { return q->nv; }
 int he_nt(T *q) { return q->nt; }
 int he_ne(T *q) { return q->ne; }
@@ -135,8 +142,6 @@ int he_edg_rotate(T *q, int e0) {
 #define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
 #define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
 
-    enum {END = -1};
-
     int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
     int v0, v1, v2, v3;
     int e1, e2, e3, e4;
@@ -156,6 +161,8 @@ int he_edg_rotate(T *q, int e0) {
     h7 = flp(h2);
     h8 = flp(h4);
     h9 = flp(h5);
+    assert(h2 != h8);
+    assert(h4 != h7);
 
     v0 = ver(h0);
     v1 = ver(h1);
@@ -169,6 +176,17 @@ int he_edg_rotate(T *q, int e0) {
 
     t0 = tri(h0);
     t1 = tri(h3);
+
+    const int set[] = {h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, END};
+    if (!distinct(set)) {
+        MSG("v: %d %d %d %d", v0, v1, v2, v3);
+        MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
+        MSG("t: %d %d", t0, t1);
+        MSG("t: h2 = %d   h8 = %d", h2, h8);
+        MSG("t: h4 = %d   h7 = %d", h4, h7);
+        ERR(HE_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
+            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
+    }
 
     assert(v0 == ver(h4)); assert(v0 == ver(h7));
     assert(v1 == ver(h3)); assert(v1 == ver(h9));
@@ -236,6 +254,7 @@ int he_edg_rotate(T *q, int e0) {
     s_hdg_edg(e1, h5);
     s_hdg_edg(e2, h1);
     s_hdg_edg(e3, h2);
+    s_hdg_edg(e4, h4);
 
     s_hdg_tri(t0, h0);
     s_hdg_tri(t1, h3);
@@ -250,6 +269,23 @@ int he_edg_rotate(T *q, int e0) {
     assert(e2 == edg(h7));
     assert(e3 == edg(h8));
     assert(e4 == edg(h9));
+
+    assert(t0 == tri(h1)); assert(t0 == tri(h2));
+    assert(t1 == tri(h4)); assert(t1 == tri(h5));
+
+    assert(nxt(nxt(nxt(h0))) == h0);
+    assert(nxt(nxt(nxt(h3))) == h3);
+
+    assert(flp(flp(h0)) == h0);
+    assert(flp(flp(h1)) == h1);
+    assert(flp(flp(h2)) == h2);
+    assert(flp(flp(h3)) == h3);
+    assert(flp(flp(h4)) == h4);
+    assert(flp(flp(h5)) == h5);
+    assert(flp(flp(h6)) == h6);
+    assert(flp(flp(h7)) == h7);
+    assert(flp(flp(h8)) == h8);
+    assert(flp(flp(h9)) == h9);
 
     return HE_OK;
 }

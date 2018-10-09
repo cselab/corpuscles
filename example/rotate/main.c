@@ -1,16 +1,20 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include <real.h>
 #include <he/err.h>
 #include <he/off.h>
 #include <he/read.h>
 #include <he/he.h>
+#include <he/macro.h>
+#include <he/equiangulate.h>
 
 static HeOff *off;
 static HeRead *read;
 static real *ver;
 static int  nv, nt, *tri;
 static He *he;
+static const char **argv;
 
 #define  nxt(h)     he_nxt(he, (h))
 #define  flp(h)     he_flp(he, (h))
@@ -20,6 +24,14 @@ static He *he;
 #define  hdg_ver(v) he_hdg_ver(he, (v))
 #define  hdg_edg(e) he_hdg_edg(he, (e))
 #define  hdg_tri(t) he_hdg_tri(he, (t))
+
+static int num(/**/ int *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, "%d", p) != 1)
+        ER("not a number '%s'", *argv);
+    argv++;
+    return HE_OK;
+}
 
 static void ini() {
     he_off_ini("/dev/stdin", &off);
@@ -82,20 +94,56 @@ static int check_edg() {
     }
 }
 
-static void main0() {
-    int e;
-    for (e = 0; e < 6; e++) {
-        he_edg_rotate(he, e);
-        check_tri();
-        check_edg();
-        check_ver();
+static int check_hdgA() {
+    int nh, h, n, f, nf;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        n = nxt(h);
+        f = flp(h);
+        nf = flp(nxt(h));
+        if (n == f)
+            ER("n=%d   ==   f=%d (h = %d)", n, f, h);
+        if (nf == h)
+            ER("nf=%d   ==   f=%d (h = %d)", nf, f, h);         }
+}
+
+static int check_hdgB() {
+    int nh;
+    int h0, h1, h2, h3, h4, h5, h6, h7, h8;
+    nh = he_nh(he);
+    for (h0 = 0; h0 < nh; h0++) {
+        h1 = nxt(h0);
+        h2 = nxt(h1);
+
+        h3 = flp(h0);
+        h4 = nxt(h3);
+        h5 = nxt(h4);
+
+        h6 = flp(h1);
+        h7 = flp(h2);
+        h8 = flp(h4);
+        assert(h2 != h8);
     }
+}
+
+static void main0(int e) {
+    if (!he_ear(he, e)) {
+        MSG("rotated");
+        he_edg_rotate(he, e);
+    }
+    check_hdgA();
+    check_hdgB();
+    check_tri();
+    check_edg();
+    check_ver();
     he_off_he_write(off, he, "/dev/stdout");
 }
 
-int main() {
-    enum {X, Y, Z};
+int main(int __UNUSED argc, const char *v[]) {
+    int e;
+    argv = v; argv++;
+    num(&e);
     ini();
-    main0();
+    main0(e);
     fin();
 }

@@ -14,9 +14,11 @@
 #include "he/f/harmonic.h"
 #include "he/f/harmonic_ref.h"
 #include "he/f/kantor.h"
+#include "he/f/juelicher.h"
 #include "he/f/gompper.h"
 #include "he/area.h"
 #include "he/volume.h"
+#include "he/equiangulate.h"
 #include "he/x.h"
 
 const real pi = 3.141592653589793115997964;
@@ -35,6 +37,7 @@ static HeFHarmonic *f_harmonic;
 static HeFHarmonicRef *f_harmonic_ref;
 static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
+static HeFJuelicher *f_juelicher;
 static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
@@ -53,7 +56,7 @@ real area() { return he_area_tri(he, XX, YY, ZZ); }
 real volume() { return he_volume_tri(he, XX, YY, ZZ); }
 
 int off_write(const real *x, const real *y, const real *z, const char *path) {
-    return he_off_write(off, x, y, z, path);
+    return he_off_he_xyz_write(off, he, x, y, z, path);
 }
 
 int RZERO(int n, real **pq) { /* alloc and make zero */
@@ -252,4 +255,23 @@ int f_gompper_energy_ver(real **p) {
 }
 int f_gompper_area(real **p) {
    return he_f_gompper_area(f_gompper, p);
+}
+
+int f_juelicher_ini(real K) {
+    he_f_juelicher_ini(K, he, /**/ &f_juelicher);
+    return HE_OK;
+}
+int f_juelicher_fin() {
+    he_f_juelicher_fin(f_juelicher);
+    return HE_OK;
+}
+real f_juelicher_energy(const real *x, const real *y, const real *z) {
+    return he_f_juelicher_energy(f_juelicher, he, x, y, z);
+}
+int f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_juelicher_force(f_juelicher, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int equiangulate(int *cnt) {
+    return he_equiangulate(he, XX, YY, ZZ, cnt);
 }
