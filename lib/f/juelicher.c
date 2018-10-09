@@ -50,6 +50,12 @@ static real sum(int n, real *a) {
     return s;
 }
 
+static int plus(int n, const real *a, const real *b, /**/ real *c) {
+    int i;
+    for (i = 0; i < n; i++)
+        c[i] = a[i] + b[i];
+}
+
 int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
@@ -366,6 +372,10 @@ int he_f_juelicher_force(T *q, He *he,
     MSG("lentheta_tot: %g", lentheta_tot);
     MSG("curva_mean_tot: %g", curva_mean_tot);
     MSG("area_tot: %g", area_tot);
+
+    plus(nv, fx, fxad, /**/ fx_tot);
+    plus(nv, fy, fyad, /**/ fy_tot);
+    plus(nv, fz, fzad, /**/ fz_tot);
 
     return HE_OK;
 }
