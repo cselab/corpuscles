@@ -9,6 +9,7 @@
 #include "he/ddih.h"
 #include "he/dedg.h"
 #include "he/tri.h"
+#include "he/dtri.h"
 
 #include "he/f/juelicher.h"
 
@@ -50,10 +51,10 @@ static real sum(int n, real *a) {
     return s;
 }
 
-static int plus(int n, const real *a, const real *b, /**/ real *c) {
+static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
-        c[i] = a[i] + b[i];
+        b[i] += a[i];
 }
 
 int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
@@ -100,6 +101,7 @@ int he_f_juelicher_fin(T *q) {
     FREE(q->energy);
     FREE(q->theta);
     FREE(q->len);
+    FREE(q->lentheta);
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
     FREE(q->fxad); FREE(q->fyad); FREE(q->fzad);
     FREE(q);
@@ -328,6 +330,75 @@ static int force_edg(He *he, real H0, Size size, real curva_mean_area_tot,
     return HE_OK;
 }
 
+static int force_lentheta(He *he, real H0, Size size,
+                          real curva_mean_area_tot, const real *lentheta, const real *area,
+                          const real *xx, const real *yy, const real *zz,
+                          /**/ real *fx, real *fy, real *fz, real *fxad, real *fyad, real *fzad) {
+    int h, e, ne;
+    int i, j, k, l;
+    real len0, coef;
+    real a[3], b[3], c[3], d[3];
+    real da[3], db[3], dc[3], dd[3], u[3];
+
+    ne = size.ne;
+
+    for (e = 0; e < ne; e++) {
+        h = hdg_edg(e);
+        if (bnd(h)) continue;
+        get_ijkl(h, he, /**/ &i, &j, &k, &l);
+        get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
+        ddih_angle(a, b, c, d, da, db, dc, dd);
+        vec_minus(c, b, u);
+        len0 = vec_abs(u);
+        coef =  -(  (lentheta[j]/area[j]/4 - H0) + (lentheta[k]/area[k]/4 - H0) ) * len0 ;
+        vec_scalar_append(da, coef, i, fx, fy, fz);
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
+        vec_scalar_append(dd, coef, l, fx, fy, fz);
+        coef = -curva_mean_area_tot/4.0*len0;
+        vec_scalar_append(da, coef, i, fxad, fyad, fzad);
+        vec_scalar_append(db, coef, j, fxad, fyad, fzad);
+        vec_scalar_append(dc, coef, k, fxad, fyad, fzad);
+        vec_scalar_append(dd, coef, l, fxad, fyad, fzad);
+
+    }
+    return HE_OK;
+}
+
+static int force_area(He *he, real H0, Size size, /**/
+                      const real *lentheta, const real *area,
+                      const real *xx, const real *yy, const real *zz,
+                      /**/ real *fx, real *fy, real *fz) {
+    int nt, t, i, j, k;
+    real a[3], b[3], c[3];
+    real da[3], db[3], dc[3];
+    real coef1, coef2, coef;
+
+    nt = size.nt;
+
+    for (t = 0; t < nt; t++) {
+        get_ijk(t, he, &i, &j, &k);
+        get3(xx, yy, zz, i, j, k, a, b, c);
+
+        dtri_area(a, b, c, da, db, dc);
+        coef1 = 1.0/3.0;
+
+        coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i] - 2.0*H0*H0;
+        coef = coef1 * coef2;
+        vec_scalar_append(da, coef, i, fx, fy, fz);
+
+        coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j] - 2.0*H0*H0;
+        coef = coef1 * coef2;
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+
+        coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k] - 2.0*H0*H0;
+        coef = coef1 * coef2;
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
+    }
+    return HE_OK;
+}
+
+
 int he_f_juelicher_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx_tot, real *fy_tot, real *fz_tot) {
@@ -337,7 +408,7 @@ int he_f_juelicher_force(T *q, He *he,
     real H0, Kad;
     real eng, *area, *curva_mean;
     real *energy, *theta, *len, *lentheta;
-    real area_tot, lentheta_tot, curva_mean_tot;
+    real area_tot, lentheta_tot, curva_mean_area_tot;
     real *fx, *fy, *fz, *fxad, *fyad, *fzad;
     const real pi = 3.141592653589793115997964;
 
@@ -367,15 +438,33 @@ int he_f_juelicher_force(T *q, He *he,
 
     area_tot = sum(nv, area);
     lentheta_tot = sum(nv, lentheta);
-    curva_mean_tot = (lentheta_tot/4 - H0*area_tot)*(4*Kad*pi/area_tot);
+    curva_mean_area_tot = (lentheta_tot/4 - H0*area_tot)*(4*Kad*pi/area_tot);
+
+    force_edg(he, H0, size, curva_mean_area_tot,
+              theta,  lentheta, area,
+              x, y, z, /**/
+              fx, fy, fz, fxad, fyad, fzad);
+    force_lentheta(he, H0, size,
+                   curva_mean_area_tot, lentheta, area,
+                   x, y, z, /**/
+                   fx, fy, fz, fxad, fyad, fzad);
+    force_area(he, H0, size, /**/
+               lentheta, area,
+               x, y, z, /**/ fx, fy, fz);
 
     MSG("lentheta_tot: %g", lentheta_tot);
-    MSG("curva_mean_tot: %g", curva_mean_tot);
+    MSG("curva_mean_tot: %g", curva_mean_area_tot);
     MSG("area_tot: %g", area_tot);
+    MSG("fx: %g %g", fx[0], fx[nv-1]);
+    MSG("fx: %g %g", fy[0], fy[nv-1]);
 
-    plus(nv, fx, fxad, /**/ fx_tot);
-    plus(nv, fy, fyad, /**/ fy_tot);
-    plus(nv, fz, fzad, /**/ fz_tot);
+    plus(nv, fx, /*io*/ fx_tot);
+    plus(nv, fy, /*io*/ fy_tot);
+    plus(nv, fz, /*io*/ fz_tot);
+
+    plus(nv, fxad, /*io*/ fx_tot);
+    plus(nv, fyad, /*io*/ fy_tot);
+    plus(nv, fzad, /*io*/ fz_tot);
 
     return HE_OK;
 }

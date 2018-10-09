@@ -67,6 +67,7 @@ int he_off_ini(const char *path, T **pq) {
         if (np != 3)
             E("not a triangle '%s' in '%s'", line, path);
     }
+    fclose(f);
     q->nv = nv; q->nt = nt;
     *pq = q;
     return HE_OK;
