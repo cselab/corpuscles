@@ -257,8 +257,8 @@ int f_gompper_area(real **p) {
    return he_f_gompper_area(f_gompper, p);
 }
 
-int f_juelicher_ini(real K) {
-    he_f_juelicher_ini(K, he, /**/ &f_juelicher);
+int f_juelicher_ini(real K, real C0, real Kad) {
+    he_f_juelicher_ini(K, C0, Kad, he, /**/ &f_juelicher);
     return HE_OK;
 }
 int f_juelicher_fin() {

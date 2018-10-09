@@ -71,7 +71,7 @@ int  f_gompper_force(const real *x, const real *y, const real *z, /**/ real *fx,
 int f_gompper_energy_ver(real**);
 int f_gompper_area(real**);
 
-int f_juelicher_ini(real K);
+int f_juelicher_ini(real K, real C0, real Kad);
 int f_juelicher_fin();
 real f_juelicher_energy(const real *x, const real *y, const real *z);
 int  f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
