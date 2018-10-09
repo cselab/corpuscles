@@ -147,10 +147,10 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
-        area0 = tri_area(a, b, c);
-        area[i] += area0/3;
-        area[j] += area0/3;
-        area[k] += area0/3;
+        area0 = tri_area(a, b, c)/3;
+        area[i] += area0;
+        area[j] += area0;
+        area[k] += area0;
     }
     return HE_OK;
 }
