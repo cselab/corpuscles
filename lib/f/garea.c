@@ -61,7 +61,7 @@ static void get(int t, He *he,
     vec_get(k, x, y, z, /**/ c);
 }
 static void compute_area(He *he, const real *x, const real *y, const real *z, /**/ real *area) {
-    real one, a[3], b[3], c[3];
+    real a[3], b[3], c[3];
     int n, t;
     n = he_nt(he);
     for (t = 0; t < n; t++) {
@@ -70,7 +70,7 @@ static void compute_area(He *he, const real *x, const real *y, const real *z, /*
     }
 }
 
-static void compute_force(real K, real A0, real A, real *area, He *he,
+static void compute_force(real K, real A0, real A, He *he,
                           const real *x, const real *y, const real *z,
                           /**/ real *fx, real *fy, real *fz) {
     int n, t, i, j, k;
@@ -114,7 +114,7 @@ int he_f_garea_force(T *q, He *he,
 
     compute_area(he, x, y, z, /**/ area);
     A = sum(n, area);
-    compute_force(K, A0, A,   area, he, x, y, z, /**/ fx, fy, fz);
+    compute_force(K, A0, A,   he, x, y, z, /**/ fx, fy, fz);
 
     return HE_OK;
 }

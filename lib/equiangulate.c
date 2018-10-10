@@ -76,9 +76,7 @@ int he_ear(He *he, int e0) {
     return ear(he, v2, v3);
 }
 
-static int equiangulate0(He *he, const real *x, const real *y, const real *z, int e) {
-    he_edg_rotate(he, e);
-}
+static int equiangulate0(He *he, int e) { return he_edg_rotate(he, e); }
 int he_equiangulate(He *he, const real *x, const real *y, const real *z, /**/ int *pcnt) {
     int e, ne, cnt;
     ne = he_ne(he);
@@ -86,7 +84,7 @@ int he_equiangulate(He *he, const real *x, const real *y, const real *z, /**/ in
     for (e = 0; e < ne; e++) {
         if (he_ear(he, e)) continue;
         if (!good(he, x, y, z, e)) {
-            equiangulate0(he, x, y, z, e);
+            equiangulate0(he, e);
             cnt++;
         }
     }
