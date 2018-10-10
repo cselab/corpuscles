@@ -106,18 +106,6 @@ static int get(int e, He *he, const real *x, const real *y, const real *z,
     return BULK;
 }
 
-
-static void compute_cos(He *he, const real *x, const real *y, const real *z, /**/ real *acos) {
-    real a[3], b[3], c[3], d[3];
-    int status, n, m;
-    n = he_ne(he);
-    for (m = 0; m < n; m++) {
-        status = get(m, he, x, y, z, /**/ a, b, c, d);
-        if (status == BND) continue;
-        acos[m]  = dih_cos(a, b, c, d);
-    }
-}
-
 static void compute_force(real K,
                           He *he, const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
@@ -168,33 +156,24 @@ real he_f_meyer_energy(T *q, He *he,
     NV = he_nv(he);
     NT = he_nt(he);
 
+    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+    curva_mean = q->curva_mean;
+    energy = q->energy;
+    area = q->area;
+    T0 = q->T0; T1 = q->T1; T2 = q->T2;
+
     for (t = 0; t < NT; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         T0[t] = i; T1[t] = j; T2[t] = k;
     }
 
-    lbx = q->lbx;
-    lby = q->lby;
-    lbz = q->lbz;
-    curva_mean = q->curva_mean;
-    energy = q->energy;
-    area = q->area;
-
     for (v = 0; v < NV; v++) {
-
-        lbx[v] = 0;
-        lby[v] = 0;
-        lbz[v] = 0;
-        curva_mean[v] = 0;
-        energy[v]     = 0;
-        area[v]       = 0;
-
+        lbx[v] = 0; lby[v] = 0; lbz[v] = 0;
+        curva_mean[v] = 0; energy[v] = 0; area[v] = 0;
     }
 
     area_tot_tri = 0;
-
     for ( t = 0; t < NT; t++ ) {
-
         /*At first, assume it is not an obtuse triangle*/
         obtuse = 0;
 

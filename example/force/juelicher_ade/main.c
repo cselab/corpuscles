@@ -234,7 +234,7 @@ void force_juelicher() {
   kb = 1.0;
   C0 = -1.0;
   H0 = C0/2.0;
-  kad= 2.0 * kb / pi;
+  kad = 2.0 * kb / pi;
   D  = 4.0e-3/3.91;
 
   for (i = 0; i < NV; i++) {

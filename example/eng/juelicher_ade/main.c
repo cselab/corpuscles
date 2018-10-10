@@ -52,7 +52,7 @@ void energy_juelicher_ext() {
 
   
   kB  = 1.0;
-  //kA  = 2*kB/pi;
+  kA  = 2*kB/pi;
   kA = 0.0;
   C0  = 0.0;
   H0  = C0/2.0;

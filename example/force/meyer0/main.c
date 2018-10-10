@@ -60,8 +60,9 @@ static void main0() {
     real e0;
     real *eng, *area, *curv;
 
-    e0 = energy(); force();
-    e0 = energy(); force();
+//    e0 = energy(); //force();
+//    e0 = energy(); //force();
+    e0 = energy();
 
 //    energy_ver(&eng);
 //    area_ver(&area);
