@@ -34,8 +34,7 @@ struct T {
     Param param;
     real *area, *curva_mean, *energy;
     real *theta, *len, *lentheta;
-    real *fx, *fy, *fz;
-    real *fxad, *fyad, *fzad;
+    real *fx, *fy, *fz, *fxad, *fyad, *fzad;
 };
 
 static void zero(int n, real *a) {
@@ -58,6 +57,7 @@ static int plus(int n, const real *a, /*io*/ real *b) {
     return HE_OK;
 }
 
+/* he_f_juelicher_ini(real Kb, real Kad, real da0) */
 int he_f_juelicher_ini(real K, real C0, real Kad, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
