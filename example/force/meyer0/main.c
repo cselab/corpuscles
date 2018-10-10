@@ -55,15 +55,13 @@ static void force() {
 static real energy() { return f_meyer_energy(XX, YY, ZZ); }
 //static real energy_ver(real **p) { return f_meyer_energy_ver(p); }
 //static real fad(real **x, real **y, real **z) { return f_meyer_fad(x, y, z); }
-
 static void main0() {
     int i, nstep;
     real e0;
     real *eng, *area, *curv;
-    real *fxad, *fyad, *fzad;
 
     e0 = energy(); force();
-    e0 = energy(); force(); /* test */
+    e0 = energy(); force();
 
 //    energy_ver(&eng);
 //    area_ver(&area);
@@ -71,7 +69,7 @@ static void main0() {
 
     MSG("eng: %g", e0);
     MSG("FX[0]: %g", FX[0]);
-    MSG("fxad[0]: %g", fxad[0]);
+//    MSG("fxad[0]: %g", fxad[0]);
 
     real *queue[] = {XX, YY, ZZ, FX, FY, FZ, NULL};
     punto_fwrite(NV, queue, stdout);
