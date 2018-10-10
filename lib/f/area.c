@@ -88,9 +88,8 @@ static void compute_force(real K, real a0, real *darea, He *he, const real *x, c
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
-
         dtri_area(a, b, c, /**/ da, db, dc);
-        coeff = 2*K*darea[t]/a0;
+        coeff = a0 == 0 ? 2*K*darea[t] : 2*K*darea[t]/a0;
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
         vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
@@ -125,7 +124,7 @@ static real compute_energy(real K, real a0, real *darea, int n) {
         da = darea[t];
         e += da * da;
     }
-    return K*e/a0;
+    return (a0 == 0) ? K*e : K*e/a0;
 }
 
 real he_f_area_energy(T *q, He *he,

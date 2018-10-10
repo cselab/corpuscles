@@ -204,9 +204,9 @@ static void main0(real *vx, real *vy, real *vz,
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 1e-3;
+    dt = 2e-4;
     mu = 20.0;
-    rnd = 0.001;
+    rnd = 0.01;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
@@ -221,7 +221,8 @@ static void main0(real *vx, real *vy, real *vz,
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 1500 == 0) {
             do {
-                equiangulate(&cnt);
+                //equiangulate(&cnt);
+                cnt = 0;
                 MSG("cnt : %d", cnt);
             } while (cnt > 0);
             punto_fwrite(NV, queue, stdout);
@@ -252,8 +253,9 @@ int main(int __UNUSED argc, const char *v[]) {
 
     ini("/dev/stdin");
     A0 = area();
-    a0 = A0/NT;
-    V0 = target_volume(A0, rVolume); e0 = eq_tri_edg(a0);
+    //a0 = A0/NT; e0 = eq_tri_edg(a0);
+    e0 = 0; a0 = 0;
+    V0 = target_volume(A0, rVolume);
     MSG("v0/volume(): %g", V0/volume());
     MSG("area, volume, edg: %g %g %g", A0, V0, e0);
 
