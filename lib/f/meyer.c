@@ -69,6 +69,7 @@ int he_f_meyer_ini(real K, real C0, real Kad, He *he, T **pq) {
 }
 
 int he_f_meyer_fin(T *q) {
+    FREE(q->T0); FREE(q->T1); FREE(q->T2);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->curva_mean); FREE(q->energy); FREE(q->area);
     return HE_OK;
@@ -136,7 +137,7 @@ static void compute_force(real K,
 real he_f_meyer_energy(T *q, He *he,
                        const real *XX, const real *YY, const real *ZZ) {
     int n;
-    real *acos, K;
+    real *acos; //, K;
     int v, t;
     int i, j, k;
     real a[3], b[3], c[3], u[3], coord[3];
@@ -152,7 +153,7 @@ real he_f_meyer_energy(T *q, He *he,
     int NV, NT;
     int *T0, *T1, *T2;
     
-    K  = q->K;
+    //K  = q->K;
     NV = he_nv(he);
     NT = he_nt(he);
 
