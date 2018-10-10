@@ -142,20 +142,22 @@ static void euler(real dt,
 
 static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
     int nv;
-    real r, r0, s;
+    real r, r0, sx, sy, sz;
     int i;
     nv = NV;
-    s = 0;
+    sx = sy = sz = 0;
     for (i = 0; i < nv; i++) {
         r = rand()/(real)RAND_MAX - 0.5;
         r0 = r * mag;
-        vx[i] += r0;
-        vy[i] += r0;
-        vz[i] += r0;
-        s += r0;
+        vx[i] += r0; vy[i] += r0; vz[i] += r0;
     }
-    s /= nv;
-    for (i = 0; i < nv; i++) { vx[i] -= s; vy[i] -= s; vz[i] -= s; }
+    for (i = 0; i < nv; i++) {
+        sx += vx[i]; sy += vy[i]; sz += vz[i];
+    }
+    sx /= nv; sy /= nv; sz /= nv;
+    for (i = 0; i < nv; i++) {
+        vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
+    }
 }
 
 static void visc_lang(real mu,

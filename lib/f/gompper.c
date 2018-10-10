@@ -19,7 +19,6 @@
 #define  hdg_edg(e) he_hdg_edg(he, (e))
 #define  bnd(h)     he_bnd(he, (h))
 
-
 struct T {
     int nv;
     real *area;
