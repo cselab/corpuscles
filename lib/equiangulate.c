@@ -60,7 +60,7 @@ static int ear(He *he, int v, int v_new) {
         if (bnd(h)) return 0;
         f = flp(h);
         vc = ver(f);
-        if (vc == v) return 1;
+        if (vc == v_new) return 1;
         h = nxt(flp(h));
     } while (h != h0);
     return 0;
