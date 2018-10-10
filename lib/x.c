@@ -16,6 +16,7 @@
 #include "he/f/kantor.h"
 #include "he/f/juelicher.h"
 #include "he/f/gompper.h"
+#include "he/f/meyer.h"
 #include "he/area.h"
 #include "he/volume.h"
 #include "he/equiangulate.h"
@@ -37,6 +38,7 @@ static HeFHarmonic *f_harmonic;
 static HeFHarmonicRef *f_harmonic_ref;
 static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
+static HeFMeyer *f_meyer;
 static HeFJuelicher *f_juelicher;
 static HeOff *off;
 
@@ -234,6 +236,21 @@ real f_kantor_energy(const real *x, const real *y, const real *z) {
 }
 int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_meyer_ini(real K, real C0, real Kad) {
+    he_f_meyer_ini(K, C0, Kad, he, /**/ &f_meyer);
+    return HE_OK;
+}
+int f_meyer_fin() {
+    he_f_meyer_fin(f_meyer);
+    return HE_OK;
+}
+real f_meyer_energy(const real *x, const real *y, const real *z) {
+    return he_f_meyer_energy(f_meyer, he, x, y, z);
+}
+int f_meyer_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_meyer_force(f_meyer, he, x, y, z, /**/ fx, fy, fz);
 }
 
 int f_gompper_ini(real K) {
