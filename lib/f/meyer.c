@@ -15,7 +15,7 @@
 struct T {
     int n;
     real *acos;
-    real K;
+    real K, C0, Kad;
 };
 
 static real compute_energy(He *he, real *acos) {
@@ -31,7 +31,7 @@ static real compute_energy(He *he, real *acos) {
     }
     return v;
 }
-int he_f_meyer_ini(real K, He *he, T **pq) {
+int he_f_meyer_ini(real K, real C0, real Kad, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
@@ -41,6 +41,8 @@ int he_f_meyer_ini(real K, He *he, T **pq) {
 
     q->n = n;
     q->K = K;
+    q->C0 = C0;
+    q->Kad = Kad;
 
     *pq = q;
     return HE_OK;
