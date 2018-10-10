@@ -128,7 +128,7 @@ static int check_hdgB() {
 
 static void main0(int e) {
     if (!he_ear(he, e)) {
-        MSG("rotated");
+        MSG("rotated: %d", e);
         he_edg_rotate(he, e);
     }
     check_hdgA();
