@@ -73,7 +73,7 @@ static void main0() {
     MSG("FX[0]: %g", FX[0]);
     MSG("fxad[0]: %g", fxad[0]);
 
-    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, area, eng, curv, NULL};
+    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, NULL};
     punto_fwrite(NV, queue, stdout);
 }
 
@@ -82,7 +82,6 @@ int main(int __UNUSED argc, const char *v[]) {
     arg();
     ini("/dev/stdin");
     f_meyer_ini(K, C0, Kad);
-
     RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
     main0();
     FREE(FX); FREE(FY); FREE(FZ);
