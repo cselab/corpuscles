@@ -56,13 +56,13 @@ int he_f_meyer_ini(real K, real C0, real Kad, He *he, T **pq) {
     nv = he_nv(he);
     nt = he_nt(he);
 
-    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
-    MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
-    MALLOC(nv, &q->curva_mean); MALLOC(nv, &q->energy); MALLOC(nv, &q->area);
-
     q->K = K;
     q->C0 = C0;
     q->Kad = Kad;
+
+    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
+    MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
+    MALLOC(nv, &q->curva_mean); MALLOC(nv, &q->energy); MALLOC(nv, &q->area);
 
     *pq = q;
     return HE_OK;
