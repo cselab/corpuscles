@@ -255,21 +255,6 @@ int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, r
     return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
 }
 
-int f_meyer_ini(real K, real C0, real Kad) {
-    he_f_meyer_ini(K, C0, Kad, he, /**/ &f_meyer);
-    return HE_OK;
-}
-int f_meyer_fin() {
-    he_f_meyer_fin(f_meyer);
-    return HE_OK;
-}
-real f_meyer_energy(const real *x, const real *y, const real *z) {
-    return he_f_meyer_energy(f_meyer, he, x, y, z);
-}
-int f_meyer_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
-    return he_f_meyer_force(f_meyer, he, x, y, z, /**/ fx, fy, fz);
-}
-
 int f_gompper_ini(real K) {
     he_f_gompper_ini(K, he, /**/ &f_gompper);
     return HE_OK;
@@ -316,6 +301,43 @@ int f_juelicher_area_ver(real **p) {
 }
 int f_juelicher_fad(real **x, real **y, real **z) {
     return he_f_juelicher_fad(f_juelicher, /**/ x, y, z);
+}
+int f_juelicher_curva_mean_ver(real **p) {
+    return he_f_juelicher_curva_mean(f_juelicher, p);
+}
+
+
+int f_meyer_ini(real Kb, real Kad, real Da0) {
+  he_f_meyer_ini(Kb, Kad, Da0, he, /**/ &f_meyer);
+  return HE_OK;
+}
+int f_meyer_fin() {
+  he_f_meyer_fin(f_meyer);
+  return HE_OK;
+}
+real f_meyer_energy(const real *x, const real *y, const real *z) {
+  return he_f_meyer_energy(f_meyer, he, x, y, z);
+}
+int f_meyer_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+  return he_f_meyer_force(f_meyer, he, x, y, z, /**/ fx, fy, fz);
+}
+int f_meyer_area_ver(real **p) {
+  return he_f_meyer_area_ver(f_meyer, p);
+}
+int f_meyer_laplace_ver(real **px, real **py, real **pz) {
+  return he_f_meyer_laplace_ver(f_meyer, px, py, pz);
+}
+int f_meyer_norm_ver(real **px, real **py, real **pz) {
+    return he_f_meyer_norm_ver(f_meyer, px, py, pz);
+}
+int f_meyer_curva_mean_ver(real **p) {
+    return he_f_meyer_curva_mean_ver(f_meyer, p);
+}
+int f_meyer_curva_gauss_ver(real **p) {
+    return he_f_meyer_curva_gauss_ver(f_meyer, p);
+}
+int f_meyer_energy_ver(real **p) {
+  return he_f_meyer_energy_ver(f_meyer, p);
 }
 
 int equiangulate(int *cnt) {

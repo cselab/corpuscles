@@ -33,8 +33,7 @@ int RZERO(int, real**);
 
 /* forces */
 int f_area_ini(real a0, real K);
-int f_area_fin();
-real f_area_energy(const real *x, const real *y, const real *z);
+int f_area_fin();real f_area_energy(const real *x, const real *y, const real *z);
 int  f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
 int f_garea_ini(real a0, real K);
@@ -85,15 +84,15 @@ int f_juelicher_energy_ver(/**/ real**);
 int f_juelicher_area_ver(/**/ real**);
 int f_juelicher_fad(/**/ real**, real**, real**);
 
-int f_meyer_ini(real Kb, real Kad, real da0);
+int f_meyer_ini(real Kb, real Kad, real Da0);
 int f_meyer_fin();
 real f_meyer_energy(const real *x, const real *y, const real *z);
 int  f_meyer_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+int f_meyer_area_ver(/**/ real**);
 int f_meyer_laplace_ver(/**/ real**, real**, real**);
 int f_meyer_norm_ver(/**/ real**, real**, real**);
 int f_meyer_curva_mean_ver(/**/ real**);
+int f_meyer_curva_gauss_ver(/**/ real**);
 int f_meyer_energy_ver(/**/ real**);
-int f_meyer_area_ver(/**/ real**);
-
 
 int equiangulate(int *cnt);
