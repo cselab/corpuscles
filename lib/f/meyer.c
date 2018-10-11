@@ -27,6 +27,7 @@ static const real pi = 3.141592653589793115997964;
 struct T {
   real Kb, Kad, Da0;
   int *T0, *T1, *T2;
+  int *D0, *D1, *D2, *D3;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
@@ -42,21 +43,30 @@ static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
     *pi = i; *pj = j; *pk = k;
     return HE_OK;
 }
-
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
-    vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+  vec_get(i, x, y, z, /**/ a);
+  vec_get(j, x, y, z, /**/ b);
+  vec_get(k, x, y, z, /**/ c);
+  return HE_OK;
+}
+static int get4(const real *x, const real *y, const real *z,
+		int i, int j, int k, int l, /**/
+		real a[3], real b[3], real c[3], real d[3]) {
+  
+  vec_get(i, x, y, z, a);
+  vec_get(j, x, y, z, b);
+  vec_get(k, x, y, z, c);
+  vec_get(l, x, y, z, d);
+  return HE_OK;  
 }
 static real sum(int n, real *volume) {
-    int t;
-    real v;
-    v = 0;
-    for (t = 0; t < n; t++) v += volume[t];
-    return v;
+  int t;
+  real v;
+  v = 0;
+  for (t = 0; t < n; t++) v += volume[t];
+  return v;
 }
 enum {BULK, BND};
 static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
@@ -66,59 +76,62 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
 #    define  hdg_ver(v) he_hdg_ver(he, v)
 #    define  hdg_edg(e) he_hdg_edg(he, e)
 #    define  bnd(h)     he_bnd(he, h)
-    int h, n, nn, nnf, i, j, k, l;
-    h = he_hdg_edg(he, e);
-    if (bnd(h)) return BND;
-
-    h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
-    nnf = nxt(nxt(flp(h)));
-    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
-
-    *pi = i; *pj = j; *pk = k; *pl = l;
-    return BULK;
+  int h, n, nn, nnf, i, j, k, l;
+  h = he_hdg_edg(he, e);
+  if (bnd(h)) return BND;
+  
+  h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
+  nnf = nxt(nxt(flp(h)));
+  j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
+  
+  *pi = i; *pj = j; *pk = k; *pl = l;
+  return BULK;
 }
 static int get(int e, He *he, const real *x, const real *y, const real *z,
                /**/ real a[3], real b[3], real c[3], real d[3]) {
-    int status, i, j, k, l;
-    status = get_ijkl(e, he, /**/ &i, &j, &k, &l);
-    if (status == BND) return BND;
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
-    vec_get(k, x, y, z, /**/ c);
-    vec_get(l, x, y, z, /**/ d);
-    return BULK;
+  int status, i, j, k, l;
+  status = get_ijkl(e, he, /**/ &i, &j, &k, &l);
+  if (status == BND) return BND;
+  vec_get(i, x, y, z, /**/ a);
+  vec_get(j, x, y, z, /**/ b);
+  vec_get(k, x, y, z, /**/ c);
+  vec_get(l, x, y, z, /**/ d);
+  return BULK;
 }
 int he_f_meyer_ini(real Kb, real Kad, real Da0, He *he, T **pq) {
-    T *q;
-    int nv, nt;
-    MALLOC(1, &q);
-    nv = he_nv(he);
-    nt = he_nt(he);
-
-    q->Kb  = Kb;
-    q->Kad = Kad;
-    q->Da0 = Da0;
-
-    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
-    MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
-    MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
-    MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
-    MALLOC(nv, &q->energy); MALLOC(nv, &q->area);
-    
-    *pq = q;
-    return HE_OK;
+  T *q;
+  int nv, nt, ne;
+  MALLOC(1, &q);
+  nv = he_nv(he);
+  nt = he_nt(he);
+  ne = he_ne(he);
+  
+  q->Kb  = Kb;
+  q->Kad = Kad;
+  q->Da0 = Da0;
+  
+  MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
+  MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
+  MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
+  MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
+  MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
+  MALLOC(nv, &q->energy); MALLOC(nv, &q->area);
+  
+  *pq = q;
+  return HE_OK;
 }
 int he_f_meyer_fin(T *q) {
-    FREE(q->T0); FREE(q->T1); FREE(q->T2);
-    FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
-    FREE(q->normx);FREE(q->normy);FREE(q->normz);
-    FREE(q->curva_mean);FREE(q->curva_gauss);
-    FREE(q->energy); FREE(q->area);
-    return HE_OK;
+  FREE(q->T0); FREE(q->T1); FREE(q->T2);
+  FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
+  FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
+  FREE(q->normx);FREE(q->normy);FREE(q->normz);
+  FREE(q->curva_mean);FREE(q->curva_gauss);
+  FREE(q->energy); FREE(q->area);
+  return HE_OK;
 }
 int he_f_meyer_area_ver(T *q, /**/ real **pa) {
-    *pa = q->area;
-    return HE_OK;
+  *pa = q->area;
+  return HE_OK;
 }
 int he_f_meyer_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *px = q->lbx;
@@ -127,22 +140,22 @@ int he_f_meyer_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
     return HE_OK;
 }
 int he_f_meyer_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
-    *px = q->normx;
-    *py = q->normy;
-    *pz = q->normz;
-    return HE_OK;
+  *px = q->normx;
+  *py = q->normy;
+  *pz = q->normz;
+  return HE_OK;
 }
 int he_f_meyer_curva_mean_ver(T *q, /**/ real **pa) {
-    *pa = q->curva_mean;
-    return HE_OK;
+  *pa = q->curva_mean;
+  return HE_OK;
 }
-int he_f_meyer_curva_gauss_ver(T *q, real **curva_gauss) {
-  *curva_gauss = q->curva_gauss;
+int he_f_meyer_curva_gauss_ver(T *q, real **pa) {
+  *pa = q->curva_gauss;
   return HE_OK;
 }
 int he_f_meyer_energy_ver(T *q, /**/ real**pa) {
-    *pa = q->energy;
-    return HE_OK;
+  *pa = q->energy;
+  return HE_OK;
 }
 static real he_f_meyer_area(T *q, He *he,
 			    const real *XX, const real *YY, const real *ZZ, /**/
@@ -163,6 +176,10 @@ static real he_f_meyer_area(T *q, He *he,
   nt = he_nt(he);
   nv = he_nv(he);
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  
+  for ( i = 0; i < nv; i ++ ) {
+    area[i] = 0;
+  }
   
   for ( t = 0; t < nt; t++ ) {
     
@@ -237,16 +254,23 @@ static int he_f_meyer_laplace(T *q, He *he,
   real area0;
   real theta_a, theta_b, theta_c;
   real cota,cotb,cotc;
-  real ab2, bc2, ca2;
-
+  
   nt = he_nt(he);
   nv = he_nv(he);
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   area = q->area;
+
+  for ( i = 0; i < nv; i ++ ) {
+    lbx[i] = 0;
+    lby[i] = 0;
+    lbz[i] = 0;
+  }
   
-  for ( t = 0; t < nt; t++ ) {
-    
-    i = T0[t]; j = T1[t]; k = T2[t];
+  for ( t = 0; t < nt; t++ ) {    
+
+    i = T0[t];
+    j = T1[t];
+    k = T2[t];
     
     get3(XX, YY, ZZ, i, j, k, a, b, c);
     
@@ -264,8 +288,6 @@ static int he_f_meyer_laplace(T *q, He *he,
     lby[j] -= cotc*u[Y]/2;
     lbz[j] -= cotc*u[Z]/2;
     
-    ab2 = vec_dot(u, u);
-    
     vec_minus(b, c, u);
     
     lbx[j] += cota*u[X]/2;
@@ -276,8 +298,6 @@ static int he_f_meyer_laplace(T *q, He *he,
     lby[k] -= cota*u[Y]/2;
     lbz[k] -= cota*u[Z]/2;
     
-    bc2 = vec_dot(u, u);
-    
     vec_minus(c, a,  u);
     
     lbx[k] += cotb*u[X]/2;
@@ -287,8 +307,6 @@ static int he_f_meyer_laplace(T *q, He *he,
     lbx[i] -= cotb*u[X]/2;
     lby[i] -= cotb*u[Y]/2;
     lbz[i] -= cotb*u[Z]/2;
-    
-    ca2 = vec_dot(u, u);
     
   }
 
@@ -318,9 +336,20 @@ static int he_f_meyer_norm(T *q, He *he,
   
   nt = he_nt(he);
   nv = he_nv(he);
-  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  T0 = q->T0;
+  T1 = q->T1;
+  T2 = q->T2;
+
+  for ( i = 0; i < nv; i++ ) {
+
+    normx[i] = 0;
+    normy[i] = 0;
+    normz[i] = 0;
+    
+  }
   
-  for ( t = 0; t < nt; t++ ) {    
+  for ( t = 0; t < nt; t++ ) {
+    
     i = T0[t]; j = T1[t]; k = T2[t];
     
     get3(XX, YY, ZZ, i, j, k, a, b, c);
@@ -341,10 +370,12 @@ static int he_f_meyer_norm(T *q, He *he,
     
     normx[k] += theta_c * u[X];
     normy[k] += theta_c * u[Y];
-    normz[k] += theta_c * u[Z];    
+    normz[k] += theta_c * u[Z];
+    
   }
 
   for ( i = 0; i < nv; i++ ) {
+    
     u[X] = normx[i];
     u[Y] = normy[i];
     u[Z] = normz[i];
@@ -354,7 +385,8 @@ static int he_f_meyer_norm(T *q, He *he,
     
     normx[i] = normx[i]/len;
     normy[i] = normy[i]/len;
-    normz[i] = normz[i]/len;    
+    normz[i] = normz[i]/len;
+    
   }
   
  return HE_OK;
@@ -404,8 +436,16 @@ static int he_f_meyer_curva_gauss(T *q, He *he,
   
   nt = he_nt(he);
   nv = he_nv(he);
-  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  T0 = q->T0;
+  T1 = q->T1;
+  T2 = q->T2;
   area = q->area;
+
+  for ( i = 0; i < nv; i ++ ) {
+    
+    curva_gauss[i] = 0;
+    
+  }
   
   for ( t = 0; t < nt; t++ ) {    
     i = T0[t]; j = T1[t]; k = T2[t];
@@ -421,31 +461,23 @@ static int he_f_meyer_curva_gauss(T *q, He *he,
     curva_gauss[k] -= theta_c;
   }
   
-  for ( i = 0; i < nv; i++ ) {    
+  for ( i = 0; i < nv; i++ ) {
+    
     curva_gauss[i] = ( curva_gauss[i] + 2 * pi ) / area[i];    
   }
   
   return HE_OK;
 }
-static void compute_force(real K,
-                          He *he, const real *x, const real *y, const real *z, /**/
-                          real *fx, real *fy, real *fz){
-}
-int he_f_meyer_force(T *q, He *he,
-                     const real *x, const real *y, const real *z, /**/
-                     real *fx, real *fy, real *fz) {
-   return HE_OK;
-}
 real he_f_meyer_energy(T *q, He *he,
                        const real *XX, const real *YY, const real *ZZ) {
   enum {X, Y, Z};
   int n;
-  real *acos; //, K;
   int v, t;
   int i, j, k;
   real a[3], b[3], c[3], u[3], uu[3], coord[3];
   int *T0, *T1, *T2;    
-  real *lbx, *lby, *lbz, *normx, *normy, *normz;
+  real *lbx, *lby, *lbz;
+  real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
   real *energy, *area;
   
@@ -468,14 +500,16 @@ real he_f_meyer_energy(T *q, He *he,
   Kad = q->Kad;
   Da0 = q->Da0;
 
-  Kb  = 1.0;
-  Kad = 2*Kb/pi;
-
   /*define and work out backwards for auxiliary parameters*/
   C0  = -1.0;
   H0  = C0/2.0;
   D   = 3.0e-3/3.91;
-    
+
+  /*Kad = 0;
+  H0  = 0;
+  DA0 = 0;
+  Da0 = 0;*/
+  
   nv = he_nv(he);
   nt = he_nt(he);
   
@@ -483,7 +517,6 @@ real he_f_meyer_energy(T *q, He *he,
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
   curva_mean  = q->curva_mean;
-  curva_gauss = q->curva_gauss;
   energy  = q->energy;
   area    = q->area;
   
@@ -495,7 +528,7 @@ real he_f_meyer_energy(T *q, He *he,
   for (v = 0; v < nv; v++) {
     normx[v] = 0; normy[v] = 0; normz[v] = 0;
     lbx[v] = 0; lby[v] = 0; lbz[v] = 0;
-    curva_mean[v] = 0; curva_gauss[v] = 0;      
+    curva_mean[v] = 0;
     energy[v] = 0; area[v] = 0;
   }
 
@@ -503,28 +536,163 @@ real he_f_meyer_energy(T *q, He *he,
   he_f_meyer_laplace(q, he, XX, YY, ZZ, lbx, lby, lbz);
   he_f_meyer_norm(q, he, XX, YY, ZZ, normx, normy, normz);
   he_f_meyer_curva_mean(q, he, XX, YY, ZZ, curva_mean);
-  he_f_meyer_curva_gauss(q, he, XX, YY, ZZ, curva_gauss);
 
   energy_tot = 0;
   cm_intga   = 0;
   
   for ( v = 0; v < nv; v++ ) {
-    energy[v] = 2 * curva_mean[v] * curva_mean[v] * area[v];
-    cm_intga +=  curva_mean[v] * area[v];
+    energy[v] = 2 * Kb* curva_mean[v] * curva_mean[v] * area[v];
+    cm_intga += curva_mean[v] * area[v];
   }
 
-  DA0 = (Da0 - 2*Kb*H0*D/pi/Kad) * area_tot_tri;
+  //DA0 = (Da0 - 2*Kb*H0*D/pi/Kad) * area_tot_tri;
   
   energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
   energy3 = -2*pi*Kad*Da0*cm_intga/D;
-  //energy4 = 2*Kb*H0*H0*area_tot_tri;
-  //energy5 = pi*Kad*DA0*DA0/2/area_tot_tri/D/D;
+  energy4 = 2*Kb*H0*H0*area_tot_tri;
+  energy5 = pi*Kad*DA0*DA0/2/area_tot_tri/D/D;
   
-  energy1 =  Kb*sum(nv, energy);
+  energy1 =  sum(nv, energy);
 
   energy_tot = energy1 + energy2 + energy3;
   //energy_tot = energy1 + energy2 + energy3 + energy4 + energy5;
   
   return energy_tot;
   
+}
+int he_f_meyer_force(T *q, He *he,
+                     const real *XX, const real *YY, const real *ZZ, /**/
+                     real *fx, real *fy, real *fz) {
+  enum {X, Y, Z};
+  int v, e, t;
+  int i, j, k, l;
+  int nv, nt, ne;
+  real a[3], b[3], c[3], d[3], u[3], n[3];
+  int *T0, *T1, *T2;
+  int *D0, *D1, *D2, *D3;
+  real coti, cotl, cotil;
+  real *lbx, *lby, *lbz;
+  real *normx, *normy, *normz;
+  real *area;
+  real *curva_gauss, *curva_mean;
+  real fm;
+  //real *fxad, *fyad, *fzad;
+  real area0;
+  int  obtuse;
+  real thetaa, thetab, thetac;
+  real cota,cotb,cotc;
+  real ab2, bc2, ca2;
+  real area_tot_tri, area_tot_mix, curva_mean_area_tot;
+
+  real Kb, Kad, Da0;
+  real C0, H0, D, DA0, cm_intga;
+
+  Kb  = q->Kb;
+  Kad = q->Kad;
+  Da0 = q->Da0;
+
+  /*define and work out backwards for auxiliary parameters*/
+  C0  = -1.0;
+  H0  = C0/2.0;
+  D   = 3.0e-3/3.91;
+
+  /*Kad = 0;
+  H0  = 0;
+  DA0 = 0;
+  Da0 = 0;*/
+
+  nv = he_nv(he);
+  nt = he_nt(he);
+  ne = he_ne(he);
+  
+  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  D0 = q->D0; D1 = q->D1; D2 = q->D2; D3 = q->D3;  
+  lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+  normx = q->normx; normy = q->normy; normz = q->normz;
+  curva_mean  = q->curva_mean;
+  curva_gauss = q->curva_gauss;
+  area    = q->area;
+  
+  for (t = 0; t < nt; t++) {
+    get_ijk(t, he, /**/ &i, &j, &k);
+    T0[t] = i; T1[t] = j; T2[t] = k;
+  }
+
+  for (e = 0; e < ne; e++) {
+    get_ijkl(e, he, /**/ &i, &j, &k, &l);
+    D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
+  }
+  
+  for (v = 0; v < nv; v++) {
+    normx[v] = 0; normy[v] = 0; normz[v] = 0;
+    lbx[v] = 0; lby[v] = 0; lbz[v] = 0;
+    curva_mean[v] = 0; curva_gauss[v] = 0;      
+    area[v] = 0;
+    fx[v] = 0; fy[v]=0; fz[v]=0;
+    //fxad[v] = 0; fyad[v]=0; fzad[v]=0;
+  }
+
+  area_tot_tri = he_f_meyer_area(q, he, XX, YY, ZZ, area);
+  he_f_meyer_laplace(q, he, XX, YY, ZZ, lbx, lby, lbz);
+  he_f_meyer_norm(q, he, XX, YY, ZZ, normx, normy, normz);
+  he_f_meyer_curva_mean(q, he, XX, YY, ZZ, curva_mean);
+  he_f_meyer_curva_gauss(q, he, XX, YY, ZZ, curva_gauss);
+  
+  for ( v = 0; v < nv; v++ ) {
+    
+    fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
+    
+    fx[v] += fm * normx[v];
+    fy[v] += fm * normy[v];
+    fz[v] += fm * normz[v];
+
+    cm_intga +=  curva_mean[v] * area[v];
+    
+  }
+
+  DA0 = (Da0 - 2*Kb*H0*D/pi/Kad) * area_tot_tri;
+    
+  cm_intga -= (DA0/2/D);
+  cm_intga *= (4*pi* Kad/ area_tot_tri);
+  
+  for ( v = 0; v < nv; v++ ) {
+
+    fm = -cm_intga * curva_gauss[v];
+    //fxad[v] += fm * nx[v];
+    //fyad[v] += fm * ny[v];
+    //fzad[v] += fm * nz[v];
+    fx[v] += fm * normx[v];
+    fy[v] += fm * normy[v];
+    fz[v] += fm * normz[v];
+    
+  }
+  
+  /*5th loop*/
+  for (e = 0; e < ne; e++) {
+    
+    if (bnd(e)) continue;
+    
+    i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
+    
+    get4(XX, YY, ZZ, i, j, k, l, /**/ a, b, c, d);
+    
+    coti = tri_cot(c, a, b);
+    cotl = tri_cot(b, d, c);
+    cotil = coti + cotl;
+    
+    vec_minus(b, c,  u);
+
+    fm = Kb*cotil * (curva_mean[j] - curva_mean[k]) / area[j];
+    fx[j] += fm * normx[j];
+    fy[j] += fm * normy[j];
+    fz[j] += fm * normz[j];
+
+    fm = Kb*cotil * (curva_mean[k] - curva_mean[j]) / area[k];
+    fx[k] += fm * normx[k];
+    fy[k] += fm * normy[k];
+    fz[k] += fm * normz[k];
+    
+  }
+
+  return HE_OK;
 }
