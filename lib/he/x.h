@@ -4,7 +4,7 @@ extern int *T0, *T1, *T2;
 extern int *D0, *D1, *D2, *D3;
 extern real *XX, *YY, *ZZ;
 extern real *VX, *VY, *VZ;
-extern real *RR; /* sqrt(x^2 + y^2 + z^2) */
+extern real *RR; /* sqrt(x^2 + y^2) */
 extern real *TH; /* acos(z/r) */
 
 int ini(const char *path);
@@ -68,11 +68,6 @@ int f_kantor_fin();
 real f_kantor_energy(const real *x, const real *y, const real *z);
 int  f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
-int f_meyer_ini(real K, real C0, real Kad);
-int f_meyer_fin();
-real f_meyer_energy(const real *x, const real *y, const real *z);
-int  f_meyer_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
-
 int f_gompper_ini(real K);
 int f_gompper_fin();
 real f_gompper_energy(const real *x, const real *y, const real *z);
@@ -89,5 +84,16 @@ int f_juelicher_curva_mean(/**/ real**);
 int f_juelicher_energy_ver(/**/ real**);
 int f_juelicher_area_ver(/**/ real**);
 int f_juelicher_fad(/**/ real**, real**, real**);
+
+int f_meyer_ini(real Kb, real Kad, real da0);
+int f_meyer_fin();
+real f_meyer_energy(const real *x, const real *y, const real *z);
+int  f_meyer_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+int f_meyer_laplace_ver(/**/ real**, real**, real**);
+int f_meyer_norm_ver(/**/ real**, real**, real**);
+int f_meyer_curva_mean_ver(/**/ real**);
+int f_meyer_energy_ver(/**/ real**);
+int f_meyer_area_ver(/**/ real**);
+
 
 int equiangulate(int *cnt);
