@@ -10,7 +10,18 @@
 
 #define T Bending
 
-struct T { };
+
+struct T {struct Bending_vtable *vtable; };
+
+struct Bending_vtable {
+    int (*ini)(BendingParam, He*, /**/  T**);
+    int (*fin)(T*);
+    int (*force)(T*, He*,
+                 const real *x, const real *y, const real *z, /**/
+                 real *fx, real *fy, real *fz);
+    real (*energy)(T*, He*, const real *x, const real *y, const real *z);
+    int (*energy_ver)(T*, real**);
+};
 
 int bending_ini(BendingParam param, He *he, /**/ T **pq)  {
     return HE_OK;
