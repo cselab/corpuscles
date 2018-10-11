@@ -12,6 +12,7 @@
 #include "he/f/garea.h"
 #include "he/f/volume.h"
 #include "he/f/harmonic.h"
+#include "he/f/edg_sq.h"
 #include "he/f/harmonic_ref.h"
 #include "he/f/kantor.h"
 #include "he/f/juelicher.h"
@@ -35,6 +36,7 @@ static HeFArea *f_area;
 static HeFGarea *f_garea;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
+static HeFEdgSq *f_edg_sq;
 static HeFHarmonicRef *f_harmonic_ref;
 static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
@@ -206,6 +208,21 @@ real f_harmonic_energy(const real *x, const real *y, const real *z) {
 }
 int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_harmonic_force(f_harmonic, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_edg_sq_ini(real K) {
+    he_f_edg_sq_ini(K, he, /**/ &f_edg_sq);
+    return HE_OK;
+}
+int f_edg_sq_fin() {
+    he_f_edg_sq_fin(f_edg_sq);
+    return HE_OK;
+}
+real f_edg_sq_energy(const real *x, const real *y, const real *z) {
+    return he_f_edg_sq_energy(f_edg_sq, he, x, y, z);
+}
+int f_edg_sq_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_edg_sq_force(f_edg_sq, he, x, y, z, /**/ fx, fy, fz);
 }
 
 int f_harmonic_ref_ini(real K, const real *x, const real *y, const real *z) {
