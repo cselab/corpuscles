@@ -16,7 +16,7 @@
 
 #define FMT_IN   XE_REAL_IN
 
-static real Ka, Kga, Kv, Ke, Kb;
+static real rVolume, Ka, Kga, Kv, Ke, Kb;
 static real A0, V0;
 static const char **argv;
 static char bending[4048];
@@ -85,7 +85,7 @@ int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
+    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Kb); scl(&Ke);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -93,7 +93,7 @@ real Energy(const real *x, const real *y, const real *z) {
     a = f_area_energy(x, y, z);
     ga = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
-    e = f_harmonic_energy(x, y, z);
+    e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
     return a + ga + v + e + b;
 }
@@ -108,7 +108,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
-    f_harmonic_force(x, y, z, /**/ fx, fy, fz);
+    f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -134,39 +134,34 @@ static void main0() {
     }
 }
 
-static real eq_tri_edg(real area) {
-    /* area = sqrt(3)/4 * edg^2 */
-    return 2*sqrt(area)/pow(3, 0.25);
-}
-
-static real rbc(real area) { return 0.06064602170131934*pow(area, 1.5); }
-static real sph(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real target_volume(real area, real v) { return v*sph_volume(area); }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real e0, a0;
+    real a0;
     argv = v; argv++;
     arg();
 
     ini("/dev/stdin");
     A0 = area();
     a0 = A0/NT;
-    V0 = rbc(A0); e0 = eq_tri_edg(a0);
+    V0 = target_volume(A0, rVolume);
     MSG("v0/volume(): %g", V0/volume());
-    MSG("area, volume, edg: %g %g %g", A0, V0, e0);
+    MSG("area, volume, edg: %g %g %g", A0, V0);
 
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
-    f_harmonic_ini(e0, Ke);
+    f_edg_sq_ini(Ke);
     f_bending_ini(bending, Kb);
 
-    min_ini(CONJUGATE_PR);
+    min_ini(VECTOR_BFGS2);
 
     main0();
     min_fin();
 
     f_bending_fin();
-    f_harmonic_fin();
+    f_edg_sq_fin();
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
