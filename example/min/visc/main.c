@@ -114,7 +114,7 @@ real Energy(const real *x, const real *y, const real *z) {
     a = f_area_energy(x, y, z);
     ga = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
-    e = f_harmonic_energy(x, y, z);
+    e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
     return a + ga + v + e + b;
 }
@@ -125,7 +125,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
-    f_harmonic_force(x, y, z, /**/ fx, fy, fz);
+    f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -175,14 +175,15 @@ static void visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
     int e, i, j;
-    real a[3], b[3], u[3];
+    real a[3], b[3], u[3], u0;
     for (e = 0; e < NE; e++) {
         i = D1[e]; j = D2[e];
         vec_get(i, vx, vy, vz, a);
         vec_get(j, vx, vy, vz, b);
         vec_minus(a, b, u);
-        vec_scalar_append(u, -mu, i, fx, fy, fz);
-        vec_scalar_append(u,  mu, j, fx, fy, fz);
+        u0 = vec_abs(u);
+        vec_scalar_append(u, -mu*u0, i, fx, fy, fz);
+        vec_scalar_append(u,  mu*u0, j, fx, fy, fz);
     }
 }
 
@@ -214,14 +215,14 @@ static void main0(real *vx, real *vy, real *vz,
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
 //        visc_lang(mu, vx, vy, vz, /**/
 //                  fx, fy, fz);
+        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         jigle(rnd, vx, vy, vz);
-        visc_pair(mu, vx, vy, vz, /**/
-                  fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         if (i % 1500 == 0) {
             do {
-                equiangulate(&cnt);
+                //equiangulate(&cnt);
+                cnt = 0;
                 MSG("cnt : %d", cnt);
             } while (cnt > 0);
             punto_fwrite(NV, queue, stdout);
@@ -233,17 +234,11 @@ static void main0(real *vx, real *vy, real *vz,
     }
 }
 
-static real eq_tri_edg(real area) {
-    /* area = sqrt(3)/4 * edg^2 */
-    return 2*sqrt(area)/pow(3, 0.25);
-}
-
-
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
 static real target_volume(real area, real v) { return v*sph_volume(area); }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real e0, a0;
+    real a0;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
     argv = v; argv++;
@@ -253,14 +248,14 @@ int main(int __UNUSED argc, const char *v[]) {
     ini("/dev/stdin");
     A0 = area();
     a0 = A0/NT;
-    V0 = target_volume(A0, rVolume); e0 = eq_tri_edg(a0);
+    V0 = target_volume(A0, rVolume);
     MSG("v0/volume(): %g", V0/volume());
-    MSG("area, volume, edg: %g %g %g", A0, V0, e0);
+    MSG("area, volume, edg: %g %g %g", A0, V0);
 
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
-    f_harmonic_ini(e0, Ke);
+    f_edg_sq_ini(Ke);
     f_bending_ini(bending, Kb);
 
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
@@ -272,7 +267,7 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(vx); FREE(vy); FREE(vz);
 
     f_bending_fin();
-    f_harmonic_fin();
+    f_edg_sq_fin();
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
