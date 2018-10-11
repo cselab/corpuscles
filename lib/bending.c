@@ -21,7 +21,7 @@ struct Bending_vtable {
     int (*energy_ver)(T*, real**);
 };
 
-int bending_ini(BendingParam param, He *he, /**/ T **pq)  {
+int bending_ini(const char *name, BendingParam param, He *he, /**/ T **pq)  {
     return HE_OK;
 }
 
