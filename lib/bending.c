@@ -14,7 +14,6 @@
 struct T {struct Bending_vtable *vtable; };
 
 struct Bending_vtable {
-    int (*ini)(BendingParam, He*, /**/  T**);
     int (*fin)(T*);
     int (*force)(T*, He*,
                  const real *x, const real *y, const real *z, /**/
