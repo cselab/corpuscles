@@ -14,8 +14,8 @@
 
 struct T {
     int n;
-    real *edg, *dedg;
-    real e0, K;
+    real *edg;
+    real K;
 };
 
 static real sum_sq(int n, real *a) {
@@ -25,17 +25,15 @@ static real sum_sq(int n, real *a) {
     for (i = 0; i < n; i++) v += a[i]*a[i];
     return v;
 }
-int he_f_edg_sq_ini(real e0, real K, He *he, T **pq) {
+int he_f_edg_sq_ini(real K, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
     n = he_ne(he);
 
     MALLOC(n, &q->edg);
-    MALLOC(n, &q->dedg);
 
     q->n = n;
-    q->e0 = e0;
     q->K = K;
 
     *pq = q;
@@ -43,7 +41,8 @@ int he_f_edg_sq_ini(real e0, real K, He *he, T **pq) {
 }
 
 int he_f_edg_sq_fin(T *q) {
-    FREE(q->edg); FREE(q->dedg); FREE(q);
+    FREE(q->edg);
+    FREE(q);
     return HE_OK;
 }
 
@@ -67,19 +66,18 @@ static void get(int m, He *he,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
 }
-static void compute_edg(He *he, real e0, const real *x, const real *y, const real *z, /**/ real *edg, real *dedg) {
+static void compute_edg(He *he, const real *x, const real *y, const real *z, /**/ real *edg) {
     real one, a[3], b[3];
     int n, m;
     n = he_ne(he);
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b);
         edg[m]  = one = edg_abs(a, b);
-        dedg[m] = one - e0;
     }
 }
 
-static void compute_force(real e0, real K, real *dedg,
-                          He *he, const real *x, const real *y, const real *z, /**/
+static void compute_force(He *he, real K, const real *edg,
+                          const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
     int n, m, i, j;
     real a[3], b[3], da[3], db[3], coeff;
@@ -89,9 +87,7 @@ static void compute_force(real e0, real K, real *dedg,
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         dedg_abs(a, b, /**/ da, db);
-
-        coeff = (e0 == 0) ? 2*K*dedg[m] : 2*K*dedg[m]/e0;
-        
+        coeff = 2*K*edg[m];
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
     }
@@ -101,34 +97,29 @@ int he_f_edg_sq_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *edg, *dedg, e0, K;
+    real *edg, K;
     n = q->n;
     edg = q->edg;
-    dedg = q->dedg;
     K  = q->K;
-    e0 = q->e0;
     if (he_ne(he) != n)
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
-    compute_edg(he, e0, x, y, z, /**/ edg, dedg);
-    compute_force(e0, K, dedg, he, x, y, z, /**/ fx, fy, fz);
+    compute_edg(he, x, y, z, /**/ edg);
+    compute_force(he, K, edg, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 
 real he_f_edg_sq_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
-    real *edg, *dedg, e0, v, K;
+    real *edg, v, K;
     n = q->n;
     edg = q->edg;
-    dedg = q->dedg;    
-    e0 = q->e0;
     K  = q->K;
 
     if (he_ne(he) != n)
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
-    compute_edg(he, e0, x, y, z, /**/ edg, dedg);
-    v = sum_sq(n, dedg);
-
-    return e0 == 0 ? K*v : K*v/e0;
+    compute_edg(he, x, y, z, /**/ edg);
+    v = sum_sq(n, edg);
+    return K*v;
 }
