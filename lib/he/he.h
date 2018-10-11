@@ -1,5 +1,4 @@
 #define T He
-
 typedef struct T T;
 typedef struct HeRead HeRead;
 
@@ -18,7 +17,6 @@ int he_flp(T*, int h);
 int he_ver(T*, int h); /* return ver, tri, or edg */
 int he_tri(T*, int h);
 int he_edg(T*, int h);
-
 int he_hdg_ver(T*, int v); /* return half-edg */
 int he_hdg_edg(T*, int e);
 int he_hdg_tri(T*, int t);
