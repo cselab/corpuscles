@@ -479,6 +479,8 @@ int he_f_meyer_force(T *q, He *he,
     real Kb, C0, Kad, DA0D;
     real H0, cm_intga;
 
+    HeSum *sum;
+
     Kb   = q->Kb;
     C0   = q->C0;
     Kad  = q->Kad;
@@ -514,18 +516,16 @@ int he_f_meyer_force(T *q, He *he,
     compute_curva_mean(q, he, curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
-    cm_intga = 0;
-    for ( v = 0; v < nv; v++ ) {
-
+    he_sum_ini(&sum);
+    for (v = 0; v < nv; v++) {
         fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
-
         fx[v] += fm * normx[v];
         fy[v] += fm * normy[v];
         fz[v] += fm * normz[v];
-
-        cm_intga +=  curva_mean[v] * area[v];
-
+        he_sum_add(sum, curva_mean[v] * area[v]);
     }
+    cm_intga = he_sum_get(sum);
+    he_sum_fin(sum);
 
     cm_intga -= (DA0D/2);
     cm_intga *= (4*pi* Kad/ area_tot_tri);
