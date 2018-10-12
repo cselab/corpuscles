@@ -302,11 +302,9 @@ static int compute_norm(T *q, He *he,
     for ( t = 0; t < nt; t++ ) {
         i = T0[t]; j = T1[t]; k = T2[t];
         get3(x, y, z, i, j, k, a, b, c);
-
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
         theta_c = tri_angle(b, c, a);
-
         tri_normal(a, b, c, u);
         vec_scalar_append(u, theta_a, i, normx, normy, normz);
         vec_scalar_append(u, theta_b, j, normx, normy, normz);
@@ -320,7 +318,7 @@ static int compute_norm(T *q, He *he,
     }
     return HE_OK;
 }
-static int he_f_meyer_curva_mean(T *q, He *he, /**/ real *curva_mean) {
+static int compute_curva_mean(T *q, He *he, /**/ real *curva_mean) {
     enum {X, Y, Z};
     int i, nv;
     real *lbx, *lby, *lbz;
@@ -337,12 +335,8 @@ static int he_f_meyer_curva_mean(T *q, He *he, /**/ real *curva_mean) {
     normz = q->normz;
 
     for ( i = 0; i < nv; i++ ) {
-        u[X] = lbx[i];
-        u[Y] = lby[i];
-        u[Z] = lbz[i];
-        v[X] = normx[i];
-        v[Y] = normy[i];
-        v[Z] = normz[i];
+        vec_get(i, lbx, lby, lbz, u);
+        vec_get(i, normx, normy, normz, v);
         curva_mean[i] = vec_dot(u, v)/2;
     }
 
@@ -436,7 +430,7 @@ real he_f_meyer_energy(T *q, He *he,
     area_tot_tri = compute_area(q, he, x, y, z, area);
     laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
-    he_f_meyer_curva_mean(q, he, /**/ curva_mean);
+    compute_curva_mean(q, he, /**/ curva_mean);
 
     cm_intga   = 0;
     for ( v = 0; v < nv; v++ ) {
@@ -509,7 +503,7 @@ int he_f_meyer_force(T *q, He *he,
     area_tot_tri = compute_area(q, he, x, y, z, area);
     laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
-    he_f_meyer_curva_mean(q, he, curva_mean);
+    compute_curva_mean(q, he, curva_mean);
     he_f_meyer_curva_gauss(q, he, x, y, z, curva_gauss);
 
     cm_intga = 0;
