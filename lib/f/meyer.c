@@ -197,28 +197,23 @@ static real compute_area(T *q, He *he,
         theta_b = tri_angle(a, b, c);
         theta_c = tri_angle(b, c, a);
 
-        /*check if the triangle has an obtuse angle*/
         if ( theta_a > pi/2.0 || theta_b > pi/2.0 || theta_c > pi/2.0 ) {
-            /*check if angle b is obtuse*/
             if ( theta_a > pi/2.0 ) {
                 area[i] += area0/2;
                 area[j] += area0/4;
                 area[k] += area0/4;
             }
-            /*check if angle b is obtuse*/
             else if ( theta_b > pi/2.0 ) {
                 area[j] += area0/2;
                 area[i] += area0/4;
                 area[k] += area0/4;
             }
-            /*check if angle c is obtuse*/
             else if ( theta_c > pi/2.0 ) {
                 area[k] += area0/2;
                 area[i] += area0/4;
                 area[j] += area0/4;
             }
         }
-        /*no obtuse angle at al*/
         else {
             vec_minus(a, b,  u);
             ab2 = vec_dot(u, u);
