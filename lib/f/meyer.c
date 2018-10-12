@@ -133,13 +133,13 @@ int he_f_meyer_area_ver(T *q, /**/ real **pa) {
   *pa = q->area;
   return HE_OK;
 }
-int laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
+int he_f_meyer_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *px = q->lbx;
     *py = q->lby;
     *pz = q->lbz;
     return HE_OK;
 }
-int compute_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
+int he_f_meyer_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
   *px = q->normx;
   *py = q->normy;
   *pz = q->normz;
