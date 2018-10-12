@@ -212,7 +212,7 @@ static void main0(real *vx, real *vy, real *vz,
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 1e-3;
+    dt = 1e-4;
     mu = 20.0;
     rnd = 0.01;
 

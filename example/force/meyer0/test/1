@@ -1,0 +1,2 @@
+# TEST: 1
+./main 2 3 4 4 < ../../../data/configuration_off_xin/biconcave/biconcave.off > energy_force.out.txt
