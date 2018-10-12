@@ -227,7 +227,7 @@ static void main0(real *vx, real *vy, real *vz,
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
-            MSG("area/vol: %g %g", area()/A0, volume()/V0);
+            MSG("area, vol: %g, %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
         }
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
