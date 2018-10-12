@@ -174,13 +174,13 @@ static real compute_area(T *q, He *he,
     real area0;
     real theta_a, theta_b, theta_c;
     real cota,cotb,cotc;
-    real ab2, bc2, ca2;
-
-    real area_tot_tri;
+    real ab2, bc2, ca2, area_tot_tri;
+    HeSum *sum;
 
     nt = he_nt(he);
     nv = he_nv(he);
     T0 = q->T0; T1 = q->T1; T2 = q->T2;
+    he_sum_ini(&sum);
 
     zero(nv, area);
 
@@ -191,7 +191,7 @@ static real compute_area(T *q, He *he,
         get3(x, y, z, i, j, k, a, b, c);
         area0 = tri_area(a, b, c);
 
-        area_tot_tri += area0;
+        he_sum_add(sum, area0);
 
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
@@ -239,6 +239,9 @@ static real compute_area(T *q, He *he,
         }
 
     }/*end for loop*/
+    area_tot_tri = he_sum_get(sum);
+
+    he_sum_fin(sum);
     return area_tot_tri;
 
 }
