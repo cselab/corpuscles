@@ -36,6 +36,12 @@ struct T {
   int nv, ne, nt;
 };
 
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] = 0;
+}
+
 static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
     int h, n, nn, i, j, k;
     h = hdg_tri(t);
@@ -127,7 +133,7 @@ int he_f_meyer_area_ver(T *q, /**/ real **pa) {
   *pa = q->area;
   return HE_OK;
 }
-int he_f_meyer_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
+int laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *px = q->lbx;
     *py = q->lby;
     *pz = q->lbz;
@@ -151,9 +157,9 @@ int he_f_meyer_energy_ver(T *q, /**/ real**pa) {
   *pa = q->energy;
   return HE_OK;
 }
-static real he_f_meyer_area(T *q, He *he,
-                            const real *x, const real *y, const real *z, /**/
-                            real *area) {
+static real compute_area(T *q, He *he,
+                         const real *x, const real *y, const real *z, /**/
+                         real *area) {
   enum {X, Y, Z};
   int t, nt, nv;
   int i, j, k;
@@ -170,13 +176,10 @@ static real he_f_meyer_area(T *q, He *he,
   nv = he_nv(he);
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
 
-  for ( i = 0; i < nv; i ++ ) {
-    area[i] = 0;
-  }
-
+  zero(nv, area);
+  
   area_tot_tri = 0;
   for ( t = 0; t < nt; t++ ) {
-
     i = T0[t]; j = T1[t]; k = T2[t];
 
     get3(x, y, z, i, j, k, a, b, c);
@@ -233,7 +236,7 @@ static real he_f_meyer_area(T *q, He *he,
   return area_tot_tri;
 
 }
-static int he_f_meyer_laplace(T *q, He *he,
+static int laplace(T *q, He *he,
 			      const real *x, const real *y, const real *z, /**/
 			      real *lbx, real *lby, real *lbz) {
   enum {X, Y, Z};
@@ -473,18 +476,9 @@ real he_f_meyer_energy(T *q, He *he,
     get_ijk(t, he, /**/ &i, &j, &k);
     T0[t] = i; T1[t] = j; T2[t] = k;
   }
-
-  /*  this initialization is useless,
-      as everything has been initialized other places
-      for (v = 0; v < nv; v++) {
-      normx[v] = 0; normy[v] = 0; normz[v] = 0;
-      lbx[v] = 0; lby[v] = 0; lbz[v] = 0;
-      curva_mean[v] = 0;
-      energy[v] = 0; area[v] = 0;
-      }*/
   
-  area_tot_tri = he_f_meyer_area(q, he, x, y, z, area);
-  he_f_meyer_laplace(q, he, x, y, z, lbx, lby, lbz);
+  area_tot_tri = compute_area(q, he, x, y, z, area);
+  laplace(q, he, x, y, z, lbx, lby, lbz);
   he_f_meyer_norm(q, he, x, y, z, normx, normy, normz);
   he_f_meyer_curva_mean(q, he, /**/ curva_mean);
   
@@ -563,17 +557,8 @@ int he_f_meyer_force(T *q, He *he,
     D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
   }
 
-  /*for (v = 0; v < nv; v++) {
-    normx[v] = 0; normy[v] = 0; normz[v] = 0;
-    lbx[v] = 0; lby[v] = 0; lbz[v] = 0;
-    curva_mean[v] = 0; curva_gauss[v] = 0;
-    area[v] = 0;
-    fx[v] = 0; fy[v]=0; fz[v]=0;
-    fxad[v] = 0; fyad[v]=0; fzad[v]=0;
-    }*/
-  
-  area_tot_tri = he_f_meyer_area(q, he, x, y, z, area);
-  he_f_meyer_laplace(q, he, x, y, z, lbx, lby, lbz);
+  area_tot_tri = compute_area(q, he, x, y, z, area);
+  laplace(q, he, x, y, z, lbx, lby, lbz);
   he_f_meyer_norm(q, he, x, y, z, normx, normy, normz);
   he_f_meyer_curva_mean(q, he, curva_mean);
   he_f_meyer_curva_gauss(q, he, x, y, z, curva_gauss);
