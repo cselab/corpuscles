@@ -79,14 +79,13 @@ static void main0() {
     f_meyer_curva_mean_ver(&curva_mean);
     f_meyer_curva_gauss_ver(&curva_gauss);
     
-    MSG("energy: %g", e0);
-    MSG("force : %g %g", FX[0], FX[NV-1]);
 
     RZERO(NV, &fm);
     RZERO(NV, &fmad);
     f0 = force();
     vabs(NV, FX, FY, FZ, /**/ fm);
-    //vabs(NV, fxad, fyad, fzad, /**/ fmad);
+    MSG("energy: %g", e0);
+    MSG("force : %g %g", FX[0], FX[NV-1]);
 
     printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 fm; 8 area; 9 curva_mean; 10 curva_gauss \n");
     real *queue[] = {ZZ, RR, eng, FX, FY, FZ, fm, area, curva_mean, curva_gauss, NULL};
