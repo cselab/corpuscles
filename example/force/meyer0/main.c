@@ -66,7 +66,7 @@ static int force() {
 }
 static void main0() {
     int i, nstep;
-    real e0, f0;
+    real e0;
     real *eng, *area;
     real *curva_mean;
     real *curva_gauss;
@@ -78,11 +78,11 @@ static void main0() {
     f_meyer_area_ver(&area);
     f_meyer_curva_mean_ver(&curva_mean);
     f_meyer_curva_gauss_ver(&curva_gauss);
-    
 
     RZERO(NV, &fm);
     RZERO(NV, &fmad);
-    f0 = force();
+    force();
+    MSG("FX[0]: %g", FX[0]);
     vabs(NV, FX, FY, FZ, /**/ fm);
     MSG("energy: %g", e0);
     MSG("force : %g %g", FX[0], FX[NV-1]);
