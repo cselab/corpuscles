@@ -39,10 +39,7 @@ int bending_energy_ver(T *q, /**/ real **e) { return q->vtable->energy_ver(q, e)
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
 typedef struct BendingKantor BendingKantor;
-struct BendingKantor {
-    T bending;
-    HeFKantor *local;
-};
+struct BendingKantor {T bending; HeFKantor *local; }
 static int method_kantor_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz) {
     BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
