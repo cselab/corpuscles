@@ -264,7 +264,7 @@ static int laplace(T *q, He *he,
         vec_minus(a, b,  u);
         vec_scalar_append(u,  cotc/2, i, /**/ lbx, lby, lbz);
         vec_scalar_append(u, -cotc/2, j, /**/ lbx, lby, lbz);
-        
+
         vec_minus(b, c, u);
         vec_scalar_append(u,  cota/2, j, /**/  lbx, lby, lbz);
         vec_scalar_append(u, -cota/2, k, /**/  lbx, lby, lbz);
