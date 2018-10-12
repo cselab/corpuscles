@@ -176,6 +176,7 @@ static real he_f_meyer_area(T *q, He *he,
     area[i] = 0;
   }
 
+  area_tot_tri = 0;
   for ( t = 0; t < nt; t++ ) {
 
     i = T0[t]; j = T1[t]; k = T2[t];
