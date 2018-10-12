@@ -307,8 +307,8 @@ int f_juelicher_curva_mean_ver(real **p) {
 }
 
 
-int f_meyer_ini(real Kb, real Kad, real Da0) {
-  he_f_meyer_ini(Kb, Kad, Da0, he, /**/ &f_meyer);
+int f_meyer_ini(real Kb, real C0, real Kad, real DA0D) {
+  he_f_meyer_ini(Kb, C0, Kad, DA0D, he, /**/ &f_meyer);
   return HE_OK;
 }
 int f_meyer_fin() {

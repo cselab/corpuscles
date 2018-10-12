@@ -16,7 +16,7 @@
 
 #define FMT_IN   XE_REAL_IN
 
-static real Kb, Kad, da0;
+static real Kb, C0, Kad, DA0D;
 static real *ENG;
 static real *FX, *FY, *FZ;
 static const real Pi = 3.141592653589793115997964;
@@ -24,7 +24,7 @@ static const char **argv;
 
 static const char *me = "force/meyer";
 static void usg() {
-    fprintf(stderr, "%s Kb Kad da0 < OFF\n", me);
+    fprintf(stderr, "%s Kb C0, Kad DA0D < OFF\n", me);
     exit(0);
 }
 
@@ -41,7 +41,7 @@ int scl(/**/ real *p) {
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
-    scl(&Kb); scl(&Kad); scl(&da0);
+    scl(&Kb); scl(&C0); scl(&Kad); scl(&DA0D);
 }
 static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
   /*Given n vectors with x, y, z components,
@@ -102,7 +102,8 @@ int main(int __UNUSED argc, const char *v[]) {
     argv = v; argv++;
     arg();
     ini("/dev/stdin");
-    f_meyer_ini(Kb, Kad, da0);
+    f_meyer_ini(Kb, C0, Kad, DA0D);
+    
     RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
     
     main0();
