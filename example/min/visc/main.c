@@ -49,7 +49,8 @@ static int f_bending_ini(const char *bending, real K) {
         f_gompper_ini(K);
     } else if (util_eq(bending, "juelicher")) {
         btype = JUELICHER;
-        H0 = Kad = 0;
+        H0 = 0;
+        Kad = 1e-3;
         f_juelicher_ini(K, H0, Kad);
     } else if (util_eq(bending, "meyer")) {
         btype = MEYER;
