@@ -323,7 +323,7 @@ static int he_f_meyer_norm(T *q, He *he,
   enum {X, Y, Z};
   int t, nt;
   int i, j, k, nv;
-  real a[3], b[3], c[3], u[3];
+  real a[3], b[3], c[3], u[3], u0[3];
   int *T0, *T1, *T2;
   real *area;
   real area0;
@@ -358,13 +358,8 @@ static int he_f_meyer_norm(T *q, He *he,
 
   for ( i = 0; i < nv; i++ ) {
       vec_get(i, normx, normy, normz, /**/ u);
-
-      len = vec_dot(u, u);
-      len = sqrt(len);
-
-      normx[i] = normx[i]/len;
-      normy[i] = normy[i]/len;
-      normz[i] = normz[i]/len;
+      vec_norm(u, /**/ u0);
+      vec_set(u0, i, /**/ normx, normy, normz);
   }
 
  return HE_OK;

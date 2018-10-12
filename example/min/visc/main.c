@@ -226,7 +226,7 @@ static void main0(real *vx, real *vy, real *vz,
         jigle(rnd, vx, vy, vz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        if (i % 1500 == 0) {
+        if (i % 100 == 0) {
             do {
                 //equiangulate(&cnt);
                 cnt = 0;
