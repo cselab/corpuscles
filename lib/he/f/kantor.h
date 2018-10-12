@@ -1,4 +1,4 @@
-#define T HeFKantor
+#define T  HeFKantor
 
 typedef struct He He;
 typedef struct T T;

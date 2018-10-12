@@ -6,6 +6,11 @@
 #include "he/err.h"
 #include "he/he.h"
 
+#include "he/f/kantor.h"
+#include "he/f/juelicher.h"
+#include "he/f/gompper.h"
+#include "he/f/meyer.h"
+
 #include "he/bending.h"
 
 #define T Bending
@@ -40,3 +45,8 @@ int bending_energy_ver(T *q, /**/ real **e) {
 int bending_fin(T *q) {
     return q->vtable->fin(q);
 }
+
+struct BendingKantor {
+    T bending;
+    HeFKantor *local;
+};
