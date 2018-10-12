@@ -71,12 +71,6 @@ static real sum(int n, real *volume) {
 }
 enum {BULK, BND};
 static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
-#    define  nxt(h)     he_nxt(he, h)
-#    define  flp(h)     he_flp(he, h)
-#    define  ver(h)     he_ver(he, h)
-#    define  hdg_ver(v) he_hdg_ver(he, v)
-#    define  hdg_edg(e) he_hdg_edg(he, e)
-#    define  bnd(h)     he_bnd(he, h)
   int h, n, nn, nnf, i, j, k, l;
   h = he_hdg_edg(he, e);
   if (bnd(h)) return BND;
