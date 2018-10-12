@@ -563,6 +563,7 @@ int he_f_meyer_force(T *q, He *he,
   he_f_meyer_curva_mean(q, he, curva_mean);
   he_f_meyer_curva_gauss(q, he, XX, YY, ZZ, curva_gauss);
 
+  cm_intga = 0;
   for ( v = 0; v < nv; v++ ) {
 
     fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
