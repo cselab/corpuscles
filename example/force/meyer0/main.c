@@ -86,7 +86,7 @@ static void main0() {
     MSG("energy: %g", e0);
     MSG("force : %g %g", FX[0], FX[NV-1]);
 
-    printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 fm; 8 area; 9 curva_mean; 10 curva_gauss \n");
+    printf("z axis dist eng Fx Fy Fz fm area curva_mean curva_gauss");
     real *queue[] = {ZZ, RR, eng, FX, FY, FZ, fm, area, curva_mean, curva_gauss, NULL};
     punto_fwrite(NV, queue, stdout);
 
