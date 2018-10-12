@@ -252,11 +252,7 @@ static int laplace(T *q, He *he,
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   area = q->area;
 
-  for ( i = 0; i < nv; i ++ ) {
-    lbx[i] = 0;
-    lby[i] = 0;
-    lbz[i] = 0;
-  }
+  zero(nv, lbx); zero(nv,  lby); zero(nv, lbz);
 
   for ( t = 0; t < nt; t++ ) {
 
@@ -329,12 +325,7 @@ static int compute_norm(T *q, He *he,
   T1 = q->T1;
   T2 = q->T2;
 
-  for ( i = 0; i < nv; i++ ) {
-    normx[i] = 0;
-    normy[i] = 0;
-    normz[i] = 0;
-  }
-
+  zero(nv, normx); zero(nv, normy); zero(nv, normz);
   for ( t = 0; t < nt; t++ ) {
     i = T0[t]; j = T1[t]; k = T2[t];
     get3(x, y, z, i, j, k, a, b, c);
@@ -404,12 +395,7 @@ static int he_f_meyer_curva_gauss(T *q, He *he,
   T1 = q->T1;
   T2 = q->T2;
   area = q->area;
-
-  for ( i = 0; i < nv; i ++ ) {
-
-    curva_gauss[i] = 0;
-
-  }
+  zero(nv,  curva_gauss);
 
   for ( t = 0; t < nt; t++ ) {
     i = T0[t]; j = T1[t]; k = T2[t];
@@ -483,24 +469,17 @@ real he_f_meyer_energy(T *q, He *he,
   he_f_meyer_curva_mean(q, he, /**/ curva_mean);
   
   cm_intga   = 0;
-  
   for ( v = 0; v < nv; v++ ) {
     energy[v] = 2 * Kb* curva_mean[v] * curva_mean[v] * area[v];
     cm_intga += curva_mean[v] * area[v];
   }
   
   energy1 = sum(nv, energy);
-  
   energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
-  
   energy3a =  -4*Kb*H0*cm_intga;
-  
   energy3b =  -2*pi*Kad*DA0D*cm_intga;
-  
   energy4 = 2*Kb*H0*H0*area_tot_tri;
-
   energy5 = pi*Kad*DA0D*DA0D/2/area_tot_tri;
-  
   energy_tot = energy1 + energy2 + energy3a + energy3b + energy4 + energy5;
   
   return energy_tot;
