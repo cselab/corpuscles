@@ -149,3 +149,7 @@ real he_f_kantor_energy(T *q, He *he,
     compute_cos(he, x, y, z, /**/ acos);
     return 2*K*compute_energy(he, acos);
 }
+
+int he_f_kantor_energy_ver(T *q, /**/ real **pe) {
+    return HE_OK;
+}
