@@ -255,27 +255,6 @@ int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, r
     return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
 }
 
-int f_gompper_ini(real K) {
-    he_f_gompper_ini(K, he, /**/ &f_gompper);
-    return HE_OK;
-}
-int f_gompper_fin() {
-    he_f_gompper_fin(f_gompper);
-    return HE_OK;
-}
-real f_gompper_energy(const real *x, const real *y, const real *z) {
-    return he_f_gompper_energy(f_gompper, he, x, y, z);
-}
-int f_gompper_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
-    return he_f_gompper_force(f_gompper, he, x, y, z, /**/ fx, fy, fz);
-}
-int f_gompper_energy_ver(real **p) {
-   return he_f_gompper_energy_ver(f_gompper, p);
-}
-int f_gompper_area(real **p) {
-   return he_f_gompper_area(f_gompper, p);
-}
-
 int f_juelicher_ini(real K, real C0, real Kad) {
     he_f_juelicher_ini(K, C0, Kad, he, /**/ &f_juelicher);
     return HE_OK;
@@ -305,8 +284,38 @@ int f_juelicher_fad(real **x, real **y, real **z) {
 int f_juelicher_curva_mean_ver(real **p) {
     return he_f_juelicher_curva_mean(f_juelicher, p);
 }
-
-
+int f_gompper_ini(real Kb, real C0, real Kad, real DA0D) {
+  he_f_gompper_ini(Kb, C0, Kad, DA0D, he, /**/ &f_gompper);
+  return HE_OK;
+}
+int f_gompper_fin() {
+  he_f_gompper_fin(f_gompper);
+  return HE_OK;
+}
+real f_gompper_energy(const real *x, const real *y, const real *z) {
+  return he_f_gompper_energy(f_gompper, he, x, y, z);
+}
+int f_gompper_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+  return he_f_gompper_force(f_gompper, he, x, y, z, /**/ fx, fy, fz);
+}
+int f_gompper_area_ver(real **p) {
+  return he_f_gompper_area_ver(f_gompper, p);
+}
+int f_gompper_laplace_ver(real **px, real **py, real **pz) {
+  return he_f_gompper_laplace_ver(f_gompper, px, py, pz);
+}
+int f_gompper_norm_ver(real **px, real **py, real **pz) {
+    return he_f_gompper_norm_ver(f_gompper, px, py, pz);
+}
+int f_gompper_curva_mean_ver(real **p) {
+    return he_f_gompper_curva_mean_ver(f_gompper, p);
+}
+int f_gompper_curva_gauss_ver(real **p) {
+    return he_f_gompper_curva_gauss_ver(f_gompper, p);
+}
+int f_gompper_energy_ver(real **p) {
+  return he_f_gompper_energy_ver(f_gompper, p);
+}
 int f_meyer_ini(real Kb, real C0, real Kad, real DA0D) {
   he_f_meyer_ini(Kb, C0, Kad, DA0D, he, /**/ &f_meyer);
   return HE_OK;

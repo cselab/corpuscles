@@ -3,8 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-/* E = gompper */
-int he_f_gompper_ini(real K, He*, T**);
+int he_f_gompper_ini(real Kb, real C0, real Kad, real DA0D, He*, T**);
 int he_f_gompper_fin(T*);
 
 int he_f_gompper_force(T*, He*,
@@ -12,10 +11,15 @@ int he_f_gompper_force(T*, He*,
                       real *fx, real *fy, real *fz);
 real he_f_gompper_energy(T*, He*, const real *x, const real *y, const real *z);
 
- /* "energy without constant" : energy/(2*K) */
+
+int he_f_gompper_area_ver(T*, /**/ real**);
+int he_f_gompper_laplace_ver(T*, /**/
+			   /**/ real**, real**, real**);
+int he_f_gompper_norm_ver(T*, 
+			/**/ real**, real**, real**);
+int he_f_gompper_curva_mean_ver(T*, /**/ real**);
+int he_f_gompper_curva_gauss_ver(T*, /**/ real**);
 int he_f_gompper_energy_ver(T*, /**/ real**);
 
-int he_f_gompper_area(T*, /**/ real**);
-int he_f_gompper_laplace(T*, /**/ real**, real**, real**);
 
 #undef T

@@ -38,26 +38,29 @@ static const char *me = "min/visc";
 
 enum {KANTOR, GOMPPER, JUELICHER, MEYER};
 static int btype;
-static int f_bending_ini(const char *bending, real K) {
-    real C0, Kad, DA0D, Da0;
-    if (util_eq(bending, "kantor")) {
-        btype = KANTOR;
-        f_kantor_ini(K);
-    }
-    else if (util_eq(bending, "gompper")) {
-        btype = GOMPPER;
-        f_gompper_ini(K);
-    } else if (util_eq(bending, "juelicher")) {
-        btype = JUELICHER;
-        Da0 = Kad = 0;
-        f_juelicher_ini(K, Kad, Da0);
-    } else if (util_eq(bending, "meyer")) {
-        btype = MEYER;
-        C0 = Kad = DA0D = 0;
-        f_meyer_ini(K, C0, Kad, DA0D);
-    } else
-        ER("unknown bending type: %s", bending);
-    return HE_OK;
+static int f_bending_ini(const char *bending, real Kb) {
+  real C0, Kad, DA0D, Da0;
+  if (util_eq(bending, "kantor")) {
+    btype = KANTOR;
+    f_kantor_ini(Kb);
+  }
+  else if (util_eq(bending, "juelicher")) {
+    btype = JUELICHER;
+    Kad = Da0 = 0;
+    f_juelicher_ini(Kb, Kad, Da0);
+  }
+  else if (util_eq(bending, "gompper")) {
+    btype = GOMPPER;
+    C0 = Kad = DA0D = 0;
+    f_gompper_ini(Kb, C0, Kad, DA0D);
+  }
+  else if (util_eq(bending, "meyer")) {
+    btype = MEYER;
+    C0 = Kad = DA0D = 0;
+    f_meyer_ini(Kb, C0, Kad, DA0D);
+  } else
+    ER("unknown bending type: %s", bending);
+  return HE_OK;
 }
 
 static int f_bending_fin() {

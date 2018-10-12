@@ -85,22 +85,23 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
 }
 int he_f_meyer_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   T *q;
-  int nv, nt, ne;
+  int nv, ne, nt;
 
   MALLOC(1, &q);
   
   nv = he_nv(he);
-  nt = he_nt(he);
   ne = he_ne(he);
+  nt = he_nt(he);
+
+  q->nv = nv;
+  q->ne = ne;
+  q->nt = nt;
 
   q->Kb   = Kb;
   q->C0   = C0;
   q->Kad  = Kad;
   q->DA0D = DA0D;
 
-  q->nv = nv;
-  q->ne = ne;
-  q->nt = nt;
   
   MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
   MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
@@ -119,6 +120,7 @@ int he_f_meyer_fin(T *q) {
   FREE(q->normx);FREE(q->normy);FREE(q->normz);
   FREE(q->curva_mean);FREE(q->curva_gauss);
   FREE(q->energy); FREE(q->area);
+  FREE(q);
   return HE_OK;
 }
 int he_f_meyer_area_ver(T *q, /**/ real **pa) {

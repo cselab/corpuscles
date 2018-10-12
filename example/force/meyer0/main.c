@@ -21,13 +21,12 @@ static real *ENG;
 static real *FX, *FY, *FZ;
 static const real Pi = 3.141592653589793115997964;
 static const char **argv;
-
 static const char *me = "force/meyer";
+
 static void usg() {
     fprintf(stderr, "%s Kb C0, Kad DA0D < OFF\n", me);
     exit(0);
 }
-
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int scl(/**/ real *p) {
     if (*argv == NULL) {
@@ -43,6 +42,10 @@ static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     scl(&Kb); scl(&C0); scl(&Kad); scl(&DA0D);
 }
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
+}
 static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
   /*Given n vectors with x, y, z components,
     calculate the absolute value/Euclidean length for each vector.*/
@@ -52,10 +55,6 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
     for (i = 0; i < n; i++)
         r[i] = sqrt(x[i]*x[i] + y[i]*y[i] + z[i]*z[i]);
     
-}
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++) a[i] = 0;
 }
 static real energy() { return f_meyer_energy(XX, YY, ZZ); }
 //static real energy_ver(real **p) { return f_meyer_energy_ver(p); }
@@ -93,23 +92,20 @@ static void main0() {
 
     FREE(fm);
     FREE(fmad);
-
-
 }
-
 int main(int __UNUSED argc, const char *v[]) {
-    argv = v; argv++;
-    arg();
-    ini("/dev/stdin");
-    f_meyer_ini(Kb, C0, Kad, DA0D);
-    
-    RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
-    
-    main0();
-    
-    FREE(FX); FREE(FY); FREE(FZ);
-    
-    f_meyer_fin();
-    fin();
-    return 0;
+  argv = v; argv++;
+  arg();
+  ini("/dev/stdin");
+  f_meyer_ini(Kb, C0, Kad, DA0D);
+  
+  RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
+  
+  main0();
+  
+  FREE(FX); FREE(FY); FREE(FZ);
+  
+  f_meyer_fin();
+  fin();
+  return 0;
 }
