@@ -149,7 +149,7 @@ int he_f_meyer_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->curva_mean;
     return HE_OK;
 }
-int he_f_meyer_curva_gauss_ver(T *q, /**/ real **pa) {
+intcompute_curva_gauss_ver(T *q, /**/ real **pa) {
     *pa = q->curva_gauss;
     return HE_OK;
 }
@@ -343,7 +343,7 @@ static int compute_curva_mean(T *q, He *he, /**/ real *curva_mean) {
     return HE_OK;
 
 }
-static int he_f_meyer_curva_gauss(T *q, He *he,
+static intcompute_curva_gauss(T *q, He *he,
                                   const real *x, const real *y, const real *z, /**/
                                   real *curva_gauss) {
 
@@ -465,7 +465,6 @@ int he_f_meyer_force(T *q, He *he,
     real *area;
     real *curva_gauss, *curva_mean;
     real fm;
-    //real *fxad, *fyad, *fzad;
     real area_tot_tri;
 
     real Kb, C0, Kad, DA0D;
@@ -504,7 +503,7 @@ int he_f_meyer_force(T *q, He *he,
     laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, curva_mean);
-    he_f_meyer_curva_gauss(q, he, x, y, z, curva_gauss);
+   compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
     cm_intga = 0;
     for ( v = 0; v < nv; v++ ) {
