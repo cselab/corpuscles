@@ -23,7 +23,6 @@
 #    define  bnd(h)     he_bnd(he, h)
 
 static const real pi = 3.141592653589793115997964;
-static const real epsilon = 1.e-2;
 
 struct T {
   real Kb, C0, Kad, DA0D;
