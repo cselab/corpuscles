@@ -94,7 +94,7 @@ int he_f_meyer_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   int nv, ne, nt;
 
   MALLOC(1, &q);
-  
+
   nv = he_nv(he);
   ne = he_ne(he);
   nt = he_nt(he);
@@ -108,7 +108,7 @@ int he_f_meyer_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   q->Kad  = Kad;
   q->DA0D = DA0D;
 
-  
+
   MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
   MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
   MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
@@ -177,20 +177,20 @@ static real compute_area(T *q, He *he,
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
 
   zero(nv, area);
-  
+
   area_tot_tri = 0;
   for ( t = 0; t < nt; t++ ) {
     i = T0[t]; j = T1[t]; k = T2[t];
 
     get3(x, y, z, i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
-    
+
     area_tot_tri += area0;
-    
+
     theta_a = tri_angle(c, a, b);
     theta_b = tri_angle(a, b, c);
     theta_c = tri_angle(b, c, a);
-    
+
     /*check if the triangle has an obtuse angle*/
     if ( theta_a > pi/2.0 || theta_b > pi/2.0 || theta_c > pi/2.0 ) {
       /*check if angle b is obtuse*/
@@ -237,8 +237,8 @@ static real compute_area(T *q, He *he,
 
 }
 static int laplace(T *q, He *he,
-			      const real *x, const real *y, const real *z, /**/
-			      real *lbx, real *lby, real *lbz) {
+                              const real *x, const real *y, const real *z, /**/
+                              real *lbx, real *lby, real *lbz) {
   enum {X, Y, Z};
   int t, nt;
   int i, j, k, nv;
@@ -255,55 +255,29 @@ static int laplace(T *q, He *he,
   zero(nv, lbx); zero(nv,  lby); zero(nv, lbz);
 
   for ( t = 0; t < nt; t++ ) {
-
-    i = T0[t];
-    j = T1[t];
-    k = T2[t];
-
+    i = T0[t]; j = T1[t]; k = T2[t];
     get3(x, y, z, i, j, k, a, b, c);
-
     cota = tri_cot(c, a, b);
     cotb = tri_cot(a, b, c);
     cotc = tri_cot(b, c, a);
 
     vec_minus(a, b,  u);
-    
-    lbx[i] += cotc*u[X]/2;
-    lby[i] += cotc*u[Y]/2;
-    lbz[i] += cotc*u[Z]/2;
-
-    lbx[j] -= cotc*u[X]/2;
-    lby[j] -= cotc*u[Y]/2;
-    lbz[j] -= cotc*u[Z]/2;
-
+    vec_scalar_append(u,  cotc/2, i, /**/ lbx, lby, lbz);
+    vec_scalar_append(u, -cotc/2, j, /**/ lbx, lby, lbz);
     vec_minus(b, c, u);
 
-    lbx[j] += cota*u[X]/2;
-    lby[j] += cota*u[Y]/2;
-    lbz[j] += cota*u[Z]/2;
-
-    lbx[k] -= cota*u[X]/2;
-    lby[k] -= cota*u[Y]/2;
-    lbz[k] -= cota*u[Z]/2;
+    vec_scalar_append(u,  cota/2, j, /**/  lbx, lby, lbz);
+    vec_scalar_append(u, -cota/2, k, /**/  lbx, lby, lbz);
 
     vec_minus(c, a,  u);
-
-    lbx[k] += cotb*u[X]/2;
-    lby[k] += cotb*u[Y]/2;
-    lbz[k] += cotb*u[Z]/2;
-
-    lbx[i] -= cotb*u[X]/2;
-    lby[i] -= cotb*u[Y]/2;
-    lbz[i] -= cotb*u[Z]/2;
-
+    vec_scalar_append(u,  cotb/2, k, /**/  lbx, lby, lbz);
+    vec_scalar_append(u, -cotb/2, i, /**/  lbx, lby, lbz);
   }
 
-  for ( i = 0; i < nv; i++ ) {
-
+  for (i = 0; i < nv; i++ ) {
     lbx[i] /=area[i];
     lby[i] /=area[i];
     lbz[i] /=area[i];
-
   }
 
   return HE_OK;
@@ -329,7 +303,7 @@ static int compute_norm(T *q, He *he,
   for ( t = 0; t < nt; t++ ) {
     i = T0[t]; j = T1[t]; k = T2[t];
     get3(x, y, z, i, j, k, a, b, c);
-    
+
     theta_a = tri_angle(c, a, b);
     theta_b = tri_angle(a, b, c);
     theta_c = tri_angle(b, c, a);
@@ -379,9 +353,9 @@ static int he_f_meyer_curva_mean(T *q, He *he, /**/ real *curva_mean) {
 
 }
 static int he_f_meyer_curva_gauss(T *q, He *he,
-				  const real *x, const real *y, const real *z, /**/
-				  real *curva_gauss) {
-  
+                                  const real *x, const real *y, const real *z, /**/
+                                  real *curva_gauss) {
+
   int *T0, *T1, *T2;
   real *area;
   int t, nt;
@@ -401,7 +375,7 @@ static int he_f_meyer_curva_gauss(T *q, He *he,
     i = T0[t]; j = T1[t]; k = T2[t];
 
     get3(x, y, z, i, j, k, a, b, c);
-    
+
     theta_a = tri_angle(c, a, b);
     theta_b = tri_angle(a, b, c);
     theta_c = tri_angle(b, c, a);
@@ -414,7 +388,7 @@ static int he_f_meyer_curva_gauss(T *q, He *he,
   for ( i = 0; i < nv; i++ ) {
     curva_gauss[i] = ( curva_gauss[i] + 2 * pi ) / area[i];
   }
-  
+
   return HE_OK;
 }
 real he_f_meyer_energy(T *q, He *he,
@@ -445,12 +419,12 @@ real he_f_meyer_energy(T *q, He *he,
 
   nv = he_nv(he);
   nt = he_nt(he);
-  
+
   if (nv != q->nv )
     ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", nv, q->nv);
   if (nt != q->nt )
     ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", nt, q->nt);
-  
+
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
@@ -462,18 +436,17 @@ real he_f_meyer_energy(T *q, He *he,
     get_ijk(t, he, /**/ &i, &j, &k);
     T0[t] = i; T1[t] = j; T2[t] = k;
   }
-  
   area_tot_tri = compute_area(q, he, x, y, z, area);
   laplace(q, he, x, y, z, lbx, lby, lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
   he_f_meyer_curva_mean(q, he, /**/ curva_mean);
-  
+
   cm_intga   = 0;
   for ( v = 0; v < nv; v++ ) {
     energy[v] = 2 * Kb* curva_mean[v] * curva_mean[v] * area[v];
     cm_intga += curva_mean[v] * area[v];
   }
-  
+
   energy1 = sum(nv, energy);
   energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
   energy3a =  -4*Kb*H0*cm_intga;
@@ -481,9 +454,9 @@ real he_f_meyer_energy(T *q, He *he,
   energy4 = 2*Kb*H0*H0*area_tot_tri;
   energy5 = pi*Kad*DA0D*DA0D/2/area_tot_tri;
   energy_tot = energy1 + energy2 + energy3a + energy3b + energy4 + energy5;
-  
+
   return energy_tot;
-  
+
 }
 int he_f_meyer_force(T *q, He *he,
                      const real *x, const real *y, const real *z, /**/
@@ -541,20 +514,20 @@ int he_f_meyer_force(T *q, He *he,
   compute_norm(q, he, x, y, z, normx, normy, normz);
   he_f_meyer_curva_mean(q, he, curva_mean);
   he_f_meyer_curva_gauss(q, he, x, y, z, curva_gauss);
-  
+
   cm_intga = 0;
   for ( v = 0; v < nv; v++ ) {
-    
+
     fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
-    
+
     fx[v] += fm * normx[v];
     fy[v] += fm * normy[v];
     fz[v] += fm * normz[v];
-    
+
     cm_intga +=  curva_mean[v] * area[v];
-    
+
   }
-  
+
   cm_intga -= (DA0D/2);
   cm_intga *= (4*pi* Kad/ area_tot_tri);
 
@@ -568,13 +541,13 @@ int he_f_meyer_force(T *q, He *he,
   }
 
   for (e = 0; e < ne; e++) {
-    
+
     if (bnd(e)) continue;
-    
+
     i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
 
     get4(x, y, z, i, j, k, l, /**/ a, b, c, d);
-    
+
     coti = tri_cot(c, a, b);
     cotl = tri_cot(b, d, c);
     cotil = coti + cotl;
