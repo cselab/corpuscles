@@ -29,8 +29,12 @@ struct Bending_vtable {
 };
 
 int bending_ini(const char *name, BendingParam param, He *he, /**/ T **pq)  { return HE_OK; }
-int bending_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) { return q->vtable->force(q, he, x, y, z, fx, fy, fz); }
-real bending_energy(T *q, He *he, const real *x, const real *y, const real *z) { return q->vtable->energy(q, he, x, y, z); }
+int bending_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return q->vtable->force(q, he, x, y, z, fx, fy, fz);
+}
+real bending_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+    return q->vtable->energy(q, he, x, y, z);
+}
 int bending_energy_ver(T *q, /**/ real **e) { return q->vtable->energy_ver(q, e); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
