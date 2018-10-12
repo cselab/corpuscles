@@ -6,12 +6,41 @@
 #include "he/vec.h"
 #include "he/tri.h"
 
-real tri_area(const real a[3], const real b[3], const real c[3]) {
+static void swap(real *a, real *b) {
+    double t;
+    t = *a; *a = *b; *b = t;
+}
+static int less(real *a, real *b) { return (*a) < (*b); }
+static void sort3(real *a, real *b, real *c) {
+    if (less(c, b)) swap(c, b);
+    if (less(b, a)) swap(b, a);
+    if (less(c, b)) swap(c, b);
+}
+
+static real kahan_area0(real a, real b, real c) {
+    sort3(&c, &b, &a); /* make a > b > c */
+    return sqrt((a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c)))/4;
+}
+
+static real kahan_area(const real r0[3], const real r1[3], const real r2[3]) {
+    real r01[3], r12[3], r20[3], a, b, c;
+    vec_minus(r0, r1, /**/ r01);
+    vec_minus(r1, r2, /**/ r12);
+    vec_minus(r2, r0, /**/ r20);
+    a = vec_abs(r01); b = vec_abs(r12); c = vec_abs(r20);
+    return kahan_area0(a, b, c);
+}
+
+static real naive_area(const real a[3], const real b[3], const real c[3]) {
     real u[3], v[3], n[3];
     vec_minus(b, a, u);
     vec_minus(c, a, v);
     vec_cross(u, v,   n);
     return vec_abs(n)/2;
+}
+
+real tri_area(const real a[3], const real b[3], const real c[3]) {
+    return kahan_area(a, b, c);
 }
 
 /* oriented volume of tetrahedral [0, a, b, c] */

@@ -264,8 +264,8 @@ static int laplace(T *q, He *he,
         vec_minus(a, b,  u);
         vec_scalar_append(u,  cotc/2, i, /**/ lbx, lby, lbz);
         vec_scalar_append(u, -cotc/2, j, /**/ lbx, lby, lbz);
+        
         vec_minus(b, c, u);
-
         vec_scalar_append(u,  cota/2, j, /**/  lbx, lby, lbz);
         vec_scalar_append(u, -cota/2, k, /**/  lbx, lby, lbz);
 
@@ -503,7 +503,7 @@ int he_f_meyer_force(T *q, He *he,
     laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, curva_mean);
-   compute_curva_gauss(q, he, x, y, z, curva_gauss);
+    compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
     cm_intga = 0;
     for ( v = 0; v < nv; v++ ) {
