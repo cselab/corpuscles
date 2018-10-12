@@ -80,7 +80,7 @@ static void main0() {
     f_meyer_curva_gauss_ver(&curva_gauss);
     
     MSG("energy: %g", e0);
-    MSG("force : %g", f0);
+    MSG("force : %g %g", FX[0], FX[NV-1]);
 
     RZERO(NV, &fm);
     RZERO(NV, &fmad);

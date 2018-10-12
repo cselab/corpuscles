@@ -36,10 +36,13 @@ static const char **argv;
 static char bending[4048];
 static const char *me = "min/visc";
 
-enum {KANTOR, GOMPPER, JUELICHER};
+enum {KANTOR, GOMPPER, JUELICHER, MEYER};
 static int btype;
 static int f_bending_ini(const char *bending, real K) {
-    real H0, Kad;
+    real Da0, H0, Kad;
+    Kad = 1e-6;
+    Da0 = 0;
+
     if (util_eq(bending, "kantor")) {
         btype = KANTOR;
         f_kantor_ini(K);
@@ -49,8 +52,10 @@ static int f_bending_ini(const char *bending, real K) {
         f_gompper_ini(K);
     } else if (util_eq(bending, "juelicher")) {
         btype = JUELICHER;
-        H0 = Kad = 0;
-        f_juelicher_ini(K, H0, Kad);
+        f_juelicher_ini(K, Kad, Da0);
+    } else if (util_eq(bending, "meyer")) {
+        btype = MEYER;
+        f_meyer_ini(K, Kad, Da0);
     } else
         ER("unknown bending type: %s", bending);
     return HE_OK;
@@ -61,6 +66,7 @@ static int f_bending_fin() {
     case KANTOR: return f_kantor_fin();
     case GOMPPER: return f_gompper_fin();
     case JUELICHER: return f_juelicher_fin();
+    case MEYER: return f_meyer_fin();
     }
     ER("unknown btype: %d", btype);
 }
@@ -70,6 +76,7 @@ static real f_bending_energy(const real *x, const real *y, const real *z) {
     case KANTOR: return f_kantor_energy(x, y, z);
     case GOMPPER: return f_gompper_energy(x, y, z);
     case JUELICHER: return f_juelicher_energy(x, y, z);
+    case MEYER: return f_meyer_energy(x, y, z);
     }
     ER("unknown btype: %d", btype);
 }
@@ -80,12 +87,13 @@ static real f_bending_force(const real *x, const real *y, const real *z,
     case KANTOR: return f_kantor_force(x, y, z, /**/ fx, fy, fz);
     case GOMPPER: return f_gompper_force(x, y, z, /**/ fx, fy, fz);
     case JUELICHER: return f_juelicher_force(x, y, z, /**/ fx, fy, fz);
+    case MEYER: return f_meyer_force(x, y, z, /**/ fx, fy, fz);
     }
     ER("unknown btype: %d", btype);
 }
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/juelicher rVolume Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/juelicher/meyer rVolume Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -207,7 +215,7 @@ static void main0(real *vx, real *vy, real *vz,
     i = 0;
     dt = 1e-3;
     mu = 20.0;
-    rnd = 0.001;
+    rnd = 0.01;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (;;) {
