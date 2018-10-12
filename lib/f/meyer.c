@@ -149,7 +149,7 @@ int he_f_meyer_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->curva_mean;
     return HE_OK;
 }
-intcompute_curva_gauss_ver(T *q, /**/ real **pa) {
+int he_f_meyer_curva_gauss_ver(T *q, /**/ real **pa) {
     *pa = q->curva_gauss;
     return HE_OK;
 }
@@ -343,7 +343,7 @@ static int compute_curva_mean(T *q, He *he, /**/ real *curva_mean) {
     return HE_OK;
 
 }
-static intcompute_curva_gauss(T *q, He *he,
+static int compute_curva_gauss(T *q, He *he,
                                   const real *x, const real *y, const real *z, /**/
                                   real *curva_gauss) {
 
