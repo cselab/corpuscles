@@ -139,7 +139,7 @@ int laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *pz = q->lbz;
     return HE_OK;
 }
-int he_f_meyer_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
+int compute_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
   *px = q->normx;
   *py = q->normy;
   *pz = q->normz;
@@ -313,9 +313,9 @@ static int laplace(T *q, He *he,
   return HE_OK;
 
 }
-static int he_f_meyer_norm(T *q, He *he,
-			   const real *x, const real *y, const real *z, /**/
-			   real *normx, real *normy, real *normz) {
+static int compute_norm(T *q, He *he,
+                        const real *x, const real *y, const real *z, /**/
+                        real *normx, real *normy, real *normz) {
   enum {X, Y, Z};
   int t, nt;
   int i, j, k, nv;
@@ -479,7 +479,7 @@ real he_f_meyer_energy(T *q, He *he,
   
   area_tot_tri = compute_area(q, he, x, y, z, area);
   laplace(q, he, x, y, z, lbx, lby, lbz);
-  he_f_meyer_norm(q, he, x, y, z, normx, normy, normz);
+  compute_norm(q, he, x, y, z, normx, normy, normz);
   he_f_meyer_curva_mean(q, he, /**/ curva_mean);
   
   cm_intga   = 0;
@@ -559,7 +559,7 @@ int he_f_meyer_force(T *q, He *he,
 
   area_tot_tri = compute_area(q, he, x, y, z, area);
   laplace(q, he, x, y, z, lbx, lby, lbz);
-  he_f_meyer_norm(q, he, x, y, z, normx, normy, normz);
+  compute_norm(q, he, x, y, z, normx, normy, normz);
   he_f_meyer_curva_mean(q, he, curva_mean);
   he_f_meyer_curva_gauss(q, he, x, y, z, curva_gauss);
   
