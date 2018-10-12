@@ -351,9 +351,7 @@ static int he_f_meyer_norm(T *q, He *he,
   }
   
   for ( t = 0; t < nt; t++ ) {
-    
     i = T0[t]; j = T1[t]; k = T2[t];
-    
     get3(XX, YY, ZZ, i, j, k, a, b, c);
     
     theta_a = tri_angle(c, a, b);
@@ -361,19 +359,9 @@ static int he_f_meyer_norm(T *q, He *he,
     theta_c = tri_angle(b, c, a);
 
     tri_normal(a, b, c, u);
-    
-    normx[i] += theta_a * u[X];
-    normy[i] += theta_a * u[Y];
-    normz[i] += theta_a * u[Z];
-    
-    normx[j] += theta_b * u[X];
-    normy[j] += theta_b * u[Y];
-    normz[j] += theta_b * u[Z];
-    
-    normx[k] += theta_c * u[X];
-    normy[k] += theta_c * u[Y];
-    normz[k] += theta_c * u[Z];
-    
+    vec_scalar_append(u, theta_a, i, normx, normy, normz);
+    vec_scalar_append(u, theta_b, j, normx, normy, normz);
+    vec_scalar_append(u, theta_c, k, normx, normy, normz);
   }
 
   for ( i = 0; i < nv; i++ ) {
