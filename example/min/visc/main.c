@@ -40,6 +40,9 @@ enum {KANTOR, GOMPPER, JUELICHER, MEYER};
 static int btype;
 static int f_bending_ini(const char *bending, real K) {
     real Da0, H0, Kad;
+    Kad = 1e-6;
+    Da0 = 0;
+
     if (util_eq(bending, "kantor")) {
         btype = KANTOR;
         f_kantor_ini(K);
@@ -49,12 +52,9 @@ static int f_bending_ini(const char *bending, real K) {
         f_gompper_ini(K);
     } else if (util_eq(bending, "juelicher")) {
         btype = JUELICHER;
-        H0 = 0;
-        Kad = 1e-3;
-        f_juelicher_ini(K, H0, Kad);
+        f_juelicher_ini(K, Kad, Da0);
     } else if (util_eq(bending, "meyer")) {
         btype = MEYER;
-        Da0 = Kad = 0;
         f_meyer_ini(K, Kad, Da0);
     } else
         ER("unknown bending type: %s", bending);
@@ -213,7 +213,7 @@ static void main0(real *vx, real *vy, real *vz,
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     i = 0;
-    dt = 2e-4;
+    dt = 1e-3;
     mu = 20.0;
     rnd = 0.01;
 
