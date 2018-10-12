@@ -9,6 +9,7 @@
 #include "he/dih.h"
 #include "he/ddih.h"
 #include "he/tri.h"
+#include "he/sum.h"
 
 #include "he/f/meyer.h"
 
@@ -69,11 +70,16 @@ static int get4(const real *x, const real *y, const real *z,
     vec_get(l, x, y, z, d);
     return HE_OK;
 }
-static real sum(int n, real *volume) {
-    int t;
+static real sum(int n, real *a) {
+    int i;
     real v;
+    HeSum *sum;
+    he_sum_ini(&sum);
     v = 0;
-    for (t = 0; t < n; t++) v += volume[t];
+    for (i = 0; i < n; i++)
+        he_sum_add(sum, a[i]);
+    v = he_sum_get(sum);
+    he_sum_fin(sum);
     return v;
 }
 enum {BULK, BND};
