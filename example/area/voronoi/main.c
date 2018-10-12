@@ -7,6 +7,7 @@
 #include <he/vec.h>
 #include <he/tri.h>
 #include <he/memory.h>
+#include <he/sum.h>
 
 void get4(int i, int j, int k, int l, /**/
           real a[3], real b[3], real c[3], real d[3]) {
@@ -24,8 +25,9 @@ void main1() {
     int h0, h, n, nn, fnn;
     real a[3], b[3], c[3], d[3], u[3], u2, ci, cl;
     real A, A0;
+    HeSum *sum;
 
-    A = 0;
+    he_sum_ini(&sum);
     for (v = 0; v < NV; v++) {
         h0 = h = hdg_ver(v);
         do {
@@ -38,13 +40,15 @@ void main1() {
             vec_minus(b, c,  u);
             u2 = vec_dot(u, u);
             A0 = (ci + cl) * u2;
-            A += A0;
+            he_sum_add(sum, A0);
             h = nxt(flp(h));
         } while (h != h0);
     }
-    A /= 8;
 
-    printf("NT=%i, traverse halfedge A = %g\n", NT, A);
+    A = he_sum_get(sum)/8;
+
+    printf("NT=%i, traverse halfedge A = %.10g\n", NT, A);
+    he_sum_fin(sum);
 }
 
 void main2() {
@@ -53,8 +57,9 @@ void main2() {
     int i, j, k, l;
     real a[3], b[3], c[3], d[3], u[3], u2, ci, cl;
     real A, A0;
+    HeSum *sum;    
 
-    A = 0;
+    he_sum_ini(&sum);    
     for (e = 0; e < NE; e++) {
       if (bnd(e)) continue;
 
@@ -66,11 +71,13 @@ void main2() {
       vec_minus(b, c,  u);
       u2 = vec_dot(u, u);
       A0 = (ci + cl) * u2;
-      A += 2*A0;
+      he_sum_add(sum, 2*A0);
     }
-    A /= 8;
+    
+    A = he_sum_get(sum)/8;
+    printf("NT=%i, traverse edge     A = %.10g\n", NT, A);
 
-    printf("NT=%i, traverse edge     A = %g\n", NT, A);
+    he_sum_fin(sum);
 }
 
 
