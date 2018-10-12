@@ -211,22 +211,14 @@ static void main0(real *vx, real *vy, real *vz,
     int cnt, i;
     real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
-    i = 0;
-    dt = 1e-4;
+    dt = 1e-3;
     mu = 20.0;
     rnd = 0.01;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
-    for (;;) {
-        i++;
+    for (i = 0; /**/ ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
-//        visc_lang(mu, vx, vy, vz, /**/
-//                  fx, fy, fz);
-        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-        jigle(rnd, vx, vy, vz);
-        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        if (i % 100 == 0) {
+        if (i % 1500 == 0) {
             do {
                 //equiangulate(&cnt);
                 cnt = 0;
@@ -238,6 +230,10 @@ static void main0(real *vx, real *vy, real *vz,
             MSG("area/vol: %g %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
         }
+        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+        jigle(rnd, vx, vy, vz);
+        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
 }
 
