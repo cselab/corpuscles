@@ -81,17 +81,6 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
   *pi = i; *pj = j; *pk = k; *pl = l;
   return BULK;
 }
-static int get(int e, He *he, const real *x, const real *y, const real *z,
-               /**/ real a[3], real b[3], real c[3], real d[3]) {
-  int status, i, j, k, l;
-  status = get_ijkl(e, he, /**/ &i, &j, &k, &l);
-  if (status == BND) return BND;
-  vec_get(i, x, y, z, /**/ a);
-  vec_get(j, x, y, z, /**/ b);
-  vec_get(k, x, y, z, /**/ c);
-  vec_get(l, x, y, z, /**/ d);
-  return BULK;
-}
 int he_f_meyer_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   T *q;
   int nv, nt, ne;
@@ -166,7 +155,6 @@ static real he_f_meyer_area(T *q, He *he,
   real ab2, bc2, ca2;
 
   real area_tot_tri;
-  real area_tot_mix;
 
   nt = he_nt(he);
   nv = he_nv(he);
@@ -232,9 +220,6 @@ static real he_f_meyer_area(T *q, He *he,
     }
 
   }/*end for loop*/
-
-  area_tot_mix = sum(nv, area);
-
   return area_tot_tri;
 
 }
@@ -247,8 +232,6 @@ static int he_f_meyer_laplace(T *q, He *he,
   real a[3], b[3], c[3], u[3];
   int *T0, *T1, *T2;
   real *area;
-  real area0;
-  real theta_a, theta_b, theta_c;
   real cota,cotb,cotc;
 
   nt = he_nt(he);
@@ -325,10 +308,7 @@ static int he_f_meyer_norm(T *q, He *he,
   int i, j, k, nv;
   real a[3], b[3], c[3], u[3], u0[3];
   int *T0, *T1, *T2;
-  real *area;
-  real area0;
   real theta_a, theta_b, theta_c;
-  real len;
 
   nt = he_nt(he);
   nv = he_nv(he);
@@ -365,9 +345,7 @@ static int he_f_meyer_norm(T *q, He *he,
  return HE_OK;
 
 }
-static int he_f_meyer_curva_mean(T *q, He *he,
-                            const real *XX, const real *YY, const real *ZZ, /**/
-                            real *curva_mean) {
+static int he_f_meyer_curva_mean(T *q, He *he, /**/ real *curva_mean) {
   enum {X, Y, Z};
   int i, nv;
   real *lbx, *lby, *lbz;
@@ -444,25 +422,16 @@ static int he_f_meyer_curva_gauss(T *q, He *he,
 real he_f_meyer_energy(T *q, He *he,
                        const real *XX, const real *YY, const real *ZZ) {
   enum {X, Y, Z};
-  int n;
   int v, t;
   int i, j, k;
-  real a[3], b[3], c[3], u[3], uu[3], coord[3];
   int *T0, *T1, *T2;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
-  real *curva_mean, *curva_gauss;
+  real *curva_mean;
   real *energy, *area;
 
   real Kb, C0, Kad, DA0D;
-  real len, area0;
-  real rxy, phi;
-  int  obtuse;
-  real theta0;
-  real theta_a, theta_b, theta_c;
-  real cota,cotb,cotc;
-  real ab2, bc2, ca2;
-  real area_tot_tri, area_tot_mix;
+  real area_tot_tri;
   int  nv, nt;
 
   real H0, cm_intga;
@@ -501,7 +470,7 @@ real he_f_meyer_energy(T *q, He *he,
   area_tot_tri = he_f_meyer_area(q, he, XX, YY, ZZ, area);
   he_f_meyer_laplace(q, he, XX, YY, ZZ, lbx, lby, lbz);
   he_f_meyer_norm(q, he, XX, YY, ZZ, normx, normy, normz);
-  he_f_meyer_curva_mean(q, he, XX, YY, ZZ, curva_mean);
+  he_f_meyer_curva_mean(q, he, /**/ curva_mean);
 
   energy_tot = 0;
   cm_intga   = 0;
@@ -535,7 +504,7 @@ int he_f_meyer_force(T *q, He *he,
   int v, e, t;
   int i, j, k, l;
   int nv, nt, ne;
-  real a[3], b[3], c[3], d[3], u[3], n[3];
+  real a[3], b[3], c[3], d[3], u[3];
   int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
   real coti, cotl, cotil;
@@ -545,12 +514,7 @@ int he_f_meyer_force(T *q, He *he,
   real *curva_gauss, *curva_mean;
   real fm;
   //real *fxad, *fyad, *fzad;
-  real area0;
-  int  obtuse;
-  real thetaa, thetab, thetac;
-  real cota,cotb,cotc;
-  real ab2, bc2, ca2;
-  real area_tot_tri, area_tot_mix, curva_mean_area_tot;
+  real area_tot_tri;
 
   real Kb, C0, Kad, DA0D;
   real H0, cm_intga;
@@ -596,7 +560,7 @@ int he_f_meyer_force(T *q, He *he,
   area_tot_tri = he_f_meyer_area(q, he, XX, YY, ZZ, area);
   he_f_meyer_laplace(q, he, XX, YY, ZZ, lbx, lby, lbz);
   he_f_meyer_norm(q, he, XX, YY, ZZ, normx, normy, normz);
-  he_f_meyer_curva_mean(q, he, XX, YY, ZZ, curva_mean);
+  he_f_meyer_curva_mean(q, he, curva_mean);
   he_f_meyer_curva_gauss(q, he, XX, YY, ZZ, curva_gauss);
 
   for ( v = 0; v < nv; v++ ) {
