@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <stddef.h>
 
 #include "real.h"
 
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
+#include "he/container.h"
 
 #include "he/f/kantor.h"
 #include "he/f/juelicher.h"
@@ -46,7 +48,14 @@ int bending_fin(T *q) {
     return q->vtable->fin(q);
 }
 
+typedef struct BendingKantor BendingKantor;
 struct BendingKantor {
     T bending;
     HeFKantor *local;
 };
+
+static int method_kantor_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz) {
+    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+    return he_f_kantor_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
