@@ -23,9 +23,10 @@
 #    define  bnd(h)     he_bnd(he, h)
 
 static const real pi = 3.141592653589793115997964;
+static const real epsilon = 1.e-2;
 
 struct T {
-  real Kb, Kad, Da0;
+  real Kb, C0, Kad, DA0D;
   int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
   real *lbx, *lby, *lbz;
@@ -98,7 +99,7 @@ static int get(int e, He *he, const real *x, const real *y, const real *z,
   vec_get(l, x, y, z, /**/ d);
   return BULK;
 }
-int he_f_meyer_ini(real Kb, real Kad, real Da0, He *he, T **pq) {
+int he_f_meyer_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   T *q;
   int nv, nt, ne;
   MALLOC(1, &q);
@@ -106,9 +107,10 @@ int he_f_meyer_ini(real Kb, real Kad, real Da0, He *he, T **pq) {
   nt = he_nt(he);
   ne = he_ne(he);
   
-  q->Kb  = Kb;
-  q->Kad = Kad;
-  q->Da0 = Da0;
+  q->Kb   = Kb;
+  q->C0   = C0;
+  q->Kad  = Kad;
+  q->DA0D = DA0D;
   
   MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
   MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
@@ -481,7 +483,7 @@ real he_f_meyer_energy(T *q, He *he,
   real *curva_mean, *curva_gauss;
   real *energy, *area;
   
-  real Kb, Kad, Da0;
+  real Kb, C0, Kad, DA0D;
   real len, area0;
   real rxy, phi;
   int  obtuse;
@@ -492,24 +494,17 @@ real he_f_meyer_energy(T *q, He *he,
   real area_tot_tri, area_tot_mix;
   int  nv, nt;
 
-  real C0, H0, D, DA0, cm_intga;
-  real energy1, energy2, energy3, energy4, energy5;
+  real H0, cm_intga;
+  real energy1, energy2, energy3a, energy3b, energy4, energy5;
   real energy_tot;
 
-  Kb  = q->Kb;
-  Kad = q->Kad;
-  Da0 = q->Da0;
+  Kb   = q->Kb;
+  C0   = q->C0;
+  Kad  = q->Kad;
+  DA0D = q->DA0D;
 
-  /*define and work out backwards for auxiliary parameters*/
-  C0  = -1.0;
   H0  = C0/2.0;
-  D   = 3.0e-3/3.91;
-
-  /*Kad = 0;
-  H0  = 0;
-  DA0 = 0;
-  Da0 = 0;*/
-  
+ 
   nv = he_nv(he);
   nt = he_nt(he);
   
@@ -545,17 +540,19 @@ real he_f_meyer_energy(T *q, He *he,
     cm_intga += curva_mean[v] * area[v];
   }
 
-  //DA0 = (Da0 - 2*Kb*H0*D/pi/Kad) * area_tot_tri;
-  
-  energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
-  energy3 = -2*pi*Kad*Da0*cm_intga/D;
-  energy4 = 2*Kb*H0*H0*area_tot_tri;
-  energy5 = pi*Kad*DA0*DA0/2/area_tot_tri/D/D;
-  
-  energy1 =  sum(nv, energy);
+  energy1 = sum(nv, energy);
 
-  energy_tot = energy1 + energy2 + energy3;
-  //energy_tot = energy1 + energy2 + energy3 + energy4 + energy5;
+  energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
+
+  energy3a =  -4*Kb*H0*cm_intga;
+
+  energy3b =  -2*pi*Kad*DA0D*cm_intga;    
+
+  energy4 = 2*Kb*H0*H0*area_tot_tri;  
+
+  energy5 = pi*Kad*DA0D*DA0D/2/area_tot_tri;
+  
+  energy_tot = energy1 + energy2 + energy3a + energy3b + energy4 + energy5;
   
   return energy_tot;
   
@@ -584,22 +581,15 @@ int he_f_meyer_force(T *q, He *he,
   real ab2, bc2, ca2;
   real area_tot_tri, area_tot_mix, curva_mean_area_tot;
 
-  real Kb, Kad, Da0;
-  real C0, H0, D, DA0, cm_intga;
+  real Kb, C0, Kad, DA0D;
+  real H0, cm_intga;
 
-  Kb  = q->Kb;
-  Kad = q->Kad;
-  Da0 = q->Da0;
+  Kb   = q->Kb;
+  C0   = q->C0;
+  Kad  = q->Kad;
+  DA0D = q->DA0D;
 
-  /*define and work out backwards for auxiliary parameters*/
-  C0  = -1.0;
-  H0  = C0/2.0;
-  D   = 3.0e-3/3.91;
-
-  /*Kad = 0;
-  H0  = 0;
-  DA0 = 0;
-  Da0 = 0;*/
+  H0   = C0/2.0;
 
   nv = he_nv(he);
   nt = he_nt(he);
@@ -650,9 +640,7 @@ int he_f_meyer_force(T *q, He *he,
     
   }
 
-  DA0 = (Da0 - 2*Kb*H0*D/pi/Kad) * area_tot_tri;
-    
-  cm_intga -= (DA0/2/D);
+  cm_intga -= (DA0D/2);
   cm_intga *= (4*pi* Kad/ area_tot_tri);
   
   for ( v = 0; v < nv; v++ ) {

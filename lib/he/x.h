@@ -84,7 +84,7 @@ int f_juelicher_energy_ver(/**/ real**);
 int f_juelicher_area_ver(/**/ real**);
 int f_juelicher_fad(/**/ real**, real**, real**);
 
-int f_meyer_ini(real Kb, real Kad, real Da0);
+int f_meyer_ini(real Kb, real C0, real Kad, real DA0D);
 int f_meyer_fin();
 real f_meyer_energy(const real *x, const real *y, const real *z);
 int  f_meyer_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
