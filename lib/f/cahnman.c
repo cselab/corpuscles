@@ -23,15 +23,12 @@
 #    define  hdg_tri(t) he_hdg_tri(he, t)
 #    define  bnd(h)     he_bnd(he, h)
 
-typedef struct Param Param;
-struct Param { real K; };
-
 typedef struct Size Size;
 struct Size { int nv, ne, nt; };
 
 struct T {
     Size size;
-    Param param;
+    real K;
     real *area, *curva_mean, *energy;
     real *theta, *len, *lentheta;
     real *fx, *fy, *fz;
@@ -60,7 +57,6 @@ static int plus(int n, const real *a, /*io*/ real *b) {
 int he_f_cahnman_ini(real K, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
-    Param param;
     Size size;
 
     MALLOC(1, &q);
@@ -69,13 +65,11 @@ int he_f_cahnman_ini(real K, He *he, T **pq) {
     ne = he_ne(he);
     nt = he_nt(he);
 
-    param.K = K;
+    q->K = K;
 
     size.nv = nv;
     size.nt = nt;
     size.ne = ne;
-
-    q->param = param;
     q->size = size;
 
     MALLOC(nv, &q->curva_mean);
@@ -235,13 +229,10 @@ static int compute_mean_curv(He *he, Size size,
     return HE_OK;
 }
 
-static int compute_energy(Param param, Size size,
+static int compute_energy(real K, Size size,
                           real *area, real *curva_mean, /**/ real *energy) {
     int v, nv;
-    real K, energy0;
-
-    K  = param.K;
-
+    real energy0;
     nv = size.nv;
     for (v = 0; v < nv; v++) {
         curva_mean[v] /= area[v];
@@ -254,12 +245,12 @@ static int compute_energy(Param param, Size size,
 real he_f_cahnman_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     Size size;
-    Param param;
+    real K;
     real eng, *area, *curva_mean, *energy, *theta, *len;
     int nv;
 
     size = q->size;
-    param = q->param;
+    K = q->K;
 
     area = q->area;
     curva_mean = q->curva_mean;
@@ -273,7 +264,7 @@ real he_f_cahnman_energy(T *q, He *he,
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
     compute_mean_curv(he, size, len, theta, /**/ curva_mean);
-    compute_energy(param, size, area, curva_mean, /**/ energy);
+    compute_energy(K, size, area, curva_mean, /**/ energy);
     eng = sum(nv, energy);
     return eng;
 }
