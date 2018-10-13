@@ -7,6 +7,7 @@
 #include "he/err.h"
 #include "he/he.h"
 #include "he/container.h"
+#include "he/util.h"
 
 #include "he/f/kantor.h"
 #include "he/f/juelicher.h"
@@ -26,11 +27,15 @@ static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_
 int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     const int n = sizeof(Name)/sizeof(Name[0]);
     int i;
-    for (i = 0; i < n; i++) {
-        MSG("bendings: %s", Name[i]);
-    }
+    for (i = 0; i < n; i++)
+        if (util_eq(name, Name[i]))
+            return Ini[i](param, he, pq);
 
-    return HE_OK;
+    MSG("unknown bending: '%s'", name);
+    MSG("possible values:");
+    for (i = 0; i < n; i++)
+        MSG("%s", Name[i]);
+    ERR(HE_INDEX, "");
 }
 
 typedef struct Vtable Vtable;
