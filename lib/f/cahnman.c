@@ -227,7 +227,7 @@ static int compute_mean_curv(He *he, Size size,
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
         get_ij(h, he, /**/ &i, &j);
-        cur = len[e]*theta[e]/4;
+        cur = len[e]*theta[e];
         curva_mean[i] += cur;
         curva_mean[j] += cur;
     }
@@ -240,7 +240,7 @@ static int compute_energy(real K, Size size,
     real energy0;
     nv = size.nv;
     for (v = 0; v < nv; v++)
-        energy[v] = 2*K*curva_mean[v]*curva_mean[v]/area[v];
+        energy[v] = 2*K*curva_mean[v]/4*curva_mean[v]/4/area[v];
     return HE_OK;
 }
 
@@ -287,7 +287,7 @@ static int force_edg(He *he, Size size,
         vec_get(k, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
         theta0 = theta[e];
-        coef = - (curva_mean[j]/area[j] + curva_mean[k]/area[k]) * theta0;
+        coef = - (curva_mean[j]/4/area[j] + curva_mean[k]/4/area[k]) * theta0;
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
@@ -314,7 +314,7 @@ static int force_curva_mean(He *he, Size size,
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
         len0 = vec_abs(u);
-        coef =  -(  (curva_mean[j]/area[j] ) + (curva_mean[k]/area[k] ) ) * len0 ;
+        coef =  -(  (curva_mean[j]/area[j]/4 ) + (curva_mean[k]/area[k]/4 ) ) * len0 ;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -341,15 +341,15 @@ static int force_area(He *he, Size size, /**/
         dtri_area(a, b, c, da, db, dc);
         coef1 = 2.0/3.0;
 
-        coef2 = curva_mean[i]*curva_mean[i]/area[i]/area[i];
+        coef2 = curva_mean[i]/4*curva_mean[i]/4/area[i]/area[i];
         coef = coef1 * coef2;
         vec_scalar_append(da, coef, i, fx, fy, fz);
 
-        coef2 = curva_mean[j]*curva_mean[j]/area[j]/area[j];
+        coef2 = curva_mean[j]/4*curva_mean[j]/4/area[j]/area[j];
         coef = coef1 * coef2;
         vec_scalar_append(db, coef, j, fx, fy, fz);
 
-        coef2 = curva_mean[k]*curva_mean[k]/area[k]/area[k];
+        coef2 = curva_mean[k]/4*curva_mean[k]/4/area[k]/area[k];
         coef = coef1 * coef2;
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
