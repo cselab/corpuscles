@@ -241,11 +241,8 @@ static int compute_energy(real K, Size size,
     int v, nv;
     real energy0;
     nv = size.nv;
-    for (v = 0; v < nv; v++) {
-        curva_mean[v] /= area[v];
-        energy0 = 2*(curva_mean[v])*(curva_mean[v])*area[v];
-        energy[v] = K*energy0;
-    }
+    for (v = 0; v < nv; v++)
+        energy[v] = 2*K*curva_mean[v]*curva_mean[v]/area[v];
     return HE_OK;
 }
 
@@ -361,17 +358,17 @@ static int force_area(He *he, Size size, /**/
         get3(xx, yy, zz, i, j, k, a, b, c);
 
         dtri_area(a, b, c, da, db, dc);
-        coef1 = 1.0/3.0;
+        coef1 = 1.0/24.0;
 
-        coef2 = lentheta[i]*lentheta[i]/8.0/area[i]/area[i];
+        coef2 = lentheta[i]*lentheta[i]/area[i]/area[i];
         coef = coef1 * coef2;
         vec_scalar_append(da, coef, i, fx, fy, fz);
 
-        coef2 = lentheta[j]*lentheta[j]/8.0/area[j]/area[j];
+        coef2 = lentheta[j]*lentheta[j]/area[j]/area[j];
         coef = coef1 * coef2;
         vec_scalar_append(db, coef, j, fx, fy, fz);
 
-        coef2 = lentheta[k]*lentheta[k]/8.0/area[k]/area[k];
+        coef2 = lentheta[k]*lentheta[k]/area[k]/area[k];
         coef = coef1 * coef2;
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
