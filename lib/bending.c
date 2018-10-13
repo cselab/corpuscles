@@ -19,13 +19,10 @@
 
 struct T {struct Vtable *vtable; };
 
-
 typedef struct Vtable Vtable;
 struct Vtable {
     int (*fin)(T*);
-    int (*force)(T*, He*,
-                 const real *x, const real *y, const real *z, /**/
-                 real *fx, real *fy, real *fz);
+    int (*force)(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
     real (*energy)(T*, He*, const real *x, const real *y, const real *z);
     int (*energy_ver)(T*, real**);
 };
