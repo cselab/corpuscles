@@ -33,7 +33,7 @@ static void zero(int n, real *a) {
 static real rVolume, Ka, Kga, Kv, Ke;
 static real A0, V0;
 static const char **argv;
-static char bending[4048];
+static char bending[4049];
 static const char *me = "min/visc";
 
 enum {KANTOR, GOMPPER, JUELICHER, MEYER};
