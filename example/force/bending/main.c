@@ -8,7 +8,7 @@
 #include <he/off.h>
 #include <he/memory.h>
 
-static real *fx, *fy, *fz, *xx, *yy, *zz;
+static real *fx, *fy, *fz, *xx, *yy, *zz, *eng;
 static int nv, nt;
 static He *he;
 static Bending *bending;
@@ -34,13 +34,13 @@ int main() {
     he_off_tri(off, &tri);
     he_tri_ini(nv, nt, tri, &he);
 
-    MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
-    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
+    MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz); 
+    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz); CALLOC(nv, &eng);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
 
-    FREE(xx); FREE(yy); FREE(zz);
+    FREE(xx); FREE(yy); FREE(zz); FREE(eng);
     FREE(fx); FREE(fy); FREE(fz);
 
     he_off_fin(off);
