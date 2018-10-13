@@ -37,7 +37,8 @@ struct T {
 
 static void zero(int n, real *a) {
     int i;
-    for (i = 0; i < n; i++) a[i] = 0;
+    for (i = 0; i < n; i++)
+        a[i] = 0;
 }
 
 static real sum(int n, real *a) {
