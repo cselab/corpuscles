@@ -10,6 +10,7 @@
 #include "he/dedg.h"
 #include "he/tri.h"
 #include "he/dtri.h"
+#include "he/sum.h"
 
 #include "he/f/cahnman.h"
 
@@ -42,8 +43,13 @@ static void zero(int n, real *a) {
 static real sum(int n, real *a) {
     int i;
     real s;
+    HeSum *sum;
+    he_sum_ini(&sum);
     s = 0;
-    for (i = 0; i < n; i++) s += a[i];
+    for (i = 0; i < n; i++)
+        he_sum_add(sum, a[i]);
+    s = he_sum_get(sum);
+    he_sum_fin(sum);
     return s;
 }
 
