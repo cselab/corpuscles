@@ -12,9 +12,31 @@
 
 #define SIZE (MAX_STRING_SIZE)
 
+static int count(const real *a[]) {
+    int i;
+    i = 0;
+    if (a == NULL) return 0;
+    while (a[i] != NULL && i < 999)
+        i += 1;
+    return i;
+}
+
+static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
+    int h, n, nn, i, j, k;
+    h = he_hdg_tri(he, t);
+    n = he_nxt(he, h);
+    nn = he_nxt(he, n);
+    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
+    *pi = i; *pj = j; *pk = k;
+    return HE_OK;
+}
+
 int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
                   const real *scalars[], const char *names[], /**/ FILE *f) {
-    int nv, nt, r, i;
+    int np, nv, nt, r, i, n_sc, i_sc;
+    int a, b, c;
+
+    np = 3;
     nv = he_nv(he);
     nt = he_nt(he);
 
@@ -27,6 +49,23 @@ int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
     for (i = 0; i < nv; i++)
         fprintf(f, FMT_OUT " " FMT_OUT " " FMT_OUT "\n",
                 x[i], y[i], z[i]);
+
+    fprintf(f, "POLYGONS %d %d\n", nt, (np + 1)*nt);
+    for (i = 0; i <  nt; i++) {
+        get_ijk(i, he, /**/ &a, &b, &c);
+        fprintf(f, "%d %d %d %d", np, a, b, c);
+    }
+
+    n_sc = count(scalars);
+    if (n_sc > 0) {
+        fprintf(f, "POINT_DATA %d\n", nv);
+        for (i_sc = 0; i_sc < n_sc; i_sc++) {
+            fprintf(f, "SCALARS %s double 1\n", names[i_sc]);
+            fprintf(f, "LOOKUP_TABLE default\n");
+            for (i = 0; i < nv; i++)
+                fprintf(f, FMT_OUT "\n", scalars[i_sc][i]);
+        }
+    }
     return HE_OK;
 }
 
