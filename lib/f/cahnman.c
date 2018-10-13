@@ -240,7 +240,7 @@ static int compute_energy(real K, Size size,
     real energy0;
     nv = size.nv;
     for (v = 0; v < nv; v++)
-        energy[v] = 2*K*curva_mean[v]/4*curva_mean[v]/4/area[v];
+        energy[v] = K*curva_mean[v]*curva_mean[v]/area[v]/8;
     return HE_OK;
 }
 
@@ -277,7 +277,7 @@ static int force_edg(He *he, Size size,
                      real *fx, real *fy, real *fz) {
     int h, e, j, k;
     int ne;
-    real theta0, coef;
+    real coef;
     real b[3], c[3], db[3], dc[3];
     ne = size.ne;
     for (e = 0; e < ne; e++) {
@@ -286,15 +286,14 @@ static int force_edg(He *he, Size size,
         vec_get(j, xx, yy, zz, /**/ b);
         vec_get(k, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
-        theta0 = theta[e];
-        coef = - (curva_mean[j]/4/area[j] + curva_mean[k]/4/area[k]) * theta0;
+        coef =  -(curva_mean[j]/area[j] + curva_mean[k]/area[k])*theta[e]/4;
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
     return HE_OK;
 }
 
-static int force_curva_mean(He *he, Size size,
+static int force_theta(He *he, Size size,
                           const real *curva_mean, const real *area,
                           const real *xx, const real *yy, const real *zz,
                           /**/ real *fx, real *fy, real *fz) {
@@ -314,7 +313,7 @@ static int force_curva_mean(He *he, Size size,
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
         len0 = vec_abs(u);
-        coef =  -(  (curva_mean[j]/area[j]/4 ) + (curva_mean[k]/area[k]/4 ) ) * len0 ;
+        coef =  -(curva_mean[j]/area[j] + curva_mean[k]/area[k])*len0/4;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -382,7 +381,7 @@ int he_f_cahnman_force(T *q, He *he,
     compute_mean_curv(he, size, len, theta, /**/ curva_mean);
 
     force_edg(he, size, theta,  curva_mean, area, x, y, z, /**/ fx, fy, fz);
-    force_curva_mean(he, size, curva_mean, area, x, y, z, /**/ fx, fy, fz);
+    force_theta(he, size, curva_mean, area, x, y, z, /**/ fx, fy, fz);
     force_area(he, size, curva_mean, area,  x, y, z, /**/ fx, fy, fz);
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
