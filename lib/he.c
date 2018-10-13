@@ -78,6 +78,15 @@ int he_ini(HeRead *r, T **pq) {
     return HE_OK;
 }
 
+int he_tri_ini(int nv, int nt, int *tri, T **pq) {
+    int status;
+    HeRead *read;
+    he_read_tri_ini(nv, nt, tri, &read);
+    status = he_ini(read, pq);
+    he_read_fin(read);
+    return status;
+}
+
 int he_fin(T *q) {
     if (q->magic != MAGIC)
         ERR(HE_MEMORY, "wrong fin() call");

@@ -11,7 +11,6 @@
 static real *fx, *fy, *fz, *xx, *yy, *zz;
 static int nv, nt;
 static He *he;
-static HeOff *off;
 static Bending *bending;
 
 static void main0() {
@@ -24,15 +23,18 @@ static void main0() {
 }
 
 int main() {
+    int *tri;
     const char path[] = "/dev/stdin";
-    he_file_ini(path, &he);
+    static HeOff *off;
     he_off_ini(path, &off);
 
-    nv = he_nv(he);
-    nt = he_nt(he);
+    nv = he_off_nv(off);
+    nt = he_off_nt(off);
+    he_off_tri(off, &tri);
+    he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
-    MALLOC(nv, &fx); MALLOC(nv, &fy); MALLOC(nv, &fz);
+    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
     he_off_xyz(off, xx, yy, zz);
     main0();

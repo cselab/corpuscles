@@ -13,6 +13,14 @@ int he_malloc(int size, /**/ void **pq) {
     return HE_OK;
 }
 
+int he_calloc(int size, /**/ void **pq) {
+    void *q;
+    q = calloc(1, size);
+    if (q == NULL) ERR(HE_MEMORY, "calloc failed for size=%ld", size);
+    *pq = q;
+    return HE_OK;
+}
+
 int he_free(void *q) {
     free(q);
     q = NULL;
