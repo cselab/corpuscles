@@ -17,10 +17,11 @@
 
 #define T Bending
 
-struct T {struct Bending_vtable *vtable; };
+struct T {struct Vtable *vtable; };
 
-typedef struct Bending_vtable Bending_vtable;
-struct Bending_vtable {
+
+typedef struct Vtable Vtable;
+struct Vtable {
     int (*fin)(T*);
     int (*force)(T*, He*,
                  const real *x, const real *y, const real *z, /**/
@@ -29,7 +30,6 @@ struct Bending_vtable {
     int (*energy_ver)(T*, real**);
 };
 
-int bending_ini(const char *name, BendingParam param, He *he, /**/ T **pq)  { return HE_OK; }
 int bending_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return q->vtable->force(q, he, x, y, z, fx, fy, fz);
 }
@@ -39,24 +39,26 @@ real bending_energy(T *q, He *he, const real *x, const real *y, const real *z) {
 int bending_energy_ver(T *q, /**/ real **e) { return q->vtable->energy_ver(q, e); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
-typedef struct BendingKantor BendingKantor;
-struct BendingKantor {T bending; HeFKantor *local; };
-static int method_kantor_fin(T *q) {
-    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+typedef struct Kantor Kantor;
+struct Kantor {T bending; HeFKantor *local; };
+static int kantor_fin(T *q) {
+    Kantor *b = CONTAINER_OF(q, Kantor, bending);
     return he_f_kantor_fin(b->local);
 }
-static int method_kantor_force(T *q, He *he, const real *x, const real *y, const real *z,
+static int kantor_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz) {
-    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+    Kantor *b = CONTAINER_OF(q, Kantor, bending);
     return he_f_kantor_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
-static real method_kantor_energy(T *q, He *he, const real *x, const real *y, const real *z) {
-    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+static real kantor_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+    Kantor *b = CONTAINER_OF(q, Kantor, bending);
     return he_f_kantor_energy(b->local, he, x, y, z);
 }
-static int method_kantor_energy_ver(T *q, /**/ real **e) {
-    BendingKantor *b = CONTAINER_OF(q, BendingKantor, bending);
+static int kantor_energy_ver(T *q, /**/ real **e) {
+    Kantor *b = CONTAINER_OF(q, Kantor, bending);
     return he_f_kantor_energy_ver(b->local, /**/ e);
 }
-static Bending_vtable BendingKantor_vtable = { method_kantor_fin, method_kantor_force, method_kantor_energy,
-                                               method_kantor_energy_ver};
+static Vtable kantor_vtable = { kantor_fin, kantor_force, kantor_energy, kantor_energy_ver};
+
+int bending_kantor_ini(const char*, BendingParam, He*, /**/ T**);
+
