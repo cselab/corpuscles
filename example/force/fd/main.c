@@ -19,7 +19,7 @@
 static const char **argv;
 static char name[4048];
 
-static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng;
+static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng, h;
 static int nv, nt, id;
 static He *he;
 static Bending *bending;
@@ -27,7 +27,7 @@ static BendingParam param;
 static const char *me = "bending";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/juelicher/meyer Kb C0 Kad DA0D < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/juelicher/meyer id h < OFF > PUNTO\n", me);
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
@@ -65,23 +65,26 @@ static void arg() {
         usg();
         exit(0);
     }
-    str(name);
-    scl(&param.Kb); scl(&param.C0); scl(&param.Kad); scl(&param.DA0D); num(&id);
+    str(name); num(&id); scl(&h);
 }
 
+static real vabs(real x, real y, real z) { return sqrt(x*x + y*y + z*z); }
 static void main0() {
     int i;
     real e, e1, r[3], f[3];
-    real eh, h, tmp;
+    real fx0, fy0, fz0;
+    real eh, tmp;
 
-    h = 1e-9;
+    param.Kb = 1;
+    param.C0 = param.Kad = param.DA0D = 0;
+
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
+
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
 
     MSG("energy: %g", e);
-    MSG("f0: %g %g %g", fx[10], fy[10], fz[10]);
 
     for (i = 0; i < nv; i++) {
         vec_get(i, xx, yy, zz, /**/ r);
@@ -95,10 +98,12 @@ static void main0() {
     puts(key);
     punto_fwrite(nv, queue, stdout);
 
-    tmp = xx[10]; xx[10] += h; eh = bending_energy(bending, he, xx, yy, zz); MSG("df: %g", (eh - e)/h); xx[10] = tmp;
-    tmp = yy[10]; yy[10] += h; eh = bending_energy(bending, he, xx, yy, zz); MSG("df: %g", (eh - e)/h); yy[10] = tmp;
-    tmp = zz[10]; zz[10] += h; eh = bending_energy(bending, he, xx, yy, zz); MSG("df: %g", (eh - e)/h); zz[10] = tmp;
-    
+    tmp = xx[id]; xx[id] += h; eh = bending_energy(bending, he, xx, yy, zz); fx0 = (eh - e)/h; xx[id] = tmp;
+    tmp = yy[id]; yy[id] += h; eh = bending_energy(bending, he, xx, yy, zz); fy0 = (eh - e)/h; yy[id] = tmp;
+    tmp = zz[id]; zz[id] += h; eh = bending_energy(bending, he, xx, yy, zz); fz0 = (eh - e)/h; zz[id] = tmp;
+    MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", fx0, fy0, fz0, vabs(fx0, fy0, fz0));
+    MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", fx[id], fy[id], fz[id], vabs(fx[id], fy[id], fz[id]));
+
     bending_fin(bending);
 }
 
