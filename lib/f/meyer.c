@@ -26,15 +26,17 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-    real Kb, C0, Kad, DA0D;
-    int *T0, *T1, *T2;
-    int *D0, *D1, *D2, *D3;
-    real *lbx, *lby, *lbz;
-    real *normx, *normy, *normz;
-    real *curva_mean, *curva_gauss;
-    real *energy, *area;
+  real Kb, C0, Kad, DA0D;
+  
+  int *T0, *T1, *T2;
+  int *D0, *D1, *D2, *D3;
 
-    int nv, ne, nt;
+  real *lbx, *lby, *lbz;
+  real *normx, *normy, *normz;
+  real *curva_mean, *curva_gauss;
+  real *energy, *area;
+  
+  int nv, ne, nt;
 };
 
 static void zero(int n, real *a) {
@@ -117,6 +119,7 @@ int he_f_meyer_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
 
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
+
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
     MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
     MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
@@ -237,7 +240,7 @@ static real compute_area(T *q, He *he,
     return area_tot_tri;
 
 }
-static int laplace(T *q, He *he,
+static int compute_laplace(T *q, He *he,
                    const real *x, const real *y, const real *z, /**/
                    real *lbx, real *lby, real *lbz) {
     enum {X, Y, Z};
@@ -429,7 +432,7 @@ real he_f_meyer_energy(T *q, He *he,
         T0[t] = i; T1[t] = j; T2[t] = k;
     }
     area_tot_tri = compute_area(q, he, x, y, z, area);
-    laplace(q, he, x, y, z, lbx, lby, lbz);
+    compute_laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, /**/ curva_mean);
 
@@ -503,7 +506,7 @@ int he_f_meyer_force(T *q, He *he,
     }
 
     area_tot_tri = compute_area(q, he, x, y, z, area);
-    laplace(q, he, x, y, z, lbx, lby, lbz);
+    compute_laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
