@@ -99,7 +99,7 @@ static void main0() {
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
         printf("%g %g\n", fx[i], f[X]);
-        fdx[i] = f[X];
+        fdx[i] = f[X] - fx[i];
     }
 
     const real *scalars[] = {fx, fy, fz, fdx, NULL};
@@ -125,8 +125,8 @@ int main(int __UNUSED argc, const char *v[]) {
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
     MALLOC(nv, &rr); MALLOC(nv, &fm);
-    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
-    MALLOC(nv, &fdx); MALLOC(nv, &fdy); CALLOC(nv, &fdz);
+    CALLOC(nv, &fx);  CALLOC(nv, &fy);  CALLOC(nv, &fz);
+    CALLOC(nv, &fdx); CALLOC(nv, &fdy); CALLOC(nv, &fdz);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
