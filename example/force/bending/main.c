@@ -34,6 +34,7 @@ int main() {
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
     MALLOC(nv, &fx); MALLOC(nv, &fy); MALLOC(nv, &fz);
 
+    he_off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
