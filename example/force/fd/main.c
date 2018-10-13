@@ -13,13 +13,14 @@
 #include <he/util.h>
 #include <he/macro.h>
 #include <he/vec.h>
-
+#include <he/vtk.h>
 #define FMT_IN   XE_REAL_IN
 
 static const char **argv;
 static char name[4048];
 
 static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng, h;
+static real *fdx, *fdy, *fdz;
 static int nv, nt, every;
 static He *he;
 static Bending *bending;
@@ -98,7 +99,12 @@ static void main0() {
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
         printf("%g %g\n", fx[i], f[X]);
+        fdx[i] = f[X];
     }
+
+    const real *scalars[] = {fx, fy, fz, fdx, NULL};
+    const char *names[]   = {"fx", "fy", "fz", "fdx", NULL};
+    he_vtk_write(he, xx, yy, zz, scalars, names, "q.vtk");
 
     bending_fin(bending);
 }
@@ -120,6 +126,7 @@ int main(int __UNUSED argc, const char *v[]) {
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
     MALLOC(nv, &rr); MALLOC(nv, &fm);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
+    MALLOC(nv, &fdx); MALLOC(nv, &fdy); CALLOC(nv, &fdz);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
@@ -127,6 +134,7 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(xx); FREE(yy); FREE(zz);
     FREE(rr); FREE(fm);
     FREE(fx); FREE(fy); FREE(fz);
+    FREE(fdx); FREE(fdy); FREE(fdz);
 
     he_off_fin(off);
     he_fin(he);
