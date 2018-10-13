@@ -1,2 +1,5 @@
 # nTEST: 0
 ./main gompper 1 2 3 4 < ../../../data/rbc/laplace/0.off  | uscale 1000 > q.out.txt
+
+# nTEST: 1
+./main cahnman 1 0 0 0 < ../../../data/rbc/laplace/0.off  | uscale 1000 > q.out.txt
