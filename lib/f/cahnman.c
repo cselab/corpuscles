@@ -400,12 +400,8 @@ int he_f_cahnman_force(T *q, He *he,
     compute_theta(he, size, x, y, z, /**/ theta);
     compute_lentheta(he, size, len, theta, /**/ lentheta);
 
-    force_edg(he, size,
-              theta,  lentheta, area,
-              x, y, z, /**/ fx, fy, fz);
-    force_lentheta(he, size,
-                   lentheta, area,
-                   x, y, z, /**/ fx, fy, fz);
+    force_edg(he, size, theta,  lentheta, area, x, y, z, /**/ fx, fy, fz);
+    force_lentheta(he, size, lentheta, area, x, y, z, /**/ fx, fy, fz);
     force_area(he, size, lentheta, area,  x, y, z, /**/ fx, fy, fz);
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
