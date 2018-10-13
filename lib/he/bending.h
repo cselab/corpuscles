@@ -13,8 +13,6 @@ int bending_force(T*, He*, const real *x, const real *y, const real *z, /**/ rea
 real bending_energy(T*, He*, const real *x, const real *y, const real *z);
 int bending_energy_ver(T*, /**/ real**);
 
-
-
 int bending_kantor_ini(BendingParam, He*, /**/ T**);
 int bending_gompper_ini(BendingParam, He*, /**/ T**);
 int bending_juelicher_ini(BendingParam, He*, /**/ T**);
