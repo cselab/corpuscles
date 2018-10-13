@@ -22,14 +22,14 @@ static void ini() {
     nt = he_off_nt(read);
     he_off_tri(read, &tri);
     MALLOC(nv, &x); MALLOC(nv, &y); MALLOC(nv, &z);
-    MALLOC(nv, &fx); MALLOC(nv, &fy); MALLOC(nv, &fz);
+    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
     he_off_xyz(read, x, y, z);
     he_tri_ini(nv, nt, tri, &he);
 
     param.Kb = 1;
     param.C0 = param.Kad = param.DA0D = 0;
-    bending_ini("gompper", param, he, &bending);
+    bending_ini("meyer", param, he, &bending);
 }
 static void fin() {
     bending_fin(bending);
