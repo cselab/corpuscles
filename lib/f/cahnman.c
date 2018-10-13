@@ -273,23 +273,6 @@ real he_f_cahnman_energy(T *q, He *he,
     return eng;
 }
 
-static int compute_lentheta(He *he, Size size, const real *len, const real *theta, /**/ real *lentheta) {
-    int nv, ne, e, h, i, j;
-    real lentheta0;
-    nv = size.nv;
-    ne = size.ne;
-    zero(nv, lentheta);
-    for (e = 0; e < ne; e++) {
-        h = hdg_edg(e);
-        get_ij(h, he, /**/ &i, &j);
-        lentheta0 = len[e]*theta[e];
-        lentheta[i] += lentheta0;
-        lentheta[j] += lentheta0;
-    }
-
-    return HE_OK;
-}
-
 static int force_edg(He *he, Size size,
                      const real *theta,  const real *lentheta, const real *area,
                      const real *xx, const real *yy, const real *zz, /**/
@@ -306,7 +289,7 @@ static int force_edg(He *he, Size size,
         vec_get(k, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
         theta0 = theta[e];
-        coef = - ( (lentheta[j]/area[j]/4) + (lentheta[k]/area[k]/4) ) * theta0;
+        coef = - (lentheta[j]/area[j] + lentheta[k]/area[k]) * theta0;
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
@@ -314,7 +297,7 @@ static int force_edg(He *he, Size size,
 }
 
 static int force_lentheta(He *he, Size size,
-                          const real *lentheta, const real *area,
+                          const real *curva_mean, const real *area,
                           const real *xx, const real *yy, const real *zz,
                           /**/ real *fx, real *fy, real *fz) {
     int h, e, ne;
@@ -333,7 +316,7 @@ static int force_lentheta(He *he, Size size,
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
         len0 = vec_abs(u);
-        coef =  -(  (lentheta[j]/area[j]/4 ) + (lentheta[k]/area[k]/4 ) ) * len0 ;
+        coef =  -(  (curva_mean[j]/area[j] ) + (curva_mean[k]/area[k] ) ) * len0 ;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -358,7 +341,7 @@ static int force_area(He *he, Size size, /**/
         get3(xx, yy, zz, i, j, k, a, b, c);
 
         dtri_area(a, b, c, da, db, dc);
-        coef1 = 1.0/24.0;
+        coef1 = 2.0/3.0;
 
         coef2 = lentheta[i]*lentheta[i]/area[i]/area[i];
         coef = coef1 * coef2;
@@ -382,7 +365,7 @@ int he_f_cahnman_force(T *q, He *he,
     Size size;
     int nv;
     real *area;
-    real *theta, *len, *lentheta;
+    real *theta, *len, *lentheta, *curva_mean;
     real *fx, *fy, *fz;
     size = q->size;
 
@@ -390,6 +373,7 @@ int he_f_cahnman_force(T *q, He *he,
     theta = q->theta;
     len = q->len;
     lentheta = q->lentheta;
+    curva_mean = q->curva_mean;
     fx = q->fx; fy = q->fy; fz = q->fz;
 
     nv = size.nv;
@@ -398,11 +382,11 @@ int he_f_cahnman_force(T *q, He *he,
     compute_area(he, size, x, y, z, /**/ area);
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
-    compute_lentheta(he, size, len, theta, /**/ lentheta);
+    compute_mean_curv(he, size, len, theta, /**/ curva_mean);
 
-    force_edg(he, size, theta,  lentheta, area, x, y, z, /**/ fx, fy, fz);
-    force_lentheta(he, size, lentheta, area, x, y, z, /**/ fx, fy, fz);
-    force_area(he, size, lentheta, area,  x, y, z, /**/ fx, fy, fz);
+    force_edg(he, size, theta,  curva_mean, area, x, y, z, /**/ fx, fy, fz);
+    force_lentheta(he, size, curva_mean, area, x, y, z, /**/ fx, fy, fz);
+    force_area(he, size, curva_mean, area,  x, y, z, /**/ fx, fy, fz);
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
