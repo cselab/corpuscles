@@ -53,13 +53,16 @@ int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
     fprintf(f, "POLYGONS %d %d\n", nt, (np + 1)*nt);
     for (i = 0; i <  nt; i++) {
         get_ijk(i, he, /**/ &a, &b, &c);
-        fprintf(f, "%d %d %d %d", np, a, b, c);
+        fprintf(f, "%d %d %d %d\n", np, a, b, c);
     }
 
     n_sc = count(scalars);
+    MSG("n_sc: %d", n_sc);
     if (n_sc > 0) {
         fprintf(f, "POINT_DATA %d\n", nv);
         for (i_sc = 0; i_sc < n_sc; i_sc++) {
+            if (names[i_sc] == NULL)
+                ERR(HE_IO, "not enough names: n_sc=%d, i_sc=%d", n_sc, i_sc);
             fprintf(f, "SCALARS %s double 1\n", names[i_sc]);
             fprintf(f, "LOOKUP_TABLE default\n");
             for (i = 0; i < nv; i++)
