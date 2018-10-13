@@ -82,6 +82,16 @@ int he_off_fin(T *q) {
 int he_off_nt(T *q) { return q->nt; };
 int he_off_nv(T *q) { return q->nv; };
 int he_off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
+int he_off_xyz(T *q, real *x, real *y, real *z) {
+    int i, nv;
+    real *ver;
+    ver = q->ver;
+    nv = q->nv;
+    for (i = 0; i < nv; i++) {
+        x[i] = *ver++; y[i] = *ver++; z[i] = *ver++;
+    }
+    return HE_OK;
+}
 int he_off_tri(T *q, int  **p) { *p = q->tri; return HE_OK; }
 
 int he_off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) {

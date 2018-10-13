@@ -11,6 +11,7 @@ int he_off_nt(T*);
 int he_off_nv(T*);
 int he_off_ver(T*, real**);
 int he_off_tri(T*, int**);
+int he_off_xyz(T*, /**/ real*, real*, real*);
 
 int he_off_fwrite(T*, const real*, const real*, const real*, FILE*);
 int he_off_write(T*, const real*, const real*, const real*, /**/ const char*);
