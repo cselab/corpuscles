@@ -17,6 +17,7 @@
 #define  ver(h)     he_ver(he, (h))
 #define  hdg_ver(v) he_hdg_ver(he, (v))
 #define  hdg_edg(e) he_hdg_edg(he, (e))
+#define  hdg_tri(e) he_hdg_tri(he, (e))
 #define  bnd(h)     he_bnd(he, (h))
 
 struct T {
