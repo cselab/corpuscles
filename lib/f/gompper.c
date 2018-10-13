@@ -21,13 +21,15 @@
 
 struct T {
   real Kb, C0, Kad, DA0D;
+
+  int *T0, *T1, *T2;
+  real *l2, *t;
+
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
   real *energy, *area;
-  
-  real *l2, *t;
-  
+ 
   int nv, ne, nt;
 };
 static void get_edg(int i, int j, const real *x, const real *y, const real *z, /**/ real r[3]) {
@@ -36,14 +38,23 @@ static void get_edg(int i, int j, const real *x, const real *y, const real *z, /
     vec_get(j, x, y, z, b);
     vec_minus(a, b, r);
 }
-static void get3(int i, int j, int k,
-                 const real *x, const real *y, const real *z,
-                 /**/ real a[3], real b[3], real c[3]) {
-    vec_get(i, x, y, z, a);
-    vec_get(j, x, y, z, b);
-    vec_get(k, x, y, z, c);
+static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
+    int h, n, nn, i, j, k;
+    h = hdg_tri(t);
+    n = nxt(h);
+    nn = nxt(n);
+    i = ver(h); j = ver(n); k = ver(nn);
+    *pi = i; *pj = j; *pk = k;
+    return HE_OK;
 }
-
+static int get3(const real *x, const real *y, const real *z,
+                int i, int j, int k,  /**/
+                real a[3], real b[3], real c[3]) {
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    return HE_OK;
+}
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
@@ -77,6 +88,8 @@ int he_f_gompper_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   MALLOC(nh, &q->l2);
   MALLOC(nh, &q->t);
 
+  MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
+
   MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
   MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
   MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
@@ -91,6 +104,7 @@ int he_f_gompper_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   return HE_OK;
 }
 int he_f_gompper_fin(T *q) {
+  FREE(q->T0); FREE(q->T1); FREE(q->T2);
     FREE(q->t); FREE(q->l2);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
@@ -140,7 +154,7 @@ static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/
         H[h] = vec_dot(r, r);
     }
 }
-static void compute_t(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
+static void compute_cot(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
     int nh, h, n, nn;
     int i, j, k;
     real a[3], b[3], c[3], cot;
@@ -149,13 +163,12 @@ static void compute_t(He *he, const real *x, const real *y, const real *z, /**/ 
     for (h = 0; h < nh; h++) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
-        get3(i, j, k, x, y, z, /**/ a, b, c);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
         cot = tri_cot(b, c, a);
         H[h] += cot;
         if (!bnd(h)) H[flp(h)] += cot;
     }
 }
-
 static void compute_area(He *he, const real *l2, const real *t, /**/ real *V) {
     int nv, nh, h, i;
     nv = he_nv(he);
@@ -166,7 +179,6 @@ static void compute_area(He *he, const real *l2, const real *t, /**/ real *V) {
         V[i] += t[h]*l2[h]/8;
     }
 }
-
 static void compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
     int h, n, nv, nh, i, j;
     nv = he_nv(he);
@@ -180,7 +192,67 @@ static void compute_laplace(He *he, const real *V0, const real *t, const real *a
     for (i = 0; i < nv; i++)
         V1[i] /= area[i];
 }
+static int compute_norm(T *q, He *he,
+                        const real *x, const real *y, const real *z, /**/
+                        real *normx, real *normy, real *normz) {
+    enum {X, Y, Z};
+    int t, nt;
+    int i, j, k, nv;
+    real a[3], b[3], c[3], u[3], u0[3];
+    int *T0, *T1, *T2;
+    real theta_a, theta_b, theta_c;
 
+    nt = he_nt(he);
+    nv = he_nv(he);
+    T0 = q->T0;
+    T1 = q->T1;
+    T2 = q->T2;
+
+    zero(nv, normx); zero(nv, normy); zero(nv, normz);
+    for ( t = 0; t < nt; t++ ) {
+        i = T0[t]; j = T1[t]; k = T2[t];
+        get3(x, y, z, i, j, k, a, b, c);
+        theta_a = tri_angle(c, a, b);
+        theta_b = tri_angle(a, b, c);
+        theta_c = tri_angle(b, c, a);
+        tri_normal(a, b, c, u);
+        vec_scalar_append(u, theta_a, i, normx, normy, normz);
+        vec_scalar_append(u, theta_b, j, normx, normy, normz);
+        vec_scalar_append(u, theta_c, k, normx, normy, normz);
+    }
+
+    for (i = 0; i < nv; i++) {
+        vec_get(i, normx, normy, normz, /**/ u);
+        vec_norm(u, /**/ u0);
+        vec_set(u0, i, /**/ normx, normy, normz);
+    }
+    return HE_OK;
+}
+static int compute_curva_mean(T *q, He *he, /**/ real *curva_mean) {
+    enum {X, Y, Z};
+    int i, nv;
+    real *lbx, *lby, *lbz;
+    real *normx, *normy, *normz;
+    real u[3], v[3];
+
+    nv  = he_nv(he);
+    lbx = q->lbx;
+    lby = q->lby;
+    lbz = q->lbz;
+
+    normx = q->normx;
+    normy = q->normy;
+    normz = q->normz;
+
+    for ( i = 0; i < nv; i++ ) {
+        vec_get(i, lbx, lby, lbz, u);
+        vec_get(i, normx, normy, normz, v);
+        curva_mean[i] = vec_dot(u, v)/2;
+    }
+
+    return HE_OK;
+
+}
 static void compute_force_t(real Kb, He *he, const real *x, const real *y, const real *z, const real *t, const real *lbx, const real *lby, const real *lbz, /**/ real *fx, real *fy, real *fz) {
     int nh;
     int h, n;
@@ -199,7 +271,6 @@ static void compute_force_t(real Kb, He *he, const real *x, const real *y, const
         vec_substr(df, j, /**/ fx, fy, fz);
     }
 }
-
 static void compute_force_dt(real Kb, He *he, const real *x, const real *y, const real *z,
                              const real *lbx, const real *lby, const real *lbz,
                              /**/ real *fx, real *fy, real *fz) {
@@ -213,7 +284,7 @@ static void compute_force_dt(real Kb, He *he, const real *x, const real *y, cons
     for (h = 0; h < nh; h++) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
-        get3(i, j, k, x, y, z,    a, b, c);
+        get3(x, y, z, i, j, k,  a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
         get_edg(i, k, x, y, z, /**/ r);
         vec_get(k, lbx, lby, lbz, /**/ lk);
@@ -231,20 +302,38 @@ static void compute_force_dt(real Kb, He *he, const real *x, const real *y, cons
 int he_f_gompper_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
-    int nv;
-    real Kb;
-    real *l2, *t, *area, *lbx, *lby, *lbz;
+  int nv, nt;
+  int i, j, k, l;
+  int *T0, *T1, *T2;
 
-    area = q->area;
-    l2 = q->l2; t = q->t;
-    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+  real Kb;
+  real *l2, *t;
+  real *lbx, *lby, *lbz;
+  real *normx, *normy, *normz;
+  real *curva_mean;
+  real *area;
 
-    nv = q->nv;
-    Kb  = q->Kb;
+
+  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  area = q->area;
+  l2 = q->l2; t = q->t;
+  lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+  normx = q->normx; normy = q->normy; normz = q->normz;
+  curva_mean  = q->curva_mean;
+
+  nv = q->nv;
+  Kb  = q->Kb;
+  
+    nt = he_nt(he);
+    for (l = 0; l < nt; l++) {
+      get_ijk(l, he, /**/ &i, &j, &k);
+      T0[l] = i; T1[l] = j; T2[l] = k;
+    }
+
     if (he_nv(he) != nv)
         ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
     compute_l2(he, x, y, z, /**/ l2);
-    compute_t(he, x, y, z, /**/ t);
+    compute_cot(he, x, y, z, /**/ t);
     compute_area(he, l2, t, /**/ area);
     compute_laplace(he, x, t, area, /**/ lbx);
     compute_laplace(he, y, t, area, /**/ lby);
@@ -254,41 +343,72 @@ int he_f_gompper_force(T *q, He *he,
                     /**/ fx, fy, fz);
     compute_force_dt(Kb, he, x, y, z, lbx, lby, lbz,
                      /**/ fx, fy, fz);
+
+    /*so far this is not need*/
+    //compute_norm(q, he, x, y, z, normx, normy, normz);
+    //compute_curva_mean(q, he, curva_mean);
+
     return HE_OK;
 }
 
-void compute_energy(int n, const real *area, const real *lbx, const real *lby, const real *lbz, /**/ real *energy) {
-    int i;
-    real area0, curv_sq, l[3];
-    for (i = 0; i < n; i++) {
-        area0 = area[i];
-        vec_get(i, lbx, lby, lbz, /**/ l);
-        curv_sq = vec_dot(l, l);
-        energy[i] = curv_sq * area0;
-    }
+void compute_energy(T *q, He *he, const real *area, const real *lbx, const real *lby, const real *lbz, /**/ real *energy) {
+  int i, nv;
+  real Kb;
+  real area0, curv_sq, l[3];
+
+  Kb = q->Kb;
+  nv = q->nv;
+  
+  for (i = 0; i < nv; i++) {
+    area0 = area[i];
+    vec_get(i, lbx, lby, lbz, /**/ l);
+    curv_sq = vec_dot(l, l);
+    energy[i] = 2* Kb * curv_sq * area0 / 4;
+  }
 }
 
 real he_f_gompper_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
-    int nv;
-    real Kb;
-    real *l2, *t, *area, *energy, *lbx, *lby, *lbz;
+  int nv, nt;
+  int i, j, k, l;
+  int *T0, *T1, *T2;
+  
+  real Kb;
+  real *l2, *t;
+  real *lbx, *lby, *lbz;
+  real *normx, *normy, *normz;
+  real *curva_mean;
+  real *energy, *area;
 
-    area = q->area; energy = q->energy;
-    l2 = q->l2; t = q->t;
-    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  l2 = q->l2; t = q->t;
+  lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+  normx = q->normx; normy = q->normy; normz = q->normz;
+  curva_mean  = q->curva_mean;
+  area = q->area; energy = q->energy;
     nv = q->nv;
     Kb = q->Kb;
 
+    nt = he_nt(he);
+    for (l = 0; l < nt; l++) {
+      get_ijk(l, he, /**/ &i, &j, &k);
+      T0[l] = i; T1[l] = j; T2[l] = k;
+    }
+
     if (he_nv(he) != nv)
         ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
+    
     compute_l2(he, x, y, z, /**/ l2);
-    compute_t(he, x, y, z, /**/ t);
+    compute_cot(he, x, y, z, /**/ t);
     compute_area(he, l2, t, /**/ area);
     compute_laplace(he, x, t, area, /**/ lbx);
     compute_laplace(he, y, t, area, /**/ lby);
     compute_laplace(he, z, t, area, /**/ lbz);
-    compute_energy(nv, area, lbx, lby, lbz, /**/ energy);
+    compute_energy(q, he, area, lbx, lby, lbz, /**/ energy);
 
-    return 2*Kb*sum(nv, energy);
+    /*so far this is not need*/
+    compute_norm(q, he, x, y, z, normx, normy, normz);
+    compute_curva_mean(q, he, curva_mean);
+
+    return sum(nv, energy);
 }

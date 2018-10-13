@@ -110,10 +110,10 @@ static void main0() {
     RZERO(NV, &fm);
     RZERO(NV, &fmad);
     force();
-    MSG("FX[0]: %g", FX[0]);
+    MSGR("FX[0]: %g", FX[0]);
     vabs(NV, FX, FY, FZ, /**/ fm);
-    MSG("energy: %g", e0);
-    MSG("force : %g %g", FX[0], FX[NV-1]);
+    MSGR("energy: %g", e0);
+    MSGR("force : %g %g", FX[0], FX[NV-1]);
 
     printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 fm; 8 area; 9 curva_mean \n");
     real *queue[] = {ZZ, RR, eng, FX, FY, FZ, fm, area, curva_mean, NULL};

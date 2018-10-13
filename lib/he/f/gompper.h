@@ -13,10 +13,8 @@ real he_f_gompper_energy(T*, He*, const real *x, const real *y, const real *z);
 
 
 int he_f_gompper_area_ver(T*, /**/ real**);
-int he_f_gompper_laplace_ver(T*, /**/
-			   /**/ real**, real**, real**);
-int he_f_gompper_norm_ver(T*, 
-			/**/ real**, real**, real**);
+int he_f_gompper_laplace_ver(T*, /**/ /**/ real**, real**, real**);
+int he_f_gompper_norm_ver(T*, /**/ real**, real**, real**);
 int he_f_gompper_curva_mean_ver(T*, /**/ real**);
 int he_f_gompper_curva_gauss_ver(T*, /**/ real**);
 int he_f_gompper_energy_ver(T*, /**/ real**);
