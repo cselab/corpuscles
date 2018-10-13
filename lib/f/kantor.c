@@ -15,18 +15,23 @@
 
 struct T {
     int ne;
-    real *acos, *eng;
+    real *acos, *energy;
     real K;
 };
 
-static real compute_energy(He *he, const real *acos, /**/ real *eng) {
-    int n, m, h, f;
+static real compute_energy(He *he, const real *acos, /**/ real *energy) {
+    int ne, nv, m, h, f;
     int i, j;
-    real v;
+    real e, e0;
 
-    n = he_ne(he);
-    v = 0;
-    for (m = 0; m < n; m++) {
+    ne = he_ne(he);
+    nv = he_nv(he);
+
+    for (m = 0; m < nv; m++)
+        energy[m] = 0;
+
+    e = 0;
+    for (m = 0; m < ne; m++) {
         h = he_hdg_edg(he, m);
         f = he_flp(he, h);
 
@@ -34,9 +39,14 @@ static real compute_energy(He *he, const real *acos, /**/ real *eng) {
         j = he_ver(he, f);
 
         if (he_bnd(he, h)) continue;
-        v += 1 - acos[m];
+        e0 = 1 - acos[m];
+
+        energy[i] += e0/2;
+        energy[j] += e0/2;
+
+        e += e0;
     }
-    return v;
+    return e;
 }
 int he_f_kantor_ini(real K, He *he, T **pq) {
     T *q;
@@ -46,7 +56,7 @@ int he_f_kantor_ini(real K, He *he, T **pq) {
     nv = he_nv(he);
 
     MALLOC(ne, &q->acos);
-    MALLOC(nv, &q->eng);
+    MALLOC(nv, &q->energy);
 
     q->ne = ne;
     q->K = K;
@@ -56,7 +66,7 @@ int he_f_kantor_ini(real K, He *he, T **pq) {
 }
 
 int he_f_kantor_fin(T *q) {
-    FREE(q->acos); FREE(q->eng); FREE(q);
+    FREE(q->acos); FREE(q->energy); FREE(q);
     return HE_OK;
 }
 
@@ -148,18 +158,20 @@ int he_f_kantor_force(T *q, He *he,
 real he_f_kantor_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int ne;
-    real *acos, *eng, K;
+    real *acos, *energy, K;
     ne = q->ne;
     acos = q->acos;
-    eng = q->eng;
+    energy = q->energy;
     K  = q->K;
 
     if (he_ne(he) != ne)
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), ne);
     compute_cos(he, x, y, z, /**/ acos);
-    return 2*K*compute_energy(he, acos, /**/ eng);
+    return 2*K*compute_energy(he, acos, /**/ energy);
 }
 
-int he_f_kantor_energy_ver(__UNUSED T *q, /**/ __UNUSED real **pe) {
-    ERR(HE_NOT, "he_f_kantor_energy_ver is not implimented");
+
+int he_f_kantor_energy_ver(T *q, /**/ real**pa) {
+    *pa = q->energy;
+    return HE_OK;
 }
