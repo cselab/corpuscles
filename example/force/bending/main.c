@@ -12,6 +12,7 @@
 #include <he/err.h>
 #include <he/util.h>
 #include <he/macro.h>
+#include <he/vec.h>
 
 #define FMT_IN   XE_REAL_IN
 
@@ -59,15 +60,27 @@ static void arg() {
 }
 
 static void main0() {
-    real e;
-    real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
+    int i;
+    real e, r[3], f[3];
+
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
+
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
-    puts("r x y z fm fx fy fz eng");
+
+    for (i = 0; i < nv; i++) {
+        vec_get(i, xx, yy, zz, /**/ r);
+        vec_get(i, fx, fy, fz, /**/ f);
+        rr[i] = vec_cylindrical_r(r);
+        fm[i] = vec_abs(f);
+    }
+
+    char *key = "r x y z fm fx fy fz eng";
+    real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
+    puts(key);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);
 }
@@ -78,7 +91,7 @@ int main(int __UNUSED argc, const char *v[]) {
     static HeOff *off;
     argv = v; argv++;
     arg();
-    
+
     he_off_ini(path, &off);
 
     nv = he_off_nv(off);
