@@ -25,13 +25,15 @@ static const char *me = "min/kantor";
 enum {KANTOR, GOMPPER};
 static int btype;
 static int f_bending_ini(const char *bending, real K) {
+    real C0, Kad, DA0D;
     if (util_eq(bending, "kantor")) {
         btype = KANTOR;
         f_kantor_ini(K);
     }
     else if (util_eq(bending, "gompper")) {
         btype = GOMPPER;
-        f_gompper_ini(K);
+        C0 = Kad = DA0D = 0;
+        f_gompper_ini(K, C0, Kad, DA0D);
     } else
         ER("unknown bending type: %s", bending);
     return HE_OK;
