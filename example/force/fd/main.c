@@ -20,7 +20,7 @@ static const char **argv;
 static char name[4048];
 
 static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng, h;
-static int nv, nt, id;
+static int nv, nt;
 static He *he;
 static Bending *bending;
 static BendingParam param;
@@ -65,7 +65,7 @@ static void arg() {
         usg();
         exit(0);
     }
-    str(name); scl(&h); num(&id);
+    str(name); scl(&h);
 }
 
 static real vabs(real x, real y, real z) { return sqrt(x*x + y*y + z*z); }
@@ -83,7 +83,6 @@ static void main0() {
     int i;
     real e, e1, r[3], f[3];
     real eh, tmp;
-
     param.Kb = 1;
     param.C0 = param.Kad = param.DA0D = 0;
 
@@ -94,26 +93,11 @@ static void main0() {
     bending_energy_ver(bending, /**/ &eng);
 
     MSG("energy: %g", e);
-
-    for (i = 0; i < nv; i++) {
-        vec_get(i, xx, yy, zz, /**/ r);
-        vec_get(i, fx, fy, fz, /**/ f);
-        rr[i] = vec_cylindrical_r(r);
-        fm[i] = vec_abs(f);
-    }
-
-    char *key = "r x y z fm fx fy fz eng";
-    real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
-    //puts(key);
-    //punto_fwrite(nv, queue, stdout);
-
     for (i = 0; i < nv; i++) {
         diff(i, /**/ f);
-        //MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", fx[i], fy[i], fz[i], vabs(fx[id], fy[id], fz[id]));    
-        //MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", f[X], f[Y], f[Z], vabs(f[X], f[Y], f[Z]));
         printf("%g %g\n", fx[i], f[X]);
     }
-    
+
     bending_fin(bending);
 }
 
