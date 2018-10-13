@@ -12,6 +12,6 @@ int bending_energy_ver(T*, /**/ real**);
 int bending_fin(T*);
 
 
-int bending_kantor_ini(const char*, BendingParam, He*, /**/ T**);
+int bending_kantor_ini(BendingParam, He*, /**/ T**);
 
 #undef T
