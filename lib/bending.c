@@ -82,7 +82,6 @@ static int kantor_energy_ver(T *q, /**/ real **e) {
 static Vtable kantor_vtable = { kantor_fin, kantor_force, kantor_energy, kantor_energy_ver};
 int bending_kantor_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb;
-    int status;
     Kantor *q;
     Kb = param.Kb;
     MALLOC(1, &q);
@@ -119,7 +118,6 @@ static int gompper_energy_ver(T *q, /**/ real **e) {
 static Vtable gompper_vtable = { gompper_fin, gompper_force, gompper_energy, gompper_energy_ver};
 int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
-    int status;
     Gompper *q;
     Kb  = param.Kb;
     C0 = param.C0;
@@ -160,7 +158,6 @@ static int juelicher_energy_ver(T *q, /**/ real **e) {
 static Vtable juelicher_vtable = { juelicher_fin, juelicher_force, juelicher_energy, juelicher_energy_ver};
 int bending_juelicher_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad;
-    int status;
     Juelicher *q;
     Kb  = param.Kb;
     C0 = param.C0;
@@ -200,7 +197,6 @@ static int meyer_energy_ver(T *q, /**/ real **e) {
 static Vtable meyer_vtable = { meyer_fin, meyer_force, meyer_energy, meyer_energy_ver};
 int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
-    int status;
     Meyer *q;
     Kb  = param.Kb;
     C0 = param.C0;

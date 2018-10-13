@@ -12,13 +12,14 @@
 #include <he/err.h>
 #include <he/util.h>
 #include <he/macro.h>
+#include <he/vec.h>
 
 #define FMT_IN   XE_REAL_IN
 
 static const char **argv;
 static char name[4048];
 
-static real *fx, *fy, *fz, *xx, *yy, *zz, *eng;
+static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng;
 static int nv, nt;
 static He *he;
 static Bending *bending;
@@ -59,13 +60,27 @@ static void arg() {
 }
 
 static void main0() {
-    real e;
-    real *queue[] = {xx, yy, zz, fx, fy, fz, eng, NULL};
+    int i;
+    real e, r[3], f[3];
+
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
+
     MSG("energy: %g", e);
+    MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
+
+    for (i = 0; i < nv; i++) {
+        vec_get(i, xx, yy, zz, /**/ r);
+        vec_get(i, fx, fy, fz, /**/ f);
+        rr[i] = vec_cylindrical_r(r);
+        fm[i] = vec_abs(f);
+    }
+
+    char *key = "r x y z fm fx fy fz eng";
+    real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
+    puts(key);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);
 }
@@ -76,7 +91,7 @@ int main(int __UNUSED argc, const char *v[]) {
     static HeOff *off;
     argv = v; argv++;
     arg();
-    
+
     he_off_ini(path, &off);
 
     nv = he_off_nv(off);
@@ -84,13 +99,15 @@ int main(int __UNUSED argc, const char *v[]) {
     he_off_tri(off, &tri);
     he_tri_ini(nv, nt, tri, &he);
 
-    MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz); 
+    MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
+    MALLOC(nv, &rr); MALLOC(nv, &fm);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
+    FREE(rr); FREE(fm);
     FREE(fx); FREE(fy); FREE(fz);
 
     he_off_fin(off);

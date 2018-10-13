@@ -2,6 +2,7 @@
 #include <math.h>
 
 #include "he/memory.h"
+#include "he/err.h"
 
 #include "real.h"
 
@@ -15,9 +16,10 @@ int he_sum_ini(/**/ T **pq) {
     MALLOC(1, &q);
     q->c = q->sum = 0;
     *pq = q;
+    return HE_OK;
 }
 
-int he_sum_fin(T *q) { FREE(q); }
+int he_sum_fin(T *q) { FREE(q); return HE_OK; }
 int he_sum_add(T *q, real input) {
     real t;
     real y, c, sum;
@@ -29,6 +31,7 @@ int he_sum_add(T *q, real input) {
     sum = t;
 
     q->y = y; q->c = c; q->sum = sum;
+    return HE_OK;
 }
 
 real he_sum_get(const T *q) { return q->sum; }

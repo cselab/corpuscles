@@ -5,4 +5,4 @@ H = he/area.h he/bending.h he/ddih.h he/dedg.h he/dih.h he/equiangulate.h \
     he/hash.h he/he.h he/macro.h he/sum.h he/container.h he/memory.h \
     he/off.h he/prec/d/real.h he/prec/s/real.h he/punto.h \
     he/read.h he/real.h he/ten.h he/tri.h \
-    he/util.h he/vec.h he/volume.h he/x.h
+    he/util.h he/vec.h he/volume.h he/vtk.h he/x.h

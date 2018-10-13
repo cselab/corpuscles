@@ -17,6 +17,7 @@
 #define  ver(h)     he_ver(he, (h))
 #define  hdg_ver(v) he_hdg_ver(he, (v))
 #define  hdg_edg(e) he_hdg_edg(he, (e))
+#define  hdg_tri(e) he_hdg_tri(he, (e))
 #define  bnd(h)     he_bnd(he, (h))
 
 struct T {
@@ -309,8 +310,6 @@ int he_f_gompper_force(T *q, He *he,
   real Kb;
   real *l2, *t;
   real *lbx, *lby, *lbz;
-  real *normx, *normy, *normz;
-  real *curva_mean;
   real *area;
 
 
@@ -318,8 +317,6 @@ int he_f_gompper_force(T *q, He *he,
   area = q->area;
   l2 = q->l2; t = q->t;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
-  normx = q->normx; normy = q->normy; normz = q->normz;
-  curva_mean  = q->curva_mean;
 
   nv = q->nv;
   Kb  = q->Kb;
@@ -351,7 +348,7 @@ int he_f_gompper_force(T *q, He *he,
     return HE_OK;
 }
 
-void compute_energy(T *q, He *he, const real *area, const real *lbx, const real *lby, const real *lbz, /**/ real *energy) {
+void compute_energy(T *q, const real *area, const real *lbx, const real *lby, const real *lbz, /**/ real *energy) {
   int i, nv;
   real Kb;
   real area0, curv_sq, l[3];
@@ -373,7 +370,6 @@ real he_f_gompper_energy(T *q, He *he,
   int i, j, k, l;
   int *T0, *T1, *T2;
   
-  real Kb;
   real *l2, *t;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
@@ -387,8 +383,6 @@ real he_f_gompper_energy(T *q, He *he,
   curva_mean  = q->curva_mean;
   area = q->area; energy = q->energy;
     nv = q->nv;
-    Kb = q->Kb;
-
     nt = he_nt(he);
     for (l = 0; l < nt; l++) {
       get_ijk(l, he, /**/ &i, &j, &k);
@@ -404,7 +398,7 @@ real he_f_gompper_energy(T *q, He *he,
     compute_laplace(he, x, t, area, /**/ lbx);
     compute_laplace(he, y, t, area, /**/ lby);
     compute_laplace(he, z, t, area, /**/ lbz);
-    compute_energy(q, he, area, lbx, lby, lbz, /**/ energy);
+    compute_energy(q, area, lbx, lby, lbz, /**/ energy);
 
     /*so far this is not need*/
     compute_norm(q, he, x, y, z, normx, normy, normz);

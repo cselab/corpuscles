@@ -25,13 +25,15 @@ static const char *me = "min/kantor";
 enum {KANTOR, GOMPPER};
 static int btype;
 static int f_bending_ini(const char *bending, real K) {
+    real C0, Kad, DA0D;
     if (util_eq(bending, "kantor")) {
         btype = KANTOR;
         f_kantor_ini(K);
     }
     else if (util_eq(bending, "gompper")) {
         btype = GOMPPER;
-        f_gompper_ini(K);
+        C0 = Kad = DA0D = 0;
+        f_gompper_ini(K, C0, Kad, DA0D);
     } else
         ER("unknown bending type: %s", bending);
     return HE_OK;
@@ -64,7 +66,7 @@ static real f_bending_force(const real *x, const real *y, const real *z,
 
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper rVolume Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -147,7 +149,7 @@ int main(int __UNUSED argc, const char *v[]) {
     a0 = A0/NT;
     V0 = target_volume(A0, rVolume);
     MSG("v0/volume(): %g", V0/volume());
-    MSG("area, volume, edg: %g %g %g", A0, V0);
+    MSG("area, volume: %g %g", A0, V0);
 
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
