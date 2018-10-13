@@ -24,10 +24,10 @@ static int nv, nt;
 static He *he;
 static Bending *bending;
 static BendingParam param;
-static const char *me = "bending";
+static const char *me = "fd";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/juelicher/meyer step  < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/juelicher/meyer step  < OFF > forces\n", me);
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
