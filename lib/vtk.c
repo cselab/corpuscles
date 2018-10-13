@@ -57,7 +57,6 @@ int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
     }
 
     n_sc = count(scalars);
-    MSG("n_sc: %d", n_sc);
     if (n_sc > 0) {
         fprintf(f, "POINT_DATA %d\n", nv);
         for (i_sc = 0; i_sc < n_sc; i_sc++) {
