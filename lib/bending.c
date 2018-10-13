@@ -19,6 +19,10 @@
 
 struct T {struct Vtable *vtable; };
 
+static const char *Name[] = {"kantor", "gompper", "juelicher", "meyer", NULL};
+typedef int (*TypeIni)(BendingParam, He*, T**);
+static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_juelicher_ini, bending_meyer_ini, NULL};
+
 typedef struct Vtable Vtable;
 struct Vtable {
     int (*fin)(T*);
