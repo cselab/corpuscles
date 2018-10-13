@@ -8,7 +8,7 @@
 #include <he/off.h>
 #include <he/memory.h>
 
-static real *fx, *fy, *fz, *xx, *yy, *zz;
+static real *fx, *fy, *fz, *xx, *yy, *zz, *eng;
 static int nv, nt;
 static He *he;
 static Bending *bending;
@@ -16,8 +16,9 @@ static Bending *bending;
 static void main0() {
     BendingParam param;
     real *queue[] = {xx, yy, zz, fx, fy, fz, NULL};
-    param.K = 1;
-    bending_kantor_ini(param, he,  &bending);
+    param.Kb = 1;
+    bending_ini("gompper", param, he,  &bending);
+    bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);
 }
@@ -33,13 +34,13 @@ int main() {
     he_off_tri(off, &tri);
     he_tri_ini(nv, nt, tri, &he);
 
-    MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
-    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
+    MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz); 
+    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz); CALLOC(nv, &eng);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
 
-    FREE(xx); FREE(yy); FREE(zz);
+    FREE(xx); FREE(yy); FREE(zz); FREE(eng);
     FREE(fx); FREE(fy); FREE(fz);
 
     he_off_fin(off);

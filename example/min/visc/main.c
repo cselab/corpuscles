@@ -99,15 +99,15 @@ static void usg() {
     exit(0);
 }
 
-int eq(const char *a, const char *b) { return util_eq(a, b); }
-int scl(/**/ real *p) {
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
+static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
     return HE_OK;
 }
-int str(/**/ char *p) {
+static int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
     strncpy(p, *argv, 4048);
     argv++;
