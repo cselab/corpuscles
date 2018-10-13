@@ -65,14 +65,23 @@ static void arg() {
         usg();
         exit(0);
     }
-    str(name); num(&id); scl(&h);
+    str(name); scl(&h); num(&id);
 }
 
 static real vabs(real x, real y, real z) { return sqrt(x*x + y*y + z*z); }
+static int diff(int id, /**/ real f[3]) {
+    real tmp, e, eh;
+    enum {X, Y, Z};
+    e = bending_energy(bending, he, xx, yy, zz);
+    tmp = xx[id]; xx[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[X] = (eh - e)/h; xx[id] = tmp;
+    tmp = yy[id]; yy[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Y] = (eh - e)/h; yy[id] = tmp;
+    tmp = zz[id]; zz[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Z] = (eh - e)/h; zz[id] = tmp;
+}
+
 static void main0() {
+    enum {X, Y, Z};
     int i;
     real e, e1, r[3], f[3];
-    real fx0, fy0, fz0;
     real eh, tmp;
 
     param.Kb = 1;
@@ -95,15 +104,16 @@ static void main0() {
 
     char *key = "r x y z fm fx fy fz eng";
     real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
-    puts(key);
-    punto_fwrite(nv, queue, stdout);
+    //puts(key);
+    //punto_fwrite(nv, queue, stdout);
 
-    tmp = xx[id]; xx[id] += h; eh = bending_energy(bending, he, xx, yy, zz); fx0 = (eh - e)/h; xx[id] = tmp;
-    tmp = yy[id]; yy[id] += h; eh = bending_energy(bending, he, xx, yy, zz); fy0 = (eh - e)/h; yy[id] = tmp;
-    tmp = zz[id]; zz[id] += h; eh = bending_energy(bending, he, xx, yy, zz); fz0 = (eh - e)/h; zz[id] = tmp;
-    MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", fx0, fy0, fz0, vabs(fx0, fy0, fz0));
-    MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", fx[id], fy[id], fz[id], vabs(fx[id], fy[id], fz[id]));
-
+    for (i = 0; i < nv; i++) {
+        diff(i, /**/ f);
+        //MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", fx[i], fy[i], fz[i], vabs(fx[id], fy[id], fz[id]));    
+        //MSG("f: %+9.5e %+9.5e %+9.5e %+9.5e", f[X], f[Y], f[Z], vabs(f[X], f[Y], f[Z]));
+        printf("%g %g\n", fx[i], f[X]);
+    }
+    
     bending_fin(bending);
 }
 
