@@ -1,2 +1,2 @@
-# TEST: 0
+# nTEST: 0
 ./main < ../../data/rbc/laplace/1.off > q.out.vtk
