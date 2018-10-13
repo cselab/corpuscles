@@ -19,14 +19,20 @@ struct T {
     real K;
 };
 
-static real compute_energy(He *he, real *acos) {
-    int n, m, h;
+static real compute_energy(He *he, const real *acos, /**/ real *eng) {
+    int n, m, h, f;
+    int i, j;
     real v;
 
     n = he_ne(he);
     v = 0;
     for (m = 0; m < n; m++) {
         h = he_hdg_edg(he, m);
+        f = he_flp(he, h);
+
+        i = he_ver(he, h);
+        j = he_ver(he, f);
+
         if (he_bnd(he, h)) continue;
         v += 1 - acos[m];
     }
@@ -34,11 +40,13 @@ static real compute_energy(He *he, real *acos) {
 }
 int he_f_kantor_ini(real K, He *he, T **pq) {
     T *q;
-    int ne;
+    int ne, nv;
     MALLOC(1, &q);
     ne = he_ne(he);
+    nv = he_nv(he);
 
     MALLOC(ne, &q->acos);
+    MALLOC(nv, &q->eng);
 
     q->ne = ne;
     q->K = K;
@@ -48,7 +56,7 @@ int he_f_kantor_ini(real K, He *he, T **pq) {
 }
 
 int he_f_kantor_fin(T *q) {
-    FREE(q->acos); FREE(q);
+    FREE(q->acos); FREE(q->eng); FREE(q);
     return HE_OK;
 }
 
@@ -140,15 +148,16 @@ int he_f_kantor_force(T *q, He *he,
 real he_f_kantor_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int ne;
-    real *acos, K;
+    real *acos, *eng, K;
     ne = q->ne;
     acos = q->acos;
+    eng = q->eng;
     K  = q->K;
 
     if (he_ne(he) != ne)
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), ne);
     compute_cos(he, x, y, z, /**/ acos);
-    return 2*K*compute_energy(he, acos);
+    return 2*K*compute_energy(he, acos, /**/ eng);
 }
 
 int he_f_kantor_energy_ver(__UNUSED T *q, /**/ __UNUSED real **pe) {
