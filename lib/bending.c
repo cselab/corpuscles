@@ -237,15 +237,12 @@ static int cahnman_energy_ver(T *q, /**/ real **e) {
 }
 static Vtable cahnman_vtable = { cahnman_fin, cahnman_force, cahnman_energy, cahnman_energy_ver};
 int bending_cahnman_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb, C0, Kad;
+    real Kb;
     Cahnman *q;
     Kb  = param.Kb;
-    C0 = param.C0;
-    Kad = param.Kad;
-
     MALLOC(1, &q);
     q->bending.vtable = &cahnman_vtable;
     *pq = &q->bending;
-    return he_f_cahnman_ini(Kb, C0, Kad, he, &q->local);
+    return he_f_cahnman_ini(Kb, he, &q->local);
 }
 /* end cahnman */

@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-int he_f_cahnman_ini(real K, real C0, real Kad, He*, T**);
+int he_f_cahnman_ini(real K, He*, T**);
 int he_f_cahnman_fin(T*);
 
 int he_f_cahnman_force(T*, He*,
