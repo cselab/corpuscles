@@ -17,7 +17,7 @@ static void main0() {
     BendingParam param;
     real *queue[] = {xx, yy, zz, fx, fy, fz, NULL};
     param.Kb = 1;
-    bending_gompper_ini(param, he,  &bending);
+    bending_ini("gompper", param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);
