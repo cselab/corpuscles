@@ -66,6 +66,7 @@ static void main0() {
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
     MSG("energy: %g", e);
+    MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);
 }
