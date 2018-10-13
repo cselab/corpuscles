@@ -559,5 +559,12 @@ int he_f_meyer_force(T *q, He *he,
         fz[k] += fm * normz[k];
 
     }
+
+    for ( v = 0; v < nv; v++ ) {
+      fx[v] *= area[v];
+      fy[v] *= area[v];
+      fz[v] *= area[v];
+    }
+    
     return HE_OK;
 }
