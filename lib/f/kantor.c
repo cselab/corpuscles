@@ -2,6 +2,7 @@
 
 #include "real.h"
 #include "he/memory.h"
+#include "he/macro.h"
 #include "he/err.h"
 #include "he/he.h"
 #include "he/vec.h"
@@ -150,6 +151,6 @@ real he_f_kantor_energy(T *q, He *he,
     return 2*K*compute_energy(he, acos);
 }
 
-int he_f_kantor_energy_ver(T *q, /**/ real **pe) {
-    return HE_OK;
+int he_f_kantor_energy_ver(__UNUSED T *q, /**/ __UNUSED real **pe) {
+    ERR(HE_NOT, "he_f_kantor_energy_ver is not implimented");
 }

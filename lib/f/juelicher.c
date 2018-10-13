@@ -187,10 +187,8 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
 
 static int compute_len(He *he, Size size, const real *xx, const real *yy, const real *zz,
                              /**/ real *len) {
-    int nv, ne, e, h;
+    int ne, e, h;
     real b[3], c[3], u[3];
-
-    nv = size.nv;
     ne = size.ne;
 
     for (e = 0; e < ne; e++) {
@@ -205,11 +203,10 @@ static int compute_len(He *he, Size size, const real *xx, const real *yy, const 
 
 static int compute_theta(He *he, Size size, const real *xx, const real *yy, const real *zz,
                              /**/ real *theta) {
-    int nv, ne, e, h;
+    int ne, e, h;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3];
 
-    nv = size.nv;
     ne = size.ne;
 
     for (e = 0; e < ne; e++) {
@@ -406,8 +403,8 @@ int he_f_juelicher_force(T *q, He *he,
     Param param;
     int nv;
     real H0, Kad;
-    real *area, *curva_mean;
-    real *energy, *theta, *len, *lentheta;
+    real *area;
+    real *theta, *len, *lentheta;
     real area_tot, lentheta_tot, curva_mean_area_tot;
     real *fx, *fy, *fz, *fxad, *fyad, *fzad;
     const real pi = 3.141592653589793115997964;
@@ -419,8 +416,6 @@ int he_f_juelicher_force(T *q, He *he,
     Kad = param.Kad;
 
     area = q->area;
-    curva_mean = q->curva_mean;
-    energy = q->energy;
     theta = q->theta;
     len = q->len;
     lentheta = q->lentheta;

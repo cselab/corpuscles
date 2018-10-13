@@ -4,6 +4,8 @@
 #include "real.h"
 #include "he/err.h"
 #include "he/vec.h"
+#include "he/macro.h"
+
 #include "he/tri.h"
 
 static void swap(real *a, real *b) {
@@ -31,7 +33,7 @@ static real kahan_area(const real r0[3], const real r1[3], const real r2[3]) {
     return kahan_area0(a, b, c);
 }
 
-static real naive_area(const real a[3], const real b[3], const real c[3]) {
+static real __UNUSED naive_area(const real a[3], const real b[3], const real c[3]) {
     real u[3], v[3], n[3];
     vec_minus(b, a, u);
     vec_minus(c, a, v);
