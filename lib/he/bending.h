@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-struct BendingParam { real K, C0, Kad; };
+struct BendingParam { real Kb, C0, Kad, DA0D; };
 typedef struct BendingParam BendingParam;
 
 int bending_force(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
@@ -13,5 +13,6 @@ int bending_fin(T*);
 
 
 int bending_kantor_ini(BendingParam, He*, /**/ T**);
+int bending_gompper_ini(BendingParam, He*, /**/ T**);
 
 #undef T
