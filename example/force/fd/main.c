@@ -86,7 +86,7 @@ static void main0() {
     real e, f[3];
     param.Kb = 1;
     param.C0 = 1;
-    param.Kad = 0;
+    param.Kad = 1;
     param.DA0D = 0;
 
     bending_ini(name, param, he,  &bending);
