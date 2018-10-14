@@ -62,7 +62,7 @@ static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
 }
-static real sum(int n, real *volume) {
+static real sum(int n, const  real *volume) {
     int t;
     real v;
     v = 0;
@@ -294,6 +294,7 @@ static real compute_energy_nonlocal(T *q, const real *curva_mean, const real *ar
   nv   = q->nv;
   
   cm_integral=compute_curva_mean_integral(q, curva_mean, area);
+  MSG("cm_integral: %g", cm_integral);
   area_tot   =sum(nv, area);
   energy_tot = 4*pi*Kad/area_tot*(cm_integral - DA0D/2)*(cm_integral - DA0D/2);
   
