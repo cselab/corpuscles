@@ -247,10 +247,13 @@ static int compute_H(He *he, Size size, real *len, real *theta, real *area, /**/
     return HE_OK;
 }
 
-static int compute_energy(int nv, real *area, real *H, /**/ real *energy) {
+static int compute_energy(Param param, int nv, real *area, real *H, /**/ real *energy) {
+    real H0;
     int v;
+
+    H0 = param.H0;
     for (v = 0; v < nv; v++)
-        energy[v] = H[v]*H[v]*area[v];
+        energy[v] = (H[v] - H0)*(H[v] - H0)*area[v];
     return HE_OK;
 }
 
@@ -258,7 +261,7 @@ real he_f_canham_energy(T *q, He *he,
                         const real *x, const real *y, const real *z) {
     Size size;
     Param param;
-    real K;
+    real K, H0;
     real eng, *area, *H, *energy, *theta, *len;
     int nv;
 
@@ -266,6 +269,7 @@ real he_f_canham_energy(T *q, He *he,
 
     param = q->param;
     K = param.K;
+    H0 = param.H0;
 
     area = q->area;
     H = q->H;
@@ -279,7 +283,7 @@ real he_f_canham_energy(T *q, He *he,
     compute_theta(he, size, x, y, z, /**/ theta);
     compute_area(he, size, x, y, z, /**/ area);
     compute_H(he, size, len, theta, area, /**/ H);
-    compute_energy(nv, area, H, /**/ energy);
+    compute_energy(param, nv, area, H, /**/ energy);
 
     scale(nv, K/8, energy);
     eng = sum(nv, energy);
