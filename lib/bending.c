@@ -237,12 +237,13 @@ static int canham_energy_ver(T *q, /**/ real **e) {
 }
 static Vtable canham_vtable = { canham_fin, canham_force, canham_energy, canham_energy_ver};
 int bending_canham_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb;
+    real Kb, C0;
     Canham *q;
     Kb  = param.Kb;
+    C0 = param.C0;
     MALLOC(1, &q);
     q->bending.vtable = &canham_vtable;
     *pq = &q->bending;
-    return he_f_canham_ini(Kb, he, &q->local);
+    return he_f_canham_ini(Kb, C0, he, &q->local);
 }
 /* end canham */

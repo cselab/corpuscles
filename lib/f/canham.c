@@ -44,12 +44,6 @@ static void zero(int n, real *a) {
         a[i] = 0;
 }
 
-static void one(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] = 1;
-}
-
 static real sum(int n, real *a) {
     int i;
     real s;
@@ -77,7 +71,7 @@ static int scale(int n, real sc, /*io*/ real *a) {
     return HE_OK;
 }
 
-int he_f_canham_ini(real K, He *he, T **pq) {
+int he_f_canham_ini(real K, real C0, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
     Size size;
@@ -90,8 +84,8 @@ int he_f_canham_ini(real K, He *he, T **pq) {
     nt = he_nt(he);
 
     param.K = K;
+    param.H0 = C0/2;
     q->param = param;
-
 
     size.nv = nv;
     size.nt = nt;
