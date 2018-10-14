@@ -281,14 +281,13 @@ real he_f_canham_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     Size size;
     real K;
-    real eng, *area, *H, *curva_mean, *energy, *theta, *len;
+    real eng, *area, *H, *energy, *theta, *len;
     int nv;
 
     size = q->size;
     K = q->K;
 
     area = q->area;
-    curva_mean = q->curva_mean;
     H = q->H;
     energy = q->energy;
     len = q->len;
@@ -299,10 +298,7 @@ real he_f_canham_energy(T *q, He *he,
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
     compute_area(he, size, x, y, z, /**/ area);
-
-    compute_mean_curv(he, size, len, theta, /**/ curva_mean);
     compute_H(he, size, len, theta, area, /**/ H);
-
     compute_energy(nv, area, H, /**/ energy);
 
     scale(nv, K/8, energy);
