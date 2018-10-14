@@ -329,7 +329,7 @@ static int force_len(He *he, Size size,
 }
 
 static int force_theta(He *he, Size size,
-                       const real *curv, const real *area, const real *len,
+                       const real *len, const real *H,
                        const real *xx, const real *yy, const real *zz,
                        /**/ real *fx, real *fy, real *fz) {
     int h, e, ne;
@@ -347,7 +347,7 @@ static int force_theta(He *he, Size size,
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
-        coef =  -2*(curv[j]/area[j] + curv[k]/area[k])*len[e];
+        coef =  -2*(H[j] + H[k])*len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -411,7 +411,7 @@ int he_f_canham_force(T *q, He *he,
     compute_mean_curv(he, size, len, theta, /**/ curva_mean);
 
     force_len(he, size, theta,  H, x, y, z, /**/ fx, fy, fz);
-    force_theta(he, size, curva_mean, area, len, x, y, z, /**/ fx, fy, fz);
+    force_theta(he, size, len, H, x, y, z, /**/ fx, fy, fz);
     force_area(he, size, curva_mean, area,  x, y, z, /**/ fx, fy, fz);
 
     scale(nv, K/8, fx); scale(nv, K/8, fy); scale(nv, K/8, fz);
