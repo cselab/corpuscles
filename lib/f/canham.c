@@ -41,8 +41,7 @@ struct T {
 
 static void zero(int n, real *a) {
     int i;
-    for (i = 0; i < n; i++)
-        a[i] = 0;
+    for (i = 0; i < n; i++) a[i] = 0;
 }
 
 static real sum(int n, const real *a) {
@@ -234,6 +233,7 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
     real a[3], b[3], c[3], d[3];
 
     ne = size.ne;
+
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
         if (bnd(h)) continue;
@@ -304,6 +304,7 @@ real he_f_canham_energy(T *q, He *he,
     compute_theta(he, size, x, y, z, /**/ theta);
     compute_len_theta(he, size, len, theta, /**/ len_theta);
     compute_area(he, size, x, y, z, /**/ area);
+
     divide(nv, len_theta, area, /**/ H);
     scale(nv, 0.25, /**/ H);
 
@@ -314,7 +315,7 @@ real he_f_canham_energy(T *q, He *he,
     /* Ead */
     area_tot = sum(nv, area);
     len_theta_tot = sum(nv, len_theta);
-    scurv = (len_theta_tot/2 - DA0D*H0)/area_tot;
+    scurv = (len_theta_tot/2 - DA0D*H0)/area_tot;    
 
     eng_ad = pi*Kad*area_tot*scurv*scurv/2; /* TODO */
     return eng_bend + eng_ad;
@@ -511,8 +512,7 @@ int he_f_canham_force(T *q, He *he,
 
     fad_len(he, size, scurv/2, theta, x, y, z, /**/ fxad, fyad, fzad);
     fad_theta(he, size, scurv/2, len, x, y, z, /**/ fxad, fyad, fzad);
-    fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);
-    scale(nv, pi*Kad, fxad);
+    fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);       scale(nv, pi*Kad, fxad);
     scale(nv, pi*Kad, fyad);
     scale(nv, pi*Kad, fzad);
 
