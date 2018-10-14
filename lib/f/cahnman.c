@@ -333,7 +333,7 @@ static int force_area(He *he, Size size, /**/
     int nt, t, i, j, k;
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
-    real c1, c2, coef;
+    real coef;
 
     nt = size.nt;
 
@@ -341,11 +341,9 @@ static int force_area(He *he, Size size, /**/
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
         dtri_area(a, b, c, da, db, dc);
-        c1 = -1/24.;
-        c2 = (curv[i]*curv[i]/area[i]/area[i] +
-              curv[j]*curv[j]/area[j]/area[j] +
-              curv[k]*curv[k]/area[k]/area[k]);
-        coef = c1 * c2;
+        coef = -(curv[i]*curv[i]/area[i]/area[i] +
+                 curv[j]*curv[j]/area[j]/area[j] +
+                 curv[k]*curv[k]/area[k]/area[k])/24;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
