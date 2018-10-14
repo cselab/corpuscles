@@ -308,7 +308,7 @@ static int force_len(Param param, He *he, Size size,
         vec_get(i, xx, yy, zz, /**/ b);
         vec_get(j, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
-        coef =  2*(H[i] + H[j])*theta[e];
+        coef =  2*(H[i] + H[j] - 2*H0)*theta[e];
         vec_scalar_append(db, coef, i, fx, fy, fz);
         vec_scalar_append(dc, coef, j, fx, fy, fz);
     }
@@ -335,7 +335,7 @@ static int force_theta(Param param, He *he, Size size,
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
-        coef =  -2*(H[j] + H[k])*len[e];
+        coef =  -2*(H[j] + H[k] - 2*H0)*len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -359,7 +359,7 @@ static int force_area(Param param, He *he, Size size, const real *H,
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
         dtri_area(a, b, c, da, db, dc);
-        coef = -(H[i]*H[i] + H[j]*H[j] + H[k]*H[k])/3;
+        coef = -(H[i]*H[i] + H[j]*H[j] + H[k]*H[k] - 3*H0*H0)/3;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
