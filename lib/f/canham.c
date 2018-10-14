@@ -403,14 +403,18 @@ int he_f_canham_force(T *q, He *he,
     Size size;
     Param param;
     int nv;
-    real K;
+    real K, H0, DA0D;
     real *theta, *len, *area, *len_theta, *H;
+    real area_tot, len_theta_tot, scurv;
     real *fx, *fy, *fz, *fxad, *fyad, *fzad;
 
     param = q->param;
     size = q->size;
 
     K = param.K;
+    H0 = param.H0;
+    DA0D = param.DA0D;
+
     area = q->area;
     theta = q->theta;
     len = q->len;
@@ -437,7 +441,11 @@ int he_f_canham_force(T *q, He *he,
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
 
-    
+
+    area_tot = sum(nv, area);
+    len_theta_tot = sum(nv, len_theta);
+    scurv = (2*len_theta_tot - DA0D*H0)/area_tot;
+
     plus(nv, fxad, /*io*/ fx_tot);
     plus(nv, fyad, /*io*/ fy_tot);
     plus(nv, fzad, /*io*/ fz_tot);
