@@ -279,20 +279,20 @@ static int force_len(He *he, Size size,
                      const real *theta,  const real *curv, const real *area,
                      const real *xx, const real *yy, const real *zz, /**/
                      real *fx, real *fy, real *fz) {
-    int h, e, j, k;
+    int h, e, i, j;
     int ne;
     real coef;
     real b[3], c[3], db[3], dc[3];
     ne = size.ne;
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
-        get_ij(h, he, /**/ &j, &k);
-        vec_get(j, xx, yy, zz, /**/ b);
-        vec_get(k, xx, yy, zz, /**/ c);
+        get_ij(h, he, /**/ &i, &j);
+        vec_get(i, xx, yy, zz, /**/ b);
+        vec_get(j, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
-        coef =  (curv[j]/area[j] + curv[k]/area[k])*theta[e]/4;
-        vec_scalar_append(db, coef, j, fx, fy, fz);
-        vec_scalar_append(dc, coef, k, fx, fy, fz);
+        coef =  (curv[i]/area[i] + curv[j]/area[j])*theta[e]/4;
+        vec_scalar_append(db, coef, i, fx, fy, fz);
+        vec_scalar_append(dc, coef, j, fx, fy, fz);
     }
     return HE_OK;
 }
