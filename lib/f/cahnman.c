@@ -67,6 +67,13 @@ static int plus(int n, const real *a, /*io*/ real *b) {
     return HE_OK;
 }
 
+static int scale(int n, real sc, /*io*/ real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] *= sc;
+    return HE_OK;
+}
+
 int he_f_cahnman_ini(real K, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
@@ -355,11 +362,13 @@ int he_f_cahnman_force(T *q, He *he,
                       real *fx_tot, real *fy_tot, real *fz_tot) {
     Size size;
     int nv;
+    real K;
     real *area;
     real *theta, *len, *curva_mean;
     real *fx, *fy, *fz;
-    size = q->size;
 
+    K = q->K;
+    size = q->size;
     area = q->area;
     theta = q->theta;
     len = q->len;
@@ -377,6 +386,9 @@ int he_f_cahnman_force(T *q, He *he,
     force_len(he, size, theta,  curva_mean, area, x, y, z, /**/ fx, fy, fz);
     force_theta(he, size, curva_mean, area, len, x, y, z, /**/ fx, fy, fz);
     force_area(he, size, curva_mean, area,  x, y, z, /**/ fx, fy, fz);
+
+    scale(nv, K, fx); scale(nv, K, fy); scale(nv, K, fz);
+    
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
