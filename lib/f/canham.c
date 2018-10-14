@@ -388,7 +388,7 @@ int he_f_canham_force(T *q, He *he,
     int nv;
     real K;
     real *area;
-    real *theta, *len, *curva_mean;
+    real *theta, *len, *curva_mean, *H;
     real *fx, *fy, *fz;
 
     K = q->K;
@@ -397,14 +397,16 @@ int he_f_canham_force(T *q, He *he,
     theta = q->theta;
     len = q->len;
     curva_mean = q->curva_mean;
+    H = q->H;
     fx = q->fx; fy = q->fy; fz = q->fz;
 
     nv = size.nv;
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
 
-    compute_area(he, size, x, y, z, /**/ area);
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
+    compute_area(he, size, x, y, z, /**/ area);
+
     compute_mean_curv(he, size, len, theta, /**/ curva_mean);
 
     force_len(he, size, theta,  curva_mean, area, x, y, z, /**/ fx, fy, fz);
