@@ -24,17 +24,20 @@
 #    define  hdg_tri(t) he_hdg_tri(he, t)
 #    define  bnd(h)     he_bnd(he, h)
 
+
+const real pi = 3.141592653589793115997964;
+
 typedef struct Size Size;
 struct Size { int nv, ne, nt; };
 
 typedef struct Param Param;
-struct Param { real K, H0; };
+struct Param { real K, H0, Kad, DA0D; };
 
 struct T {
     Size size;
     Param param;
     real *theta, *len, *len_theta, *area, *H;
-    real *energy, *fx, *fy, *fz;
+    real *energy, *fx, *fy, *fz, *fxad, *fyad, *fzad;
 };
 
 static void zero(int n, real *a) {
@@ -77,7 +80,8 @@ static int scale(int n, real sc, /*io*/ real *a) {
     return HE_OK;
 }
 
-int he_f_canham_ini(real K, real C0, He *he, T **pq) {
+int he_f_canham_ini(real K, real C0, real Kad, real DA0D,
+                    He *he, T **pq) {
     T *q;
     int nv, ne, nt;
     Size size;
@@ -91,6 +95,9 @@ int he_f_canham_ini(real K, real C0, He *he, T **pq) {
 
     param.K = K;
     param.H0 = C0/2;
+    param.Kad = Kad;
+    param.DA0D = DA0D;
+
     q->param = param;
 
     size.nv = nv;
@@ -107,6 +114,7 @@ int he_f_canham_ini(real K, real C0, He *he, T **pq) {
     MALLOC(ne, &q->len);
 
     MALLOC(nv, &q->fx); MALLOC(nv, &q->fy); MALLOC(nv, &q->fz);
+    MALLOC(nv, &q->fxad); MALLOC(nv, &q->fyad); MALLOC(nv, &q->fzad);
 
     *pq = q;
 
@@ -114,7 +122,7 @@ int he_f_canham_ini(real K, real C0, He *he, T **pq) {
 }
 
 int he_f_canham_fin(T *q) {
-    FREE(q->len_theta);    
+    FREE(q->len_theta);
     FREE(q->H);
     FREE(q->area);
     FREE(q->energy);
@@ -122,6 +130,7 @@ int he_f_canham_fin(T *q) {
     FREE(q->len);
 
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
+    FREE(q->fxad); FREE(q->fyad); FREE(q->fzad);
     FREE(q);
     return HE_OK;
 }
@@ -268,15 +277,19 @@ real he_f_canham_energy(T *q, He *he,
                         const real *x, const real *y, const real *z) {
     Size size;
     Param param;
-    real K;
-    real eng, *area, *H, *energy, *theta, *len, *len_theta;
-    real area_tot;
+    real K, H0, Kad, DA0D;
+    real *area, *H, *energy, *theta, *len, *len_theta;
+    real area_tot, len_theta_tot, scurv;
+    real eng_bend, eng_ad;
     int nv;
 
     size = q->size;
 
     param = q->param;
     K = param.K;
+    H0 = param.H0;
+    Kad = param.Kad;
+    DA0D = param.DA0D;
 
     area = q->area;
     H = q->H;
@@ -292,16 +305,19 @@ real he_f_canham_energy(T *q, He *he,
     compute_len_theta(he, size, len, theta, /**/ len_theta);
     compute_area(he, size, x, y, z, /**/ area);
     divide(nv, len_theta, area, /**/ H);
-    
+
     compute_energy(param, nv, area, H, /**/ energy);
     scale(nv, K/8, energy);
+    eng_bend = sum(nv, energy);
 
-    area_tot  = sum(nv, area);
+    /* Ead */
+    area_tot = sum(nv, area);
+    len_theta_tot = sum(nv, len_theta);
+    scurv = (2*len_theta_tot - DA0D*H0)/area_tot;
+    eng_ad = pi*Kad*area_tot*scurv*scurv/2; /* TODO */
+    MSG("eng_ad: %g", eng_ad);
 
-    MSG("area: %g", area_tot);
-    
-    eng = sum(nv, energy);
-    return eng;
+    return eng_bend + eng_ad;
 }
 
 static int force_len(Param param, He *he, Size size,
@@ -389,7 +405,7 @@ int he_f_canham_force(T *q, He *he,
     int nv;
     real K;
     real *theta, *len, *area, *len_theta, *H;
-    real *fx, *fy, *fz;
+    real *fx, *fy, *fz, *fxad, *fyad, *fzad;
 
     param = q->param;
     size = q->size;
@@ -401,9 +417,11 @@ int he_f_canham_force(T *q, He *he,
     len_theta = q->len_theta;
     H = q->H;
     fx = q->fx; fy = q->fy; fz = q->fz;
+    fxad = q->fxad; fyad = q->fyad; fzad = q->fzad;
 
     nv = size.nv;
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
+    zero(nv, fxad); zero(nv, fyad); zero(nv, fzad);
 
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
@@ -414,13 +432,15 @@ int he_f_canham_force(T *q, He *he,
     force_len(param, he, size, theta,  H, x, y, z, /**/ fx, fy, fz);
     force_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
     force_area(param, he, size, H,  x, y, z, /**/ fx, fy, fz);
-
     scale(nv, K/8, fx); scale(nv, K/8, fy); scale(nv, K/8, fz);
-
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
 
+    
+    plus(nv, fxad, /*io*/ fx_tot);
+    plus(nv, fyad, /*io*/ fy_tot);
+    plus(nv, fzad, /*io*/ fz_tot);
     return HE_OK;
 }
 

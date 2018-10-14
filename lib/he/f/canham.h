@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-int he_f_canham_ini(real K, real C0, He*, T**);
+int he_f_canham_ini(real K, real C0, real Kad, real DA0D, He*, T**);
 int he_f_canham_fin(T*);
 
 int he_f_canham_force(T*, He*,
