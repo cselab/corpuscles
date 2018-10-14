@@ -315,8 +315,7 @@ real he_f_canham_energy(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (2*len_theta_tot - DA0D*H0)/area_tot;
     eng_ad = pi*Kad*area_tot*scurv*scurv/2; /* TODO */
-    MSG("eng_ad: %g", eng_ad);
-
+    MSG("eng_bend, eng_ad: %g %g", eng_bend, eng_ad);
     return eng_bend + eng_ad;
 }
 
@@ -381,10 +380,8 @@ static int f_area(Param param, He *he, Size size, const real *H,
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
     real coef, H0;
-
     nt = size.nt;
     H0 = param.H0;
-
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
@@ -397,12 +394,73 @@ static int f_area(Param param, He *he, Size size, const real *H,
     return HE_OK;
 }
 
+static int fad_len(He *he, Size size, real coef,
+                 const real *xx, const real *yy, const real *zz, /**/
+                 real *fx, real *fy, real *fz) {
+    int h, e, i, j;
+    int ne;
+    real b[3], c[3], db[3], dc[3];
+    ne = size.ne;
+    for (e = 0; e < ne; e++) {
+        h = hdg_edg(e);
+        get_ij(h, he, /**/ &i, &j);
+        vec_get(i, xx, yy, zz, /**/ b);
+        vec_get(j, xx, yy, zz, /**/ c);
+        dedg_abs(b, c, db, dc);
+        vec_scalar_append(db, coef, i, fx, fy, fz);
+        vec_scalar_append(dc, coef, j, fx, fy, fz);
+    }
+    return HE_OK;
+}
+
+static int fad_theta(He *he, Size size, real coef,
+                     const real *xx, const real *yy, const real *zz,
+                   /**/ real *fx, real *fy, real *fz) {
+    int h, e, ne;
+    int i, j, k, l;
+    real a[3], b[3], c[3], d[3];
+    real da[3], db[3], dc[3], dd[3], u[3];
+    ne = size.ne;
+    for (e = 0; e < ne; e++) {
+        h = hdg_edg(e);
+        if (bnd(h)) continue;
+        get_ijkl(h, he, /**/ &i, &j, &k, &l);
+        get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
+        ddih_angle(a, b, c, d, da, db, dc, dd);
+        vec_minus(c, b, u);
+        vec_scalar_append(da, coef, i, fx, fy, fz);
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
+        vec_scalar_append(dd, coef, l, fx, fy, fz);
+    }
+    return HE_OK;
+}
+
+static int fad_area(He *he, Size size, real coef,
+                    const real *xx, const real *yy, const real *zz,
+                    /**/ real *fx, real *fy, real *fz) {
+    int nt, t, i, j, k;
+    real a[3], b[3], c[3];
+    real da[3], db[3], dc[3];
+    nt = size.nt;
+    for (t = 0; t < nt; t++) {
+        get_ijk(t, he, &i, &j, &k);
+        get3(xx, yy, zz, i, j, k, a, b, c);
+        dtri_area(a, b, c, da, db, dc);
+        vec_scalar_append(da, coef/3, i, fx, fy, fz);
+        vec_scalar_append(db, coef/3, j, fx, fy, fz);
+        vec_scalar_append(dc, coef/3, k, fx, fy, fz);
+    }
+    return HE_OK;
+}
+
+
 int he_f_canham_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx_tot, real *fy_tot, real *fz_tot) {
     Size size;
     Param param;
-    int nv;
+    int nv, ne;
     real K, H0, Kad, DA0D;
     real *theta, *len, *area, *len_theta, *H;
     real area_tot, len_theta_tot, scurv;
@@ -425,6 +483,8 @@ int he_f_canham_force(T *q, He *he,
     fxad = q->fxad; fyad = q->fyad; fzad = q->fzad;
 
     nv = size.nv;
+    ne = size.ne;
+
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
     zero(nv, fxad); zero(nv, fyad); zero(nv, fzad);
 
@@ -442,12 +502,21 @@ int he_f_canham_force(T *q, He *he,
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
 
-
     area_tot = sum(nv, area);
     len_theta_tot = sum(nv, len_theta);
     scurv = (2*len_theta_tot - DA0D*H0)/area_tot;
 
-    scale(nv, pi*Kad, fx); scale(nv, pi*Kad, fy); scale(nv, pi*Kad, fz);
+    fad_len(he, size, 2*scurv*sum(ne, theta),
+            x, y, z, /**/ fxad, fyad, fzad);
+    fad_theta(he, size, 2*scurv*sum(ne, len),
+              x, y, z, /**/ fxad, fyad, fzad);
+//    fad_area(he, size, -scurv*scurv/2,
+//             x, y, z, /**/ fxad, fyad, fzad);
+
+    scale(nv, pi*Kad, fxad);
+    scale(nv, pi*Kad, fyad);
+    scale(nv, pi*Kad, fzad);
+
     plus(nv, fxad, /*io*/ fx_tot);
     plus(nv, fyad, /*io*/ fy_tot);
     plus(nv, fzad, /*io*/ fz_tot);
