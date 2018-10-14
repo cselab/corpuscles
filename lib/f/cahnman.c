@@ -219,8 +219,7 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
     return HE_OK;
 }
 
-static int compute_mean_curv(He *he, Size size,
-                             real *len, real *theta,
+static int compute_mean_curv(He *he, Size size, real *len, real *theta,
                              /**/ real *curva_mean) {
     int nv, ne, e, h;
     int i, j;
