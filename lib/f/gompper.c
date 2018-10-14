@@ -281,7 +281,7 @@ static real compute_curva_mean_integral(T *q, const real *curva_mean, const real
   for (i = 0; i < nv; i++) {
     cm_integral += curva_mean[i]*area[i];
   }
- 
+  return cm_integral;
 }
 static real compute_energy_nonlocal(T *q, const real *curva_mean, const real *area) {
   
@@ -294,7 +294,6 @@ static real compute_energy_nonlocal(T *q, const real *curva_mean, const real *ar
   nv   = q->nv;
   
   cm_integral=compute_curva_mean_integral(q, curva_mean, area);
-  MSG("cm_integral: %g", cm_integral);
   area_tot   =sum(nv, area);
   energy_tot = 4*pi*Kad/area_tot*(cm_integral - DA0D/2)*(cm_integral - DA0D/2);
   
