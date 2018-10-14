@@ -99,4 +99,10 @@ int f_meyer_curva_mean_ver(/**/ real**);
 int f_meyer_curva_gauss_ver(/**/ real**);
 int f_meyer_energy_ver(/**/ real**);
 
+int f_bending_ini(const  char *name, BendingParam param);
+int f_bending_fin();
+real f_bending_energy(const real *x, const real *y, const real *z);
+int f_bending_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+int f_bending_energy_ver(/**/ real**);
+
 int equiangulate(int *cnt);

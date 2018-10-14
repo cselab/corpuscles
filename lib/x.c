@@ -18,6 +18,7 @@
 #include "he/f/juelicher.h"
 #include "he/f/gompper.h"
 #include "he/f/meyer.h"
+#include "he/bending.h"
 #include "he/area.h"
 #include "he/volume.h"
 #include "he/equiangulate.h"
@@ -42,6 +43,7 @@ static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
 static HeFMeyer *f_meyer;
 static HeFJuelicher *f_juelicher;
+static Bending *f_bending;
 static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
@@ -136,6 +138,10 @@ int  fin()      {
     he_off_fin(off);
     he_fin(he);
     return HE_OK;
+}
+
+int equiangulate(int *cnt) {
+    return he_equiangulate(he, XX, YY, ZZ, cnt);
 }
 
 int f_area_ini(real a0, real K) {
@@ -349,6 +355,22 @@ int f_meyer_energy_ver(real **p) {
   return he_f_meyer_energy_ver(f_meyer, p);
 }
 
-int equiangulate(int *cnt) {
-    return he_equiangulate(he, XX, YY, ZZ, cnt);
+
+int f_bending_ini(const  char *name, BendingParam param) {
+    bending_ini(name, param, he, /**/ &f_bending);
+    return HE_OK;
 }
+int f_bending_fin() {
+    bending_fin(f_bending);
+    return HE_OK;
+}
+real f_bending_energy(const real *x, const real *y, const real *z) {
+    return bending_energy(f_bending, he, x, y, z);
+}
+int f_bending_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return bending_force(f_bending, he, x, y, z, /**/ fx, fy, fz);
+}
+int f_bending_energy_ver(real **p) {
+    return bending_energy_ver(f_bending, p);
+}
+
