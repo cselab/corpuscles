@@ -290,7 +290,8 @@ static int force_len(He *he, Size size,
         vec_get(j, xx, yy, zz, /**/ b);
         vec_get(k, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
-        coef =  -(curva_mean[j]/area[j] + curva_mean[k]/area[k])*theta[e]/4;
+        coef =  (curva_mean[j]/area[j] +
+                 curva_mean[k]/area[k])*theta[e]/4;
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
@@ -326,7 +327,7 @@ static int force_theta(He *he, Size size,
 }
 
 static int force_area(He *he, Size size, /**/
-                      const real *curva_mean, const real *area,
+                      const real *curv, const real *area,
                       const real *xx, const real *yy, const real *zz,
                       /**/ real *fx, real *fy, real *fz) {
     int nt, t, i, j, k;
@@ -339,20 +340,14 @@ static int force_area(He *he, Size size, /**/
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
-
         dtri_area(a, b, c, da, db, dc);
-        c1 = 1/24.;
-
-        c2 = curva_mean[i]*curva_mean[i]/area[i]/area[i];
+        c1 = -1/24.;
+        c2 = (curv[i]*curv[i]/area[i]/area[i] +
+              curv[j]*curv[j]/area[j]/area[j] +
+              curv[k]*curv[k]/area[k]/area[k]);
         coef = c1 * c2;
         vec_scalar_append(da, coef, i, fx, fy, fz);
-
-        c2 = curva_mean[j]*curva_mean[j]/area[j]/area[j];
-        coef = c1 * c2;
         vec_scalar_append(db, coef, j, fx, fy, fz);
-
-        c2 = curva_mean[k]*curva_mean[k]/area[k]/area[k];
-        coef = c1 * c2;
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
     return HE_OK;
