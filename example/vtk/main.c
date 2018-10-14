@@ -29,7 +29,7 @@ static void ini() {
 
     param.Kb = 1;
     param.C0 = param.Kad = param.DA0D = 0;
-    bending_ini("meyer", param, he, &bending);
+    bending_ini("kantor", param, he, &bending);
 }
 static void fin() {
     bending_fin(bending);
