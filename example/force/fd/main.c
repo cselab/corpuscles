@@ -84,9 +84,9 @@ static void main0() {
     enum {X, Y, Z};
     int i;
     real e, f[3];
-    param.Kb = 1;
-    param.C0 = 1;
-    param.Kad = 2;
+    param.Kb = 0;
+    param.C0 = 0;
+    param.Kad = 1;
     param.DA0D = 0;
 
     bending_ini(name, param, he,  &bending);
