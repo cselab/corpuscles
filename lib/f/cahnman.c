@@ -353,7 +353,6 @@ static int force_area(He *he, Size size, /**/
     return HE_OK;
 }
 
-
 int he_f_cahnman_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx_tot, real *fy_tot, real *fz_tot) {
