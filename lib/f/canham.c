@@ -33,7 +33,7 @@ struct Param { real K, H0; };
 struct T {
     Size size;
     Param param;
-    real *theta, *len, *area, *H;
+    real *theta, *len, *len_theta, *area, *H;
     real *energy, *fx, *fy, *fz;
 };
 
@@ -54,6 +54,13 @@ static real sum(int n, real *a) {
     s = he_sum_get(sum);
     he_sum_fin(sum);
     return s;
+}
+
+static int divide(int n, const real *a, const real *b, /**/ real *c) {
+    int i;
+    for (i = 0; i < n; i++)
+        c[i] = a[i] / b[i];
+    return HE_OK;
 }
 
 static int plus(int n, const real *a, /*io*/ real *b) {
@@ -91,6 +98,7 @@ int he_f_canham_ini(real K, real C0, He *he, T **pq) {
     size.ne = ne;
     q->size = size;
 
+    MALLOC(nv, &q->len_theta);
     MALLOC(nv, &q->H);
 
     MALLOC(nv, &q->area);
@@ -106,11 +114,13 @@ int he_f_canham_ini(real K, real C0, He *he, T **pq) {
 }
 
 int he_f_canham_fin(T *q) {
+    FREE(q->len_theta);    
     FREE(q->H);
     FREE(q->area);
     FREE(q->energy);
     FREE(q->theta);
     FREE(q->len);
+
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
     FREE(q);
     return HE_OK;
@@ -226,23 +236,21 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
     return HE_OK;
 }
 
-static int compute_H(He *he, Size size, real *len, real *theta, real *area, /**/ real *H) {
-    int nv, ne, v, e, h;
+static int compute_len_theta(He *he, Size size, real *len, real *theta, /**/ real *len_theta) {
+    int nv, ne, e, h;
     int i, j;
     real cur;
 
     nv = size.nv;
     ne = size.ne;
 
-    zero(nv, H);
+    zero(nv, len_theta);
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
         get_ij(h, he, /**/ &i, &j);
         cur = len[e]*theta[e];
-        H[i] += cur; H[j] += cur;
+        len_theta[i] += cur; len_theta[j] += cur;
     }
-    for (v = 0; v < nv; v++)
-        H[v] /= area[v];
     return HE_OK;
 }
 
@@ -261,7 +269,8 @@ real he_f_canham_energy(T *q, He *he,
     Size size;
     Param param;
     real K;
-    real eng, *area, *H, *energy, *theta, *len;
+    real eng, *area, *H, *energy, *theta, *len, *len_theta;
+    real area_tot;
     int nv;
 
     size = q->size;
@@ -274,16 +283,23 @@ real he_f_canham_energy(T *q, He *he,
     energy = q->energy;
     len = q->len;
     theta = q->theta;
+    len_theta = q->len_theta;
 
     nv = size.nv;
 
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
+    compute_len_theta(he, size, len, theta, /**/ len_theta);
     compute_area(he, size, x, y, z, /**/ area);
-    compute_H(he, size, len, theta, area, /**/ H);
+    divide(nv, len_theta, area, /**/ H);
+    
     compute_energy(param, nv, area, H, /**/ energy);
-
     scale(nv, K/8, energy);
+
+    area_tot  = sum(nv, area);
+
+    MSG("area: %g", area_tot);
+    
     eng = sum(nv, energy);
     return eng;
 }
@@ -372,8 +388,7 @@ int he_f_canham_force(T *q, He *he,
     Param param;
     int nv;
     real K;
-    real *area;
-    real *theta, *len, *H;
+    real *theta, *len, *area, *len_theta, *H;
     real *fx, *fy, *fz;
 
     param = q->param;
@@ -383,6 +398,7 @@ int he_f_canham_force(T *q, He *he,
     area = q->area;
     theta = q->theta;
     len = q->len;
+    len_theta = q->len_theta;
     H = q->H;
     fx = q->fx; fy = q->fy; fz = q->fz;
 
@@ -391,9 +407,9 @@ int he_f_canham_force(T *q, He *he,
 
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
+    compute_len_theta(he, size, len, theta, /**/ len_theta);
     compute_area(he, size, x, y, z, /**/ area);
-
-    compute_H(he, size, len, theta, area, /**/ H);
+    divide(nv, len_theta, area, /**/ H);
 
     force_len(param, he, size, theta,  H, x, y, z, /**/ fx, fy, fz);
     force_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
