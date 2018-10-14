@@ -27,9 +27,12 @@
 typedef struct Size Size;
 struct Size { int nv, ne, nt; };
 
+typedef struct Param Param;
+struct Param { real K, H0; };
+
 struct T {
     Size size;
-    real K;
+    Param param;
     real *area, *energy;
     real *theta, *len, *H;
     real *fx, *fy, *fz;
@@ -78,6 +81,7 @@ int he_f_canham_ini(real K, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
     Size size;
+    Param param;
 
     MALLOC(1, &q);
 
@@ -85,7 +89,9 @@ int he_f_canham_ini(real K, He *he, T **pq) {
     ne = he_ne(he);
     nt = he_nt(he);
 
-    q->K = K;
+    param.K = K;
+    q->param = param;
+
 
     size.nv = nv;
     size.nt = nt;
@@ -255,14 +261,17 @@ static int compute_energy(int nv, real *area, real *H, /**/ real *energy) {
 }
 
 real he_f_canham_energy(T *q, He *he,
-                      const real *x, const real *y, const real *z) {
+                        const real *x, const real *y, const real *z) {
     Size size;
+    Param param;
     real K;
     real eng, *area, *H, *energy, *theta, *len;
     int nv;
 
     size = q->size;
-    K = q->K;
+
+    param = q->param;
+    K = param.K;
 
     area = q->area;
     H = q->H;
@@ -359,14 +368,17 @@ int he_f_canham_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx_tot, real *fy_tot, real *fz_tot) {
     Size size;
+    Param param;
     int nv;
     real K;
     real *area;
     real *theta, *len, *H;
     real *fx, *fy, *fz;
 
-    K = q->K;
+    param = q->param;
     size = q->size;
+
+    K = param.K;
     area = q->area;
     theta = q->theta;
     len = q->len;
