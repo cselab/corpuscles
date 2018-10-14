@@ -13,7 +13,6 @@
 #include <he/util.h>
 #include <he/macro.h>
 #include <he/vec.h>
-#include <he/vtk.h>
 #define FMT_IN   XE_REAL_IN
 
 static const char **argv;
@@ -69,9 +68,9 @@ static int arg() {
     str(name); scl(&h); num(&every);
     if (every < 1)
         ER("ever < 1");
+    return HE_OK;
 }
 
-static real vabs(real x, real y, real z) { return sqrt(x*x + y*y + z*z); }
 static int diff(int id, /**/ real f[3]) {
     real tmp, e, eh;
     enum {X, Y, Z};
@@ -79,13 +78,13 @@ static int diff(int id, /**/ real f[3]) {
     tmp = xx[id]; xx[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[X] = (eh - e)/h; xx[id] = tmp;
     tmp = yy[id]; yy[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Y] = (eh - e)/h; yy[id] = tmp;
     tmp = zz[id]; zz[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Z] = (eh - e)/h; zz[id] = tmp;
+    return HE_OK;
 }
 
 static void main0() {
     enum {X, Y, Z};
     int i;
-    real e, e1, r[3], f[3];
-    real eh, tmp;
+    real e, f[3];
     param.Kb = 1;
     param.C0 = param.Kad = param.DA0D = 0;
 
@@ -99,12 +98,7 @@ static void main0() {
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
         printf("%g %g\n", fx[i], f[X]);
-        fdx[i] = f[X] - fx[i];
     }
-
-    const real *scalars[] = {fx, fy, fz, fdx, NULL};
-    const char *names[]   = {"fx", "fy", "fz", "fdx", NULL};
-    he_vtk_write(he, xx, yy, zz, scalars, names, "q.vtk");
 
     bending_fin(bending);
 }
