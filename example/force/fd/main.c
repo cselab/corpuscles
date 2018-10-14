@@ -84,10 +84,10 @@ static void main0() {
     enum {X, Y, Z};
     int i;
     real e, f[3];
-    param.Kb = 0;
-    param.C0 = 0;
+    param.Kb = 1;
+    param.C0 = 2;
     param.Kad = 1;
-    param.DA0D = 0;
+    param.DA0D = 3;
 
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);

@@ -233,7 +233,6 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
     real a[3], b[3], c[3], d[3];
 
     ne = size.ne;
-
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
         if (bnd(h)) continue;
@@ -450,9 +449,9 @@ static int fad_area(He *he, Size size, real coef,
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
         dtri_area(a, b, c, da, db, dc);
-        vec_scalar_append(da, coef/3, i, fx, fy, fz);
-        vec_scalar_append(db, coef/3, j, fx, fy, fz);
-        vec_scalar_append(dc, coef/3, k, fx, fy, fz);
+        vec_scalar_append(da, coef, i, fx, fy, fz);
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
     return HE_OK;
 }
@@ -510,9 +509,10 @@ int he_f_canham_force(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (len_theta_tot/2 - DA0D*H0)/area_tot;
 
-    fad_len(he, size, scurv/2, theta, x, y, z, /**/ fxad, fyad, fzad);
-    fad_theta(he, size, scurv/2, len, x, y, z, /**/ fxad, fyad, fzad);
-    fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);       scale(nv, pi*Kad, fxad);
+    fad_len(he, size, scurv, theta, x, y, z, /**/ fxad, fyad, fzad);
+    fad_theta(he, size, -scurv, len, x, y, z, /**/ fxad, fyad, fzad);
+    fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);
+    scale(nv, pi*Kad, fxad);
     scale(nv, pi*Kad, fyad);
     scale(nv, pi*Kad, fzad);
 
