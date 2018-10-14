@@ -46,7 +46,7 @@ static void zero(int n, real *a) {
         a[i] = 0;
 }
 
-static real sum(int n, real *a) {
+static real sum(int n, const real *a) {
     int i;
     real s;
     HeSum *sum;
@@ -258,7 +258,8 @@ static int compute_len_theta(He *he, Size size, real *len, real *theta, /**/ rea
         h = hdg_edg(e);
         get_ij(h, he, /**/ &i, &j);
         cur = len[e]*theta[e];
-        len_theta[i] += cur; len_theta[j] += cur;
+        len_theta[i] += cur;
+        len_theta[j] += cur;
     }
     return HE_OK;
 }
@@ -305,9 +306,10 @@ real he_f_canham_energy(T *q, He *he,
     compute_len_theta(he, size, len, theta, /**/ len_theta);
     compute_area(he, size, x, y, z, /**/ area);
     divide(nv, len_theta, area, /**/ H);
+    scale(nv, 0.25, /**/ H);
 
     compute_energy(param, nv, area, H, /**/ energy);
-    scale(nv, K/8, energy);
+    scale(nv, 2*K, energy);
     eng_bend = sum(nv, energy);
 
     /* Ead */
@@ -315,7 +317,6 @@ real he_f_canham_energy(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (2*len_theta_tot - DA0D*H0)/area_tot;
     eng_ad = pi*Kad*area_tot*scurv*scurv/2; /* TODO */
-    MSG("eng_bend, eng_ad: %g %g", eng_bend, eng_ad);
     return eng_bend + eng_ad;
 }
 
@@ -337,7 +338,7 @@ static int f_len(Param param, He *he, Size size,
         vec_get(i, xx, yy, zz, /**/ b);
         vec_get(j, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
-        coef =  2*(H[i] + H[j] - 2*H0)*theta[e];
+        coef =  (H[i] + H[j] - 2*H0)*theta[e];
         vec_scalar_append(db, coef, i, fx, fy, fz);
         vec_scalar_append(dc, coef, j, fx, fy, fz);
     }
@@ -364,7 +365,7 @@ static int f_theta(Param param, He *he, Size size,
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
-        coef =  -2*(H[j] + H[k] - 2*H0)*len[e];
+        coef =  -(H[j] + H[k] - 2*H0)*len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -386,7 +387,7 @@ static int f_area(Param param, He *he, Size size, const real *H,
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
         dtri_area(a, b, c, da, db, dc);
-        coef = -(H[i]*H[i] + H[j]*H[j] + H[k]*H[k] - 3*H0*H0)/3;
+        coef = -2*(H[i]*H[i] + H[j]*H[j] + H[k]*H[k] - 3*H0*H0)/3;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -493,11 +494,12 @@ int he_f_canham_force(T *q, He *he,
     compute_len_theta(he, size, len, theta, /**/ len_theta);
     compute_area(he, size, x, y, z, /**/ area);
     divide(nv, len_theta, area, /**/ H);
+    scale(nv, 0.25, /**/ H);
 
     f_len(param, he, size, theta,  H, x, y, z, /**/ fx, fy, fz);
     f_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
     f_area(param, he, size, H,  x, y, z, /**/ fx, fy, fz);
-    scale(nv, K/8, fx); scale(nv, K/8, fy); scale(nv, K/8, fz);
+    scale(nv, K, fx); scale(nv, K, fy); scale(nv, K, fz);
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
