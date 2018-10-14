@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <stdlib.h>
 
 #include <real.h>
 
@@ -16,10 +17,10 @@
 #include <he/dedg.h>
 #include <he/ddih.h>
 #include <he/dtri.h>
+#include <he/bending.h>
 #include <he/x.h>
 #include <alg/x.h>
 #include <alg/min.h>
-#include <stdlib.h>
 
 static real Kb;
 static void zero(int n, real *a) {
@@ -35,64 +36,6 @@ static real A0, V0;
 static const char **argv;
 static char bending[4049];
 static const char *me = "min/visc";
-
-enum {KANTOR, GOMPPER, JUELICHER, MEYER};
-static int btype;
-static int f_bending_ini(const char *bending, real Kb) {
-  real C0, Kad, DA0D, Da0;
-  if (util_eq(bending, "kantor")) {
-    btype = KANTOR;
-    f_kantor_ini(Kb);
-  }
-  else if (util_eq(bending, "juelicher")) {
-    btype = JUELICHER;
-    Kad = Da0 = 0;
-    f_juelicher_ini(Kb, Kad, Da0);
-  }
-  else if (util_eq(bending, "gompper")) {
-    btype = GOMPPER;
-    C0 = Kad = DA0D = 0;
-    f_gompper_ini(Kb, C0, Kad, DA0D);
-  }
-  else if (util_eq(bending, "meyer")) {
-    btype = MEYER;
-    C0 = Kad = DA0D = 0;
-    f_meyer_ini(Kb, C0, Kad, DA0D);
-  } else
-    ER("unknown bending type: %s", bending);
-  return HE_OK;
-}
-
-static int f_bending_fin() {
-    switch (btype) {
-    case KANTOR: return f_kantor_fin();
-    case GOMPPER: return f_gompper_fin();
-    case JUELICHER: return f_juelicher_fin();
-    case MEYER: return f_meyer_fin();
-    }
-    ER("unknown btype: %d", btype);
-}
-
-static real f_bending_energy(const real *x, const real *y, const real *z) {
-    switch (btype) {
-    case KANTOR: return f_kantor_energy(x, y, z);
-    case GOMPPER: return f_gompper_energy(x, y, z);
-    case JUELICHER: return f_juelicher_energy(x, y, z);
-    case MEYER: return f_meyer_energy(x, y, z);
-    }
-    ER("unknown btype: %d", btype);
-}
-
-static real f_bending_force(const real *x, const real *y, const real *z,
-                            /**/ real *fx, real *fy, real *fz) {
-    switch (btype) {
-    case KANTOR: return f_kantor_force(x, y, z, /**/ fx, fy, fz);
-    case GOMPPER: return f_gompper_force(x, y, z, /**/ fx, fy, fz);
-    case JUELICHER: return f_juelicher_force(x, y, z, /**/ fx, fy, fz);
-    case MEYER: return f_meyer_force(x, y, z, /**/ fx, fy, fz);
-    }
-    ER("unknown btype: %d", btype);
-}
 
 static void usg() {
     fprintf(stderr, "%s kantor/gompper/juelicher/meyer rVolume Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
@@ -247,6 +190,8 @@ int main(int __UNUSED argc, const char *v[]) {
     real a0;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
+    BendingParam bending_param;
+    
     argv = v; argv++;
     arg();
     srand(time(NULL));
@@ -262,7 +207,10 @@ int main(int __UNUSED argc, const char *v[]) {
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
     f_edg_sq_ini(Ke);
-    f_bending_ini(bending, Kb);
+
+    bending_param.Kb = Kb;
+    bending_param.C0 = bending_param.Kad = bending_param.DA0D = 0;
+    f_bending_ini(bending, bending_param);
 
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
     MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
