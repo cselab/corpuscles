@@ -286,7 +286,7 @@ static int force_len(He *he, Size size,
     ne = size.ne;
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
-         get_ij(h, he, /**/ &j, &k);
+        get_ij(h, he, /**/ &j, &k);
         vec_get(j, xx, yy, zz, /**/ b);
         vec_get(k, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
@@ -317,8 +317,7 @@ static int force_theta(He *he, Size size,
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
-        coef =  -(curva_mean[j]/area[j] +
-                  curva_mean[k]/area[k])*len[e]/4;
+        coef =  -(curva_mean[j]/area[j] + curva_mean[k]/area[k])*len[e]/4;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -334,7 +333,7 @@ static int force_area(He *he, Size size, /**/
     int nt, t, i, j, k;
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
-    real coef;
+    real c1, c2, coef;
 
     nt = size.nt;
 
@@ -342,9 +341,11 @@ static int force_area(He *he, Size size, /**/
         get_ijk(t, he, &i, &j, &k);
         get3(xx, yy, zz, i, j, k, a, b, c);
         dtri_area(a, b, c, da, db, dc);
-        coef = (curv[i]*curv[i]/area[i]/area[i] +
-                curv[j]*curv[j]/area[j]/area[j] +
-                curv[k]*curv[k]/area[k]/area[k])/24;
+        c1 = -1/24.;
+        c2 = (curv[i]*curv[i]/area[i]/area[i] +
+              curv[j]*curv[j]/area[j]/area[j] +
+              curv[k]*curv[k]/area[k]/area[k]);
+        coef = c1 * c2;
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
