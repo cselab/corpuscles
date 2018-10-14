@@ -31,7 +31,7 @@ struct T {
     Size size;
     real K;
     real *area, *curva_mean, *energy;
-    real *theta, *len;
+    real *theta, *len, *H;
     real *fx, *fy, *fz;
 };
 
@@ -93,6 +93,8 @@ int he_f_canham_ini(real K, He *he, T **pq) {
     q->size = size;
 
     MALLOC(nv, &q->curva_mean);
+    MALLOC(nv, &q->H);
+
     MALLOC(nv, &q->area);
     MALLOC(nv, &q->energy);
     MALLOC(ne, &q->theta);
@@ -107,6 +109,7 @@ int he_f_canham_ini(real K, He *he, T **pq) {
 
 int he_f_canham_fin(T *q) {
     FREE(q->curva_mean);
+    FREE(q->H);
     FREE(q->area);
     FREE(q->energy);
     FREE(q->theta);
@@ -180,7 +183,7 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
     real area0;
     nt = size.nt;
     nv = size.nv;
-    
+
     zero(nv, area);
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, &i, &j, &k);
@@ -246,12 +249,31 @@ static int compute_mean_curv(He *he, Size size, real *len, real *theta,
     return HE_OK;
 }
 
-static int compute_energy(Size size,
-                          real *area, real *curva_mean, /**/ real *energy) {
-    int v, nv;
+static int compute_H(He *he, Size size, real *len, real *theta, real *area, /**/ real *H) {
+    int nv, ne, v, e, h;
+    int i, j;
+    real cur;
+
     nv = size.nv;
+    ne = size.ne;
+
+    zero(nv, H);
+    for (e = 0; e < ne; e++) {
+        h = hdg_edg(e);
+        get_ij(h, he, /**/ &i, &j);
+        cur = len[e]*theta[e];
+        H[i] += cur;
+        H[j] += cur;
+    }
     for (v = 0; v < nv; v++)
-        energy[v] = curva_mean[v]*curva_mean[v]/area[v];
+        H[v] /= area[v];
+    return HE_OK;
+}
+
+static int compute_energy(int nv, real *area, real *H, /**/ real *energy) {
+    int v;
+    for (v = 0; v < nv; v++)
+        energy[v] = H[v]*H[v]*area[v];
     return HE_OK;
 }
 
@@ -259,7 +281,7 @@ real he_f_canham_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     Size size;
     real K;
-    real eng, *area, *curva_mean, *energy, *theta, *len;
+    real eng, *area, *H, *curva_mean, *energy, *theta, *len;
     int nv;
 
     size = q->size;
@@ -267,17 +289,21 @@ real he_f_canham_energy(T *q, He *he,
 
     area = q->area;
     curva_mean = q->curva_mean;
+    H = q->H;
     energy = q->energy;
     len = q->len;
     theta = q->theta;
 
     nv = size.nv;
 
-    compute_area(he, size, x, y, z, /**/ area);
     compute_len(he, size, x, y, z, /**/ len);
     compute_theta(he, size, x, y, z, /**/ theta);
+    compute_area(he, size, x, y, z, /**/ area);
+
     compute_mean_curv(he, size, len, theta, /**/ curva_mean);
-    compute_energy(size, area, curva_mean, /**/ energy);
+    compute_H(he, size, len, theta, area, /**/ H);
+
+    compute_energy(nv, area, H, /**/ energy);
 
     scale(nv, K/8, energy);
     eng = sum(nv, energy);
@@ -390,7 +416,7 @@ int he_f_canham_force(T *q, He *he,
     force_area(he, size, curva_mean, area,  x, y, z, /**/ fx, fy, fz);
 
     scale(nv, K/8, fx); scale(nv, K/8, fy); scale(nv, K/8, fz);
-    
+
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
     plus(nv, fz, /*io*/ fz_tot);
