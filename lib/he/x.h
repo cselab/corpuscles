@@ -69,7 +69,7 @@ int f_kantor_fin();
 real f_kantor_energy(const real *x, const real *y, const real *z);
 int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
-int f_juelicher_ini(real K, real C0, real Kad);
+int f_juelicher_ini(real K, real C0, real Kad, real DA0D);
 int f_juelicher_fin();
 real f_juelicher_energy(const real *x, const real *y, const real *z);
 int f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
@@ -77,7 +77,6 @@ int f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx
 int f_juelicher_curva_mean(/**/ real**);
 int f_juelicher_energy_ver(/**/ real**);
 int f_juelicher_area_ver(/**/ real**);
-int f_juelicher_fad(/**/ real**, real**, real**);
 
 int f_gompper_ini(real Kb, real C0, real Kad, real DA0D);
 int f_gompper_fin();

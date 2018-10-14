@@ -261,8 +261,8 @@ int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, r
     return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
 }
 
-int f_juelicher_ini(real K, real C0, real Kad) {
-    he_f_juelicher_ini(K, C0, Kad, he, /**/ &f_juelicher);
+int f_juelicher_ini(real K, real C0, real Kad, real DA0D) {
+    he_f_juelicher_ini(K, C0, Kad, DA0D, he, /**/ &f_juelicher);
     return HE_OK;
 }
 int f_juelicher_fin() {
@@ -283,9 +283,6 @@ int f_juelicher_energy_ver(real **p) {
 }
 int f_juelicher_area_ver(real **p) {
     return he_f_juelicher_area_ver(f_juelicher, p);
-}
-int f_juelicher_fad(real **x, real **y, real **z) {
-    return he_f_juelicher_fad(f_juelicher, /**/ x, y, z);
 }
 int f_juelicher_curva_mean_ver(real **p) {
     return he_f_juelicher_curva_mean(f_juelicher, p);
