@@ -19,7 +19,6 @@ static const char **argv;
 static char name[4048];
 
 static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng, h;
-static real *fdx, *fdy, *fdz;
 static int nv, nt, every;
 static He *he;
 static Bending *bending;
@@ -120,7 +119,6 @@ int main(int __UNUSED argc, const char *v[]) {
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
     MALLOC(nv, &rr); MALLOC(nv, &fm);
     CALLOC(nv, &fx);  CALLOC(nv, &fy);  CALLOC(nv, &fz);
-    CALLOC(nv, &fdx); CALLOC(nv, &fdy); CALLOC(nv, &fdz);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
@@ -128,7 +126,6 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(xx); FREE(yy); FREE(zz);
     FREE(rr); FREE(fm);
     FREE(fx); FREE(fy); FREE(fz);
-    FREE(fdx); FREE(fdy); FREE(fdz);
 
     he_off_fin(off);
     he_fin(he);
