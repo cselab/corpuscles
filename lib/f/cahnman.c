@@ -12,7 +12,7 @@
 #include "he/dtri.h"
 #include "he/sum.h"
 
-#include "he/f/cahnman.h"
+#include "he/f/canham.h"
 
 #define T HeFCahnman
 
@@ -74,7 +74,7 @@ static int scale(int n, real sc, /*io*/ real *a) {
     return HE_OK;
 }
 
-int he_f_cahnman_ini(real K, He *he, T **pq) {
+int he_f_canham_ini(real K, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
     Size size;
@@ -105,7 +105,7 @@ int he_f_cahnman_ini(real K, He *he, T **pq) {
     return HE_OK;
 }
 
-int he_f_cahnman_fin(T *q) {
+int he_f_canham_fin(T *q) {
     FREE(q->curva_mean);
     FREE(q->area);
     FREE(q->energy);
@@ -255,7 +255,7 @@ static int compute_energy(Size size,
     return HE_OK;
 }
 
-real he_f_cahnman_energy(T *q, He *he,
+real he_f_canham_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     Size size;
     real K;
@@ -359,7 +359,7 @@ static int force_area(He *he, Size size, /**/
     return HE_OK;
 }
 
-int he_f_cahnman_force(T *q, He *he,
+int he_f_canham_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx_tot, real *fy_tot, real *fz_tot) {
     Size size;
@@ -398,17 +398,17 @@ int he_f_cahnman_force(T *q, He *he,
     return HE_OK;
 }
 
-int he_f_cahnman_curva_mean(T *q, /**/ real **pa) {
+int he_f_canham_curva_mean(T *q, /**/ real **pa) {
     *pa = q->curva_mean;
     return HE_OK;
 }
 
-int he_f_cahnman_energy_ver(T *q, /**/ real **pa) {
+int he_f_canham_energy_ver(T *q, /**/ real **pa) {
     *pa = q->energy;
     return HE_OK;
 }
 
-int he_f_cahnman_area_ver(T *q, /**/ real **pa) {
+int he_f_canham_area_ver(T *q, /**/ real **pa) {
     *pa = q->area;
     return HE_OK;
 }
