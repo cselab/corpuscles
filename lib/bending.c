@@ -213,32 +213,32 @@ int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
 
 
 /* begin canham */
-typedef struct Cahnman Cahnman;
-struct Cahnman {T bending; HeFCahnman *local; };
+typedef struct Canham Canham;
+struct Canham {T bending; HeFCanham *local; };
 static int canham_fin(T *q) {
     int status;
-    Cahnman *b = CONTAINER_OF(q, Cahnman, bending);
+    Canham *b = CONTAINER_OF(q, Canham, bending);
     status = he_f_canham_fin(b->local);
     FREE(q);
     return status;
 }
 static int canham_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz) {
-    Cahnman *b = CONTAINER_OF(q, Cahnman, bending);
+    Canham *b = CONTAINER_OF(q, Canham, bending);
     return he_f_canham_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
 static real canham_energy(T *q, He *he, const real *x, const real *y, const real *z) {
-    Cahnman *b = CONTAINER_OF(q, Cahnman, bending);
+    Canham *b = CONTAINER_OF(q, Canham, bending);
     return he_f_canham_energy(b->local, he, x, y, z);
 }
 static int canham_energy_ver(T *q, /**/ real **e) {
-    Cahnman *b = CONTAINER_OF(q, Cahnman, bending);
+    Canham *b = CONTAINER_OF(q, Canham, bending);
     return he_f_canham_energy_ver(b->local, /**/ e);
 }
 static Vtable canham_vtable = { canham_fin, canham_force, canham_energy, canham_energy_ver};
 int bending_canham_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb;
-    Cahnman *q;
+    Canham *q;
     Kb  = param.Kb;
     MALLOC(1, &q);
     q->bending.vtable = &canham_vtable;

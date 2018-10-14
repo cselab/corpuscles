@@ -14,7 +14,7 @@
 
 #include "he/f/canham.h"
 
-#define T HeFCahnman
+#define T HeFCanham
 
 #    define  nxt(h)     he_nxt(he, h)
 #    define  flp(h)     he_flp(he, h)

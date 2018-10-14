@@ -1,4 +1,4 @@
-#define T HeFCahnman
+#define T HeFCanham
 
 typedef struct He He;
 typedef struct T T;
