@@ -33,9 +33,8 @@ struct Param { real K, H0; };
 struct T {
     Size size;
     Param param;
-    real *area, *energy;
-    real *theta, *len, *H;
-    real *fx, *fy, *fz;
+    real *theta, *len, *area, *H;
+    real *energy, *fx, *fy, *fz;
 };
 
 static void zero(int n, real *a) {
@@ -261,7 +260,7 @@ real he_f_canham_energy(T *q, He *he,
                         const real *x, const real *y, const real *z) {
     Size size;
     Param param;
-    real K, H0;
+    real K;
     real eng, *area, *H, *energy, *theta, *len;
     int nv;
 
@@ -269,7 +268,6 @@ real he_f_canham_energy(T *q, He *he,
 
     param = q->param;
     K = param.K;
-    H0 = param.H0;
 
     area = q->area;
     H = q->H;
