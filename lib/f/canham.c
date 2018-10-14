@@ -320,10 +320,10 @@ real he_f_canham_energy(T *q, He *he,
     return eng_bend + eng_ad;
 }
 
-static int force_len(Param param, He *he, Size size,
-                     const real *theta, const real *H,
-                     const real *xx, const real *yy, const real *zz, /**/
-                     real *fx, real *fy, real *fz) {
+static int f_len(Param param, He *he, Size size,
+                 const real *theta, const real *H,
+                 const real *xx, const real *yy, const real *zz, /**/
+                 real *fx, real *fy, real *fz) {
     int h, e, i, j;
     int ne;
     real coef, H0;
@@ -345,10 +345,10 @@ static int force_len(Param param, He *he, Size size,
     return HE_OK;
 }
 
-static int force_theta(Param param, He *he, Size size,
-                       const real *len, const real *H,
-                       const real *xx, const real *yy, const real *zz,
-                       /**/ real *fx, real *fy, real *fz) {
+static int f_theta(Param param, He *he, Size size,
+                   const real *len, const real *H,
+                   const real *xx, const real *yy, const real *zz,
+                   /**/ real *fx, real *fy, real *fz) {
     int h, e, ne;
     int i, j, k, l;
     real coef, H0;
@@ -374,9 +374,9 @@ static int force_theta(Param param, He *he, Size size,
     return HE_OK;
 }
 
-static int force_area(Param param, He *he, Size size, const real *H,
-                      const real *xx, const real *yy, const real *zz,
-                      /**/ real *fx, real *fy, real *fz) {
+static int f_area(Param param, He *he, Size size, const real *H,
+                  const real *xx, const real *yy, const real *zz,
+                  /**/ real *fx, real *fy, real *fz) {
     int nt, t, i, j, k;
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
@@ -433,9 +433,9 @@ int he_f_canham_force(T *q, He *he,
     compute_area(he, size, x, y, z, /**/ area);
     divide(nv, len_theta, area, /**/ H);
 
-    force_len(param, he, size, theta,  H, x, y, z, /**/ fx, fy, fz);
-    force_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
-    force_area(param, he, size, H,  x, y, z, /**/ fx, fy, fz);
+    f_len(param, he, size, theta,  H, x, y, z, /**/ fx, fy, fz);
+    f_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
+    f_area(param, he, size, H,  x, y, z, /**/ fx, fy, fz);
     scale(nv, K/8, fx); scale(nv, K/8, fy); scale(nv, K/8, fz);
     plus(nv, fx, /*io*/ fx_tot);
     plus(nv, fy, /*io*/ fy_tot);
