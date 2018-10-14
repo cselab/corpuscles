@@ -307,7 +307,7 @@ real he_f_canham_energy(T *q, He *he,
 }
 
 static int force_len(He *he, Size size,
-                     const real *theta,  const real *curv, const real *area,
+                     const real *theta, const real *H,
                      const real *xx, const real *yy, const real *zz, /**/
                      real *fx, real *fy, real *fz) {
     int h, e, i, j;
@@ -321,7 +321,7 @@ static int force_len(He *he, Size size,
         vec_get(i, xx, yy, zz, /**/ b);
         vec_get(j, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
-        coef =  2*(curv[i]/area[i] + curv[j]/area[j])*theta[e];
+        coef =  2*(H[i] + H[j])*theta[e];
         vec_scalar_append(db, coef, i, fx, fy, fz);
         vec_scalar_append(dc, coef, j, fx, fy, fz);
     }
@@ -407,9 +407,10 @@ int he_f_canham_force(T *q, He *he,
     compute_theta(he, size, x, y, z, /**/ theta);
     compute_area(he, size, x, y, z, /**/ area);
 
+    compute_H(he, size, len, theta, area, /**/ H);
     compute_mean_curv(he, size, len, theta, /**/ curva_mean);
 
-    force_len(he, size, theta,  curva_mean, area, x, y, z, /**/ fx, fy, fz);
+    force_len(he, size, theta,  H, x, y, z, /**/ fx, fy, fz);
     force_theta(he, size, curva_mean, area, len, x, y, z, /**/ fx, fy, fz);
     force_area(he, size, curva_mean, area,  x, y, z, /**/ fx, fy, fz);
 
