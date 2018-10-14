@@ -24,7 +24,7 @@
 #    define  hdg_tri(t) he_hdg_tri(he, t)
 #    define  bnd(h)     he_bnd(he, h)
 
-const real pi = 3.141592653589793115997964;
+static const real pi = 3.141592653589793115997964;
 
 typedef struct Size Size;
 struct Size { int nv, ne, nt; };

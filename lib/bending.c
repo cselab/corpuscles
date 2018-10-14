@@ -158,16 +158,17 @@ static int juelicher_energy_ver(T *q, /**/ real **e) {
 }
 static Vtable juelicher_vtable = { juelicher_fin, juelicher_force, juelicher_energy, juelicher_energy_ver};
 int bending_juelicher_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb, C0, Kad;
+    real Kb, C0, Kad, DA0D;
     Juelicher *q;
     Kb  = param.Kb;
     C0 = param.C0;
     Kad = param.Kad;
+    DA0D = param.DA0D;
 
     MALLOC(1, &q);
     q->bending.vtable = &juelicher_vtable;
     *pq = &q->bending;
-    return he_f_juelicher_ini(Kb, C0, Kad, he, &q->local);
+    return he_f_juelicher_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
 /* end juelicher */
 
