@@ -198,7 +198,7 @@ int main(int __UNUSED argc, const char *v[]) {
     V0 = target_volume(A0, rVolume);
     
     MSG("v0/volume(): %g", V0/volume());
-    MSG("area, volume, edg: %g %g", A0, V0);
+    MSG("area, volume; %g %g", A0, V0);
 
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
