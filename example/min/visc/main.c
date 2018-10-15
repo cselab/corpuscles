@@ -180,7 +180,7 @@ static void main0(real *vx, real *vy, real *vz,
     for (i = 0; /**/ ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.001*max_vec(vx, vy, vz);
+        rnd = 0.01*max_vec(vx, vy, vz);
         if (i % 1500 == 0) {
             do {
                 //equiangulate(&cnt);

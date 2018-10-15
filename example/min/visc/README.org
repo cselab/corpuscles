@@ -21,3 +21,5 @@
 ./main gompper 0.64 1.0 500.0  500.0   1.0 0.1  < ~/1.off > q
 
 ./main gompper 0.75   0.1 1 1  0.001  0.01 0 0  < ~/1.off > q
+
+./main juelicher 0.75   0.01 1 2  0.001  0.01 0 0  < ~/0.off > q
