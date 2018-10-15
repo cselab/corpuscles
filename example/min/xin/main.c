@@ -24,6 +24,12 @@
 
 static const real pi = 3.141592653589793115997964;
 
+static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real target_volume(real area, real v) { return v*sph_volume(area); }
+static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
+
+static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
+
 static real Kb, C0, DA0D;
 static void zero(int n, real *a) {
     int i;
@@ -34,7 +40,7 @@ static void zero(int n, real *a) {
 #define FMT_IN   XE_REAL_IN
 
 static real rVolume, Ka, Kga, Kv, Ke;
-static real A0, V0, e0;
+static real A0, V0;
 static const char **argv;
 static char bending[4049];
 static const char *me = "min/visc";
@@ -115,17 +121,6 @@ static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
     }
 }
 
-static void visc_lang(real mu,
-                      const real *vx, const real *vy, const real *vz, /*io*/
-                      real *fx, real *fy, real *fz) {
-    int i;
-    for (i = 0; i < NV; i++) {
-        fx[i] -= mu*vx[i];
-        fy[i] -= mu*vy[i];
-        fz[i] -= mu*vz[i];
-    }
-}
-
 static void visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
@@ -177,7 +172,7 @@ static void main0(real *vx, real *vy, real *vz,
             printf("\n");
             MSG("dt: %g", dt);
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
-            MSG("area, vol: %g, %g", area()/A0, volume()/V0);
+            MSG("area, vol, rVolume: %g %g %g", area()/A0, volume()/V0, reduced_volume(area(), volume()));
             off_write(XX, YY, ZZ, "q.off");
         }
         jigle(rnd, vx, vy, vz);        
@@ -186,11 +181,6 @@ static void main0(real *vx, real *vy, real *vz,
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
 }
-
-static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
-
 
 int main(int __UNUSED argc, const char *v[]) {
     real a0;
@@ -206,7 +196,6 @@ int main(int __UNUSED argc, const char *v[]) {
     A0 = area();
     a0 = A0/NT;
     V0 = target_volume(A0, rVolume);
-    e0 = eq_tri_edg(a0);
     
     MSG("v0/volume(): %g", V0/volume());
     MSG("area, volume, edg: %g %g", A0, V0);
