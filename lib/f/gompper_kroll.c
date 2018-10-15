@@ -489,13 +489,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
     vec_append(df, i, /**/ fx, fy, fz);
     vec_substr(df, j, /**/ fx, fy, fz);
 
-    //coef3 = 1.0 / 8.0 / cm[i];
-    //vec_scalar(lbisq_der, coef3, dcm);
-    
-    /*accumulate the derivative of mean curvature on vertices i and j*/
-    //vec_append(dcm, i, /**/ cm_dx, cm_dy, cm_dz);
-    //vec_substr(dcm, j, /**/ cm_dx, cm_dy, cm_dz);
-    
     /*+++++++++++++++++++++++++++++++++++
       force due to area-difference elasticity: part I
       +++++++++++++++++++++++++++++++++++*/
@@ -505,8 +498,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
     vec_scalar(lbisq_der, doef, df);
 
     /*accumulate the force on vertices i and j*/
-    //vec_append(df, i, /**/ fxad, fyad, fzad);
-    //vec_substr(df, j, /**/ fxad, fyad, fzad);
     vec_append(df, i, /**/ fx, fy, fz);
     vec_substr(df, j, /**/ fx, fy, fz);
 
@@ -544,16 +535,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
 
     coef3 = coef1 + coef2;
 
-    /*accumulate the derivative of mean curvature i, j, k*/
-    //vec_scalar_append(da1, coef3, i, /**/ cm_dx, cm_dy, cm_dz);
-    //vec_scalar_append(db1, coef3, j, /**/ cm_dx, cm_dy, cm_dz);
-    //vec_scalar_append(dc,  coef3, k, /**/ cm_dx, cm_dy, cm_dz);
-
-    /*accumulate the derivative of mean curvature i, j, l*/
-    //vec_scalar_append(da2, coef3, i, /**/ cm_dx, cm_dy, cm_dz);
-    //vec_scalar_append(db2, coef3, j, /**/ cm_dx, cm_dy, cm_dz);
-    //vec_scalar_append(dd,  coef3, l, /**/ cm_dx, cm_dy, cm_dz);
-
     /*+++++++++++++++++++++++++++++++++++
       force due to area-difference elasticity: part II
       +++++++++++++++++++++++++++++++++++*/
@@ -561,17 +542,11 @@ int he_f_gompper_kroll_force(T *q, He *he,
     doef *= (coef1 + coef2);
     
     /*accumulate the force on vertices i, j, k*/
-    //vec_scalar_append(da1, doef, i, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(db1, doef, j, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(dc,  doef, k, /**/ fxad, fyad, fzad);
     vec_scalar_append(da1, doef, i, /**/ fx, fy, fz);
     vec_scalar_append(db1, doef, j, /**/ fx, fy, fz);
     vec_scalar_append(dc,  doef, k, /**/ fx, fy, fz);
 
     /*accumulate the force on vertices i, j, l*/
-    //vec_scalar_append(da2, doef, i, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(db2, doef, j, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(dd,  doef, l, /**/ fxad, fyad, fzad);
     vec_scalar_append(da2, doef, i, /**/ fx, fy, fz);
     vec_scalar_append(db2, doef, j, /**/ fx, fy, fz);
     vec_scalar_append(dd,  doef, l, /**/ fx, fy, fz);
@@ -617,25 +592,17 @@ int he_f_gompper_kroll_force(T *q, He *he,
     vec_scalar(r, doef1, df);
     
     /*accumulate the force on vertices i and j*/
-    //vec_append(df, i, /**/ fxad, fyad, fzad);
-    //vec_substr(df, j, /**/ fxad, fyad, fzad);    
     vec_append(df, i, /**/ fx, fy, fz);
     vec_substr(df, j, /**/ fx, fy, fz);    
 
     doef2 = doef * rsq / 8.0;
     
     /*accumulate the force on vertices i, j, k*/
-    //vec_scalar_append(da1, doef2, i, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(db1, doef2, j, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(dc,  doef2, k, /**/ fxad, fyad, fzad);
     vec_scalar_append(da1, doef2, i, /**/ fx, fy, fz);
     vec_scalar_append(db1, doef2, j, /**/ fx, fy, fz);
     vec_scalar_append(dc,  doef2, k, /**/ fx, fy, fz);
 
     /*accumulate the force on vertices i, j, l*/
-    //vec_scalar_append(da2, doef2, i, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(db2, doef2, j, /**/ fxad, fyad, fzad);
-    //vec_scalar_append(dd,  doef2, l, /**/ fxad, fyad, fzad);
     vec_scalar_append(da2, doef2, i, /**/ fx, fy, fz);
     vec_scalar_append(db2, doef2, j, /**/ fx, fy, fz);
     vec_scalar_append(dd,  doef2, l, /**/ fx, fy, fz);
