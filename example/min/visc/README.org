@@ -1,14 +1,5 @@
 |    |   bi   |       |
 0  0.591   0.652
 
-./main juelicher 0.63   0.01 0.1 1 0       0.001 0 0 0 < ~/0.off > q
 
-./main gompper_kroll 0.63   0.01 0.1 1 0       0.001 0 0 0 < ~/0.off  > q
-main.c:248: v0/volume(): 1
-main.c:249: a0/area(): 1.35942
-main.c:250: area, volume, edg: 17.0012 4.15274
-main.c:217: cnt : 0
-main.c:221: dt: 0.01
-main.c:222: eng: 0.157316 2.01984e-13
-main.c:224: area, vol, rVolume: 0.735607 1 0.998555
-
+./main gompper_kroll 0.63   0 1 1 0       0.001 0 0 0 < ~/0.off  > q
