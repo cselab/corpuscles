@@ -49,7 +49,7 @@ static real sph_volume(real area) { return pow(area, 1.5)/(6*pi); }
 static real target_volume(real area, real v) { return v*sph_volume(area); }
 static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
 
-static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 2.0/3); }
+static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
 static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
@@ -87,9 +87,14 @@ void Force(const real *x, const real *y, const real *z, /**/
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
-    f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
+}
+
+void ForceVolume(const real *x, const real *y, const real *z, /**/
+           real *fx, real *fy, real *fz) {
+    zero(NV, fx); zero(NV, fy); zero(NV, fz);
+    f_volume_force(x, y, z, /**/ fx, fy, fz);
 }
 
 static void euler(real dt,
@@ -176,21 +181,36 @@ static real max_vec(real *fx, real *fy, real *fz) {
 
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int cnt, i;
+    int cnt, i, j;
     real dt, dt_max, h, mu, rnd;
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
+    int nsub;
     
-    dt_max = 0.05;
+    dt_max = 0.01;
     mu = 100.0;
     h = 0.01*e0;
+
+    nsub = 100;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; /**/ ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
         rnd = 0.01*max_vec(vx, vy, vz);
-        if (i % 1500 == 0) {
+        jigle(rnd, vx, vy, vz);        
+        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+
+        for (j = 0; j < nsub; j++) {
+            ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
+            visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+            euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+            euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+        }
+
+        if (i % 500 == 0) {
             do {
                 //equiangulate(&cnt);
                 cnt = 0;
@@ -204,10 +224,7 @@ static void main0(real *vx, real *vy, real *vz,
             MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
             off_write(XX, YY, ZZ, "q.off");
         }
-        jigle(rnd, vx, vy, vz);        
-        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+
     }
 }
 
