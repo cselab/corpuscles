@@ -408,8 +408,9 @@ int he_f_gompper_kroll_force(T *q, He *he,
   DA0D = q->DA0D;
 
   H0 = C0/2.0;
-
-
+  
+  //printf("Kb, C0, Kad, DA0D: %f, %f, %f, %f\n", Kb, C0, Kad, DA0D);
+  
   if (he_nv(he) != nv)
     ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
   if (he_ne(he) != ne)
@@ -460,8 +461,12 @@ int he_f_gompper_kroll_force(T *q, He *he,
     
     /*calculate derivative of Laplace-Beltrami operator: part I*/
     /*this is to calculate the derivative of relative position of i, j*/
-
-    coef =  Kb*(curva_mean[i] - H0) * area[i] / 2.0 / curva_mean[i];
+    
+    if (fabs(curva_mean[i]) < epsilon ) {
+      //printf("__FILE__, __LINE__, curva_mean too small!\n");
+      curva_mean[i] = epsilon;
+    }
+    coef  = Kb*(curva_mean[i]-H0)*area[i]/2.0/curva_mean[i];
 
     coef1 =  cot1 / area1;
     coef2 = -lbisq * cot1 /area1 / 2.0;
@@ -480,7 +485,13 @@ int he_f_gompper_kroll_force(T *q, He *he,
 
     if ( Kad > epsilon ) {
       
-      doef  = Kad*pi/area_tot*(cm_integral-DA0D/2)*area[i]/2.0/curva_mean[i];
+
+      if (fabs(curva_mean[i]) < epsilon ) {
+	printf("__FILE__, __LINE__, curva_mean too small!\n");
+	curva_mean[i] = epsilon;
+      }
+      
+      doef = Kad*pi/area_tot*(cm_integral-DA0D/2)*area[i]/2.0/curva_mean[i];
       
       vec_scalar(lbisq_der, doef, df);
       
