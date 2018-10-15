@@ -85,7 +85,7 @@ static void main0() {
     int i;
     real e, f[3];
     param.Kb = 1;
-    param.C0 = 1;
+    param.C0 = 0;
     param.Kad = 0;
     param.DA0D = 0;
 
@@ -98,7 +98,7 @@ static void main0() {
     MSG("energy: %g", e);
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
-        printf("%g %g\n", fx[i], -f[X]);
+        printf("%g %g\n", fx[i], f[X]);
     }
 
     bending_fin(bending);
