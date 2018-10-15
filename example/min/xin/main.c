@@ -154,33 +154,19 @@ static real Kin(real *vx, real *vy, real *vz) {
     return s;
 }
 
-static real max_vec(real *fx, real *fy, real *fz) {
-    int i;
-    real c, m;
-    m = 0;
-    for (i = 0; i < NV; i++) {
-        c = sqrt(fx[i]*fx[i] + fy[i]*fy[i] + fz[i]*fz[i]);
-        if (c > m)
-            m = c;
-    }
-    return m;
-}
-
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
     int cnt, i;
-    real dt, dt_max, h, mu, rnd;
+    real dt, mu, rnd;
     real *queue[] = {XX, YY, ZZ, NULL};
     
-    dt_max = 0.1;
     mu = 20.0;
-    h = 0.01*e0;
+    rnd = 0.0001;
+    dt = 1e-3;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; /**/ ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
-        dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.001*max_vec(vx, vy, vz);
         if (i % 1500 == 0) {
             do {
                 //equiangulate(&cnt);
