@@ -135,7 +135,7 @@ int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
 /* begin gompper_kroll */
 typedef struct Gompper_Kroll Gompper_Kroll;
 struct Gompper_Kroll {T bending; HeFGompper_Kroll *local; };
-static int gompper_fin(T *q) {
+static int gompper_kroll_fin(T *q) {
     int status;
     Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
     status = he_f_gompper_kroll_fin(b->local);
