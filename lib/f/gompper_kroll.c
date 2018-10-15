@@ -27,16 +27,18 @@ struct T {
   real Kb, C0, Kad, DA0D;
 
   int *T0, *T1, *T2;
-  real *l2, *t;
-
+  
+  real *len2, *cot;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
   real *energy, *area;
  
-  int nv, ne, nt;
+  int nv, ne, nt, nh;
 };
-static void get_edg(int i, int j, const real *x, const real *y, const real *z, /**/ real r[3]) {
+static void get_edg(const real *x, const real *y, const real *z,
+		    int i, int j,
+		    /**/ real r[3]) {
     real a[3], b[3];
     vec_get(i, x, y, z, a);
     vec_get(j, x, y, z, b);
@@ -58,6 +60,19 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
     return HE_OK;
+}
+void get4(const real *x, const real *y, const real *z,
+	  int i, int j, int k, int l, /**/
+          real a[3], real b[3], real c[3], real d[3]) {
+  
+  /*Given four indices i, j, k l of vertices,
+    return their positions in a, b, c, d.*/
+
+  vec_get(i, x, y, z, a);
+  vec_get(j, x, y, z, b);
+  vec_get(k, x, y, z, c);
+  vec_get(l, x, y, z, d);
+  
 }
 static void zero(int n, real *a) {
     int i;
@@ -83,17 +98,17 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
   q->nv = nv;
   q->ne = ne;
   q->nt = nt;
+  q->nh = nh;
   
   q->Kb   = Kb;
   q->C0   = C0;
   q->Kad  = Kad;
   q->DA0D = DA0D;
 
-  MALLOC(nh, &q->l2);
-  MALLOC(nh, &q->t);
-
   MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
-
+  
+  MALLOC(nh, &q->len2);
+  MALLOC(nh, &q->cot);
   MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
   MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
   MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
@@ -109,13 +124,13 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
 }
 int he_f_gompper_kroll_fin(T *q) {
   FREE(q->T0); FREE(q->T1); FREE(q->T2);
-    FREE(q->t); FREE(q->l2);
-    FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
-    FREE(q->normx);FREE(q->normy);FREE(q->normz);
-    FREE(q->curva_mean);FREE(q->curva_gauss);
-    FREE(q->energy); FREE(q->area);
-    FREE(q);
-    return HE_OK;
+  FREE(q->len2); FREE(q->cot); 
+  FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
+  FREE(q->normx);FREE(q->normy);FREE(q->normz);
+  FREE(q->curva_mean);FREE(q->curva_gauss);
+  FREE(q->energy); FREE(q->area);
+  FREE(q);
+  return HE_OK;
 }
 int he_f_gompper_kroll_area_ver(T *q, /**/ real **pa) {
   *pa = q->area;
@@ -145,7 +160,7 @@ int he_f_gompper_kroll_energy_ver(T *q, /**/ real**pa) {
   *pa = q->energy;
   return HE_OK;
 }
-static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
+static void compute_len2(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
     int nh;
     int h, n;
     int i, j;
@@ -154,7 +169,7 @@ static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/
     for (h = 0; h < nh; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        get_edg(i, j, x, y, z, /**/ r);
+        get_edg(x, y, z, i, j, /**/ r);
         H[h] = vec_dot(r, r);
     }
 }
@@ -173,14 +188,14 @@ static void compute_cot(He *he, const real *x, const real *y, const real *z, /**
         if (!bnd(h)) H[flp(h)] += cot;
     }
 }
-static void compute_area(He *he, const real *l2, const real *t, /**/ real *V) {
+static void compute_area(He *he, const real *len2, const real *t, /**/ real *V) {
     int nv, nh, h, i;
     nv = he_nv(he);
     zero(nv, V);
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         i = ver(h);
-        V[i] += t[h]*l2[h]/8;
+        V[i] += t[h]*len2[h]/8;
     }
 }
 static void compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
@@ -252,7 +267,6 @@ static int compute_curva_mean(T *q, He *he,
   
 }
 static real compute_energy_local(T *q, const real *curva_mean, const real *area, /**/ real *energy) {
-  
   real Kb, C0, H0;
   int i, nv;
   real energy_tot;
@@ -307,7 +321,7 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   int i, j, k, l;
   int *T0, *T1, *T2;
   
-  real *l2, *t;
+  real *len2, *cot;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean;
@@ -315,12 +329,13 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   real energy_tot;
   
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
-  l2 = q->l2; t = q->t;
+  len2 = q->len2; cot = q->cot;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
   curva_mean  = q->curva_mean;
-  area = q->area; energy = q->energy;
-
+  area = q->area;
+  energy = q->energy;
+  
   Kad = q->Kad;
   nv  = q->nv;
   nt  = he_nt(he);
@@ -333,12 +348,12 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   if (he_nv(he) != nv)
     ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
   
-  compute_l2(he, x, y, z, /**/ l2);
-  compute_cot(he, x, y, z, /**/ t);
-  compute_area(he, l2, t, /**/ area);
-  compute_laplace(he, x, t, area, /**/ lbx);
-  compute_laplace(he, y, t, area, /**/ lby);
-  compute_laplace(he, z, t, area, /**/ lbz);
+  compute_len2(he, x, y, z, /**/ len2);
+  compute_cot(he, x, y, z, /**/ cot);
+  compute_area(he, len2, cot, /**/ area);
+  compute_laplace(he, x, cot, area, /**/ lbx);
+  compute_laplace(he, y, cot, area, /**/ lby);
+  compute_laplace(he, z, cot, area, /**/ lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
   compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
   
@@ -350,117 +365,256 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   
   return energy_tot;
 }
-static void compute_force_t(T *q, He *he,
-			    const real *x, const real *y, const real *z,
-			    const real *t,
-			    const real *lbx, const real *lby, const real *lbz,
-			    /**/ real *fx, real *fy, real *fz) {
-  real Kb, C0, Kad, DA0D, H0;
-  int nh;
-  int h, n;
-  int i, j;
-  real r[3], ll[3], df[3];
-  real t0, l2;
-  
-  Kb   = q->Kb;
-  C0   = q->C0;
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
-  H0   = C0/2;
-  
-  nh = he_nh(he);
-  
-  for (h = 0; h < nh; h++) {
-    n = nxt(h); i = ver(h); j = ver(n);
-    t0 = t[h];
-    get_edg(i, j, x, y, z, /**/  r);
-    vec_get(i, lbx, lby, lbz, ll);
-    l2 = vec_dot(ll, ll);
-    vec_linear_combination(Kb*t0/2, ll, -Kb*t0*l2/8, r,  df);
-    vec_append(df, i, /**/ fx, fy, fz);
-    vec_substr(df, j, /**/ fx, fy, fz);
-  }
-  
-}
-static void compute_force_dt(T *q, He *he,
-			     const real *x, const real *y, const real *z,
-                             const real *lbx, const real *lby, const real *lbz,
-                             /**/ real *fx, real *fy, real *fz) {
-  real Kb, C0, Kad, DA0D, H0;
-  int nh;
-  int h, n, nn;
-  int i, j, k;
-  real r[3], a[3], b[3], c[3], da[3], db[3], dc[3];
-  real li[3], lk[3];
-  real dl, dd, r2, C;
-
-  Kb   = q->Kb;
-  C0   = q->C0;
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
-  H0   = C0/2;
-
-  nh = he_nh(he);
-  
-  for (h = 0; h < nh; h++) {
-    n = nxt(h); nn = nxt(n);
-    i = ver(h); j = ver(n); k = ver(nn);
-    get3(x, y, z, i, j, k,  a, b, c);
-    dtri_cot(a, b, c, /**/ da, db, dc);
-    get_edg(i, k, x, y, z, /**/ r);
-    vec_get(k, lbx, lby, lbz, /**/ lk);
-    vec_get(i, lbx, lby, lbz, /**/ li);
-    r2 = vec_dot(r, r);
-    dl = vec_dot(lk, lk) + vec_dot(li, li);
-    dd = vec_dot(li, r)  - vec_dot(lk, r);
-    C = Kb*dd/2 - Kb*r2*dl/16;
-    vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
-    vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
-    vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
-  }
-  
-}
 int he_f_gompper_kroll_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
-  int nv, nt;
+  int nv, nt, nh;
   int i, j, k, l;
+  int h, n, nn, fnf;
   int *T0, *T1, *T2;
 
-  real Kb;
-  real *l2, *t;
+  real Kb, C0, Kad, DA0D, H0;
+  real *len2, *cot;
   real *lbx, *lby, *lbz;
+  real *normx, *normy, *normz;
+  real *curva_mean;
   real *area;
+  real cm_integral, area_tot;
 
+  real cot1, area1, rsq;
+  real a[3], b[3], c[3], d[3], r[3];
+  real lbi[3], lbisq, lbisq_der[3];
+  real coef, coef1, coef2;
+  real doef, doef1, doef2;
+  real da1[3], db1[3], dc[3];
+  real da2[3], db2[3], dd[3];
+  real df[3], dcm[3];
+  real coef3;
 
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   area = q->area;
-  l2 = q->l2; t = q->t;
+  len2 = q->len2; cot = q->cot;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
 
   nv = q->nv;
-  Kb  = q->Kb;
+  nh = q->nh;
   
-    nt = he_nt(he);
-    for (l = 0; l < nt; l++) {
-      get_ijk(l, he, /**/ &i, &j, &k);
-      T0[l] = i; T1[l] = j; T2[l] = k;
-    }
+  Kb   = q->Kb;
+  C0   = q->C0;
+  Kad  = q->Kad;
+  DA0D = q->DA0D;
 
-    if (he_nv(he) != nv)
-        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
+  H0 = C0/2.0;
+  
+  for (i=0; i< nv; i++){
+    fx[i] = 0;
+    fy[i] = 0;
+    fz[i] = 0;
+  }
     
-    compute_l2(he, x, y, z, /**/ l2);
-    compute_cot(he, x, y, z, /**/ t);
-    compute_area(he, l2, t, /**/ area);
-    compute_laplace(he, x, t, area, /**/ lbx);
-    compute_laplace(he, y, t, area, /**/ lby);
-    compute_laplace(he, z, t, area, /**/ lbz);
+  if (he_nv(he) != nv)
+    ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
+  if (he_nh(he) != nh)
+    ERR(HE_INDEX, "he_nh(he)=%d != nh = %d", he_nh(he), nh);
+  
+  compute_len2(he, x, y, z, /**/ len2);
+  compute_cot(he, x, y, z, /**/ cot);
+  compute_area(he, len2, cot, /**/ area);
+  compute_laplace(he, x, cot, area, /**/ lbx);
+  compute_laplace(he, y, cot, area, /**/ lby);
+  compute_laplace(he, z, cot, area, /**/ lbz);
+  compute_norm(q, he, x, y, z, normx, normy, normz);
+  compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
+  cm_integral=compute_curva_mean_integral(q, curva_mean, area);
+  area_tot   =sum(nv, area);
+  
+  for (h = 0; h < nh; h++) {
+    
+    n = nxt(h); nn = nxt(n); fnf = flp(nxt(flp(h)));
+    i = ver(h); j = ver(n); k = ver(nn); l = ver(fnf);
+    
+    cot1  = cot[h];
+    area1 = area[i];
+    rsq   = len2[h];
+    
+    vec_get(i, lbx, lby, lbz, lbi);    
+    lbisq = vec_dot(lbi, lbi);
+    
+    /*###################################
+      ###################################
+      force part I
+      ###################################
+      ###################################*/
+    
+    /*calculate derivative of Laplace-Beltrami operator: part I*/
+    /*this is to calculate the derivative of relative position of i, j*/
 
-    compute_force_t(q, he, x, y, z, t, lbx, lby, lbz,
-                    /**/ fx, fy, fz);
-    compute_force_dt(q, he, x, y, z, lbx, lby, lbz,
-                     /**/ fx, fy, fz);
+    coef =  -Kb*(curva_mean[i] - H0) * area[i] / 2.0 / curva_mean[i];
 
-    return HE_OK;
+    coef1 =  cot1 / area1;
+    coef2 = -lbisq * cot1 /area1 / 2.0;
+    
+    vec_linear_combination(coef1, lbi, coef2, r, lbisq_der);
+
+    vec_scalar(lbisq_der, coef, df);
+    
+    /*accumulate the force on vertices i and j*/
+    vec_append(df, i, /**/ fx, fy, fz);
+    vec_substr(df, j, /**/ fx, fy, fz);
+
+    //coef3 = 1.0 / 8.0 / cm[i];
+    //vec_scalar(lbisq_der, coef3, dcm);
+    
+    /*accumulate the derivative of mean curvature on vertices i and j*/
+    //vec_append(dcm, i, /**/ cm_dx, cm_dy, cm_dz);
+    //vec_substr(dcm, j, /**/ cm_dx, cm_dy, cm_dz);
+    
+    /*+++++++++++++++++++++++++++++++++++
+      force due to area-difference elasticity: part I
+      +++++++++++++++++++++++++++++++++++*/
+    
+    doef  = -Kad * pi / area_tot * (cm_integral - DA0D/2) * area[i] / 2.0 / curva_mean[i];
+
+    vec_scalar(lbisq_der, doef, df);
+
+    /*accumulate the force on vertices i and j*/
+    //vec_append(df, i, /**/ fxad, fyad, fzad);
+    //vec_substr(df, j, /**/ fxad, fyad, fzad);
+    vec_append(df, i, /**/ fx, fy, fz);
+    vec_substr(df, j, /**/ fx, fy, fz);
+
+    /*###################################
+      ###################################
+        force part II
+	###################################
+      ###################################*/
+    
+    /*calculate derivative of Laplace-Beltrami operator: part II*/
+    
+    /*this is to calculate derivative of cotangent of angle c 
+      with respect to poisition b, c, a*/
+    
+    dtri_cot(b, c, a, /**/ db1, dc, da1);
+    
+    /*this is calculate derivative of cotangent of angle d 
+      with respect to poisition a, d, b*/
+    
+    dtri_cot(a, d, b, /**/ da2, dd, db2);
+    
+    coef1 =  vec_dot(lbi, r) / area1;
+    coef2 = -lbisq * rsq / area1 / 4.0;
+    coef *= (coef1 + coef2);
+
+    /*accumulate the force on vertices i, j, k*/
+    vec_scalar_append(da1, coef, i, /**/ fx, fy, fz);
+    vec_scalar_append(db1, coef, j, /**/ fx, fy, fz);
+    vec_scalar_append(dc,  coef, k, /**/ fx, fy, fz);
+
+    /*accumulate the force on vertices i, j, l*/
+    vec_scalar_append(da2, coef, i, /**/ fx, fy, fz);
+    vec_scalar_append(db2, coef, j, /**/ fx, fy, fz);
+    vec_scalar_append(dd,  coef, l, /**/ fx, fy, fz);
+
+    coef3 = coef1 + coef2;
+
+    /*accumulate the derivative of mean curvature i, j, k*/
+    //vec_scalar_append(da1, coef3, i, /**/ cm_dx, cm_dy, cm_dz);
+    //vec_scalar_append(db1, coef3, j, /**/ cm_dx, cm_dy, cm_dz);
+    //vec_scalar_append(dc,  coef3, k, /**/ cm_dx, cm_dy, cm_dz);
+
+    /*accumulate the derivative of mean curvature i, j, l*/
+    //vec_scalar_append(da2, coef3, i, /**/ cm_dx, cm_dy, cm_dz);
+    //vec_scalar_append(db2, coef3, j, /**/ cm_dx, cm_dy, cm_dz);
+    //vec_scalar_append(dd,  coef3, l, /**/ cm_dx, cm_dy, cm_dz);
+
+    /*+++++++++++++++++++++++++++++++++++
+      force due to area-difference elasticity: part II
+      +++++++++++++++++++++++++++++++++++*/
+
+    doef *= (coef1 + coef2);
+    
+    /*accumulate the force on vertices i, j, k*/
+    //vec_scalar_append(da1, doef, i, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(db1, doef, j, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(dc,  doef, k, /**/ fxad, fyad, fzad);
+    vec_scalar_append(da1, doef, i, /**/ fx, fy, fz);
+    vec_scalar_append(db1, doef, j, /**/ fx, fy, fz);
+    vec_scalar_append(dc,  doef, k, /**/ fx, fy, fz);
+
+    /*accumulate the force on vertices i, j, l*/
+    //vec_scalar_append(da2, doef, i, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(db2, doef, j, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(dd,  doef, l, /**/ fxad, fyad, fzad);
+    vec_scalar_append(da2, doef, i, /**/ fx, fy, fz);
+    vec_scalar_append(db2, doef, j, /**/ fx, fy, fz);
+    vec_scalar_append(dd,  doef, l, /**/ fx, fy, fz);
+    
+    /*###################################
+      ###################################
+      force part III
+      ###################################      
+      ###################################*/
+    
+    /*calculate derivative of local area with respective to position b, c, a
+      This is similiar to the cotangent case above.*/
+    coef  = -Kb * 2.0 * (curva_mean[i] - H0) * (curva_mean[i] - H0);
+    
+    coef1 = coef * cot1 / 4.0;
+    vec_scalar(r, coef1, df);
+    
+    /*accumulate the force on vertices i and j*/
+    vec_append(df, i, /**/ fx, fy, fz);
+    vec_substr(df, j, /**/ fx, fy, fz);
+    
+    coef2 = coef * rsq / 8.0;
+    
+    /*accumulate the force on vertices i, j, k*/
+    vec_scalar_append(da1, coef2, i, /**/ fx, fy, fz);
+    vec_scalar_append(db1, coef2, j, /**/ fx, fy, fz);
+    vec_scalar_append(dc,  coef2, k, /**/ fx, fy, fz);
+
+    /*accumulate the force on vertices i, j, l*/
+    vec_scalar_append(da2, coef2, i, /**/ fx, fy, fz);
+    vec_scalar_append(db2, coef2, j, /**/ fx, fy, fz);
+    vec_scalar_append(dd,  coef2, l, /**/ fx, fy, fz);
+
+    
+    /*+++++++++++++++++++++++++++++++++++
+      force due to area-difference elasticity: part III
+      +++++++++++++++++++++++++++++++++++*/
+    
+    doef  = -4.0 * Kad * pi / area_tot * (cm_integral - DA0D/2.0) * curva_mean[i];
+    
+    doef1 = doef * cot1 / 4.0;
+    
+    vec_scalar(r, doef1, df);
+    
+    /*accumulate the force on vertices i and j*/
+    //vec_append(df, i, /**/ fxad, fyad, fzad);
+    //vec_substr(df, j, /**/ fxad, fyad, fzad);    
+    vec_append(df, i, /**/ fx, fy, fz);
+    vec_substr(df, j, /**/ fx, fy, fz);    
+
+    doef2 = doef * rsq / 8.0;
+    
+    /*accumulate the force on vertices i, j, k*/
+    //vec_scalar_append(da1, doef2, i, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(db1, doef2, j, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(dc,  doef2, k, /**/ fxad, fyad, fzad);
+    vec_scalar_append(da1, doef2, i, /**/ fx, fy, fz);
+    vec_scalar_append(db1, doef2, j, /**/ fx, fy, fz);
+    vec_scalar_append(dc,  doef2, k, /**/ fx, fy, fz);
+
+    /*accumulate the force on vertices i, j, l*/
+    //vec_scalar_append(da2, doef2, i, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(db2, doef2, j, /**/ fxad, fyad, fzad);
+    //vec_scalar_append(dd,  doef2, l, /**/ fxad, fyad, fzad);
+    vec_scalar_append(da2, doef2, i, /**/ fx, fy, fz);
+    vec_scalar_append(db2, doef2, j, /**/ fx, fy, fz);
+    vec_scalar_append(dd,  doef2, l, /**/ fx, fy, fz);
+
+  
+  }
+   
+  return HE_OK;
 }

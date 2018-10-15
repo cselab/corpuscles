@@ -44,6 +44,11 @@ static void usg() {
     exit(0);
 }
 
+static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real target_volume(real area, real v) { return v*sph_volume(area); }
+static real reduced_volume(real area, real v) { return (10.63472310543305*v)/pow(area, 1.5); }
+static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
+
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
@@ -170,9 +175,10 @@ static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
     int cnt, i;
     real dt, dt_max, h, mu, rnd;
+    real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
     
-    dt_max = 0.1;
+    dt_max = 0.05;
     mu = 100.0;
     h = 0.01*e0;
 
@@ -180,7 +186,7 @@ static void main0(real *vx, real *vy, real *vz,
     for (i = 0; /**/ ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.001*max_vec(vx, vy, vz);
+        rnd = 0.01*max_vec(vx, vy, vz);
         if (i % 1500 == 0) {
             do {
                 //equiangulate(&cnt);
@@ -191,7 +197,8 @@ static void main0(real *vx, real *vy, real *vz,
             printf("\n");
             MSG("dt: %g", dt);
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
-            MSG("area, vol: %g, %g", area()/A0, volume()/V0);
+            A = area(); V = volume();
+            MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
             off_write(XX, YY, ZZ, "q.off");
         }
         jigle(rnd, vx, vy, vz);        
@@ -200,11 +207,6 @@ static void main0(real *vx, real *vy, real *vz,
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
 }
-
-static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
-
 
 int main(int __UNUSED argc, const char *v[]) {
     real a0;
