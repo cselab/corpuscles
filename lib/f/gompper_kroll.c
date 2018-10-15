@@ -89,7 +89,8 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
   T *q;
   int nv, ne, nt, nh;
   MALLOC(1, &q);
-  
+
+  //printf("size of q %g", sizeof(q));
   nv = he_nv(he);
   ne = he_ne(he);
   nt = he_nt(he);
@@ -105,13 +106,14 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
   q->Kad  = Kad;
   q->DA0D = DA0D;
 
-  MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
   
   MALLOC(nh, &q->len2);
   MALLOC(nh, &q->cot);
   MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
   MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
   MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
+
+  MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
   
   MALLOC(nv, &q->energy);
   MALLOC(nv, &q->area);
@@ -395,6 +397,8 @@ int he_f_gompper_kroll_force(T *q, He *he,
   area = q->area;
   len2 = q->len2; cot = q->cot;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+  normx = q->normx; normy = q->normy; normz = q->normz;
+  curva_mean  = q->curva_mean;
 
   nv = q->nv;
   nh = q->nh;
