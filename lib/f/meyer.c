@@ -514,9 +514,9 @@ int he_f_meyer_force(T *q, He *he,
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
         fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
-        fx[v] += fm * normx[v];
-        fy[v] += fm * normy[v];
-        fz[v] += fm * normz[v];
+        fx[v] += fm * normx[v] * area[v];
+        fy[v] += fm * normy[v] * area[v];
+        fz[v] += fm * normz[v] * area[v];
         he_sum_add(sum, curva_mean[v] * area[v]);
     }
     cm_intga = he_sum_get(sum);
@@ -528,9 +528,9 @@ int he_f_meyer_force(T *q, He *he,
     for ( v = 0; v < nv; v++ ) {
 
         fm = -cm_intga * curva_gauss[v];
-        fx[v] += fm * normx[v];
-        fy[v] += fm * normy[v];
-        fz[v] += fm * normz[v];
+        fx[v] += fm * normx[v] * area[v];
+        fy[v] += fm * normy[v] * area[v];
+        fz[v] += fm * normz[v] * area[v];
 
     }
 
@@ -548,23 +548,25 @@ int he_f_meyer_force(T *q, He *he,
 
         vec_minus(b, c,  u);
 
-        fm = Kb*cotil * (curva_mean[j] - curva_mean[k]) / area[j];
+        //fm = Kb*cotil*(curva_mean[j]-curva_mean[k])/area[j];
+        fm = Kb*cotil*(curva_mean[j]-curva_mean[k]);
         fx[j] += fm * normx[j];
         fy[j] += fm * normy[j];
         fz[j] += fm * normz[j];
 
-        fm = Kb*cotil * (curva_mean[k] - curva_mean[j]) / area[k];
+        //fm = Kb*cotil*(curva_mean[k]-curva_mean[j])/area[k];
+        fm = Kb*cotil*(curva_mean[k]-curva_mean[j]);
         fx[k] += fm * normx[k];
         fy[k] += fm * normy[k];
         fz[k] += fm * normz[k];
 
     }
 
-    for ( v = 0; v < nv; v++ ) {
+    /*for ( v = 0; v < nv; v++ ) {
       fx[v] *= area[v];
       fy[v] *= area[v];
       fz[v] *= area[v];
-    }
+      }*/
     
     return HE_OK;
 }
