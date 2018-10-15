@@ -261,7 +261,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_bending_ini(bending, bending_param);
 
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
-    MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
+    CALLOC(NV, &vx); CALLOC(NV, &vy); CALLOC(NV, &vz);
 
     main0(vx, vy, vz, fx, fy, fz);
 
