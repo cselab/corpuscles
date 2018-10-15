@@ -2,4 +2,4 @@
 0  0.591   0.652
 
 
-./main gompper_kroll 0.63   0 1 1 0       -0.001 0 0 0 < ~/0.off  > q
+./main gompper_kroll 0.63   0 1 1 0       -0.01 0 0 0 < ~/0.off > q
