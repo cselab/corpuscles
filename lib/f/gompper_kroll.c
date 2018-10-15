@@ -56,10 +56,12 @@ static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
-    vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+
+  //printf("i, j, k = %i, %i, %i\n", i, j, k);
+  vec_get(i, x, y, z, /**/ a);
+  vec_get(j, x, y, z, /**/ b);
+  vec_get(k, x, y, z, /**/ c);
+  return HE_OK;
 }
 void get4(const real *x, const real *y, const real *z,
 	  int i, int j, int k, int l, /**/
@@ -230,8 +232,9 @@ static int compute_norm(T *q, He *he,
     T2 = q->T2;
 
     zero(nv, normx); zero(nv, normy); zero(nv, normz);
+
     for ( t = 0; t < nt; t++ ) {
-        i = T0[t]; j = T1[t]; k = T2[t];
+      i = T0[t]; j = T1[t]; k = T2[t];
         get3(x, y, z, i, j, k, a, b, c);
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
@@ -327,7 +330,8 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean;
-  real *energy, *area;
+  real *area;
+  real *energy;
   real energy_tot;
   
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
@@ -370,7 +374,7 @@ real he_f_gompper_kroll_energy(T *q, He *he,
 int he_f_gompper_kroll_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
-  int nv, nt, nh;
+  int nv, ne, nt, nh;
   int i, j, k, l;
   int h, n, nn, fnf;
   int *T0, *T1, *T2;
@@ -394,13 +398,15 @@ int he_f_gompper_kroll_force(T *q, He *he,
   real coef3;
 
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
-  area = q->area;
   len2 = q->len2; cot = q->cot;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
   curva_mean  = q->curva_mean;
+  area = q->area;
 
   nv = q->nv;
+  ne = q->ne;
+  nt = q->nt;
   nh = q->nh;
   
   Kb   = q->Kb;
@@ -409,17 +415,28 @@ int he_f_gompper_kroll_force(T *q, He *he,
   DA0D = q->DA0D;
 
   H0 = C0/2.0;
-  
+
+
+  if (he_nv(he) != nv)
+    ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
+  if (he_ne(he) != ne)
+    ERR(HE_INDEX, "he_nh(he)=%d != ne = %d", he_ne(he), ne);
+  if (he_nt(he) != nt)
+    ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", he_nt(he), nt);
+  if (he_nh(he) != nh)
+    ERR(HE_INDEX, "he_nh(he)=%d != nh = %d", he_nh(he), nh);
+//printf("Kb, C0, Kad, DA0D = %f, %f, %f, %f\n", Kb, C0, Kad, DA0D);
   for (i=0; i< nv; i++){
     fx[i] = 0;
     fy[i] = 0;
     fz[i] = 0;
   }
-    
-  if (he_nv(he) != nv)
-    ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
-  if (he_nh(he) != nh)
-    ERR(HE_INDEX, "he_nh(he)=%d != nh = %d", he_nh(he), nh);
+
+  for (l = 0; l < nt; l++) {
+    get_ijk(l, he, /**/ &i, &j, &k);
+    T0[l] = i; T1[l] = j; T2[l] = k;
+  }
+  
   
   compute_len2(he, x, y, z, /**/ len2);
   compute_cot(he, x, y, z, /**/ cot);
@@ -431,6 +448,8 @@ int he_f_gompper_kroll_force(T *q, He *he,
   compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
   cm_integral=compute_curva_mean_integral(q, curva_mean, area);
   area_tot   =sum(nv, area);
+
+  //printf("cm_integral, area_tot = %f, %f\n", cm_integral, area_tot);
   
   for (h = 0; h < nh; h++) {
     
@@ -440,7 +459,11 @@ int he_f_gompper_kroll_force(T *q, He *he,
     cot1  = cot[h];
     area1 = area[i];
     rsq   = len2[h];
-    
+
+    get4(x, y, z, i, j, k, l, a, b, c, d);
+    get_edg(x, y, z, i, j, r);
+    rsq = vec_dot(r, r);
+ 
     vec_get(i, lbx, lby, lbz, lbi);    
     lbisq = vec_dot(lbi, lbi);
     

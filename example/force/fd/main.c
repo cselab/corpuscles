@@ -98,7 +98,7 @@ static void main0() {
     MSG("energy: %g", e);
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
-        printf("%g %g\n", fx[i], f[X]);
+        printf("%g %g\n", fx[i], -f[X]);
     }
 
     bending_fin(bending);
