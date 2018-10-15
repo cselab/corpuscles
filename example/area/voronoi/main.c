@@ -9,7 +9,7 @@
 #include <he/memory.h>
 #include <he/sum.h>
 
-void get4(int i, int j, int k, int l, /**/
+static void get4(int i, int j, int k, int l, /**/
           real a[3], real b[3], real c[3], real d[3]) {
     vec_get(i, XX, YY, ZZ, a);
     vec_get(j, XX, YY, ZZ, b);
@@ -17,7 +17,7 @@ void get4(int i, int j, int k, int l, /**/
     vec_get(l, XX, YY, ZZ, d);
 }
 
-void main1() {
+static void main1() {
   /*This applies halfedge to traverse*/
     enum {X, Y, Z};
     int v;
@@ -51,7 +51,7 @@ void main1() {
     he_sum_fin(sum);
 }
 
-void main2() {
+static void main2() {
     /*This utilize edge/diheral to traverse*/
     int e;
     int i, j, k, l;
