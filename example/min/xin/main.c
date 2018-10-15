@@ -24,7 +24,7 @@
 
 static const real pi = 3.141592653589793115997964;
 
-static real Kb, C0, DA0D;
+static real Kb, C0, Kad, DA0D;
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
@@ -40,7 +40,7 @@ static char bending[4049];
 static const char *me = "min/visc";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 DA0D < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -61,7 +61,7 @@ static int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Ke); scl(&Kb); scl(&C0); scl(&DA0D);
+    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Ke); scl(&Kb); scl(&C0);  scl(&Kad); scl(&DA0D);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -218,7 +218,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
-    bending_param.Kad = 0.0;
+    bending_param.Kad = Kad;
     bending_param.DA0D = DA0D;
     f_bending_ini(bending, bending_param);
 
