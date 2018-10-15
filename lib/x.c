@@ -17,6 +17,7 @@
 #include "he/f/kantor.h"
 #include "he/f/juelicher.h"
 #include "he/f/gompper.h"
+#include "he/f/gompper_kroll.h"
 #include "he/f/meyer.h"
 #include "he/bending.h"
 #include "he/area.h"
@@ -41,6 +42,7 @@ static HeFEdgSq *f_edg_sq;
 static HeFHarmonicRef *f_harmonic_ref;
 static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
+static HeFGompper_Kroll *f_gompper_kroll;
 static HeFMeyer *f_meyer;
 static HeFJuelicher *f_juelicher;
 static Bending *f_bending;
@@ -318,6 +320,38 @@ int f_gompper_curva_gauss_ver(real **p) {
 }
 int f_gompper_energy_ver(real **p) {
   return he_f_gompper_energy_ver(f_gompper, p);
+}
+int f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D) {
+  he_f_gompper_kroll_ini(Kb, C0, Kad, DA0D, he, /**/ &f_gompper_kroll);
+  return HE_OK;
+}
+int f_gompper_kroll_fin() {
+  he_f_gompper_kroll_fin(f_gompper_kroll);
+  return HE_OK;
+}
+real f_gompper_kroll_energy(const real *x, const real *y, const real *z) {
+  return he_f_gompper_kroll_energy(f_gompper_kroll, he, x, y, z);
+}
+int f_gompper_kroll_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+  return he_f_gompper_kroll_force(f_gompper_kroll, he, x, y, z, /**/ fx, fy, fz);
+}
+int f_gompper_kroll_area_ver(real **p) {
+  return he_f_gompper_kroll_area_ver(f_gompper_kroll, p);
+}
+int f_gompper_kroll_laplace_ver(real **px, real **py, real **pz) {
+  return he_f_gompper_kroll_laplace_ver(f_gompper_kroll, px, py, pz);
+}
+int f_gompper_kroll_norm_ver(real **px, real **py, real **pz) {
+    return he_f_gompper_kroll_norm_ver(f_gompper_kroll, px, py, pz);
+}
+int f_gompper_kroll_curva_mean_ver(real **p) {
+    return he_f_gompper_kroll_curva_mean_ver(f_gompper_kroll, p);
+}
+int f_gompper_kroll_curva_gauss_ver(real **p) {
+    return he_f_gompper_kroll_curva_gauss_ver(f_gompper_kroll, p);
+}
+int f_gompper_kroll_energy_ver(real **p) {
+  return he_f_gompper_kroll_energy_ver(f_gompper_kroll, p);
 }
 int f_meyer_ini(real Kb, real C0, real Kad, real DA0D) {
   he_f_meyer_ini(Kb, C0, Kad, DA0D, he, /**/ &f_meyer);

@@ -89,6 +89,17 @@ int f_gompper_curva_mean_ver(/**/ real**);
 int f_gompper_curva_gauss_ver(/**/ real**);
 int f_gompper_energy_ver(/**/real**);
 
+int f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D);
+int f_gompper_kroll_fin();
+real f_gompper_kroll_energy(const real *x, const real *y, const real *z);
+int f_gompper_kroll_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+int f_gompper_kroll_area_ver(/**/ real**);
+int f_gompper_kroll_laplace_ver(/**/ real**, real**, real**);
+int f_gompper_kroll_norm_ver(/**/ real**, real**, real**);
+int f_gompper_kroll_curva_mean_ver(/**/ real**);
+int f_gompper_kroll_curva_gauss_ver(/**/ real**);
+int f_gompper_kroll_energy_ver(/**/real**);
+
 int f_meyer_ini(real Kb, real C0, real Kad, real DA0D);
 int f_meyer_fin();
 real f_meyer_energy(const real *x, const real *y, const real *z);
