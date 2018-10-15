@@ -21,7 +21,6 @@
 #define  bnd(h)     he_bnd(he, (h))
 
 static const real pi = 3.141592653589793115997964;
-static const real epsilon = 1.0e-12;
 
 struct T {
   real Kb, C0, Kad, DA0D;
@@ -302,7 +301,6 @@ static real compute_energy_nonlocal(T *q, const real *curva_mean, const real *ar
 }
 real he_f_gompper_energy(T *q, He *he,
 			 const real *x, const real *y, const real *z) {
-  real Kad;
   int nv, nt;
   int i, j, k, l;
   int *T0, *T1, *T2;
@@ -321,9 +319,8 @@ real he_f_gompper_energy(T *q, He *he,
   curva_mean  = q->curva_mean;
   area = q->area; energy = q->energy;
 
-  Kad = q->Kad;
-  nv  = q->nv;
-  nt  = he_nt(he);
+  nv = q->nv;
+  nt = he_nt(he);
   
   for (l = 0; l < nt; l++) {
     get_ijk(l, he, /**/ &i, &j, &k);
@@ -343,10 +340,7 @@ real he_f_gompper_energy(T *q, He *he,
   compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
   
   energy_tot  = compute_energy_local(q, curva_mean, area, /**/ energy);
-
-  if (Kad > epsilon){
-    energy_tot += compute_energy_nonlocal(q, curva_mean, area);
-  }
+  energy_tot += compute_energy_nonlocal(q, curva_mean, area);
   
   return energy_tot;
 }
@@ -376,7 +370,7 @@ static void compute_force_t(T *q, He *he,
     get_edg(i, j, x, y, z, /**/  r);
     vec_get(i, lbx, lby, lbz, ll);
     l2 = vec_dot(ll, ll);
-    vec_linear_combination(-Kb*t0/2, ll, Kb*t0*l2/8, r,  df);
+    vec_linear_combination(Kb*t0/2, ll, -Kb*t0*l2/8, r,  df);
     vec_append(df, i, /**/ fx, fy, fz);
     vec_substr(df, j, /**/ fx, fy, fz);
   }
@@ -413,7 +407,7 @@ static void compute_force_dt(T *q, He *he,
     r2 = vec_dot(r, r);
     dl = vec_dot(lk, lk) + vec_dot(li, li);
     dd = vec_dot(li, r)  - vec_dot(lk, r);
-    C = -Kb*dd/2 + Kb*r2*dl/16;
+    C = Kb*dd/2 - Kb*r2*dl/16;
     vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
     vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
     vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
