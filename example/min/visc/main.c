@@ -200,14 +200,14 @@ static void main0(real *vx, real *vy, real *vz,
         rnd = 0.01*max_vec(vx, vy, vz);
         jigle(rnd, vx, vy, vz);        
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+        euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler(dt, fx, fy, fz, /**/ vx, vy, vz);
 
         for (j = 0; j < nsub; j++) {
             ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
             visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-            euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-            euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+            euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
+            euler(dt, fx, fy, fz, /**/ vx, vy, vz);
         }
 
         if (i % 500 == 0) {
@@ -252,7 +252,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
-    f_edg_sq_ini(Ke);
+   f_edg_sq_ini(Ke);
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
