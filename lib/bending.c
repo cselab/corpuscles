@@ -12,6 +12,7 @@
 #include "he/f/kantor.h"
 #include "he/f/juelicher.h"
 #include "he/f/gompper.h"
+#include "he/f/gompper_kroll.h"
 #include "he/f/meyer.h"
 
 #include "he/bending.h"
@@ -20,9 +21,9 @@
 
 struct T {struct Vtable *vtable; };
 
-static const char *Name[] = {"kantor", "gompper", "juelicher", "meyer"};
+static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer"};
 typedef int (*TypeIni)(BendingParam, He*, T**);
-static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_juelicher_ini, bending_meyer_ini};
+static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini};
 
 int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     const int n = sizeof(Name)/sizeof(Name[0]);
@@ -131,6 +132,44 @@ int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
 }
 /* end gompper */
 
+/* begin gompper_kroll */
+typedef struct Gompper_Kroll Gompper_Kroll;
+struct Gompper_Kroll {T bending; HeFGompper_Kroll *local; };
+static int gompper_fin(T *q) {
+    int status;
+    Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
+    status = he_f_gompper_kroll_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int gompper_kroll_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz) {
+    Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
+    return he_f_gompper_kroll_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real gompper_kroll_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+    Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
+    return he_f_gompper_kroll_energy(b->local, he, x, y, z);
+}
+static int gompper_kroll_energy_ver(T *q, /**/ real **e) {
+    Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
+    return he_f_gompper_kroll_energy_ver(b->local, /**/ e);
+}
+static Vtable gompper_kroll_vtable = { gompper_kroll_fin, gompper_kroll_force, gompper_kroll_energy, gompper_kroll_energy_ver};
+int bending_gompper_kroll_ini(BendingParam param, He *he, /**/ T **pq) {
+    real Kb, C0, Kad, DA0D;
+    Gompper_Kroll *q;
+    Kb  = param.Kb;
+    C0 = param.C0;
+    Kad = param.Kad;
+    DA0D = param.DA0D;
+
+    MALLOC(1, &q);
+    q->bending.vtable = &gompper_kroll_vtable;
+    *pq = &q->bending;
+    return he_f_gompper_kroll_ini(Kb, C0, Kad, DA0D, he, &q->local);
+}
+/* end gompper_kroll */
 
 /* begin juelicher */
 typedef struct Juelicher Juelicher;

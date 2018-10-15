@@ -3,7 +3,7 @@
 
 #include <real.h>
 
-#include <he/f/gompper.h>
+#include <he/f/gompper_kroll.h>
 
 #include <he/memory.h>
 #include <he/punto.h>
@@ -20,7 +20,7 @@ static real *ENG, *AREA;
 static real *FX, *FY, *FZ;
 static const real Pi = 3.141592653589793115997964;
 static const char **argv;
-static const char *me = "force/gompper";
+static const char *me = "force/gompper_kroll";
 
 static void usg() {
     fprintf(stderr, "%s Kb C0, Kad DA0D < OFF\n", me);
@@ -59,14 +59,12 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
         r[i] = sqrt(x[i]*x[i] + y[i]*y[i] + z[i]*z[i]);
     
 }
-static real energy() { return f_gompper_energy(XX, YY, ZZ); }
+static real energy() { return f_gompper_kroll_energy(XX, YY, ZZ); }
 static void force() {
     zero(NV, FX); zero(NV, FY); zero(NV, FZ);
-    f_gompper_force(XX, YY, ZZ,   FX, FY, FZ);
+    f_gompper_kroll_force(XX, YY, ZZ,  FX, FY, FZ);
 }
 
-//static int energy_ver(real **pq) { return f_gompper_energy_ver(pq); }
-//static int area_ver(real **pq) { return f_gompper_area(pq); }
 
 static void update() {
     real d;
@@ -103,9 +101,9 @@ static void main0() {
         putchar('\n');
 	}*/
 
-    f_gompper_energy_ver(&eng);
-    f_gompper_area_ver(&area);
-    f_gompper_curva_mean_ver(&curva_mean);
+    f_gompper_kroll_energy_ver(&eng);
+    f_gompper_kroll_area_ver(&area);
+    f_gompper_kroll_curva_mean_ver(&curva_mean);
 
     RZERO(NV, &fm);
     RZERO(NV, &fmad);
@@ -127,7 +125,7 @@ int main(int __UNUSED argc, const char *v[]) {
   argv = v; argv++;
   arg();
   ini("/dev/stdin");
-  f_gompper_ini(Kb, C0, Kad, DA0D);
+  f_gompper_kroll_ini(Kb, C0, Kad, DA0D);
   
   RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
   RZERO(NV, &ENG); RZERO(NV, &AREA);
@@ -135,7 +133,7 @@ int main(int __UNUSED argc, const char *v[]) {
   main0();
   
   FREE(FX); FREE(FY); FREE(FZ); FREE(ENG); FREE(AREA);
-  f_gompper_fin();
+  f_gompper_kroll_fin();
   fin();
   return 0;
 }
