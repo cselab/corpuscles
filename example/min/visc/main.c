@@ -212,7 +212,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
-    bending_param.Kad = -Kb/(2*pi);
+    bending_param.Kad = Kb/(2*pi);
     bending_param.DA0D = DA0D;
     f_bending_ini(bending, bending_param);
 
