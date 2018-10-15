@@ -44,9 +44,12 @@ static void usg() {
     exit(0);
 }
 
-static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real sph_volume(real area) { return pow(area, 1.5)/(6*pi); }
+
 static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real reduced_volume(real area, real v) { return (10.63472310543305*v)/pow(area, 1.5); }
+static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
+
+static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 2.0/3); }
 static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
@@ -219,12 +222,14 @@ int main(int __UNUSED argc, const char *v[]) {
     srand(time(NULL));
 
     ini("/dev/stdin");
-    A0 = area();
+    //A0 = area(); V0 = target_volume(A0, rVolume);
+    V0 = volume(); A0 = target_area(V0, rVolume);
+    
     a0 = A0/NT;
-    V0 = target_volume(A0, rVolume);
     e0 = eq_tri_edg(a0);
     
     MSG("v0/volume(): %g", V0/volume());
+    MSG("a0/area(): %g", A0/area());
     MSG("area, volume, edg: %g %g", A0, V0);
 
     f_area_ini(a0,  Ka);
