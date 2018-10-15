@@ -419,12 +419,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
   if (he_nh(he) != nh)
     ERR(HE_INDEX, "he_nh(he)=%d != nh = %d", he_nh(he), nh);
   
-  for (i=0; i< nv; i++){
-    fx[i] = 0;
-    fy[i] = 0;
-    fz[i] = 0;
-  }
-
   for (l = 0; l < nt; l++) {
     get_ijk(l, he, /**/ &i, &j, &k);
     T0[l] = i; T1[l] = j; T2[l] = k;
