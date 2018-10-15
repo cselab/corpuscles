@@ -85,7 +85,7 @@ static void main0() {
     int i;
     real e, f[3];
     param.Kb = 1;
-    param.C0 = 0;
+    param.C0 = 1;
     param.Kad = 0;
     param.DA0D = 0;
 
