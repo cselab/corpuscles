@@ -56,8 +56,6 @@ static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
-
-  //printf("i, j, k = %i, %i, %i\n", i, j, k);
   vec_get(i, x, y, z, /**/ a);
   vec_get(j, x, y, z, /**/ b);
   vec_get(k, x, y, z, /**/ c);
@@ -69,12 +67,10 @@ void get4(const real *x, const real *y, const real *z,
   
   /*Given four indices i, j, k l of vertices,
     return their positions in a, b, c, d.*/
-
   vec_get(i, x, y, z, a);
   vec_get(j, x, y, z, b);
   vec_get(k, x, y, z, c);
-  vec_get(l, x, y, z, d);
-  
+  vec_get(l, x, y, z, d);  
 }
 static void zero(int n, real *a) {
     int i;
@@ -107,21 +103,18 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
   q->C0   = C0;
   q->Kad  = Kad;
   q->DA0D = DA0D;
-
   
+  MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
+
   MALLOC(nh, &q->len2);
   MALLOC(nh, &q->cot);
+
   MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
   MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
   MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
 
-  MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
-  
   MALLOC(nv, &q->energy);
   MALLOC(nv, &q->area);
-  MALLOC(nv, &q->lbx);
-  MALLOC(nv, &q->lby);
-  MALLOC(nv, &q->lbz);
   
   *pq = q;
   return HE_OK;
@@ -192,17 +185,17 @@ static void compute_cot(He *he, const real *x, const real *y, const real *z, /**
         if (!bnd(h)) H[flp(h)] += cot;
     }
 }
-static void compute_area(He *he, const real *len2, const real *t, /**/ real *V) {
+static void compute_area(He *he, const real *len2, const real *cot, /**/ real *V) {
     int nv, nh, h, i;
     nv = he_nv(he);
     zero(nv, V);
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         i = ver(h);
-        V[i] += t[h]*len2[h]/8;
+        V[i] += cot[h]*len2[h]/8;
     }
 }
-static void compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
+static void compute_laplace(He *he, const real *V0, const real *cot, const real *area, /**/ real *V1) {
     int h, n, nv, nh, i, j;
     nv = he_nv(he);
     zero(nv, V1);
@@ -210,7 +203,7 @@ static void compute_laplace(He *he, const real *V0, const real *t, const real *a
     for (h = 0; h < nh; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        V1[i] += t[h]*(V0[i] - V0[j])/2;
+        V1[i] += cot[h]*(V0[i] - V0[j])/2;
     }
     for (i = 0; i < nv; i++)
         V1[i] /= area[i];
@@ -294,7 +287,7 @@ static real compute_energy_local(T *q, const real *curva_mean, const real *area,
 static real compute_curva_mean_integral(T *q, const real *curva_mean, const real *area) {
 
   int i, nv;
-  real cm_integral, area_tot, energy_tot;
+  real cm_integral;
   nv   = q->nv;
 
   cm_integral = 0;
@@ -425,6 +418,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
     ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", he_nt(he), nt);
   if (he_nh(he) != nh)
     ERR(HE_INDEX, "he_nh(he)=%d != nh = %d", he_nh(he), nh);
+  
   for (i=0; i< nv; i++){
     fx[i] = 0;
     fy[i] = 0;
@@ -489,19 +483,23 @@ int he_f_gompper_kroll_force(T *q, He *he,
     /*+++++++++++++++++++++++++++++++++++
       force due to area-difference elasticity: part I
       +++++++++++++++++++++++++++++++++++*/
+
+    if ( Kad > epsilon ) {
+      
+      doef  = Kad*pi/area_tot*(cm_integral-DA0D/2)*area[i]/2.0/curva_mean[i];
+      
+      vec_scalar(lbisq_der, doef, df);
+      
+      /*accumulate the force on vertices i and j*/
+      vec_append(df, i, /**/ fx, fy, fz);
+      vec_substr(df, j, /**/ fx, fy, fz);
+
+    }
     
-    doef  = Kad * pi / area_tot * (cm_integral - DA0D/2) * area[i] / 2.0 / curva_mean[i];
-
-    vec_scalar(lbisq_der, doef, df);
-
-    /*accumulate the force on vertices i and j*/
-    vec_append(df, i, /**/ fx, fy, fz);
-    vec_substr(df, j, /**/ fx, fy, fz);
-
     /*###################################
       ###################################
-        force part II
-	###################################
+      force part II
+      ###################################
       ###################################*/
     
     /*calculate derivative of Laplace-Beltrami operator: part II*/
@@ -519,34 +517,38 @@ int he_f_gompper_kroll_force(T *q, He *he,
     coef1 =  vec_dot(lbi, r) / area1;
     coef2 = -lbisq * rsq / area1 / 4.0;
     coef *= (coef1 + coef2);
-
+    
     /*accumulate the force on vertices i, j, k*/
     vec_scalar_append(da1, coef, i, /**/ fx, fy, fz);
     vec_scalar_append(db1, coef, j, /**/ fx, fy, fz);
     vec_scalar_append(dc,  coef, k, /**/ fx, fy, fz);
-
+    
     /*accumulate the force on vertices i, j, l*/
     vec_scalar_append(da2, coef, i, /**/ fx, fy, fz);
     vec_scalar_append(db2, coef, j, /**/ fx, fy, fz);
     vec_scalar_append(dd,  coef, l, /**/ fx, fy, fz);
 
     coef3 = coef1 + coef2;
-
+    
     /*+++++++++++++++++++++++++++++++++++
       force due to area-difference elasticity: part II
       +++++++++++++++++++++++++++++++++++*/
-
-    doef *= (coef1 + coef2);
     
-    /*accumulate the force on vertices i, j, k*/
-    vec_scalar_append(da1, doef, i, /**/ fx, fy, fz);
-    vec_scalar_append(db1, doef, j, /**/ fx, fy, fz);
-    vec_scalar_append(dc,  doef, k, /**/ fx, fy, fz);
+    if ( Kad > epsilon ) {
+      
+      doef *= (coef1 + coef2);
+      
+      /*accumulate the force on vertices i, j, k*/
+      vec_scalar_append(da1, doef, i, /**/ fx, fy, fz);
+      vec_scalar_append(db1, doef, j, /**/ fx, fy, fz);
+      vec_scalar_append(dc,  doef, k, /**/ fx, fy, fz);
+      
+      /*accumulate the force on vertices i, j, l*/
+      vec_scalar_append(da2, doef, i, /**/ fx, fy, fz);
+      vec_scalar_append(db2, doef, j, /**/ fx, fy, fz);
+      vec_scalar_append(dd,  doef, l, /**/ fx, fy, fz);
 
-    /*accumulate the force on vertices i, j, l*/
-    vec_scalar_append(da2, doef, i, /**/ fx, fy, fz);
-    vec_scalar_append(db2, doef, j, /**/ fx, fy, fz);
-    vec_scalar_append(dd,  doef, l, /**/ fx, fy, fz);
+    }
     
     /*###################################
       ###################################
@@ -556,7 +558,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
     
     /*calculate derivative of local area with respective to position b, c, a
       This is similiar to the cotangent case above.*/
-    coef  = Kb * 2.0 * (curva_mean[i] - H0) * (curva_mean[i] - H0);
+    coef  = Kb*2.0*(curva_mean[i]-H0)*(curva_mean[i]-H0);
     
     coef1 = coef * cot1 / 4.0;
     vec_scalar(r, coef1, df);
@@ -576,34 +578,38 @@ int he_f_gompper_kroll_force(T *q, He *he,
     vec_scalar_append(da2, coef2, i, /**/ fx, fy, fz);
     vec_scalar_append(db2, coef2, j, /**/ fx, fy, fz);
     vec_scalar_append(dd,  coef2, l, /**/ fx, fy, fz);
-
+    
     
     /*+++++++++++++++++++++++++++++++++++
       force due to area-difference elasticity: part III
       +++++++++++++++++++++++++++++++++++*/
-    
-    doef  = 4.0 * Kad * pi / area_tot * (cm_integral - DA0D/2.0) * curva_mean[i];
-    
-    doef1 = doef * cot1 / 4.0;
-    
-    vec_scalar(r, doef1, df);
-    
-    /*accumulate the force on vertices i and j*/
-    vec_append(df, i, /**/ fx, fy, fz);
-    vec_substr(df, j, /**/ fx, fy, fz);    
 
-    doef2 = doef * rsq / 8.0;
-    
-    /*accumulate the force on vertices i, j, k*/
-    vec_scalar_append(da1, doef2, i, /**/ fx, fy, fz);
-    vec_scalar_append(db1, doef2, j, /**/ fx, fy, fz);
-    vec_scalar_append(dc,  doef2, k, /**/ fx, fy, fz);
+    if ( Kad > epsilon ) {
+      
+      doef=4.0*Kad*pi/area_tot*(cm_integral-DA0D/2.0)*curva_mean[i];
+      
+      doef1 = doef * cot1 / 4.0;
+      
+      vec_scalar(r, doef1, df);
+      
+      /*accumulate the force on vertices i and j*/
+      vec_append(df, i, /**/ fx, fy, fz);
+      vec_substr(df, j, /**/ fx, fy, fz);    
+      
+      doef2 = doef * rsq / 8.0;
+      
+      /*accumulate the force on vertices i, j, k*/
+      vec_scalar_append(da1, doef2, i, /**/ fx, fy, fz);
+      vec_scalar_append(db1, doef2, j, /**/ fx, fy, fz);
+      vec_scalar_append(dc,  doef2, k, /**/ fx, fy, fz);
+      
+      /*accumulate the force on vertices i, j, l*/
+      vec_scalar_append(da2, doef2, i, /**/ fx, fy, fz);
+      vec_scalar_append(db2, doef2, j, /**/ fx, fy, fz);
+      vec_scalar_append(dd,  doef2, l, /**/ fx, fy, fz);
 
-    /*accumulate the force on vertices i, j, l*/
-    vec_scalar_append(da2, doef2, i, /**/ fx, fy, fz);
-    vec_scalar_append(db2, doef2, j, /**/ fx, fy, fz);
-    vec_scalar_append(dd,  doef2, l, /**/ fx, fy, fz);
-    
+    }
+      
   }
    
   return HE_OK;

@@ -99,9 +99,6 @@ int he_f_gompper_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   
   MALLOC(nv, &q->energy);
   MALLOC(nv, &q->area);
-  MALLOC(nv, &q->lbx);
-  MALLOC(nv, &q->lby);
-  MALLOC(nv, &q->lbz);
   
   *pq = q;
   return HE_OK;
@@ -274,7 +271,7 @@ static real compute_energy_local(T *q, const real *curva_mean, const real *area,
 static real compute_curva_mean_integral(T *q, const real *curva_mean, const real *area) {
 
   int i, nv;
-  real cm_integral, area_tot, energy_tot;
+  real cm_integral;
   nv   = q->nv;
 
   cm_integral = 0;
