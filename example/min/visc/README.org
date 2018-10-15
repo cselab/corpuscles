@@ -19,3 +19,5 @@
 ./main gompper 0.85 5000 5000  10000   10 0  < ~/1.off > q
 
 ./main gompper 0.64 1.0 500.0  500.0   1.0 0.1  < ~/1.off > q
+
+./main gompper 0.75   0.1 1 1  0.001  0.01 0 0  < ~/1.off > q
