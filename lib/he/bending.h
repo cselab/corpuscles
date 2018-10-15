@@ -15,6 +15,7 @@ int bending_energy_ver(T*, /**/ real**);
 
 int bending_kantor_ini(BendingParam, He*, /**/ T**);
 int bending_gompper_ini(BendingParam, He*, /**/ T**);
+int bending_gompper_kroll_ini(BendingParam, He*, /**/ T**);
 int bending_juelicher_ini(BendingParam, He*, /**/ T**);
 int bending_meyer_ini(BendingParam, He*, /**/ T**);
 
