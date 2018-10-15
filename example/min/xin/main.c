@@ -24,13 +24,7 @@
 
 static const real pi = 3.141592653589793115997964;
 
-static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
-
-static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
-
-static real Kb, C0, DA0D;
+static real Kb, C0, Kad, DA0D;
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
@@ -40,13 +34,13 @@ static void zero(int n, real *a) {
 #define FMT_IN   XE_REAL_IN
 
 static real rVolume, Ka, Kga, Kv, Ke;
-static real A0, V0;
+static real A0, V0, e0;
 static const char **argv;
 static char bending[4049];
 static const char *me = "min/visc";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 DA0D < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -67,7 +61,7 @@ static int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Ke); scl(&Kb); scl(&C0); scl(&DA0D);
+    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Ke); scl(&Kb); scl(&C0);  scl(&Kad); scl(&DA0D);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -118,6 +112,17 @@ static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
     sx /= nv; sy /= nv; sz /= nv;
     for (i = 0; i < nv; i++) {
         vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
+    }
+}
+
+static void visc_lang(real mu,
+                      const real *vx, const real *vy, const real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+    int i;
+    for (i = 0; i < NV; i++) {
+        fx[i] -= mu*vx[i];
+        fy[i] -= mu*vy[i];
+        fz[i] -= mu*vz[i];
     }
 }
 
@@ -172,7 +177,7 @@ static void main0(real *vx, real *vy, real *vz,
             printf("\n");
             MSG("dt: %g", dt);
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
-            MSG("area, vol, rVolume: %g %g %g", area()/A0, volume()/V0, reduced_volume(area(), volume()));
+            MSG("area, vol: %g, %g", area()/A0, volume()/V0);
             off_write(XX, YY, ZZ, "q.off");
         }
         jigle(rnd, vx, vy, vz);        
@@ -181,6 +186,11 @@ static void main0(real *vx, real *vy, real *vz,
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
 }
+
+static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real target_volume(real area, real v) { return v*sph_volume(area); }
+static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
+
 
 int main(int __UNUSED argc, const char *v[]) {
     real a0;
@@ -196,6 +206,7 @@ int main(int __UNUSED argc, const char *v[]) {
     A0 = area();
     a0 = A0/NT;
     V0 = target_volume(A0, rVolume);
+    e0 = eq_tri_edg(a0);
     
     MSG("v0/volume(): %g", V0/volume());
     MSG("area, volume; %g %g", A0, V0);
@@ -207,7 +218,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
-    bending_param.Kad = 0.0;
+    bending_param.Kad = Kad;
     bending_param.DA0D = DA0D;
     f_bending_ini(bending, bending_param);
 

@@ -425,7 +425,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
     ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", he_nt(he), nt);
   if (he_nh(he) != nh)
     ERR(HE_INDEX, "he_nh(he)=%d != nh = %d", he_nh(he), nh);
-//printf("Kb, C0, Kad, DA0D = %f, %f, %f, %f\n", Kb, C0, Kad, DA0D);
   for (i=0; i< nv; i++){
     fx[i] = 0;
     fy[i] = 0;
@@ -449,8 +448,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
   cm_integral=compute_curva_mean_integral(q, curva_mean, area);
   area_tot   =sum(nv, area);
 
-  //printf("cm_integral, area_tot = %f, %f\n", cm_integral, area_tot);
-  
   for (h = 0; h < nh; h++) {
     
     n = nxt(h); nn = nxt(n); fnf = flp(nxt(flp(h)));
@@ -476,7 +473,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
     /*calculate derivative of Laplace-Beltrami operator: part I*/
     /*this is to calculate the derivative of relative position of i, j*/
 
-    coef =  -Kb*(curva_mean[i] - H0) * area[i] / 2.0 / curva_mean[i];
+    coef =  Kb*(curva_mean[i] - H0) * area[i] / 2.0 / curva_mean[i];
 
     coef1 =  cot1 / area1;
     coef2 = -lbisq * cot1 /area1 / 2.0;
@@ -493,7 +490,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
       force due to area-difference elasticity: part I
       +++++++++++++++++++++++++++++++++++*/
     
-    doef  = -Kad * pi / area_tot * (cm_integral - DA0D/2) * area[i] / 2.0 / curva_mean[i];
+    doef  = Kad * pi / area_tot * (cm_integral - DA0D/2) * area[i] / 2.0 / curva_mean[i];
 
     vec_scalar(lbisq_der, doef, df);
 
@@ -559,7 +556,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
     
     /*calculate derivative of local area with respective to position b, c, a
       This is similiar to the cotangent case above.*/
-    coef  = -Kb * 2.0 * (curva_mean[i] - H0) * (curva_mean[i] - H0);
+    coef  = Kb * 2.0 * (curva_mean[i] - H0) * (curva_mean[i] - H0);
     
     coef1 = coef * cot1 / 4.0;
     vec_scalar(r, coef1, df);
@@ -585,7 +582,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
       force due to area-difference elasticity: part III
       +++++++++++++++++++++++++++++++++++*/
     
-    doef  = -4.0 * Kad * pi / area_tot * (cm_integral - DA0D/2.0) * curva_mean[i];
+    doef  = 4.0 * Kad * pi / area_tot * (cm_integral - DA0D/2.0) * curva_mean[i];
     
     doef1 = doef * cot1 / 4.0;
     
@@ -606,8 +603,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
     vec_scalar_append(da2, doef2, i, /**/ fx, fy, fz);
     vec_scalar_append(db2, doef2, j, /**/ fx, fy, fz);
     vec_scalar_append(dd,  doef2, l, /**/ fx, fy, fz);
-
-  
+    
   }
    
   return HE_OK;
