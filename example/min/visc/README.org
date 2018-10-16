@@ -1,5 +1,18 @@
 |    |   bi   |       |
 0  0.591   0.652
 
-./main juelicher 0.63   0 5 1 0       0.1 0 0 0 < ~/0.off > q
-./main juelicher 0.66   0 5 1 0       0.1 0 0 0 < ~/0.off > q
+./main juelicher 0.63   1 1 1 0       0.1 0 0 0 < ~/0.off > q
+
+Shape A
+./main juelicher 0.63   3 3 3 0       0.1 0 0.064 20  < ~/0.off > q
+
+Shape B
+./main juelicher 0.63   3 3 3 0       0.1 0 0.064 25    < ~/0.off > q
+./main juelicher 0.63   3 3 3 0       0.1 0 0.064 27.5  < ~/0.off > q
+
+Disc
+./main juelicher 0.63   3 3 3 0       0.1 0 0.064 30  < ~/0.off > q
+
+Dumbels
+./main juelicher 0.63   3 3 3 0       0.1 0 0.064 35  < ~/0.off > q
+./main juelicher 0.63   3 3 3 0       0.1 0 0.064 40  < ~/0.off > q

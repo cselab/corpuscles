@@ -210,7 +210,7 @@ static void main0(real *vx, real *vy, real *vz,
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
 
-        if (i % 1000 == 0) {
+        if (i % 100 == 0) {
             do {
                 equiangulate(&cnt);
                 //cnt = 0;
