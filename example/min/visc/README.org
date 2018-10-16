@@ -13,6 +13,9 @@ Shape B
 Disc
 ./main juelicher 0.63   3 3 3 0       0.1 0 0.064 30  < ~/0.off > q
 
+Elliptocyde
+./main juelicher 0.63   3 3 3 0       0.1 0 0.064 27.5  < ~/0.off > q
+
 Dumbels
 ./main juelicher 0.63   3 3 3 0       0.1 0 0.064 35  < ~/0.off > q
 ./main juelicher 0.63   3 3 3 0       0.1 0 0.064 40  < ~/0.off > q
