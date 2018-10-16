@@ -18,8 +18,14 @@
 static const char **argv;
 static char name[4048];
 
-static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng, h;
-static int nv, nt, every;
+
+static real Kb, C0, Kad, DA0D;
+static real h;
+static int  every;
+static real *xx, *yy, *zz, *rxy;
+static real *eng;
+static real *Fx, *Fy, *Fz, *Fm;
+static int nv, nt;
 static He *he;
 static Bending *bending;
 static BendingParam param;
@@ -69,7 +75,7 @@ static int arg() {
     scl(&h);
     num(&every);
     if (every < 1)
-        ER("ever < 1");
+      ER("every < 1");
     return HE_OK;
 }
 
@@ -87,9 +93,8 @@ static void main0() {
     enum {X, Y, Z};
     int i;
     real e, f[3];
-
     bending_ini(name, param, he,  &bending);
-    bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
+    bending_force(bending, he, xx, yy, zz, /**/ Fx, Fy, Fz);
 
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
@@ -97,7 +102,7 @@ static void main0() {
     MSG("energy: %g", e);
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
-        printf("%g %g\n", fx[i], f[X]);
+        printf("%g %g\n", Fx[i], f[X]);
     }
 
     bending_fin(bending);
@@ -118,15 +123,15 @@ int main(int __UNUSED argc, const char *v[]) {
     he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
-    MALLOC(nv, &rr); MALLOC(nv, &fm);
-    CALLOC(nv, &fx);  CALLOC(nv, &fy);  CALLOC(nv, &fz);
+    MALLOC(nv, &rxy); MALLOC(nv, &Fm);
+    CALLOC(nv, &Fx);  CALLOC(nv, &Fy);  CALLOC(nv, &Fz);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
-    FREE(rr); FREE(fm);
-    FREE(fx); FREE(fy); FREE(fz);
+    FREE(rxy); FREE(Fm);
+    FREE(Fx); FREE(Fy); FREE(Fz);
 
     he_off_fin(off);
     he_fin(he);
