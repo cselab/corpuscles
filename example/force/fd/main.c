@@ -26,7 +26,7 @@ static BendingParam param;
 static const char *me = "fd";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer step  every < OFF > forces\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer Kb C0 Kad DA0D step  every < OFF > forces\n", me);
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
@@ -64,7 +64,10 @@ static int arg() {
         usg();
         exit(0);
     }
-    str(name); scl(&h); num(&every);
+    str(name);
+    scl(&param.Kb); scl(&param.C0); scl(&param.Kad); scl(&param.DA0D);
+    scl(&h);
+    num(&every);
     if (every < 1)
         ER("ever < 1");
     return HE_OK;
@@ -84,10 +87,6 @@ static void main0() {
     enum {X, Y, Z};
     int i;
     real e, f[3];
-    param.Kb = 1;
-    param.C0 = 0;
-    param.Kad = 0;
-    param.DA0D = 0;
 
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);

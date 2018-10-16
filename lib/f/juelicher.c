@@ -314,9 +314,9 @@ real he_f_juelicher_energy(T *q, He *he,
     /* Ead */
     area_tot = sum(nv, area);
     len_theta_tot = sum(nv, len_theta);
-    scurv = (len_theta_tot/2 - DA0D*H0)/area_tot;    
+    scurv = (len_theta_tot/2 - DA0D)/area_tot;
 
-    eng_ad = pi*Kad*area_tot*scurv*scurv/2; /* TODO */
+    eng_ad = pi*Kad*area_tot*scurv*scurv; /* TODO */
     return eng_bend + eng_ad;
 }
 
@@ -507,14 +507,14 @@ int he_f_juelicher_force(T *q, He *he,
 
     area_tot = sum(nv, area);
     len_theta_tot = sum(nv, len_theta);
-    scurv = (len_theta_tot/2 - DA0D*H0)/area_tot;
+    scurv = (len_theta_tot/2 - DA0D)/area_tot;
 
     fad_len(he, size, scurv, theta, x, y, z, /**/ fxad, fyad, fzad);
     fad_theta(he, size, -scurv, len, x, y, z, /**/ fxad, fyad, fzad);
     fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);
-    scale(nv, pi*Kad, fxad);
-    scale(nv, pi*Kad, fyad);
-    scale(nv, pi*Kad, fzad);
+    scale(nv, 2*pi*Kad, fxad);
+    scale(nv, 2*pi*Kad, fyad);
+    scale(nv, 2*pi*Kad, fzad);
 
     plus(nv, fxad, /*io*/ fx_tot);
     plus(nv, fyad, /*io*/ fy_tot);
