@@ -83,42 +83,31 @@ static void main0() {
     real e0;
     real *eng, *area;
     real *curva_mean;
-    real *curva_gauss;
-    real *fm, *fmad;
+    real *Fm;
 
     e0 = energy();
     
-    /*
-        nstep = 1;
-	for (i = 0; i < nstep; i++) {
-        force();
-        update();
-        fprintf(stderr, "eng: %.5f\n", (energy() - e0)/e0);
-        energy_ver(&eng);  copy(NV, eng, ENG);
-        area_ver(&area0); copy(NV, area0, AREA);
-
-        punto_fwrite(NV, queue, stdout);
-        putchar('\n');
-	}*/
-
     f_gompper_kroll_energy_ver(&eng);
     f_gompper_kroll_area_ver(&area);
     f_gompper_kroll_curva_mean_ver(&curva_mean);
 
-    RZERO(NV, &fm);
-    RZERO(NV, &fmad);
+    RZERO(NV, &Fm);
+
     force();
+    
     MSGR("FX[0]: %g", FX[0]);
-    vabs(NV, FX, FY, FZ, /**/ fm);
+    vabs(NV, FX, FY, FZ, /**/ Fm);
     MSGR("energy: %g", e0);
     MSGR("force : %g %g", FX[0], FX[NV-1]);
 
-    printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 fm; 8 area; 9 curva_mean \n");
-    real *queue[] = {ZZ, RR, eng, FX, FY, FZ, fm, area, curva_mean, NULL};
-    punto_fwrite(NV, queue, stdout);
+    //printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 fm; 8 area; 9 curva_mean \n");
+    //real *queue[] = {ZZ, RR, eng, FX, FY, FZ, fm, area, curva_mean, NULL};
+    printf("x y z rxy eng Fx Fy Fz Fm area cm\n");
+    real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, NULL};
+      punto_fwrite(NV, queue, stdout);
 
-    FREE(fm);
-    FREE(fmad);
+    FREE(Fm);
+    
 }
 
 int main(int __UNUSED argc, const char *v[]) {

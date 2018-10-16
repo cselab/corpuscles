@@ -314,7 +314,8 @@ real he_f_juelicher_energy(T *q, He *he,
     /* Ead */
     area_tot = sum(nv, area);
     len_theta_tot = sum(nv, len_theta);
-    scurv = (len_theta_tot/2 - DA0D*H0)/area_tot;    
+    //scurv = (len_theta_tot/2 - DA0D*H0)/area_tot; 
+    scurv = (len_theta_tot/2 - DA0D/2)/area_tot;    
 
     eng_ad = pi*Kad*area_tot*scurv*scurv/2; /* TODO */
     return eng_bend + eng_ad;

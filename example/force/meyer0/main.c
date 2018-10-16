@@ -69,7 +69,7 @@ static void main0() {
     real *eng, *area;
     real *curva_mean;
     real *curva_gauss;
-    real *fm, *fmad;
+    real *Fm;
 
     e0 = energy();
     
@@ -78,20 +78,20 @@ static void main0() {
     f_meyer_curva_mean_ver(&curva_mean);
     f_meyer_curva_gauss_ver(&curva_gauss);
 
-    RZERO(NV, &fm);
-    RZERO(NV, &fmad);
+    RZERO(NV, &Fm);
+
     force();
     MSGR("FX[0]: %g", FX[0]);
-    vabs(NV, FX, FY, FZ, /**/ fm);
+    vabs(NV, FX, FY, FZ, /**/ Fm);
     MSGR("energy: %g", e0);
     MSGR("force : %g %g", FX[0], FX[NV-1]);
 
-    printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 fm; 8 area; 9 curva_mean; 10 curva_gauss \n");
-    real *queue[] = {ZZ, RR, eng, FX, FY, FZ, fm, area, curva_mean, curva_gauss, NULL};
+    printf("x y z rxy eng Fx Fy Fz Fm area cm cg \n");
+    real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, curva_gauss, NULL};
     punto_fwrite(NV, queue, stdout);
 
-    FREE(fm);
-    FREE(fmad);
+    FREE(Fm);
+    
 }
 int main(int __UNUSED argc, const char *v[]) {
   argv = v; argv++;
