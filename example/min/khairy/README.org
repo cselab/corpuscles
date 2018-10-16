@@ -1,0 +1,6 @@
+Run
+
+make
+sh main.sh
+
+wait, files are in *.off
