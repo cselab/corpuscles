@@ -206,7 +206,7 @@ static void main0(real *vx, real *vy, real *vz,
     nsub = 100;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
-    for (i = 0; /**/ ; i++) {
+    for (i = 0; i < end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
         rnd = 0.01*max_vec(vx, vy, vz);
@@ -236,9 +236,8 @@ static void main0(real *vx, real *vy, real *vz,
             MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
             off_write(XX, YY, ZZ, "q.off");
         }
-        if (i == end)
-            off_write(XX, YY, ZZ, "end.off");
     }
+    off_write(XX, YY, ZZ, "end.off");            
 }
 
 int main(int __UNUSED argc, const char *v[]) {
