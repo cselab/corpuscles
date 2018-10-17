@@ -283,7 +283,7 @@ static real compute_curva_mean_integral(T *q, const real *curva_mean, const real
 static real compute_energy_nonlocal(T *q, const real *curva_mean, const real *area) {
   
   real Kad, DA0D;
-  int i, nv;
+  int nv;
   real cm_integral, area_tot, energy_tot;
   
   Kad  = q->Kad;
