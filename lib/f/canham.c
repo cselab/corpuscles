@@ -64,16 +64,6 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(k, x, y, z, /**/ c);
     return HE_OK;
 }
-static int get4(const real *x, const real *y, const real *z,
-                int i, int j, int k, int l, /**/
-                real a[3], real b[3], real c[3], real d[3]) {
-
-    vec_get(i, x, y, z, a);
-    vec_get(j, x, y, z, b);
-    vec_get(k, x, y, z, c);
-    vec_get(l, x, y, z, d);
-    return HE_OK;
-}
 static real sum(int n, real *a) {
     int i;
     real v;
@@ -435,10 +425,8 @@ int he_f_canham_force(T *q, He *he,
     int v, e, m;
     int i, j, k, l;
     int nv, nt, ne;
-    real a[3], b[3], c[3], d[3], u[3];
     int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
-    real coti, cotl, cotil;
     real *lbx, *lby, *lbz, *t;
     real *normx, *normy, *normz;
     real *area;
