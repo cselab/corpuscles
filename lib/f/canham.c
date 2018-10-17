@@ -2,7 +2,6 @@
 #include <math.h>
 
 #include "real.h"
-#include "he/macro.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
@@ -27,7 +26,8 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-  real Kb;
+  real Kb, C0, Kad, DA0D;
+
   int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
 
@@ -97,7 +97,7 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     *pi = i; *pj = j; *pk = k; *pl = l;
     return BULK;
 }
-int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
+int he_f_canham_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
 
@@ -112,6 +112,9 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real 
     q->nt = nt;
 
     q->Kb   = Kb;
+    q->C0   = C0;
+    q->Kad  = Kad;
+    q->DA0D = DA0D;
 
 
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
@@ -163,38 +166,6 @@ int he_f_canham_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
     return HE_OK;
 }
-
-static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
-    int nh, h, n, nn;
-    int i, j, k;
-    real a[3], b[3], c[3], cot;
-    nh = he_nh(he);
-    zero(nh, H);
-    for (h = 0; h < nh; h++) {
-        n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);
-        get3(x, y, z, i, j, k, /**/ a, b, c);
-        cot = tri_cot(b, c, a);
-        H[h] += cot;
-        if (!bnd(h)) H[flp(h)] += cot;
-    }
-    return HE_OK;
-}
-
-static void compute_laplace2(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
-    int h, n, nv, nh, i, j;
-    nv = he_nv(he);
-    zero(nv, V1);
-    nh = he_nh(he);
-    for (h = 0; h < nh; h++) {
-        n = nxt(h);
-        i = ver(h); j = ver(n);
-        V1[i] += t[h]*(V0[i] - V0[j])/2;
-    }
-    for (i = 0; i < nv; i++)
-        V1[i] /= area[i];
-}
-
 static real compute_area(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
@@ -426,15 +397,20 @@ real he_f_canham_energy(T *q, He *he,
     real *curva_mean;
     real *energy, *area;
 
-    real Kb;
+    real Kb, C0, Kad, DA0D;
     real area_tot_tri;
     int  nv, nt;
 
-    real cm_intga;
-    real energy1; 
+    real H0, cm_intga;
+    real energy1, energy2, energy3a, energy3b, energy4, energy5;
     real energy_tot;
 
     Kb   = q->Kb;
+    C0   = q->C0;
+    Kad  = q->Kad;
+    DA0D = q->DA0D;
+
+    H0  = C0/2.0;
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -467,7 +443,12 @@ real he_f_canham_energy(T *q, He *he,
     }
 
     energy1 = sum(nv, energy);
-    energy_tot = energy1;
+    energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
+    energy3a =  -4*Kb*H0*cm_intga;
+    energy3b =  -2*pi*Kad*DA0D*cm_intga;
+    energy4 = 2*Kb*H0*H0*area_tot_tri;
+    energy5 = pi*Kad*DA0D*DA0D/2/area_tot_tri;
+    energy_tot = energy1 + energy2 + energy3a + energy3b + energy4 + energy5;
 
     return energy_tot;
 
@@ -490,11 +471,17 @@ int he_f_canham_force(T *q, He *he,
     real fm;
     real area_tot_tri;
 
-    real Kb;
-    real cm_intga;
+    real Kb, C0, Kad, DA0D;
+    real H0, cm_intga;
+
     HeSum *sum;
 
     Kb   = q->Kb;
+    C0   = q->C0;
+    Kad  = q->Kad;
+    DA0D = q->DA0D;
+
+    H0   = C0/2.0;
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -526,7 +513,7 @@ int he_f_canham_force(T *q, He *he,
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-        fm = 2*2*Kb*(curva_mean[v])*(curva_mean[v]*curva_mean[v]+-curva_gauss[v]);
+        fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
         fx[v] += fm * normx[v] * area[v];
         fy[v] += fm * normy[v] * area[v];
         fz[v] += fm * normz[v] * area[v];
@@ -534,6 +521,9 @@ int he_f_canham_force(T *q, He *he,
     }
     cm_intga = he_sum_get(sum);
     he_sum_fin(sum);
+
+    cm_intga -= (DA0D/2);
+    cm_intga *= (4*pi* Kad/ area_tot_tri);
 
     for ( v = 0; v < nv; v++ ) {
 
