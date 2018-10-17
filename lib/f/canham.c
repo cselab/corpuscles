@@ -390,10 +390,6 @@ real he_f_canham_energy(T *q, He *he,
     real area_tot_tri;
     int  nv, nt;
 
-    real cm_intga;
-    real energy1;
-    real energy_tot;
-
     Kb   = q->Kb;
 
     nv = he_nv(he);
@@ -426,16 +422,10 @@ real he_f_canham_energy(T *q, He *he,
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, /**/ curva_mean);
 
-    cm_intga   = 0;
-    for ( v = 0; v < nv; v++ ) {
+    for ( v = 0; v < nv; v++ )
         energy[v] = 2 * Kb* curva_mean[v] * curva_mean[v] * area[v];
-        cm_intga += curva_mean[v] * area[v];
-    }
 
-    energy1 = sum(nv, energy);
-    energy_tot = energy1;
-
-    return energy_tot;
+    return sum(nv, energy);
 
 }
 int he_f_canham_force(T *q, He *he,
