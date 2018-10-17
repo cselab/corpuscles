@@ -21,9 +21,9 @@
 
 struct T {struct Vtable *vtable; };
 
-static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer"};
+static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer", "canham"};
 typedef int (*TypeIni)(BendingParam, He*, T**);
-static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini};
+static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini, bending_canham_ini};
 
 int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     const int n = sizeof(Name)/sizeof(Name[0]);
@@ -251,3 +251,41 @@ int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
 /* end meyer */
 
 
+/* begin canham */
+typedef struct Canham Canham;
+struct Canham {T bending; HeFCanham *local; };
+static int canham_fin(T *q) {
+    int status;
+    Canham *b = CONTAINER_OF(q, Canham, bending);
+    status = he_f_canham_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int canham_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz) {
+    Canham *b = CONTAINER_OF(q, Canham, bending);
+    return he_f_canham_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real canham_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+    Canham *b = CONTAINER_OF(q, Canham, bending);
+    return he_f_canham_energy(b->local, he, x, y, z);
+}
+static int canham_energy_ver(T *q, /**/ real **e) {
+    Canham *b = CONTAINER_OF(q, Canham, bending);
+    return he_f_canham_energy_ver(b->local, /**/ e);
+}
+static Vtable canham_vtable = { canham_fin, canham_force, canham_energy, canham_energy_ver};
+int bending_canham_ini(BendingParam param, He *he, /**/ T **pq) {
+    real Kb, C0, Kad, DA0D;
+    Canham *q;
+    Kb  = param.Kb;
+    C0 = param.C0;
+    Kad = param.Kad;
+    DA0D = param.DA0D;
+
+    MALLOC(1, &q);
+    q->bending.vtable = &canham_vtable;
+    *pq = &q->bending;
+    return he_f_canham_ini(Kb, C0, Kad, DA0D, he, &q->local);
+}
+/* end canham */
