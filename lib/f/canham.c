@@ -27,7 +27,7 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-  real Kb, C0, Kad, DA0D;
+  real Kb, Kad, DA0D;
 
   int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
@@ -98,7 +98,7 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     *pi = i; *pj = j; *pk = k; *pl = l;
     return BULK;
 }
-int he_f_canham_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
+int he_f_canham_ini(real Kb, __UNUSED real C0, real Kad, real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
 
@@ -113,7 +113,6 @@ int he_f_canham_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->nt = nt;
 
     q->Kb   = Kb;
-    q->C0   = C0;
     q->Kad  = Kad;
     q->DA0D = DA0D;
 
@@ -398,20 +397,17 @@ real he_f_canham_energy(T *q, He *he,
     real *curva_mean;
     real *energy, *area;
 
-    real Kb, C0, Kad, DA0D;
+    real Kb, Kad, DA0D;
     real area_tot_tri;
     int  nv, nt;
 
-    real H0, cm_intga;
-    real energy1, energy2, energy3a, energy3b, energy4, energy5;
+    real cm_intga;
+    real energy1, energy2, energy3b, energy5;
     real energy_tot;
 
     Kb   = q->Kb;
-    C0   = q->C0;
     Kad  = q->Kad;
     DA0D = q->DA0D;
-
-    H0  = C0/2.0;
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -445,11 +441,9 @@ real he_f_canham_energy(T *q, He *he,
 
     energy1 = sum(nv, energy);
     energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
-    energy3a =  -4*Kb*H0*cm_intga;
     energy3b =  -2*pi*Kad*DA0D*cm_intga;
-    energy4 = 2*Kb*H0*H0*area_tot_tri;
     energy5 = pi*Kad*DA0D*DA0D/2/area_tot_tri;
-    energy_tot = energy1 + energy2 + energy3a + energy3b + energy4 + energy5;
+    energy_tot = energy1 + energy2 + energy3b + energy5;
 
     return energy_tot;
 
@@ -472,17 +466,14 @@ int he_f_canham_force(T *q, He *he,
     real fm;
     real area_tot_tri;
 
-    real Kb, C0, Kad, DA0D;
-    real H0, cm_intga;
+    real Kb, Kad, DA0D;
+    real cm_intga;
 
     HeSum *sum;
 
     Kb   = q->Kb;
-    C0   = q->C0;
     Kad  = q->Kad;
     DA0D = q->DA0D;
-
-    H0   = C0/2.0;
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -514,7 +505,7 @@ int he_f_canham_force(T *q, He *he,
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-        fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
+        fm = 2*2*Kb*(curva_mean[v])*(curva_mean[v]*curva_mean[v]-curva_gauss[v]);
         fx[v] += fm * normx[v] * area[v];
         fy[v] += fm * normy[v] * area[v];
         fz[v] += fm * normz[v] * area[v];
