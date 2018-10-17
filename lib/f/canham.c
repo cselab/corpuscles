@@ -2,6 +2,7 @@
 #include <math.h>
 
 #include "real.h"
+#include "he/macro.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
