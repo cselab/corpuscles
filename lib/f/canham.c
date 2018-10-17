@@ -186,7 +186,7 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
-static void compute_laplace2(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
+static void compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
     int h, n, nv, nh, i, j;
     nv = he_nv(he);
     zero(nv, V1);
@@ -273,51 +273,6 @@ static real compute_area(T *q, He *he,
     he_sum_fin(sum);
     return area_tot_tri;
 
-}
-static int compute_laplace(T *q, He *he,
-                   const real *x, const real *y, const real *z, /**/
-                   real *lbx, real *lby, real *lbz) {
-    enum {X, Y, Z};
-    int t, nt;
-    int i, j, k, nv;
-    real a[3], b[3], c[3], u[3];
-    int *T0, *T1, *T2;
-    real *area;
-    real cota,cotb,cotc;
-
-    nt = he_nt(he);
-    nv = he_nv(he);
-    T0 = q->T0; T1 = q->T1; T2 = q->T2;
-    area = q->area;
-
-    zero(nv, lbx); zero(nv,  lby); zero(nv, lbz);
-
-    for ( t = 0; t < nt; t++ ) {
-        i = T0[t]; j = T1[t]; k = T2[t];
-        get3(x, y, z, i, j, k, a, b, c);
-        cota = tri_cot(c, a, b);
-        cotb = tri_cot(a, b, c);
-        cotc = tri_cot(b, c, a);
-
-        vec_minus(a, b,  u);
-        vec_scalar_append(u,  cotc/2, i, /**/ lbx, lby, lbz);
-        vec_scalar_append(u, -cotc/2, j, /**/ lbx, lby, lbz);
-
-        vec_minus(b, c, u);
-        vec_scalar_append(u,  cota/2, j, /**/  lbx, lby, lbz);
-        vec_scalar_append(u, -cota/2, k, /**/  lbx, lby, lbz);
-
-        vec_minus(c, a,  u);
-        vec_scalar_append(u,  cotb/2, k, /**/  lbx, lby, lbz);
-        vec_scalar_append(u, -cotb/2, i, /**/  lbx, lby, lbz);
-    }
-
-    for (i = 0; i < nv; i++ ) {
-        lbx[i] /=area[i];
-        lby[i] /=area[i];
-        lbz[i] /=area[i];
-    }
-    return HE_OK;
 }
 
 static int compute_norm(T *q, He *he,
@@ -464,11 +419,10 @@ real he_f_canham_energy(T *q, He *he,
     area_tot_tri = compute_area(q, he, x, y, z, area);
 
     compute_cot(he, x, y, z, /**/ t);
-    compute_laplace2(he, x, t, area, /**/ lbx);
-    compute_laplace2(he, y, t, area, /**/ lby);
-    compute_laplace2(he, z, t, area, /**/ lbz);    
+    compute_laplace(he, x, t, area, /**/ lbx);
+    compute_laplace(he, y, t, area, /**/ lby);
+    compute_laplace(he, z, t, area, /**/ lbz);    
     
-//    compute_laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, /**/ curva_mean);
 
@@ -488,14 +442,14 @@ int he_f_canham_force(T *q, He *he,
                      const real *x, const real *y, const real *z, /**/
                      real *fx, real *fy, real *fz) {
     enum {X, Y, Z};
-    int v, e, t;
+    int v, e, m;
     int i, j, k, l;
     int nv, nt, ne;
     real a[3], b[3], c[3], d[3], u[3];
     int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
     real coti, cotl, cotil;
-    real *lbx, *lby, *lbz;
+    real *lbx, *lby, *lbz, *t;
     real *normx, *normy, *normz;
     real *area;
     real *curva_gauss, *curva_mean;
@@ -520,10 +474,11 @@ int he_f_canham_force(T *q, He *he,
     curva_mean  = q->curva_mean;
     curva_gauss = q->curva_gauss;
     area    = q->area;
+    t = q->t;
 
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        T0[t] = i; T1[t] = j; T2[t] = k;
+    for (m = 0; m < nt; m++) {
+        get_ijk(m, he, /**/ &i, &j, &k);
+        T0[m] = i; T1[m] = j; T2[m] = k;
     }
 
     for (e = 0; e < ne; e++) {
@@ -532,7 +487,11 @@ int he_f_canham_force(T *q, He *he,
     }
 
     area_tot_tri = compute_area(q, he, x, y, z, area);
-    compute_laplace(q, he, x, y, z, lbx, lby, lbz);
+    compute_cot(he, x, y, z, /**/ t);
+    compute_laplace(he, x, t, area, /**/ lbx);
+    compute_laplace(he, y, t, area, /**/ lby);
+    compute_laplace(he, z, t, area, /**/ lbz);    
+    
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
