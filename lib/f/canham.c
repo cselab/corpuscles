@@ -163,6 +163,24 @@ int he_f_canham_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
     return HE_OK;
 }
+
+static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
+    int nh, h, n, nn;
+    int i, j, k;
+    real a[3], b[3], c[3], cot;
+    nh = he_nh(he);
+    zero(nh, H);
+    for (h = 0; h < nh; h++) {
+        n = nxt(h); nn = nxt(n);
+        i = ver(h); j = ver(n); k = ver(nn);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        cot = tri_cot(b, c, a);
+        H[h] += cot;
+        if (!bnd(h)) H[flp(h)] += cot;
+    }
+    return HE_OK;
+}
+
 static real compute_area(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
