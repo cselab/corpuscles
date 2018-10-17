@@ -14,6 +14,7 @@
 #include "he/f/gompper.h"
 #include "he/f/gompper_kroll.h"
 #include "he/f/meyer.h"
+#include "he/f/canham.h"
 
 #include "he/bending.h"
 
