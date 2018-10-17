@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 #include "real.h"
 #include "he/memory.h"
