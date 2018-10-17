@@ -181,6 +181,20 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
+static void compute_laplace2(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
+    int h, n, nv, nh, i, j;
+    nv = he_nv(he);
+    zero(nv, V1);
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        n = nxt(h);
+        i = ver(h); j = ver(n);
+        V1[i] += t[h]*(V0[i] - V0[j])/2;
+    }
+    for (i = 0; i < nv; i++)
+        V1[i] /= area[i];
+}
+
 static real compute_area(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
