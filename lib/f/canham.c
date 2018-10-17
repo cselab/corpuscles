@@ -447,9 +447,6 @@ int he_f_canham_force(T *q, He *he,
     real area_tot_tri;
 
     real Kb;
-    real cm_intga;
-
-    HeSum *sum;
 
     Kb   = q->Kb;
 
@@ -486,16 +483,12 @@ int he_f_canham_force(T *q, He *he,
     compute_curva_mean(q, he, curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
-    he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
         fm = 2*2*Kb*(curva_mean[v])*(curva_mean[v]*curva_mean[v]-curva_gauss[v]);
         fx[v] += fm * normx[v] * area[v];
         fy[v] += fm * normy[v] * area[v];
         fz[v] += fm * normz[v] * area[v];
-        he_sum_add(sum, curva_mean[v] * area[v]);
     }
-    cm_intga = he_sum_get(sum);
-    he_sum_fin(sum);
 
     for (e = 0; e < ne; e++) {
 
