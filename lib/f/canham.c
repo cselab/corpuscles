@@ -27,7 +27,7 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-    real Kb, Kad;
+    real Kb;
 
   int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
@@ -98,7 +98,7 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     *pi = i; *pj = j; *pk = k; *pl = l;
     return BULK;
 }
-int he_f_canham_ini(real Kb, __UNUSED real C0, real Kad, __UNUSED real DA0D, He *he, T **pq) {
+int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt;
 
@@ -113,7 +113,6 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, real Kad, __UNUSED real DA0D, He 
     q->nt = nt;
 
     q->Kb   = Kb;
-    q->Kad  = Kad;
 
 
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
@@ -396,16 +395,15 @@ real he_f_canham_energy(T *q, He *he,
     real *curva_mean;
     real *energy, *area;
 
-    real Kb, Kad;
+    real Kb;
     real area_tot_tri;
     int  nv, nt;
 
     real cm_intga;
-    real energy1, energy2;
+    real energy1;
     real energy_tot;
 
     Kb   = q->Kb;
-    Kad  = q->Kad;
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -438,8 +436,7 @@ real he_f_canham_energy(T *q, He *he,
     }
 
     energy1 = sum(nv, energy);
-    energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
-    energy_tot = energy1 + energy2;
+    energy_tot = energy1;
 
     return energy_tot;
 
@@ -462,13 +459,12 @@ int he_f_canham_force(T *q, He *he,
     real fm;
     real area_tot_tri;
 
-    real Kb, Kad;
+    real Kb;
     real cm_intga;
 
     HeSum *sum;
 
     Kb   = q->Kb;
-    Kad  = q->Kad;
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -508,17 +504,6 @@ int he_f_canham_force(T *q, He *he,
     }
     cm_intga = he_sum_get(sum);
     he_sum_fin(sum);
-
-    cm_intga *= (4*pi* Kad/ area_tot_tri);
-
-    for ( v = 0; v < nv; v++ ) {
-
-        fm = -cm_intga * curva_gauss[v];
-        fx[v] += fm * normx[v] * area[v];
-        fy[v] += fm * normy[v] * area[v];
-        fz[v] += fm * normz[v] * area[v];
-
-    }
 
     for (e = 0; e < ne; e++) {
 
