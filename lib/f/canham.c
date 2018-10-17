@@ -32,6 +32,7 @@ struct T {
   int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
 
+  real *t;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
@@ -100,13 +101,14 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
 }
 int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
-    int nv, ne, nt;
+    int nv, ne, nt, nh;
 
     MALLOC(1, &q);
 
     nv = he_nv(he);
     ne = he_ne(he);
     nt = he_nt(he);
+    nh = he_nh(he);
 
     q->nv = nv;
     q->ne = ne;
@@ -115,6 +117,7 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real 
     q->Kb   = Kb;
 
 
+    MALLOC(nh, &q->t);
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
 
@@ -127,6 +130,7 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real 
     return HE_OK;
 }
 int he_f_canham_fin(T *q) {
+    FREE(q->t);
     FREE(q->T0); FREE(q->T1); FREE(q->T2);
     FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
@@ -419,13 +423,13 @@ static int compute_curva_gauss(T *q, He *he,
 real he_f_canham_energy(T *q, He *he,
                        const real *x, const real *y, const real *z) {
     enum {X, Y, Z};
-    int v, t;
+    int v, m;
     int i, j, k;
     int *T0, *T1, *T2;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *curva_mean;
-    real *energy, *area;
+    real *energy, *area, *t;
 
     real Kb;
     real area_tot_tri;
@@ -451,13 +455,20 @@ real he_f_canham_energy(T *q, He *he,
     curva_mean  = q->curva_mean;
     energy  = q->energy;
     area    = q->area;
+    t = q->t;
 
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        T0[t] = i; T1[t] = j; T2[t] = k;
+    for (m = 0; m < nt; m++) {
+        get_ijk(m, he, /**/ &i, &j, &k);
+        T0[m] = i; T1[m] = j; T2[m] = k;
     }
     area_tot_tri = compute_area(q, he, x, y, z, area);
-    compute_laplace(q, he, x, y, z, lbx, lby, lbz);
+
+    compute_cot(he, x, y, z, /**/ t);
+    compute_laplace2(he, x, t, area, /**/ lbx);
+    compute_laplace2(he, y, t, area, /**/ lby);
+    compute_laplace2(he, z, t, area, /**/ lbz);    
+    
+//    compute_laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, /**/ curva_mean);
 
