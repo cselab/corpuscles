@@ -19,5 +19,4 @@ int he_f_canham_curva_mean_ver(T*, /**/ real**);
 int he_f_canham_curva_gauss_ver(T*, /**/ real**);
 int he_f_canham_energy_ver(T*, /**/ real**);
 
-
 #undef T
