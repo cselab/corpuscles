@@ -13,6 +13,7 @@
 #include <he/util.h>
 #include <he/macro.h>
 #include <he/vec.h>
+#include <he/vtk.h>
 #define FMT_IN   XE_REAL_IN
 
 static const char **argv;
@@ -22,7 +23,7 @@ static char name[4048];
 static real Kb, C0, Kad, DA0D;
 static real h;
 static int  every;
-static real *xx, *yy, *zz, *rxy;
+static real *xx, *yy, *zz;
 static real *eng;
 static real *Fx, *Fy, *Fz, *Fm;
 static int nv, nt;
@@ -103,6 +104,13 @@ static void main0() {
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
         printf("%g %g\n", Fx[i], f[X]);
+        Fm[i] = Fx[i] - f[X];
+    }
+
+    if (every == 1) {
+        const real *scalars[] = {Fx, Fy, Fz, Fm, NULL};
+        const char *names[]   = {"fx", "fy", "fz", "fm", NULL};
+        he_vtk_write(he, xx, yy, zz, scalars, names, "q.vtk");
     }
 
     bending_fin(bending);
@@ -123,15 +131,13 @@ int main(int __UNUSED argc, const char *v[]) {
     he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
-    MALLOC(nv, &rxy); MALLOC(nv, &Fm);
-    CALLOC(nv, &Fx);  CALLOC(nv, &Fy);  CALLOC(nv, &Fz);
+    CALLOC(nv, &Fm); CALLOC(nv, &Fx);  CALLOC(nv, &Fy); CALLOC(nv, &Fz);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
-    FREE(rxy); FREE(Fm);
-    FREE(Fx); FREE(Fy); FREE(Fz);
+    FREE(Fm); FREE(Fx); FREE(Fy); FREE(Fz);
 
     he_off_fin(off);
     he_fin(he);

@@ -188,6 +188,27 @@ static int compute_laplace(He *he, const real *V0, const real *t, const real *ar
     return HE_OK;
 }
 
+static int compute_area2(He *he, const real *xx, const real *yy, const real *zz, /**/ real *area) {
+    int t, i, j, k;
+    int nv, nt;
+    real a[3], b[3], c[3];
+    real area0;
+
+    nt = he_nt(he);
+    nv = he_nv(he);
+
+    zero(nv, area);
+    for (t = 0; t < nt; t++) {
+        get_ijk(t, he, &i, &j, &k);
+        get3(xx, yy, zz, i, j, k, a, b, c);
+        area0 = tri_area(a, b, c)/3;
+        area[i] += area0;
+        area[j] += area0;
+        area[k] += area0;
+    }
+    return HE_OK;
+}
+
 static int compute_area(He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
