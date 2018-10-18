@@ -166,7 +166,66 @@ int he_f_meyer_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
     return HE_OK;
 }
-static real compute_area(T *q, He *he,
+static real compute_area_voronoi(T *q, He *he,
+				 const real *x, const real *y, const real *z, /**/
+				 real *area) {
+  enum {X, Y, Z};
+  int t, nt, nv;
+  int i, j, k;
+  real a[3], b[3], c[3], u[3];
+  int *T0, *T1, *T2;
+  real area0;
+  real theta_a, theta_b, theta_c;
+  real cota,cotb,cotc;
+  real ab2, bc2, ca2, area_tot_tri;
+  HeSum *sum;
+  
+  nt = he_nt(he);
+  nv = he_nv(he);
+  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  he_sum_ini(&sum);
+  
+  zero(nv, area);
+  
+  area_tot_tri = 0;
+  for ( t = 0; t < nt; t++ ) {
+    i = T0[t]; j = T1[t]; k = T2[t];
+    
+    get3(x, y, z, i, j, k, a, b, c);
+    area0 = tri_area(a, b, c);
+    
+    he_sum_add(sum, area0);
+    
+    theta_a = tri_angle(c, a, b);
+    theta_b = tri_angle(a, b, c);
+    theta_c = tri_angle(b, c, a);
+    
+    vec_minus(a, b,  u);
+    ab2 = vec_dot(u, u);
+    
+    vec_minus(b, c, u);
+    bc2 = vec_dot(u, u);
+    
+    vec_minus(c, a,  u);
+    ca2 = vec_dot(u, u);
+    
+    cota = tri_cot(c, a, b);
+    cotb = tri_cot(a, b, c);
+    cotc = tri_cot(b, c, a);
+    
+    area[i] += ( ab2*cotc + ca2*cotb ) / 8;
+    area[j] += ( bc2*cota + ab2*cotc ) / 8;
+    area[k] += ( ca2*cotb + bc2*cota ) / 8;
+    
+  }/*end for loop*/
+  
+  area_tot_tri = he_sum_get(sum);
+  
+  he_sum_fin(sum);
+  return area_tot_tri;
+  
+}
+static real compute_area_mix(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
     enum {X, Y, Z};
@@ -445,7 +504,7 @@ real he_f_meyer_energy(T *q, He *he,
     energy1 = sum(nv, energy);
     energy2 = 2*pi*Kad*cm_intga*cm_intga/area_tot_tri;
     energy3a =  -4*Kb*H0*cm_intga;
-    energy3b =  -2*pi*Kad*DA0D*cm_intga;
+    energy3b =  -2*pi*Kad*DA0D/area_tot_tri*cm_intga;
     energy4 = 2*Kb*H0*H0*area_tot_tri;
     energy5 = pi*Kad*DA0D*DA0D/2/area_tot_tri;
     energy_tot = energy1 + energy2 + energy3a + energy3b + energy4 + energy5;
