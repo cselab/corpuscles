@@ -44,6 +44,8 @@ static void fin() {
 }
 
 int main() {
+    real *mean, *gaus;
+
     ini();
 
     e0 = he_f_canham_energy(bending, he, x, y, z);
@@ -52,8 +54,11 @@ int main() {
     MSG("eng[0]: %g", eng[0]);
 
 
-    char *key = "x y z fm fx fy fz eng";
-    real *queue[] = {x, y, z, fx, fy, fz, eng, NULL};
+    he_f_canham_curva_mean_ver(bending, &mean);
+    he_f_canham_curva_gauss_ver(bending, &gaus);
+
+    char *key = "x y z mean gaus";
+    real *queue[] = {x, y, z, mean, gaus, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
 
