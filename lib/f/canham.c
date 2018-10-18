@@ -245,7 +245,7 @@ static real compute_area(He *he,
 
 }
 
-static int compute_norm(T *q, He *he,
+static int compute_norm(He *he,
                         const real *x, const real *y, const real *z, /**/
                         real *normx, real *normy, real *normz) {
     enum {X, Y, Z};
@@ -384,7 +384,7 @@ real he_f_canham_energy(T *q, He *he,
     compute_laplace(he, y, t, area, /**/ lby);
     compute_laplace(he, z, t, area, /**/ lbz);
 
-    compute_norm(q, he, x, y, z, normx, normy, normz);
+    compute_norm(he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, /**/ curva_mean);
 
     for ( v = 0; v < nv; v++ )
@@ -430,7 +430,7 @@ int he_f_canham_force(T *q, He *he,
     compute_laplace(he, y, t, area, /**/ lby);
     compute_laplace(he, z, t, area, /**/ lbz);
 
-    compute_norm(q, he, x, y, z, normx, normy, normz);
+    compute_norm(he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
