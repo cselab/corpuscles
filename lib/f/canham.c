@@ -390,7 +390,7 @@ real he_f_canham_energy(T *q, He *he,
     compute_norm(he, x, y, z, normx, normy, normz);
     compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
 
-    for ( v = 0; v < nv; v++ )
+    for (v = 0; v < nv; v++)
         energy[v] = curva_mean[v]*curva_mean[v]*area[v];
 
     scale(nv, 2*Kb, energy);
