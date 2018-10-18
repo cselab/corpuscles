@@ -302,7 +302,7 @@ static int compute_H(He *he,
     for ( i = 0; i < nv; i++ ) {
         vec_get(i, lbx, lby, lbz, u);
         vec_get(i, normx, normy, normz, v);
-        H[i] = -vec_dot(u, v)/2;
+        H[i] = vec_dot(u, v)/2;
     }
     return HE_OK;
 }
@@ -439,7 +439,7 @@ int he_f_canham_force(T *q, He *he,
     compute_lb(he, t, area, H, /**/ lpl);
 
     for (v = 0; v < nv; v++) {
-        fm = 2*H[v]*(H[v]*H[v]-G[v]) + lpl[v];
+        fm = -(2*H[v]*(H[v]*H[v]-G[v]) - lpl[v]);
         fm *= area[v];
         fx[v] += fm * normx[v];
         fy[v] += fm * normy[v];
