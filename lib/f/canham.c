@@ -171,7 +171,7 @@ static void compute_laplace(He *he, const real *V0, const real *t, const real *a
         V1[i] /= area[i];
 }
 
-static real compute_area(T *q, He *he,
+static real compute_area(He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
     enum {X, Y, Z};
@@ -377,7 +377,7 @@ real he_f_canham_energy(T *q, He *he,
         get_ijk(m, he, /**/ &i, &j, &k);
         T0[m] = i; T1[m] = j; T2[m] = k;
     }
-    area_tot_tri = compute_area(q, he, x, y, z, area);
+    area_tot_tri = compute_area(he, x, y, z, area);
 
     compute_cot(he, x, y, z, /**/ t);
     compute_laplace(he, x, t, area, /**/ lbx);
@@ -424,7 +424,7 @@ int he_f_canham_force(T *q, He *he,
     area    = q->area;
     t = q->t; lpl = q->lpl;
 
-    area_tot_tri = compute_area(q, he, x, y, z, area);
+    area_tot_tri = compute_area(he, x, y, z, area);
     compute_cot(he, x, y, z, /**/ t);
     compute_laplace(he, x, t, area, /**/ lbx);
     compute_laplace(he, y, t, area, /**/ lby);
