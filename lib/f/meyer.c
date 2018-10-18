@@ -608,13 +608,13 @@ int he_f_meyer_force(T *q, He *he,
         vec_minus(b, c,  u);
 
         //fm = Kb*cotil*(curva_mean[j]-curva_mean[k])/area[j];
-        fm = Kb*cotil*(curva_mean[j]-curva_mean[k]);
+        fm = -Kb*cotil*(curva_mean[j]-curva_mean[k]);
         fx[j] += fm * normx[j];
         fy[j] += fm * normy[j];
         fz[j] += fm * normz[j];
 
         //fm = Kb*cotil*(curva_mean[k]-curva_mean[j])/area[k];
-        fm = Kb*cotil*(curva_mean[k]-curva_mean[j]);
+        fm = -Kb*cotil*(curva_mean[k]-curva_mean[j]);
         fx[k] += fm * normx[k];
         fy[k] += fm * normy[k];
         fz[k] += fm * normz[k];
