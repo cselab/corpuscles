@@ -188,7 +188,7 @@ static int compute_laplace(He *he, const real *V0, const real *t, const real *ar
     return HE_OK;
 }
 
-static real compute_area(He *he,
+static int compute_area(He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
     enum {X, Y, Z};
@@ -199,24 +199,17 @@ static real compute_area(He *he,
     real area0;
     real theta_a, theta_b, theta_c;
     real cota,cotb,cotc;
-    real ab2, bc2, ca2, area_tot_tri;
-    HeSum *sum;
+    real ab2, bc2, ca2;
 
     nt = he_nt(he);
     nv = he_nv(he);
     he_T(he, /**/ &T0, &T1, &T2);
     zero(nv, area);
-    area_tot_tri = 0;
 
-    he_sum_ini(&sum);
     for ( t = 0; t < nt; t++ ) {
         i = T0[t]; j = T1[t]; k = T2[t];
-
         get3(x, y, z, i, j, k, a, b, c);
         area0 = tri_area(a, b, c);
-
-        he_sum_add(sum, area0);
-
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
         theta_c = tri_angle(b, c, a);
@@ -253,12 +246,8 @@ static real compute_area(He *he,
             area[j] += ( bc2*cota + ab2*cotc ) / 8;
             area[k] += ( ca2*cotb + bc2*cota ) / 8;
         }
-
-    }/*end for loop*/
-    area_tot_tri = he_sum_get(sum);
-
-    he_sum_fin(sum);
-    return area_tot_tri;
+    }
+    return HE_OK;
 }
 
 static int compute_norm(He *he,
