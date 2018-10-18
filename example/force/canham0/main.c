@@ -3,7 +3,7 @@
 #include <real.h>
 #include <he/err.h>
 #include <he/off.h>
-#include <he/vtk.h>
+#include <he/punto.h>
 #include <he/memory.h>
 #include <he/f/canham.h>
 #include <he/he.h>
@@ -44,17 +44,18 @@ static void fin() {
 }
 
 int main() {
-    const char *path = "/dev/stdout";
-
     ini();
 
     e0 = he_f_canham_energy(bending, he, x, y, z);
     he_f_canham_force(bending, he, x, y, z, /**/ fx, fy, fz);
     he_f_canham_energy_ver(bending, /**/ &eng);
     MSG("eng[0]: %g", eng[0]);
-    const real *scalars[] =  {fx, fy, fz, eng, NULL};
-    const char *names[] =  {"fx", "fy", "fz", "eng", NULL};
-    he_vtk_write(he, x, y, z, scalars, names, path);
+
+
+    char *key = "x y z fm fx fy fz eng";
+    real *queue[] = {x, y, z, fx, fy, fz, eng, NULL};
+    puts(key);
+    punto_fwrite(nv, queue, stdout);
 
     fin();
 }
