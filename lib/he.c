@@ -60,6 +60,9 @@ int he_ini(HeRead *r, T **pq) {
     MALLOC(ne, &q->hdg_edg);
     MALLOC(nt, &q->hdg_tri);
 
+    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
+    MALLOC(nt, &q->D0); MALLOC(nt, &q->D1); MALLOC(nt, &q->D2); MALLOC(nt, &q->D3);
+
     he_read_nxt(r, &nxt);
     he_read_flp(r, &flp);
     he_read_ver(r, &ver);
@@ -99,6 +102,10 @@ int he_fin(T *q) {
     FREE(q->hdg_ver);
     FREE(q->hdg_edg);
     FREE(q->hdg_tri);
+
+    FREE(q->T0); FREE(q->T1); FREE(q->T2);
+    FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
+
     FREE(q);
     return HE_OK;
 }
@@ -303,10 +310,10 @@ int he_edg_rotate(T *q, int e0) {
     return HE_OK;
 }
 
-int he_T(T*, int **pT0, int **pT1, int **pT2) {
+int he_T(T *q, int **pT0, int **pT1, int **pT2) {
     return HE_OK;
 }
 
-int he_D(T*, int **pD0, int **pD1, int **pD2, int **pD3) {
+int he_D(T *q, int **pD0, int **pD1, int **pD2, int **pD3) {
     return HE_OK;
 }
