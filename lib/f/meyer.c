@@ -45,13 +45,6 @@ static void zero(int n, real *a) {
         a[i] = 0;
 }
 
-static int scale(int n, real sc, /*io*/ real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] *= sc;
-    return HE_OK;
-}
-
 static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
     int h, n, nn, i, j, k;
     h = hdg_tri(t);
