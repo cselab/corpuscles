@@ -38,10 +38,11 @@ struct T {
     int nv, ne, nt;
 };
 
-static void zero(int n, real *a) {
+static int zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
+    return HE_OK;
 }
 
 static int plus(int n, const real *a, /*io*/ real *b) {
@@ -172,7 +173,7 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
-static void compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
+static int compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
     int h, n, nv, nh, i, j;
     nv = he_nv(he);
     zero(nv, V1);
@@ -184,6 +185,7 @@ static void compute_laplace(He *he, const real *V0, const real *t, const real *a
     }
     for (i = 0; i < nv; i++)
         V1[i] /= area[i];
+    return HE_OK;
 }
 
 static real compute_area(He *he,
