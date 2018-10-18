@@ -34,7 +34,7 @@ struct T {
     real *normx, *normy, *normz;
     real *curva_mean, *curva_gauss;
     real *energy, *area, *lpl;
-
+    real *fx, *fy, *fz;
     int nv, ne, nt;
 };
 
@@ -42,6 +42,20 @@ static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
+}
+
+static int plus(int n, const real *a, /*io*/ real *b) {
+    int i;
+    for (i = 0; i < n; i++)
+        b[i] += a[i];
+    return HE_OK;
+}
+
+static int scale(int n, real sc, /*io*/ real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] *= sc;
+    return HE_OK;
 }
 
 static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
@@ -93,7 +107,7 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real 
 
 
     MALLOC(nh, &q->t); MALLOC(nh, &q->lpl);
-
+    MALLOC(nv, &q->fx); MALLOC(nv, &q->fy); MALLOC(nv, &q->fz);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
     MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
     MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
@@ -104,6 +118,7 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real 
 }
 int he_f_canham_fin(T *q) {
     FREE(q->t);  FREE(q->lpl);
+    FREE(q->fx); FREE(q->fy); FREE(q->fz);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
     FREE(q->curva_mean);FREE(q->curva_gauss);
@@ -385,12 +400,13 @@ real he_f_canham_energy(T *q, He *he,
 }
 int he_f_canham_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
-                      real *fx, real *fy, real *fz) {
+                      real *fx_tot, real *fy_tot, real *fz_tot) {
     enum {X, Y, Z};
     int v, e, m;
     int i, j, k, l;
     int nv, nt, ne;
     int *T0, *T1, *T2;
+    real *fx, *fy, *fz;
     real *lbx, *lby, *lbz, *t;
     real *normx, *normy, *normz;
     real *area;
@@ -408,12 +424,15 @@ int he_f_canham_force(T *q, He *he,
 
     he_T(he, &T0, &T1, &T2);
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+    fx = q->fx; fy = q->fy; fz = q->fz;
+    
     normx = q->normx; normy = q->normy; normz = q->normz;
     curva_mean  = q->curva_mean;
     curva_gauss = q->curva_gauss;
     area    = q->area;
     t = q->t; lpl = q->lpl;
 
+    zero(nv, fx); zero(nv, fy); zero(nv, fz);
     area_tot_tri = compute_area(he, x, y, z, area);
     compute_cot(he, x, y, z, /**/ t);
     compute_laplace(he, x, t, area, /**/ lbx);
@@ -437,6 +456,10 @@ int he_f_canham_force(T *q, He *he,
         fy[m] += 2 * Kb * lpl[m] * normy[m] * area[m];
         fz[m] += 2 * Kb * lpl[m] * normz[m] * area[m];
     }
+
+    plus(nv, fx, fx_tot);
+    plus(nv, fy, fy_tot);
+    plus(nv, fz, fz_tot);
 
     return HE_OK;
 }
