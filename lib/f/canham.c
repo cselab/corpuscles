@@ -306,9 +306,7 @@ static int compute_curva_mean(He *he,
         vec_get(i, normx, normy, normz, v);
         curva_mean[i] = vec_dot(u, v)/2;
     }
-
     return HE_OK;
-
 }
 static int compute_curva_gauss(He *he, const real *area,
                                const real *x, const real *y, const real *z, /**/
@@ -425,7 +423,7 @@ int he_f_canham_force(T *q, He *he,
     he_T(he, &T0, &T1, &T2);
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     fx = q->fx; fy = q->fy; fz = q->fz;
-    
+
     normx = q->normx; normy = q->normy; normz = q->normz;
     curva_mean  = q->curva_mean;
     curva_gauss = q->curva_gauss;
@@ -442,20 +440,20 @@ int he_f_canham_force(T *q, He *he,
     compute_norm(he, x, y, z, normx, normy, normz);
     compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
     compute_curva_gauss(he, area, x, y, z, curva_gauss);
-
-    for (v = 0; v < nv; v++) {
-        fm = 2*2*Kb*(curva_mean[v])*(curva_mean[v]*curva_mean[v]-curva_gauss[v]);
-        fx[v] += fm * normx[v] * area[v];
-        fy[v] += fm * normy[v] * area[v];
-        fz[v] += fm * normz[v] * area[v];
-    }
-
     compute_laplace(he, curva_mean, t, area, /**/ lpl);
-    for (m = 0; m < nv; m++) {
-        fx[m] += 2 * Kb * lpl[m] * normx[m] * area[m];
-        fy[m] += 2 * Kb * lpl[m] * normy[m] * area[m];
-        fz[m] += 2 * Kb * lpl[m] * normz[m] * area[m];
+    
+    for (v = 0; v < nv; v++) {
+        fm = 2*(curva_mean[v])*(curva_mean[v]*curva_mean[v]-curva_gauss[v]);
+        fm += lpl[v];
+        fm *= area[v];
+        fx[v] += fm * normx[v];
+        fy[v] += fm * normy[v];
+        fz[v] += fm * normz[v];
     }
+
+    scale(nv, 2*Kb, fx);
+    scale(nv, 2*Kb, fy);
+    scale(nv, 2*Kb, fz);
 
     plus(nv, fx, fx_tot);
     plus(nv, fy, fy_tot);
