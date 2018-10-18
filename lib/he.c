@@ -310,7 +310,22 @@ int he_edg_rotate(T *q, int e0) {
     return HE_OK;
 }
 
-int he_T(T *q, int **pT0, int **pT1, int **pT2) {
+int he_T(T *he, int **pT0, int **pT1, int **pT2) {
+    int nt, t, *T0, *T1, *T2;
+    int h, n, nn;
+    T0 = he->T0;
+    T1 = he->T1;
+    T2 = he->T2;
+    nt = he_nt(he);
+
+    for (t = 0; t < nt; t++) {
+        h = he_hdg_tri(he, t);
+        n = he_nxt(he, h);
+        nn = he_nxt(he, n);
+        T0[t] = he_ver(he, h); T1[t] = he_ver(he, n); T2[t] = he_ver(he, nn);
+    }
+
+    *pT0 = T0; *pT1 = T1; *pT2 = T2;
     return HE_OK;
 }
 
