@@ -16,6 +16,10 @@ struct T {
     int *nxt, *flp;
     int *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
+
+    int *T0, *T1, *T2;
+    int *D0, *D1, *D2, *D3;
+
     int magic;
 };
 
@@ -296,5 +300,13 @@ int he_edg_rotate(T *q, int e0) {
     assert(flp(flp(h8)) == h8);
     assert(flp(flp(h9)) == h9);
 
+    return HE_OK;
+}
+
+int he_T(T*, int **pT0, int **pT1, int **pT2) {
+    return HE_OK;
+}
+
+int he_D(T*, int **pD0, int **pD1, int **pD2, int **pD3) {
     return HE_OK;
 }
