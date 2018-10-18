@@ -113,7 +113,7 @@ real vec_spherical_theta(const real a[3]) {
 }
 
 static int small(real s) {
-    const real eps = 1e-12;
+    const real eps = 1e-32;
     if      (s >  eps) return 0;
     else if (s < -eps) return 0;
     else               return 1;
