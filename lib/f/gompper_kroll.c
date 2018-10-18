@@ -186,7 +186,7 @@ static void compute_cot(He *he, const real *x, const real *y, const real *z, /**
         if (!bnd(h)) H[flp(h)] += cot;
     }
 }
-static void compute_area(He *he, const real *len2, const real *cot, /**/ real *V) {
+static void compute_area_voronoi(He *he, const real *len2, const real *cot, /**/ real *V) {
     int nv, nh, h, i;
     nv = he_nv(he);
     zero(nv, V);
@@ -350,7 +350,7 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   
   compute_len2(he, x, y, z, /**/ len2);
   compute_cot(he, x, y, z, /**/ cot);
-  compute_area(he, len2, cot, /**/ area);
+  compute_area_voronoi(he, len2, cot, /**/ area);
   compute_laplace(he, x, cot, area, /**/ lbx);
   compute_laplace(he, y, cot, area, /**/ lby);
   compute_laplace(he, z, cot, area, /**/ lbz);
@@ -429,7 +429,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
   
   compute_len2(he, x, y, z, /**/ len2);
   compute_cot(he, x, y, z, /**/ cot);
-  compute_area(he, len2, cot, /**/ area);
+  compute_area_voronoi(he, len2, cot, /**/ area);
   compute_laplace(he, x, cot, area, /**/ lbx);
   compute_laplace(he, y, cot, area, /**/ lby);
   compute_laplace(he, z, cot, area, /**/ lbz);
