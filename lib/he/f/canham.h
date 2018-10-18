@@ -13,10 +13,10 @@ real he_f_canham_energy(T*, He*, const real *x, const real *y, const real *z);
 
 
 int he_f_canham_area_ver(T*, /**/ real**);
-int he_f_canham_laplace_ver(T*, /**/ real**, real**, real**);
+int he_f_canham_lb_ver(T*, /**/ real**, real**, real**);
 int he_f_canham_norm_ver(T*, /**/ real**, real**, real**);
-int he_f_canham_curva_mean_ver(T*, /**/ real**);
-int he_f_canham_curva_gauss_ver(T*, /**/ real**);
+int he_f_canham_H_ver(T*, /**/ real**);
+int he_f_canham_G_ver(T*, /**/ real**);
 int he_f_canham_energy_ver(T*, /**/ real**);
 
 #undef T

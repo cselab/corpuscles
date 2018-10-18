@@ -189,7 +189,7 @@ static int compute_lb(He *he, const real *t, const real *area, const real *V0, /
     for (h = 0; h < nh; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        V1[i] += t[h]*(V0[i] - V0[j])/2;
+        V1[i] -= t[h]*(V0[i] - V0[j])/2;  /* TODO */
     }
     for (i = 0; i < nv; i++)
         V1[i] /= area[i];
@@ -426,21 +426,20 @@ int he_f_canham_force(T *q, He *he,
     t = q->t; lpl = q->lpl;
 
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
-    compute_area(he, x, y, z, area);
+    compute_area(he, x, y, z, /**/ area);
     compute_cot(he, x, y, z, /**/ t);
     compute_lb(he, t, area, x, /**/ lbx);
     compute_lb(he, t, area, y, /**/ lby);
     compute_lb(he, t, area, z, /**/ lbz);
 
-    compute_norm(he, x, y, z, normx, normy, normz);
+    compute_norm(he, x, y, z, /**/ normx, normy, normz);
     compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
 
     compute_G(he, area, x, y, z, G);
     compute_lb(he, t, area, H, /**/ lpl);
 
     for (v = 0; v < nv; v++) {
-        fm = 2*H[v]*(H[v]*H[v]-G[v]);
-        fm += lpl[v];
+        fm = 2*H[v]*(H[v]*H[v]-G[v]) + lpl[v];
         fm *= area[v];
         fx[v] += fm * normx[v];
         fy[v] += fm * normy[v];
