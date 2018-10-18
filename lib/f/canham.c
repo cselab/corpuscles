@@ -376,10 +376,6 @@ real he_f_canham_energy(T *q, He *he,
     area    = q->area;
     t = q->t;
 
-    for (m = 0; m < nt; m++) {
-        get_ijk(m, he, /**/ &i, &j, &k);
-        T0[m] = i; T1[m] = j; T2[m] = k;
-    }
     area_tot_tri = compute_area(he, x, y, z, area);
 
     compute_cot(he, x, y, z, /**/ t);
