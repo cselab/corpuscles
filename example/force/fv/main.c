@@ -14,6 +14,7 @@
 #include <he/macro.h>
 #include <he/vec.h>
 #include <he/vtk.h>
+#include <he/area.h>
 #define FMT_IN   XE_REAL_IN
 
 static const char **argv;
@@ -24,7 +25,7 @@ static real Kb, C0, Kad, DA0D;
 static real h;
 static int  every;
 static real *xx, *yy, *zz;
-static real *eng;
+static real *eng, *area;
 static real *Fx, *Fy, *Fz, *Fm;
 static int nv, nt;
 static He *he;
@@ -80,31 +81,32 @@ static int arg() {
     return HE_OK;
 }
 
-static int diff(int id, /**/ real f[3]) {
-    real tmp, e, eh;
-    enum {X, Y, Z};
-    e = bending_energy(bending, he, xx, yy, zz);
-    tmp = xx[id]; xx[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[X] = (eh - e)/h; xx[id] = tmp;
-    tmp = yy[id]; yy[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Y] = (eh - e)/h; yy[id] = tmp;
-    tmp = zz[id]; zz[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Z] = (eh - e)/h; zz[id] = tmp;
+static int diff(int i, /**/ real *e0, real *e1) {
+    real tmp;
+    *e0 = bending_energy(bending, he, xx, yy, zz);
+    tmp = yy[i];
+    yy[i] += h;
+    *e1 = bending_energy(bending, he, xx, yy, zz);
+    yy[i] = tmp;
     return HE_OK;
 }
 
 static void main0() {
     enum {X, Y, Z};
     int i;
-    real e, f[3];
+    real f, fd, area0, e0, e1, de;
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ Fx, Fy, Fz);
-
-    e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
-
-    MSG("energy: %g", e);
+    he_area_ver(he, xx, yy, zz, /**/ area);
+    
     for (i = 0; i < nv; i += every) {
-        diff(i, /**/ f);
-        printf("%g %g\n", Fx[i], f[X]);
-        Fm[i] = Fx[i] - f[X];
+        diff(i, /**/ &e0, &e1);
+        area0 = area[i];
+        fd = Fy[i]/area0;
+        de = fd*h*area0;
+        printf("%g %g\n", de/h, (e1 - e0)/h);
+        Fm[i] = Fx[i] - f;
     }
 
     if (every == 1) {
@@ -132,12 +134,15 @@ int main(int __UNUSED argc, const char *v[]) {
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
     CALLOC(nv, &Fm); CALLOC(nv, &Fx);  CALLOC(nv, &Fy); CALLOC(nv, &Fz);
+    MALLOC(nv, &area);
 
     he_off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
     FREE(Fm); FREE(Fx); FREE(Fy); FREE(Fz);
+    FREE(area);
+    
 
     he_off_fin(off);
     he_fin(he);

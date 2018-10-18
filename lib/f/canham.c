@@ -438,7 +438,7 @@ int he_f_canham_force(T *q, He *he,
     compute_laplace(he, H, t, area, /**/ lpl);
     
     for (v = 0; v < nv; v++) {
-        fm = 2*(H[v])*(H[v]*H[v]-G[v]);
+        fm = 2*H[v]*(H[v]*H[v]-G[v]);
         fm += lpl[v];
         fm *= area[v];
         fx[v] += fm * normx[v];
