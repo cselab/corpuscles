@@ -59,7 +59,7 @@ int he_ini(HeRead *r, T **pq) {
     MALLOC(nt, &q->hdg_tri);
 
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
-    MALLOC(nt, &q->D0); MALLOC(nt, &q->D1); MALLOC(nt, &q->D2); MALLOC(nt, &q->D3);
+    MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
 
     he_read_nxt(r, &nxt);
     he_read_flp(r, &flp);
@@ -327,15 +327,20 @@ int he_T(T *he, int **pT0, int **pT1, int **pT2) {
 
 int he_D(T *he, int **pD0, int **pD1, int **pD2, int **pD3) {
     int ne, e, *D0, *D1, *D2, *D3;
-    int h, n, nn;
+    int h, n, nn, nnf;
     D0 = he->D0; D1 = he->D1; D2 = he->D2;D3 = he->D3;
     ne = he_ne(he);
 
     for (e = 0; e < ne; e++) {
         h = he_hdg_edg(he, e);
-        //T0[t] = he_ver(he, h); T1[t] = he_ver(he, n); T2[t] = he_ver(he, nn);
+        if (he_bnd(he, h)) {
+            D0[e] = D1[e] = D2[e] = D3[e] = -1;
+        } else {
+            h = he_hdg_edg(he, e); n = he_nxt(he, h); nn = he_nxt(he, he_nxt(he, h));
+            nnf = he_nxt(he, he_nxt(he, he_flp(he, h)));
+            D1[e] = he_ver(he, h); D2[e] = he_ver(he, n); D0[e] = he_ver(he, nn); D3[e] = he_ver(he, nnf);
+        }
     }
-
     *pD0 = D0; *pD1 = D1; *pD2 = D2; *pD3 = D3;
     return HE_OK;
 }

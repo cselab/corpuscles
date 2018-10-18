@@ -27,15 +27,13 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-    real Kb;
-
-  int *D0, *D1, *D2, *D3;
+  real Kb;
 
   real *t;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
-    real *energy, *area, *lpl;
+  real *energy, *area, *lpl;
 
   int nv, ne, nt;
 };
@@ -75,19 +73,7 @@ static real sum(int n, real *a) {
     he_sum_fin(sum);
     return v;
 }
-enum {BULK, BND};
-static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
-    int h, n, nn, nnf, i, j, k, l;
-    h = he_hdg_edg(he, e);
-    if (bnd(h)) return BND;
 
-    h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
-    nnf = nxt(nxt(flp(h)));
-    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
-
-    *pi = i; *pj = j; *pk = k; *pl = l;
-    return BULK;
-}
 int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt, nh;
@@ -107,7 +93,6 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real 
 
 
     MALLOC(nh, &q->t); MALLOC(nh, &q->lpl);
-    MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
 
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
     MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
@@ -119,7 +104,6 @@ int he_f_canham_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real 
 }
 int he_f_canham_fin(T *q) {
     FREE(q->t);  FREE(q->lpl);
-    FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
     FREE(q->curva_mean);FREE(q->curva_gauss);
@@ -417,7 +401,6 @@ int he_f_canham_force(T *q, He *he,
     int i, j, k, l;
     int nv, nt, ne;
     int *T0, *T1, *T2;
-    int *D0, *D1, *D2, *D3;
     real *lbx, *lby, *lbz, *t;
     real *normx, *normy, *normz;
     real *area;
@@ -434,23 +417,12 @@ int he_f_canham_force(T *q, He *he,
     ne = he_ne(he);
 
     he_T(he, &T0, &T1, &T2);
-    D0 = q->D0; D1 = q->D1; D2 = q->D2; D3 = q->D3;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     normx = q->normx; normy = q->normy; normz = q->normz;
     curva_mean  = q->curva_mean;
     curva_gauss = q->curva_gauss;
     area    = q->area;
     t = q->t; lpl = q->lpl;
-
-    for (m = 0; m < nt; m++) {
-        get_ijk(m, he, /**/ &i, &j, &k);
-        T0[m] = i; T1[m] = j; T2[m] = k;
-    }
-
-    for (e = 0; e < ne; e++) {
-        get_ijkl(e, he, /**/ &i, &j, &k, &l);
-        D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
-    }
 
     area_tot_tri = compute_area(q, he, x, y, z, area);
     compute_cot(he, x, y, z, /**/ t);
