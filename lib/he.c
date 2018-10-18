@@ -16,10 +16,7 @@ struct T {
     int *nxt, *flp;
     int *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
-
-    int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
-
     int magic;
 };
 
