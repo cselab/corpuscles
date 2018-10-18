@@ -45,6 +45,14 @@ static int zero(int n, real *a) {
     return HE_OK;
 }
 
+static int one(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] = 1;
+    return HE_OK;
+}
+
+
 static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
