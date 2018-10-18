@@ -181,7 +181,7 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
-static int compute_laplace(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
+static int compute_laplace(He *he, const real *t, const real *area, const real *V0, /**/ real *V1) {
     int h, n, nv, nh, i, j;
     nv = he_nv(he);
     zero(nv, V1);
@@ -377,9 +377,9 @@ real he_f_canham_energy(T *q, He *he,
     compute_area(he, x, y, z, area);
 
     compute_cot(he, x, y, z, /**/ t);
-    compute_laplace(he, x, t, area, /**/ lbx);
-    compute_laplace(he, y, t, area, /**/ lby);
-    compute_laplace(he, z, t, area, /**/ lbz);
+    compute_laplace(he, t, area, x, /**/ lbx);
+    compute_laplace(he, t, area, y, /**/ lby);
+    compute_laplace(he, t, area, z, /**/ lbz);
 
     compute_norm(he, x, y, z, normx, normy, normz);
     compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
@@ -428,15 +428,16 @@ int he_f_canham_force(T *q, He *he,
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
     compute_area(he, x, y, z, area);
     compute_cot(he, x, y, z, /**/ t);
-    compute_laplace(he, x, t, area, /**/ lbx);
-    compute_laplace(he, y, t, area, /**/ lby);
-    compute_laplace(he, z, t, area, /**/ lbz);
+    compute_laplace(he, t, area, x, /**/ lbx);
+    compute_laplace(he, t, area, y, /**/ lby);
+    compute_laplace(he, t, area, z, /**/ lbz);
 
     compute_norm(he, x, y, z, normx, normy, normz);
     compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
+
     compute_G(he, area, x, y, z, G);
-    compute_laplace(he, H, t, area, /**/ lpl);
-    
+    compute_laplace(he, t, area, H, /**/ lpl);
+
     for (v = 0; v < nv; v++) {
         fm = 2*H[v]*(H[v]*H[v]-G[v]);
         fm += lpl[v];
