@@ -189,7 +189,7 @@ static int compute_lb(He *he, const real *t, const real *area, const real *V0, /
     for (h = 0; h < nh; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        V1[i] -= t[h]*(V0[i] - V0[j])/2;  /* TODO */
+        V1[i] -= t[h]*(V0[i] - V0[j])/2;  /* TODO: why minus? */
     }
     for (i = 0; i < nv; i++)
         V1[i] /= area[i];
