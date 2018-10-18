@@ -84,10 +84,10 @@ static int arg() {
 static int diff(int i, /**/ real *e0, real *e1) {
     real tmp;
     *e0 = bending_energy(bending, he, xx, yy, zz);
-    tmp = yy[i];
-    yy[i] += h;
+    tmp = xx[i];
+    xx[i] += h;
     *e1 = bending_energy(bending, he, xx, yy, zz);
-    yy[i] = tmp;
+    xx[i] = tmp;
     return HE_OK;
 }
 
@@ -103,7 +103,7 @@ static void main0() {
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ &e0, &e1);
         area0 = area[i];
-        fd = Fy[i]/area0;
+        fd = Fx[i]/area0;
         de = fd*h*area0;
         printf("%g %g\n", de/h, (e1 - e0)/h);
         Fm[i] = Fx[i] - f;
