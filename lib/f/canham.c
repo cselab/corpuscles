@@ -278,22 +278,14 @@ static int compute_norm(He *he,
     }
     return HE_OK;
 }
-static int compute_curva_mean(T *q, He *he, /**/ real *curva_mean) {
+static int compute_curva_mean(He *he,
+                              const real *lbx, const real *lby, const real *lbz,
+                              const real *normx, const real *normy, const real *normz,
+                              /**/ real *curva_mean) {
     enum {X, Y, Z};
     int i, nv;
-    real *lbx, *lby, *lbz;
-    real *normx, *normy, *normz;
     real u[3], v[3];
-
     nv  = he_nv(he);
-    lbx = q->lbx;
-    lby = q->lby;
-    lbz = q->lbz;
-
-    normx = q->normx;
-    normy = q->normy;
-    normz = q->normz;
-
     for ( i = 0; i < nv; i++ ) {
         vec_get(i, lbx, lby, lbz, u);
         vec_get(i, normx, normy, normz, v);
@@ -385,7 +377,8 @@ real he_f_canham_energy(T *q, He *he,
     compute_laplace(he, z, t, area, /**/ lbz);
 
     compute_norm(he, x, y, z, normx, normy, normz);
-    compute_curva_mean(q, he, /**/ curva_mean);
+    compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz,
+                       /**/ curva_mean);
 
     for ( v = 0; v < nv; v++ )
         energy[v] = 2 * Kb* curva_mean[v] * curva_mean[v] * area[v];
@@ -431,7 +424,8 @@ int he_f_canham_force(T *q, He *he,
     compute_laplace(he, z, t, area, /**/ lbz);
 
     compute_norm(he, x, y, z, normx, normy, normz);
-    compute_curva_mean(q, he, curva_mean);
+    compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz,
+                       /**/ curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
     for (v = 0; v < nv; v++) {
