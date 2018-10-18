@@ -257,7 +257,6 @@ static real compute_area(He *he,
 
     he_sum_fin(sum);
     return area_tot_tri;
-
 }
 
 static int compute_norm(He *he,
@@ -376,7 +375,7 @@ real he_f_canham_energy(T *q, He *he,
     area    = q->area;
     t = q->t;
 
-    area_tot_tri = compute_area(he, x, y, z, area);
+    compute_area(he, x, y, z, area);
 
     compute_cot(he, x, y, z, /**/ t);
     compute_laplace(he, x, t, area, /**/ lbx);
@@ -408,7 +407,6 @@ int he_f_canham_force(T *q, He *he,
     real *area;
     real *curva_gauss, *curva_mean, *lpl;
     real fm;
-    real area_tot_tri;
 
     real Kb;
 
@@ -429,7 +427,7 @@ int he_f_canham_force(T *q, He *he,
     t = q->t; lpl = q->lpl;
 
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
-    area_tot_tri = compute_area(he, x, y, z, area);
+    compute_area(he, x, y, z, area);
     compute_cot(he, x, y, z, /**/ t);
     compute_laplace(he, x, t, area, /**/ lbx);
     compute_laplace(he, y, t, area, /**/ lby);
