@@ -84,12 +84,12 @@ static int arg() {
 }
 
 static int diff(int i, /**/ real *e0, real *e1) {
-    real tmp;
+    real tx, ty, tz;
     *e0 = bending_energy(bending, he, xx, yy, zz);
-    tmp = xx[i];
-    xx[i] += h;
+    tx = xx[i]; ty = yy[i]; tz = zz[i];
+    xx[i] += h*nx[i]; yy[i] += h*ny[i]; zz[i] += h*nz[i];
     *e1 = bending_energy(bending, he, xx, yy, zz);
-    xx[i] = tmp;
+    xx[i] = tx;  yy[i] = ty; zz[i] = tz;
     return HE_OK;
 }
 
@@ -101,12 +101,11 @@ static void main0() {
     bending_force(bending, he, xx, yy, zz, /**/ Fx, Fy, Fz);
     bending_energy_ver(bending, /**/ &eng);
     he_area_ver(he, xx, yy, zz, /**/ area);
-    
+    he_normal_mwa(he, xx, yy, zz, /**/ nx, ny, nz);
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ &e0, &e1);
-        area0 = area[i];
-        fd = Fx[i]/area0;
-        de = fd*h*area0;
+        fd = Fx[i]*nx[i] + Fy[i]*ny[i] + Fz[i]*nz[i];
+        de = fd*h;
         printf("%g %g\n", de/h, (e1 - e0)/h);
         Fm[i] = Fx[i] - f;
     }
