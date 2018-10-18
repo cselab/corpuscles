@@ -83,30 +83,40 @@ static void main0() {
     real e0;
     real *eng, *area;
     real *curva_mean;
+    real *curva_gauss;
     real *Fm;
+    real *lbx, *lby, *lbz, *lbm;
+    real *nx, *ny, *nz, *nm;
 
     e0 = energy();
+    force();
+    
+    RZERO(NV, &Fm);
+    RZERO(NV, &lbm);
+    RZERO(NV, &nm);
     
     f_gompper_kroll_energy_ver(&eng);
     f_gompper_kroll_area_ver(&area);
     f_gompper_kroll_curva_mean_ver(&curva_mean);
+    f_gompper_kroll_curva_gauss_ver(&curva_gauss);
 
-    RZERO(NV, &Fm);
+    f_gompper_kroll_laplace_ver(&lbx, &lby, &lbz);
+    f_gompper_kroll_norm_ver(&nx, &ny, &nz);
 
-    force();
-    
-    MSGR("FX[0]: %g", FX[0]);
     vabs(NV, FX, FY, FZ, /**/ Fm);
     MSGR("energy: %g", e0);
     MSGR("force : %g %g", FX[0], FX[NV-1]);
 
-    //printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 fm; 8 area; 9 curva_mean \n");
-    //real *queue[] = {ZZ, RR, eng, FX, FY, FZ, fm, area, curva_mean, NULL};
-    printf("x y z rxy eng Fx Fy Fz Fm area cm\n");
-    real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, NULL};
-      punto_fwrite(NV, queue, stdout);
+    vabs(NV, lbx, lby, lbz, /**/ lbm);
+    vabs(NV, nx, ny, nz, /**/ nm);
+
+    printf("x y z rxy eng Fx Fy Fz Fm area cm cg lbx lby lbz lbm nx ny nz nm\n");
+    real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, curva_gauss, lbx, lby, lbz, lbm, nx, ny, nz, nm, NULL};
+    punto_fwrite(NV, queue, stdout);
 
     FREE(Fm);
+    FREE(lbm);
+    FREE(nm);
     
 }
 

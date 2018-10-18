@@ -373,7 +373,7 @@ static int compute_norm(T *q, He *he,
         vec_scalar_append(u, theta_b, j, normx, normy, normz);
         vec_scalar_append(u, theta_c, k, normx, normy, normz);
     }
-
+    
     for (i = 0; i < nv; i++) {
         vec_get(i, normx, normy, normz, /**/ u);
         vec_norm(u, /**/ u0);
@@ -490,7 +490,7 @@ real he_f_meyer_energy(T *q, He *he,
         get_ijk(t, he, /**/ &i, &j, &k);
         T0[t] = i; T1[t] = j; T2[t] = k;
     }
-    area_tot_tri = compute_area(q, he, x, y, z, area);
+    area_tot_tri = compute_area_voronoi(q, he, x, y, z, area);
     compute_laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, /**/ curva_mean);
@@ -564,7 +564,7 @@ int he_f_meyer_force(T *q, He *he,
         D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
     }
 
-    area_tot_tri = compute_area(q, he, x, y, z, area);
+    area_tot_tri = compute_area_voronoi(q, he, x, y, z, area);
     compute_laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, curva_mean);
