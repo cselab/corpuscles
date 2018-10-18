@@ -313,9 +313,7 @@ int he_edg_rotate(T *q, int e0) {
 int he_T(T *he, int **pT0, int **pT1, int **pT2) {
     int nt, t, *T0, *T1, *T2;
     int h, n, nn;
-    T0 = he->T0;
-    T1 = he->T1;
-    T2 = he->T2;
+    T0 = he->T0; T1 = he->T1; T2 = he->T2;
     nt = he_nt(he);
 
     for (t = 0; t < nt; t++) {
@@ -329,6 +327,17 @@ int he_T(T *he, int **pT0, int **pT1, int **pT2) {
     return HE_OK;
 }
 
-int he_D(T *q, int **pD0, int **pD1, int **pD2, int **pD3) {
+int he_D(T *he, int **pD0, int **pD1, int **pD2, int **pD3) {
+    int ne, e, *D0, *D1, *D2, *D3;
+    int h, n, nn;
+    D0 = he->D0; D1 = he->D1; D2 = he->D2;D3 = he->D3;
+    ne = he_ne(he);
+
+    for (e = 0; e < ne; e++) {
+        h = he_hdg_edg(he, e);
+        //T0[t] = he_ver(he, h); T1[t] = he_ver(he, n); T2[t] = he_ver(he, nn);
+    }
+
+    *pD0 = D0; *pD1 = D1; *pD2 = D2; *pD3 = D3;
     return HE_OK;
 }
