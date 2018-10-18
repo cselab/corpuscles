@@ -15,6 +15,8 @@
 #include <he/vec.h>
 #include <he/vtk.h>
 #include <he/area.h>
+#include <he/normal.h>
+
 #define FMT_IN   XE_REAL_IN
 
 static const char **argv;
@@ -26,7 +28,7 @@ static real h;
 static int  every;
 static real *xx, *yy, *zz;
 static real *eng, *area;
-static real *Fx, *Fy, *Fz, *Fm;
+static real *Fx, *Fy, *Fz, *Fm, *nx, *ny, *nz;
 static int nv, nt;
 static He *he;
 static Bending *bending;
@@ -133,6 +135,7 @@ int main(int __UNUSED argc, const char *v[]) {
     he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
+    MALLOC(nv, &nx); MALLOC(nv, &ny); MALLOC(nv, &nz);
     CALLOC(nv, &Fm); CALLOC(nv, &Fx);  CALLOC(nv, &Fy); CALLOC(nv, &Fz);
     MALLOC(nv, &area);
 
@@ -140,6 +143,7 @@ int main(int __UNUSED argc, const char *v[]) {
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
+    FREE(nx); FREE(ny); FREE(nz);
     FREE(Fm); FREE(Fx); FREE(Fy); FREE(Fz);
     FREE(area);
     
