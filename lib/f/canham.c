@@ -435,7 +435,7 @@ int he_f_canham_force(T *q, He *he,
     compute_norm(he, x, y, z, /**/ normx, normy, normz);
     compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
 
-    compute_G(he, area, x, y, z, G);
+    compute_G(he, area, x, y, z, /**/ G);
     compute_lb(he, t, area, H, /**/ lpl);
 
     for (v = 0; v < nv; v++) {
