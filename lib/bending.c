@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stddef.h>
+#include <string.h>
 
 #include "real.h"
 
@@ -23,6 +24,8 @@
 
 struct T {struct Vtable *vtable; };
 
+#define SIZE (4048)
+static char List[SIZE];
 static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer", "canham", "gompper_xin"};
 typedef int (*TypeIni)(BendingParam, He*, T**);
 static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini, bending_canham_ini, bending_gompper_xin_ini};
@@ -39,6 +42,18 @@ int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     for (i = 0; i < n; i++)
         MSG("%s", Name[i]);
     ERR(HE_INDEX, "");
+}
+
+const char *bending_list() {
+    const int n = sizeof(Name)/sizeof(Name[0]);
+    const char *sep = "/";
+    int i;
+    List[0] = '\0';
+    for (i = 0; i < n; i++) {
+        if (i > 0) strncat(List, sep, SIZE - 1);
+        strncat(List, Name[i], SIZE - 1);
+    }
+    return List;
 }
 
 typedef struct Vtable Vtable;

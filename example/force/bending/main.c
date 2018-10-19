@@ -27,7 +27,9 @@ static BendingParam param;
 static const char *me = "bending";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer Kb C0 Kad DA0D < OFF > PUNTO\n", me);
+    const char *list;
+    list = bending_list();
+    fprintf(stderr, "%s %s Kb C0 Kad DA0D < OFF > PUNTO\n", me, list);
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
