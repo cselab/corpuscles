@@ -38,7 +38,7 @@ name_o () ( sed 's,\.c$,.o,g' )
 name_d () ( sed 's,\.c$,.d.o,g' )
 name_s () ( sed 's,\.c$,.s.o,g' )
 
-find he -name '*.h'  | norm |         format H              > make/hdr.mk
+find he -name '*.h'  | norm |                  format H     > make/hdr.mk
 find .  -name '*.c'  | norm | nreal | name_o | format O     > make/obj.mk
 find .  -name '*.c'  | norm |  real | name_s | format O_S  >> make/obj.mk
 find .  -name '*.c'  | norm |  real | name_d | format O_D  >> make/obj.mk
