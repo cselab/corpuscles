@@ -15,6 +15,7 @@
 #include "he/f/gompper_kroll.h"
 #include "he/f/meyer.h"
 #include "he/f/canham.h"
+#include "he/f/gompper_xin.h"
 
 #include "he/bending.h"
 
@@ -22,9 +23,9 @@
 
 struct T {struct Vtable *vtable; };
 
-static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer", "canham"};
+static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer", "canham", "gompper_xin"};
 typedef int (*TypeIni)(BendingParam, He*, T**);
-static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini, bending_canham_ini};
+static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini, bending_canham_ini, bending_gompper_xin_ini};
 
 int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     const int n = sizeof(Name)/sizeof(Name[0]);
@@ -290,3 +291,43 @@ int bending_canham_ini(BendingParam param, He *he, /**/ T **pq) {
     return he_f_canham_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
 /* end canham */
+
+
+/* begin gompper_xin */
+typedef struct GompperXin GompperXin;
+struct GompperXin {T bending; HeFGompperXin *local; };
+static int gompper_xin_fin(T *q) {
+    int status;
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    status = he_f_gompper_xin_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int gompper_xin_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real gompper_xin_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_energy(b->local, he, x, y, z);
+}
+static int gompper_xin_energy_ver(T *q, /**/ real **e) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_energy_ver(b->local, /**/ e);
+}
+static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver};
+int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
+    real Kb, C0, Kad, DA0D;
+    GompperXin *q;
+    Kb  = param.Kb;
+    C0 = param.C0;
+    Kad = param.Kad;
+    DA0D = param.DA0D;
+
+    MALLOC(1, &q);
+    q->bending.vtable = &gompper_xin_vtable;
+    *pq = &q->bending;
+    return he_f_gompper_xin_ini(Kb, C0, Kad, DA0D, he, &q->local);
+}
+/* end gompper_xin */
