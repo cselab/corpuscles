@@ -61,3 +61,12 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(k, x, y, z, /**/ c);
     return HE_OK;
 }
+static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
+    int h, n, nn, i, j, k;
+    h = hdg_tri(t);
+    n = nxt(h);
+    nn = nxt(n);
+    i = ver(h); j = ver(n); k = ver(nn);
+    *pi = i; *pj = j; *pk = k;
+    return HE_OK;
+}
