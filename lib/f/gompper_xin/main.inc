@@ -26,14 +26,14 @@ static void compute_cot(He *he, const real *x, const real *y, const real *z, /**
         if (!bnd(h)) H[flp(h)] += cot;
     }
 }
-static void compute_area(He *he, const real *l2, const real *t, /**/ real *V) {
+static void compute_area(He *he, const real *l2, const real *t, /**/ real *area) {
     int nv, nh, h, i;
     nv = he_nv(he);
-    zero(nv, V);
+    zero(nv, area);
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         i = ver(h);
-        V[i] += t[h]*l2[h]/8;
+        area[i] += t[h]*l2[h]/8;
     }
 }
 static void compute_lb(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
