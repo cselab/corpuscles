@@ -7,6 +7,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/dtri.h"
+#include "he/sum.h"
 
 #include "he/f/gompper_xin.h"
 
@@ -62,13 +63,20 @@ static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
 }
-static real sum(int n, const  real *volume) {
-    int t;
+
+static real sum(int n, real *a) {
+    int i;
     real v;
+    HeSum *sum;
+    he_sum_ini(&sum);
     v = 0;
-    for (t = 0; t < n; t++) v += volume[t];
+    for (i = 0; i < n; i++)
+        he_sum_add(sum, a[i]);
+    v = he_sum_get(sum);
+    he_sum_fin(sum);
     return v;
 }
+
 int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   T *q;
   int nv, ne, nt, nh;
