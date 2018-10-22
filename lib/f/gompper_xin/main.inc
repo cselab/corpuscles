@@ -181,7 +181,7 @@ static void compute_force_dt(He *he,
     int i, j, k;
     real r[3], a[3], b[3], c[3], da[3], db[3], dc[3];
     real li[3], lk[3];
-    real dl, dd, r2, C;
+    real dl, dd, l2, C;
 
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
@@ -192,10 +192,10 @@ static void compute_force_dt(He *he,
         get_edg(i, k, x, y, z, /**/ r);
         vec_get(k, lbx, lby, lbz, /**/ lk);
         vec_get(i, lbx, lby, lbz, /**/ li);
-        r2 = vec_dot(r, r);
+        l2 = vec_dot(r, r);
         dl = vec_dot(lk, lk) + vec_dot(li, li);
         dd = vec_dot(li, r)  - vec_dot(lk, r);
-        C = dd/4 - r2*dl/32;
+        C = dd/4 - l2*dl/32;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
