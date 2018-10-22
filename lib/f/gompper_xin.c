@@ -76,6 +76,13 @@ static real sum(int n, real *a) {
     return v;
 }
 
+static int scale(int n, real sc, /*io*/ real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] *= sc;
+    return HE_OK;
+}
+
 int he_f_gompper_xin_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt, nh;
@@ -252,15 +259,10 @@ static int compute_H(He *he,
 
 }
 static int compute_energy(T *q, const real *H, const real *area, /**/ real *energy) {
-
-    real Kb;
     int i, nv;
-
-    Kb   = q->Kb;
     nv   = q->nv;
-
     for (i = 0; i < nv; i++)
-        energy[i]   = 2*Kb*H[i]*H[i]*area[i];
+        energy[i]   = H[i]*H[i]*area[i];
 
     return HE_OK;
 }
@@ -271,6 +273,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     int i, j, k, l;
     int *T0, *T1, *T2;
 
+    real Kb;
     real *l2, *t;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
@@ -283,6 +286,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     normx = q->normx; normy = q->normy; normz = q->normz;
     H  = q->H;
     area = q->area; energy = q->energy;
+    Kb = q->Kb;
 
     nv = q->nv;
     nt = he_nt(he);
@@ -304,6 +308,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
     compute_energy(q, H, area, /**/ energy);
+    scale(nv, 2*Kb, /**/ energy);
 
     return sum(nv, energy);
 }
