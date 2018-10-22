@@ -14,3 +14,11 @@ int dedg_abs(real a[3], real b[3], /**/ real da[3], real db[3]) {
     vec_negative(e, da);
     return HE_OK;
 }
+
+int dedg_abs2(real a[3], real b[3], /**/ real da[3], real db[3]) {
+    real u[3], e[3];
+    vec_minus(b, a,   u);
+    vec_scalar(e,  2,    db);
+    vec_scalar(e, -2,    da);
+    return HE_OK;
+}
