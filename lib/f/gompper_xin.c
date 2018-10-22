@@ -25,7 +25,7 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-    real Kb, C0;
+    real Kb;
 
     int *T0, *T1, *T2;
     real *l2, *t;
@@ -78,7 +78,7 @@ static real sum(int n, real *a) {
     return v;
 }
 
-int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
+int he_f_gompper_xin_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt, nh;
     MALLOC(1, &q);
@@ -93,7 +93,6 @@ int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D
     q->nt = nt;
 
     q->Kb   = Kb;
-    q->C0   = C0;
 
     MALLOC(nh, &q->l2);
     MALLOC(nh, &q->t);
@@ -256,16 +255,14 @@ static int compute_H(T *q, He *he,
 }
 static int compute_energy(T *q, const real *H, const real *area, /**/ real *energy) {
 
-    real Kb, C0, H0;
+    real Kb;
     int i, nv;
 
     Kb   = q->Kb;
-    C0   = q->C0;
     nv   = q->nv;
-    H0 = C0/2.0;
 
     for (i = 0; i < nv; i++)
-        energy[i]   = 2*Kb*(H[i]-H0)*(H[i]-H0)*area[i];
+        energy[i]   = 2*Kb*H[i]*H[i]*area[i];
 
     return HE_OK;
 }
@@ -318,7 +315,7 @@ static void compute_force_t(T *q, He *he,
                             const real *t,
                             const real *lbx, const real *lby, const real *lbz,
                             /**/ real *fx, real *fy, real *fz) {
-    real Kb, C0, H0;
+    real Kb;
     int nh;
     int h, n;
     int i, j;
@@ -326,8 +323,6 @@ static void compute_force_t(T *q, He *he,
     real t0, l2;
 
     Kb   = q->Kb;
-    C0   = q->C0;
-    H0   = C0/2;
 
     nh = he_nh(he);
 
@@ -347,7 +342,7 @@ static void compute_force_dt(T *q, He *he,
                              const real *x, const real *y, const real *z,
                              const real *lbx, const real *lby, const real *lbz,
                              /**/ real *fx, real *fy, real *fz) {
-    real Kb, C0, H0;
+    real Kb;
     int nh;
     int h, n, nn;
     int i, j, k;
@@ -356,8 +351,6 @@ static void compute_force_dt(T *q, He *he,
     real dl, dd, r2, C;
 
     Kb   = q->Kb;
-    C0   = q->C0;
-    H0   = C0/2;
 
     nh = he_nh(he);
 
