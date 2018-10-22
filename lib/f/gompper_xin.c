@@ -247,7 +247,7 @@ static int compute_curva_mean(T *q, He *he,
   return HE_OK;
 
 }
-static real compute_energy_local(T *q, const real *curva_mean, const real *area, /**/ real *energy) {
+static real compute_energy(T *q, const real *curva_mean, const real *area, /**/ real *energy) {
 
   real Kb, C0, H0;
   int i, nv;
@@ -280,22 +280,7 @@ static real compute_curva_mean_integral(T *q, const real *curva_mean, const real
   }
   return cm_integral;
 }
-static real compute_energy_nonlocal(T *q, const real *curva_mean, const real *area) {
 
-  real Kad, DA0D;
-  int nv;
-  real cm_integral, area_tot, energy_tot;
-
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
-  nv   = q->nv;
-
-  cm_integral=compute_curva_mean_integral(q, curva_mean, area);
-  area_tot   =sum(nv, area);
-  energy_tot = 4*pi*Kad/area_tot*(cm_integral - DA0D/2)*(cm_integral - DA0D/2);
-
-  return energy_tot;
-}
 real he_f_gompper_xin_energy(T *q, He *he,
                          const real *x, const real *y, const real *z) {
   int nv, nt;
@@ -336,8 +321,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
   compute_norm(q, he, x, y, z, normx, normy, normz);
   compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
 
-  energy_tot  = compute_energy_local(q, curva_mean, area, /**/ energy);
-  energy_tot += compute_energy_nonlocal(q, curva_mean, area);
+  energy_tot  = compute_energy(q, curva_mean, area, /**/ energy);
 
   return energy_tot;
 }
