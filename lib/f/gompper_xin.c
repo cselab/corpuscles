@@ -33,8 +33,43 @@ struct T {
     real *H, *curva_gauss;
     real *energy, *area;
 
+    real *fx, *fy, *fz;
+
     int nv, ne, nt;
 };
+
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
+}
+
+static real sum(int n, real *a) {
+    int i;
+    real v;
+    HeSum *sum;
+    he_sum_ini(&sum);
+    v = 0;
+    for (i = 0; i < n; i++)
+        he_sum_add(sum, a[i]);
+    v = he_sum_get(sum);
+    he_sum_fin(sum);
+    return v;
+}
+
+static int plus(int n, const real *a, /*io*/ real *b) {
+    int i;
+    for (i = 0; i < n; i++)
+        b[i] += a[i];
+    return HE_OK;
+}
+
+static int scale(int n, real sc, /*io*/ real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] *= sc;
+    return HE_OK;
+}
+
 static void get_edg(int i, int j, const real *x, const real *y, const real *z, /**/ real r[3]) {
     real a[3], b[3];
     vec_get(i, x, y, z, a);
@@ -58,30 +93,6 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(k, x, y, z, /**/ c);
     return HE_OK;
 }
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++) a[i] = 0;
-}
-
-static real sum(int n, real *a) {
-    int i;
-    real v;
-    HeSum *sum;
-    he_sum_ini(&sum);
-    v = 0;
-    for (i = 0; i < n; i++)
-        he_sum_add(sum, a[i]);
-    v = he_sum_get(sum);
-    he_sum_fin(sum);
-    return v;
-}
-
-static int scale(int n, real sc, /*io*/ real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] *= sc;
-    return HE_OK;
-}
 
 int he_f_gompper_xin_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
@@ -103,6 +114,7 @@ int he_f_gompper_xin_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED 
     MALLOC(nh, &q->t);
 
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
+    MALLOC(nv, &q->fx); MALLOC(nv, &q->fy); MALLOC(nv, &q->fz);
 
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
     MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
@@ -116,6 +128,8 @@ int he_f_gompper_xin_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED 
 }
 int he_f_gompper_xin_fin(T *q) {
     FREE(q->T0); FREE(q->T1); FREE(q->T2);
+    FREE(q->fx); FREE(q->fy); FREE(q->fz);
+    
     FREE(q->t); FREE(q->l2);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
@@ -372,7 +386,7 @@ static void compute_force_dt(T *q, He *he,
 }
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
-                           real *fx, real *fy, real *fz) {
+                           real *fx_tot, real *fy_tot, real *fz_tot) {
     int nv, nt;
     int i, j, k, l;
     int *T0, *T1, *T2;
@@ -380,16 +394,19 @@ int he_f_gompper_xin_force(T *q, He *he,
     real *l2, *t;
     real *lbx, *lby, *lbz;
     real *area;
+    real *fx, *fy, *fz;
 
 
     T0 = q->T0; T1 = q->T1; T2 = q->T2;
     area = q->area;
     l2 = q->l2; t = q->t;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
-
+    fx = q->fx; fy = q->fy; fz = q->fz;
     nv = q->nv;
-
     nt = he_nt(he);
+
+    zero(nv, fx); zero(nv, fy); zero(nv, fz);
+    
     for (l = 0; l < nt; l++) {
         get_ijk(l, he, /**/ &i, &j, &k);
         T0[l] = i; T1[l] = j; T2[l] = k;
@@ -409,6 +426,10 @@ int he_f_gompper_xin_force(T *q, He *he,
                     /**/ fx, fy, fz);
     compute_force_dt(q, he, x, y, z, lbx, lby, lbz,
                      /**/ fx, fy, fz);
+
+    plus(nv, fx, fx_tot);
+    plus(nv, fy, fy_tot);
+    plus(nv, fz, fz_tot);    
 
     return HE_OK;
 }
