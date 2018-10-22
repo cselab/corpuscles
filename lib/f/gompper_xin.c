@@ -268,18 +268,6 @@ static real compute_energy(T *q, const real *curva_mean, const real *area, /**/ 
 
   return energy_tot;
 }
-static real compute_curva_mean_integral(T *q, const real *curva_mean, const real *area) {
-
-  int i, nv;
-  real cm_integral;
-  nv   = q->nv;
-
-  cm_integral = 0;
-  for (i = 0; i < nv; i++) {
-    cm_integral += curva_mean[i]*area[i];
-  }
-  return cm_integral;
-}
 
 real he_f_gompper_xin_energy(T *q, He *he,
                          const real *x, const real *y, const real *z) {
