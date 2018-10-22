@@ -22,8 +22,6 @@
 #define  hdg_tri(e) he_hdg_tri(he, (e))
 #define  bnd(h)     he_bnd(he, (h))
 
-static const real pi = 3.141592653589793115997964;
-
 struct T {
     real Kb;
 
@@ -234,7 +232,7 @@ static int compute_norm(T *q, He *he,
     }
     return HE_OK;
 }
-static int compute_H(T *q, He *he,
+static int compute_H(He *he,
                      real *lbx, real *lby, real *lbz,
                      real *normx, real *normy, real *normz,
                      /**/ real *H) {
@@ -278,7 +276,6 @@ real he_f_gompper_xin_energy(T *q, He *he,
     real *normx, *normy, *normz;
     real *H;
     real *energy, *area;
-    real energy_tot;
 
     T0 = q->T0; T1 = q->T1; T2 = q->T2;
     l2 = q->l2; t = q->t;
@@ -305,7 +302,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
-    compute_H(q, he, lbx, lby, lbz, normx, normy, normz, /**/ H);
+    compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
     compute_energy(q, H, area, /**/ energy);
 
     return sum(nv, energy);
@@ -379,7 +376,6 @@ int he_f_gompper_xin_force(T *q, He *he,
     int i, j, k, l;
     int *T0, *T1, *T2;
 
-    real Kb;
     real *l2, *t;
     real *lbx, *lby, *lbz;
     real *area;
@@ -391,7 +387,6 @@ int he_f_gompper_xin_force(T *q, He *he,
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
 
     nv = q->nv;
-    Kb  = q->Kb;
 
     nt = he_nt(he);
     for (l = 0; l < nt; l++) {
