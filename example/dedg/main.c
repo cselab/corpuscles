@@ -27,6 +27,11 @@ int main(__UNUSED int argc, const char **v) {
         dedg_abs(a, b, da, db);
         vec_printf(da, "%g");
         vec_printf(db, "%g");
+    } else if (eq(op, "abs2")) {
+        vec(a); vec(b);
+        dedg_abs2(a, b, da, db);
+        vec_printf(da, "%g");
+        vec_printf(db, "%g");
     } else
         ER("unknown operation '%s'", op);
     return 0;
