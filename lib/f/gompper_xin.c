@@ -16,4 +16,5 @@
 #include "f/gompper_xin/type.inc"
 #include "f/gompper_xin/util.inc"
 #include "f/gompper_xin/ini.inc"
+#include "f/gompper_xin/get.inc"
 #include "f/gompper_xin/main.inc"
