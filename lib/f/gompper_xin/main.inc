@@ -147,6 +147,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     return sum(nv, energy);
 }
+
 static void compute_force_t(He *he,
                             const real *x, const real *y, const real *z,
                             const real *t,
@@ -170,8 +171,33 @@ static void compute_force_t(He *he,
         vec_append(df, i, /**/ fx, fy, fz);
         vec_substr(df, j, /**/ fx, fy, fz);
     }
-
 }
+
+static void compute_force_l2(He *he,
+                            const real *x, const real *y, const real *z,
+                            const real *t,
+                            const real *lbx, const real *lby, const real *lbz,
+                            /**/ real *fx, real *fy, real *fz) {
+    int nh;
+    int h, n;
+    int i, j;
+    real r[3], ll[3], df[3];
+    real t0, l2;
+
+    nh = he_nh(he);
+
+    for (h = 0; h < nh; h++) {
+        n = nxt(h); i = ver(h); j = ver(n);
+        t0 = t[h];
+        get_edg(i, j, x, y, z, /**/  r);
+        vec_get(i, lbx, lby, lbz, ll);
+        l2 = vec_dot(ll, ll);
+        vec_linear_combination(t0/4, ll, -t0*l2/16, r,  df);
+        vec_append(df, i, /**/ fx, fy, fz);
+        vec_substr(df, j, /**/ fx, fy, fz);
+    }
+}
+
 static void compute_force_dt(He *he,
                              const real *x, const real *y, const real *z,
                              const real *lbx, const real *lby, const real *lbz,
