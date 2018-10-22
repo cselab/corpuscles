@@ -45,14 +45,6 @@ static int zero(int n, real *a) {
     return HE_OK;
 }
 
-static int one(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] = 1;
-    return HE_OK;
-}
-
-
 static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
@@ -67,15 +59,6 @@ static int scale(int n, real sc, /*io*/ real *a) {
     return HE_OK;
 }
 
-static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = hdg_tri(t);
-    n = nxt(h);
-    nn = nxt(n);
-    i = ver(h); j = ver(n); k = ver(nn);
-    *pi = i; *pj = j; *pk = k;
-    return HE_OK;
-}
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
@@ -344,8 +327,7 @@ static int compute_G(He *he, const real *area,
 real he_f_canham_energy(T *q, He *he,
                         const real *x, const real *y, const real *z) {
     enum {X, Y, Z};
-    int v, m;
-    int i, j, k;
+    int v;
     int *T0, *T1, *T2;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
@@ -353,7 +335,6 @@ real he_f_canham_energy(T *q, He *he,
     real *energy, *area, *t;
 
     real Kb;
-    real area_tot_tri;
     int  nv, nt;
 
     Kb   = q->Kb;
@@ -396,9 +377,8 @@ int he_f_canham_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx_tot, real *fy_tot, real *fz_tot) {
     enum {X, Y, Z};
-    int v, e, m;
-    int i, j, k, l;
-    int nv, nt, ne;
+    int v;
+    int nv;
     int *T0, *T1, *T2;
     real *fx, *fy, *fz;
     real *lbx, *lby, *lbz, *t;
@@ -412,8 +392,6 @@ int he_f_canham_force(T *q, He *he,
     Kb   = q->Kb;
 
     nv = he_nv(he);
-    nt = he_nt(he);
-    ne = he_ne(he);
 
     he_T(he, &T0, &T1, &T2);
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
