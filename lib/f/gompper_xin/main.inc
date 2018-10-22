@@ -167,7 +167,7 @@ static void compute_force_dr(He *he,
         get_edg(i, j, x, y, z, /**/  r);
         vec_get(i, lbx, lby, lbz, ll);
         l2 = vec_dot(ll, ll);
-        vec_linear_combination(t0/4, ll, -t0*l2/16, r,  df);
+        vec_scalar(ll, t0/4, df);
         vec_append(df, i, /**/ fx, fy, fz);
         vec_substr(df, j, /**/ fx, fy, fz);
     }
@@ -192,7 +192,7 @@ static void compute_force_dl2(He *he,
         get_edg(i, j, x, y, z, /**/  r);
         vec_get(i, lbx, lby, lbz, ll);
         l2 = vec_dot(ll, ll);
-        vec_linear_combination(t0/4, ll, -t0*l2/16, r,  df);
+        vec_scalar(r, -t0*l2/16, df);
         vec_append(df, i, /**/ fx, fy, fz);
         vec_substr(df, j, /**/ fx, fy, fz);
     }
@@ -286,6 +286,8 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, z, t, area, /**/ lbz);
     compute_force_dr(he, x, y, z, t, lbx, lby, lbz,
                     /**/ fx, fy, fz);
+    compute_force_dl2(he, x, y, z, t, lbx, lby, lbz,
+                        /**/ fx, fy, fz);
     compute_force_dt(he, x, y, z, lbx, lby, lbz,
                      /**/ fx, fy, fz);
 
