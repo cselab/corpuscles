@@ -255,26 +255,20 @@ static int compute_curva_mean(T *q, He *he,
   return HE_OK;
 
 }
-static real compute_energy(T *q, const real *curva_mean, const real *area, /**/ real *energy) {
+static int compute_energy(T *q, const real *curva_mean, const real *area, /**/ real *energy) {
 
   real Kb, C0, H0;
   int i, nv;
-  real energy_tot;
 
   Kb   = q->Kb;
   C0   = q->C0;
   nv   = q->nv;
-
   H0 = C0/2.0;
 
-  energy_tot = 0;
-
-  for (i = 0; i < nv; i++) {
+  for (i = 0; i < nv; i++)
     energy[i]   = 2*Kb*(curva_mean[i]-H0)*(curva_mean[i]-H0)*area[i];
-    energy_tot += energy[i];
-  }
 
-  return energy_tot;
+  return HE_OK;
 }
 
 real he_f_gompper_xin_energy(T *q, He *he,
@@ -316,10 +310,9 @@ real he_f_gompper_xin_energy(T *q, He *he,
   compute_laplace(he, z, t, area, /**/ lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
   compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
+  compute_energy(q, curva_mean, area, /**/ energy);
 
-  energy_tot  = compute_energy(q, curva_mean, area, /**/ energy);
-
-  return energy_tot;
+  return sum(nv, energy);
 }
 static void compute_force_t(T *q, He *he,
                             const real *x, const real *y, const real *z,
