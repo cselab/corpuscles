@@ -1,7 +1,5 @@
 struct T {
     real Kb;
-
-    int *T0, *T1, *T2;
     real *l2, *t;
 
     real *lbx, *lby, *lbz;

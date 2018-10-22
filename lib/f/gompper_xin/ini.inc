@@ -17,7 +17,6 @@ int he_f_gompper_xin_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED 
     MALLOC(nh, &q->l2);
     MALLOC(nh, &q->t);
 
-    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(nv, &q->fx); MALLOC(nv, &q->fy); MALLOC(nv, &q->fz);
 
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
@@ -31,7 +30,6 @@ int he_f_gompper_xin_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED 
     return HE_OK;
 }
 int he_f_gompper_xin_fin(T *q) {
-    FREE(q->T0); FREE(q->T1); FREE(q->T2);
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
     
     FREE(q->t); FREE(q->l2);
