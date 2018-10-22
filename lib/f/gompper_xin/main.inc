@@ -180,7 +180,7 @@ static void compute_force_dl2(He *he,
     int h, n;
     int i, j;
     real r[3], ll[3], df[3], a[3], b[3], da[3], db[3];
-    real t0, l2, C;
+    real t0, lpl, C;
 
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
@@ -189,8 +189,8 @@ static void compute_force_dl2(He *he,
         dedg_abs2(a, b, /**/ da, db);
         t0 = t[h];
         vec_get(i, lbx, lby, lbz, ll);
-        l2 = vec_dot(ll, ll);
-        C = -t0*l2/32;
+        lpl = vec_dot(ll, ll);
+        C = -t0*lpl/32;
         vec_scalar_append(da, C, i, /**/ fx, fy, fz);
         vec_scalar_append(db, C, j, /**/ fx, fy, fz);
     }
