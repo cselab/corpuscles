@@ -61,3 +61,11 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(k, x, y, z, /**/ c);
     return HE_OK;
 }
+
+static int get2(const real *x, const real *y, const real *z,
+                int i, int j, /**/
+                real a[3], real b[3]) {
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    return HE_OK;
+}
