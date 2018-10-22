@@ -7,6 +7,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/dtri.h"
+#include "he/dedg.h"
 #include "he/sum.h"
 #include "he/macro.h"
 #include "he/f/gompper_xin.h"

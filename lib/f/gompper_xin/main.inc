@@ -181,20 +181,20 @@ static void compute_force_dl2(He *he,
     int nh;
     int h, n;
     int i, j;
-    real r[3], ll[3], df[3];
-    real t0, l2;
+    real r[3], ll[3], df[3], a[3], b[3], da[3], db[3];
+    real t0, l2, coef;
 
     nh = he_nh(he);
-
     for (h = 0; h < nh; h++) {
         n = nxt(h); i = ver(h); j = ver(n);
+	get2(x, y, z, i, j, /**/ a, b);
+        dedg_abs2(a, b, /**/ da, db);
         t0 = t[h];
-        get_edg(i, j, x, y, z, /**/  r);
         vec_get(i, lbx, lby, lbz, ll);
         l2 = vec_dot(ll, ll);
-        vec_scalar(r, -t0*l2/16, df);
-        vec_append(df, i, /**/ fx, fy, fz);
-        vec_substr(df, j, /**/ fx, fy, fz);
+        coef = -t0*l2/32;
+        vec_scalar_append(da, coef, i, /**/ fx, fy, fz);
+        vec_scalar_append(db, coef, j, /**/ fx, fy, fz);
     }
 }
 
