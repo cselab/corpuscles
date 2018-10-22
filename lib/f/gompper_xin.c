@@ -322,19 +322,16 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     return sum(nv, energy);
 }
-static void compute_force_t(T *q, He *he,
+static void compute_force_t(He *he,
                             const real *x, const real *y, const real *z,
                             const real *t,
                             const real *lbx, const real *lby, const real *lbz,
                             /**/ real *fx, real *fy, real *fz) {
-    real Kb;
     int nh;
     int h, n;
     int i, j;
     real r[3], ll[3], df[3];
     real t0, l2;
-
-    Kb   = q->Kb;
 
     nh = he_nh(he);
 
@@ -344,17 +341,16 @@ static void compute_force_t(T *q, He *he,
         get_edg(i, j, x, y, z, /**/  r);
         vec_get(i, lbx, lby, lbz, ll);
         l2 = vec_dot(ll, ll);
-        vec_linear_combination(Kb*t0/2, ll, -Kb*t0*l2/8, r,  df);
+        vec_linear_combination(t0/2, ll, -t0*l2/8, r,  df);
         vec_append(df, i, /**/ fx, fy, fz);
         vec_substr(df, j, /**/ fx, fy, fz);
     }
 
 }
-static void compute_force_dt(T *q, He *he,
+static void compute_force_dt(He *he,
                              const real *x, const real *y, const real *z,
                              const real *lbx, const real *lby, const real *lbz,
                              /**/ real *fx, real *fy, real *fz) {
-    real Kb;
     int nh;
     int h, n, nn;
     int i, j, k;
@@ -362,10 +358,7 @@ static void compute_force_dt(T *q, He *he,
     real li[3], lk[3];
     real dl, dd, r2, C;
 
-    Kb   = q->Kb;
-
     nh = he_nh(he);
-
     for (h = 0; h < nh; h++) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
@@ -377,7 +370,7 @@ static void compute_force_dt(T *q, He *he,
         r2 = vec_dot(r, r);
         dl = vec_dot(lk, lk) + vec_dot(li, li);
         dd = vec_dot(li, r)  - vec_dot(lk, r);
-        C = Kb*dd/2 - Kb*r2*dl/16;
+        C = dd/2 - r2*dl/16;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
@@ -391,11 +384,13 @@ int he_f_gompper_xin_force(T *q, He *he,
     int i, j, k, l;
     int *T0, *T1, *T2;
 
+    real Kb;
     real *l2, *t;
     real *lbx, *lby, *lbz;
     real *area;
     real *fx, *fy, *fz;
 
+    Kb = q->Kb;
 
     T0 = q->T0; T1 = q->T1; T2 = q->T2;
     area = q->area;
@@ -421,15 +416,16 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, x, t, area, /**/ lbx);
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
-
-    compute_force_t(q, he, x, y, z, t, lbx, lby, lbz,
+    compute_force_t(he, x, y, z, t, lbx, lby, lbz,
                     /**/ fx, fy, fz);
-    compute_force_dt(q, he, x, y, z, lbx, lby, lbz,
+    compute_force_dt(he, x, y, z, lbx, lby, lbz,
                      /**/ fx, fy, fz);
 
-    plus(nv, fx, fx_tot);
-    plus(nv, fy, fy_tot);
-    plus(nv, fz, fz_tot);    
+    scale(nv, Kb, fx); scale(nv, Kb, fy); scale(nv, Kb, fz);    
+
+    plus(nv, fx, /*io*/ fx_tot);
+    plus(nv, fy, /*io*/ fy_tot);
+    plus(nv, fz, /*io*/ fz_tot);    
 
     return HE_OK;
 }
