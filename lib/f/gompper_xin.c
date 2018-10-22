@@ -152,7 +152,7 @@ int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
     return HE_OK;
 }
-static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
+static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/ real *l2) {
     int nh;
     int h, n;
     int i, j;
@@ -162,7 +162,7 @@ static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/
         n = nxt(h);
         i = ver(h); j = ver(n);
         get_edg(i, j, x, y, z, /**/ r);
-        H[h] = vec_dot(r, r);
+        l2[h] = vec_dot(r, r);
     }
 }
 static void compute_cot(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
@@ -203,25 +203,23 @@ static void compute_lb(He *he, const real *V0, const real *t, const real *area, 
     for (i = 0; i < nv; i++)
         V1[i] /= area[i];
 }
-static int compute_norm(T *q, He *he,
+static int compute_norm(He *he,
                         const real *x, const real *y, const real *z, /**/
                         real *normx, real *normy, real *normz) {
     enum {X, Y, Z};
-    int t, nt;
+    int t, nt, h, n, nn;
     int i, j, k, nv;
     real a[3], b[3], c[3], u[3], u0[3];
-    int *T0, *T1, *T2;
     real theta_a, theta_b, theta_c;
 
     nt = he_nt(he);
     nv = he_nv(he);
-    T0 = q->T0;
-    T1 = q->T1;
-    T2 = q->T2;
 
     zero(nv, normx); zero(nv, normy); zero(nv, normz);
     for ( t = 0; t < nt; t++ ) {
-        i = T0[t]; j = T1[t]; k = T2[t];
+        h = hdg_tri(t);
+        n = nxt(h); nn = nxt(n);
+        i = ver(h); j = ver(n); k = ver(nn);        
         get3(x, y, z, i, j, k, a, b, c);
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
@@ -258,12 +256,10 @@ static int compute_H(He *he,
     return HE_OK;
 
 }
-static int compute_energy(T *q, const real *H, const real *area, /**/ real *energy) {
-    int i, nv;
-    nv   = q->nv;
+static int compute_energy(int nv, const real *H, const real *area, /**/ real *energy) {
+    int i;
     for (i = 0; i < nv; i++)
         energy[i]   = H[i]*H[i]*area[i];
-
     return HE_OK;
 }
 
@@ -305,9 +301,9 @@ real he_f_gompper_xin_energy(T *q, He *he,
     compute_lb(he, x, t, area, /**/ lbx);
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
-    compute_norm(q, he, x, y, z, normx, normy, normz);
+    compute_norm(he, x, y, z, normx, normy, normz);
     compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
-    compute_energy(q, H, area, /**/ energy);
+    compute_energy(nv, H, area, /**/ energy);
     scale(nv, 2*Kb, /**/ energy);
 
     return sum(nv, energy);
