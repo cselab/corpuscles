@@ -156,17 +156,15 @@ static void compute_force_dr(He *he,
     int nh;
     int h, n;
     int i, j;
-    real r[3], ll[3], df[3];
-    real t0, l2;
+    real ll[3], df[3];
+    real t0;
 
     nh = he_nh(he);
 
     for (h = 0; h < nh; h++) {
         n = nxt(h); i = ver(h); j = ver(n);
         t0 = t[h];
-        get_edg(i, j, x, y, z, /**/  r);
         vec_get(i, lbx, lby, lbz, ll);
-        l2 = vec_dot(ll, ll);
         vec_scalar(ll, t0/4, df);
         vec_append(df, i, /**/ fx, fy, fz);
         vec_substr(df, j, /**/ fx, fy, fz);
