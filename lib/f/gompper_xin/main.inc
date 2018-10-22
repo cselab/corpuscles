@@ -182,7 +182,7 @@ static void compute_force_dl2(He *he,
     int h, n;
     int i, j;
     real r[3], ll[3], df[3], a[3], b[3], da[3], db[3];
-    real t0, l2, coef;
+    real t0, l2, C;
 
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
@@ -192,34 +192,9 @@ static void compute_force_dl2(He *he,
         t0 = t[h];
         vec_get(i, lbx, lby, lbz, ll);
         l2 = vec_dot(ll, ll);
-        coef = -t0*l2/32;
-        vec_scalar_append(da, coef, i, /**/ fx, fy, fz);
-        vec_scalar_append(db, coef, j, /**/ fx, fy, fz);
-    }
-}
-
-static void compute_force_l2(He *he,
-                            const real *x, const real *y, const real *z,
-                            const real *t,
-                            const real *lbx, const real *lby, const real *lbz,
-                            /**/ real *fx, real *fy, real *fz) {
-    int nh;
-    int h, n;
-    int i, j;
-    real r[3], ll[3], df[3];
-    real t0, l2;
-
-    nh = he_nh(he);
-
-    for (h = 0; h < nh; h++) {
-        n = nxt(h); i = ver(h); j = ver(n);
-        t0 = t[h];
-        get_edg(i, j, x, y, z, /**/  r);
-        vec_get(i, lbx, lby, lbz, ll);
-        l2 = vec_dot(ll, ll);
-        vec_linear_combination(t0/4, ll, -t0*l2/16, r,  df);
-        vec_append(df, i, /**/ fx, fy, fz);
-        vec_substr(df, j, /**/ fx, fy, fz);
+        C = -t0*l2/32;
+        vec_scalar_append(da, C, i, /**/ fx, fy, fz);
+        vec_scalar_append(db, C, j, /**/ fx, fy, fz);
     }
 }
 
