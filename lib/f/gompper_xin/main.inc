@@ -65,7 +65,7 @@ static int compute_norm(He *he,
     for ( t = 0; t < nt; t++ ) {
         h = hdg_tri(t);
         n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);        
+        i = ver(h); j = ver(n); k = ver(nn);
         get3(x, y, z, i, j, k, a, b, c);
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
@@ -183,7 +183,7 @@ static void f2_l2(He *he,
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         n = nxt(h); i = ver(h); j = ver(n);
-	get2(x, y, z, i, j, /**/ a, b);
+        get2(x, y, z, i, j, /**/ a, b);
         dedg_abs2(a, b, /**/ da, db);
         t0 = t[h];
         vec_get(i, lbx, lby, lbz, ll);
@@ -234,19 +234,19 @@ int he_f_gompper_xin_force(T *q, He *he,
     real *l2, *t;
     real *lbx, *lby, *lbz;
     real *area;
-    real *fx, *fy, *fz;
+    real *f2x, *f2y, *f2z;
 
     Kb = q->Kb;
 
     area = q->area;
     l2 = q->l2; t = q->t;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
-    fx = q->fx; fy = q->fy; fz = q->fz;
+    f2x = q->f2x; f2y = q->f2y; f2z = q->f2z;
     nv = q->nv;
     nt = he_nt(he);
 
-    zero(nv, fx); zero(nv, fy); zero(nv, fz);
-    
+    zero(nv, f2x); zero(nv, f2y); zero(nv, f2z);
+
     if (he_nv(he) != nv)
         ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
 
@@ -256,15 +256,16 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, x, t, area, /**/ lbx);
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
-    f2_r(he, x, y, z, t, lbx, lby, lbz, /**/ fx, fy, fz);
-    f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ fx, fy, fz);
-    f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ fx, fy, fz);
 
-    scale(nv, 2*Kb, fx); scale(nv, 2*Kb, fy); scale(nv, 2*Kb, fz);    
+    f2_r(he, x, y, z, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
+    f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
+    f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ f2x, f2y, f2z);
 
-    plus(nv, fx, /*io*/ fx_tot);
-    plus(nv, fy, /*io*/ fy_tot);
-    plus(nv, fz, /*io*/ fz_tot);    
+    scale(nv, 2*Kb, f2x); scale(nv, 2*Kb, f2y); scale(nv, 2*Kb, f2z);
+
+    plus(nv, f2x, /*io*/ fx_tot);
+    plus(nv, f2y, /*io*/ fy_tot);
+    plus(nv, f2z, /*io*/ fz_tot);
 
     return HE_OK;
 }
