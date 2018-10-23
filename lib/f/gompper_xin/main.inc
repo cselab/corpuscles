@@ -256,10 +256,8 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, x, t, area, /**/ lbx);
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
-    f2_r(he, x, y, z, t, lbx, lby, lbz,
-                    /**/ fx, fy, fz);
-    f2_l2(he, x, y, z, t, lbx, lby, lbz,
-                        /**/ fx, fy, fz);
+    f2_r(he, x, y, z, t, lbx, lby, lbz, /**/ fx, fy, fz);
+    f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ fx, fy, fz);
     f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ fx, fy, fz);
 
     scale(nv, 2*Kb, fx); scale(nv, 2*Kb, fy); scale(nv, 2*Kb, fz);    
