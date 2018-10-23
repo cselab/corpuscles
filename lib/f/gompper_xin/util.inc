@@ -69,3 +69,14 @@ static int get2(const real *x, const real *y, const real *z,
     vec_get(j, x, y, z, /**/ b);
     return HE_OK;
 }
+
+static int normalize(int n, const real *x, const real *y, const real *z, /**/ real *x0, real *y0, real *z0) {
+    int i;
+    real a[3], a0[3];
+    for (i = 0; i < n; i++) {
+        vec_get(i, x, y, z, a);
+        vec_norm(a, /**/ a0);
+        vec_set(a0, i, /**/ x0, y0, z0);
+    }
+    return HE_OK;
+}

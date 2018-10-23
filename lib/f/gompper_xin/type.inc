@@ -3,6 +3,8 @@ struct T {
     real *l2, *t;
 
     real *lbx, *lby, *lbz;
+    real *lbx0, *lby0, *lbz0;
+
     real *normx, *normy, *normz;
     real *H, *curva_gauss;
     real *energy, *area;

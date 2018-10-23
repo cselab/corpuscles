@@ -232,7 +232,7 @@ int he_f_gompper_xin_force(T *q, He *he,
 
     real Kb;
     real *l2, *t;
-    real *lbx, *lby, *lbz;
+    real *lbx, *lby, *lbz, *lbx0, *lby0, *lbz0;
     real *area;
     real *f2x, *f2y, *f2z;
 
@@ -241,6 +241,8 @@ int he_f_gompper_xin_force(T *q, He *he,
     area = q->area;
     l2 = q->l2; t = q->t;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+    lbx0 = q->lbx0; lby0 = q->lby0; lbz0 = q->lbz0;
+    
     f2x = q->f2x; f2y = q->f2y; f2z = q->f2z;
     nv = q->nv;
     nt = he_nt(he);
@@ -264,6 +266,8 @@ int he_f_gompper_xin_force(T *q, He *he,
     axpy(nv, 2*Kb, f2x, /*io*/ fx_tot);
     axpy(nv, 2*Kb, f2y, /*io*/ fy_tot);
     axpy(nv, 2*Kb, f2z, /*io*/ fz_tot);
+
+    normalize(nv, lbx, lby, lbz, /**/ lbx0, lby0, lbz0);
 
     return HE_OK;
 }
