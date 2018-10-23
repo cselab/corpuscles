@@ -89,14 +89,14 @@ static int compute_H(He *he,
                      /**/ real *H) {
     enum {X, Y, Z};
     int i, nv;
-    real u[3], v[3];
+    real ll[3], nn[3];
 
     nv  = he_nv(he);
 
     for ( i = 0; i < nv; i++ ) {
-        vec_get(i, lbx, lby, lbz, u);
-        vec_get(i, normx, normy, normz, v);
-        H[i] = vec_dot(u, v)/2;
+        vec_get(i, lbx, lby, lbz, /**/ ll);
+        vec_get(i, normx, normy, normz, /**/ nn);
+        H[i] = vec_dot(ll, nn)/2;
     }
 
     return HE_OK;
@@ -218,9 +218,9 @@ static void compute_force_dt(He *he,
         vec_get(k, lbx, lby, lbz, /**/ lk);
         vec_get(i, lbx, lby, lbz, /**/ li);
         dd = vec_dot(li, r)  - vec_dot(lk, r);
+        dl = vec_dot(li, li) + vec_dot(lk, lk);
         l20 = l2[nn];
-        dl = vec_dot(lk, lk) + vec_dot(li, li);
-        C = dd/4 -l20*dl/32;
+        C = dd/4 - l20*dl/32;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
