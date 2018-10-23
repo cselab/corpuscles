@@ -158,9 +158,7 @@ static void compute_force_dr(He *he,
     int i, j;
     real ll[3], df[3];
     real t0;
-
     nh = he_nh(he);
-
     for (h = 0; h < nh; h++) {
         n = nxt(h); i = ver(h); j = ver(n);
         t0 = t[h];
