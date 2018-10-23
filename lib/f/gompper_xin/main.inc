@@ -44,10 +44,10 @@ static void compute_lb(He *he, const real *V0, const real *t, const real *area, 
     for (h = 0; h < nh; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        V1[i] += t[h]*(V0[i] - V0[j])/2;
+        V1[i] += t[h]*(V0[i] - V0[j]);
     }
     for (i = 0; i < nv; i++)
-        V1[i] /= area[i];
+        V1[i] = V1[i]/(2*area[i]);
 }
 static int compute_norm(He *he,
                         const real *x, const real *y, const real *z, /**/
