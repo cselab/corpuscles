@@ -261,11 +261,9 @@ int he_f_gompper_xin_force(T *q, He *he,
     f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
     f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ f2x, f2y, f2z);
 
-    scale(nv, 2*Kb, f2x); scale(nv, 2*Kb, f2y); scale(nv, 2*Kb, f2z);
-
-    plus(nv, f2x, /*io*/ fx_tot);
-    plus(nv, f2y, /*io*/ fy_tot);
-    plus(nv, f2z, /*io*/ fz_tot);
+    axpy(nv, 2*Kb, f2x, /*io*/ fx_tot);
+    axpy(nv, 2*Kb, f2y, /*io*/ fy_tot);
+    axpy(nv, 2*Kb, f2z, /*io*/ fz_tot);
 
     return HE_OK;
 }

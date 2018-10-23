@@ -24,10 +24,10 @@ static real sum(int n, real *a) {
     return v;
 }
 
-static int plus(int n, const real *a, /*io*/ real *b) {
+static int axpy(int n, const real a, const real *x, /*io*/ real *y) {
     int i;
     for (i = 0; i < n; i++)
-        b[i] += a[i];
+        y[i] += a*x[i];
     return HE_OK;
 }
 
