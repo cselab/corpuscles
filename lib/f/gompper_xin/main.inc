@@ -111,8 +111,7 @@ static int compute_energy(int nv, const real *H, const real *area, /**/ real *en
 
 real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
-    int nv, nt;
-    int i, j, k, l;
+    int nv;
 
     real Kb;
     real *l2, *t;
@@ -129,7 +128,6 @@ real he_f_gompper_xin_energy(T *q, He *he,
     Kb = q->Kb;
 
     nv = q->nv;
-    nt = he_nt(he);
 
     if (he_nv(he) != nv)
         ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
@@ -149,10 +147,9 @@ real he_f_gompper_xin_energy(T *q, He *he,
 }
 
 static void f2_r(He *he,
-                            const real *x, const real *y, const real *z,
-                            const real *t,
-                            const real *lbx, const real *lby, const real *lbz,
-                            /**/ real *fx, real *fy, real *fz) {
+                 const real *t,
+                 const real *lbx, const real *lby, const real *lbz,
+                 /**/ real *fx, real *fy, real *fz) {
     int nh;
     int h, n;
     int i, j;
@@ -177,7 +174,7 @@ static void f2_l2(He *he,
     int nh;
     int h, n;
     int i, j;
-    real r[3], ll[3], df[3], a[3], b[3], da[3], db[3];
+    real ll[3], a[3], b[3], da[3], db[3];
     real t0, lpl, C;
 
     nh = he_nh(he);
@@ -227,13 +224,13 @@ static void f2_t(He *he,
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *fx_tot, real *fy_tot, real *fz_tot) {
-    int nv, nt;
-    int i, j, k, l;
+    int nv;
 
     real Kb;
     real *l2, *t;
     real *lbx, *lby, *lbz, *lbx0, *lby0, *lbz0;
     real *area;
+    real *f1x, *f1y, *f1z;
     real *f2x, *f2y, *f2z;
 
     Kb = q->Kb;
@@ -242,11 +239,11 @@ int he_f_gompper_xin_force(T *q, He *he,
     l2 = q->l2; t = q->t;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     lbx0 = q->lbx0; lby0 = q->lby0; lbz0 = q->lbz0;
-    
+
+    f1x = q->f1x; f1y = q->f1y; f1z = q->f1z;
     f2x = q->f2x; f2y = q->f2y; f2z = q->f2z;
     nv = q->nv;
-    nt = he_nt(he);
-
+    zero(nv, f1x); zero(nv, f1y); zero(nv, f1z);
     zero(nv, f2x); zero(nv, f2y); zero(nv, f2z);
 
     if (he_nv(he) != nv)
@@ -259,7 +256,7 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
 
-    f2_r(he, x, y, z, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
+    f2_r(he, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
     f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
     f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ f2x, f2y, f2z);
 

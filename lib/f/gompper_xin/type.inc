@@ -9,6 +9,7 @@ struct T {
     real *H, *curva_gauss;
     real *energy, *area;
 
+    real *f1x, *f1y, *f1z;
     real *f2x, *f2y, *f2z;
 
     int nv, ne, nt;
