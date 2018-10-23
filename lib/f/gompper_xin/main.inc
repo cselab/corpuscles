@@ -148,7 +148,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     return sum(nv, energy);
 }
 
-static void compute_force_dr(He *he,
+static void f2_r(He *he,
                             const real *x, const real *y, const real *z,
                             const real *t,
                             const real *lbx, const real *lby, const real *lbz,
@@ -169,7 +169,7 @@ static void compute_force_dr(He *he,
     }
 }
 
-static void compute_force_dl2(He *he,
+static void f2_l2(He *he,
                             const real *x, const real *y, const real *z,
                             const real *t,
                             const real *lbx, const real *lby, const real *lbz,
@@ -194,7 +194,7 @@ static void compute_force_dl2(He *he,
     }
 }
 
-static void compute_force_dt(He *he,
+static void f2_t(He *he,
                              const real *x, const real *y, const real *z,
                              const real *l2,
                              const real *lbx, const real *lby, const real *lbz,
@@ -256,11 +256,11 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, x, t, area, /**/ lbx);
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
-    compute_force_dr(he, x, y, z, t, lbx, lby, lbz,
+    f2_r(he, x, y, z, t, lbx, lby, lbz,
                     /**/ fx, fy, fz);
-    compute_force_dl2(he, x, y, z, t, lbx, lby, lbz,
+    f2_l2(he, x, y, z, t, lbx, lby, lbz,
                         /**/ fx, fy, fz);
-    compute_force_dt(he, x, y, z, l2, lbx, lby, lbz, /**/ fx, fy, fz);
+    f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ fx, fy, fz);
 
     scale(nv, 2*Kb, fx); scale(nv, 2*Kb, fy); scale(nv, 2*Kb, fz);    
 
