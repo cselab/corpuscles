@@ -13,17 +13,15 @@ static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/
 }
 static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
     int nh, h, n, nn;
-    int i, j, k;
-    real a[3], b[3], c[3], cot;
+    int i, j, k, l;
+    real a[3], b[3], c[3], d[3], cot;
     nh = he_nh(he);
     zero(nh, H);
     for (h = 0; h < nh; h++) {
-        n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);
-        get3(x, y, z, i, j, k, /**/ a, b, c);
-        cot = tri_cot(b, c, a);
+        get_ijkl(h, he, /**/ &i, &j, &k, &l);
+        get4(x, y, z, i, j, k, l, /**/ a, b, c, d);
+        cot = tri_cot(c, a, b) + tri_cot(b, d, c);
         H[h]      += cot;
-        H[flp(h)] += cot;
     }
     return HE_OK;
 }
