@@ -244,7 +244,9 @@ static int f2_t(He *he,
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
     }
-    
+
+    int ii, jj, kk;
+    real aa[3], bb[3], cc[3];
     for (h = 0; h < nh; h++) {
         k = ver(h); i = ver(nxt(h)); j = ver(nxt(nxt(h)));
         get3(x, y, z, i, j, k,  a, b, c);
