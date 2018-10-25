@@ -79,9 +79,9 @@ int dtri_norm(const real a[3], const real b[3], const real c[3], /**/
     vec_cross(e, n, /**/ u);
     C = 1/(2*A);
 
-    if (x != NULL) vec_scalar(n, C*u[X], /**/ x);
-    if (y != NULL) vec_scalar(n, C*u[Y], /**/ y);
-    if (z != NULL) vec_scalar(n, C*u[Z], /**/ z);
+    if (x != NULL) vec_scalar(u, C*n[X], /**/ x);
+    if (y != NULL) vec_scalar(u, C*n[Y], /**/ y);
+    if (z != NULL) vec_scalar(u, C*n[Z], /**/ z);
     return HE_OK;
 }
 
