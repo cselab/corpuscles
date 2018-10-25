@@ -229,34 +229,6 @@ static void f2_t(He *he,
     }
 }
 
-static void f1_t(He *he,
-                 const real *x, const real *y, const real *z,
-                 const real *lbx, const real *lby, const real *lbz,
-                 /**/ real *fx, real *fy, real *fz) {
-    int nh;
-    int h, n, nn;
-    int i, j, k;
-    real r[3], a[3], b[3], c[3], da[3], db[3], dc[3];
-    real li[3], lk[3];
-    real dd, C;
-
-    nh = he_nh(he);
-    for (h = 0; h < nh; h++) {
-        n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);
-        get3(x, y, z, i, j, k,  a, b, c);
-        dtri_cot(a, b, c, /**/ da, db, dc);
-        get_edg(i, k, x, y, z, /**/ r);
-        vec_get(k, lbx, lby, lbz, /**/ lk);
-        vec_get(i, lbx, lby, lbz, /**/ li);
-        dd = vec_dot(li, r)  - vec_dot(lk, r);
-        C = dd/4;
-        vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
-        vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
-        vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
-    }
-}
-
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *fx_tot, real *fy_tot, real *fz_tot) {
@@ -308,8 +280,9 @@ int he_f_gompper_xin_force(T *q, He *he,
     axpy(nv, 2*Kb, f2z, /*io*/ fz_tot);
 
     normalize(nv, lbx, lby, lbz, /**/ lbx0, lby0, lbz0);
-    f2_r(he, t, lbx0, lby0, lbz0,  /**/ f1x, f1y, f1z); /* (sic) */
-    f1_t(he, x, y, z, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
+    f2_r(he, t, lbx0, lby0, lbz0,  /**/ f1x, f1y, f1z);
+    f2_l2(he, x, y, z, t, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
+    f2_t(he, x, y, z, l2, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
 
     sign(nv, H, /**/ f1x);
     sign(nv, H, /**/ f1y);

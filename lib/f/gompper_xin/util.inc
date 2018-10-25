@@ -73,7 +73,7 @@ static int normalize(int n, const real *x, const real *y, const real *z, /**/ re
     int i;
     real a[3], a0[3];
     for (i = 0; i < n; i++) {
-        vec_get(i, x, y, z, a);
+        vec_get(i, x, y, z, /**/ a);
         vec_norm(a, /**/ a0);
         vec_set(a0, i, /**/ x0, y0, z0);
     }
