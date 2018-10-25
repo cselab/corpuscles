@@ -12,6 +12,7 @@ int bending_fin(T*);
 int bending_force(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 real bending_energy(T*, He*, const real *x, const real *y, const real *z);
 int bending_energy_ver(T*, /**/ real**);
+int bending_area_ver(T*, /**/ real**);
 
 const char* bending_list();
 
