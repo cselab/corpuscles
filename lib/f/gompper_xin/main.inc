@@ -178,10 +178,10 @@ static int f2_r(He *he,
 }
 
 static int f2_l2(He *he,
-                            const real *x, const real *y, const real *z,
-                            const real *t,
-                            const real *lbx, const real *lby, const real *lbz,
-                            /**/ real *fx, real *fy, real *fz) {
+                 const real *x, const real *y, const real *z,
+                 const real *t,
+                 const real *lbx, const real *lby, const real *lbz,
+                 /**/ real *fx, real *fy, real *fz) {
     int nh;
     int h, n;
     int i, j;
@@ -225,31 +225,13 @@ static int f2_t(He *he,
         vec_get(k, lbx, lby, lbz, /**/ lk);
         vec_get(i, lbx, lby, lbz, /**/ li);
         dd = vec_dot(li, r)  - vec_dot(lk, r);
-        dl = vec_dot(li, li);
+        dl = vec_dot(li, li) + vec_dot(lk, lk);
         l20 = l2[nn];
         C = dd/4 - l20*dl/32;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
     }
-
-    for (h = 0; h < nh; h++) {
-        n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);
-        get3(x, y, z, i, j, k,  a, b, c);
-        dtri_cot(a, b, c, /**/ da, db, dc);
-        get_edg(i, k, x, y, z, /**/ r);
-        vec_get(k, lbx, lby, lbz, /**/ lk);
-        vec_get(i, lbx, lby, lbz, /**/ li);
-        dd = 0.0;
-        dl = vec_dot(lk, lk);
-        l20 = l2[nn];
-        C = dd/4 - l20*dl/32;
-        vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
-        vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
-        vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
-    }
-    
     return HE_OK;
 }
 
