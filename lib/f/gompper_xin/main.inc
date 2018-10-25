@@ -218,10 +218,10 @@ static int f2_l2(He *he,
 }
 
 static int f2_t(He *he,
-                 const real *x, const real *y, const real *z,
-                 const real *l2,
-                 const real *lbx, const real *lby, const real *lbz,
-                 /**/ real *fx, real *fy, real *fz) {
+                const real *x, const real *y, const real *z,
+                const real *l2, const real *l2ver,
+                const real *lbx, const real *lby, const real *lbz,
+                /**/ real *fx, real *fy, real *fz) {
     int nh;
     int h, n, nn;
     int i, j, k;
@@ -294,7 +294,7 @@ int he_f_gompper_xin_force(T *q, He *he,
 
     f2_r(he, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
     f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
-    f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ f2x, f2y, f2z);
+    f2_t(he, x, y, z, l2, l2ver, lbx, lby, lbz, /**/ f2x, f2y, f2z);
 
     axpy(nv, 2*Kb, f2x, /*io*/ fx_tot);
     axpy(nv, 2*Kb, f2y, /*io*/ fy_tot);
