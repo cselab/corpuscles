@@ -22,8 +22,8 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
         i = ver(h); j = ver(n); k = ver(nn);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         cot = tri_cot(b, c, a);
-        H[h] += cot;
-        if (!bnd(h)) H[flp(h)] += cot;
+        H[h]      += cot;
+        H[flp(h)] += cot;
     }
     return HE_OK;
 }
@@ -248,7 +248,7 @@ static int f2_t(He *he,
     for (h = 0; h < nh; h++) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
-        get3(x, y, z, i, j, k,  a, b, c);
+        get3(x, y, z, i, j, k,  /**/ a, b, c);
         dtri_cot(b, c, a, /**/ db, dc, da);
         vec_get(i, lbx, lby, lbz, /**/ li);
         dl = vec_dot(li, li);
@@ -262,7 +262,7 @@ static int f2_t(He *he,
     for (h = 0; h < nh; h++) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
-        get3(x, y, z, i, j, k,  a, b, c);
+        get3(x, y, z, i, j, k,  /**/ a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
         vec_get(i, lbx, lby, lbz, /**/ li);
         dl = vec_dot(li, li);
