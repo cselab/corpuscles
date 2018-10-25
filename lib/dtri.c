@@ -69,7 +69,6 @@ int dtri_volume(real a[3], real b[3], real c[3], /**/ real da[3], real db[3], re
     return HE_OK;
 }
 
-
 int dtri_norm(const real a[3], const real b[3], const real c[3], /**/
               real x[3], real y[3], real z[3]) {
     enum {X, Y, Z};
@@ -80,9 +79,20 @@ int dtri_norm(const real a[3], const real b[3], const real c[3], /**/
     vec_cross(e, n, /**/ u);
     C = 1/(2*A);
 
-    vec_scalar(n, C*u[X], /**/ x);
-    vec_scalar(n, C*u[Y], /**/ y);
-    vec_scalar(n, C*u[Z], /**/ z);
-
+    if (x != NULL) vec_scalar(n, C*u[X], /**/ x);
+    if (y != NULL) vec_scalar(n, C*u[Y], /**/ y);
+    if (z != NULL) vec_scalar(n, C*u[Z], /**/ z);
     return HE_OK;
+}
+
+int dtri_norm_x(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
+    dtri_norm(a, b, c, /**/ r, NULL, NULL);
+}
+
+int dtri_norm_y(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
+    dtri_norm(a, b, c, /**/ NULL, r, NULL);
+}
+
+int dtri_norm_z(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
+    dtri_norm(a, b, c, /**/ NULL, NULL, r);
 }
