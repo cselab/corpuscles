@@ -78,9 +78,8 @@ int dtri_norm(const real a[3], const real b[3], const real c[3], /**/
     vec_minus(a, c, /**/ e);
     tri_normal(a, b, c, /**/ n);
     vec_cross(e, n, /**/ u);
-
     C = 1/(2*A);
-
+    
     vec_scalar(n, C*u[X], /**/ x);
     vec_scalar(n, C*u[Y], /**/ y);
     vec_scalar(n, C*u[Z], /**/ z);    
