@@ -303,7 +303,7 @@ int he_f_gompper_xin_force(T *q, He *he,
     normalize(nv, lbx, lby, lbz, /**/ lbx0, lby0, lbz0);
     f2_r(he, t, lbx0, lby0, lbz0,  /**/ f1x, f1y, f1z);
     f2_l2(he, x, y, z, t, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
-    f2_t(he, x, y, z, l2, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
+//    f2_t(he, x, y, z, l2, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
 
     sign(nv, H, /**/ f1x);
     sign(nv, H, /**/ f1y);
