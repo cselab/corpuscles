@@ -100,3 +100,15 @@ static int normalize(int n, const real *x, const real *y, const real *z, /**/ re
     }
     return HE_OK;
 }
+
+static real dih_cot(const real a[3], const real b[3], const real c[3], const real d[3]) {
+    return tri_cot(c, a, b) + tri_cot(b, d, c);
+}
+
+
+static int ddih_cot(const real a[3], const real b[3], const real c[3], const real d[3], /**/
+             real da[3], real db[3], real dc[3], real dd[3]) {
+    dtri_cot(c, a, b, /**/ dc, da, db);
+    dtri_cot(b, d, c, /**/ db, dd, dc);
+    return HE_OK;
+}
