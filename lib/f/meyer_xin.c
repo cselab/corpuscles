@@ -182,7 +182,6 @@ static real compute_area_voronoi(T *q, He *he,
   real a[3], b[3], c[3], u[3];
   int *T0, *T1, *T2;
   real area0;
-  real theta_a, theta_b, theta_c;
   real cota,cotb,cotc;
   real ab2, bc2, ca2, area_tot_tri;
   HeSum *sum;
@@ -202,10 +201,6 @@ static real compute_area_voronoi(T *q, He *he,
     area0 = tri_area(a, b, c);
     
     he_sum_add(sum, area0);
-    
-    theta_a = tri_angle(c, a, b);
-    theta_b = tri_angle(a, b, c);
-    theta_c = tri_angle(b, c, a);
     
     vec_minus(a, b,  u);
     ab2 = vec_dot(u, u);
@@ -464,7 +459,6 @@ real he_f_meyer_xin_energy(T *q, He *he,
     real *energy_local, *area;
 
     real Kb, C0, Kad, DA0D;
-    real area_tot_tri;
     int  nv, nt;
 
     real H0;
@@ -524,10 +518,10 @@ real he_f_meyer_xin_energy(T *q, He *he,
 
     energy_tot_local = energy1 + energy3 + energy5;
     energy_tot_nonlocal = energy2 + energy4 + energy6;
-     energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
+    energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
      
-    printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
-    printf("enegy local, nonlocal, tot: %f, %f, %f\n", energy_tot_local, energy_tot_nonlocal, energy_tot);
+    //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
+    //printf("enegy local, nonlocal, tot: %f, %f, %f\n", energy_tot_local, energy_tot_nonlocal, energy_tot);
     return energy_tot;
 
 }
@@ -542,16 +536,18 @@ int he_f_meyer_xin_force(T *q, He *he,
     int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
     real coti, cotl, cotil;
+    real cota, cotb, cotc;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *area;
     real *curva_gauss, *curva_mean;
     real fm;
-    real area_tot_tri;
 
     real Kb, C0, Kad, DA0D;
-    real H0, cm_intga;
-
+    real H0;
+    real mH0, mH1;
+    real tt;
+    
     HeSum *sum;
 
     Kb   = q->Kb;
@@ -583,62 +579,99 @@ int he_f_meyer_xin_force(T *q, He *he,
         D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
     }
 
-    area_tot_tri = compute_area_voronoi(q, he, x, y, z, area);
+    mH0 = compute_area_voronoi(q, he, x, y, z, area);
     compute_laplace(q, he, x, y, z, lbx, lby, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(q, he, curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
     he_sum_ini(&sum);
-    for (v = 0; v < nv; v++) {
-        fm = -2*2*Kb*(curva_mean[v]+H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
+    
+    /*
+      for (v = 0; v < nv; v++) {
+        fm = -2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
         fx[v] += fm * normx[v] * area[v];
         fy[v] += fm * normy[v] * area[v];
         fz[v] += fm * normz[v] * area[v];
+	
         he_sum_add(sum, curva_mean[v] * area[v]);
-    }
-    cm_intga = he_sum_get(sum);
+	}*/
+    
+    mH1 = he_sum_get(sum);
     he_sum_fin(sum);
 
-    cm_intga -= (DA0D/2);
-    cm_intga *= (4*pi* Kad/ area_tot_tri);
-
+    tt = 2*mH1-DA0D;
+    
     for ( v = 0; v < nv; v++ ) {
-
-        fm = -cm_intga * curva_gauss[v];
-        fx[v] += fm * normx[v] * area[v];
-        fy[v] += fm * normy[v] * area[v];
-        fz[v] += fm * normz[v] * area[v];
-
+      
+      fm = pi*Kad*(tt*2*curva_gauss[v]/mH0 - tt*tt*curva_mean[v]/mH0/mH0);
+      fx[v] += fm * normx[v] * area[v];
+      fy[v] += fm * normy[v] * area[v];
+      fz[v] += fm * normz[v] * area[v];
+      
     }
-
+    
     for (e = 0; e < ne; e++) {
-
+       
         if (bnd(e)) continue;
 
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
 
-        get4(x, y, z, i, j, k, l, /**/ a, b, c, d);
+        get4(x, y, z, i, j, k, l,  a, b, c, d);
 
-        coti = tri_cot(c, a, b);
-        cotl = tri_cot(b, d, c);
+        coti  = tri_cot(b, a, c);
+        cotl  = tri_cot(c, d, b);
         cotil = coti + cotl;
 
         vec_minus(b, c,  u);
 
-        //fm = Kb*cotil*(curva_mean[j]-curva_mean[k])/area[j];
         fm = -Kb*cotil*(curva_mean[j]-curva_mean[k]);
         fx[j] += fm * normx[j];
         fy[j] += fm * normy[j];
         fz[j] += fm * normz[j];
 
-        //fm = Kb*cotil*(curva_mean[k]-curva_mean[j])/area[k];
         fm = -Kb*cotil*(curva_mean[k]-curva_mean[j]);
         fx[k] += fm * normx[k];
         fy[k] += fm * normy[k];
         fz[k] += fm * normz[k];
 
     }
+	/*for ( t = 0; t < nt; t++ ) {
+      
+      i = T0[t]; j = T1[t]; k = T2[t];
+      get3(x, y, z, i, j, k, a, b, c);
+      cota = tri_cot(c, a, b);
+      cotb = tri_cot(a, b, c);
+      cotc = tri_cot(b, c, a);
+
+      fm = -Kb*cotc*(curva_mean[i]-curva_mean[j]);
+      fx[i] += fm * normx[i];
+      fy[i] += fm * normy[i];
+      fz[i] += fm * normz[i];
+
+      fx[j] -= fm * normx[j];
+      fy[j] -= fm * normy[j];
+      fz[j] -= fm * normz[j];
+
+      fm = -Kb*cota*(curva_mean[j]-curva_mean[k]);
+      fx[j] += fm * normx[j];
+      fy[j] += fm * normy[j];
+      fz[j] += fm * normz[j];
+
+      fx[k] -= fm * normx[k];
+      fy[k] -= fm * normy[k];
+      fz[k] -= fm * normz[k];
+
+      fm = -Kb*cotb*(curva_mean[i]-curva_mean[k]);
+      fx[i] += fm * normx[i];
+      fy[i] += fm * normy[i];
+      fz[i] += fm * normz[i];
+
+      fx[k] -= fm * normx[k];
+      fy[k] -= fm * normy[k];
+      fz[k] -= fm * normz[k];
+
+      }*/
 
     /*for ( v = 0; v < nv; v++ ) {
       fx[v] *= area[v];

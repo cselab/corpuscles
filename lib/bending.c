@@ -64,6 +64,9 @@ struct Vtable {
     real (*energy)(T*, He*, const real *x, const real *y, const real *z);
     int (*energy_ver)(T*, real**);
     int (*area_ver)(T*, real**);
+    int (*curva_mean_ver)(T*, real**);
+    int (*norm_ver)(T*, real**, real**, real**);
+    int (*laplace_ver)(T*, real**, real**, real**);
 };
 
 int bending_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
@@ -74,6 +77,9 @@ real bending_energy(T *q, He *he, const real *x, const real *y, const real *z) {
 }
 int bending_energy_ver(T *q, /**/ real **e) { return q->vtable->energy_ver(q, e); }
 int bending_area_ver(T *q, /**/ real **e) { return q->vtable->area_ver(q, e); }
+int bending_curva_mean_ver(T *q, /**/ real **e) { return q->vtable->curva_mean_ver(q, e); }
+int bending_norm_ver(T *q, /**/ real **e, real **f, real **g) { return q->vtable->norm_ver(q, e, f, g); }
+int bending_laplace_ver(T *q, /**/ real **e, real **f, real **g) { return q->vtable->laplace_ver(q, e, f, g); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
 
@@ -377,10 +383,23 @@ static int meyer_xin_area_ver(T *q, /**/ real **e) {
     MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
     return he_f_meyer_xin_area_ver(b->local, /**/ e);
 }
-static Vtable meyer_xin_vtable = { meyer_xin_fin, meyer_xin_force, meyer_xin_energy, meyer_xin_energy_ver, meyer_xin_area_ver};
+static int meyer_xin_curva_mean_ver(T *q, /**/ real **e) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_curva_mean_ver(b->local, /**/ e);
+}
+static int meyer_xin_norm_ver(T *q, /**/ real **e, real **f, real **g) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_norm_ver(b->local, /**/ e, f, g);
+}
+static int meyer_xin_laplace_ver(T *q, /**/ real **e, real **f, real **g) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_laplace_ver(b->local, /**/ e, f, g);
+}
+static Vtable meyer_xin_vtable = { meyer_xin_fin, meyer_xin_force, meyer_xin_energy, meyer_xin_energy_ver,
+				   meyer_xin_area_ver, meyer_xin_curva_mean_ver, meyer_xin_norm_ver, meyer_xin_laplace_ver};
 int bending_meyer_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
-    Meyer *q;
+    MeyerXin *q;
     Kb  = param.Kb;
     C0 = param.C0;
     Kad = param.Kad;
