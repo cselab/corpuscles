@@ -35,7 +35,10 @@ struct T {
   real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
   real *energy_local, *area;
-  
+
+  real energy_total;
+  real energy_total_local;
+  real energy_total_nonlocal;
   int nv, ne, nt;
 };
 
@@ -125,6 +128,10 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
     MALLOC(nv, &q->energy_local); MALLOC(nv, &q->area);
 
+    q->energy_total = 0;
+    q->energy_total_local = 0;
+    q->energy_total_nonlocal = 0;
+    
     *pq = q;
     return HE_OK;
 }
@@ -464,6 +471,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
     real mH0, mH1, mH2;
     real energy1, energy2, energy3, energy4, energy5, energy6;
     real energy_tot;
+    real energy_tot_local, energy_tot_nonlocal;
     
     Kb   = q->Kb;
     C0   = q->C0;
@@ -513,8 +521,13 @@ real he_f_meyer_xin_energy(T *q, He *he,
     energy4 =-2*pi*Kad*DA0D*mH1/mH0;
     energy5 = 2*Kb*H0*H0*mH0;
     energy6 = pi*Kad*DA0D*DA0D/2/mH0;
-    energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
 
+    energy_tot_local = energy1 + energy3 + energy5;
+    energy_tot_nonlocal = energy2 + energy4 + energy6;
+     energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
+     
+    printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
+    printf("enegy local, nonlocal, tot: %f, %f, %f\n", energy_tot_local, energy_tot_nonlocal, energy_tot);
     return energy_tot;
 
 }
