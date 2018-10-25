@@ -225,7 +225,7 @@ static int f2_t(He *he,
         vec_get(k, lbx, lby, lbz, /**/ lk);
         vec_get(i, lbx, lby, lbz, /**/ li);
         dd = vec_dot(li, r)  - vec_dot(lk, r);
-        dl = vec_dot(li, li) + vec_dot(lk, lk);
+        dl = vec_dot(li, li);
         l20 = l2[nn];
         C = dd/4 - l20*dl/32;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
@@ -241,11 +241,10 @@ static int f2_t(He *he,
         get_edg(i, k, x, y, z, /**/ r);
         vec_get(k, lbx, lby, lbz, /**/ lk);
         vec_get(i, lbx, lby, lbz, /**/ li);
-        dd = vec_dot(li, r)  - vec_dot(lk, r);
-        dl = vec_dot(li, li) + vec_dot(lk, lk);
+        dd = 0.0;
+        dl = vec_dot(lk, lk);
         l20 = l2[nn];
         C = dd/4 - l20*dl/32;
-        C = 0;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
