@@ -108,7 +108,12 @@ static real dih_cot(const real a[3], const real b[3], const real c[3], const rea
 
 static int ddih_cot(const real a[3], const real b[3], const real c[3], const real d[3], /**/
              real da[3], real db[3], real dc[3], real dd[3]) {
-    dtri_cot(c, a, b, /**/ dc, da, db);
-    dtri_cot(b, d, c, /**/ db, dd, dc);
+    real dc0[3], db0[3], db1[3], dc1[3];
+    dtri_cot(c, a, b, /**/ dc0, da, db0);
+    dtri_cot(b, d, c, /**/ db1, dd, dc1);
+
+    vec_plus(dc0, dc1, /**/ dc);
+    vec_plus(db0, db1, /**/ db);
+
     return HE_OK;
 }
