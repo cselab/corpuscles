@@ -28,6 +28,18 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
+static int compute_l2sum(He *he, const real *l2, const real *t, /**/ real *V) {
+    int nv, nh, h, i;
+    nv = he_nv(he);
+    zero(nv, V);
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        i = ver(h);
+        V[i] += l2[h];
+    }
+    return HE_OK;
+}
+
 static int compute_area(He *he, const real *l2, const real *t, /**/ real *area) {
     int nv, nh, h, i;
     nv = he_nv(he);
