@@ -86,13 +86,13 @@ int dtri_normal(const real a[3], const real b[3], const real c[3], /**/
 }
 
 int dtri_normal_x(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
-    dtri_normal(a, b, c, /**/ r, NULL, NULL);
+    return dtri_normal(a, b, c, /**/ r, NULL, NULL);
 }
 
 int dtri_normal_y(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
-    dtri_normal(a, b, c, /**/ NULL, r, NULL);
+    return dtri_normal(a, b, c, /**/ NULL, r, NULL);
 }
 
 int dtri_normal_z(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
-    dtri_normal(a, b, c, /**/ NULL, NULL, r);
+    return dtri_normal(a, b, c, /**/ NULL, NULL, r);
 }
