@@ -17,6 +17,7 @@
 #include "he/f/meyer.h"
 #include "he/f/canham.h"
 #include "he/f/gompper_xin.h"
+#include "he/f/meyer_xin.h"
 
 #include "he/bending.h"
 
@@ -26,9 +27,9 @@ struct T {struct Vtable *vtable; };
 
 #define SIZE (4048)
 static char List[SIZE];
-static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer", "canham", "gompper_xin"};
+static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer", "canham", "gompper_xin", "meyer_xin"};
 typedef int (*TypeIni)(BendingParam, He*, T**);
-static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini, bending_canham_ini, bending_gompper_xin_ini};
+static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini, bending_canham_ini, bending_gompper_xin_ini, bending_meyer_xin_ini};
 
 int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     const int n = sizeof(Name)/sizeof(Name[0]);
@@ -62,6 +63,7 @@ struct Vtable {
     int (*force)(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
     real (*energy)(T*, He*, const real *x, const real *y, const real *z);
     int (*energy_ver)(T*, real**);
+    int (*area_ver)(T*, real**);
 };
 
 int bending_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
@@ -71,6 +73,7 @@ real bending_energy(T *q, He *he, const real *x, const real *y, const real *z) {
     return q->vtable->energy(q, he, x, y, z);
 }
 int bending_energy_ver(T *q, /**/ real **e) { return q->vtable->energy_ver(q, e); }
+int bending_area_ver(T *q, /**/ real **e) { return q->vtable->area_ver(q, e); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
 
@@ -346,3 +349,46 @@ int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     return he_f_gompper_xin_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
 /* end gompper_xin */
+
+/* begin meyer_xin */
+typedef struct MeyerXin MeyerXin;
+struct MeyerXin {T bending; HeFMeyerXin *local; };
+static int meyer_xin_fin(T *q) {
+    int status;
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    status = he_f_meyer_xin_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int meyer_xin_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real meyer_xin_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_energy(b->local, he, x, y, z);
+}
+static int meyer_xin_energy_ver(T *q, /**/ real **e) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_energy_ver(b->local, /**/ e);
+}
+static int meyer_xin_area_ver(T *q, /**/ real **e) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_area_ver(b->local, /**/ e);
+}
+static Vtable meyer_xin_vtable = { meyer_xin_fin, meyer_xin_force, meyer_xin_energy, meyer_xin_energy_ver, meyer_xin_area_ver};
+int bending_meyer_xin_ini(BendingParam param, He *he, /**/ T **pq) {
+    real Kb, C0, Kad, DA0D;
+    Meyer *q;
+    Kb  = param.Kb;
+    C0 = param.C0;
+    Kad = param.Kad;
+    DA0D = param.DA0D;
+
+    MALLOC(1, &q);
+    q->bending.vtable = &meyer_xin_vtable;
+    *pq = &q->bending;
+    return he_f_meyer_xin_ini(Kb, C0, Kad, DA0D, he, &q->local);
+}
+/* end meyer_xin */
