@@ -61,6 +61,27 @@ static int get2(const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
+enum {BULK, BND};
+static int get_ijkl(int h, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
+    int n, nn, nnf, i, j, k, l;
+    n = nxt(h); nn = nxt(nxt(h));
+    nnf = nxt(nxt(flp(h)));
+    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
+
+    *pi = i; *pj = j; *pk = k; *pl = l;
+    return BULK;
+}
+
+static int get4(const real *x, const real *y, const real *z,
+                int i, int j, int k, int l,
+               /**/ real a[3], real b[3], real c[3], real d[3]) {
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    vec_get(l, x, y, z, /**/ d);
+    return HE_OK;
+}
+
 static int sign(int n, const real *a, real *b) {
     int i;
     for (i = 0; i < n; i++)
