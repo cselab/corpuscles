@@ -61,11 +61,19 @@ static int get2(const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
+static int sign(int n, const real *a, real *b) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (a[i] < 0)
+            b[i] = -b[i];
+    return HE_OK;
+}
+
 static int normalize(int n, const real *x, const real *y, const real *z, /**/ real *x0, real *y0, real *z0) {
     int i;
     real a[3], a0[3];
     for (i = 0; i < n; i++) {
-        vec_get(i, x, y, z, a);
+        vec_get(i, x, y, z, /**/ a);
         vec_norm(a, /**/ a0);
         vec_set(a0, i, /**/ x0, y0, z0);
     }

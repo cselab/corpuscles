@@ -46,17 +46,17 @@ int main(__UNUSED int argc, const char **v) {
         vec_printf(da, "%g");
         vec_printf(db, "%g");
         vec_printf(dc, "%g");
-    } else if (eq(op, "norm_x")) {
+    } else if (eq(op, "normal_x")) {
         vec(a); vec(b); vec(c);
-        dtri_norm_x(a, b, c, /**/ d);
+        dtri_normal_x(a, b, c, /**/ d);
         vec_printf(d, "%g");
-    } else if (eq(op, "norm_y")) {
+    } else if (eq(op, "normal_y")) {
         vec(a); vec(b); vec(c);
-        dtri_norm_y(a, b, c, /**/ d);
+        dtri_normal_y(a, b, c, /**/ d);
         vec_printf(d, "%g");
-    } else if (eq(op, "norm_z")) {
+    } else if (eq(op, "normal_z")) {
         vec(a); vec(b); vec(c);
-        dtri_norm_z(a, b, c, /**/ d);
+        dtri_normal_z(a, b, c, /**/ d);
         vec_printf(d, "%g");
     } else
         ER("unknown operation '%s'", op);
