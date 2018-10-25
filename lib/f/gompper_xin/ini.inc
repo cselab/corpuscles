@@ -27,6 +27,7 @@ int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D
 
     MALLOC(nv, &q->energy);
     MALLOC(nv, &q->area);
+    MALLOC(nv, &q->l2ver);
 
     *pq = q;
     return HE_OK;
@@ -41,7 +42,7 @@ int he_f_gompper_xin_fin(T *q) {
 
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
     FREE(q->H);FREE(q->curva_gauss);
-    FREE(q->energy); FREE(q->area);
+    FREE(q->energy); FREE(q->area); FREE(q->l2ver);
     FREE(q);
     return HE_OK;
 }
