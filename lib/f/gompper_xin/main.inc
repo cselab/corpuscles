@@ -245,11 +245,10 @@ static int f2_t(He *he,
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
     }
 
-    real aa[3], bb[3], cc[3];
     for (h = 0; h < nh; h++) {
         i = ver(h); j = ver(nxt(h)); k = ver(nxt(nxt(h)));
-        get3(x, y, z, j, k, i,  bb, cc, a);
-        dtri_cot(bb, cc, a, /**/ db, dc, da);
+        get3(x, y, z, i, j, k,  a, b, c);
+        dtri_cot(b, c, a, /**/ db, dc, da);
         vec_get(i, lbx, lby, lbz, /**/ lk);
         dl = vec_dot(lk, lk);
         l20 = l2[h];
