@@ -63,6 +63,7 @@ struct Vtable {
     int (*force)(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
     real (*energy)(T*, He*, const real *x, const real *y, const real *z);
     int (*energy_ver)(T*, real**);
+    int (*area_ver)(T*, real**);
 };
 
 int bending_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
@@ -72,6 +73,7 @@ real bending_energy(T *q, He *he, const real *x, const real *y, const real *z) {
     return q->vtable->energy(q, he, x, y, z);
 }
 int bending_energy_ver(T *q, /**/ real **e) { return q->vtable->energy_ver(q, e); }
+int bending_area_ver(T *q, /**/ real **e) { return q->vtable->area_ver(q, e); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
 
@@ -371,7 +373,11 @@ static int meyer_xin_energy_ver(T *q, /**/ real **e) {
     MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
     return he_f_meyer_xin_energy_ver(b->local, /**/ e);
 }
-static Vtable meyer_xin_vtable = { meyer_xin_fin, meyer_xin_force, meyer_xin_energy, meyer_xin_energy_ver};
+static int meyer_xin_area_ver(T *q, /**/ real **e) {
+    MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
+    return he_f_meyer_xin_area_ver(b->local, /**/ e);
+}
+static Vtable meyer_xin_vtable = { meyer_xin_fin, meyer_xin_force, meyer_xin_energy, meyer_xin_energy_ver, meyer_xin_area_ver};
 int bending_meyer_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Meyer *q;
