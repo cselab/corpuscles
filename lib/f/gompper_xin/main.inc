@@ -27,6 +27,7 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
     }
     return HE_OK;
 }
+
 static int compute_area(He *he, const real *l2, const real *t, /**/ real *area) {
     int nv, nh, h, i;
     nv = he_nv(he);
@@ -38,6 +39,7 @@ static int compute_area(He *he, const real *l2, const real *t, /**/ real *area) 
     }
     return HE_OK;
 }
+
 static int compute_lb(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
     int h, n, nv, nh, i, j;
     nv = he_nv(he);
