@@ -246,14 +246,12 @@ static int f2_t(He *he,
     }
     
     for (h = 0; h < nh; h++) {
-        n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);
+        k = ver(h); i = ver(nxt(h)); j = ver(nxt(nxt(h)));
         get3(x, y, z, i, j, k,  a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
         vec_get(k, lbx, lby, lbz, /**/ lk);
-        vec_get(i, lbx, lby, lbz, /**/ li);
         dl = vec_dot(lk, lk);
-        l20 = l2[nn];
+        l20 = l2[h];
         C = - l20*dl/32;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
@@ -265,7 +263,6 @@ static int f2_t(He *he,
         i = ver(h); j = ver(n); k = ver(nn);
         get3(x, y, z, i, j, k,  a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
-        vec_get(k, lbx, lby, lbz, /**/ lk);
         vec_get(i, lbx, lby, lbz, /**/ li);
         dl = vec_dot(li, li);
         l20 = l2[nn];
