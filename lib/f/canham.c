@@ -285,7 +285,7 @@ static int compute_H(He *he,
     for ( i = 0; i < nv; i++ ) {
         vec_get(i, lbx, lby, lbz, u);
         vec_get(i, normx, normy, normz, v);
-        H[i] = -vec_dot(u, v)/2;
+        H[i] = -vec_dot(u, v)/2; /*TODO why H is defined negative?*/
     }
     return HE_OK;
 }
