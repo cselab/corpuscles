@@ -131,7 +131,6 @@ real he_f_gompper_xin_energy(T *q, He *he,
     normx = q->normx; normy = q->normy; normz = q->normz;
     H  = q->H;
     area = q->area; energy = q->energy;
-
     nv = q->nv;
 
     if (he_nv(he) != nv)
@@ -148,12 +147,13 @@ real he_f_gompper_xin_energy(T *q, He *he,
     compute_energy(nv, H, area, /**/ energy);
     scale(nv, 2*Kb, /**/ energy);
 
-    real eng = 0;
-    int i;
-    for (i = 0; i < nv; i++)
-    	eng += 2 * H0 * H[i] * area[i];
-
-    return sum(nv, energy) - eng;
+    real eng;
+    int nh, i;
+    nh = he_nh(he);
+    eng = 0;
+    for (i = 0; i < nh; i++)
+        eng += H0*t[i];
+    return sum(nv, energy) + eng;
 }
 
 static int f2_r(He *he,
@@ -285,18 +285,30 @@ int he_f_gompper_xin_force(T *q, He *he,
     axpy(nv, 2*Kb, f2y, /*io*/ fy_tot);
     axpy(nv, 2*Kb, f2z, /*io*/ fz_tot);
 
-    normalize(nv, lbx, lby, lbz, /**/ lbx0, lby0, lbz0);
-    f2_r(he, t, lbx0, lby0, lbz0,  /**/ f1x, f1y, f1z);
-    f2_l2(he, x, y, z, t, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
-    f2_t(he, x, y, z, l2, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
+    int nh, h, m;
+    int i, j, k;
+    real a[3], b[3], c[3], da[3], db[3], dc[3];
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        get_ijk(h, he, &i, &j, &k);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        dtri_cot(a, b, c, /**/ da, db, dc);
+        vec_append(da, i, /**/ f1x, f1y, f1z);
+        vec_append(db, j, /**/ f1x, f1y, f1z);
+        vec_append(dc, k, /**/ f1x, f1y, f1z);
+    }
 
-    sign(nv, H, /**/ f1x);
-    sign(nv, H, /**/ f1y);
-    sign(nv, H, /**/ f1z);
+    for (h = 0; h < nh; h++) {
+        get_ijk(h, he, &i, &j, &k);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        dtri_cot(b, c, a, /**/ db, dc, da);
+        vec_append(da, i, /**/ f1x, f1y, f1z);
+        vec_append(db, j, /**/ f1x, f1y, f1z);
+        vec_append(dc, k, /**/ f1x, f1y, f1z);
+    }
 
-    axpy(nv, -2*H0, f1x, /*io*/ fx_tot);
-    axpy(nv, -2*H0, f1y, /*io*/ fy_tot);
-    axpy(nv, -2*H0, f1z, /*io*/ fz_tot);
-
+    axpy(nv, H0, f1x, /*io*/ fx_tot);
+    axpy(nv, H0, f1y, /*io*/ fy_tot);
+    axpy(nv, H0, f1z, /*io*/ fz_tot);
     return HE_OK;
 }
