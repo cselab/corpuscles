@@ -247,25 +247,16 @@ static int f2_t(He *he,
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
         get3(x, y, z, i, j, k,  /**/ a, b, c);
-        dtri_cot(b, c, a, /**/ db, dc, da);
         vec_get(i, lbx, lby, lbz, /**/ li);
-        dl = vec_dot(li, li);
-        l20 = l2[h];
-        C = - l20*dl/32;
+
+        C = - l2[h]*vec_dot(li, li)/32;
+        dtri_cot(b, c, a, /**/ db, dc, da);
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
-    }
 
-    for (h = 0; h < nh; h++) {
-        n = nxt(h); nn = nxt(n);
-        i = ver(h); j = ver(n); k = ver(nn);
-        get3(x, y, z, i, j, k,  /**/ a, b, c);
+        C = - l2[nn]*vec_dot(li, li)/32;
         dtri_cot(a, b, c, /**/ da, db, dc);
-        vec_get(i, lbx, lby, lbz, /**/ li);
-        dl = vec_dot(li, li);
-        l20 = l2[nn];
-        C = - l20*dl/32;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
