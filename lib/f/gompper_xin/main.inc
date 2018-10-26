@@ -178,10 +178,10 @@ static int f2_r(He *he,
 }
 
 static int f2_l2(He *he,
-                            const real *x, const real *y, const real *z,
-                            const real *t,
-                            const real *lbx, const real *lby, const real *lbz,
-                            /**/ real *fx, real *fy, real *fz) {
+                 const real *x, const real *y, const real *z,
+                 const real *t,
+                 const real *lbx, const real *lby, const real *lbz,
+                 /**/ real *fx, real *fy, real *fz) {
     int nh;
     int h, n;
     int i, j;
