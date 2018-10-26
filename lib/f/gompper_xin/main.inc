@@ -113,7 +113,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
     int nv;
 
-    real Kb;
+    real Kb, H0;
     real *l2, *t;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
@@ -126,6 +126,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     H  = q->H;
     area = q->area; energy = q->energy;
     Kb = q->Kb;
+    H0 = q->H0;
 
     nv = q->nv;
 
@@ -143,7 +144,12 @@ real he_f_gompper_xin_energy(T *q, He *he,
     compute_energy(nv, H, area, /**/ energy);
     scale(nv, 2*Kb, /**/ energy);
 
-    return sum(nv, energy);
+    real eng;
+    int i;
+    eng = 0;
+    for (i = 0; i < nv; i++)
+        eng += H0*t[i];
+    return sum(nv, energy) + eng;
 }
 
 static void f2_r(He *he,
@@ -265,6 +271,12 @@ int he_f_gompper_xin_force(T *q, He *he,
     axpy(nv, 2*Kb, f2z, /*io*/ fz_tot);
 
     normalize(nv, lbx, lby, lbz, /**/ lbx0, lby0, lbz0);
+
+    int nt, m;
+    nt = he_nt(he);
+    for (m = 0; m < nt; m++) {
+        
+    }
 
     return HE_OK;
 }
