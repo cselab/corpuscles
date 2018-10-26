@@ -154,7 +154,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     for (i = 0; i < nv; i++) {
         //        get_ijk(h, he, /**/ &i, &j, &k);
         //        get3(x, y, z, i, j, k, /**/ a, b, c);
-        C = lbx[i];
+        C = lbx[i] + lby[i] + lbz[i];
         eng += C;
     }
     return sum(nv, energy) + H0*eng;
@@ -317,7 +317,7 @@ int he_f_gompper_xin_force(T *q, He *he,
     for (h = 0; h < nh; h++) {
         get_ijk(h, he, /**/ &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
-        vec_ini(t[h], 0, 0, /**/ df);
+        vec_ini(t[h], t[h], t[h], /**/ df);
         vec_append(df, i, /**/ f1x, f1y, f1z);
         vec_substr(df, j, /**/ f1x, f1y, f1z);
     }
