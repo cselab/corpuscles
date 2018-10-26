@@ -147,13 +147,18 @@ real he_f_gompper_xin_energy(T *q, He *he,
     compute_energy(nv, H, area, /**/ energy);
     scale(nv, 2*Kb, /**/ energy);
 
-    real eng;
-    int nh, i;
+    enum {X, Y, Z};
+    real C, eng, a[3], b[3], c[3];
+    int nh, h, i, j, k;
     nh = he_nh(he);
     eng = 0;
-    for (i = 0; i < nh; i++)
-        eng += H0*t[i];
-    return sum(nv, energy) + eng;
+    for (h = 0; h < nh; h++) {
+        get_ijk(h, he, /**/ &i, &j, &k);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        C = (a[X] - b[X])*(a[X] - b[X]);
+        eng += C;
+    }
+    return sum(nv, energy) + H0*eng;
 }
 
 static int f2_r(He *he,
@@ -275,7 +280,7 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
     compute_norm(he, x, y, z, /**/ normx, normy, normz);
-    compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);    
+    compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
 
     f2_r(he, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
     f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
@@ -293,7 +298,7 @@ int he_f_gompper_xin_force(T *q, He *he,
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
-        C = 1;
+        C = 0;
         vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
         vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
         vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
@@ -303,10 +308,20 @@ int he_f_gompper_xin_force(T *q, He *he,
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(b, c, a, /**/ db, dc, da);
-        C = 1;        
+        C = 0;
         vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
         vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
         vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
+    }
+
+    real df[3];
+    enum {X, Y, Z};
+    for (h = 0; h < nh; h++) {
+        get_ijk(h, he, /**/ &i, &j, &k);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        vec_ini(2*(a[X] - b[X]), 0, 0, /**/ df);
+        vec_append(df, i, /**/ f1x, f1y, f1z);
+        vec_substr(df, j, /**/ f1x, f1y, f1z);
     }
 
     axpy(nv, H0, f1x, /*io*/ fx_tot);
