@@ -8,7 +8,7 @@ struct T {
 
     real *normx, *normy, *normz;
     real *H, *curva_gauss;
-    real *energy, *area, *l2ver;
+    real *energy, *area;
 
     real *f1x, *f1y, *f1z;
     real *f2x, *f2y, *f2z;

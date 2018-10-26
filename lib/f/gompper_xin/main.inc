@@ -5,8 +5,7 @@ static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/
     real r[3];
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
-        n = nxt(h);
-        i = ver(h); j = ver(n);
+        n = nxt(h); i = ver(h); j = ver(n);
         get_edg(i, j, x, y, z, /**/ r);
         l2[h] = vec_dot(r, r);
     }
@@ -22,18 +21,6 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/
         get4(x, y, z, i, j, k, l, /**/ a, b, c, d);
         cot = dih_cot(a, b, c, d);
         H[h] += cot;
-    }
-    return HE_OK;
-}
-
-static int compute_l2ver(He *he, const real *l2, const real *t, /**/ real *V) {
-    int nv, nh, h, i;
-    nv = he_nv(he);
-    zero(nv, V);
-    nh = he_nh(he);
-    for (h = 0; h < nh; h++) {
-        i = ver(h);
-        V[i] += l2[h];
     }
     return HE_OK;
 }
@@ -217,17 +204,19 @@ static int f2_l2(He *he,
 
 static int f2_t(He *he,
                 const real *x, const real *y, const real *z,
-                const real *l2, const real *l2ver,
+                const real *l2,
                 const real *lbx, const real *lby, const real *lbz,
                 /**/ real *fx, real *fy, real *fz) {
-    int nh;
+    int nv, nh;
     int h, n, nn;
     int i, j, k;
     real r[3], a[3], b[3], c[3], da[3], db[3], dc[3];
     real li[3], lk[3];
-    real dl, dd, l20, C;
+    real C;
 
     nh = he_nh(he);
+    nv = he_nv(he);
+    
     for (h = 0; h < nh; h++) {
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
@@ -236,8 +225,7 @@ static int f2_t(He *he,
         get_edg(i, k, x, y, z, /**/ r);
         vec_get(k, lbx, lby, lbz, /**/ lk);
         vec_get(i, lbx, lby, lbz, /**/ li);
-        dd = vec_dot(li, r)  - vec_dot(lk, r);
-        C = dd/4;
+        C = (vec_dot(li, r)  - vec_dot(lk, r))/4;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
@@ -249,14 +237,14 @@ static int f2_t(He *he,
         get3(x, y, z, i, j, k,  /**/ a, b, c);
         vec_get(i, lbx, lby, lbz, /**/ li);
 
-        C = - l2[h]*vec_dot(li, li)/32;
-        dtri_cot(b, c, a, /**/ db, dc, da);
+        C = - l2[nn]*vec_dot(li, li)/32;
+        dtri_cot(a, b, c, /**/ da, db, dc);
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
 
-        C = - l2[nn]*vec_dot(li, li)/32;
-        dtri_cot(a, b, c, /**/ da, db, dc);
+        C = - l2[h]*vec_dot(li, li)/32;
+        dtri_cot(b, c, a, /**/ db, dc, da);
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
@@ -273,7 +261,7 @@ int he_f_gompper_xin_force(T *q, He *he,
     real Kb, H0;
     real *l2, *t;
     real *lbx, *lby, *lbz, *lbx0, *lby0, *lbz0;
-    real *area, *l2ver;
+    real *area;
     real *H, *normx, *normy, *normz;
     real *f1x, *f1y, *f1z;
     real *f2x, *f2y, *f2z;
@@ -281,7 +269,7 @@ int he_f_gompper_xin_force(T *q, He *he,
     Kb = q->Kb;
     H0 = q->H0;
 
-    area = q->area; l2ver = q->l2ver;
+    area = q->area;
     l2 = q->l2; t = q->t;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     lbx0 = q->lbx0; lby0 = q->lby0; lbz0 = q->lbz0;
@@ -301,7 +289,6 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_l2(he, x, y, z, /**/ l2);
     compute_cot(he, x, y, z, /**/ t);
     compute_area(he, l2, t, /**/ area);
-    compute_l2ver(he, l2, t, /**/ l2ver);
     compute_lb(he, x, t, area, /**/ lbx);
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
@@ -310,7 +297,7 @@ int he_f_gompper_xin_force(T *q, He *he,
 
     f2_r(he, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
     f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
-    f2_t(he, x, y, z, l2, l2ver, lbx, lby, lbz, /**/ f2x, f2y, f2z);
+    f2_t(he, x, y, z, l2, lbx, lby, lbz, /**/ f2x, f2y, f2z);
 
     axpy(nv, 2*Kb, f2x, /*io*/ fx_tot);
     axpy(nv, 2*Kb, f2y, /*io*/ fy_tot);
