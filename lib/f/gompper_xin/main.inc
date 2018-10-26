@@ -287,24 +287,26 @@ int he_f_gompper_xin_force(T *q, He *he,
 
     int nh, h, m;
     int i, j, k;
-    real a[3], b[3], c[3], da[3], db[3], dc[3];
+    real a[3], b[3], c[3], da[3], db[3], dc[3], C;
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
-        vec_append(da, i, /**/ f1x, f1y, f1z);
-        vec_append(db, j, /**/ f1x, f1y, f1z);
-        vec_append(dc, k, /**/ f1x, f1y, f1z);
+        C = 1;
+        vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
+        vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
+        vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
     }
 
     for (h = 0; h < nh; h++) {
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(b, c, a, /**/ db, dc, da);
-        vec_append(da, i, /**/ f1x, f1y, f1z);
-        vec_append(db, j, /**/ f1x, f1y, f1z);
-        vec_append(dc, k, /**/ f1x, f1y, f1z);
+        C = 1;        
+        vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
+        vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
+        vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
     }
 
     axpy(nv, H0, f1x, /*io*/ fx_tot);
