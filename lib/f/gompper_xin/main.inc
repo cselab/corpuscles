@@ -149,13 +149,12 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     enum {X, Y, Z};
     real C, eng, a[3], b[3], c[3];
-    int nh, h, i, j, k;
-    nh = he_nh(he);
+    int i;
     eng = 0;
-    for (h = 0; h < nh; h++) {
-        get_ijk(h, he, /**/ &i, &j, &k);
-        get3(x, y, z, i, j, k, /**/ a, b, c);
-        C = (a[X] - b[X])*(a[X] - b[X]);
+    for (i = 0; i < nv; i++) {
+        //        get_ijk(h, he, /**/ &i, &j, &k);
+        //        get3(x, y, z, i, j, k, /**/ a, b, c);
+        C = lbx[i];
         eng += C;
     }
     return sum(nv, energy) + H0*eng;
@@ -218,7 +217,7 @@ static int f2_t(He *he,
     int i, j, k;
     real r[3], a[3], b[3], c[3], da[3], db[3], dc[3];
     real li[3], lk[3];
-    real dl, dd, l20, C;
+    real dl, dd, C;
 
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
@@ -231,8 +230,7 @@ static int f2_t(He *he,
         vec_get(i, lbx, lby, lbz, /**/ li);
         dd = vec_dot(li, r)  - vec_dot(lk, r);
         dl = vec_dot(li, li) + vec_dot(lk, lk);
-        l20 = l2[nn];
-        C = dd/4 - l20*dl/32;
+        C = dd/4 - l2[nn]*dl/32;
         vec_scalar_append(da,  C,  i, /**/ fx, fy, fz);
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
@@ -243,6 +241,7 @@ static int f2_t(He *he,
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *fx_tot, real *fy_tot, real *fz_tot) {
+    enum {X, Y, Z};
     int nv;
 
     real Kb, H0;
@@ -298,7 +297,7 @@ int he_f_gompper_xin_force(T *q, He *he,
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
-        C = 0;
+        C = 1;
         vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
         vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
         vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
@@ -308,18 +307,17 @@ int he_f_gompper_xin_force(T *q, He *he,
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(b, c, a, /**/ db, dc, da);
-        C = 0;
+        C = 1;
         vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
         vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
         vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
     }
 
     real df[3];
-    enum {X, Y, Z};
     for (h = 0; h < nh; h++) {
         get_ijk(h, he, /**/ &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
-        vec_ini(2*(a[X] - b[X]), 0, 0, /**/ df);
+        vec_ini(t[h], 0, 0, /**/ df);
         vec_append(df, i, /**/ f1x, f1y, f1z);
         vec_substr(df, j, /**/ f1x, f1y, f1z);
     }
