@@ -1,4 +1,4 @@
-include ../../../conf.mk
+include ../../../../conf.mk
 M = main
 PREC = d
 HE_CFLAGS = -O2 -g `alg.conf --cflags $(PREC)`

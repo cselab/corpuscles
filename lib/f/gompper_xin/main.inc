@@ -131,7 +131,6 @@ real he_f_gompper_xin_energy(T *q, He *he,
     normx = q->normx; normy = q->normy; normz = q->normz;
     H  = q->H;
     area = q->area; energy = q->energy;
-
     nv = q->nv;
 
     if (he_nv(he) != nv)
@@ -148,12 +147,17 @@ real he_f_gompper_xin_energy(T *q, He *he,
     compute_energy(nv, H, area, /**/ energy);
     scale(nv, 2*Kb, /**/ energy);
 
-    real eng = 0;
+    enum {X, Y, Z};
+    real C, eng, a[3], b[3], c[3];
     int i;
-    for (i = 0; i < nv; i++)
-    	eng += 2 * H0 * H[i] * area[i];
-
-    return sum(nv, energy) - eng;
+    eng = 0;
+    for (i = 0; i < nv; i++) {
+        //        get_ijk(h, he, /**/ &i, &j, &k);
+        //        get3(x, y, z, i, j, k, /**/ a, b, c);
+        C = lbx[i] + lby[i] + lbz[i];
+        eng += C;
+    }
+    return sum(nv, energy) + H0*eng;
 }
 
 static int f2_r(He *he,
@@ -237,6 +241,7 @@ static int f2_t(He *he,
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *fx_tot, real *fy_tot, real *fz_tot) {
+    enum {X, Y, Z};
     int nv;
 
     real Kb, H0;
@@ -274,7 +279,7 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
     compute_norm(he, x, y, z, /**/ normx, normy, normz);
-    compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);    
+    compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);
 
     f2_r(he, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
     f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
@@ -284,18 +289,41 @@ int he_f_gompper_xin_force(T *q, He *he,
     axpy(nv, 2*Kb, f2y, /*io*/ fy_tot);
     axpy(nv, 2*Kb, f2z, /*io*/ fz_tot);
 
-    normalize(nv, lbx, lby, lbz, /**/ lbx0, lby0, lbz0);
-    f2_r(he, t, lbx0, lby0, lbz0,  /**/ f1x, f1y, f1z);
-    f2_l2(he, x, y, z, t, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
-    f2_t(he, x, y, z, l2, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
+    int nh, h, m;
+    int i, j, k;
+    real a[3], b[3], c[3], da[3], db[3], dc[3], C;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        get_ijk(h, he, &i, &j, &k);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        dtri_cot(a, b, c, /**/ da, db, dc);
+        C = 1;
+        vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
+        vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
+        vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
+    }
 
-    sign(nv, H, /**/ f1x);
-    sign(nv, H, /**/ f1y);
-    sign(nv, H, /**/ f1z);
+    for (h = 0; h < nh; h++) {
+        get_ijk(h, he, &i, &j, &k);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        dtri_cot(b, c, a, /**/ db, dc, da);
+        C = 1;
+        vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
+        vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
+        vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
+    }
 
-    axpy(nv, -2*H0, f1x, /*io*/ fx_tot);
-    axpy(nv, -2*H0, f1y, /*io*/ fy_tot);
-    axpy(nv, -2*H0, f1z, /*io*/ fz_tot);
+    real df[3];
+    for (h = 0; h < nh; h++) {
+        get_ijk(h, he, /**/ &i, &j, &k);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
+        vec_ini(t[h], t[h], t[h], /**/ df);
+        vec_append(df, i, /**/ f1x, f1y, f1z);
+        vec_substr(df, j, /**/ f1x, f1y, f1z);
+    }
 
+    axpy(nv, H0, f1x, /*io*/ fx_tot);
+    axpy(nv, H0, f1y, /*io*/ fy_tot);
+    axpy(nv, H0, f1z, /*io*/ fz_tot);
     return HE_OK;
 }

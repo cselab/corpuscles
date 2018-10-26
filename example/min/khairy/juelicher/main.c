@@ -41,7 +41,7 @@ static char bending[4049];
 static const char *me = "min/visc";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 Kad DA0D end< OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D end< OFF > PUNTO\n", me);
     fprintf(stderr, "end: number of iterations\n");
     exit(0);
 }
