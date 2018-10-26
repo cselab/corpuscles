@@ -297,7 +297,7 @@ int he_f_gompper_xin_force(T *q, He *he,
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(a, b, c, /**/ da, db, dc);
-        C = a[X] - b[X];
+        C = 1;
         vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
         vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
         vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
@@ -307,7 +307,7 @@ int he_f_gompper_xin_force(T *q, He *he,
         get_ijk(h, he, &i, &j, &k);
         get3(x, y, z, i, j, k, /**/ a, b, c);
         dtri_cot(b, c, a, /**/ db, dc, da);
-        C = 0;
+        C = 1;
         vec_scalar_append(da, C, i, /**/ f1x, f1y, f1z);
         vec_scalar_append(db, C, j, /**/ f1x, f1y, f1z);
         vec_scalar_append(dc, C, k, /**/ f1x, f1y, f1z);
