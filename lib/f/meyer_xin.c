@@ -607,20 +607,20 @@ int he_f_meyer_xin_force(T *q, He *he,
     compute_curva_mean(q, he, curva_mean);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
-    compute_lb(q, he, x, lbH);
+    compute_lb(q, he, curva_mean, lbH);
    
     he_sum_ini(&sum);
     
     
     for (v = 0; v < nv; v++) {
       
-      fm = -2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
+      fm = +2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
 
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
       
-      fm = -2*Kb*lbH[v];
+      fm = +2*Kb*lbH[v];
       
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
@@ -636,19 +636,13 @@ int he_f_meyer_xin_force(T *q, He *he,
     
     for ( v = 0; v < nv; v++ ) {
       
-      fm = pi*Kad*(tt*2*curva_gauss[v]/mH0 - tt*tt*curva_mean[v]/mH0/mH0);
+      fm = -pi*Kad*(tt*2*curva_gauss[v]/mH0 - tt*tt*curva_mean[v]/mH0/mH0);
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
       
     }
 
-    
-    /*for ( v = 0; v < nv; v++ ) {
-      fx[v] *= area[v];
-      fy[v] *= area[v];
-      fz[v] *= area[v];
-      }*/
     
     return HE_OK;
 }
