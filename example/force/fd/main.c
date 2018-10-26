@@ -103,7 +103,7 @@ static void main0() {
     MSG("energy: %g", e);
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ f);
-        printf("%g %g\n", Fx[i], f[X]);
+        printf("%g %g\n", f[X], Fx[i]);
         Fm[i] = Fx[i] - f[X];
     }
 

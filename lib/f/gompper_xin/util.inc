@@ -44,9 +44,8 @@ static void get_edg(int i, int j, const real *x, const real *y, const real *z, /
     vec_get(j, x, y, z, b);
     vec_minus(a, b, r);
 }
-static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = hdg_tri(t);
+static int get_ijk(int h, He *he, /**/ int *pi, int *pj, int *pk) {
+    int n, nn, i, j, k;
     n = nxt(h);
     nn = nxt(n);
     i = ver(h); j = ver(n); k = ver(nn);
