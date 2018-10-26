@@ -11,7 +11,7 @@ static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/
         l2[h] = vec_dot(r, r);
     }
 }
-static void compute_cot(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
+static int compute_cot(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
     int nh, h, n, nn;
     int i, j, k;
     real a[3], b[3], c[3], cot;
@@ -25,8 +25,9 @@ static void compute_cot(He *he, const real *x, const real *y, const real *z, /**
         H[h] += cot;
         if (!bnd(h)) H[flp(h)] += cot;
     }
+    return HE_OK;
 }
-static void compute_area(He *he, const real *l2, const real *t, /**/ real *area) {
+static int compute_area(He *he, const real *l2, const real *t, /**/ real *area) {
     int nv, nh, h, i;
     nv = he_nv(he);
     zero(nv, area);
@@ -35,8 +36,9 @@ static void compute_area(He *he, const real *l2, const real *t, /**/ real *area)
         i = ver(h);
         area[i] += t[h]*l2[h]/8;
     }
+    return HE_OK;
 }
-static void compute_lb(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
+static int compute_lb(He *he, const real *V0, const real *t, const real *area, /**/ real *V1) {
     int h, n, nv, nh, i, j;
     nv = he_nv(he);
     zero(nv, V1);
@@ -48,6 +50,7 @@ static void compute_lb(He *he, const real *V0, const real *t, const real *area, 
     }
     for (i = 0; i < nv; i++)
         V1[i] = V1[i]/(2*area[i]);
+    return HE_OK;
 }
 static int compute_norm(He *he,
                         const real *x, const real *y, const real *z, /**/
@@ -120,14 +123,14 @@ real he_f_gompper_xin_energy(T *q, He *he,
     real *H;
     real *energy, *area;
 
+    Kb = q->Kb;
+    H0 = q->H0;
+
     l2 = q->l2; t = q->t;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     normx = q->normx; normy = q->normy; normz = q->normz;
     H  = q->H;
     area = q->area; energy = q->energy;
-    Kb = q->Kb;
-    H0 = q->H0;
-
     nv = q->nv;
 
     if (he_nv(he) != nv)
@@ -152,7 +155,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     return sum(nv, energy) + eng;
 }
 
-static void f2_r(He *he,
+static int f2_r(He *he,
                  const real *t,
                  const real *lbx, const real *lby, const real *lbz,
                  /**/ real *fx, real *fy, real *fz) {
@@ -170,13 +173,14 @@ static void f2_r(He *he,
         vec_append(df, i, /**/ fx, fy, fz);
         vec_substr(df, j, /**/ fx, fy, fz);
     }
+    return HE_OK;
 }
 
-static void f2_l2(He *he,
-                            const real *x, const real *y, const real *z,
-                            const real *t,
-                            const real *lbx, const real *lby, const real *lbz,
-                            /**/ real *fx, real *fy, real *fz) {
+static int f2_l2(He *he,
+                 const real *x, const real *y, const real *z,
+                 const real *t,
+                 const real *lbx, const real *lby, const real *lbz,
+                 /**/ real *fx, real *fy, real *fz) {
     int nh;
     int h, n;
     int i, j;
@@ -195,13 +199,14 @@ static void f2_l2(He *he,
         vec_scalar_append(da, C, i, /**/ fx, fy, fz);
         vec_scalar_append(db, C, j, /**/ fx, fy, fz);
     }
+    return HE_OK;
 }
 
-static void f2_t(He *he,
-                             const real *x, const real *y, const real *z,
-                             const real *l2,
-                             const real *lbx, const real *lby, const real *lbz,
-                             /**/ real *fx, real *fy, real *fz) {
+static int f2_t(He *he,
+                 const real *x, const real *y, const real *z,
+                 const real *l2,
+                 const real *lbx, const real *lby, const real *lbz,
+                 /**/ real *fx, real *fy, real *fz) {
     int nh;
     int h, n, nn;
     int i, j, k;
@@ -226,25 +231,32 @@ static void f2_t(He *he,
         vec_scalar_append(db,  C,  j, /**/ fx, fy, fz);
         vec_scalar_append(dc,  C,  k, /**/ fx, fy, fz);
     }
+    return HE_OK;
 }
+
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *fx_tot, real *fy_tot, real *fz_tot) {
     int nv;
 
-    real Kb;
+    real Kb, H0;
     real *l2, *t;
     real *lbx, *lby, *lbz, *lbx0, *lby0, *lbz0;
     real *area;
+    real *H, *normx, *normy, *normz;
     real *f1x, *f1y, *f1z;
     real *f2x, *f2y, *f2z;
 
     Kb = q->Kb;
+    H0 = q->H0;
 
     area = q->area;
     l2 = q->l2; t = q->t;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     lbx0 = q->lbx0; lby0 = q->lby0; lbz0 = q->lbz0;
+
+    normx = q->normx; normy = q->normy; normz = q->normz;
+    H  = q->H;
 
     f1x = q->f1x; f1y = q->f1y; f1z = q->f1z;
     f2x = q->f2x; f2y = q->f2y; f2z = q->f2z;
@@ -261,6 +273,8 @@ int he_f_gompper_xin_force(T *q, He *he,
     compute_lb(he, x, t, area, /**/ lbx);
     compute_lb(he, y, t, area, /**/ lby);
     compute_lb(he, z, t, area, /**/ lbz);
+    compute_norm(he, x, y, z, /**/ normx, normy, normz);
+    compute_H(he, lbx, lby, lbz, normx, normy, normz, /**/ H);    
 
     f2_r(he, t, lbx, lby, lbz,  /**/ f2x, f2y, f2z);
     f2_l2(he, x, y, z, t, lbx, lby, lbz, /**/ f2x, f2y, f2z);
@@ -271,6 +285,17 @@ int he_f_gompper_xin_force(T *q, He *he,
     axpy(nv, 2*Kb, f2z, /*io*/ fz_tot);
 
     normalize(nv, lbx, lby, lbz, /**/ lbx0, lby0, lbz0);
+    f2_r(he, t, lbx0, lby0, lbz0,  /**/ f1x, f1y, f1z);
+    f2_l2(he, x, y, z, t, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
+    f2_t(he, x, y, z, l2, lbx0, lby0, lbz0, /**/ f1x, f1y, f1z);
+
+    sign(nv, H, /**/ f1x);
+    sign(nv, H, /**/ f1y);
+    sign(nv, H, /**/ f1z);
+
+    axpy(nv, -2*H0, f1x, /*io*/ fx_tot);
+    axpy(nv, -2*H0, f1y, /*io*/ fy_tot);
+    axpy(nv, -2*H0, f1z, /*io*/ fz_tot);
 
     int nt, m;
     nt = he_nt(he);

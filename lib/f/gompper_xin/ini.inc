@@ -15,7 +15,6 @@ int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D
     q->Kb = Kb;
     q->H0 = C0/2;
 
-
     MALLOC(nv, &q->f1x); MALLOC(nv, &q->f1y); MALLOC(nv, &q->f1z);
     MALLOC(nv, &q->f2x); MALLOC(nv, &q->f2y); MALLOC(nv, &q->f2z);
     MALLOC(nh, &q->l2); MALLOC(nh, &q->t);
