@@ -8,8 +8,7 @@
 #include "he/dtri.h"
 
 /* n x (b - a)/|b - a|^2   */
-static int angle0(real a[3], real b[3], real n[3],
-                   real da[3]) {
+static int angle0(const real a[3], const real b[3], const real n[3], /**/ real da[3]) {
     real v0, v[3], nv[3];
     vec_minus(b, a,  v);
     vec_cross(n, v, nv);
@@ -19,7 +18,7 @@ static int angle0(real a[3], real b[3], real n[3],
     return HE_OK;
 }
 
-int dtri_angle(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[3]) {
+int dtri_angle(const real a[3], const real b[3], const real c[3],   real da[3], real db[3], real dc[3]) {
     real n[3], nda[3];
     tri_normal(b, c, a,   n);
     angle0(c, b, n,   dc);
@@ -29,7 +28,7 @@ int dtri_angle(real a[3], real b[3], real c[3],   real da[3], real db[3], real d
     return HE_OK;
 }
 
-int dtri_cot(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[3]) {
+int dtri_cot(const real a[3], const real b[3], const real c[3],   real da[3], real db[3], real dc[3]) {
     real ang, s, da0[3], db0[3], dc0[3];
     ang = tri_angle(a, b, c);
     s = sin(ang);
@@ -42,7 +41,7 @@ int dtri_cot(real a[3], real b[3], real c[3],   real da[3], real db[3], real dc[
     return HE_OK;
 }
 
-int dtri_area(real a[3], real b[3], real c[3],  /**/ real da[3], real db[3], real dc[3]) {
+int dtri_area(const real a[3], const real b[3], const real c[3],  /**/ real da[3], real db[3], real dc[3]) {
     real n[3], n2[3], ab[3], bc[3], ca[3];
     tri_normal(a, b, c,   n);
     vec_scalar(n, 0.5,   n2);
@@ -53,14 +52,14 @@ int dtri_area(real a[3], real b[3], real c[3],  /**/ real da[3], real db[3], rea
     return HE_OK;
 }
 
-static int dvolume(real a[3], real b[3], real c[3], /**/ real dd[3]) {
+static int dvolume(const real a[3], const real b[3], const real c[3], /**/ real dd[3]) {
     real n[3], area;
     tri_normal(a, b, c, /**/ n);
     area = tri_area(a, b, c);
     vec_scalar(n, area/3, /**/ dd);
     return HE_OK;
 }
-int dtri_volume(real a[3], real b[3], real c[3], /**/ real da[3], real db[3], real dc[3]) {
+int dtri_volume(const real a[3], const  real b[3], const real c[3], /**/ real da[3], real db[3], real dc[3]) {
     real z[3];
     vec_zero(z);
     dvolume(z, a, b, /**/ dc);

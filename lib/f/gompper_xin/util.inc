@@ -69,6 +69,27 @@ static int get2(const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
+enum {BULK, BND};
+static int get_ijkl(int h, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
+    int n, nn, nnf, i, j, k, l;
+    n = nxt(h); nn = nxt(nxt(h));
+    nnf = nxt(nxt(flp(h)));
+    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
+
+    *pi = i; *pj = j; *pk = k; *pl = l;
+    return BULK;
+}
+
+static int get4(const real *x, const real *y, const real *z,
+                int i, int j, int k, int l,
+               /**/ real a[3], real b[3], real c[3], real d[3]) {
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    vec_get(l, x, y, z, /**/ d);
+    return HE_OK;
+}
+
 static int sign(int n, const real *a, real *b) {
     int i;
     for (i = 0; i < n; i++)
@@ -85,5 +106,22 @@ static int normalize(int n, const real *x, const real *y, const real *z, /**/ re
         vec_norm(a, /**/ a0);
         vec_set(a0, i, /**/ x0, y0, z0);
     }
+    return HE_OK;
+}
+
+static real dih_cot(const real a[3], const real b[3], const real c[3], const real d[3]) {
+    return tri_cot(c, a, b) + tri_cot(b, d, c);
+}
+
+
+static int ddih_cot(const real a[3], const real b[3], const real c[3], const real d[3], /**/
+             real da[3], real db[3], real dc[3], real dd[3]) {
+    real dc0[3], db0[3], db1[3], dc1[3];
+    dtri_cot(c, a, b, /**/ dc0, da, db0);
+    dtri_cot(b, d, c, /**/ db1, dd, dc1);
+
+    vec_plus(dc0, dc1, /**/ dc);
+    vec_plus(db0, db1, /**/ db);
+
     return HE_OK;
 }
