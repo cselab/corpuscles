@@ -1,6 +1,6 @@
 set -eu
 
-rV=0.63 Kb=0.1 C0=0 Kad=0.636619772368
+rV=0.63 Kb=0.1 C0=0 Kad=0.0636619772368
 end=2500
 off=../../../../data/sph/laplace/0.off
 
