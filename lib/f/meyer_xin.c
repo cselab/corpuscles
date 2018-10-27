@@ -123,7 +123,6 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->Kad  = Kad;
     q->DA0D = DA0D;
 
-
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
 
@@ -390,7 +389,8 @@ static int compute_norm(T *q, He *he,
     for (i = 0; i < nv; i++) {
         vec_get(i, normx, normy, normz, /**/ u);
         vec_norm(u, /**/ u0);
-        vec_set(u0, i, /**/ normx, normy, normz);
+	vec_negative(u0, u); /*This reverses the sign of norm to be inwards*/
+        vec_set(u, i, /**/ normx, normy, normz);
     }
     return HE_OK;
 }
@@ -536,7 +536,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
     energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
      
     //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
-    //printf("enegy local, nonlocal, tot: %f, %f, %f\n", energy_tot_local, energy_tot_nonlocal, energy_tot);
+    //printf("enegy local, nonlocal, area: %f, %f, %f\n", energy_tot_local, energy_tot_nonlocal, mH0);
     return energy_tot;
 
 }
