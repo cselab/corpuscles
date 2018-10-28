@@ -11,8 +11,10 @@ body="$1"; shift
 BEGIN {
     WIDTH = 60; TAB = 4; TYPE = "real"
 
-    STREAM = NAME ".inc"; main();                      close(STREAM)
-    STREAM = NAME ".h";   decl(); cprint("%s\n", ";"); close(STREAM)
+    inc = NAME ".inc"
+    hdr = "he/" NAME ".h"
+    STREAM = inc; main();                      close(STREAM)
+    STREAM = hdr; decl(); cprint("%s\n", ";"); close(STREAM)
 }
 
 function main() {
