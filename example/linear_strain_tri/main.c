@@ -31,7 +31,7 @@ int vec2(/**/ real v[2]) {
     return HE_OK;
 }
 
-static real ks = 2, ka = 3;
+static real ks = 0, ka = 3;
 static real sq(real x) { return x*x; }
 static real  F(__UNUSED void *param, real I1, real I2) { return (((-2*I2)+sq(I1)+2*I1)*ks)/12+(sq(I2)*ka)/12; }
 static real F1(__UNUSED void *param, real I1, real I2) { return  (I1+1)*ks/6; }
