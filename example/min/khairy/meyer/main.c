@@ -46,13 +46,11 @@ static void usg() {
     exit(0);
 }
 
-static real sph_volume(real area) { return pow(area, 1.5)/(6*pi); }
-
+static real sph_volume(real area) { return pow(area, 3.0/2.0)/(6*pi); }
 static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
-
+static real target_area(real volume, real v) { return pow(3.0, 2/3.0)*pow(4.0, 1/3.0)*pow(pi, 1/3.0)*pow(volume, 2.0/3)/pow(v, 2.0/3); }
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
-static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
+static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3.0, 0.25); }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 static int num(/**/ int *p) {
@@ -209,7 +207,7 @@ static void main0(real *vx, real *vy, real *vz,
     for (i = 0; i < end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.01*max_vec(vx, vy, vz);
+        rnd = 0.001*max_vec(vx, vy, vz);
         jigle(rnd, vx, vy, vz);        
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
