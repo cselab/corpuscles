@@ -1,0 +1,161 @@
+load("nchrpl")$
+load("scifac")$
+load("format")$
+load("cgrind")$
+load("stringproc") $
+
+cgrind0(e)::=buildq([e: e, s: gensym()],
+  block(
+    [s],
+    s: make_string_output_stream(),
+    with_stdout(s, cgrind(e)),
+    s: get_output_stream_string(s),
+    s: regex_subst_first("", ";\\n$", s),
+    s));
+
+%var%: [] $
+cg(v)::=buildq([v: v], (
+    push('v, %var%),
+    printf(true, "~a = ~a;~%", 'v, cgrind0(v)))) $
+cgr(v)::=buildq([v: v],
+    printf(true, "SET(~a, ~a);~%", 'v, cgrind0(v)));
+
+frm0 (e):= format(e, %poly(Fb, Fa), %factor, gcfac) $
+frm1 (e):= format(e, %poly(vx, vy, ux, uy, wx, wy), %factor, gcfac) $
+
+co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
+
+(X: 1, Y : 2, Z : 3) $
+
+declare([ax, ay, bx, by, cx, cy], constant) $
+
+dx(x, y):= p0 + px*x + py*y $
+dy(x, y):= q0 + qx*x + qy*y $
+
+e: [
+  dx(ax, ay) = vx,
+  dy(ax, ay) = vy,
+
+  dx(bx, by) = ux,
+  dy(bx, by) = uy,
+
+  dx(cx, cy) = wx,
+  dy(cx, cy) = wy
+] $
+
+de: diff(e);
+v: [p0, px, py,   q0, qx, qy];
+ds: linsolve(de, diff(v));
+s : linsolve( e,       v);
+Q: ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
+
+ds: subst('Q, Q, ds);
+s:  subst('Q, Q, s);
+
+Dxx: diff(dx(x, y), x);
+Dxy: diff(dx(x, y), y);
+Dyx: diff(dy(x, y), x);
+Dyy: diff(dy(x, y), y);
+
+D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
+G: D . D;
+
+I1: mattrace(G)    - 2;
+I2: determinant(G) - 1;
+I2: factor(I2);
+
+E: F(I1, I2);
+gradef(F(a, b), Fa, Fb) $
+
+dE: subst(ds, factor(diff(E))) $
+dE: ratsubst('F,   F(I1, I2), dE) $
+dE: expand(dE) $
+
+d: px*qy - py*qx ;
+
+abx: ax - bx;
+aby: ay - by;
+
+cax: cx - ax;
+cay: cy - ay;
+
+cbx: cx - bx;
+cby: cy - by;
+
+back(e):=(
+  e: subst('d,   d,   e),
+
+  e: subst( 'cby,  cby, e),
+  e: subst(-'cby, -cby, e),
+
+  e: subst( 'cay,  cay, e),
+  e: subst(-'cay, -cay, e),
+
+  e: subst('cbx, cbx, e),
+
+  e: subst('cax, cax, e),
+  e: subst(-'cax, -cax, e),
+
+  e: subst(-'abx, -abx, e),
+
+  e: subst('aby, aby, e),
+  e: subst(-'aby, -aby, e),
+
+  e);
+
+dvx: gcfac(back(co(dE, vx)));
+dvy: gcfac(back(co(dE, vy)));
+
+dux: gcfac(back(co(dE, ux)));
+duy: gcfac(back(co(dE, uy)));
+
+dwx: gcfac(back(co(dE, wx)));
+dwy: gcfac(back(co(dE, wy)));
+
+px: gcfac(back(frm1(assoc('px, s))));
+py: gcfac(back(frm1(assoc('py, s))));
+
+qx: gcfac(back(frm1(assoc('qx, s))));
+qy: gcfac(back(frm1(assoc('qy, s))));
+
+matchdeclare(x, all) $
+defrule(r_sq, x^2, sq(x)) $
+rsq(e):=apply1(e, r_sq) $
+I1: rsq(factor(I1));
+
+Fa: F1(param, 'I1, 'I2) $
+Fb: F2(param, 'I1, 'I2) $
+
+nl():=newline();
+
+pI1: 'I1 $
+pI2: 'I2 $
+
+with_stdout("body",
+  cg(Q),
+  cg(abx), cg(aby), cg(cax), cg(cay), cg(cbx), cg(cby),
+  cg(px), cg(py), cg(qx), cg(qy),
+  cg(I1), cg(I2),
+  cg(Fa), cg(Fb),
+  cg(d),
+  newline(),
+  cgr(dvx), cgr(dvy), cgr(dux), cgr(duy), cgr(dwx), cgr(dwy),
+  cgr(pI1), cgr(pI2)) $
+
+%var%: reverse(%var%)$
+with_stdout("var",
+  for e in %var% do printf(true, "~a~%", e));
+
+pfun(e)::=printf(true, "real (*~a)(void*, real, real)~%", e);
+real(e)::=printf(true, "~a ~a~%",   'real, e);
+preal(e)::=printf(true, "~a *~a~%",  'real, e);
+pvoid(e)::=printf(true, "~a *~a~%", 'void, e);
+with_stdout("param",
+  pvoid(param),
+  pfun(F1), pfun(F2),
+  real(ax), real(ay), real(bx), real(by), real(cx), real(cy),
+  real(ux), real(uy), real(vx), real(vy), real(wx), real(wy),
+  preal(dux), preal(duy),
+  preal(dvx), preal(dvy),
+  preal(dwx), preal(dwy),
+  preal(pI1), preal(pI2));
