@@ -1,3 +1,5 @@
+include ../../conf.mk
+
 M = linear_strain_tri
 
 PREC = s
