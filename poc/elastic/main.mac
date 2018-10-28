@@ -134,6 +134,7 @@ pA : REAL_ABS('Q)/2;
 
 with_stdout("body",
   cg(Q),
+  printf(true, "NOT_ZERO(Q);~%"),
   cg(abx), cg(aby), cg(cax), cg(cay), cg(cbx), cg(cby),
   cg(px), cg(py), cg(qx), cg(qy),
   cg(I1), cg(I2),

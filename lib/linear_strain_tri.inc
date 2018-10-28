@@ -10,6 +10,7 @@ int linear_strain_tri(void *param, real (*F1)(void*, real, real),
     real Fa, Fb, d;
 
     Q = ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
+    NOT_ZERO(Q);
     abx = ax-bx;
     aby = ay-by;
     cax = cx-ax;
