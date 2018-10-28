@@ -3,7 +3,8 @@ int linear_strain_tri(void *param, real (*F1)(void*, real, real),
                       real bx, real by, real cx, real cy, real vx,
                       real vy, real ux, real uy, real wx, real wy,
                       real *dvx, real *dvy, real *dux, real *duy,
-                      real *dwx, real *dwy, real *pI1, real *pI2)
+                      real *dwx, real *dwy, real *pI1, real *pI2,
+                      real *pA)
 {
     real Q, abx, aby, cax, cay, cbx, cby, px, py, qx, qy, I1, I2;
     real Fa, Fb, d;
@@ -49,6 +50,7 @@ int linear_strain_tri(void *param, real (*F1)(void*, real, real),
      /Q);
     SET(pI1, I1);
     SET(pI2, I2);
+    SET(pA, REAL_ABS(Q)/2.0E+0);
 
     return HE_OK;
 }

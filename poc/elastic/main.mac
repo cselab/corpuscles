@@ -130,6 +130,7 @@ nl():=newline();
 
 pI1: 'I1 $
 pI2: 'I2 $
+pA : REAL_ABS('Q)/2;
 
 with_stdout("body",
   cg(Q),
@@ -140,7 +141,7 @@ with_stdout("body",
   cg(d),
   newline(),
   cgr(dvx), cgr(dvy), cgr(dux), cgr(duy), cgr(dwx), cgr(dwy),
-  cgr(pI1), cgr(pI2)) $
+  cgr(pI1), cgr(pI2), cgr(pA)) $
 
 %var%: reverse(%var%)$
 with_stdout("var",
@@ -158,4 +159,4 @@ with_stdout("param",
   preal(dvx), preal(dvy),
   preal(dux), preal(duy),
   preal(dwx), preal(dwy),
-  preal(pI1), preal(pI2));
+  preal(pI1), preal(pI2), preal(pA));

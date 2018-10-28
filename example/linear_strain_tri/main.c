@@ -43,7 +43,7 @@ int main(__UNUSED int argc, const char **argv0) {
     real a[2], b[2], c[2];
     real v[2], u[2], w[2];
     real da[2], db[2], dc[2];
-    real I1, I2;
+    real I1, I2, A;
     argv = argv0;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -56,9 +56,10 @@ int main(__UNUSED int argc, const char **argv0) {
                           a[X], a[Y], b[X], b[Y], c[X], c[Y],
                           v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                           &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
-                          &I1, &I2);
-        printf("%g\n", F(NULL, I1, I2));
-        printf("%g %g\n", I1, I2);
+                          &I1, &I2, &A);
+        printf("A: %g\n", A);
+        printf("eng: %g\n", F(NULL, I1, I2));
+        printf("I12: %g %g\n", I1, I2);
         printf("%g %.g\n", da[X], da[Y]);
         printf("%g %.g\n", db[X], db[Y]);
         printf("%g %.g\n", dc[X], dc[Y]);
