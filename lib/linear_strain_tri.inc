@@ -19,18 +19,34 @@ int linear_strain_tri(void *param, real (*F1)(void*, real, real),
     py = (abx*wx-cbx*vx+cax*ux)/Q;
     qx = -(aby*wy-cby*vy+cay*uy)/Q;
     qy = (abx*wy-cbx*vy+cax*uy)/Q;
-    I1 = sq(qy)+2*py*qx+sq(px)-2;
-    I2 = (px*qy-py*qx-1)*(px*qy-py*qx+1);
+    I1 = sq(qy)+2*qy+2*py*qx+sq(px)+2*px;
+    I2 = (px*qy+qy-py*qx+px)*(px*qy+qy-py*qx+px+2);
     Fa = F1(param,I1,I2);
     Fb = F2(param,I1,I2);
     d = px*qy-py*qx;
     
-    SET(dvx, (2*(Fb*d*(cby*qy+cbx*qx)-Fa*(cbx*qx-cby*px)))/Q);
-    SET(dvy, -(2*(Fa*(cbx*qy-cby*py)+Fb*d*(cby*py+cbx*px)))/Q);
-    SET(dux, (2*(Fa*(cax*qx-cay*px)-Fb*d*(cay*qy+cax*qx)))/Q);
-    SET(duy, (2*(Fa*(cax*qy-cay*py)+Fb*d*(cay*py+cax*px)))/Q);
-    SET(dwx, -(2*(Fb*d*(aby*qy+abx*qx)+Fa*(aby*px-abx*qx)))/Q);
-    SET(dwy, (2*(Fb*d*(aby*py+abx*px)-Fa*(aby*py-abx*qy)))/Q);
+    SET(dvx, 
+    (2*(Fb*(cby*qy+cbx*qx+cy-by)*((px+1)*qy-py*qx+px+1)
+       -Fa*(cbx*qx-(cby*px+cy)+by)))
+     /Q);
+    SET(dvy, 
+    -(2*(Fb*(cby*py+cbx*px+cx-bx)*((px+1)*qy-py*qx+px+1)
+        +Fa*(cbx*qy-cby*py+cx-bx)))
+     /Q);
+    SET(dux, 
+    (2*(Fa*(cax*qx-(cay*px+cy)+ay)-Fb*(cay*qy+cax*qx+cy-ay)
+                                     *((px+1)*qy-py*qx+px+1)))
+     /Q);
+    SET(duy, 
+    (2*(Fb*(cay*py+cax*px+cx-ax)*((px+1)*qy-py*qx+px+1)+Fa*(cax*qy-cay*py+cx-ax)))
+     /Q);
+    SET(dwx, 
+    (2*(Fa*(abx*qx-aby*px+by-ay)-Fb*(aby*qy+abx*qx-by+ay)*((px+1)*qy-py*qx+px+1)))
+     /Q);
+    SET(dwy, 
+    (2*(Fb*(aby*py+abx*px-bx+ax)*((px+1)*qy-py*qx+px+1)
+       +Fa*(abx*qy-(aby*py+bx)+ax)))
+     /Q);
     SET(pI1, I1);
     SET(pI2, I2);
 

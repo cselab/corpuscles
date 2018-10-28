@@ -31,9 +31,11 @@ int vec2(/**/ real v[2]) {
     return HE_OK;
 }
 
-real F1(__UNUSED void *param, real a, real b) { return a*a + b; }
-real F2(__UNUSED void *param, real a, real b) { return a*a + b; }
-
+static real ks = 2, ka = 3;
+static real sq(real x) { return x*x; }
+static real  F(__UNUSED void *param, real I1, real I2) { return (((-2*I2)+sq(I1)+2*I1)*ks)/12+(sq(I2)*ka)/12; }
+static real F1(__UNUSED void *param, real I1, real I2) { return  (I1+1)*ks/6; }
+static real F2(__UNUSED void *param, real I1, real I2) { return -(ks-I2*ka)/6;}
 
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **argv0) {
@@ -55,8 +57,12 @@ int main(__UNUSED int argc, const char **argv0) {
                           v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                           &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
                           &I1, &I2);
+        printf("%g\n", F(NULL, I1, I2));
         printf("%g %g\n", I1, I2);
-        printf("%.8g %.g\n", da[X], da[Y]);        
+        printf("%g %.g\n", da[X], da[Y]);
+        printf("%g %.g\n", db[X], db[Y]);
+        printf("%g %.g\n", dc[X], dc[Y]);
+        MSG("cons: %g %g", da[X] + db[X] + dc[X], da[Y] + db[Y] + dc[Y]);
     } else
         ER("unknown operation '%s'", op);
     return 0;

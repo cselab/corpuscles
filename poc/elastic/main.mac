@@ -52,10 +52,10 @@ Q: ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
 ds: subst('Q, Q, ds);
 s:  subst('Q, Q, s);
 
-Dxx: diff(dx(x, y), x);
+Dxx: diff(dx(x, y), x) + 1;
 Dxy: diff(dx(x, y), y);
 Dyx: diff(dy(x, y), x);
-Dyy: diff(dy(x, y), y);
+Dyy: diff(dy(x, y), y) + 1;
 
 D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
 G: D . D;
