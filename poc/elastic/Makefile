@@ -18,9 +18,9 @@ param var body: main.mac
 	u.maxima $<
 
 install: $M.o
-	cp    constant_strain_2d.inc $P/lib && \
-	cp    constant_strain_2d.c   $P/lib && \
-	cp he/constant_strain_2d.h   $P/lib/he
+	he.install constant_strain/2d.inc   $P/lib && \
+	he.install constant_strain/2d.c     $P/lib && \
+	he.install he/constant_strain/2d.h  $P/lib
 
 .PHONY: clean install
 
