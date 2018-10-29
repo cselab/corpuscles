@@ -7,7 +7,7 @@
 #include <he/vec.h>
 #include <he/macro.h>
 #include <he/util.h>
-#include <he/linear_strain_tri.h>
+#include <he/constant_strain/2d.h>
 
 #include <he/dih.h>
 #include <he/ddih.h>
@@ -52,11 +52,11 @@ int main(__UNUSED int argc, const char **argv0) {
     if (eq(op, "all")) {
         vec2(a); vec2(b); vec2(c);
         vec2(u); vec2(v); vec2(w);
-        linear_strain_tri(NULL, F1, F2,
-                          a[X], a[Y], b[X], b[Y], c[X], c[Y],
-                          v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
-                          &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
-                          &I1, &I2, &A);
+        constant_strain_2d(NULL, F1, F2,
+                           a[X], a[Y], b[X], b[Y], c[X], c[Y],
+                           v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
+                           &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
+                           &I1, &I2, &A);
         printf("A: %g\n", A);
         printf("eng: %g\n", F(NULL, I1, I2));
         printf("I12: %g %g\n", I1, I2);
