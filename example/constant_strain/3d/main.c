@@ -39,7 +39,7 @@ int main(__UNUSED int argc, const char **argv0) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
         constant_strain_force(
-            NULL, F1, F2,
+            NULL, F, F1, F2,
             a0, b0, c0,   a, b, c,   da, db, dc);
         vec_printf(da, "%g");
         vec_printf(db, "%g");
