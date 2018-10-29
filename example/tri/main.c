@@ -17,7 +17,7 @@ int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
     real a[3], b[3], c[3], d[3], n[3];
-    real u, vx, vy;
+    real ux, uy, vx, vy;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -44,8 +44,8 @@ int main(__UNUSED int argc, const char **v) {
         vec_printf(n, "%g");
     } else if (eq(op, "3to2")) {
         vec(a); vec(b); vec(c);
-        tri_3to2(a, b, c, /**/ &u, &vx, &vy);
-        printf("%g\n", u);
+        tri_3to2(a, b, c, /**/ &ux, &uy, &vx, &vy);
+        printf("%g %g\n", ux, uy);
         printf("%g %g\n", vx, vy);
     } else
         ER("unknown operation '%s'", op);
