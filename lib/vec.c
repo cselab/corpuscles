@@ -134,6 +134,21 @@ int vec_project(const real a[3], const real b[3], /**/ real c[3]) {
     return HE_OK;
 }
 
+real vec_project_scalar(const real a[3], const real b[3]) {
+    real n[3], s;
+    vec_norm(b, /**/ n);
+    s = vec_dot(a, n);
+    return s;
+}
+
+real vec_reject_scalar(const real a[3], const real b[3]) {
+    real s2, p, q;
+    p = vec_project_scalar(a, b);
+    s2 = vec_dot(a, a);
+    q = s2 - p*p;
+    return q > 0 ? sqrt(q) : 0;
+}
+
 int vec_reject(const real a[3], const real b[3], /**/ real c[3]) {
     real p[3];
     vec_project(a, b, /**/ p);

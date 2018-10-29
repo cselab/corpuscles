@@ -101,9 +101,17 @@ int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], 
 
 int tri_3to2(const real a[3], const real b[3], const real c[3],
              /**/ real *u, real *vx, real *vy) {
-    real ab[3], ac[3], n[3], proj[3], reje[3];
+    real ab[3], ac[3];
     vec_minus(b, a, /**/ ab);
     vec_minus(c, a, /**/ ac);
-    vec_norm(ab, /**/ n);
+
+    *u  = vec_abs(ab);
+    *vx = vec_project_scalar(ac, ab);
+    *vy = vec_reject_scalar(ac, ab);
+    return HE_OK;
+}
+
+int tri_2to3(real u, real vx, real vy,   real fx, real fy, /**/ real f[3]) {
+    
     return HE_OK;
 }

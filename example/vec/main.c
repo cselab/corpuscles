@@ -23,7 +23,7 @@ int scl(/**/ real *p) {
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
-    real a[3], b[3], c[3];
+    real a[3], b[3], c[3], s;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -45,6 +45,14 @@ int main(__UNUSED int argc, const char **v) {
         vec(a); vec(b);
         vec_reject(a, b, c);
         vec_printf(c, "%g");
+    } else if (eq(op, "project_scalar")) {
+        vec(a); vec(b);
+        s = vec_project_scalar(a, b);
+        printf("%g\n", s);
+    } else if (eq(op, "reject_scalar")) {
+        vec(a); vec(b);
+        s = vec_reject_scalar(a, b);
+        printf("%g\n", s);
     } else
         ER("unknown operation '%s'", op);
     return 0;
