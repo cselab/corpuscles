@@ -130,7 +130,7 @@ int vec_norm(const real a[3], /**/ real b[3]) {
 int vec_project(const real a[3], const real b[3], /**/ real c[3]) {
     real n[3], s;
     vec_norm(b, /**/ n);
-    s = vec_dot(a, b);
+    s = vec_dot(a, n);
     vec_scalar(n, s, /**/ c);
     return HE_OK;
 }
