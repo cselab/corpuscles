@@ -1,7 +1,7 @@
 P = ../..
 include $P/conf.mk
 
-M = linear_strain_tri
+M = constant_strain_2d
 
 PREC = s
 HE_CFLAGS =  `he.conf --cflags $(PREC)`
@@ -18,9 +18,9 @@ param var body: main.mac
 	u.maxima $<
 
 install: $M.o
-	cp    linear_strain_tri.inc $P/lib && \
-	cp    linear_strain_tri.c   $P/lib && \
-	cp he/linear_strain_tri.h   $P/lib/he
+	cp    constant_strain_2d.inc $P/lib && \
+	cp    constant_strain_2d.c   $P/lib && \
+	cp he/constant_strain_2d.h   $P/lib/he
 
 .PHONY: clean install
 
