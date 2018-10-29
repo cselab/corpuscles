@@ -9,10 +9,47 @@
 #define T ConstantStrain
 #define P ConstantStrainParam
 
+typedef real (*TypeFun)(void*, real, real);
+
+struct T {
+    TypeFun F, F1, F2;
+    P param;
+};
+
+static real sq(real x) { return x*x; }
+static real F_skalak(void *p0, real I1, real I2)  {
+    P *p;
+    real Ks, Ka;
+    p = (P*)p0;
+    Ks = p->Ks; Ka = p->Ka;
+
+    return (((-2*I2)+sq(I1)+2*I1)*Ks)/12+(sq(I2)*Ka)/12;
+}
+static real F1_skalak(void *p0, real I1, real I2) {
+    P *p;
+    real Ks;
+    p = (P*)p0;
+    Ks = p->Ks;
+    return  (I1+1)*Ks/6;
+}
+static real F2_skalak(void *p0, real I1, real I2) {
+    P *p;
+    real Ka, Ks;
+    p = (P*)p0;
+    Ka = p->Ka; Ks = p->Ks;
+    return -(Ks-I2*Ka)/6;
+}
+
 int constant_strain_ini(const char *name, P param, /**/ T **pq) {
+    T *q;
+    MALLOC(1, &q);
+
+
+    *pq = q;
     return HE_OK;
 }
 int constant_strain_fin(T *q) {
+    FREE(q);
     return HE_OK;
 }
 
