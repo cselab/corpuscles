@@ -114,8 +114,8 @@ int tri_3to2(const real a[3], const real b[3], const real c[3],
 
 int tri_2to3(const real a[3], const real b[3], const real c[3], real fx, real fy, /**/ real f[3]) {
     real ab[3], ac[3], r[3], ex[3], ey[3];
-    vec_minus(a, b, /**/ ab);
-    vec_minus(a, c, /**/ ac);
+    vec_minus(b, a, /**/ ab);
+    vec_minus(c, a, /**/ ac);
 
     vec_norm(ab, /**/ ex);
     vec_reject(ac, ab, /**/ r);
