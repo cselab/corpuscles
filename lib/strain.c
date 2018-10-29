@@ -22,26 +22,23 @@ static real sq(real x) { return x*x; }
 static real F_skalak(void *p0, real I1, real I2)  {
     P *p;
     real Ks, Ka;
-
     p = (P*)p0;
     Ks = p->Ks; Ka = p->Ka;
-
-    return (((-2*I2)+sq(I1)+2*I1)*Ks)/12+(sq(I2)*Ka)/12;
+    return Ks*(sq(I1)/2+I1-I2)/4 + Ka*sq(I2)/8;
 }
 static real F1_skalak(void *p0, real I1, __UNUSED real I2) {
     P *p;
     real Ks;
     p = (P*)p0;
     Ks = p->Ks;
-    return  (I1+1)*Ks/6;
+    return  Ks*(I1+1)/4;
 }
 static real F2_skalak(void *p0, __UNUSED real I1, real I2) {
     P *p;
     real Ka, Ks;
-
     p = (P*)p0;
     Ka = p->Ka; Ks = p->Ks;
-    return -(Ks-I2*Ka)/6;
+    return -(Ks-I2*Ka)/4;
 }
 
 int strain_ini(__UNUSED const char *name, P param, /**/ T **pq) {
