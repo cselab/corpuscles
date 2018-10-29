@@ -1,0 +1,85 @@
+set -eu
+
+: ${AWK=awk}
+
+name="$1"; shift
+param="$1"; shift
+var="$1"; shift
+body="$1"; shift
+
+"$AWK" -v NAME="$name" -v PARAM="$param" -v VAR="$var" -v BODY="$body" '
+BEGIN {
+    WIDTH = 60; TAB = 4; TYPE = "real"
+
+    inc = NAME ".inc"
+    hdr = "he/" NAME ".h"
+    STREAM = inc; main();                      close(STREAM)
+    STREAM = hdr; decl(); cprint("%s\n", ";"); close(STREAM)
+}
+
+function main() {
+    decl()
+    cprint("\n%s\n", "{")
+    var()
+    cprint("%s", "\n")
+    body()
+    cprint("%s\n", "}")
+}
+
+function var(   l, tab, Rest, cnt) {
+    tab = sprintf("%" TAB "s", "")
+    while (getline l < VAR > 0) {
+	if (Rest) {
+	    if (cnt > WIDTH) {
+		cprint("%s", ";\n")
+		cnt = cprint(tab "%s ", TYPE)
+	    } else {
+		cnt += cprint("%s", ", ")
+	    }
+	}  else {
+	    cnt += cprint(tab "%s ", TYPE);
+	    Rest = 1
+	}
+	cnt += cprint("%s", l)
+    }
+    cprint("%s\n", ";")
+    close(VAR)
+}
+
+function decl(   cnt, tab, Rest, l) {
+    # print name, param, var, body
+    cnt = tab = cprint("int %s(", NAME)
+    tab = sprintf("%" tab "s", "")
+    while (getline l < PARAM > 0) {
+	if (Rest) {
+	    if (cnt > WIDTH) {
+		cprint("%s", ",\n")
+		cnt = cprint("%s", tab)
+	    } else {
+		cnt += cprint("%s", ", ")
+	    }
+	} else {
+	    Rest = 1
+	}
+	cnt += cprint("%s", l)
+    }
+    cprint("%s", ")")
+    close(PARAM)
+}
+
+function body(   l, tab) {
+    tab = sprintf("%" TAB "s", "")
+    while (getline l < BODY > 0)
+	cprint(tab "%s\n", l)
+    cprint("%s", "\n")
+    cprint(tab "%s\n", "return HE_OK;")
+    close(BODY)
+}
+
+function cprint(fmt, arg,    s, cnt) {
+    s = sprintf(fmt, arg)
+    cnt = length(s)
+    printf "%s", s > STREAM
+    return cnt
+}
+' "$@"

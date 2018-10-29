@@ -1,0 +1,26 @@
+kill(all) $
+load("vect") $
+load("scifac") $
+load ("eigen") $
+
+dot(a, b):=express(a . b)$
+vabs(a):= sqrt(dot(a, a))$
+norm(a):= a/vabs(a)$
+
+
+a: [ 0,  0,  0] $
+b: [bx, by, bz] $
+c: [cx, cy, cz] $
+
+ab: b - a;
+ac: c - a;
+
+ab0: norm(ab);
+pro: dot(ac, ab0) * ab0 ;
+rej: ac - pro;
+
+u: [vabs(ab), 0];
+v: [vabs(pro), vabs(rej)];
+
+v: subst( F, vabs(ab), v);
+radcan(dot(u, v) - dot(ab, ac));
