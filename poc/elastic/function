@@ -3,16 +3,17 @@ set -eu
 : ${AWK=awk}
 
 name="$1"; shift
+file="$1"; shift
 param="$1"; shift
 var="$1"; shift
 body="$1"; shift
 
-"$AWK" -v NAME="$name" -v PARAM="$param" -v VAR="$var" -v BODY="$body" '
+"$AWK" -v FILE="$file" -v NAME="$name" -v PARAM="$param" -v VAR="$var" -v BODY="$body" '
 BEGIN {
     WIDTH = 60; TAB = 4; TYPE = "real"
 
-    inc = NAME ".inc"
-    hdr = "he/" NAME ".h"
+    inc =       FILE ".inc"
+    hdr = "he/" FILE ".h"
     STREAM = inc; main();                      close(STREAM)
     STREAM = hdr; decl(); cprint("%s\n", ";"); close(STREAM)
 }

@@ -9,15 +9,23 @@
 #include <he/macro.h>
 #include <he/util.h>
 
+#define FMT_IN   XE_REAL_IN
 static const char **argv;
 
 void vec(/**/ real a[3]) { vec_argv(&argv, a); }
+int scl(/**/ real *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, FMT_IN, p) != 1)
+        ER("not a number '%s'", *argv);
+    argv++;
+    return HE_OK;
+}
 
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
-    real a[3], b[3], c[3], d[3], n[3];
-    real ux, uy, vx, vy;
+    real a[3], b[3], c[3], d[3], n[3], f[3];
+    real ux, uy, vx, vy, fx, fy;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -47,6 +55,10 @@ int main(__UNUSED int argc, const char **v) {
         tri_3to2(a, b, c, /**/ &ux, &uy, &vx, &vy);
         printf("%g %g\n", ux, uy);
         printf("%g %g\n", vx, vy);
+    } else if (eq(op, "2to3")) {
+        vec(a); vec(b); vec(c); scl(&fx); scl(&fy);
+        tri_2to3(a, b, c, fx, fy, /**/ f);
+        vec_printf(f, "%g");
     } else
         ER("unknown operation '%s'", op);
     return 0;
