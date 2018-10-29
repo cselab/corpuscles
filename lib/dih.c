@@ -7,7 +7,8 @@
 #include "he/tri.h"
 
 #include "he/dih.h"
-
+const real pi = 3.141592653589793115997964;
+  
 real dih_angle(const real a[3], const real b[3], const real c[3], const real d[3]) {
     real x, y, ang, n[3], k[3], nk[3], e[3];
     tri_normal(b, c, a,   n);
@@ -15,7 +16,7 @@ real dih_angle(const real a[3], const real b[3], const real c[3], const real d[3
     x = vec_dot(n, k);
     vec_cross(n, k,    nk);
     y = vec_abs(nk);
-    ang = atan2(y, x);
+    ang = pi - atan2(y, x);
     vec_minus(c, b, e);
     if (vec_dot(e, nk) < 0)
         ang = - ang;
