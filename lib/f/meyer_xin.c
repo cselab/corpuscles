@@ -536,7 +536,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
     energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
      
     //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
-    //printf("enegy local, nonlocal, area: %f, %f, %f\n", energy_tot_local, energy_tot_nonlocal, mH0);
+    //printf("enegy local, nonlocal: %f, %f \n", energy_tot_local, energy_tot_nonlocal);
     return energy_tot;
 
 }
