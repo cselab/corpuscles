@@ -29,6 +29,9 @@ real vec_cylindrical_r(const real[3]);
 real vec_spherical_theta(const real[3]);
 
 int vec_norm(const real[3], /**/ real[3]);
+/* `c' = project `a' on `b' */
+int vec_project(const real a[3], const real b[3], /**/ real[3]);
+
 int vec_fprintf(const real a[3], FILE *f, const char *fmt);
 int vec_printf(const real a[3], const char *fmt);
 

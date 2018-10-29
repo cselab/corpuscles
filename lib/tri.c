@@ -98,3 +98,12 @@ int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], 
     vec_minus(a, c,   ca);
     return HE_OK;
 }
+
+int tri_3to2(const real a[3], const real b[3], const real c[3],
+             /**/ real *u, real *vx, real *vy) {
+    real ab[3], ac[3], n[3], proj[3], reje[3];
+    vec_minus(b, a, /**/ ab);
+    vec_minus(c, a, /**/ ac);
+    vec_norm(ab, /**/ n);
+    return HE_OK;
+}

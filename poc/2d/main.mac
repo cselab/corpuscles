@@ -1,26 +1,26 @@
 kill(all) $
 load("vect") $
+load("scifac") $
+load ("eigen") $
 
-cross(a, b):=express(a ~ b)$
 dot(a, b):=express(a . b)$
 vabs(a):= sqrt(dot(a, a))$
 norm(a):= a/vabs(a)$
 
-b: [bx, by, bz];
-c: [cx, cy, cz];
-n: cross(b, c);
 
-e0: b/'bb;
+a: [ 0,  0,  0] $
+b: [bx, by, bz] $
+c: [cx, cy, cz] $
 
-f1: c - bc*e0;
-e1: f1/'ff1;
+ab: b - a;
+ac: c - a;
 
-f2: cross(b, c);
-e2: [nx, ny, nz];
+ab0: norm(ab);
+pro: dot(ac, ab0) * ab0 ;
+rej: ac - pro;
 
-P: matrix(e0, e1, e2);
-P: transpose(P);
+u: [vabs(ab), 0];
+v: [vabs(pro), vabs(rej)];
 
-Q: P^(-1);
-
-gcfac(P . [0, 1, 0]);
+v: subst( F, vabs(ab), v);
+radcan(dot(u, v) - dot(ab, ac));
