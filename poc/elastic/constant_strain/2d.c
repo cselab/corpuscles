@@ -8,5 +8,5 @@
 #define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
 static real sq(real x) { return x*x; }
 
-#include "he/constant_strain_2d.h"
-#include "constant_strain_2d.inc"
+#include "he/constant_strain/2d.h"
+#include "constant_strain/2d.inc"

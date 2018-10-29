@@ -1,18 +1,18 @@
 P = ../..
 include $P/conf.mk
 
-M = constant_strain_2d
+M = constant_strain/2d
 
 PREC = s
 HE_CFLAGS =  `he.conf --cflags $(PREC)`
 HE_LDFLAGS = `he.conf --libs $(PREC)`
 
-$M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
-$M.o: $M.inc $M.h
+$M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) -I. $< -c -o $@
+$M.o: $M.inc he/$M.h
 
 $M.inc $M.h: param var body
-	mkdir -p he && \
-	./function $M param var body
+	mkdir -p constant_strain he/constant_strain && \
+	./function constant_strain_2d $M param var body
 
 param var body: main.mac
 	u.maxima $<
