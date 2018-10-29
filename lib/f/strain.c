@@ -17,34 +17,34 @@ struct T {
     Strain *strain;
 };
 
-static void get_ij(int m, He *he, /**/ int *pi, int *pj) {
-    int h, n, i, j;
-    h = he_hdg_edg(he, m);
-    n = he_nxt(he, h);
-    i = he_ver(he, h); j = he_ver(he, n);
-    *pi = i; *pj = j;
-}
-static void get(int m, He *he,
-                const real *x, const real *y, const real *z, /**/
-                real a[3], real b[3]) {
-    int i, j;
-    get_ij(m, he, &i, &j);
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] = 0;
 }
 
-static real sum_sq_norm(int n, real *a, const real *e0) {
-    int i;
-    real v;
-    v = 0;
-    for (i = 0; i < n; i++) v += a[i]*a[i]/e0[i];
-    return v;
+static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
+    int h, n, nn, i, j, k;
+    h = he_hdg_tri(he, t);
+    n = he_nxt(he, h);
+    nn = he_nxt(he, n);
+    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
+    *pi = i; *pj = j; *pk = k;
+    return HE_OK;
+}
+static int get3(const real *x, const real *y, const real *z,
+                int i, int j, int k,  /**/
+                real a[3], real b[3], real c[3]) {
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    return HE_OK;
 }
 
 int he_f_strain_ini(const char *name, StrainParam param, const real *x, const real *y, const real *z, He *he, T **pq) {
     T *q;
     int nv, i;
-    
+
     nv = he_nv(he);
     MALLOC(1, &q);
     MALLOC(nv, &q->x);
@@ -71,52 +71,51 @@ int he_f_strain_fin(T *q) {
     return HE_OK;
 }
 
-static void compute_edg(He *he, const real *e0, const real *x, const real *y, const real *z, /**/ real *edg, real *dedg) {
-    real one, a[3], b[3];
-    int n, m;
-    n = he_ne(he);
-    for (m = 0; m < n; m++) {
-        get(m, he, x, y, z, /**/ a, b);
-        edg[m]  = one = edg_abs(a, b);
-        dedg[m] = one - e0[m];
-    }
-}
-
-static void compute_force(const real *e0, real K, real *dedg,
-                          He *he, const real *x, const real *y, const real *z, /**/
-                          real *fx, real *fy, real *fz) {
-    int n, m, i, j;
-    real a[3], b[3], da[3], db[3], coeff;
-    n = he_ne(he);
-    for (m = 0; m < n; m++) {
-        get_ij(m, he, /**/ &i, &j);
-        vec_get(i, x, y, z, /**/ a);
-        vec_get(j, x, y, z, /**/ b);
-        dedg_abs(a, b, /**/ da, db);
-
-        coeff = 2*K*dedg[m]/e0[m];
-
-        vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
-        vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
-    }
-}
 
 int he_f_strain_force(T *q, He *he,
                             const real *x, const real *y, const real *z, /**/
                             real *fx, real *fy, real *fz) {
+    real a0[3], b0[3], c0[3];
+    real a[3], b[3], c[3], da[3], db[3], dc[3];
+    int nt, t;
+    int i, j, k;
+    nt = he_nt(he);
+    for (t = 0; t < nt; t++) {
+        get_ijk(t, he, /**/ &i, &j, &k);
+        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
+        get3(x, y, z, i, j, /**/ k, a, b, c);
+        strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
+        vec_append(da, i, /**/ fx, fy, fz);
+        vec_append(db, j, /**/ fx, fy, fz);
+        vec_append(dc, k, /**/ fx, fy, fz);        
+    }
     return HE_OK;
 }
 
 real he_f_strain_energy(T *q, He *he,
-                              const real *x, const real *y, const real *z) {
-    int nt, t;
-
+                        const real *x, const real *y, const real *z) {
+    real a0[3], b0[3], c0[3];
+    real a[3], b[3], c[3];
+    int nt, nv, t;
+    int i, j, k;
+    real e0, e, *eng;
     nt = he_nt(he);
-    for (t = 0; t < nt; t++) {
-        
-    }
+    nv = he_nv(he);
     
-    return 0.0;
+    e = 0;
+    eng = q->eng;
+    zero(nv, eng);
+    for (t = 0; t < nt; t++) {
+        get_ijk(t, he, /**/ &i, &j, &k);
+        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
+        get3(x, y, z, i, j, /**/ k, a, b, c);
+        e0 = strain_energy(q->strain, a0, b0, c0, a, b, c);
+        eng[i] += e0/3;
+        eng[j] += e0/3;
+        eng[k] += e0/3;
+        e += e0;
+    }
+    return e;
 }
 
 
