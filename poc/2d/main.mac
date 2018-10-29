@@ -1,0 +1,26 @@
+kill(all) $
+load("vect") $
+
+cross(a, b):=express(a ~ b)$
+dot(a, b):=express(a . b)$
+vabs(a):= sqrt(dot(a, a))$
+norm(a):= a/vabs(a)$
+
+b: [bx, by, bz];
+c: [cx, cy, cz];
+n: cross(b, c);
+
+e0: b/'bb;
+
+f1: c - bc*e0;
+e1: f1/'ff1;
+
+f2: cross(b, c);
+e2: [nx, ny, nz];
+
+P: matrix(e0, e1, e2);
+P: transpose(P);
+
+Q: P^(-1);
+
+gcfac(P . [0, 1, 0]);
