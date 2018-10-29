@@ -29,6 +29,7 @@ int main(__UNUSED int argc, const char **argv0) {
     real a[3], b[3], c[3];
     real a0[3], b0[3], c0[3];
     real da[3], db[3], dc[3];
+    real eng, deng;
     argv = argv0;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -42,7 +43,12 @@ int main(__UNUSED int argc, const char **argv0) {
             a0, b0, c0,   a, b, c,   da, db, dc);
         vec_printf(da, "%g");
         vec_printf(db, "%g");
-        vec_printf(dc, "%g");        
+        vec_printf(dc, "%g");
+    } else if (eq(op, "energy")) {
+        vec(a0); vec(b0); vec(c0);
+        vec(a); vec(b); vec(c);
+        constant_strain_energy(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
+        printf("%g %g\n", eng, deng);
     } else
         ER("unknown operation '%s'", op);
     return 0;
