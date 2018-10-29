@@ -25,7 +25,7 @@
 #include "he/equiangulate.h"
 #include "he/x.h"
 
-const real pi = 3.141592653589793115997964;
+static const real pi = 3.141592653589793115997964;
 int NV, NE, NT, NH;
 int *T0, *T1, *T2;
 int *D0, *D1, *D2, *D3;
@@ -66,7 +66,6 @@ real volume() { return he_volume_tri(he, XX, YY, ZZ); }
 int off_write(const real *x, const real *y, const real *z, const char *path) {
     return he_off_he_xyz_write(off, he, x, y, z, path);
 }
-
 int RZERO(int n, real **pq) { /* alloc and make zero */
     int i;
     real *q;
@@ -75,7 +74,6 @@ int RZERO(int n, real **pq) { /* alloc and make zero */
     *pq = q;
     return HE_OK;
 }
-
 int ini(const char *path) {
     int i, j, k, l, h, e, n, nn, nnf;
     int *tri, *tri0;
@@ -129,7 +127,6 @@ int ini(const char *path) {
 
     return HE_OK;
 }
-
 int  fin()      {
     FREE(XX); FREE(YY); FREE(ZZ);
     FREE(VX); FREE(VY); FREE(VZ);
@@ -141,25 +138,20 @@ int  fin()      {
     he_fin(he);
     return HE_OK;
 }
-
 int equiangulate(int *cnt) {
     return he_equiangulate(he, XX, YY, ZZ, cnt);
 }
-
 int f_area_ini(real a0, real K) {
     he_f_area_ini(a0, K, he, /**/ &f_area);
     return HE_OK;
 }
-
 int f_area_fin() {
     he_f_area_fin(f_area);
     return HE_OK;
 }
-
 real f_area_energy(const real *x, const real *y, const real *z) {
     return he_f_area_energy(f_area, he, x, y, z);
 }
-
 int f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -168,7 +160,6 @@ int f_garea_ini(real a0, real K) {
     he_f_garea_ini(a0, K, he, /**/ &f_garea);
     return HE_OK;
 }
-
 int f_garea_fin() {
     he_f_garea_fin(f_garea);
     return HE_OK;
@@ -181,8 +172,6 @@ real f_garea_energy(const real *x, const real *y, const real *z) {
 int f_garea_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_garea_force(f_garea, he, x, y, z, /**/ fx, fy, fz);
 }
-
-
 int f_volume_ini(real a0, real K) {
     he_f_volume_ini(a0, K, he, /**/ &f_volume);
     return HE_OK;
@@ -202,7 +191,6 @@ real f_volume_energy(const real *x, const real *y, const real *z) {
 int f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_volume_force(f_volume, he, x, y, z, /**/ fx, fy, fz);
 }
-
 int f_harmonic_ini(real a0, real K) {
     he_f_harmonic_ini(a0, K, he, /**/ &f_harmonic);
     return HE_OK;
@@ -262,7 +250,6 @@ real f_kantor_energy(const real *x, const real *y, const real *z) {
 int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
 }
-
 int f_juelicher_ini(real K, real C0, real Kad, real DA0D) {
     he_f_juelicher_ini(K, C0, Kad, DA0D, he, /**/ &f_juelicher);
     return HE_OK;
@@ -385,8 +372,6 @@ int f_meyer_curva_gauss_ver(real **p) {
 int f_meyer_energy_ver(real **p) {
   return he_f_meyer_energy_ver(f_meyer, p);
 }
-
-
 int f_bending_ini(const  char *name, BendingParam param) {
     bending_ini(name, param, he, /**/ &f_bending);
     return HE_OK;
