@@ -41,6 +41,10 @@ int main(__UNUSED int argc, const char **v) {
         vec(a); vec(b);
         vec_project(a, b, c);
         vec_printf(c, "%g");
+    } else if (eq(op, "reject")) {
+        vec(a); vec(b);
+        vec_reject(a, b, c);
+        vec_printf(c, "%g");
     } else
         ER("unknown operation '%s'", op);
     return 0;

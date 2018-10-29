@@ -126,12 +126,18 @@ int vec_norm(const real a[3], /**/ real b[3]) {
     return HE_OK;
 }
 
-/* `c' = project `a' on `b' */
 int vec_project(const real a[3], const real b[3], /**/ real c[3]) {
     real n[3], s;
     vec_norm(b, /**/ n);
     s = vec_dot(a, n);
     vec_scalar(n, s, /**/ c);
+    return HE_OK;
+}
+
+int vec_reject(const real a[3], const real b[3], /**/ real c[3]) {
+    real p[3];
+    vec_project(a, b, /**/ p);
+    vec_minus(a, p, /**/ c);
     return HE_OK;
 }
 
