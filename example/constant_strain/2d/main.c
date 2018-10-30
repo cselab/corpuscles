@@ -37,7 +37,7 @@ static real energy() {
                        v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                        NULL, NULL, NULL, NULL, NULL, NULL,
                        &I1, &I2, &A);
-    return F(NULL, I1, I2)*A;
+    return F(NULL, I1, I2);
 }
 
 static int scl(/**/ real *p) {
