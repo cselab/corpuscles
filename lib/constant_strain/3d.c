@@ -14,10 +14,9 @@ int constant_strain_force(void *param,
                           const real a[3], const real b[3], const real c[3], /**/
                           real da_tot[3], real db_tot[3], real dc_tot[3]) {
     real da[3], db[3], dc[3];
-    real dA[3], dB[3], dC[3];
     real ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
     real dvx, dvy, dux, duy, dwx, dwy;
-    real deng, eng, area, I1, I2;
+    real area, I1, I2;
 
     tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
     tri_3to2(a, b, c, /**/ &ux, &uy, &wx, &wy);
