@@ -13,7 +13,6 @@
 
 #define T HeRead
 #define SIZE (MAX_STRING_SIZE)
-#define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__);
 #define MAGIC (42)
 
 struct T {
@@ -145,19 +144,19 @@ int he_read_ini(const char *path, T **pq) {
     int nv, nt, ne, nh;
 
 #   define NXT() if (util_fgets(line, f) == NULL)  \
-        E("unexpected EOF in '%s'", path)
+        ERR(HE_IO, "unexpected EOF in '%s'", path)
     MALLOC(1, &q);
     f = fopen(path, "r");
-    if (f == NULL) E("fail to open '%s'", path);
+    if (f == NULL) ERR(HE_IO, "fail to open '%s'", path);
     NXT();
     if (!util_eq(line, "HE"))
-        E("'%s' is not a he file", path);
+        ERR(HE_IO, "'%s' is not a he file", path);
     NXT();
     cnt = sscanf(line, "%d %d %d %d", &nv, &ne, &nt, &nh);
     if (cnt != 4)
-        E("'%s' != [nv nt ne nh] in '%s'", line, path);
+        ERR(HE_IO, "'%s' != [nv nt ne nh] in '%s'", line, path);
     if (nv <= 0 || nt <= 0 || ne <= 0 || nh <= 0)
-        E("wrong sizes '%s' in '%s'", line, path);
+        ERR(HE_IO, "wrong sizes '%s' in '%s'", line, path);
 
     alloc(nv, ne, nt, nh, /**/ q);
 
@@ -165,35 +164,35 @@ int he_read_ini(const char *path, T **pq) {
         NXT();
         cnt = sscanf(line, "%d %d  %d %d %d",
                      &q->nxt[i], &q->flp[i], &q->ver[i], &q->edg[i], &q->tri[i]);
-        if (cnt != 5) E("wrong half-edg line '%s' in '%s'", line, path);
+        if (cnt != 5) ERR(HE_IO, "wrong half-edg line '%s' in '%s'", line, path);
     }
     for (i = 0; i < nv; i++) {
         NXT();
         cnt = sscanf(line, "%d", &q->hdg_ver[i]);
-        if (cnt != 1) E("wrong ver line '%s' in '%s'", line, path);
+        if (cnt != 1) ERR(HE_IO, "wrong ver line '%s' in '%s'", line, path);
     }
     for (i = 0; i < ne; i++) {
         NXT();
         cnt = sscanf(line, "%d", &q->hdg_edg[i]);
-        if (cnt != 1) E("wrong edg line '%s' in '%s'", line, path);
+        if (cnt != 1) ERR(HE_IO, "wrong edg line '%s' in '%s'", line, path);
     }
     for (i = 0; i < nt; i++) {
         NXT();
         cnt = sscanf(line, "%d", &q->hdg_tri[i]);
-        if (cnt != 1) E("wrong tri line '%s' in '%s'", line, path);
+        if (cnt != 1) ERR(HE_IO, "wrong tri line '%s' in '%s'", line, path);
     }
     if (fclose(f) != 0)
-        E("fail to close file '%s'", path);
+        ERR(HE_IO, "fail to close file '%s'", path);
 
     q->nv = nv; q->nt = nt; q->ne = ne; q->nh = nh;
     q->magic = MAGIC;
 
     if (valid(nv, q->hdg_ver, q->ver) != OK)
-        E("invalid ver references");
+        ERR(HE_IO, "invalid ver references");
     if (valid(ne, q->hdg_edg, q->edg) != OK)
-        E("invalid edg references");
+        ERR(HE_IO, "invalid edg references");
     if (valid(nt, q->hdg_tri, q->tri) != OK)
-        E("invalid tri references");
+        ERR(HE_IO, "invalid tri references");
 
     *pq = q;
     return HE_OK;
@@ -253,12 +252,12 @@ int he_read_nt(T *q) { return q->nt; }
 int he_read_ne(T *q) { return q->ne; }
 int he_read_nh(T *q) { return q->nh; }
 
-int he_read_nxt(T *q, int **p) { *p = q->nxt; return HE_OK; };
-int he_read_flp(T *q, int **p) { *p = q->flp; return HE_OK; };
-int he_read_ver(T *q,  int **p) { *p = q->ver; return HE_OK; };
-int he_read_tri(T *q,  int **p) { *p = q->tri; return HE_OK; };
-int he_read_edg(T *q,  int **p) { *p = q->edg; return HE_OK; };
+int he_read_nxt(T *q, int **p) { *p = q->nxt; return HE_OK; }
+int he_read_flp(T *q, int **p) { *p = q->flp; return HE_OK; }
+int he_read_ver(T *q,  int **p) { *p = q->ver; return HE_OK; }
+int he_read_tri(T *q,  int **p) { *p = q->tri; return HE_OK; }
+int he_read_edg(T *q,  int **p) { *p = q->edg; return HE_OK; }
 
-int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return HE_OK; };
-int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; };
-int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; };
+int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return HE_OK; }
+int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; }
+int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; }

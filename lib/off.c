@@ -13,7 +13,7 @@
 
 #define T HeOff
 enum {SIZE = MAX_STRING_SIZE};
-#define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__);
+
 #define FMT XE_REAL_IN
 
 struct T {
@@ -33,29 +33,29 @@ int he_off_ini(const char *path, T **pq) {
 
     MALLOC(1, &q);
     f = fopen(path, "r");
-    if (f == NULL) E("fail to open '%s'", path);
+    if (f == NULL) ERR(HE_IO, "fail to open '%s'", path);
 
 #   define NXT() if (util_comment_fgets(line, f) == NULL)  \
-        E("unexpected EOF in '%s'", path)
+        ERR(HE_IO, "unexpected EOF in '%s'", path)
     NXT();
     if (!util_eq(line, "OFF"))
-        E("'%s' is not an off file", path);
+        ERR(HE_IO, "'%s' is not an off file", path);
     NXT();
     cnt = sscanf(line, "%d %d %*d", &nv, &nt);
     if (3*nt < nv)
-        E("3*(nt=%d)   <   nv=%d", nt, nv);
+        ERR(HE_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
 
     MALLOC(3*nv, &q->ver); ver = q->ver;
     MALLOC(3*nt, &q->tri); tri = q->tri;
 
     if (cnt != 2)
-        E("'%s' != [nv nt ne] in '%s'", line, path);
+        ERR(HE_IO, "'%s' != [nv nt ne] in '%s'", line, path);
     for (i = 0; i < nv; i++) {
         NXT();
         x = ver++; y = ver++; z = ver++;
         cnt  = sscanf(line, FMT " " FMT " " FMT, x, y, z);
         if (cnt != 3)
-            E("wrong ver line '%s' in '%s'", line, path);
+            ERR(HE_IO, "wrong ver line '%s' in '%s'", line, path);
     }
 
     for (i = 0; i < nt; i++) {
@@ -63,9 +63,9 @@ int he_off_ini(const char *path, T **pq) {
         t0 = tri++; t1 = tri++; t2 = tri++;
         cnt  = sscanf(line, "%d %d %d %d", &np, t0, t1, t2);
         if (cnt != 4)
-            E("wrong tri line '%s' in '%s'", line, path);
+            ERR(HE_IO, "wrong tri line '%s' in '%s'", line, path);
         if (np != 3)
-            E("not a triangle '%s' in '%s'", line, path);
+            ERR(HE_IO, "not a triangle '%s' in '%s'", line, path);
     }
     fclose(f);
     q->nv = nv; q->nt = nt;
@@ -79,7 +79,7 @@ int he_off_fin(T *q) {
     return HE_OK;
 }
 
-int he_off_nt(T *q) { return q->nt; };
+int he_off_nt(T *q) { return q->nt; }
 int he_off_nv(T *q) { return q->nv; };
 int he_off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
 int he_off_xyz(T *q, real *x, real *y, real *z) {

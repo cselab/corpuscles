@@ -71,7 +71,7 @@ dE: subst(ds, factor(diff(E))) $
 dE: ratsubst('F,   F(I1, I2), dE) $
 dE: expand(dE) $
 
-d: px*qy - py*qx ;
+d: (px+1)*qy-py*qx+px+1;
 
 abx: ax - bx;
 aby: ay - by;
@@ -126,11 +126,9 @@ I1: rsq(factor(I1));
 Fa: F1(param, 'I1, 'I2) $
 Fb: F2(param, 'I1, 'I2) $
 
-nl():=newline();
-
 pI1: 'I1 $
 pI2: 'I2 $
-pA : REAL_ABS('Q)/2;
+pA : 'Q/2;
 
 with_stdout("body",
   cg(Q),

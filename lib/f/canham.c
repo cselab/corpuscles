@@ -72,7 +72,6 @@ static real sum(int n, real *a) {
     real v;
     HeSum *sum;
     he_sum_ini(&sum);
-    v = 0;
     for (i = 0; i < n; i++)
         he_sum_add(sum, a[i]);
     v = he_sum_get(sum);

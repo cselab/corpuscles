@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdio.h>
 
 #include "real.h"
 #include "he/err.h"
@@ -6,6 +7,7 @@
 #include "he/memory.h"
 #include "he/macro.h"
 #include "he/constant_strain/3d.h"
+#include "he/util.h"
 #include "he/strain.h"
 
 #define T Strain
@@ -22,37 +24,65 @@ static real sq(real x) { return x*x; }
 static real F_skalak(void *p0, real I1, real I2)  {
     P *p;
     real Ks, Ka;
-
     p = (P*)p0;
     Ks = p->Ks; Ka = p->Ka;
-
-    return (((-2*I2)+sq(I1)+2*I1)*Ks)/12+(sq(I2)*Ka)/12;
+    return Ks*(sq(I1)/2+I1-I2)/4 + Ka*sq(I2)/8;
 }
 static real F1_skalak(void *p0, real I1, __UNUSED real I2) {
     P *p;
     real Ks;
     p = (P*)p0;
     Ks = p->Ks;
-    return  (I1+1)*Ks/6;
+    return  Ks*(I1+1)/4;
 }
 static real F2_skalak(void *p0, __UNUSED real I1, real I2) {
     P *p;
     real Ka, Ks;
-
     p = (P*)p0;
     Ka = p->Ka; Ks = p->Ks;
-    return -(Ks-I2*Ka)/6;
+    return -(Ks-I2*Ka)/4;
 }
 
-int strain_ini(__UNUSED const char *name, P param, /**/ T **pq) {
+
+static real F_linear(void *p0, real I1, real I2)  {
+    P *p;
+    real Ks, Ka;
+    p = (P*)p0;
+    Ks = p->Ks; Ka = p->Ka;
+    return Ks*sq(I1) + Ka*sq(I2);
+}
+static real F1_linear(void *p0, real I1, __UNUSED real I2) {
+    P *p;
+    real Ks;
+    p = (P*)p0;
+    Ks = p->Ks;
+    return  2*Ks*I1;
+}
+static real F2_linear(void *p0, __UNUSED real I1, real I2) {
+    P *p;
+    real Ka;
+    p = (P*)p0;
+    Ka = p->Ka;
+    return 2*Ka*I2;
+}
+
+
+int strain_ini(const char *name, P param, /**/ T **pq) {
     T *q;
 
     MALLOC(1, &q);
-    q->param = param;
-    q->F = F_skalak;
-    q->F1 = F1_skalak;
-    q->F2 = F2_skalak;
+    if (util_eq(name, "skalak")) {
+        q->F = F_skalak;
+        q->F1 = F1_skalak;
+        q->F2 = F2_skalak;
+    } else if (util_eq(name, "linear")) {
+        q->F = F_linear;
+        q->F1 = F1_linear;
+        q->F2 = F2_linear;
+    } else
+        ERR(HE_INDEX, "unknown strain model: '%s'", name);
 
+    q->param = param;
     *pq = q;
     return HE_OK;
 }
@@ -66,14 +96,13 @@ int strain_force(T *q,
                  const real a[3], const real b[3], const real c[3], /**/
                  real da[3], real db[3], real dc[3]) {
     P *param;
-    TypeFun F, F1, F2;
+    TypeFun F1, F2;
 
     param = &q->param;
-    F = q->F;
     F1 = q->F1;
     F2 = q->F2;
 
-    constant_strain_force((void*)param, F, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+    constant_strain_force((void*)param, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
     return HE_OK;
 }
 

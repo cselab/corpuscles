@@ -25,33 +25,17 @@ int constant_strain_2d(void *param, real (*F1)(void*, real, real),
     I2 = (px*qy+qy-py*qx+px)*(px*qy+qy-py*qx+px+2);
     Fa = F1(param,I1,I2);
     Fb = F2(param,I1,I2);
-    d = px*qy-py*qx;
+    d = (px+1)*qy-py*qx+px+1;
     
-    SET(dvx, 
-    (2*(Fb*(cby*qy+cbx*qx+cy-by)*((px+1)*qy-py*qx+px+1)
-       -Fa*(cbx*qx-(cby*px+cy)+by)))
-     /Q);
-    SET(dvy, 
-    -(2*(Fb*(cby*py+cbx*px+cx-bx)*((px+1)*qy-py*qx+px+1)
-        +Fa*(cbx*qy-cby*py+cx-bx)))
-     /Q);
-    SET(dux, 
-    (2*(Fa*(cax*qx-(cay*px+cy)+ay)-Fb*(cay*qy+cax*qx+cy-ay)
-                                     *((px+1)*qy-py*qx+px+1)))
-     /Q);
-    SET(duy, 
-    (2*(Fb*(cay*py+cax*px+cx-ax)*((px+1)*qy-py*qx+px+1)+Fa*(cax*qy-cay*py+cx-ax)))
-     /Q);
-    SET(dwx, 
-    (2*(Fa*(abx*qx-aby*px+by-ay)-Fb*(aby*qy+abx*qx-by+ay)*((px+1)*qy-py*qx+px+1)))
-     /Q);
-    SET(dwy, 
-    (2*(Fb*(aby*py+abx*px-bx+ax)*((px+1)*qy-py*qx+px+1)
-       +Fa*(abx*qy-(aby*py+bx)+ax)))
-     /Q);
+    SET(dvx, (2*(Fb*d*(cby*qy+cbx*qx+cy-by)-Fa*(cbx*qx-(cby*px+cy)+by)))/Q);
+    SET(dvy, -(2*(Fa*(cbx*qy-cby*py+cx-bx)+Fb*d*(cby*py+cbx*px+cx-bx)))/Q);
+    SET(dux, (2*(Fa*(cax*qx-(cay*px+cy)+ay)-Fb*d*(cay*qy+cax*qx+cy-ay)))/Q);
+    SET(duy, (2*(Fa*(cax*qy-cay*py+cx-ax)+Fb*d*(cay*py+cax*px+cx-ax)))/Q);
+    SET(dwx, (2*(Fa*(abx*qx-aby*px+by-ay)-Fb*d*(aby*qy+abx*qx-by+ay)))/Q);
+    SET(dwy, (2*(Fa*(abx*qy-(aby*py+bx)+ax)+Fb*d*(aby*py+abx*px-bx+ax)))/Q);
     SET(pI1, I1);
     SET(pI2, I2);
-    SET(pA, REAL_ABS(Q)/2.0E+0);
+    SET(pA, Q/2.0E+0);
 
     return HE_OK;
 }
