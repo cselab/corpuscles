@@ -9,7 +9,7 @@
 #define T HeSum
 
 typedef struct T T;
-struct T { real c, y, sum; };
+struct T { real c, sum; };
 
 int he_sum_ini(/**/ T **pq) {
     T *q;
@@ -23,14 +23,14 @@ int he_sum_fin(T *q) { FREE(q); return HE_OK; }
 int he_sum_add(T *q, real input) {
     real t;
     real y, c, sum;
-    y = q->y; c = q->c; sum = q->sum;
+    c = q->c; sum = q->sum;
     
     y = input - c;
     t = sum + y;
     c = (t - sum) - y;
     sum = t;
 
-    q->y = y; q->c = c; q->sum = sum;
+    q->c = c; q->sum = sum;
     return HE_OK;
 }
 
