@@ -11,22 +11,6 @@
 
 int ddih_angle(const real a[3], const real b[3], const real c[3], const real d[3], /**/
                real da[3], real db[3], real dc[3], real dd[3]) {
-
-  
-  real da_s[3], db_s[3], dc_s[3], dd_s[3];
-  
-  ddih_angle_sup(a, b, c, d, /**/ da_s, db_s, dc_s, dd_s);
-
-  vec_negative(da_s, da);
-  vec_negative(db_s, db);
-  vec_negative(dc_s, dc);
-  vec_negative(dd_s, dd);
-  
-  return HE_OK;
-}
-
-int ddih_angle_sup(const real a[3], const real b[3], const real c[3], const real d[3], /**/
-               real da[3], real db[3], real dc[3], real dd[3]) {
     real n[3], k[3];
     real e, An, Ak, cn, bn, bk, ck;
 
@@ -55,6 +39,21 @@ int ddih_angle_sup(const real a[3], const real b[3], const real c[3], const real
     vec_linear_combination(-cn/e, n, -ck/e, k,    db);
 
     return HE_OK;
+}
+int ddih_angle_sup(const real a[3], const real b[3], const real c[3], const real d[3], /**/
+               real da_s[3], real db_s[3], real dc_s[3], real dd_s[3]) {
+
+  
+  real da[3], db[3], dc[3], dd[3];
+  
+  ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
+
+  vec_negative(da, da_s);
+  vec_negative(db, db_s);
+  vec_negative(dc, dc_s);
+  vec_negative(dd, dd_s);
+  
+  return HE_OK;
 }
 
 int ddih_cos(const real a[3], const real b[3], const real c[3], const real d[3], /**/
