@@ -237,7 +237,7 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
         if (bnd(h)) continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        theta[e] = tri_dih(a, b, c, d);
+        theta[e] = dih_angle_sup(a, b, c, d);
     }
     return HE_OK;
 }
@@ -338,7 +338,7 @@ static int f_len(Param param, He *he, Size size,
         vec_get(i, xx, yy, zz, /**/ b);
         vec_get(j, xx, yy, zz, /**/ c);
         dedg_abs(b, c, db, dc);
-        coef =  (H[i] + H[j] - 2*H0)*theta[e];
+        coef =  (H[i]+H[j]-2*H0)*theta[e];
         vec_scalar_append(db, coef, i, fx, fy, fz);
         vec_scalar_append(dc, coef, j, fx, fy, fz);
     }
@@ -363,8 +363,8 @@ static int f_theta(Param param, He *he, Size size,
         if (bnd(h)) continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        ddih_angle(a, b, c, d, da, db, dc, dd);
-        coef =  (H[j] + H[k] - 2*H0)*len[e];
+        ddih_angle_sup(a, b, c, d, da, db, dc, dd);
+        coef = (H[j]+H[k]-2*H0)*len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -427,7 +427,7 @@ static int fad_theta(He *he, Size size, real coef,
         if (bnd(h)) continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        ddih_angle(a, b, c, d, da, db, dc, dd);
+        ddih_angle_sup(a, b, c, d, da, db, dc, dd);
         vec_scalar_append(da, coef*len[e], i, fx, fy, fz);
         vec_scalar_append(db, coef*len[e], j, fx, fy, fz);
         vec_scalar_append(dc, coef*len[e], k, fx, fy, fz);
@@ -509,7 +509,7 @@ int he_f_juelicher_xin_force(T *q, He *he,
 
     fad_len(he, size, scurv/2, theta, x, y, z, /**/ fxad, fyad, fzad);
     fad_theta(he, size, scurv/2, len, x, y, z, /**/ fxad, fyad, fzad);
-    fad_area(he, size, -scurv*scurv/6, x, y, z, /**/ fxad, fyad, fzad);
+    fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);
     scale(nv, pi*Kad, fxad);
     scale(nv, pi*Kad, fyad);
     scale(nv, pi*Kad, fzad);
