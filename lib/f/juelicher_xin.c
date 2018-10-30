@@ -189,7 +189,6 @@ static int get4(const real *x, const real *y, const real *z,
     vec_get(l, x, y, z, /**/ d);
     return HE_OK;
 }
-
 static int compute_area(He *he, Size size, const real *xx, const real *yy, const real *zz, /**/ real *area) {
     int t, i, j, k;
     int nv, nt;
@@ -262,7 +261,7 @@ static int compute_len_theta(He *he, Size size, real *len, real *theta, /**/ rea
     return HE_OK;
 }
 
-static int compute_energy(Param param, int nv, real *area, real *H, /**/ real *energy) {
+static int compute_energy_local(Param param, int nv, real *area, real *H, /**/ real *energy) {
     real H0;
     int v;
 
@@ -307,7 +306,7 @@ real he_f_juelicher_xin_energy(T *q, He *he,
     divide(nv, len_theta, area, /**/ H);
     scale(nv, 0.25, /**/ H);
 
-    compute_energy(param, nv, area, H, /**/ energy);
+    compute_energy_local(param, nv, area, H, /**/ energy);
     scale(nv, 2*K, energy);
     eng_bend = sum(nv, energy);
 
@@ -316,7 +315,7 @@ real he_f_juelicher_xin_energy(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (len_theta_tot/2 - DA0D)/area_tot;
 
-    eng_ad = pi*Kad*area_tot*scurv*scurv; /* TODO: this should divide 2 */
+    eng_ad = pi*Kad*area_tot*scurv*scurv/2; 
     //printf("eng_bend, eng_ad, area_tot:%f, %f, %f\n", eng_bend, eng_ad, area_tot);
     return eng_bend + eng_ad;
 }
@@ -354,7 +353,7 @@ static int f_theta(Param param, He *he, Size size,
     int i, j, k, l;
     real coef, H0;
     real a[3], b[3], c[3], d[3];
-    real da[3], db[3], dc[3], dd[3], u[3];
+    real da[3], db[3], dc[3], dd[3];
 
     ne = size.ne;
     H0 = param.H0;
@@ -365,8 +364,7 @@ static int f_theta(Param param, He *he, Size size,
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
-        vec_minus(c, b, u);
-        coef =  -(H[j] + H[k] - 2*H0)*len[e];
+        coef =  (H[j] + H[k] - 2*H0)*len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -385,13 +383,13 @@ static int f_area(Param param, He *he, Size size, const real *H,
     nt = size.nt;
     H0 = param.H0;
     for (t = 0; t < nt; t++) {
-        get_ijk(t, he, &i, &j, &k);
-        get3(xx, yy, zz, i, j, k, a, b, c);
-        dtri_area(a, b, c, da, db, dc);
-        coef = -2*(H[i]*H[i] + H[j]*H[j] + H[k]*H[k] - 3*H0*H0)/3;
-        vec_scalar_append(da, coef, i, fx, fy, fz);
-        vec_scalar_append(db, coef, j, fx, fy, fz);
-        vec_scalar_append(dc, coef, k, fx, fy, fz);
+      get_ijk(t, he, &i, &j, &k);
+      get3(xx, yy, zz, i, j, k, a, b, c);
+      dtri_area(a, b, c, da, db, dc);
+      coef = -2*(H[i]*H[i] + H[j]*H[j] + H[k]*H[k] - 3*H0*H0)/3;
+      vec_scalar_append(da, coef, i, fx, fy, fz);
+      vec_scalar_append(db, coef, j, fx, fy, fz);
+      vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
     return HE_OK;
 }
@@ -422,7 +420,7 @@ static int fad_theta(He *he, Size size, real coef,
     int h, e, ne;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3];
-    real da[3], db[3], dc[3], dd[3], u[3];
+    real da[3], db[3], dc[3], dd[3];
     ne = size.ne;
     for (e = 0; e < ne; e++) {
         h = hdg_edg(e);
@@ -430,7 +428,6 @@ static int fad_theta(He *he, Size size, real coef,
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
-        vec_minus(c, b, u);
         vec_scalar_append(da, coef*len[e], i, fx, fy, fz);
         vec_scalar_append(db, coef*len[e], j, fx, fy, fz);
         vec_scalar_append(dc, coef*len[e], k, fx, fy, fz);
@@ -510,12 +507,12 @@ int he_f_juelicher_xin_force(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (len_theta_tot/2 - DA0D)/area_tot;
 
-    fad_len(he, size, scurv, theta, x, y, z, /**/ fxad, fyad, fzad);
-    fad_theta(he, size, -scurv, len, x, y, z, /**/ fxad, fyad, fzad);
-    fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);
-    scale(nv, 2*pi*Kad, fxad);
-    scale(nv, 2*pi*Kad, fyad);
-    scale(nv, 2*pi*Kad, fzad);
+    fad_len(he, size, scurv/2, theta, x, y, z, /**/ fxad, fyad, fzad);
+    fad_theta(he, size, scurv/2, len, x, y, z, /**/ fxad, fyad, fzad);
+    fad_area(he, size, -scurv*scurv/6, x, y, z, /**/ fxad, fyad, fzad);
+    scale(nv, pi*Kad, fxad);
+    scale(nv, pi*Kad, fyad);
+    scale(nv, pi*Kad, fzad);
 
     plus(nv, fxad, /*io*/ fx_tot);
     plus(nv, fyad, /*io*/ fy_tot);
@@ -523,7 +520,7 @@ int he_f_juelicher_xin_force(T *q, He *he,
     return HE_OK;
 }
 
-int he_f_juelicher_xin_curva_mean(T *q, /**/ real **pa) {
+int he_f_juelicher_xin_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->H;
     return HE_OK;
 }
@@ -534,6 +531,6 @@ int he_f_juelicher_xin_energy_ver(T *q, /**/ real **pa) {
 }
 
 int he_f_juelicher_xin_area_ver(T *q, /**/ real **pa) {
-    *pa = q->area;
-    return HE_OK;
+  *pa = q->area;
+  return HE_OK;
 }
