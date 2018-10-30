@@ -126,11 +126,9 @@ I1: rsq(factor(I1));
 Fa: F1(param, 'I1, 'I2) $
 Fb: F2(param, 'I1, 'I2) $
 
-nl():=newline();
-
 pI1: 'I1 $
 pI2: 'I2 $
-pA : REAL_ABS('Q)/2;
+pA : 'Q/2;
 
 with_stdout("body",
   cg(Q),
