@@ -60,7 +60,7 @@ static real F1_linear(void *p0, real I1, __UNUSED real I2) {
 }
 static real F2_linear(void *p0, __UNUSED real I1, real I2) {
     P *p;
-    real Ka, Ksuu;
+    real Ka;
     p = (P*)p0;
     Ka = p->Ka;
     return 2*Ka*I2;
