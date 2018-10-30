@@ -4,7 +4,11 @@
 #include "he/hash.h"
 
 #define T HeHash
-#define E(fmt, ...) ERR(HE_INDEX, fmt, ##__VA_ARGS__);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#define E(fmt, ...) ERR(HE_INDEX, fmt, ##__VA_ARGS__)
+#pragma clang diagnostic pop
+
 
 typedef struct Node Node;
 struct Node {
