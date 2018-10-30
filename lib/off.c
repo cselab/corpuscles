@@ -13,7 +13,12 @@
 
 #define T HeOff
 enum {SIZE = MAX_STRING_SIZE};
-#define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__);
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__)
+#pragma clang diagnostic pop
+
 #define FMT XE_REAL_IN
 
 struct T {
@@ -79,7 +84,7 @@ int he_off_fin(T *q) {
     return HE_OK;
 }
 
-int he_off_nt(T *q) { return q->nt; };
+int he_off_nt(T *q) { return q->nt; }
 int he_off_nv(T *q) { return q->nv; };
 int he_off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
 int he_off_xyz(T *q, real *x, real *y, real *z) {

@@ -13,7 +13,10 @@
 
 #define T HeRead
 #define SIZE (MAX_STRING_SIZE)
-#define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#define E(fmt, ...) ERR(HE_IO, fmt, ##__VA_ARGS__)
+#pragma clang diagnostic pop
 #define MAGIC (42)
 
 struct T {
@@ -253,12 +256,12 @@ int he_read_nt(T *q) { return q->nt; }
 int he_read_ne(T *q) { return q->ne; }
 int he_read_nh(T *q) { return q->nh; }
 
-int he_read_nxt(T *q, int **p) { *p = q->nxt; return HE_OK; };
-int he_read_flp(T *q, int **p) { *p = q->flp; return HE_OK; };
-int he_read_ver(T *q,  int **p) { *p = q->ver; return HE_OK; };
-int he_read_tri(T *q,  int **p) { *p = q->tri; return HE_OK; };
-int he_read_edg(T *q,  int **p) { *p = q->edg; return HE_OK; };
+int he_read_nxt(T *q, int **p) { *p = q->nxt; return HE_OK; }
+int he_read_flp(T *q, int **p) { *p = q->flp; return HE_OK; }
+int he_read_ver(T *q,  int **p) { *p = q->ver; return HE_OK; }
+int he_read_tri(T *q,  int **p) { *p = q->tri; return HE_OK; }
+int he_read_edg(T *q,  int **p) { *p = q->edg; return HE_OK; }
 
-int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return HE_OK; };
-int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; };
-int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; };
+int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return HE_OK; }
+int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; }
+int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; }
