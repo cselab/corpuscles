@@ -39,9 +39,10 @@ int fd(real da[3], real db[3], real dc[3]) {
     return HE_OK;
 }
 
-int print2(const real a[3], const real b[3]) {
+int print3(const real a[3], const real b[3], const real c[3]) {
     enum {X, Y, Z};
-    printf("%.16g %.16g %.16g %.16g %.16g %.16g\n", a[X], a[Y], a[Z], b[X], b[Y], b[Z]);
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",
+           a[X], a[Y], a[Z], b[X], b[Y], b[Z], c[X], c[Y], c[Z]);
     return HE_OK;
 }
 
@@ -69,10 +70,10 @@ int main(__UNUSED int argc, const char **argv0) {
         MSG("eng: %g", eng);
         strain_force(strain, a0, b0, c0,   a, b, c,   da, db, dc);
         fd(ha, hb, hc);
-        printf("x y z hx hy hz\n");
-        print2(da, ha);
-        print2(db, hb);
-        print2(dc, hc);
+        printf("x y z fx fy fz hx hy hz\n");
+        print3(a, da, ha);
+        print3(b, db, hb);
+        print3(c, dc, hc);
 
     } else if (eq(op, "energy")) {
         vec(a0); vec(b0); vec(c0);
