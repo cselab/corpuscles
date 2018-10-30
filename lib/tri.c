@@ -68,13 +68,15 @@ real tri_angle(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     return vec_angle(u, v);
 }
 
+#define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
 real tri_cot(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     real x, y, u[3], v[3];
     y = 2 * tri_area(a, b, c);
     vec_minus(a, b, u);
     vec_minus(c, b, v);
     x = vec_dot(u, v);
-    return x/y; /* TODO: */
+    NOT_ZERO(y);
+    return x/y;
 }
 
 /* bc is an edge */
