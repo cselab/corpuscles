@@ -18,35 +18,33 @@ static real *xx, *yy, *zz, *gx, *gy, *gz, *fm, *fx, *fy, *fz;
 static int nv, nt;
 static HeFStrain *strain;
 static He *he;
-static real h = 1e-6;
+static real h = 1e-8;
 
 int main0() {
     int i;
     real *eng, e, eh, tmp;
     StrainParam param;
-    param.Ka = 0;
-    param.Ks = 0;
+    param.Ka = 10;
+    param.Ks = 10;
 
-    he_f_strain_ini("skalak", param, xx, yy, zz, he, /**/ &strain);
+    he_f_strain_ini("linear", param, xx, yy, zz, he, /**/ &strain);
     for (i = 0; i < nv; i++) {
-        //  xx[i] += 0.01 * sin(2*pi*i/nv);
+        xx[i] += 0.01*xx[i]*yy[i];
+        yy[i] += 0.01*xx[i]*xx[i];
     }
     he_f_strain_force(strain, he, xx, yy, zz, /**/ fx, fy, fz);
     e = he_f_strain_energy(strain, he, xx, yy, zz);
     he_f_strain_energy_ver(strain, &eng);
     MSG("eng: %g", e);
-    
     for (i = 0; i < nv; i++) {
         tmp = xx[i]; xx[i] += h; eh = he_f_strain_energy(strain, he, xx, yy, zz); xx[i] = tmp;
         gx[i] = (eh - e)/h; 
     }
     real *queue[] = {xx, yy, zz, fx, fy, fz, gx, gy, gz, eng, NULL};
     puts("x y z fx fy fz gx gy gz eng");
-    MSG("xx[0]: %g", xx[0]);
-    MSG("xx[1]: %g", xx[1]);
-    
-    punto_write(nv, queue, "/dev/stdout");
+    punto_fwrite(nv, queue, stdout);
     he_f_strain_fin(strain);
+    
     return HE_OK;
 }
 
@@ -69,6 +67,7 @@ int main(int __UNUSED argc, const char *v[]) {
     he_off_xyz(off, xx, yy, zz);
 
     main0();
+    
     FREE(xx); FREE(yy); FREE(zz);
     FREE(fm); FREE(fx); FREE(fy); FREE(fz);
     FREE(gx); FREE(gy); FREE(gz);    
