@@ -51,7 +51,7 @@ int constant_strain_2d(void *param, real (*F1)(void*, real, real),
      /Q);
     SET(pI1, I1);
     SET(pI2, I2);
-    SET(pA, REAL_ABS(Q)/2.0E+0);
+    SET(pA, Q/2.0E+0);
 
     return HE_OK;
 }

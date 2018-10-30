@@ -18,16 +18,16 @@ static real *xx, *yy, *zz, *gx, *gy, *gz, *fm, *fx, *fy, *fz;
 static int nv, nt;
 static HeFStrain *strain;
 static He *he;
-static real h = 1e-8;
+static real h = 1e-10;
 
 int main0() {
     int i;
     real *eng, e, eh, tmp;
     StrainParam param;
-    param.Ka = 10;
-    param.Ks = 10;
+    param.Ka = 0;
+    param.Ks = 1;
 
-    he_f_strain_ini("linear", param, xx, yy, zz, he, /**/ &strain);
+    he_f_strain_ini("skalak", param, xx, yy, zz, he, /**/ &strain);
     for (i = 0; i < nv; i++) {
         xx[i] += 0.01*xx[i]*yy[i];
         yy[i] += 0.01*xx[i]*xx[i];
