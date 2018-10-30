@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdio.h>
 
 #include "real.h"
 #include "he/err.h"
@@ -6,6 +7,7 @@
 #include "he/memory.h"
 #include "he/macro.h"
 #include "he/constant_strain/3d.h"
+#include "he/util.h"
 #include "he/strain.h"
 
 #define T Strain
@@ -41,15 +43,46 @@ static real F2_skalak(void *p0, __UNUSED real I1, real I2) {
     return -(Ks-I2*Ka)/4;
 }
 
-int strain_ini(__UNUSED const char *name, P param, /**/ T **pq) {
+
+static real F_linear(void *p0, real I1, real I2)  {
+    P *p;
+    real Ks, Ka;
+    p = (P*)p0;
+    Ks = p->Ks; Ka = p->Ka;
+    return Ks*sq(I1) + Ka*sq(I2);
+}
+static real F1_linear(void *p0, real I1, __UNUSED real I2) {
+    P *p;
+    real Ks;
+    p = (P*)p0;
+    Ks = p->Ks;
+    return  2*Ks*I1;
+}
+static real F2_linear(void *p0, __UNUSED real I1, real I2) {
+    P *p;
+    real Ka, Ksuu;
+    p = (P*)p0;
+    Ka = p->Ka;
+    return 2*Ka*I2;
+}
+
+
+int strain_ini(const char *name, P param, /**/ T **pq) {
     T *q;
 
     MALLOC(1, &q);
-    q->param = param;
-    q->F = F_skalak;
-    q->F1 = F1_skalak;
-    q->F2 = F2_skalak;
+    if (util_eq(name, "skalak")) {
+        q->F = F_skalak;
+        q->F1 = F1_skalak;
+        q->F2 = F2_skalak;
+    } else if (util_eq(name, "linear")) {
+        q->F = F_linear;
+        q->F1 = F1_linear;
+        q->F2 = F2_linear;
+    } else
+        ERR(HE_INDEX, "unknown strain model: '%s'", name);
 
+    q->param = param;
     *pq = q;
     return HE_OK;
 }
