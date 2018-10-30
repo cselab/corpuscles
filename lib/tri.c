@@ -87,15 +87,15 @@ int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], 
 }
 
 int tri_3to2(const real a[3], const real b[3], const real c[3],
-             /**/ real *ux, real *uy, real *vx, real *vy) {
+             /**/ real *ux, real *uy, real *wx, real *wy) {
     real ab[3], ac[3];
     vec_minus(b, a, /**/ ab);
     vec_minus(c, a, /**/ ac);
 
     *ux  = vec_abs(ab);
     *uy  = 0;
-    *vx = vec_project_scalar(ac, ab);
-    *vy = vec_reject_scalar(ac, ab);
+    *wx = vec_project_scalar(ac, ab);
+    *wy = vec_reject_scalar(ac, ab);
     return HE_OK;
 }
 
