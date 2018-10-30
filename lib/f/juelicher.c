@@ -49,7 +49,6 @@ static real sum(int n, const real *a) {
     real s;
     HeSum *sum;
     he_sum_ini(&sum);
-    s = 0;
     for (i = 0; i < n; i++)
         he_sum_add(sum, a[i]);
     s = he_sum_get(sum);

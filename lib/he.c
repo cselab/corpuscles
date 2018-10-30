@@ -24,7 +24,6 @@ struct T {
 enum {END = -1};
 static int distinct(const int a[]) {
     int i, j;
-    i = 0;
     for (i = 0; a[i] != END; i++)
         for (j = i + 1; a[j] != END; j++)
             if (a[i] == a[j]) return 0;
