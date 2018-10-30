@@ -27,7 +27,7 @@ int main(__UNUSED int argc, const char **v) {
     op = *argv++;
     if (eq(op, "angle")) {
         vec(a); vec(b); vec(c); vec(d);
-        printf("%g\n", dih_angle(a, b, c, d));
+        printf("%g %g\n", dih_angle(a, b, c, d), dih_angle_sup(a, b, c, d));
     } else if (eq(op, "dangle")) {
         vec(a); vec(b); vec(c); vec(d);
         ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
