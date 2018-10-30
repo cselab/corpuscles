@@ -11,7 +11,7 @@ int he_f_juelicher_xin_force(T*, He*,
                       real *fx, real *fy, real *fz);
 real he_f_juelicher_xin_energy(T*, He*, const real *x, const real *y, const real *z);
 
-int he_f_juelicher_xin_curva_mean(T*, /**/ real**);
+int he_f_juelicher_xin_curva_mean_ver(T*, /**/ real**);
 int he_f_juelicher_xin_energy_ver(T*, /**/ real**);
 int he_f_juelicher_xin_area_ver(T*, /**/ real**);
 
