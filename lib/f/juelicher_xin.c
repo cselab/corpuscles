@@ -87,7 +87,6 @@ int he_f_juelicher_xin_ini(real K, real C0, real Kad, real DA0D,
 
     MALLOC(1, &q);
 
-    printf("%s, %d\n", __FILE__, __LINE__);
     nv = he_nv(he);
     ne = he_ne(he);
     nt = he_nt(he);
@@ -354,7 +353,7 @@ static int f_theta(Param param, He *he, Size size,
     int i, j, k, l;
     real coef, H0;
     real a[3], b[3], c[3], d[3];
-    real da[3], db[3], dc[3], dd[3], u[3];
+    real da[3], db[3], dc[3], dd[3];
 
     ne = size.ne;
     H0 = param.H0;
@@ -365,7 +364,6 @@ static int f_theta(Param param, He *he, Size size,
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         ddih_angle(a, b, c, d, da, db, dc, dd);
-        vec_minus(c, b, u);
         coef =  (H[j] + H[k] - 2*H0)*len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
@@ -522,7 +520,7 @@ int he_f_juelicher_xin_force(T *q, He *he,
     return HE_OK;
 }
 
-int he_f_juelicher_xin_curva_mean(T *q, /**/ real **pa) {
+int he_f_juelicher_xin_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->H;
     return HE_OK;
 }
@@ -533,6 +531,6 @@ int he_f_juelicher_xin_energy_ver(T *q, /**/ real **pa) {
 }
 
 int he_f_juelicher_xin_area_ver(T *q, /**/ real **pa) {
-    *pa = q->area;
-    return HE_OK;
+  *pa = q->area;
+  return HE_OK;
 }

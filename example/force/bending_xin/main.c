@@ -64,15 +64,15 @@ static void main0() {
     int i;
     real r[3], F[3];
     real e;
-    
+
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ Fx, Fy, Fz);
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
     bending_area_ver(bending, /**/ &area);
     bending_curva_mean_ver(bending, /**/ &cm);
-    bending_norm_ver(bending, /**/ &nx, &ny, &nz);
-    bending_laplace_ver(bending, /**/ &lbx, &lby, &lbz);
+    //bending_norm_ver(bending, /**/ &nx, &ny, &nz);
+    //bending_laplace_ver(bending, /**/ &lbx, &lby, &lbz);
     
     MSG("energy: %g", e);
     MSG("f[0]   : %g %g %g", Fx[0], Fy[0], Fz[0]);
@@ -110,10 +110,11 @@ int main(int __UNUSED argc, const char *v[]) {
     MALLOC(nv, &rxy);
     CALLOC(nv, &Fx); CALLOC(nv, &Fy); CALLOC(nv, &Fz);
     MALLOC(nv, &Fm);
-    
-    he_off_xyz(off, xx, yy, zz);
-    main0();
 
+    he_off_xyz(off, xx, yy, zz);
+    
+    main0();
+	
     FREE(xx); FREE(yy); FREE(zz);
     FREE(rxy);
     FREE(Fx); FREE(Fy); FREE(Fz);
