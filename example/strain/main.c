@@ -57,18 +57,19 @@ int main(__UNUSED int argc, const char **argv0) {
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
-    param.Ks = 0;
-    param.Ka = 3;
-    strain_ini("skalak", param, /**/ &strain);
+    param.Ks = 1;
+    param.Ka = 0;
+    strain_ini("bug", param, /**/ &strain);
 
     op = *argv++;
     if (eq(op, "force")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
+        eng = strain_energy(strain, a0, b0, c0,   a, b, c);
+        MSG("eng: %g", eng);
         strain_force(strain, a0, b0, c0,   a, b, c,   da, db, dc);
-
-        printf("x y z hx hy hz\n");
         fd(ha, hb, hc);
+        printf("x y z hx hy hz\n");
         print2(da, ha);
         print2(db, hb);
         print2(dc, hc);
