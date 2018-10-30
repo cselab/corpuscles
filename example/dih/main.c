@@ -35,6 +35,12 @@ int main(__UNUSED int argc, const char **v) {
         vec_printf(db, "%g");
         vec_printf(dc, "%g");
         vec_printf(dd, "%g");
+	ddih_angle_sup(a, b, c, d, /**/ da, db, dc, dd);
+        vec_printf(da, "%g");
+        vec_printf(db, "%g");
+        vec_printf(dc, "%g");
+        vec_printf(dd, "%g");
+
     } else if (eq(op, "dcos")) {
         vec(a); vec(b); vec(c); vec(d);
         ddih_cos(a, b, c, d, /**/ da, db, dc, dd);
