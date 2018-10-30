@@ -14,34 +14,66 @@
 
 #define FMT_IN   XE_REAL_IN
 static const char **argv;
+static const real h = 1e-6;
 
-Strain *strain;
-StrainParam param;
+static Strain *strain;
+static StrainParam param;
+
+static real a[3], b[3], c[3];
+static real a0[3], b0[3], c0[3];
+
+real fd0(real *p) {
+    real e, eh, v, t;
+    v = *p;
+    e  = strain_energy(strain, a0, b0, c0,   a, b, c);
+    *p += h;
+    eh  = strain_energy(strain, a0, b0, c0,  a, b, c);
+    return (eh - e)/h;
+}
+
+int fd(real da[3], real db[3], real dc[3]) {
+    enum {X, Y, Z};
+    da[X] = fd0(&a[X]); da[Y] = fd0(&a[Y]); da[Z] = fd0(&a[Z]);
+    db[X] = fd0(&b[X]); db[Y] = fd0(&b[Y]); db[Z] = fd0(&b[Z]);
+    dc[X] = fd0(&c[X]); dc[Y] = fd0(&c[Y]); dc[Z] = fd0(&c[Z]);
+    return HE_OK;
+}
+
+int print2(const real a[3], const real b[3]) {
+    enum {X, Y, Z};
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g\n", a[X], a[Y], a[Z], b[X], b[Y], b[Z]);
+    return HE_OK;
+}
 
 int vec(/**/ real a[3]) { vec_argv(&argv, a); return HE_OK; }
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **argv0) {
     const char *op;
-    real a[3], b[3], c[3];
-    real a0[3], b0[3], c0[3];
-    real da[3], db[3], dc[3];
     real eng;
+    real da[3], db[3], dc[3];
+    real ha[3], hb[3], hc[3];    
+
     argv = argv0;
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
-    param.Ks = 0;
-    param.Ka = 3;
-    strain_ini("skalak", param, /**/ &strain);
+    param.Ks = 1;
+    param.Ka = 0;
+    strain_ini("bug", param, /**/ &strain);
 
     op = *argv++;
     if (eq(op, "force")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
+        eng = strain_energy(strain, a0, b0, c0,   a, b, c);
+        MSG("eng: %g", eng);
         strain_force(strain, a0, b0, c0,   a, b, c,   da, db, dc);
-        vec_printf(da, "%g");
-        vec_printf(db, "%g");
-        vec_printf(dc, "%g");
+        fd(ha, hb, hc);
+        printf("x y z hx hy hz\n");
+        print2(da, ha);
+        print2(db, hb);
+        print2(dc, hc);
+
     } else if (eq(op, "energy")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);

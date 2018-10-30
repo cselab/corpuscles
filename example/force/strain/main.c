@@ -18,7 +18,7 @@ static real *xx, *yy, *zz, *gx, *gy, *gz, *fm, *fx, *fy, *fz;
 static int nv, nt;
 static HeFStrain *strain;
 static He *he;
-static real h = 1e-10;
+static real h = 1e-6;
 
 int main0() {
     int i;
@@ -27,7 +27,7 @@ int main0() {
     param.Ka = 0;
     param.Ks = 1;
 
-    he_f_strain_ini("skalak", param, xx, yy, zz, he, /**/ &strain);
+    he_f_strain_ini("linear", param, xx, yy, zz, he, /**/ &strain);
     for (i = 0; i < nv; i++) {
         xx[i] += 0.01*xx[i]*yy[i];
         yy[i] += 0.01*xx[i]*xx[i];
