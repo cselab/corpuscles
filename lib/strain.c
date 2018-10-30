@@ -43,6 +43,15 @@ static real F2_skalak(void *p0, __UNUSED real I1, real I2) {
     return -(Ks-I2*Ka)/4;
 }
 
+static real F_bug(__UNUSED void *p0, __UNUSED real I1, __UNUSED real I2)  {
+    return I1;
+}
+static real F1_bug(__UNUSED void *p0, __UNUSED real I1, __UNUSED real I2) {
+    return 1;
+}
+static real F2_bug(__UNUSED void *p0, __UNUSED real I1, __UNUSED real I2) {
+    return 0;
+}
 
 static real F_linear(void *p0, real I1, real I2)  {
     P *p;
@@ -79,6 +88,10 @@ int strain_ini(const char *name, P param, /**/ T **pq) {
         q->F = F_linear;
         q->F1 = F1_linear;
         q->F2 = F2_linear;
+    } else if (util_eq(name, "bug")) {
+        q->F = F_bug;
+        q->F1 = F1_bug;
+        q->F2 = F2_bug;
     } else
         ERR(HE_INDEX, "unknown strain model: '%s'", name);
 
