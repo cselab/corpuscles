@@ -54,7 +54,7 @@ static int vec2(/**/ real v[2]) {
     return HE_OK;
 }
 
-real fd0(real *p) {
+static real fd0(real *p) {
     real e, eh, v, t;
     v = *p;
     e  = energy();
@@ -63,7 +63,7 @@ real fd0(real *p) {
     return (eh - e)/h;
 }
 
-int fd(real dv[2], real du[2], real dw[2]) {
+static int fd(real dv[2], real du[2], real dw[2]) {
     enum {X, Y};
     dv[X] = fd0(&v[X]); dv[Y] = fd0(&v[Y]);
     du[X] = fd0(&u[X]); du[Y] = fd0(&u[Y]);
@@ -71,7 +71,7 @@ int fd(real dv[2], real du[2], real dw[2]) {
     return HE_OK;
 }
 
-int eq(const char *a, const char *b) { return util_eq(a, b); }
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **argv0) {
     const char *op;
     real da[2], db[2], dc[2];
