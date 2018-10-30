@@ -264,9 +264,6 @@ real f_juelicher_energy(const real *x, const real *y, const real *z) {
 int f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_juelicher_force(f_juelicher, he, x, y, z, /**/ fx, fy, fz);
 }
-int f_juelicher_curva_mean(real **p) {
-    return he_f_juelicher_curva_mean(f_juelicher, p);
-}
 int f_juelicher_energy_ver(real **p) {
     return he_f_juelicher_energy_ver(f_juelicher, p);
 }
@@ -274,7 +271,7 @@ int f_juelicher_area_ver(real **p) {
     return he_f_juelicher_area_ver(f_juelicher, p);
 }
 int f_juelicher_curva_mean_ver(real **p) {
-    return he_f_juelicher_curva_mean(f_juelicher, p);
+    return he_f_juelicher_curva_mean_ver(f_juelicher, p);
 }
 int f_gompper_ini(real Kb, real C0, real Kad, real DA0D) {
   he_f_gompper_ini(Kb, C0, Kad, DA0D, he, /**/ &f_gompper);
