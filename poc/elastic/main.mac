@@ -71,7 +71,7 @@ dE: subst(ds, factor(diff(E))) $
 dE: ratsubst('F,   F(I1, I2), dE) $
 dE: expand(dE) $
 
-d: px*qy - py*qx ;
+d: (px+1)*qy-py*qx+px+1;
 
 abx: ax - bx;
 aby: ay - by;

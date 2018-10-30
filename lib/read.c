@@ -182,17 +182,17 @@ int he_read_ini(const char *path, T **pq) {
         if (cnt != 1) ERR(HE_IO, "wrong tri line '%s' in '%s'", line, path);
     }
     if (fclose(f) != 0)
-        E("fail to close file '%s'", path);
+        ERR(HE_IO, "fail to close file '%s'", path);
 
     q->nv = nv; q->nt = nt; q->ne = ne; q->nh = nh;
     q->magic = MAGIC;
 
     if (valid(nv, q->hdg_ver, q->ver) != OK)
-        E("invalid ver references");
+        ERR(HE_IO, "invalid ver references");
     if (valid(ne, q->hdg_edg, q->edg) != OK)
-        E("invalid edg references");
+        ERR(HE_IO, "invalid edg references");
     if (valid(nt, q->hdg_tri, q->tri) != OK)
-        E("invalid tri references");
+        ERR(HE_IO, "invalid tri references");
 
     *pq = q;
     return HE_OK;

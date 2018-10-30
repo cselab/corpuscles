@@ -228,7 +228,7 @@ static int compute_norm(T *q, He *he,
     }
     return HE_OK;
 }
-static int compute_curva_mean(T *q, He *he,
+static int compute_curva_mean(He *he,
 			      real *lbx, real *lby, real *lbz,
 			      real *normx, real *normy, real *normz,
 			      /**/ real *curva_mean) {
@@ -334,7 +334,7 @@ real he_f_gompper_energy(T *q, He *he,
   compute_laplace(he, y, t, area, /**/ lby);
   compute_laplace(he, z, t, area, /**/ lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
-  compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
+  compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
   
   energy_tot  = compute_energy_local(q, curva_mean, area, /**/ energy);
   energy_tot += compute_energy_nonlocal(q, curva_mean, area);
@@ -346,7 +346,7 @@ static void compute_force_t(T *q, He *he,
 			    const real *t,
 			    const real *lbx, const real *lby, const real *lbz,
 			    /**/ real *fx, real *fy, real *fz) {
-  real Kb, C0, Kad, DA0D, H0;
+  real Kb;
   int nh;
   int h, n;
   int i, j;
@@ -354,10 +354,6 @@ static void compute_force_t(T *q, He *he,
   real t0, l2;
   
   Kb   = q->Kb;
-  C0   = q->C0;
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
-  H0   = C0/2;
   
   nh = he_nh(he);
   
@@ -377,7 +373,7 @@ static void compute_force_dt(T *q, He *he,
 			     const real *x, const real *y, const real *z,
                              const real *lbx, const real *lby, const real *lbz,
                              /**/ real *fx, real *fy, real *fz) {
-  real Kb, C0, Kad, DA0D, H0;
+  real Kb;
   int nh;
   int h, n, nn;
   int i, j, k;
@@ -386,11 +382,6 @@ static void compute_force_dt(T *q, He *he,
   real dl, dd, r2, C;
 
   Kb   = q->Kb;
-  C0   = q->C0;
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
-  H0   = C0/2;
-
   nh = he_nh(he);
   
   for (h = 0; h < nh; h++) {
@@ -418,7 +409,6 @@ int he_f_gompper_force(T *q, He *he,
   int i, j, k, l;
   int *T0, *T1, *T2;
 
-  real Kb;
   real *l2, *t;
   real *lbx, *lby, *lbz;
   real *area;
@@ -430,7 +420,6 @@ int he_f_gompper_force(T *q, He *he,
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
 
   nv = q->nv;
-  Kb  = q->Kb;
   
     nt = he_nt(he);
     for (l = 0; l < nt; l++) {
