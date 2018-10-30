@@ -28,6 +28,7 @@ real fd0(real *p) {
     e  = strain_energy(strain, a0, b0, c0,   a, b, c);
     *p += h;
     eh  = strain_energy(strain, a0, b0, c0,  a, b, c);
+    *p = v;
     return (eh - e)/h;
 }
 
