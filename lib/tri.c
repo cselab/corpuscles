@@ -79,21 +79,6 @@ real tri_cot(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     return x/y;
 }
 
-/* bc is an edge */
-real tri_dih(const real a[3], const real b[3], const real c[3], const real d[3]) {
-    real x, y, ang, n[3], k[3], nk[3], e[3];
-    tri_normal(b, c, a,   n);
-    tri_normal(c, b, d,   k);
-    x = vec_dot(n, k);
-    vec_cross(n, k,    nk);
-    y = vec_abs(nk);
-    ang = atan2(y, x);
-    vec_minus(c, b, e);
-    if (vec_dot(e, nk) < 0)
-        ang = - ang;
-    return ang;
-}
-
 int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], real bc[3], real ca[3]) {
     vec_minus(b, a,   ab);
     vec_minus(c, b,   bc);
