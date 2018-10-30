@@ -4,11 +4,6 @@
 #include "he/hash.h"
 
 #define T HeHash
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
-#define E(fmt, ...) ERR(HE_INDEX, fmt, ##__VA_ARGS__)
-#pragma clang diagnostic pop
-
 
 typedef struct Node Node;
 struct Node {
@@ -55,7 +50,7 @@ int he_hash_set(T *q, int i, int j, int v) {
     Node *nxt, *prv, *new;
     n = q->n;
     if (0 > i || i >= n || 0 > j || j >= n)    
-        E("[%d %d], n = %d", i, j, n);
+        ERR(HE_INDEX, "[%d %d], n = %d", i, j, n);
     
     prv = q->node[i];
     while (prv != NULL) {
@@ -82,7 +77,7 @@ int he_hash_get(T *q, int i, int j) {
     Node *node;
     n = q->n;
     if (0 > i || i >= n || 0 > j || j >= n)
-        E("[%d %d], n = %d", i, j, n);
+        ERR(HE_INDEX, "[%d %d], n = %d", i, j, n);
     node = q->node[i];
     while (node != NULL) {
         if (node->j == j) return node->v;
