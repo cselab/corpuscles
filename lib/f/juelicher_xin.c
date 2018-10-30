@@ -507,8 +507,8 @@ int he_f_juelicher_xin_force(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (len_theta_tot/2 - DA0D)/area_tot;
 
-    fad_len(he, size, scurv/2, theta, x, y, z, /**/ fxad, fyad, fzad);
-    fad_theta(he, size, scurv/2, len, x, y, z, /**/ fxad, fyad, fzad);
+    fad_len(he, size, scurv, theta, x, y, z, /**/ fxad, fyad, fzad);
+    fad_theta(he, size, scurv, len, x, y, z, /**/ fxad, fyad, fzad);
     fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);
     scale(nv, pi*Kad, fxad);
     scale(nv, pi*Kad, fyad);

@@ -237,7 +237,7 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
         if (bnd(h)) continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        theta[e] = tri_dih(a, b, c, d);
+        theta[e] = dih_angle_sup(a, b, c, d);
     }
     return HE_OK;
 }
@@ -315,7 +315,7 @@ real he_f_juelicher_energy(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (len_theta_tot/2 - DA0D)/area_tot;
 
-    eng_ad = pi*Kad*area_tot*scurv*scurv; /* TODO: this should divide 2 */
+    eng_ad = pi*Kad*area_tot*scurv*scurv/2; 
     //printf("eng_bend, eng_ad, area_tot:%f, %f, %f\n", eng_bend, eng_ad, area_tot);
     return eng_bend + eng_ad;
 }
@@ -363,9 +363,9 @@ static int f_theta(Param param, He *he, Size size,
         if (bnd(h)) continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        ddih_angle(a, b, c, d, da, db, dc, dd);
+        ddih_angle_sup(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
-        coef =  -(H[j] + H[k] - 2*H0)*len[e];
+        coef =  (H[j] + H[k] - 2*H0)*len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
@@ -428,7 +428,7 @@ static int fad_theta(He *he, Size size, real coef,
         if (bnd(h)) continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        ddih_angle(a, b, c, d, da, db, dc, dd);
+        ddih_angle_sup(a, b, c, d, da, db, dc, dd);
         vec_minus(c, b, u);
         vec_scalar_append(da, coef*len[e], i, fx, fy, fz);
         vec_scalar_append(db, coef*len[e], j, fx, fy, fz);
@@ -512,9 +512,9 @@ int he_f_juelicher_force(T *q, He *he,
     fad_len(he, size, scurv, theta, x, y, z, /**/ fxad, fyad, fzad);
     fad_theta(he, size, -scurv, len, x, y, z, /**/ fxad, fyad, fzad);
     fad_area(he, size, -scurv*scurv/2, x, y, z, /**/ fxad, fyad, fzad);
-    scale(nv, 2*pi*Kad, fxad);
-    scale(nv, 2*pi*Kad, fyad);
-    scale(nv, 2*pi*Kad, fzad);
+    scale(nv, pi*Kad, fxad);
+    scale(nv, pi*Kad, fyad);
+    scale(nv, pi*Kad, fzad);
 
     plus(nv, fxad, /*io*/ fx_tot);
     plus(nv, fyad, /*io*/ fy_tot);
@@ -522,7 +522,7 @@ int he_f_juelicher_force(T *q, He *he,
     return HE_OK;
 }
 
-int he_f_juelicher_curva_mean(T *q, /**/ real **pa) {
+int he_f_juelicher_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->H;
     return HE_OK;
 }
