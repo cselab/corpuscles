@@ -90,7 +90,7 @@ int main(__UNUSED int argc, const char **argv0) {
                            &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
                            NULL, NULL, NULL);
         fd(ha, hb, hc);
-        puts("x y fx fy");
+        puts("fx fy hx hy");
         print2(da, ha);
         print2(db, hb);
         print2(dc, hc);
