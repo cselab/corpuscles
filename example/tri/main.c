@@ -33,16 +33,16 @@ int main(__UNUSED int argc, const char **v) {
     op = *argv++;
     if (eq(op, "angle")) {
         vec(a); vec(b); vec(c);
-        printf("%g\n", tri_angle(a, b, c));
+        printf("%.16g\n", tri_angle(a, b, c));
     } else if (eq(op, "area")) {
         vec(a); vec(b); vec(c);
-        printf("%g\n", tri_area(a, b, c));
+        printf("%.16g\n", tri_area(a, b, c));
     } else if (eq(op, "cot")) {
         vec(a); vec(b); vec(c);
-        printf("%g\n", tri_cot(a, b, c));
+        printf("%.16g\n", tri_cot(a, b, c));
     } else if (eq(op, "volume")) {
         vec(a); vec(b); vec(c);
-        printf("%g\n", tri_volume(a, b, c));
+        printf("%.16g\n", tri_volume(a, b, c));
     } else if (eq(op, "normal")) {
         vec(a); vec(b); vec(c);
         tri_normal(a, b, c, /**/ n);
@@ -50,12 +50,12 @@ int main(__UNUSED int argc, const char **v) {
     } else if (eq(op, "3to2")) {
         vec(a); vec(b); vec(c);
         tri_3to2(a, b, c, /**/ &ux, &uy, &vx, &vy);
-        printf("%g %g\n", ux, uy);
-        printf("%g %g\n", vx, vy);
+        printf("%.16g %.16g\n", ux, uy);
+        printf("%.16g %.16g\n", vx, vy);
     } else if (eq(op, "2to3")) {
         vec(a); vec(b); vec(c); scl(&fx); scl(&fy);
         tri_2to3(a, b, c, fx, fy, /**/ f);
-        vec_printf(f, "%g");
+        vec_printf(f, "%.16g");
     } else
         ER("unknown operation '%s'", op);
     return 0;
