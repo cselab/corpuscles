@@ -572,7 +572,7 @@ int he_f_meyer_force(T *q, He *he,
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-        fm = 2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
+        fm = -2*2*Kb*(curva_mean[v]+H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
         fx[v] += fm * normx[v] * area[v];
         fy[v] += fm * normy[v] * area[v];
         fz[v] += fm * normz[v] * area[v];

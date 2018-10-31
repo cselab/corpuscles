@@ -107,7 +107,13 @@ static int kantor_energy_ver(T *q, /**/ real **e) {
     Kantor *b = CONTAINER_OF(q, Kantor, bending);
     return he_f_kantor_energy_ver(b->local, /**/ e);
 }
-static Vtable kantor_vtable = { kantor_fin, kantor_force, kantor_energy, kantor_energy_ver};
+static int kantor_area_ver(T *q, /**/ real **e) {
+  return HE_OK;
+}
+static int kantor_curva_mean_ver(T *q, /**/ real **e) {
+  return HE_OK;
+}
+static Vtable kantor_vtable = { kantor_fin, kantor_force, kantor_energy, kantor_energy_ver, kantor_area_ver, kantor_curva_mean_ver};
 int bending_kantor_ini(BendingParam param, He *he, /**/ T **pq) {
   real Kb, C0;
     Kantor *q;
@@ -144,7 +150,13 @@ static int gompper_energy_ver(T *q, /**/ real **e) {
     Gompper *b = CONTAINER_OF(q, Gompper, bending);
     return he_f_gompper_energy_ver(b->local, /**/ e);
 }
-static Vtable gompper_vtable = { gompper_fin, gompper_force, gompper_energy, gompper_energy_ver};
+static int gompper_area_ver(T *q, /**/ real **e) {
+  return HE_OK;
+}
+static int gompper_curva_mean_ver(T *q, /**/ real **e) {
+  return HE_OK;
+}
+static Vtable gompper_vtable = { gompper_fin, gompper_force, gompper_energy, gompper_energy_ver, gompper_area_ver, gompper_curva_mean_ver};
 int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Gompper *q;
@@ -183,7 +195,18 @@ static int gompper_kroll_energy_ver(T *q, /**/ real **e) {
     Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
     return he_f_gompper_kroll_energy_ver(b->local, /**/ e);
 }
-static Vtable gompper_kroll_vtable = { gompper_kroll_fin, gompper_kroll_force, gompper_kroll_energy, gompper_kroll_energy_ver};
+static int gompper_kroll_area_ver(T *q, /**/ real **e) {
+    Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
+    return he_f_gompper_kroll_area_ver(b->local, /**/ e);
+    return HE_OK;
+}
+static int gompper_kroll_curva_mean_ver(T *q, /**/ real **e) {
+  Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
+  return he_f_gompper_kroll_curva_mean_ver(b->local, /**/ e);
+  return HE_OK;
+}
+
+static Vtable gompper_kroll_vtable = { gompper_kroll_fin, gompper_kroll_force, gompper_kroll_energy, gompper_kroll_energy_ver, gompper_kroll_area_ver, gompper_kroll_curva_mean_ver};
 int bending_gompper_kroll_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Gompper_Kroll *q;
