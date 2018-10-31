@@ -109,13 +109,14 @@ static int kantor_energy_ver(T *q, /**/ real **e) {
 }
 static Vtable kantor_vtable = { kantor_fin, kantor_force, kantor_energy, kantor_energy_ver};
 int bending_kantor_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb;
+  real Kb, C0;
     Kantor *q;
     Kb = param.Kb;
+    C0 = param.C0;
     MALLOC(1, &q);
     q->bending.vtable = &kantor_vtable;
     *pq = &q->bending;
-    return he_f_kantor_ini(Kb, he, &q->local);
+    return he_f_kantor_ini(Kb, C0, he, &q->local);
 }
 /* end kantor */
 
@@ -221,7 +222,15 @@ static int juelicher_energy_ver(T *q, /**/ real **e) {
     Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
     return he_f_juelicher_energy_ver(b->local, /**/ e);
 }
-static Vtable juelicher_vtable = { juelicher_fin, juelicher_force, juelicher_energy, juelicher_energy_ver};
+static int juelicher_area_ver(T *q, /**/ real **e) {
+  Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
+  return he_f_juelicher_area_ver(b->local, /**/ e);
+}
+static int juelicher_curva_mean_ver(T *q, /**/ real **e) {
+    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
+    return he_f_juelicher_curva_mean_ver(b->local, /**/ e);
+}
+static Vtable juelicher_vtable = { juelicher_fin, juelicher_force, juelicher_energy, juelicher_energy_ver, juelicher_area_ver, juelicher_curva_mean_ver};
 int bending_juelicher_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Juelicher *q;
