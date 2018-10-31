@@ -5,8 +5,46 @@ prog=he.shake
 
 usg () {
     msg "$prog command [argument]"
-    msg 'compute finite difference with step = '$h
+    msg 'compute finite difference with step h = '$h
     exit
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+numberp () {
+    local x y
+    x="$*"
+    y=`ae "$x + 0"`
+    test "$x" = "$y"
+}
+
+zero () {
+    echo "$i" | sed 's,%,,g'
+}
+
+plus () {
+    local x
+    x=`zero $i`
+    ae $x + $h
+}
+
+compute () {
+    local i op
+    op="$1"; shift
+    for i
+    do shift
+       case $i in
+	   %*) i=`"$op" $i`
+       esac
+       set -- "$@" "$i"
+    done
+    eval "$@"
+}
+
+ya=`compute zero "$@"`
+if ! numberp "$ya"; then err "not a number: '$ya'"; fi
+
+yb=`compute plus "$@"`
+if ! numberp "$yb"; then err "not a number: '$yb'"; fi
+
+ae "($yb - $ya)/$h"
