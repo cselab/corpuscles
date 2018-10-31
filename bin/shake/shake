@@ -10,3 +10,24 @@ usg () {
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+zero () {
+    echo "$i" | sed 's,%,,g'
+}
+
+plus () {
+    local x
+    x=`zero $i`
+    ae $x + $h
+}
+
+for i
+do shift
+   case $i in
+       %*) i=`plus $i`
+   esac
+   set -- "$@" "$i"
+done
+
+echo "$@"
+

@@ -13,3 +13,12 @@ e   () {
 s  () { # silence
     e "$@" '1>/dev/null' '2>/dev/null'
 }
+
+# [a]rithmetic [e]xpression
+ae () {
+   "$AWK" 'BEGIN { printf "%.16g\n", '"$*"'}'
+   if test $? -ne 0
+   then err 'cannot evalute: '\""$@"\"
+   fi
+}
+
