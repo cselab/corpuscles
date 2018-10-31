@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-/* E = 2 * K * sum_{dih} (1 - cos(ang-ang0)^2) */
+/* E = 2 * K * sum_{dih} (1 - cos(ang-ang0)) */
 int he_f_kantor_ini(real Kb, real theta0, He*, T**);
 int he_f_kantor_fin(T*);
 

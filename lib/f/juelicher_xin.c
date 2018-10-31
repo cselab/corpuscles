@@ -208,7 +208,6 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
     }
     return HE_OK;
 }
-
 static int compute_len(He *he, Size size, const real *xx, const real *yy, const real *zz,
                              /**/ real *len) {
     int ne, e, h;

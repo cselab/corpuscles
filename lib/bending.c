@@ -108,7 +108,8 @@ static int kantor_energy_ver(T *q, /**/ real **e) {
     return he_f_kantor_energy_ver(b->local, /**/ e);
 }
 static int kantor_area_ver(T *q, /**/ real **e) {
-  return HE_OK;
+  Kantor *b = CONTAINER_OF(q, Kantor, bending);
+  return he_f_kantor_area_ver(b->local, /**/ e);
 }
 static int kantor_curva_mean_ver(T *q, /**/ real **e) {
   return HE_OK;
