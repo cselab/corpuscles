@@ -20,9 +20,9 @@ static real v[2], u[2], w[2];
 
 enum {X, Y, Z};
 
-static real  F(__UNUSED void *param, real I1, real I2) { return I1; }
-static real F1(__UNUSED void *param, real I1, real I2) { return 1;  }
-static real F2(__UNUSED void *param, real I1, real I2) { return 0;  }
+static real  F(__UNUSED void *param, real I1, __UNUSED real I2)          { return I1; }
+static real F1(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 1;  }
+static real F2(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 0;  }
 
 static int print2(const real a[2], const real b[2]) {
     enum {X, Y};
@@ -31,12 +31,12 @@ static int print2(const real a[2], const real b[2]) {
 }
 
 static real energy() {
-    real I1, I2, A;
+    real I1, I2;
     constant_strain_2d(NULL, F1, F2,
                        a[X], a[Y], b[X], b[Y], c[X], c[Y],
                        v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                        NULL, NULL, NULL, NULL, NULL, NULL,
-                       &I1, &I2, &A);
+                       &I1, &I2, NULL);
     return F(NULL, I1, I2);
 }
 
@@ -55,12 +55,11 @@ static int vec2(/**/ real v[2]) {
 }
 
 static real fd0(real *p) {
-    real e, eh, v, t;
+    real e, ep, em, v, t;
     v = *p;
-    e  = energy();
-    *p += h;
-    eh  = energy();
-    return (eh - e)/h;
+    *p += h; ep  = energy(); *p = v;
+    *p -= h; em  = energy(); *p = v;    
+    return (ep - em)/(2*h);
 }
 
 static int fd(real dv[2], real du[2], real dw[2]) {
@@ -76,7 +75,7 @@ int main(__UNUSED int argc, const char **argv0) {
     const char *op;
     real da[2], db[2], dc[2];
     real ha[2], hb[2], hc[2];
-    real I1, I2, A;
+    real I1, I2, deng;
     argv = argv0;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -91,11 +90,31 @@ int main(__UNUSED int argc, const char **argv0) {
                            &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
                            NULL, NULL, NULL);
         fd(ha, hb, hc);
-        puts("x y fx fy");
+        puts("fx fy hx hy");
         print2(da, ha);
         print2(db, hb);
         print2(dc, hc);
+    } else if (eq(op, "denergy")) {
+        vec2(a); vec2(b); vec2(c);
+        vec2(u); vec2(v); vec2(w);
+        constant_strain_2d(NULL, F1, F2,
+                           a[X], a[Y], b[X], b[Y], c[X], c[Y],
+                           v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
+                           NULL, NULL, NULL, NULL, NULL, NULL,
+                           &I1, &I2, NULL);
+        deng = F(NULL, I1, I2);
+        printf("%.16g\n", deng);
+    } else if (eq(op, "force")) {
+        vec2(a); vec2(b); vec2(c);
+        vec2(u); vec2(v); vec2(w);
+        constant_strain_2d(NULL, F1, F2,
+                           a[X], a[Y], b[X], b[Y], c[X], c[Y],
+                           v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
+                           &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
+                           NULL, NULL, NULL);
+        printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
+               da[X], da[Y], db[X], db[Y], dc[X], dc[Y]);
     } else
-        ER("unknown operation '%s'", op);
+      ER("unknown operation '%s'", op);
     return 0;
 }

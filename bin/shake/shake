@@ -1,7 +1,7 @@
 . he.util
 
 prog=he.shake
-: ${h=1e-6}
+: ${h=1e-4}
 
 usg () {
     msg "$prog command [argument]"
@@ -28,6 +28,12 @@ plus () {
     ae $x + $h
 }
 
+minus () {
+    local x
+    x=`zero $i`
+    ae $x - $h
+}
+
 compute () {
     local i op
     op="$1"; shift
@@ -41,10 +47,11 @@ compute () {
     eval "$@"
 }
 
-ya=`compute zero "$@"`
-if ! numberp "$ya"; then err "not a number: '$ya'"; fi
+yp=`compute plus "$@"`
+if ! numberp "$yp"; then err "not a number: '$yp'"; fi
 
-yb=`compute plus "$@"`
-if ! numberp "$yb"; then err "not a number: '$yb'"; fi
+ym=`compute minus "$@"`
+if ! numberp "$ym"; then err "not a number: '$ym'"; fi
 
-ae "($yb - $ya)/$h"
+d=`ae "($yp - $ym)/(2*$h)"`
+printf "%g\n" "$d"
