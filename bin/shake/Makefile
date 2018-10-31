@@ -1,0 +1,15 @@
+PREFIX = $(HOME)
+S = ../..
+
+B = $(PREFIX)/bin
+P = he
+
+M = shake
+
+include $S/make/tool.mk
+
+test: install; atest test/*
+
+clean:; rm -f conf
+
+.PHONY: clean install test
