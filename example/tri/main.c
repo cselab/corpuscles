@@ -40,9 +40,6 @@ int main(__UNUSED int argc, const char **v) {
     } else if (eq(op, "cot")) {
         vec(a); vec(b); vec(c);
         printf("%g\n", tri_cot(a, b, c));
-    } else if (eq(op, "dih")) {
-        vec(a); vec(b); vec(c); vec(d);
-        printf("%g\n", tri_dih(a, b, c, d));
     } else if (eq(op, "volume")) {
         vec(a); vec(b); vec(c);
         printf("%g\n", tri_volume(a, b, c));
