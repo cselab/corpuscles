@@ -1,0 +1,2 @@
+# nTEST: meyer_xin_h_ade
+./main meyer_xin 2 3 4 5 < ../../../data/rbc/laplace/0.off  | uscale 1000 > q.out.txt
