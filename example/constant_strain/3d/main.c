@@ -52,14 +52,11 @@ int main(__UNUSED int argc, const char **argv0) {
         constant_strain_energy(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
         tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
         tri_3to2(a, b, c,    /**/ &ux, &uy, &wx, &wy);
-        MSG("%.16g %.16g %.16g %.16g", bx, by, cx, cy);
-        MSG("%.16g %.16g %.16g %.16g", ux - bx, uy - by, wx - cx, wy - cy);
         constant_strain_2d(NULL, F1, F2,
                            0, 0, bx, by, cx, cy,
                            0, 0, ux - bx, uy - by, wx - cx, wy - cy,
                            NULL, NULL, NULL, NULL, NULL, NULL,
                            &I1, &I2, &area);
-        MSG("2d: %.16g", F(NULL, I1, I2)*area);
         printf("%.16g\n", eng);
     } else if (eq(op, "denergy")) {
         vec(a0); vec(b0); vec(c0);
