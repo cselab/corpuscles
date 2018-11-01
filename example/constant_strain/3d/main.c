@@ -50,6 +50,11 @@ int main(__UNUSED int argc, const char **argv0) {
         vec(a); vec(b); vec(c);
         constant_strain_energy(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
         printf("%.16g\n", eng);
+    } else if (eq(op, "denergy")) {
+        vec(a0); vec(b0); vec(c0);
+        vec(a); vec(b); vec(c);
+        constant_strain_energy(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
+        printf("%.16g\n", deng);
     } else
         ER("unknown operation '%s'", op);
     return 0;
