@@ -59,15 +59,14 @@ static real fd0(real *p) {
     v = *p;
     *p += h; ep  = energy(); *p = v;
     *p -= h; em  = energy(); *p = v;
-    MSG("e: %.16g %.16g", ep, em);
     return (ep - em)/(2*h);
 }
 
 static int fd(real dv[2], real du[2], real dw[2]) {
     enum {X, Y};
-    dv[X] = fd0(&v[X]); //dv[Y] = fd0(&v[Y]);
-    //du[X] = fd0(&u[X]); du[Y] = fd0(&u[Y]);
-    //dw[X] = fd0(&w[X]); dw[Y] = fd0(&w[Y]);
+    dv[X] = fd0(&v[X]); dv[Y] = fd0(&v[Y]);
+    du[X] = fd0(&u[X]); du[Y] = fd0(&u[Y]);
+    dw[X] = fd0(&w[X]); dw[Y] = fd0(&w[Y]);
     return HE_OK;
 }
 
@@ -84,30 +83,24 @@ int main(__UNUSED int argc, const char **argv0) {
     op = *argv++;
     if (eq(op, "all")) {
         vec2(a); vec2(b); vec2(c);
-        vec2(u); vec2(v); vec2(w);
+        vec2(v); vec2(u); vec2(w);
         constant_strain_2d(NULL, F1, F2,
                            a[X], a[Y], b[X], b[Y], c[X], c[Y],
                            v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                            &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
                            NULL, NULL, NULL);
         fd(ha, hb, hc);
-        //puts("fx fy hx hy");
-        printf("%g %g\n", da[X], ha[X]);
-        //print2(db, hb);
-        //print2(dc, hc);
+        puts("fx fy hx hy");
+        print2(da, ha);        
+        print2(db, hb);
+        print2(dc, hc);
     } else if (eq(op, "denergy")) {
         vec2(a); vec2(b); vec2(c);
         vec2(v); vec2(u); vec2(w);
-        constant_strain_2d(NULL, F1, F2,
-                           a[X], a[Y], b[X], b[Y], c[X], c[Y],
-                           v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
-                           NULL, NULL, NULL, NULL, NULL, NULL,
-                           &I1, &I2, NULL);
-        deng = F(NULL, I1, I2);
-        printf("%.16g\n", deng);
+        printf("%.16g\n", energy());
     } else if (eq(op, "force")) {
         vec2(a); vec2(b); vec2(c);
-        vec2(u); vec2(v); vec2(w);
+        vec2(v); vec2(u); vec2(w);
         constant_strain_2d(NULL, F1, F2,
                            a[X], a[Y], b[X], b[Y], c[X], c[Y],
                            v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
