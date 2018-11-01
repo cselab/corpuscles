@@ -94,7 +94,7 @@ int tri_3to2(const real a[3], const real b[3], const real c[3],
 
     vec_norm(u, nx);
     vec_cross(u, v,   n);
-    vec_cross(u, n,  ey);
+    vec_cross(n, u,  ey);
     vec_norm(ey, ny);
 
     *ux = vec_dot(u, nx); /* TODO */
@@ -112,7 +112,7 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
 
     vec_norm(u, nx);
     vec_cross(u, v,   n);
-    vec_cross(u, n,  ey);
+    vec_cross(n, u,  ey);
     vec_norm(ey, ny);
 
     return HE_OK;
