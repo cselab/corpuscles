@@ -4,6 +4,9 @@ load("format")$
 load("cgrind")$
 load("stringproc") $
 
+load("vect") $
+load("vec.mac") $
+load("tri.mac") $
 
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
 
@@ -50,4 +53,24 @@ E: F(I1, I2);
 
 E: ev(E, infeval, s, 'Q = Q, F = lambda([a, b], a));
 
-diff(E, 'ux);
+a0: [0, 0, 0];
+b0: [1, 0, 0];
+c0: [0, 1, 0];
+
+a: [axx, 0, 0];
+b: [1, 0.2, 0];
+c: [0, 1, 0];
+
+ax: ay: vx: vy: 0;
+[bx, by, cx, cy]: tri_3to2(a0, b0, c0);
+[ux, uy, wx, wy]: tri_3to2(a, b, c);
+
+ux: ux - bx;
+uy: uy - by;
+wx: wx - cx;
+wy: wy - cy;
+
+E: ev(E, infeval);
+F: diff(E, axx);
+
+ev([E, F], axx = 0);
