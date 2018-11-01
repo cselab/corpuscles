@@ -23,9 +23,10 @@ int constant_strain_force(void *param,
     ux -= bx; uy -= by; /* displace */
     wx -= cx; wy -= cy;
 
+    ax = ay = vx = vy = 0;
     constant_strain_2d(param, F1, F2,
-                       ax = 0, ay = 0, bx, by, cx, cy,
-                       vx = 0, vy = 0, ux, uy, wx, wy,
+                       ax, ay, bx, by, cx, cy,
+                       vx, vy, ux, uy, wx, wy,
                        &dvx, &dvy, &dux, &duy, &dwx, &dwy,
                        &I1, &I2, &area);
     tri_2to3(a, b, c, dvx, dvy, /**/ da);
@@ -52,9 +53,10 @@ int constant_strain_energy(void *param, real (*F)(void*, real, real),
     ux -= bx; uy -= by; /* displace */
     wx -= cx; wy -= cy;
 
+    ax = ay = vx = vy = 0;
     constant_strain_2d(param, Dummy, Dummy,
-                       ax = 0, ay = 0, bx, by, cx, cy,
-                       vx = 0, vy = 0, ux, uy, wx, wy,
+                       ax, ay, bx, by, cx, cy,
+                       vx, vy, ux, uy, wx, wy,
                        NULL, NULL, NULL, NULL, NULL, NULL,
                        &I1, &I2, &A);
 

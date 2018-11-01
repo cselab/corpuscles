@@ -19,9 +19,10 @@ int vec(/**/ real a[3]) { vec_argv(&argv, a); return HE_OK; }
 
 static real ks = 0, ka = 3;
 static real sq(real x) { return x*x; }
-static real  F(__UNUSED void *param, real I1, real I2) { return (((-2*I2)+sq(I1)+2*I1)*ks)/12+(sq(I2)*ka)/12; }
-static real F1(__UNUSED void *param, real I1, real I2) { return  (I1+1)*ks/6; }
-static real F2(__UNUSED void *param, real I1, real I2) { return -(ks-I2*ka)/6;}
+
+static real  F(__UNUSED void *param, real I1, __UNUSED real I2)          { return I1; }
+static real F1(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 1;  }
+static real F2(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 0;  }
 
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **argv0) {
@@ -41,14 +42,14 @@ int main(__UNUSED int argc, const char **argv0) {
         constant_strain_force(
             NULL, F1, F2,
             a0, b0, c0,   a, b, c,   da, db, dc);
-        vec_printf(da, "%g");
-        vec_printf(db, "%g");
-        vec_printf(dc, "%g");
+        vec_printf(da, "%.16g");
+        vec_printf(db, "%.16g");
+        vec_printf(dc, "%.16g");
     } else if (eq(op, "energy")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
         constant_strain_energy(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
-        printf("%g %g\n", eng, deng);
+        printf("%.16g\n", eng);
     } else
         ER("unknown operation '%s'", op);
     return 0;
