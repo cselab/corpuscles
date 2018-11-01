@@ -17,6 +17,7 @@ int constant_strain_force(void *param,
     real ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
     real dvx, dvy, dux, duy, dwx, dwy;
     real area, I1, I2;
+    real ex[3], ey[3];
 
     tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
     tri_3to2(a, b, c, /**/ &ux, &uy, &wx, &wy);
@@ -29,9 +30,11 @@ int constant_strain_force(void *param,
                        vx, vy, ux, uy, wx, wy,
                        &dvx, &dvy, &dux, &duy, &dwx, &dwy,
                        &I1, &I2, &area);
-    tri_2to3(a, b, c, dvx, dvy, /**/ da);
-    tri_2to3(a, b, c, dux, duy, /**/ db);
-    tri_2to3(a, b, c, dwx, dwy, /**/ dc);
+
+    tri_2to3(a, b, c, /**/ ex, ey);
+    vec_linear_combination(dvx, ex,  dvy, ey, /**/ da);
+    vec_linear_combination(dux, ex,  duy, ey, /**/ db);
+    vec_linear_combination(dwx, ex,  dwy, ey, /**/ dc);
 
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);

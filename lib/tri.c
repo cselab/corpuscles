@@ -99,15 +99,14 @@ int tri_3to2(const real a[3], const real b[3], const real c[3],
     return HE_OK;
 }
 
-int tri_2to3(const real a[3], const real b[3], const real c[3], real fx, real fy, /**/ real f[3]) {
-    real ab[3], ac[3], r[3], ex[3], ey[3];
+int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real ex[3], real ey[3]) {
+    real ab[3], ac[3], r[3];
     vec_minus(b, a, /**/ ab);
     vec_minus(c, a, /**/ ac);
 
     vec_norm(ab, /**/ ex);
     vec_reject(ac, ab, /**/ r);
     vec_norm(r, /**/ ey);
-    vec_linear_combination(fx, ex,  fy, ey, /**/ f);
 
     return HE_OK;
 }
