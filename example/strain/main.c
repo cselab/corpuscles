@@ -23,13 +23,11 @@ static real a[3], b[3], c[3];
 static real a0[3], b0[3], c0[3];
 
 real fd0(real *p) {
-    real e, eh, v, t;
+    real ep, em, v;
     v = *p;
-    e  = strain_energy(strain, a0, b0, c0,   a, b, c);
-    *p += h;
-    eh  = strain_energy(strain, a0, b0, c0,  a, b, c);
-    *p = v;
-    return (eh - e)/h;
+    *p += h; ep = strain_energy(strain, a0, b0, c0,   a, b, c); *p = v;
+    *p -= h; em = strain_energy(strain, a0, b0, c0,   a, b, c); *p = v;
+    return (ep - em)/(2*h);
 }
 
 int fd(real da[3], real db[3], real dc[3]) {

@@ -88,25 +88,32 @@ int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], 
 
 int tri_3to2(const real a[3], const real b[3], const real c[3],
              /**/ real *ux, real *uy, real *wx, real *wy) {
-    real ab[3], ac[3];
-    vec_minus(b, a, /**/ ab);
-    vec_minus(c, a, /**/ ac);
+    real u[3], v[3], n[3], ey[3], nx[3], ny[3];
+    vec_minus(b, a, /**/ u);
+    vec_minus(c, a, /**/ v);
 
-    *ux  = vec_abs(ab);
-    *uy  = 0;
-    *wx = vec_project_scalar(ac, ab);
-    *wy = vec_reject_scalar(ac, ab);
+    vec_norm(u, nx);
+    vec_cross(u, v,   n);
+    vec_cross(u, n,  ey);
+    vec_norm(ey, ny);
+
+    *ux = vec_dot(u, nx); /* TODO */
+    *uy = vec_dot(u, ny);
+
+    *wx = vec_dot(v, nx);
+    *wy = vec_dot(v, ny);
     return HE_OK;
 }
 
-int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real ex[3], real ey[3]) {
-    real ab[3], ac[3], r[3];
-    vec_minus(b, a, /**/ ab);
-    vec_minus(c, a, /**/ ac);
+int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3], real ny[3]) {
+    real u[3], v[3], n[3], ey[3];
+    vec_minus(b, a, /**/ u);
+    vec_minus(c, a, /**/ v);
 
-    vec_norm(ab, /**/ ex);
-    vec_reject(ac, ab, /**/ r);
-    vec_norm(r, /**/ ey);
+    vec_norm(u, nx);
+    vec_cross(u, v,   n);
+    vec_cross(u, n,  ey);
+    vec_norm(ey, ny);
 
     return HE_OK;
 }
