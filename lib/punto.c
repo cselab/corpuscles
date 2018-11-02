@@ -27,7 +27,6 @@ int punto_fwrite(int n, real *queue[], /**/ FILE *f) {
     }
     return HE_OK;
 }
-
 int punto_write(int n, real *queue[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
@@ -38,11 +37,30 @@ int punto_write(int n, real *queue[], /**/ const char *path) {
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
+int punto_fappend(int n, real *queue[], /**/ FILE *f) {
+    int i, r;
+    real **q;
+    for (i = 0; i < n; i++) {
+        q = queue;
+        for (;;) {
+            r = fprintf(f, FMT_OUT, (*q)[i]); q++;
+            if (r < 0) ERR(HE_IO, "fail to write");
+            if (*q != NULL) fputc(' ', f);
+            else {
+                fputc('\n', f);
+                break;
+            }
+        }
+    }
+    fputc('\n', f);
+    return HE_OK;
+}
+
 int punto_append(int n, real *queue[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "a")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
-    if (punto_fwrite(n, queue, f) != HE_OK)
+    if (punto_fappend(n, queue, f) != HE_OK)
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);
