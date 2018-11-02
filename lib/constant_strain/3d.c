@@ -19,8 +19,6 @@ static int assert_force_2d(real ax, real ay,
                            real dux, real duy,
                            real dwx, real dwy) {
     /* check total force and  torque */
-
-
     return 1;
 }
 
@@ -78,8 +76,8 @@ int constant_strain_force(void *param,
     if (!assert_force_2d(ax + vx, ay + vy,
                          bx + ux, vy + uy,
                          cx + wx, cy + wy,
-                         dvx, dvy, dux, duy, dwx, dwy));
-        ERR(HE_NUM, "bad 3d forces in triangle");
+                         dvx, dvy, dux, duy, dwx, dwy))
+        ERR(HE_NUM, "bad 2d forces in triangle");
 
     tri_2to3(a, b, c, /**/ ex, ey);
     vec_linear_combination(dvx, ex,  dvy, ey, /**/ da);
