@@ -123,6 +123,16 @@ int main(__UNUSED int argc, const char **argv0) {
                            NULL, NULL, &area);
         printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
                da[X]*area, da[Y]*area, db[X]*area, db[Y]*area, dc[X]*area, dc[Y]*area);
+    } else if (eq(op, "dforce")) {
+        vec2(a); vec2(b); vec2(c);
+        vec2(v); vec2(u); vec2(w);
+        constant_strain_2d(NULL, F1, F2,
+                           a[X], a[Y], b[X], b[Y], c[X], c[Y],
+                           v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
+                           &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
+                           NULL, NULL, &area);
+        printf("%.16g %.16g %.16g %.16g %.16g %.16g\n",
+               da[X], da[Y], db[X], db[Y], dc[X], dc[Y]);        
     } else
       ER("unknown operation '%s'", op);
     return 0;
