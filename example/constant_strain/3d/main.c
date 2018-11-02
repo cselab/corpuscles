@@ -28,7 +28,7 @@ static real F2(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { retur
 
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **argv0) {
-    enum {X, Y, Z};
+    enum {X, Y};
     const char *op;
     real a[3], b[3], c[3];
     real a0[3], b0[3], c0[3];
