@@ -7,7 +7,6 @@ dot(a, b):=express(a . b)$
 vabs(a):= sqrt(dot(a, a))$
 norm(a):= a/vabs(a)$
 
-
 a: [ 0,  0,  0] $
 b: [bx, by, bz] $
 c: [cx, cy, cz] $

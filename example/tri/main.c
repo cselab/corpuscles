@@ -24,8 +24,8 @@ int scl(/**/ real *p) {
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
-    real a[3], b[3], c[3], d[3], n[3], f[3];
-    real ux, uy, vx, vy, fx, fy;
+    real a[3], b[3], c[3], n[3], ex[3], ey[3];
+    real ux, uy, vx, vy;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -47,15 +47,20 @@ int main(__UNUSED int argc, const char **v) {
         vec(a); vec(b); vec(c);
         tri_normal(a, b, c, /**/ n);
         vec_printf(n, "%g");
+    } else if (eq(op, "center")) {
+        vec(a); vec(b); vec(c);
+        tri_center(a, b, c, /**/ n);
+        vec_printf(n, "%g");
     } else if (eq(op, "3to2")) {
         vec(a); vec(b); vec(c);
         tri_3to2(a, b, c, /**/ &ux, &uy, &vx, &vy);
         printf("%.16g %.16g\n", ux, uy);
         printf("%.16g %.16g\n", vx, vy);
     } else if (eq(op, "2to3")) {
-        vec(a); vec(b); vec(c); scl(&fx); scl(&fy);
-        tri_2to3(a, b, c, fx, fy, /**/ f);
-        vec_printf(f, "%.16g");
+        vec(a); vec(b); vec(c);
+        tri_2to3(a, b, c, /**/ ex, ey);
+        vec_printf(ex, "%.16g");
+        vec_printf(ey, "%.16g");
     } else
         ER("unknown operation '%s'", op);
     return 0;

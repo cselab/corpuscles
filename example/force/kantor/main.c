@@ -37,10 +37,10 @@ static void main0() {
 }
 
 int main() {
-    real K;
-    K = 1;
+    real K, theta0;
+    K = 1; theta0 = 0;
     ini("/dev/stdin");
-    f_kantor_ini(K);
+    f_kantor_ini(K, theta0);
 
     RZERO(NV, &FX); RZERO(NV, &FY); RZERO(NV, &FZ);
     main0();

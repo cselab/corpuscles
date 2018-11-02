@@ -23,7 +23,7 @@ int scl(/**/ real *p) {
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
-    real a[3], b[3], c[3], s;
+    real a[3], b[3], c[3], m[3], s;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -37,6 +37,10 @@ int main(__UNUSED int argc, const char **v) {
         vec(a);
         vec_norm(a, b);
         vec_printf(b, "%g");
+    } else if (eq(op, "mean3")) {
+        vec(a); vec(b); vec(c);
+        vec_mean3(a, b, c, /**/ m);
+        vec_printf(m, "%g");
     } else if (eq(op, "project")) {
         vec(a); vec(b);
         vec_project(a, b, c);

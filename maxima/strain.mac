@@ -1,0 +1,77 @@
+load("nchrpl")$
+load("scifac")$
+load("format")$
+load("cgrind")$
+load("stringproc") $
+
+load("vect") $
+load("vec.mac") $
+load("tri.mac") $
+
+co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
+
+(X: 1, Y : 2, Z : 3) $
+
+declare([ax, ay, bx, by, cx, cy], constant) $
+
+dx(x, y):= p0 + px*x + py*y $
+dy(x, y):= q0 + qx*x + qy*y $
+
+e: [
+  dx(ax, ay) = vx,
+  dy(ax, ay) = vy,
+
+  dx(bx, by) = ux,
+  dy(bx, by) = uy,
+
+  dx(cx, cy) = wx,
+  dy(cx, cy) = wy
+] $
+
+de: diff(e);
+v: [p0, px, py,   q0, qx, qy];
+ds: linsolve(de, diff(v));
+s : linsolve( e,       v);
+Q: ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
+
+ds: subst('Q, Q, ds);
+s:  subst('Q, Q, s);
+
+Dxx: diff(dx(x, y), x) + 1 $
+Dxy: diff(dx(x, y), y)     $
+Dyx: diff(dy(x, y), x)     $
+Dyy: diff(dy(x, y), y) + 1 $
+
+D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
+G: D . D $
+
+I1: mattrace(G)    - 2 $
+I2: determinant(G) - 1 $
+I2: factor(I2)         $
+
+E: F(I1, I2);
+
+E: ev(E, infeval, s, 'Q = Q, F = lambda([a, b], a));
+
+a0: [0, 0, 0];
+b0: [1, 0, 0];
+c0: [0, 1, 0];
+
+a: [0,  0, 0];
+b: [1,  byy, 0];
+c: [0.1, 1, 0];
+
+ax: ay: vx: vy: 0;
+[bx, by, cx, cy]: tri_3to2(a0, b0, c0);
+[ux, uy, wx, wy]: tri_3to2(a, b, c);
+
+ux: ux - bx;
+uy: uy - by;
+wx: wx - cx;
+wy: wy - cy;
+
+E: ev(E, infeval);
+F: diff(E, byy);
+
+ev([E*Q/2, F*Q/2], byy = 0);
+
