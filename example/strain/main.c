@@ -57,8 +57,8 @@ int main(__UNUSED int argc, const char **argv0) {
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
-    param.Ks = -4;
-    param.Ka = 0;
+    param.Ks = 4;
+    param.Ka = 8;
     strain_ini("skalak", param, /**/ &strain);
 
     op = *argv++;
@@ -73,7 +73,6 @@ int main(__UNUSED int argc, const char **argv0) {
         print3(a, da, ha);
         print3(b, db, hb);
         print3(c, dc, hc);
-
     } else if (eq(op, "energy")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
@@ -81,7 +80,6 @@ int main(__UNUSED int argc, const char **argv0) {
         printf("%g\n", eng);
     } else
         ER("unknown operation '%s'", op);
-
     strain_fin(strain);
     return 0;
 }
