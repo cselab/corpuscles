@@ -13,10 +13,10 @@ cross(a, b):=express(a ~ b) $
 
 declare([ax, ay, bx, by, cx, cy], constant) $
 
-F(a, b):=a;
+F(a, b):= a^2 + b;
 
-dx(x, y):= p0 + px*x + py*y $
-dy(x, y):= q0 + qx*x + qy*y $
+dx(x, y):= p0 + px*x + py*y ;
+dy(x, y):= q0 + qx*x + qy*y ;
 
 e: [
   dx(ax, ay) = vx,
@@ -27,28 +27,27 @@ e: [
 
   dx(cx, cy) = wx,
   dy(cx, cy) = wy
-] $
+] ;
 
 de: diff(e);
 v: [p0, px, py,   q0, qx, qy];
 ds: linsolve(de, diff(v));
-s : linsolve( e,       v);
+s : linsolve( e,       v) ;
+ds: linsolve(de,      diff(v));
 
+Q: ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
 ds: subst('Q, Q, ds);
 s:  subst('Q, Q, s);
 
-Dxx: diff(dx(x, y), x) + 1;
-Dxy: diff(dx(x, y), y);
-Dyx: diff(dy(x, y), x);
-Dyy: diff(dy(x, y), y) + 1;
-
+Dxx: (diff(dx(x, y), x) + diff(dx(x, y), x))/2;
+Dxy: (diff(dx(x, y), y) + diff(dy(x, y), x))/2;
+Dyx: (diff(dy(x, y), x) + diff(dx(x, y), y))/2;
+Dyy: (diff(dy(x, y), y) + diff(dy(x, y), y))/2;
 D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
-G: D . D;
 
-I1: mattrace(G)    - 2;
-I2: determinant(G) - 1;
+I1: mattrace(D)    - 2;
+I2: determinant(D) - 1;
 I2: factor(I2);
-
 E: F(I1, I2);
 
 dE: subst(ds, factor(diff(E))) $
@@ -63,21 +62,27 @@ duy: gcfac((co(dE, uy)));
 dwx: gcfac((co(dE, wx)));
 dwy: gcfac((co(dE, wy)));
 
-da: [dvx, dvy];
-db: [dux, duy];
-dc: [dwx, dwy];
+(X: 1, Y: 2);
+fa: [dvx, dvy];
+fb: [dux, duy];
+fc: [dwx, dwy];
 
 a0: [ax, ay];
 b0: [bx, by];
 c0: [cx, cy];
 
-a: [ax + vx, ay + vy] $
-b: [bx + ux, by + uy] $
-c: [cx + wx, cy + wy] $
+da: [vx, vy];
+db: [ux, uy];
+dc: [wx, wy];
 
-ta: cross(a0, da) $
-tb: cross(b0, db) $
-tc: cross(c0, dc) $
+a: a0 + da;
+b: b0 + db;
+c: c0 + dc;
 
-factor(ev(da + db + dc, infeval, s));
+ta: cross(a0, fa) ;
+tb: cross(b0, fb) ;
+tc: cross(c0, fc) ;
+
+factor(ev(fa + fb + fc, infeval, s));
 factor(ev(ta + tb + tc, infeval, s));
+
