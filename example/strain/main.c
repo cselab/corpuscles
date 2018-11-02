@@ -57,9 +57,9 @@ int main(__UNUSED int argc, const char **argv0) {
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
-    param.Ks = 1;
+    param.Ks = -4;
     param.Ka = 0;
-    strain_ini("bug", param, /**/ &strain);
+    strain_ini("skalak", param, /**/ &strain);
 
     op = *argv++;
     if (eq(op, "force")) {

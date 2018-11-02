@@ -13,7 +13,7 @@ cross(a, b):=express(a ~ b) $
 
 declare([ax, ay, bx, by, cx, cy], constant) $
 
-F(a, b):= a;
+F(a, b):= a + b;
 
 (X: 1, Y: 2)$
 dx(r):= p0 + px*r[X] + py*r[Y] ;
@@ -56,7 +56,6 @@ sxx: diff(dx([x, y]), x);
 sxy: diff(dx([x, y]), y);
 syx: diff(dy([x, y]), x);
 syy: diff(dy([x, y]), y);
-
 Dxx: (sxx + sxx + sxx*sxx + syx*syx)/2;
 Dxy: (sxy + syx + sxx*sxy + syx*syy)/2;
 Dyx: (syx + sxy + sxy*sxx + syy*syx)/2;
