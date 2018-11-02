@@ -117,3 +117,7 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
 
     return HE_OK;
 }
+
+int tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3]) {
+    return vec_mean3(a, b, c, /**/ center);
+}

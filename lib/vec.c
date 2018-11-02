@@ -156,6 +156,13 @@ int vec_reject(const real a[3], const real b[3], /**/ real c[3]) {
     return HE_OK;
 }
 
+int vec_mean3(const real a[3], const real b[3], const real c[3], /**/ real m[3]) {
+    m[X] = (a[X] + b[X] + c[X])/3;
+    m[Y] = (a[Y] + b[Y] + c[Y])/3;
+    m[Z] = (a[Z] + b[Z] + c[Z])/3;
+    return HE_OK;
+}
+
 int vec_printf(const real a[3], const char *fmt) {
     return vec_fprintf(a, stdout, fmt);
 }

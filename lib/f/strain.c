@@ -72,6 +72,12 @@ int he_f_strain_fin(T *q) {
 }
 
 
+static int assert_force(const real a[3], const real b[3], const real c[3],
+                        const real da[3], const real db[3], const real dc[3]) {
+    
+    return 1;
+}
+
 int he_f_strain_force(T *q, He *he,
                             const real *x, const real *y, const real *z, /**/
                             real *fx, real *fy, real *fz) {
@@ -85,6 +91,8 @@ int he_f_strain_force(T *q, He *he,
         get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
         get3(x, y, z, i, j, /**/ k, a, b, c);
         strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
+        if (!assert_force(a, b, c, da, db, dc))
+            ERR(HE_NUM, "no conservation in f_strain_force");
         vec_append(da, i, /**/ fx, fy, fz);
         vec_append(db, j, /**/ fx, fy, fz);
         vec_append(dc, k, /**/ fx, fy, fz);        

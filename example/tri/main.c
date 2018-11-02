@@ -47,6 +47,10 @@ int main(__UNUSED int argc, const char **v) {
         vec(a); vec(b); vec(c);
         tri_normal(a, b, c, /**/ n);
         vec_printf(n, "%g");
+    } else if (eq(op, "center")) {
+        vec(a); vec(b); vec(c);
+        tri_center(a, b, c, /**/ n);
+        vec_printf(n, "%g");
     } else if (eq(op, "3to2")) {
         vec(a); vec(b); vec(c);
         tri_3to2(a, b, c, /**/ &ux, &uy, &vx, &vy);
@@ -56,7 +60,7 @@ int main(__UNUSED int argc, const char **v) {
         vec(a); vec(b); vec(c);
         tri_2to3(a, b, c, /**/ ex, ey);
         vec_printf(ex, "%.16g");
-        vec_printf(ey, "%.16g");        
+        vec_printf(ey, "%.16g");
     } else
         ER("unknown operation '%s'", op);
     return 0;
