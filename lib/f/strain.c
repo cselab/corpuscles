@@ -5,12 +5,15 @@
 #include "he/err.h"
 #include "he/he.h"
 #include "he/vec.h"
+#include "he/tri.h"
 #include "he/edg.h"
 #include "he/dedg.h"
 #include "he/strain.h"
 #include "he/f/strain.h"
 
 #define T HeFStrain
+
+static const real EPS = 1e-4;
 
 struct T {
     real *x, *y, *z, *eng;
@@ -71,11 +74,34 @@ int he_f_strain_fin(T *q) {
     return HE_OK;
 }
 
-
+static int small(const real a[3]) { return vec_abs(a) < EPS; }
 static int assert_force(const real a[3], const real b[3], const real c[3],
                         const real da[3], const real db[3], const real dc[3]) {
-    
-    return 1;
+    /* check force and  torque */
+    real center[3], m[3], f[3], t[3], a0[3], b0[3], c0[3];
+    real ta[3], tb[3], tc[3];
+    tri_center(a, b, c, /**/ m);
+    vec_minus(a, m, /**/ a0);
+    vec_minus(b, m, /**/ b0);
+    vec_minus(c, m, /**/ c0);
+    vec_mean3(da, db, dc, /**/ f);
+
+    vec_cross(a0, da, /**/ ta);
+    vec_cross(b0, db, /**/ tb);
+    vec_cross(c0, dc, /**/ tc);
+    vec_mean3(ta, tb, tc, /**/ t);
+
+    if (!small(f) || !small(t))  {
+        MSG("bad triangle in strain");
+        MSG("a, b, c, f, t:");
+        vec_fprintf(a, stderr, "%g");
+        vec_fprintf(b, stderr, "%g");
+        vec_fprintf(c, stderr, "%g");
+        vec_fprintf(f, stderr, "%g");
+        vec_fprintf(t, stderr, "%g");
+        return 0;
+    } else
+        return 1;
 }
 
 int he_f_strain_force(T *q, He *he,
@@ -91,11 +117,13 @@ int he_f_strain_force(T *q, He *he,
         get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
         get3(x, y, z, i, j, /**/ k, a, b, c);
         strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
-        if (!assert_force(a, b, c, da, db, dc))
-            ERR(HE_NUM, "no conservation in f_strain_force");
+        if (!assert_force(a, b, c, da, db, dc)) {
+            MSG("not force in triangle: %d", t);
+            ERR(HE_NUM, "");
+        }
         vec_append(da, i, /**/ fx, fy, fz);
         vec_append(db, j, /**/ fx, fy, fz);
-        vec_append(dc, k, /**/ fx, fy, fz);        
+        vec_append(dc, k, /**/ fx, fy, fz);
     }
     return HE_OK;
 }
@@ -109,7 +137,7 @@ real he_f_strain_energy(T *q, He *he,
     real e0, e, *eng;
     nt = he_nt(he);
     nv = he_nv(he);
-    
+
     e = 0;
     eng = q->eng;
     zero(nv, eng);
