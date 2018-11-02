@@ -13,7 +13,7 @@
 
 #define T HeFStrain
 
-static const real EPS = 1e-5;
+static const real EPS = 1e-8;
 
 struct T {
     real *x, *y, *z, *eng;
@@ -94,11 +94,11 @@ static int assert_force(const real a[3], const real b[3], const real c[3],
     if (!small(f) || !small(t))  {
         MSG("bad triangle in strain");
         MSG("a, b, c, f, t:");
-        vec_fprintf(a, stderr, "%g");
-        vec_fprintf(b, stderr, "%g");
-        vec_fprintf(c, stderr, "%g");
-        vec_fprintf(f, stderr, "%g");
-        vec_fprintf(t, stderr, "%g");
+        vec_fprintf(a, stderr, "%.16g");
+        vec_fprintf(b, stderr, "%.16g");
+        vec_fprintf(c, stderr, "%.16g");
+        vec_fprintf(f, stderr, "%.16g");
+        vec_fprintf(t, stderr, "%.16g");
         return 0;
     } else
         return 1;
@@ -117,10 +117,9 @@ int he_f_strain_force(T *q, He *he,
         get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
         get3(x, y, z, i, j, /**/ k, a, b, c);
         strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
-        if (!assert_force(a, b, c, da, db, dc)) {
-            MSG("not force in triangle: %d", t);
-            ERR(HE_NUM, "");
-        }
+        if (!assert_force(a, b, c, da, db, dc))
+            ERR(HE_NUM,
+                "bad forces in triangle: %d [%d %d %d]", t, i, j, k);
         vec_append(da, i, /**/ fx, fy, fz);
         vec_append(db, j, /**/ fx, fy, fz);
         vec_append(dc, k, /**/ fx, fy, fz);
