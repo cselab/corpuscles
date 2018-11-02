@@ -24,9 +24,9 @@ static real  F(__UNUSED void *param, real I1, __UNUSED real I2)          { retur
 static real F1(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 1;  }
 static real F2(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 0;  }
 
-static int print2(const real a[2], const real b[2]) {
+static int print2(const real a[2], const real u[2], const real p[2], const real q[2]) {
     enum {X, Y};
-    printf("%.16g %.16g %.16g %.16g\n", a[X], a[Y], b[X], b[Y]);
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g\n", a[X] + u[X], a[Y] + u[Y], p[X], p[Y], q[X], q[Y]);
     return HE_OK;
 }
 
@@ -101,10 +101,10 @@ int main(__UNUSED int argc, const char **argv0) {
                            &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
                            NULL, NULL, NULL);
         fd(ha, hb, hc);
-        puts("fx fy hx hy");
-        print2(da, ha);
-        print2(db, hb);
-        print2(dc, hc);
+        puts("x y fx fy hx hy");
+        print2(a, v, da, ha);
+        print2(b, u, db, hb);
+        print2(c, w, dc, hc);
     } else if (eq(op, "energy")) {
         vec2(a); vec2(b); vec2(c);
         vec2(v); vec2(u); vec2(w);
