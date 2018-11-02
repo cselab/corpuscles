@@ -236,8 +236,8 @@ int f_harmonic_ref_force(const real *x, const real *y, const real *z, /**/ real 
     return he_f_harmonic_ref_force(f_harmonic_ref, he, x, y, z, /**/ fx, fy, fz);
 }
 
-int f_kantor_ini(real K) {
-    he_f_kantor_ini(K, he, /**/ &f_kantor);
+int f_kantor_ini(real K, real theta0) {
+    he_f_kantor_ini(K, theta0, he, /**/ &f_kantor);
     return HE_OK;
 }
 int f_kantor_fin() {
