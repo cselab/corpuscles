@@ -1,23 +1,20 @@
 kill(all) $
+load("vect") $
 load("nchrpl")$
 load("scifac")$
 load("format")$
 load("cgrind")$
 load("stringproc") $
-load("vect") $
-
-expand(c([dvx, dvy], [ax + vx, ay + vy]) + c([dux, duy], [bx + ux, by + uy]) + c([dwx, dwy], [cx + wx, cy + wy])), so;
-
-declare([ax, ay, bx, by, cx, cy], constant) $
-
-cross(a, b):=express(a ~ b);
-
-ax: ay: 0$
-F(a, b):= a^2 + b;
 
 frm0 (e):= format(e, %poly(Fb, Fa), %factor, gcfac) $
 frm1 (e):= format(e, %poly(vx, vy, ux, uy, wx, wy), %factor, gcfac) $
-co(dE, d):=frm0(factor(coeff(dE, diff(d)))) $
+co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
+cross(a, b):=express(a ~ b) $
+
+declare([ax, ay, bx, by, cx, cy], constant) $
+
+F(a, b):=a;
+
 dx(x, y):= p0 + px*x + py*y $
 dy(x, y):= q0 + qx*x + qy*y $
 
@@ -37,22 +34,24 @@ v: [p0, px, py,   q0, qx, qy];
 ds: linsolve(de, diff(v));
 s : linsolve( e,       v);
 
-sx: dx(x, y);
-sy: dy(x, y);
-Dxx: (diff(sx, x) + diff(sx, x))/2;
-Dxy: (diff(sx, y) + diff(sy, x))/2;
-Dyx: (diff(sy, x) + diff(sx, y))/2;
-Dyy: (diff(sy, y) + diff(sy, y))/2;
+ds: subst('Q, Q, ds);
+s:  subst('Q, Q, s);
+
+Dxx: diff(dx(x, y), x) + 1;
+Dxy: diff(dx(x, y), y);
+Dyx: diff(dy(x, y), x);
+Dyy: diff(dy(x, y), y) + 1;
 
 D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
+G: D . D;
 
-I1: mattrace(D);
-I2: determinant(D);
+I1: mattrace(G)    - 2;
+I2: determinant(G) - 1;
+I2: factor(I2);
 
 E: F(I1, I2);
 
 dE: subst(ds, factor(diff(E))) $
-dE: radcan(dE) $
 dE: expand(dE) $
 
 dvx: gcfac((co(dE, vx)));
@@ -72,13 +71,13 @@ a0: [ax, ay];
 b0: [bx, by];
 c0: [cx, cy];
 
-a: [ax + vx, ay + vy];
-b: [bx + ux, by + uy];
-c: [cx + wx, cy + wy];
+a: [ax + vx, ay + vy] $
+b: [bx + ux, by + uy] $
+c: [cx + wx, cy + wy] $
 
-ta: cross(a0, da);
-tb: cross(b0, db);
-tc: cross(c0, dc);
+ta: cross(a0, da) $
+tb: cross(b0, db) $
+tc: cross(c0, dc) $
 
-fullratsimp(ev(da + db + dc, infeval, s));
-fullratsimp(ev(ta + tb + tc , infeval, s));
+factor(ev(da + db + dc, infeval, s));
+factor(ev(ta + tb + tc, infeval, s));
