@@ -38,7 +38,16 @@ int punto_write(int n, real *queue[], /**/ const char *path) {
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
-
+int punto_append(int n, real *queue[], /**/ const char *path) {
+    FILE *f;
+    if ((f = fopen(path, "a")) == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);
+    if (punto_fwrite(n, queue, f) != HE_OK)
+        ERR(HE_IO, "fail to write to '%s", path);
+    if (fclose(f) != 0)
+        ERR(HE_IO, "fail to close '%s'", path);
+    return HE_OK;
+}
 enum {OK, FAIL};
 static int read(char *s, int i, real *q[]) {
     const char delim[] = " \t";
