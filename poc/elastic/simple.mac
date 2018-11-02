@@ -13,20 +13,33 @@ cross(a, b):=express(a ~ b) $
 
 declare([ax, ay, bx, by, cx, cy], constant) $
 
-F(a, b):= a^2 + b;
+F(a, b):= a;
 
-dx(x, y):= p0 + px*x + py*y ;
-dy(x, y):= q0 + qx*x + qy*y ;
+(X: 1, Y: 2)$
+dx(r):= p0 + px*r[X] + py*r[Y] ;
+dy(r):= q0 + qx*r[X] + qy*r[Y] ;
+
+a0: [ax, ay];
+b0: [bx, by];
+c0: [cx, cy];
+
+da: [vx, vy];
+db: [ux, uy];
+dc: [wx, wy];
+
+a: a0 + da;
+b: b0 + db;
+c: c0 + dc;
 
 e: [
-  dx(ax, ay) = vx,
-  dy(ax, ay) = vy,
+  dx(a0) = vx,
+  dy(a0) = vy,
 
-  dx(bx, by) = ux,
-  dy(bx, by) = uy,
+  dx(b0) = ux,
+  dy(b0) = uy,
 
-  dx(cx, cy) = wx,
-  dy(cx, cy) = wy
+  dx(c0) = wx,
+  dy(c0) = wy
 ] ;
 
 de: diff(e);
@@ -39,14 +52,19 @@ Q: ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
 ds: subst('Q, Q, ds);
 s:  subst('Q, Q, s);
 
-Dxx: (diff(dx(x, y), x) + diff(dx(x, y), x))/2;
-Dxy: (diff(dx(x, y), y) + diff(dy(x, y), x))/2;
-Dyx: (diff(dy(x, y), x) + diff(dx(x, y), y))/2;
-Dyy: (diff(dy(x, y), y) + diff(dy(x, y), y))/2;
+sxx: diff(dx([x, y]), x);
+sxy: diff(dx([x, y]), y);
+syx: diff(dy([x, y]), x);
+syy: diff(dy([x, y]), y);
+
+Dxx: (sxx + sxx + sxx*sxx + syx*syx)/2;
+Dxy: (sxy + syx + sxx*sxy + syx*syy)/2;
+Dyx: (syx + sxy + sxy*sxx + syy*syx)/2;
+Dyy: (syy + syy + sxy*sxy + syy*syy)/2;
 D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
 
-I1: mattrace(D)    - 2;
-I2: determinant(D) - 1;
+I1: mattrace(D);
+I2: determinant(D);
 I2: factor(I2);
 E: F(I1, I2);
 
@@ -62,26 +80,13 @@ duy: gcfac((co(dE, uy)));
 dwx: gcfac((co(dE, wx)));
 dwy: gcfac((co(dE, wy)));
 
-(X: 1, Y: 2);
 fa: [dvx, dvy];
 fb: [dux, duy];
 fc: [dwx, dwy];
 
-a0: [ax, ay];
-b0: [bx, by];
-c0: [cx, cy];
-
-da: [vx, vy];
-db: [ux, uy];
-dc: [wx, wy];
-
-a: a0 + da;
-b: b0 + db;
-c: c0 + dc;
-
-ta: cross(a0, fa) ;
-tb: cross(b0, fb) ;
-tc: cross(c0, fc) ;
+ta: cross(a, fa) ;
+tb: cross(b, fb) ;
+tc: cross(c, fc) ;
 
 factor(ev(fa + fb + fc, infeval, s));
 factor(ev(ta + tb + tc, infeval, s));
