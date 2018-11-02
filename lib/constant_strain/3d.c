@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 #include "real.h"
 
@@ -10,22 +11,59 @@
 
 static const real EPS = 1e-8;
 
-static int small(const real a[3]) { return vec_abs(a) < EPS; }
+static int small_v(const real a[3]) { return vec_abs(a) < EPS; }
+static int small(real a) { return fabs(a) < EPS; }
 
+static int mean(real ax, real ay, real bx, real by, real cx, real cy, /**/ real *mx, real *my) {
+    *mx = (ax + bx + cx)/3;
+    *my = (ay + by + cy)/3;
+    return HE_OK;
+}
+static int minus(real ax, real ay, real bx, real by, /**/ real *cx, real *cy) {
+    *cx = ax - bx;
+    *cy = ay - by;
+    return HE_OK;
+}
+static real cross(real ax, real ay, real bx, real by) {
+    return ax*by - ay*bx;
+}
 static int assert_force_2d(real ax, real ay,
                            real bx, real by,
                            real cx, real cy,
-                           real dvx, real dvy,
-                           real dux, real duy,
-                           real dwx, real dwy) {
+                           real dax, real day,
+                           real dbx, real dby,
+                           real dcx, real dcy) {
     /* check total force and  torque */
+    real mx, my, fx, fy, max, may, mbx, mby, mcx, mcy, ta, tb, tc, t;
+    mean(ax, ay, bx, by, cx, cy, /**/ &mx, &my);
+    mean(dax, day, dbx, dby, dcx, dcy, /**/ &fx, &fy);
+
+    minus(ax, ay, mx, my, /**/ &max, &may);
+    minus(bx, by, mx, my, /**/ &mbx, &mby);
+    minus(cx, cy, mx, my, /**/ &mcx, &mcy);
+
+    ta = cross(max, may, dax, day);
+    tb = cross(mbx, mby, dbx, dby);
+    tc = cross(mcx, mcy, dcx, dcy);
+    t = ta + tb + tc;
+    if (!small(fx) || !small(fy) || !small(t)) {
+        MSG("bad 2d triangle in constant_strain");
+        MSG("a, b, c, f, t:");
+        fprintf(stderr, "a: %.16g %.16g\n", ax, ay);
+        fprintf(stderr, "b: %.16g %.16g\n", bx, by);
+        fprintf(stderr, "c: %.16g %.16g\n", cx, cy);
+        fprintf(stderr, "f: %.16g %.16g\n", fx, fy);
+        fprintf(stderr, "t: %.16g\n", t);
+        return 0;
+    }
+
     return 1;
 }
 
 static int assert_force_3d(const real a[3], const real b[3], const real c[3],
                            const real da[3], const real db[3], const real dc[3]) {
     /* check total force and  torque */
-    real center[3], m[3], f[3], t[3], ma[3], mb[3], mc[3];
+    real m[3], f[3], t[3], ma[3], mb[3], mc[3];
     real ta[3], tb[3], tc[3];
     tri_center(a, b, c, /**/ m);
     vec_minus(a, m, /**/ ma);
@@ -38,7 +76,7 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
     vec_cross(mc, dc, /**/ tc);
     vec_mean3(ta, tb, tc, /**/ t);
 
-    if (!small(f) || !small(t))  {
+    if (!small_v(f) || !small_v(t))  {
         MSG("bad 3d triangle in constant_strain");
         MSG("a, b, c, f, t:");
         vec_fprintf(a, stderr, "%.16g");
@@ -74,10 +112,15 @@ int constant_strain_force(void *param,
                        &dvx, &dvy, &dux, &duy, &dwx, &dwy,
                        &I1, &I2, &area);
     if (!assert_force_2d(ax + vx, ay + vy,
-                         bx + ux, vy + uy,
+                         bx + ux, by + uy,
                          cx + wx, cy + wy,
-                         dvx, dvy, dux, duy, dwx, dwy))
+                         dvx, dvy, dux, duy, dwx, dwy)) {
+        MSG("in : %.16g %.16g  %.16g %.16g  %.16g %.16g %.16g %.16g  %.16g %.16g  %.16g %.16g",
+            ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy);
+        MSG("out: %.16g %.16g  %.16g %.16g  %.16g %.16g",
+            dvx, dvy, dux, duy, dwx, dwy);
         ERR(HE_NUM, "bad 2d forces in triangle");
+    }
 
     tri_2to3(a, b, c, /**/ ex, ey);
     vec_linear_combination(dvx, ex,  dvy, ey, /**/ da);
