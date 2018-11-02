@@ -13,7 +13,7 @@
 
 #define T HeFStrain
 
-static const real EPS = 1e-4;
+static const real EPS = 1e-5;
 
 struct T {
     real *x, *y, *z, *eng;
@@ -78,17 +78,17 @@ static int small(const real a[3]) { return vec_abs(a) < EPS; }
 static int assert_force(const real a[3], const real b[3], const real c[3],
                         const real da[3], const real db[3], const real dc[3]) {
     /* check force and  torque */
-    real center[3], m[3], f[3], t[3], a0[3], b0[3], c0[3];
+    real center[3], m[3], f[3], t[3], ma[3], mb[3], mc[3];
     real ta[3], tb[3], tc[3];
     tri_center(a, b, c, /**/ m);
-    vec_minus(a, m, /**/ a0);
-    vec_minus(b, m, /**/ b0);
-    vec_minus(c, m, /**/ c0);
+    vec_minus(a, m, /**/ ma);
+    vec_minus(b, m, /**/ mb);
+    vec_minus(c, m, /**/ mc);
     vec_mean3(da, db, dc, /**/ f);
 
-    vec_cross(a0, da, /**/ ta);
-    vec_cross(b0, db, /**/ tb);
-    vec_cross(c0, dc, /**/ tc);
+    vec_cross(ma, da, /**/ ta);
+    vec_cross(mb, db, /**/ tb);
+    vec_cross(mc, dc, /**/ tc);
     vec_mean3(ta, tb, tc, /**/ t);
 
     if (!small(f) || !small(t))  {
