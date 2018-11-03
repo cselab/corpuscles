@@ -224,8 +224,10 @@ static int compute_norm(T *q, He *he,
     for (i = 0; i < nv; i++) {
         vec_get(i, normx, normy, normz, /**/ u);
         vec_norm(u, /**/ u0);
-        vec_set(u0, i, /**/ normx, normy, normz);
-    }
+	vec_set(u0, i, /**/ normx, normy, normz);
+	//vec_negative(u0, u); /*This reverses the sign of norm to be inwards*/
+        //vec_set(u, i, /**/ normx, normy, normz);
+ }
     return HE_OK;
 }
 static int compute_curva_mean(He *he,
