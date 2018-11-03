@@ -7,7 +7,7 @@
 #include <he/vec.h>
 #include <he/macro.h>
 #include <he/util.h>
-#include <he/constant_strain/2d.h>
+#include <he/strain/2d.h>
 
 #include <he/dih.h>
 #include <he/ddih.h>
@@ -32,7 +32,7 @@ static int print2(const real a[2], const real u[2], const real p[2], const real 
 
 static real energy() {
     real I1, I2;
-    constant_strain_2d(NULL, F1, F2,
+    strain_2d(NULL, F1, F2,
                        a[X], a[Y], b[X], b[Y], c[X], c[Y],
                        v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                        NULL, NULL, NULL, NULL, NULL, NULL,
@@ -42,7 +42,7 @@ static real energy() {
 
 static real denergy() {
     real I1, I2, area;
-    constant_strain_2d(NULL, F1, F2,
+    strain_2d(NULL, F1, F2,
                        a[X], a[Y], b[X], b[Y], c[X], c[Y],
                        v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                        NULL, NULL, NULL, NULL, NULL, NULL,
@@ -95,7 +95,7 @@ int main(__UNUSED int argc, const char **argv0) {
     if (eq(op, "all")) {
         vec2(a); vec2(b); vec2(c);
         vec2(v); vec2(u); vec2(w);
-        constant_strain_2d(NULL, F1, F2,
+        strain_2d(NULL, F1, F2,
                            a[X], a[Y], b[X], b[Y], c[X], c[Y],
                            v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                            &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
@@ -116,7 +116,7 @@ int main(__UNUSED int argc, const char **argv0) {
     } else if (eq(op, "force")) {
         vec2(a); vec2(b); vec2(c);
         vec2(v); vec2(u); vec2(w);
-        constant_strain_2d(NULL, F1, F2,
+        strain_2d(NULL, F1, F2,
                            a[X], a[Y], b[X], b[Y], c[X], c[Y],
                            v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                            &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],
@@ -126,7 +126,7 @@ int main(__UNUSED int argc, const char **argv0) {
     } else if (eq(op, "dforce")) {
         vec2(a); vec2(b); vec2(c);
         vec2(v); vec2(u); vec2(w);
-        constant_strain_2d(NULL, F1, F2,
+        strain_2d(NULL, F1, F2,
                            a[X], a[Y], b[X], b[Y], c[X], c[Y],
                            v[X], v[Y], u[X], u[Y], w[X], w[Y], /**/
                            &da[X], &da[Y], &db[X], &db[Y], &dc[X], &dc[Y],

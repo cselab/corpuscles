@@ -7,7 +7,7 @@
 #include "he/tri.h"
 #include "he/err.h"
 #include "he/macro.h"
-#include "he/constant_strain/2d.h"
+#include "he/strain/2d.h"
 
 static const real EPS = 1e-8;
 
@@ -47,7 +47,7 @@ static int assert_force_2d(real ax, real ay,
     tc = cross(mcx, mcy, dcx, dcy);
     t = ta + tb + tc;
     if (!small(fx) || !small(fy) || !small(t)) {
-        MSG("bad 2d triangle in constant_strain");
+        MSG("bad 2d triangle in strain");
         MSG("a, b, c, f, t:");
         fprintf(stderr, "a: %.16g %.16g\n", ax, ay);
         fprintf(stderr, "b: %.16g %.16g\n", bx, by);
@@ -77,7 +77,7 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
     vec_mean3(ta, tb, tc, /**/ t);
 
     if (!small_v(f) || !small_v(t))  {
-        MSG("bad 3d triangle in constant_strain");
+        MSG("bad 3d triangle in strain");
         MSG("a, b, c, f, t:");
         vec_fprintf(a, stderr, "%.16g");
         vec_fprintf(b, stderr, "%.16g");
@@ -89,11 +89,11 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
         return 1;
 }
 
-int constant_strain_force(void *param,
-                          real (*F1)(void*, real, real), real (*F2)(void*, real, real),
-                          const real a0[3], const real b0[3], const real c0[3],
-                          const real a[3], const real b[3], const real c[3], /**/
-                          real da_tot[3], real db_tot[3], real dc_tot[3]) {
+int strain_force(void *param,
+                 real (*F1)(void*, real, real), real (*F2)(void*, real, real),
+                 const real a0[3], const real b0[3], const real c0[3],
+                 const real a[3], const real b[3], const real c[3], /**/
+                 real da_tot[3], real db_tot[3], real dc_tot[3]) {
     real da[3], db[3], dc[3];
     real ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
     real dvx, dvy, dux, duy, dwx, dwy;
@@ -106,11 +106,11 @@ int constant_strain_force(void *param,
     wx -= cx; wy -= cy;
 
     ax = ay = vx = vy = 0;
-    constant_strain_2d(param, F1, F2,
-                       ax, ay, bx, by, cx, cy,
-                       vx, vy, ux, uy, wx, wy,
-                       &dvx, &dvy, &dux, &duy, &dwx, &dwy,
-                       &I1, &I2, &area);
+    strain_2d(param, F1, F2,
+              ax, ay, bx, by, cx, cy,
+              vx, vy, ux, uy, wx, wy,
+              &dvx, &dvy, &dux, &duy, &dwx, &dwy,
+              &I1, &I2, &area);
     if (!assert_force_2d(ax + vx, ay + vy,
                          bx + ux, by + uy,
                          cx + wx, cy + wy,
@@ -136,10 +136,10 @@ int constant_strain_force(void *param,
 }
 
 static real Dummy(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 0; }
-int constant_strain_energy(void *param, real (*F)(void*, real, real),
-                           const real a0[3], const real b0[3], const real c0[3],
-                           const real a[3], const real b[3], const real c[3],
-                           real *p_eng, real *p_deng) {
+int strain_energy(void *param, real (*F)(void*, real, real),
+                  const real a0[3], const real b0[3], const real c0[3],
+                  const real a[3], const real b[3], const real c[3],
+                  real *p_eng, real *p_deng) {
     real ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
     real I1, I2, A, eng, deng;
 
@@ -149,11 +149,11 @@ int constant_strain_energy(void *param, real (*F)(void*, real, real),
     wx -= cx; wy -= cy;
 
     ax = ay = vx = vy = 0;
-    constant_strain_2d(param, Dummy, Dummy,
-                       ax, ay, bx, by, cx, cy,
-                       vx, vy, ux, uy, wx, wy,
-                       NULL, NULL, NULL, NULL, NULL, NULL,
-                       &I1, &I2, &A);
+    strain_2d(param, Dummy, Dummy,
+              ax, ay, bx, by, cx, cy,
+              vx, vy, ux, uy, wx, wy,
+              NULL, NULL, NULL, NULL, NULL, NULL,
+              &I1, &I2, &A);
 
     deng = F(param, I1, I2);
     eng = deng * A;
