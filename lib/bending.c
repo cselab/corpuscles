@@ -152,10 +152,16 @@ static int gompper_energy_ver(T *q, /**/ real **e) {
     return he_f_gompper_energy_ver(b->local, /**/ e);
 }
 static int gompper_area_ver(T *q, /**/ real **e) {
-  return HE_OK;
+  Gompper *b = CONTAINER_OF(q, Gompper, bending);
+    return he_f_gompper_area_ver(b->local, /**/ e);
+    return HE_OK;
+
 }
 static int gompper_curva_mean_ver(T *q, /**/ real **e) {
+  Gompper *b = CONTAINER_OF(q, Gompper, bending);
+  return he_f_gompper_curva_mean_ver(b->local, /**/ e);
   return HE_OK;
+
 }
 static Vtable gompper_vtable = { gompper_fin, gompper_force, gompper_energy, gompper_energy_ver, gompper_area_ver, gompper_curva_mean_ver};
 int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
@@ -342,7 +348,24 @@ static int meyer_energy_ver(T *q, /**/ real **e) {
     Meyer *b = CONTAINER_OF(q, Meyer, bending);
     return he_f_meyer_energy_ver(b->local, /**/ e);
 }
-static Vtable meyer_vtable = { meyer_fin, meyer_force, meyer_energy, meyer_energy_ver};
+static int meyer_area_ver(T *q, /**/ real **e) {
+    Meyer *b = CONTAINER_OF(q, Meyer, bending);
+    return he_f_meyer_area_ver(b->local, /**/ e);
+}
+static int meyer_curva_mean_ver(T *q, /**/ real **e) {
+    Meyer *b = CONTAINER_OF(q, Meyer, bending);
+    return he_f_meyer_curva_mean_ver(b->local, /**/ e);
+}
+static int meyer_norm_ver(T *q, /**/ real **e, real **f, real **g) {
+    Meyer *b = CONTAINER_OF(q, Meyer, bending);
+    return he_f_meyer_norm_ver(b->local, /**/ e, f, g);
+}
+static int meyer_laplace_ver(T *q, /**/ real **e, real **f, real **g) {
+    Meyer *b = CONTAINER_OF(q, Meyer, bending);
+    return he_f_meyer_laplace_ver(b->local, /**/ e, f, g);
+}
+static Vtable meyer_vtable = { meyer_fin, meyer_force, meyer_energy, meyer_energy_ver,
+			       meyer_area_ver, meyer_curva_mean_ver, meyer_norm_ver, meyer_laplace_ver};
 int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Meyer *q;
