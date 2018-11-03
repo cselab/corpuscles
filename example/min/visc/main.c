@@ -39,7 +39,8 @@ static StrainParam strain_param;
 static HeFStrain *strain;
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s %s \\\n"
+            "  rVolume Ka Kga Kv {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF > PUNTO\n", me, bending_list());
     exit(0);
 }
 
