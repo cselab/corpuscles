@@ -241,7 +241,6 @@ int main(int __UNUSED argc, const char *v[]) {
     srand(time(NULL));
 
     ini("/dev/stdin");
-    //A0 = area(); V0 = target_volume(A0, rVolume);
     V0 = volume(); A0 = target_area(V0, rVolume);
     
     a0 = A0/NT;
