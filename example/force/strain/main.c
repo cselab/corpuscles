@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <real.h>
 #include <he/memory.h>
@@ -19,6 +20,9 @@ static int nv, nt;
 static HeFStrain *strain;
 static He *he;
 static real h = 1e-6;
+
+static const char **argv;
+static char off[4048];
 
 static real energy() {
     return he_f_strain_energy(strain, he, xx, yy, zz);
@@ -65,10 +69,17 @@ int main0() {
     return HE_OK;
 }
 
+static int str(/**/ char *p) {
+    if (*argv == NULL) ER("not enough args");
+    strncpy(p, *argv, 4048);
+    argv++;
+    return HE_OK;
+}
 int main(int __UNUSED argc, const char *v[]) {
-    const char path[] = "/dev/stdin";
-    y_ini(path, /**/ &he, &xx, &yy, &zz);
-
+    argv = v; argv++;
+    str(off);
+    
+    y_ini(off, /**/ &he, &xx, &yy, &zz);
     nv = he_nv(he);
     MSG("nv: %d", nv);
 
