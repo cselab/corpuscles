@@ -6,7 +6,7 @@
 #include <he/memory.h>
 #include <he/punto.h>
 #include <he/macro.h>
-#include <he/off.h>
+#include <he/y.h>
 #include <he/he.h>
 #include <he/err.h>
 #include <he/strain.h>
@@ -61,36 +61,25 @@ int main0() {
     puts("x y z fx fy fz gx gy gz eng");
     punto_fwrite(nv, queue, stdout);
     he_f_strain_fin(strain);
-    
+
     return HE_OK;
 }
 
 int main(int __UNUSED argc, const char *v[]) {
-    int *tri;
     const char path[] = "/dev/stdin";
-    HeOff *off;
-    argv = v; argv++;
-    he_off_ini(path, &off);
+    y_ini(path, /**/ &he, &xx, &yy, &zz);
 
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
-    he_off_tri(off, &tri);
-    he_tri_ini(nv, nt, tri, &he);
+    nv = he_nv(he);
+    MSG("nv: %d", nv);
 
-    MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
     CALLOC(nv, &fm); CALLOC(nv, &fx);  CALLOC(nv, &fy); CALLOC(nv, &fz);
     CALLOC(nv, &gx);  CALLOC(nv, &gy); CALLOC(nv, &gz);
 
-    he_off_xyz(off, xx, yy, zz);
-
     main0();
-    
-    FREE(xx); FREE(yy); FREE(zz);
+
     FREE(fm); FREE(fx); FREE(fy); FREE(fz);
-    FREE(gx); FREE(gy); FREE(gz);    
+    FREE(gx); FREE(gy); FREE(gz);
 
-    he_off_fin(off);
-    he_fin(he);
-
+    y_fin(he, xx, yy, zz);
     return 0;
 }
