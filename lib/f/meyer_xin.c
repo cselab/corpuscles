@@ -460,85 +460,84 @@ static int compute_curva_gauss(T *q, He *he,
 }
 real he_f_meyer_xin_energy(T *q, He *he,
                        const real *x, const real *y, const real *z) {
-    enum {X, Y, Z};
-    int v, t;
-    int i, j, k;
-    int *T0, *T1, *T2;
-    real *lbx, *lby, *lbz;
-    real *normx, *normy, *normz;
-    real *curva_mean;
-    real *energy_local, *area, *cot;
-
-    real Kb, C0, Kad, DA0D;
-    int  nv, nt;
-
-    real H0;
-    real mH0, mH1, mH2;
-    real energy1, energy2, energy3, energy4, energy5, energy6;
-    real energy_tot;
-    real energy_tot_local, energy_tot_nonlocal;
-    
-    Kb   = q->Kb;
-    C0   = q->C0;
-    Kad  = q->Kad;
-    DA0D = q->DA0D;
-
-    H0  = C0/2.0;
-
-    nv = he_nv(he);
-    nt = he_nt(he);
-
-    if (nv != q->nv )
-        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", nv, q->nv);
-    if (nt != q->nt )
+  enum {X, Y, Z};
+  int v, t;
+  int i, j, k;
+  int *T0, *T1, *T2;
+  real *lbx, *lby, *lbz;
+  real *normx, *normy, *normz;
+  real *curva_mean;
+  real *energy_local, *area, *cot;
+  
+  real Kb, C0, Kad, DA0D;
+  int  nv, nt;
+  
+  real H0;
+  real mH0, mH1, mH2;
+  real energy1, energy2, energy3, energy4, energy5, energy6;
+  real energy_tot;
+  real energy_tot_local, energy_tot_nonlocal;
+  
+  Kb   = q->Kb;
+  C0   = q->C0;
+  Kad  = q->Kad;
+  DA0D = q->DA0D;
+  
+  H0  = C0/2.0;
+  
+  nv = he_nv(he);
+  nt = he_nt(he);
+  
+  if (nv != q->nv )
+    ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", nv, q->nv);
+  if (nt != q->nt )
         ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", nt, q->nt);
-
-    T0 = q->T0; T1 = q->T1; T2 = q->T2;
-    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
-    normx = q->normx; normy = q->normy; normz = q->normz;
-    curva_mean   = q->curva_mean;
-    energy_local = q->energy_local;
-    area = q->area;
-    cot  = q->cot;
-    
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        T0[t] = i; T1[t] = j; T2[t] = k;
-    }
-    
-    //mH0 = compute_area_voronoi(q, he, x, y, z, area);
-    mH0 = compute_area_mix(q, he, x, y, z, area);
-
-    compute_cot(q, he, x, y, z, cot);
-    compute_lb(q, he, x, lbx);
-    compute_lb(q, he, y, lby);
-    compute_lb(q, he, z, lbz);
-    compute_norm(q, he, x, y, z, normx, normy, normz);
-    compute_curva_mean(q, he, /**/ curva_mean);
-    
-    mH1 = 0;
-    mH2 = 0;
-    
-    for ( v = 0; v < nv; v++ ) {
-      mH1 += curva_mean[v]*area[v];
-      mH2 += curva_mean[v]*curva_mean[v]*area[v];
-      energy_local[v] = 2*Kb*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
-    }
-
-    energy1 = 2*Kb*mH2;
-    energy2 = 2*pi*Kad*mH1*mH1/mH0;
-    energy3 =-4*Kb*H0*mH1;
-    energy4 =-2*pi*Kad*DA0D*mH1/mH0;
-    energy5 = 2*Kb*H0*H0*mH0;
-    energy6 = pi*Kad*DA0D*DA0D/2/mH0;
-
-    energy_tot_local = energy1 + energy3 + energy5;
-    energy_tot_nonlocal = energy2 + energy4 + energy6;
-    energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
-     
-    //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
-    //printf("enegy local, nonlocal: %f, %f \n", energy_tot_local, energy_tot_nonlocal);
-    return energy_tot;
+  
+  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+  normx = q->normx; normy = q->normy; normz = q->normz;
+  curva_mean   = q->curva_mean;
+  energy_local = q->energy_local;
+  area = q->area;
+  cot  = q->cot;
+  
+  for (t = 0; t < nt; t++) {
+    get_ijk(t, he, /**/ &i, &j, &k);
+    T0[t] = i; T1[t] = j; T2[t] = k;
+  }
+  
+  mH0 = compute_area_mix(q, he, x, y, z, area);
+  
+  compute_cot(q, he, x, y, z, cot);
+  compute_lb(q, he, x, lbx);
+  compute_lb(q, he, y, lby);
+  compute_lb(q, he, z, lbz);
+  compute_norm(q, he, x, y, z, normx, normy, normz);
+  compute_curva_mean(q, he, /**/ curva_mean);
+  
+  mH1 = 0;
+  mH2 = 0;
+  
+  for ( v = 0; v < nv; v++ ) {
+    mH1 += curva_mean[v]*area[v];
+    mH2 += curva_mean[v]*curva_mean[v]*area[v];
+    energy_local[v] = 2*Kb*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
+  }
+  
+  energy1 = 2*Kb*mH2;
+  energy2 = 2*pi*Kad*mH1*mH1/mH0;
+  energy3 =-4*Kb*H0*mH1;
+  energy4 =-2*pi*Kad*DA0D*mH1/mH0;
+  energy5 = 2*Kb*H0*H0*mH0;
+  energy6 = pi*Kad*DA0D*DA0D/2/mH0;
+  
+  energy_tot_local = energy1 + energy3 + energy5;
+  energy_tot_nonlocal = energy2 + energy4 + energy6;
+  energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
+  
+  //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
+  //printf("enegy local, nonlocal: %f, %f \n", energy_tot_local, energy_tot_nonlocal);
+  return energy_tot;
 
 }
 int he_f_meyer_xin_force(T *q, He *he,

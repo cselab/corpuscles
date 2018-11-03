@@ -33,7 +33,7 @@ struct T {
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean, *curva_gauss;
-  real *energy, *area;
+  real *energy_local, *area;
  
   int nv, ne, nt, nh;
 };
@@ -114,7 +114,7 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
   MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
   MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
 
-  MALLOC(nv, &q->energy);
+  MALLOC(nv, &q->energy_local);
   MALLOC(nv, &q->area);
   
   *pq = q;
@@ -126,7 +126,7 @@ int he_f_gompper_kroll_fin(T *q) {
   FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
   FREE(q->normx);FREE(q->normy);FREE(q->normz);
   FREE(q->curva_mean);FREE(q->curva_gauss);
-  FREE(q->energy); FREE(q->area);
+  FREE(q->energy_local); FREE(q->area);
   FREE(q);
   return HE_OK;
 }
@@ -155,7 +155,7 @@ int he_f_gompper_kroll_curva_gauss_ver(T *q, /**/ real **pa) {
   return HE_OK;
 }
 int he_f_gompper_kroll_energy_ver(T *q, /**/ real**pa) {
-  *pa = q->energy;
+  *pa = q->energy_local;
   return HE_OK;
 }
 static void compute_len2(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
@@ -186,15 +186,21 @@ static void compute_cot(He *he, const real *x, const real *y, const real *z, /**
         if (!bnd(h)) H[flp(h)] += cot;
     }
 }
-static void compute_area_voronoi(He *he, const real *len2, const real *cot, /**/ real *V) {
+static real compute_area_voronoi(He *he, const real *len2, const real *cot, /**/ real *V) {
     int nv, nh, h, i;
+    real area0, area_tot;
     nv = he_nv(he);
     zero(nv, V);
+    area_tot=0;
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         i = ver(h);
-        V[i] += cot[h]*len2[h]/8;
+	area0     = cot[h]*len2[h]/8;
+	V[i]     += area0;
+	area_tot += area0;
     }
+
+    return area_tot;
 }
 static void compute_laplace(He *he, const real *V0, const real *cot, const real *area, /**/ real *V1) {
     int h, n, nv, nh, i, j;
@@ -204,7 +210,7 @@ static void compute_laplace(He *he, const real *V0, const real *cot, const real 
     for (h = 0; h < nh; h++) {
         n = nxt(h);
         i = ver(h); j = ver(n);
-        V1[i] += cot[h]*(V0[i] - V0[j])/2;
+        V1[i] -= cot[h]*(V0[i] - V0[j])/2;
     }
     for (i = 0; i < nv; i++)
         V1[i] /= area[i];
@@ -242,7 +248,8 @@ static int compute_norm(T *q, He *he,
     for (i = 0; i < nv; i++) {
         vec_get(i, normx, normy, normz, /**/ u);
         vec_norm(u, /**/ u0);
-        vec_set(u0, i, /**/ normx, normy, normz);
+	vec_negative(u0, u); /*This reverses the sign of norm to be inwards*/
+	vec_set(u, i, /**/ normx, normy, normz);
     }
     return HE_OK;
 }
@@ -265,59 +272,10 @@ static int compute_curva_mean(T *q, He *he,
   return HE_OK;
   
 }
-static real compute_energy_local(T *q, const real *curva_mean, const real *area, /**/ real *energy) {
-  real Kb, C0, H0;
-  int i, nv;
-  real energy_tot;
-  
-  Kb   = q->Kb;
-  C0   = q->C0;
-  nv   = q->nv;
-  
-  H0 = C0/2.0;
-  
-  energy_tot = 0;
-  
-  for (i = 0; i < nv; i++) {
-    energy[i]   = 2*Kb*(curva_mean[i]-H0)*(curva_mean[i]-H0)*area[i];
-    energy_tot += energy[i];
-  }
-  
-  return energy_tot;
-}
-static real compute_curva_mean_integral(T *q, const real *curva_mean, const real *area) {
-
-  int i, nv;
-  real cm_integral;
-  nv   = q->nv;
-
-  cm_integral = 0;
-  for (i = 0; i < nv; i++) {
-    cm_integral += curva_mean[i]*area[i];
-  }
-  return cm_integral;
-}
-static real compute_energy_nonlocal(T *q, const real *curva_mean, const real *area) {
-  
-  real Kad, DA0D;
-  int i, nv;
-  real cm_integral, area_tot, energy_tot;
-  
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
-  nv   = q->nv;
-  
-  cm_integral=compute_curva_mean_integral(q, curva_mean, area);
-  area_tot   =sum(nv, area);
-  energy_tot = 4*pi*Kad/area_tot*(cm_integral - DA0D/2)*(cm_integral - DA0D/2);
-  
-  return energy_tot;
-}
 real he_f_gompper_kroll_energy(T *q, He *he,
 			 const real *x, const real *y, const real *z) {
-  real Kad;
-  int nv, nt;
-  int i, j, k, l;
+  enum {X, Y, Z};
+  int i, j, k, l, v;
   int *T0, *T1, *T2;
   
   real *len2, *cot;
@@ -325,20 +283,35 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   real *normx, *normy, *normz;
   real *curva_mean;
   real *area;
-  real *energy;
+  real *energy_local;
+
+  real Kb, C0, Kad, DA0D;
+  int nv, nt;
+
+  real H0;
+  real mH0, mH1, mH2;
+  real energy1, energy2, energy3, energy4, energy5, energy6;
   real energy_tot;
+  real energy_tot_local, energy_tot_nonlocal;
+
+  Kb   = q->Kb;
+  C0   = q->C0;
+  Kad  = q->Kad;
+  DA0D = q->DA0D;
+
+  H0  = C0/2.0;
   
+  nv = he_nv(he);
+  nt = he_nt(he);
+
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   len2 = q->len2; cot = q->cot;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
   curva_mean  = q->curva_mean;
   area = q->area;
-  energy = q->energy;
+  energy_local = q->energy_local;
   
-  Kad = q->Kad;
-  nv  = q->nv;
-  nt  = he_nt(he);
   
   for (l = 0; l < nt; l++) {
     get_ijk(l, he, /**/ &i, &j, &k);
@@ -350,19 +323,36 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   
   compute_len2(he, x, y, z, /**/ len2);
   compute_cot(he, x, y, z, /**/ cot);
-  compute_area_voronoi(he, len2, cot, /**/ area);
+  mH0 = compute_area_voronoi(he, len2, cot, /**/ area);
   compute_laplace(he, x, cot, area, /**/ lbx);
   compute_laplace(he, y, cot, area, /**/ lby);
   compute_laplace(he, z, cot, area, /**/ lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
   compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
-  
-  energy_tot  = compute_energy_local(q, curva_mean, area, /**/ energy);
 
-  if (Kad > epsilon){
-    energy_tot += compute_energy_nonlocal(q, curva_mean, area);
+  mH1 = 0;
+  mH2 = 0;
+  
+  for ( v = 0; v < nv; v++ ) {
+    mH1 += curva_mean[v]*area[v];
+    mH2 += curva_mean[v]*curva_mean[v]*area[v];
+    energy_local[v] = 2*Kb*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
   }
   
+  energy1 = 2*Kb*mH2;
+  energy2 = 2*pi*Kad*mH1*mH1/mH0;
+  energy3 =-4*Kb*H0*mH1;
+  energy4 =-2*pi*Kad*DA0D*mH1/mH0;
+  energy5 = 2*Kb*H0*H0*mH0;
+  energy6 = pi*Kad*DA0D*DA0D/2/mH0;
+  
+  energy_tot_local = energy1 + energy3 + energy5;
+  energy_tot_nonlocal = energy2 + energy4 + energy6;
+  energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
+  
+  //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
+  //printf("enegy local, nonlocal: %f, %f \n", energy_tot_local, energy_tot_nonlocal);
+
   return energy_tot;
 }
 int he_f_gompper_kroll_force(T *q, He *he,
@@ -435,9 +425,13 @@ int he_f_gompper_kroll_force(T *q, He *he,
   compute_laplace(he, z, cot, area, /**/ lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
   compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
-  cm_integral=compute_curva_mean_integral(q, curva_mean, area);
   area_tot   =sum(nv, area);
-
+  
+  cm_integral = 0;
+  for (i = 0; i < nv; i++) {
+    cm_integral += curva_mean[i]*area[i];
+  }
+  
   for (h = 0; h < nh; h++) {
     
     n = nxt(h); nn = nxt(n); fnf = flp(nxt(flp(h)));
@@ -479,28 +473,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
     /*accumulate the force on vertices i and j*/
     vec_append(df, i, /**/ fx, fy, fz);
     vec_substr(df, j, /**/ fx, fy, fz);
-
-    /*+++++++++++++++++++++++++++++++++++
-      force due to area-difference elasticity: part I
-      +++++++++++++++++++++++++++++++++++*/
-
-    if ( Kad > epsilon ) {
-      
-
-      if (fabs(curva_mean[i]) < epsilon ) {
-	printf("__FILE__, __LINE__, curva_mean too small!\n");
-	curva_mean[i] = epsilon;
-      }
-      
-      doef = Kad*pi/area_tot*(cm_integral-DA0D/2)*area[i]/2.0/curva_mean[i];
-      
-      vec_scalar(lbisq_der, doef, df);
-      
-      /*accumulate the force on vertices i and j*/
-      vec_append(df, i, /**/ fx, fy, fz);
-      vec_substr(df, j, /**/ fx, fy, fz);
-
-    }
     
     /*###################################
       ###################################
@@ -536,26 +508,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
 
     coef3 = coef1 + coef2;
     
-    /*+++++++++++++++++++++++++++++++++++
-      force due to area-difference elasticity: part II
-      +++++++++++++++++++++++++++++++++++*/
-    
-    if ( Kad > epsilon ) {
-      
-      doef *= (coef1 + coef2);
-      
-      /*accumulate the force on vertices i, j, k*/
-      vec_scalar_append(da1, doef, i, /**/ fx, fy, fz);
-      vec_scalar_append(db1, doef, j, /**/ fx, fy, fz);
-      vec_scalar_append(dc,  doef, k, /**/ fx, fy, fz);
-      
-      /*accumulate the force on vertices i, j, l*/
-      vec_scalar_append(da2, doef, i, /**/ fx, fy, fz);
-      vec_scalar_append(db2, doef, j, /**/ fx, fy, fz);
-      vec_scalar_append(dd,  doef, l, /**/ fx, fy, fz);
-
-    }
-    
     /*###################################
       ###################################
       force part III
@@ -585,37 +537,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
     vec_scalar_append(db2, coef2, j, /**/ fx, fy, fz);
     vec_scalar_append(dd,  coef2, l, /**/ fx, fy, fz);
     
-    
-    /*+++++++++++++++++++++++++++++++++++
-      force due to area-difference elasticity: part III
-      +++++++++++++++++++++++++++++++++++*/
-
-    if ( Kad > epsilon ) {
-      
-      doef=4.0*Kad*pi/area_tot*(cm_integral-DA0D/2.0)*curva_mean[i];
-      
-      doef1 = doef * cot1 / 4.0;
-      
-      vec_scalar(r, doef1, df);
-      
-      /*accumulate the force on vertices i and j*/
-      vec_append(df, i, /**/ fx, fy, fz);
-      vec_substr(df, j, /**/ fx, fy, fz);    
-      
-      doef2 = doef * rsq / 8.0;
-      
-      /*accumulate the force on vertices i, j, k*/
-      vec_scalar_append(da1, doef2, i, /**/ fx, fy, fz);
-      vec_scalar_append(db1, doef2, j, /**/ fx, fy, fz);
-      vec_scalar_append(dc,  doef2, k, /**/ fx, fy, fz);
-      
-      /*accumulate the force on vertices i, j, l*/
-      vec_scalar_append(da2, doef2, i, /**/ fx, fy, fz);
-      vec_scalar_append(db2, doef2, j, /**/ fx, fy, fz);
-      vec_scalar_append(dd,  doef2, l, /**/ fx, fy, fz);
-
-    }
-      
   }
    
   return HE_OK;

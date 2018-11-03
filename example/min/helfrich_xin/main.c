@@ -193,51 +193,57 @@ static real max_vec(real *fx, real *fy, real *fz) {
 
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int cnt, i, j;
-    real dt, dt_max, h, mu, rnd;
-    real A, V;
-    real *queue[] = {XX, YY, ZZ, NULL};
-    int nsub;
+  int cnt, i, j;
+  real dt, dt_max, h, mu, rnd;
+  real A, V, Vr;
+  real *queue[] = {XX, YY, ZZ, NULL};
+  int nsub;
+  real et, eb, ek;
+  
+  dt_max = 0.01;
+  mu = 100.0;
+  h = 0.01*e0;
+  
+  nsub = 100;
+  
+  zero(NV, vx); zero(NV, vy); zero(NV, vz);
+  for (i = 0; i < end; i++) {
+    Force(XX, YY, ZZ, /**/ fx, fy, fz);
+    dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
+    rnd = 0.01*max_vec(vx, vy, vz);
+    jigle(rnd, vx, vy, vz);        
+    visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     
-    dt_max = 0.01;
-    mu = 100.0;
-    h = 0.01*e0;
-
-    nsub = 100;
-
-    zero(NV, vx); zero(NV, vy); zero(NV, vz);
-    for (i = 0; i < end; i++) {
-        Force(XX, YY, ZZ, /**/ fx, fy, fz);
-        dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.01*max_vec(vx, vy, vz);
-        jigle(rnd, vx, vy, vz);        
-        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-
-        for (j = 0; j < nsub; j++) {
-            ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
-            visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-            euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-            euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        }
-
-        if (i % 100 == 0) {
-	  j=0;
-	  do {
-	    equiangulate(&cnt);
-	    //cnt = 0;
-	    MSG("cnt : %d", cnt);
-	  } while (cnt > 0 && j < 10);
-            punto_fwrite(NV, queue, stdout);
-            printf("\n");
-            MSG("dt: %g", dt);
-            MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
-            A = area(); V = volume();
-            MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
-            off_write(XX, YY, ZZ, "q.off");
-        }
+    for (j = 0; j < nsub; j++) {
+      ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
+      visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
+    
+    if (i % 100 == 0) {
+      j=0;
+      do {
+	equiangulate(&cnt);
+	MSG("cnt : %d", cnt);
+      } while (cnt > 0 && j < 10);
+      //punto_fwrite(NV, queue, stdout);
+      punto_append(NV, queue, "inter.dat");
+      et = Energy(XX, YY, ZZ);
+      eb = f_bending_energy(XX, YY, ZZ);
+      ek = Kin(vx, vy, vz);
+      A = area(); V = volume(); Vr=reduced_volume(A,V);
+      MSG("eng: %g %g %g", et, eb, ek); 
+      MSG("dt: %g", dt);
+      MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
+      printf("eng: %g %g %g\n", et, eb, ek); 
+      printf("dt: %f\n", dt);
+      printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+      off_write(XX, YY, ZZ, "inter.off");
+    }
+  }
     off_write(XX, YY, ZZ, "end.off");            
 }
 
@@ -245,6 +251,7 @@ int main(int __UNUSED argc, const char *v[]) {
     real a0;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
+    real A, V, Vr;
     BendingParam bending_param;
     
     argv = v; argv++;
@@ -258,9 +265,14 @@ int main(int __UNUSED argc, const char *v[]) {
     a0 = A0/NT;
     e0 = eq_tri_edg(a0);
 
-    MSG("V0/volume(): %g", V0/volume());
-    MSG("A0/area(): %g", A0/area());
-    MSG("Area, Volume, edg: %g %g %g", A0, V0, e0);
+    V = V0;
+    A = area();
+    Vr= reduced_volume(A,V);
+    
+    MSG("Targeted Area, Volume: %g %g", A0, V0);
+    MSG("V/V0: %g", V/V0);
+    MSG("A/A0: %g", A/A0);
+    MSG("Vr  : %g", Vr);
 
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);

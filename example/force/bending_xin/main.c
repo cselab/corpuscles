@@ -73,6 +73,7 @@ static void main0() {
     bending_curva_mean_ver(bending, /**/ &cm);
     //bending_norm_ver(bending, /**/ &nx, &ny, &nz);
     //bending_laplace_ver(bending, /**/ &lbx, &lby, &lbz);
+    //printf("%s, %d\n", __FILE__,__LINE__);
     
     MSG("energy: %g", e);
     MSG("f[0]   : %g %g %g", Fx[0], Fy[0], Fz[0]);
