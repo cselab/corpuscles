@@ -8,4 +8,4 @@ he/f/volume.h he/hash.h he/he.h he/macro.h he/memory.h \
 he/normal.h he/off.h he/prec/d/real.h he/prec/s/real.h he/punto.h \
 he/read.h he/real.h he/strain/2d.h he/strain/3d.h he/strain.h \
 he/sum.h he/ten.h he/tri.h he/util.h he/vec.h \
-he/volume.h he/vtk.h he/x.h
+he/volume.h he/vtk.h he/x.h he/y.h

@@ -68,7 +68,7 @@ int main0() {
 int main(int __UNUSED argc, const char *v[]) {
     int *tri;
     const char path[] = "/dev/stdin";
-    static HeOff *off;
+    HeOff *off;
     argv = v; argv++;
     he_off_ini(path, &off);
 

@@ -9,7 +9,7 @@ f/harmonic.s.o f/harmonic_ref.s.o f/juelicher.s.o f/juelicher_xin.s.o f/kantor.s
 f/meyer.s.o f/meyer_xin.s.o f/strain.s.o f/volume.s.o normal.s.o \
 off.s.o punto.s.o real.s.o strain/2d.s.o strain/3d.s.o \
 strain.s.o sum.s.o ten.s.o tri.s.o vec.s.o \
-volume.s.o vtk.s.o x.s.o
+volume.s.o vtk.s.o x.s.o y.s.o
 O_D = \
 area.d.o bending.d.o ddih.d.o dedg.d.o dih.d.o \
 dtri.d.o edg.d.o equiangulate.d.o f/area.d.o f/canham.d.o \
@@ -18,4 +18,4 @@ f/harmonic.d.o f/harmonic_ref.d.o f/juelicher.d.o f/juelicher_xin.d.o f/kantor.d
 f/meyer.d.o f/meyer_xin.d.o f/strain.d.o f/volume.d.o normal.d.o \
 off.d.o punto.d.o real.d.o strain/2d.d.o strain/3d.d.o \
 strain.d.o sum.d.o ten.d.o tri.d.o vec.d.o \
-volume.d.o vtk.d.o x.d.o
+volume.d.o vtk.d.o x.d.o y.d.o
