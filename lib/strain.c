@@ -115,7 +115,7 @@ int strain_force(T *q,
     F1 = q->F1;
     F2 = q->F2;
 
-    strain_force((void*)param, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+    strain_force_3d((void*)param, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
     return HE_OK;
 }
 
@@ -129,6 +129,6 @@ real strain_energy(T* q,
     param = &q->param;
     F = q->F;
 
-    strain_energy((void*)param, F, a0, b0, c0,   a, b, c,   /**/ &eng, &deng);
+    strain_energy_3d((void*)param, F, a0, b0, c0,   a, b, c,   /**/ &eng, &deng);
     return eng;
 }
