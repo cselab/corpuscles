@@ -13,14 +13,8 @@
 #include <he/macro.h>
 #include <he/util.h>
 #include <he/memory.h>
-#include <he/tri.h>
-#include <he/dedg.h>
-#include <he/ddih.h>
-#include <he/dtri.h>
 #include <he/bending.h>
 #include <he/x.h>
-#include <alg/x.h>
-#include <alg/min.h>
 
 static const real pi = 3.141592653589793115997964;
 
@@ -48,7 +42,6 @@ static real sph_volume(real area) { return pow(area, 1.5)/(6*pi); }
 
 static real target_volume(real area, real v) { return v*sph_volume(area); }
 static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
-
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
 static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
