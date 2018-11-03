@@ -6,9 +6,9 @@
 #include "he/he.h"
 #include "he/vec.h"
 #include "he/tri.h"
-#include "he/edg.h"
-#include "he/dedg.h"
+#include "he/y.h"
 #include "he/strain.h"
+
 #include "he/f/strain.h"
 
 #define T HeFStrain
@@ -16,6 +16,7 @@
 static const real EPS = 1e-8;
 
 struct T {
+    He *he;
     real *x, *y, *z, *eng;
     Strain *strain;
 };
@@ -44,31 +45,34 @@ static int get3(const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
-int he_f_strain_ini(const char *name, StrainParam param, const real *x, const real *y, const real *z, He *he, T **pq) {
+int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq) {
     T *q;
-    int nv, i;
-
-    nv = he_nv(he);
+    int nv, i, status;
+    He *he;
+    real *x, *y, *z;
+    
     MALLOC(1, &q);
-    MALLOC(nv, &q->x);
-    MALLOC(nv, &q->y);
-    MALLOC(nv, &q->z);
+    
+    status = y_ini(off, &he, &x, &y, &z);
+    if (status != HE_OK)
+        ERR(HE_IO, "y_ini failed");
+    
+    nv = he_nv(he);
     MALLOC(nv, &q->eng);
     strain_ini(name, param, &q->strain);
 
-    for (i = 0; i < nv; i++) {
-        q->x[i] = x[i];
-        q->y[i] = y[i];
-        q->z[i] = z[i];
-    }
+    q->he = he;    
+    q->x = x;
+    q->y = y;
+    q->z = z;
 
     *pq = q;
     return HE_OK;
 }
 
 int he_f_strain_fin(T *q) {
+    y_fin(q->he, q->x, q->y, q->z);
     strain_fin(q->strain);
-    FREE(q->x); FREE(q->y); FREE(q->z);
     FREE(q->eng);
     FREE(q);
     return HE_OK;
@@ -104,17 +108,22 @@ static int assert_force(const real a[3], const real b[3], const real c[3],
         return 1;
 }
 
-int he_f_strain_force(T *q, He *he,
-                            const real *x, const real *y, const real *z, /**/
+int he_f_strain_force(T *q, const real *x, const real *y, const real *z, /**/
                             real *fx, real *fy, real *fz) {
+    He *he;
+    const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3], da[3], db[3], dc[3];
     int nt, t;
     int i, j, k;
+
+    he = q->he;
+    x0 = q->x; y0 = q->y; z0 = q->z;
+    
     nt = he_nt(he);
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
-        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
+        get3(x0, y0, z0, i, j, k, /**/ a0, b0, c0);
         get3(x, y, z, i, j, /**/ k, a, b, c);
         strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
         if (!assert_force(a, b, c, da, db, dc))
@@ -127,13 +136,17 @@ int he_f_strain_force(T *q, He *he,
     return HE_OK;
 }
 
-real he_f_strain_energy(T *q, He *he,
-                        const real *x, const real *y, const real *z) {
+real he_f_strain_energy(T *q, const real *x, const real *y, const real *z) {
+    He *he;
+    const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
     int nt, nv, t;
     int i, j, k;
     real e0, e, *eng;
+
+    he = q->he;
+    x0 = q->x; y0 = q->y; z0 = q->z;
     nt = he_nt(he);
     nv = he_nv(he);
 

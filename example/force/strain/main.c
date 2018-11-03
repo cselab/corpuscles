@@ -25,7 +25,7 @@ static const char **argv;
 static char off[4048];
 
 static real energy() {
-    return he_f_strain_energy(strain, he, xx, yy, zz);
+    return he_f_strain_energy(strain, xx, yy, zz);
 }
 
 static real fd0(real *p) {
@@ -50,13 +50,13 @@ int main0() {
     StrainParam param;
     param.Ka = 0;
     param.Ks = 1;
-    he_f_strain_ini("skalak", param, xx, yy, zz, he, /**/ &strain);
+    he_f_strain_ini(off, "skalak", param, /**/ &strain);
     for (i = 0; i < nv; i++) {
         xx[i] += 0.01*xx[i]*yy[i];
         yy[i] += 0.01*xx[i]*xx[i];
     }
-    he_f_strain_force(strain, he, xx, yy, zz, /**/ fx, fy, fz);
-    e = he_f_strain_energy(strain, he, xx, yy, zz);
+    he_f_strain_force(strain, xx, yy, zz, /**/ fx, fy, fz);
+    e = he_f_strain_energy(strain, xx, yy, zz);
     he_f_strain_energy_ver(strain, &eng);
     MSG("eng: %g", e);
     for (i = 0; i < nv; i++)
