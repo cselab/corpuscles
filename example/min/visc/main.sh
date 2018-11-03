@@ -2,21 +2,14 @@ set -eu
 
 . he.util
 
-v="$1"
-shift
-
-off="$1"
+DA0D="$1"
 shift
 
 Ks="$1"
 shift
 
-Ka="$1"
-shift
-
-DA0D="$1"
-shift
-
+off=$HOME/e.off
+v=0.642
 pi=3.141592653589793
 volume=`off.volume $off`
 area=`off.area   $off`
@@ -25,6 +18,7 @@ scale=`ae "($ta/$area)^(1/2)"`
 off.scale $scale $off > ref.off
 
 Kb=0.01
-Kd=`ae 2/$pi*$Kb`
+Kad=`ae 2/$pi*$Kb`
+C0=0
 
-./main meyer_xin $v   0 4 1  ref.off skalak $Ks $Ka      $Kb 0 $Kd $DA0D < "$off" > q
+./main juelicher $v   1 10 1  ref.off linear $Ks 0      $Kb $C0 $Kad $DA0D < $off > q

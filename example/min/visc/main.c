@@ -189,7 +189,7 @@ static void main0(real *vx, real *vy, real *vz,
     real *queue[] = {XX, YY, ZZ, NULL};
     int nsub;
     
-    dt_max = 0.01;
+    dt_max = 0.1;
     mu = 100.0;
     h = 0.01*e0;
 
@@ -220,8 +220,10 @@ static void main0(real *vx, real *vy, real *vz,
             } while (cnt > 0);
             punto_fwrite(NV, queue, stdout);
             printf("\n");
-            MSG("dt: %g", dt);
-            MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
+        }
+
+        if (i % 100 == 0) {
+            MSG("eng: %g", Energy(XX, YY, ZZ));
             A = area(); V = volume();
             MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
             off_write(XX, YY, ZZ, "q.off");
@@ -242,6 +244,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     ini("/dev/stdin");
     V0 = volume(); A0 = target_area(V0, rVolume);
+    MSG("target_area: %g", A0);
     
     a0 = A0/NT;
     e0 = eq_tri_edg(a0);
