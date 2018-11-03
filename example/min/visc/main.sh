@@ -5,9 +5,6 @@ set -eu
 DA0D="$1"
 shift
 
-Ks="$1"
-shift
-
 off=$HOME/e.off
 v=0.642
 pi=3.141592653589793
