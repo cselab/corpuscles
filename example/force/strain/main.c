@@ -20,6 +20,26 @@ static HeFStrain *strain;
 static He *he;
 static real h = 1e-6;
 
+static real energy() {
+    return he_f_strain_energy(strain, he, xx, yy, zz);
+}
+
+static real fd0(real *p) {
+    real e, ep, em, v, t;
+    v = *p;
+    *p += h; ep  = energy(); *p = v;
+    *p -= h; em  = energy(); *p = v;
+    return (ep - em)/(2*h);
+}
+
+static int fd(int i, real *gx, real *gy, real *gz) {
+    enum {X, Y, Z};
+    gx[i] = fd0(&xx[i]);
+    gy[i] = fd0(&yy[i]);
+    gz[i] = fd0(&zz[i]);
+    return HE_OK;
+}
+
 int main0() {
     int i;
     real *eng, e, eh, tmp;
@@ -35,10 +55,8 @@ int main0() {
     e = he_f_strain_energy(strain, he, xx, yy, zz);
     he_f_strain_energy_ver(strain, &eng);
     MSG("eng: %g", e);
-    for (i = 0; i < nv; i++) {
-        tmp = xx[i]; xx[i] += h; eh = he_f_strain_energy(strain, he, xx, yy, zz); xx[i] = tmp;
-        gx[i] = (eh - e)/h; 
-    }
+    for (i = 0; i < nv; i++)
+        fd(i, gx, gy, gz);
     real *queue[] = {xx, yy, zz, fx, fy, fz, gx, gy, gz, eng, NULL};
     puts("x y z fx fy fz gx gy gz eng");
     punto_fwrite(nv, queue, stdout);
