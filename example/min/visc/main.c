@@ -14,6 +14,8 @@
 #include <he/util.h>
 #include <he/memory.h>
 #include <he/bending.h>
+#include <he/strain.h>
+#include <he/f/strain.h>
 #include <he/x.h>
 
 static const real pi = 3.141592653589793115997964;
@@ -27,14 +29,17 @@ static void zero(int n, real *a) {
 
 #define FMT_IN   XE_REAL_IN
 
-static real rVolume, Ka, Kga, Kv, Ke;
+static real rVolume, Ka, Kga, Kv;
 static real A0, V0, e0;
 static const char **argv;
-static char bending[4049];
+static char bending[4049], model[4049], off[4049];
 static const char *me = "min/visc";
 
+static StrainParam strain_param;
+static HeFStrain *strain;
+
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -62,7 +67,9 @@ static int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Ke); scl(&Kb); scl(&C0);  scl(&Kad); scl(&DA0D);
+    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv);
+    str(off); str(model); scl(&strain_param.Ks); scl(&strain_param.Ka);
+    scl(&Kb); scl(&C0);  scl(&Kad); scl(&DA0D);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -70,8 +77,9 @@ real Energy(const real *x, const real *y, const real *z) {
     a = f_area_energy(x, y, z);
     ga = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
-    e = f_edg_sq_energy(x, y, z);
+    e = he_f_strain_energy(strain, x, y, z);
     b = f_bending_energy(x, y, z);
+    MSG("a ga v e b: %g %g %g %g %g", a, ga, v, e, b);
     return a + ga + v + e + b;
 }
 
@@ -80,7 +88,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
-    f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
+    he_f_strain_force(strain, x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -245,7 +253,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
-    f_edg_sq_ini(Ke);
+    he_f_strain_ini(off, model, strain_param, /**/ &strain);
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
@@ -261,8 +269,8 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(fx); FREE(fy); FREE(fz);
     FREE(vx); FREE(vy); FREE(vz);
 
+    he_f_strain_fin(strain);
     f_bending_fin();
-    f_edg_sq_fin();
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
