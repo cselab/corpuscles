@@ -8,8 +8,8 @@
 #include <he/tri.h>
 #include <he/macro.h>
 #include <he/util.h>
-#include <he/constant_strain/3d.h>
-#include <he/constant_strain/2d.h>
+#include <he/strain/3d.h>
+#include <he/strain/2d.h>
 
 #include <he/dih.h>
 #include <he/ddih.h>
@@ -44,11 +44,11 @@ int main(__UNUSED int argc, const char **argv0) {
     if (eq(op, "2d")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
-        constant_strain_force(NULL, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+        strain_force_3d(NULL, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
         //vec_printf(da, "%.16g"); vec_printf(db, "%.16g"); vec_printf(dc, "%.16g");
         tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
         tri_3to2(a, b, c,    /**/ &ux, &uy, &wx, &wy);
-        constant_strain_2d(NULL, F1, F2,
+        strain_2d(NULL, F1, F2,
                            0, 0, bx, by, cx, cy,
                            0, 0, ux - bx, uy - by, wx - cx, wy - cy,
                            &dvx, &dvy, &dux, &duy, &dwx, &dwy,
@@ -60,7 +60,7 @@ int main(__UNUSED int argc, const char **argv0) {
     } else if (eq(op, "3d")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
-        constant_strain_force(NULL, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+        strain_force_3d(NULL, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
         puts("x y fx fy");
         printf("%.16g %.16g %.16g %.16g\n", a[X], a[Y], da[X], da[Y]);
         printf("%.16g %.16g %.16g %.16g\n", b[X], b[Y], db[X], db[Y]);
@@ -68,10 +68,10 @@ int main(__UNUSED int argc, const char **argv0) {
     } else if (eq(op, "energy")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
-        constant_strain_energy(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
+        strain_energy_3d(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
         tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
         tri_3to2(a, b, c,    /**/ &ux, &uy, &wx, &wy);
-        constant_strain_2d(NULL, F1, F2,
+        strain_2d(NULL, F1, F2,
                            0, 0, bx, by, cx, cy,
                            0, 0, ux - bx, uy - by, wx - cx, wy - cy,
                            NULL, NULL, NULL, NULL, NULL, NULL,
@@ -80,7 +80,7 @@ int main(__UNUSED int argc, const char **argv0) {
     } else if (eq(op, "denergy")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
-        constant_strain_energy(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
+        strain_energy_3d(NULL, F, a0, b0, c0,   a, b, c,   &eng, &deng);
         printf("%.16g\n", deng);
     } else
         ER("unknown operation '%s'", op);

@@ -6,7 +6,7 @@
 
 #include "he/memory.h"
 #include "he/macro.h"
-#include "he/constant_strain/3d.h"
+#include "he/strain/3d.h"
 #include "he/util.h"
 #include "he/strain.h"
 
@@ -115,7 +115,7 @@ int strain_force(T *q,
     F1 = q->F1;
     F2 = q->F2;
 
-    constant_strain_force((void*)param, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+    strain_force_3d((void*)param, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
     return HE_OK;
 }
 
@@ -129,6 +129,6 @@ real strain_energy(T* q,
     param = &q->param;
     F = q->F;
 
-    constant_strain_energy((void*)param, F, a0, b0, c0,   a, b, c,   /**/ &eng, &deng);
+    strain_energy_3d((void*)param, F, a0, b0, c0,   a, b, c,   /**/ &eng, &deng);
     return eng;
 }

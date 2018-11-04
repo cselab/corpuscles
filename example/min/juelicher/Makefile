@@ -9,7 +9,7 @@ $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
 
 test: $M; atest test/*
-install:
+install: $M; cp main $(PREFIX)/bin/juelicher
 
 .PHONY: clean test install
 clean:; rm -f $M.o $M

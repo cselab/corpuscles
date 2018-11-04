@@ -33,9 +33,10 @@ char *util_fgets(char *s, FILE *stream) {
 
 enum {NO, YES};
 static int commentp(const char *s) {
-    while (*(s++) != '\0') {
-        if    (*s == '#') return YES;
+    while (*s != '\0') {
+        if (*s == '#') return YES;
         if (!isblank(*s)) return NO;
+        s++;
     }
     return YES;
 }

@@ -42,14 +42,13 @@ int he_off_ini(const char *path, T **pq) {
         ERR(HE_IO, "'%s' is not an off file", path);
     NXT();
     cnt = sscanf(line, "%d %d %*d", &nv, &nt);
+    if (cnt != 2)
+        ERR(HE_IO, "fail to parse: '%s' in '%s'", line, path);
     if (3*nt < nv)
         ERR(HE_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
 
     MALLOC(3*nv, &q->ver); ver = q->ver;
     MALLOC(3*nt, &q->tri); tri = q->tri;
-
-    if (cnt != 2)
-        ERR(HE_IO, "'%s' != [nv nt ne] in '%s'", line, path);
     for (i = 0; i < nv; i++) {
         NXT();
         x = ver++; y = ver++; z = ver++;

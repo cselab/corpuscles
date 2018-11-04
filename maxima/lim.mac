@@ -1,0 +1,36 @@
+load("scifac") $
+
+/* [a, b], [I1, I2]: invariants of strain rate tensor
+   [e11, e22], [x, y]: eigen values of  strain rate tensor
+   l1, l2: local principle stretches?
+*/
+
+e: [x + y = a, x * y = b];
+s: solve(e, [x, y]);
+
+l1: sqrt(1 + 2*x);
+l2: sqrt(1 + 2*y);
+
+e11: (l1^2 - 1)/2;
+e22: (l2^2 - 1)/2;
+
+I1: e11 + e22;
+I2: e11*e22;
+
+al: e11*e22 - 1;
+be: (e11 - e22)^2/(2*e11*e22);
+
+factor(al^2), s;
+expand(be), s;
+
+V: 100e-18;
+A: 140e-12;
+D: 3e-9;
+e: da0 = dA0 / A;
+s: linsolve(e, dA0);
+dA0/D, s;
+
+Vs: 4.06969;
+L: (Vs/V)^(1/3);
+
+ev((dA0/D) * L, s, da0 = 2/100, infeval);
