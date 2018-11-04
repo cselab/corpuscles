@@ -19,6 +19,7 @@
 #include <he/x.h>
 
 static const real pi = 3.141592653589793115997964;
+static const real EPS = 1e-6;
 
 static real Kb, C0, Kad, DA0D;
 static void zero(int n, real *a) {
@@ -29,7 +30,7 @@ static void zero(int n, real *a) {
 
 #define FMT_IN   XE_REAL_IN
 
-static real rVolume, Ka, Kga, Kv;
+static real rVolume, Ka, Kga;
 static real A0, V0, e0;
 static const char **argv;
 static char bending[4049], model[4049], off[4049];
@@ -40,7 +41,7 @@ static HeFStrain *strain;
 
 static void usg() {
     fprintf(stderr, "%s %s \\\n"
-            "  rVolume Ka Kga Kv {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF > PUNTO\n", me, bending_list());
+            "  rVolume Ka Kga {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF > PUNTO\n", me, bending_list());
     exit(0);
 }
 
@@ -68,7 +69,7 @@ static int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv);
+    scl(&rVolume); scl(&Ka); scl(&Kga);
     str(off); str(model); scl(&strain_param.Ks); scl(&strain_param.Ka);
     scl(&Kb); scl(&C0);  scl(&Kad); scl(&DA0D);
 }
@@ -181,21 +182,39 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
+static int restore_volume(real *fx, real *fy, real *fz) {
+    int j, nsub;
+    real v, dv, q, step, f[3];
+    int m;
+
+    v = volume();
+    dv = V0 - v;
+    if (dv/V0 > -EPS && dv/V0 < EPS)
+        return HE_OK;
+    ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
+    q = 0;
+    for (m = 0; m < NV; m++) {
+        vec_get(m, fx, fy, fz, /**/ f);
+        q += vec_dot(f, f);
+    }
+    step = -dv/q;
+    euler(step, fx, fy, fz, /**/ XX, YY, ZZ);
+    MSG("v: %g %g %g %g", v, volume(), V0, dv);
+    exit(0);
+}
+
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int cnt, end, i, j;
+    int cnt, end, i;
     real dt, dt_max, h, mu, rnd;
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
-    int nsub;
     
     dt_max = 0.001;
     mu = 100.0;
     h = 0.01*e0;
-
-    nsub = 100;
     end = 10000;
-
+    
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
@@ -205,22 +224,16 @@ static void main0(real *vx, real *vy, real *vz,
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-
-        for (j = 0; j < nsub; j++) {
-            ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
-            visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-            euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-            euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        }
+        restore_volume(fx, fy, fz);
 
         if (i % 100 == 0) {
-	  /*do {
-                equiangulate(&cnt);
-                cnt = 0;
-                MSG("cnt : %d", cnt);
-		} while (cnt > 0);*/
-            punto_fwrite(NV, queue, stdout);
-            printf("\n");
+	  do {
+              equiangulate(&cnt);
+              cnt = 0;
+              MSG("cnt : %d", cnt);
+          } while (cnt > 0);
+          punto_fwrite(NV, queue, stdout);
+          printf("\n");
         }
 
         if (i % 100 == 0) {
@@ -234,7 +247,7 @@ static void main0(real *vx, real *vy, real *vz,
 }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real a0;
+    real a0, Kv;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
     BendingParam bending_param;
@@ -256,7 +269,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
-    f_volume_ini(V0, Kv);
+    f_volume_ini(V0, Kv = 1);
     he_f_strain_ini(off, model, strain_param, /**/ &strain);
 
     bending_param.Kb = Kb;
