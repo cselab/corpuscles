@@ -33,4 +33,4 @@ dA0/D, s;
 Vs: 4.06969;
 L: (Vs/V)^(1/3);
 
-ev((dA0/D) * L, s, da0 = 2/100, infeval);
+ev((dA0/D) * L, s, da0 = 1.5/100, infeval);
