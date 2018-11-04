@@ -214,11 +214,11 @@ static void main0(real *vx, real *vy, real *vz,
         }
 
         if (i % 100 == 0) {
-            do {
+	  /*do {
                 equiangulate(&cnt);
-                //cnt = 0;
+                cnt = 0;
                 MSG("cnt : %d", cnt);
-            } while (cnt > 0);
+		} while (cnt > 0);*/
             punto_fwrite(NV, queue, stdout);
             printf("\n");
         }

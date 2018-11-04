@@ -506,7 +506,8 @@ real he_f_meyer_xin_energy(T *q, He *he,
     T0[t] = i; T1[t] = j; T2[t] = k;
   }
   
-  mH0 = compute_area_mix(q, he, x, y, z, area);
+  //mH0 = compute_area_mix(q, he, x, y, z, area);
+  mH0 = compute_area_voronoi(q, he, x, y, z, area);
   
   compute_cot(q, he, x, y, z, cot);
   compute_lb(q, he, x, lbx);
@@ -597,9 +598,9 @@ int he_f_meyer_xin_force(T *q, He *he,
         D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
     }
 
-    //mH0 = compute_area_voronoi(q, he, x, y, z, area);
-    mH0 = compute_area_mix(q, he, x, y, z, area);
-
+    //mH0 = compute_area_mix(q, he, x, y, z, area);
+    mH0 = compute_area_voronoi(q, he, x, y, z, area);
+  
     compute_cot(q, he, x, y, z, cot);
     compute_lb(q, he, x, lbx);
     compute_lb(q, he, y, lby);
