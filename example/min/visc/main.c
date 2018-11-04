@@ -183,20 +183,21 @@ static real max_vec(real *fx, real *fy, real *fz) {
 
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int cnt, i, j;
+    int cnt, end, i, j;
     real dt, dt_max, h, mu, rnd;
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
     int nsub;
     
-    dt_max = 0.1;
+    dt_max = 0.001;
     mu = 100.0;
     h = 0.01*e0;
 
     nsub = 100;
+    end = 10000;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
-    for (i = 0; /**/ ; i++) {
+    for (i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
         rnd = 0.01*max_vec(vx, vy, vz);
