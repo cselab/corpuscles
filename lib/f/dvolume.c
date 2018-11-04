@@ -7,7 +7,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/dtri.h"
-
+#include "he/sum.h"
 #include "he/f/dvolume.h"
 
 #define T HeFDvolume
@@ -17,13 +17,18 @@ struct T {
     real *volume;
 };
 
-static real sum(int n, real *volume) {
-    int t;
+static real sum(int n, real *a) {
+    int i;
     real v;
-    v = 0;
-    for (t = 0; t < n; t++) v += volume[t];
+    HeSum *sum;
+    he_sum_ini(&sum);
+    for (i = 0; i < n; i++)
+        he_sum_add(sum, a[i]);
+    v = he_sum_get(sum);
+    he_sum_fin(sum);
     return v;
 }
+
 int he_f_dvolume_ini(He *he, T **pq) {
     T *q;
     int n;
