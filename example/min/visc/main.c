@@ -40,7 +40,7 @@ static char bending[4049];
 static const char *me = "min/visc";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
     exit(0);
 }
 
@@ -211,11 +211,11 @@ static void main0(real *vx, real *vy, real *vz,
         }
 
         if (i % 100 == 0) {
-            do {
+	  /*do {
                 equiangulate(&cnt);
-                //cnt = 0;
+                cnt = 0;
                 MSG("cnt : %d", cnt);
-            } while (cnt > 0);
+		} while (cnt > 0);*/
             punto_fwrite(NV, queue, stdout);
             printf("\n");
             MSG("dt: %g", dt);
