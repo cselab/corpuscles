@@ -71,7 +71,7 @@ int orient_apply(T *q, /**/ real *x, real *y, real *z) {
     real x0, y0, z0;
     real m[6], v[3*3];
     n = q->n;
-    to_cm(n, x, y, z);
+    to_cm(n, /**/ x, y, z);
     moment(n, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
     for (i = 0; i < n; i++)
