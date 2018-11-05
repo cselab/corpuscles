@@ -68,12 +68,11 @@ function local(  T) {
     m_translate(0, 0, 0, A)
 }
 
-function m_ident(A, i, j) {
+function m_ident(A,   i, j) {
     for (i = 0; i < 4; i++)
 	for (j = 0; j < 4; j++)
 	    A[i,j] = (i == j) + 0
 }
-
 function m2str(A,   i, j, s) {
     for (i = 0; (i, 0) in A; i++) {
 	if (i > 0) s = s "\n"
@@ -105,7 +104,6 @@ function m_rot0(p, A, P, Q,   c, s) {
     A[P, P] = c; A[P, Q] = -s
     A[Q, P] = s; A[Q, Q] =  c
 }
-
 
 BEGIN {
     ini()
