@@ -7,37 +7,52 @@
 
 #include <real.h>
 
+#include <he/f/area.h>
+#include <he/f/garea.h>
+#include <he/bending.h>
+#include "he/equiangulate.h"
+#include <he/he.h>
+#include <he/area.h>
+#include <he/volume.h>
+#include <he/off.h>
+
 #include <he/err.h>
 #include <he/punto.h>
 #include <he/vec.h>
 #include <he/macro.h>
 #include <he/util.h>
 #include <he/memory.h>
-#include <he/bending.h>
 #include <he/strain.h>
 #include <he/f/strain.h>
-#include <he/x.h>
+#include <he/restore.h>
+#include <he/y.h>
 
+static const char *me = "min/visc";
 static const real pi = 3.141592653589793115997964;
 static const real EPS = 1e-6;
+static Restore *restore;
 
+static He *he;
+static int NV, NE, NT;
+static HeFArea *f_area;
+static HeFGarea *f_garea;
+static Bending *f_bending;
+static real *XX, *YY, *ZZ;
+static real rVolume, Ka, Kga;
+static real A0, V0, e0;
+static const char **argv;
+static char bending[4049], model[4049], off[4049];
+static StrainParam strain_param;
+static HeFStrain *f_strain;
 static real Kb, C0, Kad, DA0D;
+
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
 }
 
-
 #define FMT_IN   XE_REAL_IN
 
-static real rVolume, Ka, Kga;
-static real A0, V0, e0;
-static const char **argv;
-static char bending[4049], model[4049], off[4049];
-static const char *me = "min/visc";
-
-static StrainParam strain_param;
-static HeFStrain *strain;
 
 static void usg() {
     fprintf(stderr, "%s %s \\\n"
@@ -75,29 +90,22 @@ static void arg() {
 }
 
 real Energy(const real *x, const real *y, const real *z) {
-    real a, ga, v, e, b;
-    a = f_area_energy(x, y, z);
-    ga = f_garea_energy(x, y, z);
-    v = f_volume_energy(x, y, z);
-    e = he_f_strain_energy(strain, x, y, z);
-    b = f_bending_energy(x, y, z);
-    MSG("a ga v e b: %g %g %g %g %g", a, ga, v, e, b);
-    return a + ga + v + e + b;
+    real a, ga, e, b;
+    a = he_f_area_energy(f_area, he, x, y, z);
+    ga = he_f_garea_energy(f_garea, he, x, y, z);
+    e = he_f_strain_energy(f_strain, x, y, z);
+    b = bending_energy(f_bending, he, x, y, z);
+    MSG("a ga v e b: %g %g %g %g %g", a, ga, e, b);
+    return a + ga + e + b;
 }
 
 void Force(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_area_force(x, y, z, /**/ fx, fy, fz);
-    f_garea_force(x, y, z, /**/ fx, fy, fz);
-    he_f_strain_force(strain, x, y, z, /**/ fx, fy, fz);
-    f_bending_force(x, y, z, /**/ fx, fy, fz);
-}
-
-void ForceVolume(const real *x, const real *y, const real *z, /**/
-           real *fx, real *fy, real *fz) {
-    zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_volume_force(x, y, z, /**/ fx, fy, fz);
+    he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
+    he_f_garea_force(f_garea, he, x, y, z, /**/ fx, fy, fz);
+    he_f_strain_force(f_strain, x, y, z, /**/ fx, fy, fz);
+    bending_force(f_bending, he, x, y, z, /**/ fx, fy, fz);
 }
 
 static void euler(real dt,
@@ -131,24 +139,18 @@ static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
     }
 }
 
-static void visc_lang(real mu,
-                      const real *vx, const real *vy, const real *vz, /*io*/
-                      real *fx, real *fy, real *fz) {
-    int i;
-    for (i = 0; i < NV; i++) {
-        fx[i] -= mu*vx[i];
-        fy[i] -= mu*vy[i];
-        fz[i] -= mu*vz[i];
-    }
-}
-
 static void visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
-    int e, i, j;
+    int e, h, n, i, j;
     real a[3], b[3], u[3], u0;
     for (e = 0; e < NE; e++) {
-        i = D1[e]; j = D2[e];
+        h = he_hdg_ver(he, e);
+        n = he_nxt(he, h);
+        
+        i = he_ver(he, h);
+        j = he_ver(he, n);        
+        
         vec_get(i, vx, vy, vz, a);
         vec_get(j, vx, vy, vz, b);
         vec_minus(a, b, u);
@@ -182,27 +184,6 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static int restore_volume(real *fx, real *fy, real *fz) {
-    int j, nsub;
-    real v, dv, q, step, f[3];
-    int m;
-
-    v = volume();
-    dv = V0 - v;
-    if (dv/V0 > -EPS && dv/V0 < EPS)
-        return HE_OK;
-    ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
-    q = 0;
-    for (m = 0; m < NV; m++) {
-        vec_get(m, fx, fy, fz, /**/ f);
-        q += vec_dot(f, f);
-    }
-    step = -dv/q;
-    euler(step, fx, fy, fz, /**/ XX, YY, ZZ);
-    MSG("v: %g %g %g %g", v, volume(), V0, dv);
-    exit(0);
-}
-
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
     int cnt, end, i;
@@ -224,12 +205,11 @@ static void main0(real *vx, real *vy, real *vz,
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        restore_volume(fx, fy, fz);
+        restore_volume(restore, he, /**/ XX, YY, ZZ);
 
         if (i % 100 == 0) {
 	  do {
-              equiangulate(&cnt);
-              cnt = 0;
+              he_equiangulate(he, XX, YY, ZZ, /**/ &cnt);
               MSG("cnt : %d", cnt);
           } while (cnt > 0);
           punto_fwrite(NV, queue, stdout);
@@ -238,13 +218,17 @@ static void main0(real *vx, real *vy, real *vz,
 
         if (i % 100 == 0) {
             MSG("eng: %g", Energy(XX, YY, ZZ));
-            A = area(); V = volume();
+            A = he_area_tri(he, XX, YY, ZZ);
+            V = he_volume_tri(he, XX, YY, ZZ);
             MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
-            off_write(XX, YY, ZZ, "q.off");
+            
+            he_off_he_xyz_write(he, XX, YY, ZZ, "q.off");
         }
 
     }
 }
+
+
 
 int main(int __UNUSED argc, const char *v[]) {
     real a0, Kv;
@@ -256,27 +240,31 @@ int main(int __UNUSED argc, const char *v[]) {
     arg();
     srand(time(NULL));
 
-    ini("/dev/stdin");
-    V0 = volume(); A0 = target_area(V0, rVolume);
+    y_ini("/dev/stdin", &he, &XX, &YY, &ZZ);
+    NV = he_nv(he);
+    NE = he_ne(he);
+    NT = he_nt(he);
+
+    V0 = he_volume_tri(he, XX, YY, ZZ);    
+    A0 = target_area(V0, rVolume);
     MSG("target_area: %g", A0);
     
     a0 = A0/NT;
     e0 = eq_tri_edg(a0);
     
-    MSG("v0/volume(): %g", V0/volume());
-    MSG("a0/area(): %g", A0/area());
+    MSG("v0/volume(): %g", V0/he_volume_tri(he, XX, YY, ZZ));
+    MSG("a0/area(): %g", A0/he_area_tri(he, XX, YY, ZZ));
     MSG("area, volume, edg: %g %g", A0, V0);
 
-    f_area_ini(a0,  Ka);
-    f_garea_ini(A0, Kga);
-    f_volume_ini(V0, Kv = 1);
-    he_f_strain_ini(off, model, strain_param, /**/ &strain);
+    he_f_area_ini(a0,  Ka,  he, /**/ &f_area);
+    he_f_garea_ini(A0,  Kga, he, /**/ &f_garea);    
+    he_f_strain_ini(off, model, strain_param, /**/ &f_strain);
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
     bending_param.Kad = Kad;
     bending_param.DA0D = DA0D;
-    f_bending_ini(bending, bending_param);
+    bending_ini(bending, bending_param, he, /**/ &f_bending);
 
     MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
     MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
@@ -286,12 +274,12 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(fx); FREE(fy); FREE(fz);
     FREE(vx); FREE(vy); FREE(vz);
 
-    he_f_strain_fin(strain);
-    f_bending_fin();
-    f_volume_fin();
-    f_area_fin();
-    f_garea_fin();
-    fin();
+    he_f_strain_fin(f_strain);
+    bending_fin(f_bending);
+    he_f_area_fin(f_area);
+    he_f_garea_fin(f_garea);
+
+    y_fin(he, XX, YY, ZZ);
 
     return 0;
 }
