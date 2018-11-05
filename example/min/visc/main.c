@@ -94,7 +94,7 @@ real Energy(const real *x, const real *y, const real *z) {
     ga = he_f_garea_energy(f_garea, he, x, y, z);
     e = he_f_strain_energy(f_strain, x, y, z);
     b = bending_energy(f_bending, he, x, y, z);
-    MSG("a ga e b: %g %g %g %g %g", a, ga, e, b);
+    MSG("a ga e b: %g %g %g %g", a, ga, e, b);
     return a + ga + e + b;
 }
 
@@ -190,7 +190,7 @@ static void main0(real *vx, real *vy, real *vz,
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
     
-    dt_max = 0.01;
+    dt_max = 0.001;
     mu = 100.0;
     h = 0.01*e0;
     end = 10000;
@@ -204,16 +204,16 @@ static void main0(real *vx, real *vy, real *vz,
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        restore_volume(restore, he, /**/ XX, YY, ZZ);
 
         if (i % 100 == 0) {
 	  do {
               he_equiangulate(he, XX, YY, ZZ, /**/ &cnt);
               if (cnt) MSG("cnt : %d", cnt);
           } while (cnt > 0);
+          restore_volume(restore, he, /**/ XX, YY, ZZ);
         }
 
-        if (i % 1000 == 0) {
+        if (i % 100 == 0) {
             MSG("eng: %g", Energy(XX, YY, ZZ));
             A = he_area_tri(he, XX, YY, ZZ);
             V = he_volume_tri(he, XX, YY, ZZ);
