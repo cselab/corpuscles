@@ -32,17 +32,14 @@ function key(k) {
 	g("snapshot Camera snap.ppm")
     } else if (k == KEY_SPACE) {
         msg("space")
-	g("xform-set `worldgeom` transform {\n" \
-	    "1 0 0 0\n" \
-	    "0 3 0 0\n" \
-	    "0 0 1 0\n" \
-	    "0 0 0 1"   \
-	    "}")
+	local()
+	g("xform-set `worldgeom` transform {" m2str(A) "}")
     }
     else err("unknown key: " k)
 }
 
 function ini() {
+    X = 0; Y = 1; Z = 2
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
     OK = 0; EOF = 1; ERR = -1
 }
@@ -63,6 +60,38 @@ function g0(s) {
     printf "%s\n", quote(s) | "cat"
     close("cat")
 }
+
+
+function local() {
+    m_rotx(A, 0.1)
+}
+
+function m_eigen(A, i, j) {
+    for (i = 0; i < 4; i++)
+	for (j = 0; j < 4; j++)
+	    A[i,j] = (i == j) + 0
+}
+function m2str(A,   i, j, s) {
+    for (i = 0; (i, 0) in A; i++) {
+	if (i > 0) s = s "\n"
+	for (j = 0; (i, j) in A; j++) {
+	    if (j > 0) s = s " "
+	    s = s sprintf("%.16g", A[i,j])
+	}
+    }
+    return s
+}
+
+function m_rotx(A, p) { return m_rot(A, p, Y, Z) }
+function m_roty(A, p) { return m_rot(A, p, Z, X) }
+function m_rotz(A, p) { return m_rot(A, p, X, Y) }
+function m_rot(A, p, P, Q,   c, s) {
+    c = cos(p); s = sin(p)
+    m_eigen(A)
+    A[P, P] = c; A[P, Q] = -s
+    A[Q, P] = s; A[Q, Q] =  c
+}
+
 
 BEGIN {
     ini()
