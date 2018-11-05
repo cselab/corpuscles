@@ -42,30 +42,23 @@ int orient_fin(T *q) {
     return HE_OK;
 }
 
-static int transpose(/*io*/ real v[9]) {
-    enum {XX, XY, XZ,
-          YX, YY, YZ,
-          ZX, ZY, ZZ};
-    real t;
-    t = v[XY]; v[XY] = v[YX]; v[YX] = t;
-    t = v[XZ]; v[XZ] = v[ZX]; v[ZX] = t;
-    t = v[YZ]; v[YZ] = v[ZY]; v[ZY] = t;
-    return HE_OK;
+static int mult(const real m[3*3], real *px, real *py, real *pz) {
+    enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};
+    real x, y, z, x0, y0, z0;
+    x = *px; y = *py; z = *pz;
+
+    x0 = x*m[XX] + y*m[YX] + z*m[ZX];
+    y0 = x*m[XY] + y*m[YY] + z*m[ZY];
+    z0 = x*m[XZ] + y*m[YZ] + z*m[ZZ];
+
+    *px = x0; *py = y0; *pz = z0;
 }
 
-int orient_apply(T *q, /**/ real *xx, real *yy, real *zz) {
+static int moment(int n, const real *xx, const real *yy, const real *zz, /**/ real m[6]) {
+    /* moment of inertia tensor */
+    int i;
+    real x, y, z;
     enum {XX, XY, XZ, YY, YZ, ZZ};
-    int n, i, j;
-    real x0, y0, z0, x, y, z;
-    real m[6], v[3*3];
-
-    n = q->n;
-
-    x0 = sum(n, xx)/n; y0 = sum(n, yy)/n; z0 = sum(n, zz)/n;
-    for (i = 0; i < n; i++) {
-        xx[i] -= x0; yy[i] -= y0; zz[i] -= z0;
-    }
-
     m[XX] = m[XY] = m[XZ] = m[YY] = m[YZ] = m[ZZ] = 0;
     for (i = 0; i < n; i++) {
         x = xx[i]; y = yy[i]; z = zz[i];
@@ -73,20 +66,27 @@ int orient_apply(T *q, /**/ real *xx, real *yy, real *zz) {
         m[YY] += x*x + z*z; m[YZ] += -y*z;
         m[ZZ] += x*x + y*y;
     }
+    return HE_OK;
+}
 
-    alg_eig_vectors(m, v);
-    transpose(v);
-    MSG("v[1,0]: %g", v[1 + 3*0]);
-    MSG("v[0,1]: %g", v[0 + 3*1]);
-
+static int to_cm(int n, /**/ real *xx, real *yy, real *zz) {
+    int i;
+    real x, y, z;
+    x = sum(n, xx)/n; y = sum(n, yy)/n; z = sum(n, zz)/n;
     for (i = 0; i < n; i++) {
-        x = xx[i]; y = yy[i]; z = zz[i];
-        j = 0;
-        x0 = v[j++]*x + v[j++]*y + v[j++]*z;
-        y0 = v[j++]*x + v[j++]*y + v[j++]*z;
-        z0 = v[j++]*x + v[j++]*y + v[j++]*z;
-        xx[i] = x0; yy[i] = y0; zz[i] = z0;
+        xx[i] -= x; yy[i] -= y; zz[i] -= z;
     }
+}
 
+int orient_apply(T *q, /**/ real *x, real *y, real *z) {
+    int n, i, j;
+    real x0, y0, z0;
+    real m[6], v[3*3];
+    n = q->n;
+    to_cm(n, x, y, z);
+    moment(n, x, y, z, /**/ m);
+    alg_eig_vectors(m, v);
+    for (i = 0; i < n; i++)
+        mult(v, /**/ &x[i], &y[i], &z[i]);
     return HE_OK;
 }
