@@ -15,7 +15,6 @@ struct T {
     int n;
     real volume;
     real *fx, *fy, *fz;
-    real *x, *y, *z;
     HeFDvolume *dvolume;
 };
 
@@ -31,7 +30,6 @@ int restore_ini(real volume, He *he, T **pq) {
     q->n = n;
     q->volume = volume;
     MALLOC(n, &q->fx); MALLOC(n, &q->fy); MALLOC(n, &q->fz);
-    MALLOC(n, &q->x); MALLOC(n, &q->y); MALLOC(n, &q->z);
 
     he_f_dvolume_ini(he, &q->dvolume);
 
@@ -41,7 +39,6 @@ int restore_ini(real volume, He *he, T **pq) {
 
 int restore_fin(T *q) {
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
-    FREE(q->z); FREE(q->y); FREE(q->x);
     he_f_dvolume_fin(q->dvolume);
     FREE(q);
     return HE_OK;
@@ -101,9 +98,5 @@ int restore_volume(T *q, He *he, /**/
     step = -delta/lambda;
     add(n, step, fx, fy, fz, x, y, z);
 
-    return HE_OK;
-}
-
-int restore_orient(T *q, real *x, real *y, real *z) {
     return HE_OK;
 }
