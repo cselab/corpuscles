@@ -4,8 +4,22 @@ prog=he.geomview
 prog0=he.geomview0
 
 usg () {
-    msg "$prog OFF..."
+    msg "$prog [-t x y z] [-r x y z] [-a APPEARANCE] [-o PPM] OFF"
     msg 'he geomview wrapper'
+    msg '-t x y z   translation'
+    msg '-r x y z   rotation in degree'
+    msg '-o PPM     save PPM file and exit'
+    msg '-a APPEARANCE load appearance information from a file'
+    msg
+    msg 'Keys:'
+    msg '    q: quit'
+    msg '    s: save snap.ppm'
+    msg '    p: panel'
+    msg
+    msg 'Examples:'
+    msg "$prog -t 0.25 0.25 0                      data/rbc.off"
+    msg "$prog -t 0 -0.1 1.4  -a data/appearance   data/rbc.off"
+    msg "$prog -t -0.25 0 0 -r 0 45 0 -o snap.ppm  data/rbc.off"
     exit
 }
 
