@@ -17,17 +17,7 @@ struct T {
     real *volume;
 };
 
-static real sum(int n, real *a) {
-    int i;
-    real v;
-    HeSum *sum;
-    he_sum_ini(&sum);
-    for (i = 0; i < n; i++)
-        he_sum_add(sum, a[i]);
-    v = he_sum_get(sum);
-    he_sum_fin(sum);
-    return v;
-}
+static real sum(int n, real *a) { return he_sum_array(n, a); }
 
 int he_f_dvolume_ini(He *he, T **pq) {
     T *q;
