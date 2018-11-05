@@ -7,24 +7,23 @@
 
 #include <real.h>
 
+#include <he/area.h>
+#include <he/bending.h>
+#include <he/equiangulate.h>
+#include <he/err.h>
 #include <he/f/area.h>
 #include <he/f/garea.h>
-#include <he/bending.h>
-#include "he/equiangulate.h"
-#include <he/he.h>
-#include <he/area.h>
-#include <he/volume.h>
-#include <he/off.h>
-
-#include <he/err.h>
-#include <he/punto.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/memory.h>
-#include <he/strain.h>
 #include <he/f/strain.h>
+#include <he/he.h>
+#include <he/macro.h>
+#include <he/memory.h>
+#include <he/off.h>
+#include <he/punto.h>
 #include <he/restore.h>
+#include <he/strain.h>
+#include <he/util.h>
+#include <he/vec.h>
+#include <he/volume.h>
 #include <he/y.h>
 
 static const char *me = "min/visc";
@@ -139,13 +138,13 @@ static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
     }
 }
 
-static void visc_pair(real mu,
+static int visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
     int e, h, n, i, j;
     real a[3], b[3], u[3], u0;
     for (e = 0; e < NE; e++) {
-        h = he_hdg_ver(he, e);
+        h = he_hdg_edg(he, e);
         n = he_nxt(he, h);
         
         i = he_ver(he, h);
@@ -244,6 +243,7 @@ int main(int __UNUSED argc, const char *v[]) {
     NV = he_nv(he);
     NE = he_ne(he);
     NT = he_nt(he);
+    MSG("N[VET: %d %d %d", NV, NE, NT);
 
     V0 = he_volume_tri(he, XX, YY, ZZ);    
     A0 = target_area(V0, rVolume);
@@ -256,6 +256,7 @@ int main(int __UNUSED argc, const char *v[]) {
     MSG("a0/area(): %g", A0/he_area_tri(he, XX, YY, ZZ));
     MSG("area, volume, edg: %g %g", A0, V0);
 
+    restore_ini(V0, he, /**/ &restore);
     he_f_area_ini(a0,  Ka,  he, /**/ &f_area);
     he_f_garea_ini(A0,  Kga, he, /**/ &f_garea);    
     he_f_strain_ini(off, model, strain_param, /**/ &f_strain);
@@ -274,6 +275,7 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(fx); FREE(fy); FREE(fz);
     FREE(vx); FREE(vy); FREE(vz);
 
+    restore_fin(restore);
     he_f_strain_fin(f_strain);
     bending_fin(f_bending);
     he_f_area_fin(f_area);
