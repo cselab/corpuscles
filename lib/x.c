@@ -64,7 +64,7 @@ real area() { return he_area_tri(he, XX, YY, ZZ); }
 real volume() { return he_volume_tri(he, XX, YY, ZZ); }
 
 int off_write(const real *x, const real *y, const real *z, const char *path) {
-    return he_off_he_xyz_write(off, he, x, y, z, path);
+    return he_off_he_xyz_write(he, x, y, z, path);
 }
 int RZERO(int n, real **pq) { /* alloc and make zero */
     int i;

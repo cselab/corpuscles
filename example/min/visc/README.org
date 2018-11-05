@@ -1,5 +1,7 @@
 |    |   bi   |       |
 0  0.591   0.652
 
+ellipsoid: 1 1 0.656
+
 off=../../../data/sph/laplace/0.off
 ./main juelicher 0.642   40 40 2  $off linear 0 0      0.1 0 0.06366197723675814 40 < $off > q

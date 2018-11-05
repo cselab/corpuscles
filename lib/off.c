@@ -195,14 +195,11 @@ int he_off_he_write(T *q, He *he, /**/ const char *path) {
     return HE_OK;
 }
 
-int he_off_he_xyz_fwrite(T *q, He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
+int he_off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, npv, m, h, n, nn, i, j, k;
     if (fputs("OFF\n", f) == EOF)
         ERR(HE_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
-    if (q->nv != nv)
-        ERR(HE_INDEX, "q->nv=%d   !=   nv=%d", q->nv, nv);
-
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (m = 0; m < nv; m++) {
         fprintf(f, "%.16e %.16e %.16e\n", x[m], y[m], z[m]);
@@ -217,11 +214,11 @@ int he_off_he_xyz_fwrite(T *q, He *he, const real *x, const real *y, const real 
     return HE_OK;
 }
 
-int he_off_he_xyz_write(T *q, He *he, const real *x, const real *y, const real *z, /**/ const char *path) {
+int he_off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
-    if (he_off_he_xyz_fwrite(q, he, x, y, z, f) != HE_OK)
+    if (he_off_he_xyz_fwrite(he, x, y, z, f) != HE_OK)
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);
