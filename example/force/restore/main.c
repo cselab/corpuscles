@@ -4,7 +4,7 @@
 #include <real.h>
 #include <he/memory.h>
 #include <he/punto.h>
-#include <he/f/dvolume.h>
+#include <he/restore.h>
 #include <he/he.h>
 #include <he/y.h>
 
@@ -12,15 +12,12 @@ static int nv;
 static real *fx, *fy, *fz;
 static real *x, *y, *z;
 static He *he;
-static HeFDvolume *dvolume;
+static Restore *restore;
 
 static void main0() {
-    real *queue[] = {z, y, z, fx, fy, fz, NULL};
-    fprintf(stderr, "eng: %g\n",
-            he_f_dvolume_energy(dvolume, he, x, y, z));
-    he_f_dvolume_force(dvolume, he, x, y, z,   fx, fy, fz);
-
-    puts("x y z fx fy fz");
+    real *queue[] = {z, y, x, NULL};
+    fprintf(stderr, "eng: %g\n", restore_volume(he, x, y, z));
+    puts("x y z");
     punto_fwrite(nv, queue, stdout);
 }
 

@@ -97,7 +97,6 @@ int restore_volume(T *q, He *he, /**/
     lambda = sum_sq(n, fx, fy, fz);
     delta = volume - volume0;
     step = -delta/lambda;
-
     add(n, step, fx, fy, fz, x, y, z);
 
     return HE_OK;
