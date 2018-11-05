@@ -87,8 +87,6 @@ int restore_volume(T *q, He *he, /**/
     dvolume = q->dvolume;
     fx = q->fx; fy = q->fy; fz = q->fz;
     n = he_nv(he);
-
-    MSG("n: %d", n);
     zero(n, fx); zero(n, fy); zero(n, fz);
     status = he_f_dvolume_force(dvolume, he, x, y, z, /**/ fx, fy, fz);
     if (status != HE_OK)
