@@ -9,10 +9,22 @@ usg () {
 }
 
 oogl="$1"; shift
+translate="$1"; shift
+rotate="$1"; shift
+output="$1"; shift
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-"$AWK" -v prog="$prog" -v oogl="$oogl" -v LOG="$LOG" '
+"$AWK" -v prog="$prog" -v LOG="$LOG" \
+       -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v output="$output" '
+function ini() {
+    X = 1; Y = 2; Z = 3
+    KEY_Q = 113; KEY_S = 115; KEY_P = 112
+    OK = 0; EOF = 1; ERR = -1
+    split(translate, Translate)
+    split(rotate,    Rotate)
+}
+
 function keys(s,   a, n) {
     n = sub(/^\(/, "", s)
     if (n != 1) return ERR
@@ -30,18 +42,7 @@ function key(k) {
     else if (k == KEY_S) {
 	msg("write snap.ppm")
 	g("snapshot Camera snap.ppm")
-    } else if (k == KEY_SPACE) {
-        msg("space")
-	local()
-	g("xform-set `worldgeom` transform {" m2str(A) "}")
-    }
-    else err("unknown key: " k)
-}
-
-function ini() {
-    X = 0; Y = 1; Z = 2
-    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
-    OK = 0; EOF = 1; ERR = -1
+    } else err("unknown key: " k)
 }
 
 function reg_key(k) { g(sprintf("interest (rawevent %s)", k)) }
@@ -50,7 +51,7 @@ function geom() {
 	g(sprintf("geometry obj < %s", oogl))
 	g("bbox-draw obj no")
     g0(")")
-    reg_key(KEY_Q); reg_key(KEY_S); reg_key(KEY_P); reg_key(KEY_SPACE)
+    reg_key(KEY_Q); reg_key(KEY_S); reg_key(KEY_P)
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
@@ -61,22 +62,15 @@ function g0(s) {
     close("cat")
 }
 
-
-function local(  T) {
-    m_ident(A)
-    m_rotate(0.1, 0, 0, A)
-    m_translate(0, 0, 0, A)
-}
-
 function m_ident(A,   i, j) {
-    for (i = 0; i < 4; i++)
-	for (j = 0; j < 4; j++)
+    for (i = 1; i <= 4; i++)
+	for (j = 1; j <= 4; j++)
 	    A[i,j] = (i == j) + 0
 }
-function m2str(A,   i, j, s) {
-    for (i = 0; (i, 0) in A; i++) {
-	if (i > 0) s = s "\n"
-	for (j = 0; (i, j) in A; j++) {
+function m_str(A,   i, j, s) {
+    for (i = 1; (i, 1) in A; i++) {
+	if (i > 1) s = s "\n"
+	for (j = 1; (i, j) in A; j++) {
 	    if (j > 0) s = s " "
 	    s = s sprintf("%.16g", A[i,j])
 	}
@@ -84,16 +78,16 @@ function m2str(A,   i, j, s) {
     return s
 }
 
-function m_mult(A, B,   i, j, k, C) { # A *= B, c[i,k] = a[i,j] * b[j, k]
-    for (i = 0; (i, 0) in A; i++)
-	for (j = 0; (i, j) in A; j++)
-	    for (k = 0; (j, k) in B; k++)
+function m_mult(A, B,   i, j, k, C) { # A *= B
+    for (i = 1; (i, 1) in A; i++)
+	for (j = 1; (i, j) in A; j++)
+	    for (k = 1; (j, k) in B; k++)
 		C[i,k] += A[i,j] * B[j,k]
     m_copy(C, A)
 }
 
 function m_copy(A, B,  k) { for (k in A) B[k] = A[k] }
-function m_translate(x, y, z, A) { A[3,X] += x; A[3,Y] += y; A[3,Z] += z }
+function m_translate(x, y, z, A) { A[4,X] += x; A[4,Y] += y; A[4,Z] += z }
 function m_rotate(x, y, z, A) { m_rotx(x, A); m_roty(y, A); m_rotz(z, A) }
 function m_rotx(p, A,  T) { m_rot0(p, T, Y, Z); m_mult(A, T) }
 function m_roty(p, A,  T) { m_rot0(p, T, Z, X); m_mult(A, T) }
@@ -105,18 +99,35 @@ function m_rot0(p, A, P, Q,   c, s) {
     A[Q, P] = s; A[Q, Q] =  c
 }
 
+function transform(   A) {
+    m_ident(A)
+    m_rotate(ang2rad(Rotate[X]), ang2rad(Rotate[Y]), ang2rad(Rotate[Z]), A)
+    m_translate(Translate[X], Translate[Y], Translate[Z], A)
+    g("xform-set `worldgeom` transform {" m_str(A) "}")
+}
+
 BEGIN {
     ini()
     geom()
-    for (;;) {
-	status = getline s
-	if (status == ERR) break
-	if (keys(s) != OK) {
-	    msg("fail to parse: " s)
-	    break
+    transform()
+
+    if (emptyp(output)) {
+	for (;;) {
+	    if (getline s == ERR) break
+	    if (keys(s) != OK) {
+		msg("fail to parse: " s)
+		break
+	    }
 	}
+    } else {
+	g(sprintf("snapshot Camera `%s`", output))
+	g(sprintf("snapshot Camera `%s`", output)) # TODO
+	g("exit")
     }
 }
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); g("exit") }
+function emptyp(s) { return length(s) == 0 }
+function ang2rad(s) { return 180/pi()*s }
+function pi() { return 3.141592653589793 }
 ' "$@"
