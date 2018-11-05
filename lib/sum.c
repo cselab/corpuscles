@@ -37,7 +37,6 @@ int he_sum_add(T *q, real input) {
 real he_sum_get(const T *q) { return q->sum; }
 int he_sum_compensation(const T *q) { return q->c; }
 
-
 real he_sum_array(int n, const real a[]) {
     int i;
     real v;
