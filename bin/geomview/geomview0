@@ -3,9 +3,79 @@
 prog=he.geomview0
 
 usg () {
-    msg "$prog OFF..."
+    msg "$prog"
     msg 'he geomview module'
     exit
 }
 
+oogl="$1"; shift
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+"$AWK" -v prog="$prog" -v oogl="$oogl" -v LOG="$LOG" '
+function keys(s,   a, n) {
+    n = sub(/^\(/, "", s)
+    if (n != 1) return ERR
+    n = sub(/\)$/, "", s)
+    if (n != 1) return ERR
+    n = split(s, a)
+    if (a[1] == "rawevent")
+       key(a[2])
+    return OK
+}
+
+function key(k) {
+    if      (k == KEY_Q) g("exit")
+    else if (k == KEY_P) g("ui-panel geomview on")
+    else if (k == KEY_S) {
+	msg("write snap.ppm")
+	g("snapshot Camera snap.ppm")
+    } else if (k == KEY_SPACE) {
+        msg("space")
+	g("xform-set `worldgeom` transform {\n" \
+	    "1 0 0 0\n" \
+	    "0 3 0 0\n" \
+	    "0 0 1 0\n" \
+	    "0 0 0 1"   \
+	    "}")
+    }
+    else err("unknown key: " k)
+}
+
+function ini() {
+    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
+    OK = 0; EOF = 1; ERR = -1
+}
+
+function reg_key(k) { g(sprintf("interest (rawevent %s)", k)) }
+function geom() {
+    g0("(progn")
+	g(sprintf("geometry obj < %s", oogl))
+	g("bbox-draw obj no")
+    g0(")")
+    reg_key(KEY_Q); reg_key(KEY_S); reg_key(KEY_P); reg_key(KEY_SPACE)
+}
+
+function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
+function g(s) { g0("(" s ")") }
+function g0(s) {
+    if ("" LOG != "0") msg("gcl: " quote(s))
+    printf "%s\n", quote(s) | "cat"
+    close("cat")
+}
+
+BEGIN {
+    ini()
+    geom()
+    for (;;) {
+	status = getline s
+	if (status == ERR) break
+	if (keys(s) != OK) {
+	    msg("fail to parse: " s)
+	    break
+	}
+    }
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); g("exit") }
+' "$@"

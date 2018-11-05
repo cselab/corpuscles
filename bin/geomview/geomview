@@ -1,6 +1,7 @@
 . he.util
 
 prog=he.geomview
+prog0=he.geomview0
 
 usg () {
     msg "$prog OFF..."
@@ -8,4 +9,30 @@ usg () {
     exit
 }
 
+: ${GEOMVIEW=geomview}
+: ${WX=800}
+: ${WY=600}
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+off="$1"; shift
+
+if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'
+then err "$GEOMVIEW is not found"
+fi
+
+t=/tmp/geomview.$$
+trap 'e rm $t; exit 2' 1 2 3 4 15
+
+cat >$t <<!
+{ appearance {
+      +edge
+      material { ks 0.0 }
+  }
+  < "$off"
+}
+!
+
+e "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run "$prog0" $t
+
+rm -f $t
