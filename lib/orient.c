@@ -18,7 +18,7 @@ struct T {
 
 static real sum(int n, real *a) { return he_sum_array(n, a); }
 
-int restore_ini(real volume, He *he, T **pq) {
+int orient_ini(He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
@@ -26,13 +26,12 @@ int restore_ini(real volume, He *he, T **pq) {
     n = he_nv(he);
 
     q->n = n;
-    q->volume = volume;
     MALLOC(n, &q->x); MALLOC(n, &q->y); MALLOC(n, &q->z);
 
     *pq = q;
     return HE_OK;
 }
 
-int restore_orient(T *q, real *x, real *y, real *z) {
+int orient_orient(T *q, real *x, real *y, real *z) {
     return HE_OK;
 }
