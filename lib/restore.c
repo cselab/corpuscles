@@ -88,13 +88,16 @@ int restore_volume(T *q, He *he, /**/
     fx = q->fx; fy = q->fy; fz = q->fz;
     n = he_nv(he);
 
-    zero(n, fx); zero(n, fy); zero(n, fx);
+    MSG("n: %d", n);
+    zero(n, fx); zero(n, fy); zero(n, fz);
     status = he_f_dvolume_force(dvolume, he, x, y, z, /**/ fx, fy, fz);
     if (status != HE_OK)
         ERR(HE_NUM, "he_f_dvolume_force failed");
     volume = he_f_dvolume_energy(dvolume, he, x, y, z);
 
     lambda = sum_sq(n, fx, fy, fz);
+    MSG("lambda: %g", lambda);
+    
     delta = volume - volume0;
     step = -delta/lambda;
     add(n, step, fx, fy, fz, x, y, z);

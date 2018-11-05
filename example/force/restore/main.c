@@ -9,29 +9,25 @@
 #include <he/y.h>
 
 static int nv;
-static real *fx, *fy, *fz;
 static real *x, *y, *z;
 static He *he;
 static Restore *restore;
 
 static void main0() {
     real *queue[] = {z, y, x, NULL};
-    fprintf(stderr, "eng: %g\n", restore_volume(he, x, y, z));
+    restore_volume(restore, he, x, y, z);
     puts("x y z");
-    punto_fwrite(nv, queue, stdout);
+    punto_fwrite(nv, queue, stdout);    
 }
 
 int main() {
+    real V;
     y_ini("/dev/stdin", &he, &x, &y, &z);
     nv = he_nv(he);
-
-    he_f_dvolume_ini(he, &dvolume);
-
-    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
+    V = 10;
+    restore_ini(V, he, &restore);
     main0();
-
-    FREE(fx); FREE(fy); FREE(fz);
-    he_f_dvolume_fin(dvolume);
+    restore_fin(restore);
 
     y_fin(he, x, y, z);
     return 0;
