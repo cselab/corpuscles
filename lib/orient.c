@@ -32,6 +32,12 @@ int orient_ini(He *he, T **pq) {
     return HE_OK;
 }
 
-int orient_orient(T *q, real *x, real *y, real *z) {
+int orient_fin(T *q) {
+    FREE(q->x); FREE(q->y); FREE(q->z);
+    FREE(q);
+    return HE_OK;
+}
+
+int orient_apply(T *q, real *x, real *y, real *z) {
     return HE_OK;
 }
