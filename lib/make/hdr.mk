@@ -6,6 +6,7 @@ he/f/gompper.h he/f/gompper_kroll.h he/f/gompper_xin.h he/f/harmonic.h he/f/harm
 he/f/juelicher.h he/f/juelicher_xin.h he/f/kantor.h he/f/meyer.h he/f/meyer_xin.h \
 he/f/strain.h he/f/volume.h he/hash.h he/he.h he/macro.h \
 he/memory.h he/normal.h he/off.h he/prec/d/real.h he/prec/s/real.h \
-he/punto.h he/read.h he/real.h he/strain/2d.h he/strain/3d.h \
-he/strain.h he/sum.h he/ten.h he/tri.h he/util.h \
-he/vec.h he/volume.h he/vtk.h he/x.h he/y.h
+he/punto.h he/read.h he/real.h he/restore.h he/strain/2d.h \
+he/strain/3d.h he/strain.h he/sum.h he/ten.h he/tri.h \
+he/util.h he/vec.h he/volume.h he/vtk.h he/x.h \
+he/y.h
