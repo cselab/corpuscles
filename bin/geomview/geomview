@@ -1,0 +1,11 @@
+. he.util
+
+prog=he.geomview
+
+usg () {
+    msg "$prog OFF..."
+    msg 'he geomview wrapper'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
