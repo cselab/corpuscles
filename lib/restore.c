@@ -57,10 +57,23 @@ static real sum_sq(int n, real *x, real *y, real *z) {
     return v;
 }
 
-static void zero(int n, real *a) {
+static int zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
+    return HE_OK;
+}
+
+static int add(int n, real step,
+               const real *fx, const real *fy, const real *fz,
+               real *x, real *y, real *z) {
+    int i;
+    for (i = 0; i < n; i++) {
+        x[i] += step * fx[i];
+        y[i] += step * fy[i];
+        z[i] += step * fz[i];
+    }
+    return HE_OK;
 }
 
 int restore_volume(T *q, He *he, /**/
@@ -84,6 +97,8 @@ int restore_volume(T *q, He *he, /**/
     lambda = sum_sq(n, fx, fy, fz);
     delta = volume - volume0;
     step = -delta/lambda;
-    
+
+    add(n, step, fx, fy, fz, x, y, z);
+
     return HE_OK;
 }
