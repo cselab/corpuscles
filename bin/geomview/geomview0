@@ -62,15 +62,18 @@ function g0(s) {
 }
 
 
-function local() {
-    m_rotx(A, 0.1)
+function local(  T) {
+    m_ident(A)
+    m_rotate(0.1, 0, 0, A)
+    m_translate(0, 0, 0, A)
 }
 
-function m_eigen(A, i, j) {
+function m_ident(A, i, j) {
     for (i = 0; i < 4; i++)
 	for (j = 0; j < 4; j++)
 	    A[i,j] = (i == j) + 0
 }
+
 function m2str(A,   i, j, s) {
     for (i = 0; (i, 0) in A; i++) {
 	if (i > 0) s = s "\n"
@@ -82,12 +85,23 @@ function m2str(A,   i, j, s) {
     return s
 }
 
-function m_rotx(A, p) { return m_rot(A, p, Y, Z) }
-function m_roty(A, p) { return m_rot(A, p, Z, X) }
-function m_rotz(A, p) { return m_rot(A, p, X, Y) }
-function m_rot(A, p, P, Q,   c, s) {
+function m_mult(A, B,   i, j, k, C) { # A *= B, c[i,k] = a[i,j] * b[j, k]
+    for (i = 0; (i, 0) in A; i++)
+	for (j = 0; (i, j) in A; j++)
+	    for (k = 0; (j, k) in B; k++)
+		C[i,k] += A[i,j] * B[j,k]
+    m_copy(C, A)
+}
+
+function m_copy(A, B,  k) { for (k in A) B[k] = A[k] }
+function m_translate(x, y, z, A) { A[3,X] += x; A[3,Y] += y; A[3,Z] += z }
+function m_rotate(x, y, z, A) { m_rotx(x, A); m_roty(y, A); m_rotz(z, A) }
+function m_rotx(p, A,  T) { m_rot0(p, T, Y, Z); m_mult(A, T) }
+function m_roty(p, A,  T) { m_rot0(p, T, Z, X); m_mult(A, T) }
+function m_rotz(p, A,  T) { m_rot0(p, T, X, Y); m_mult(A, T) }
+function m_rot0(p, A, P, Q,   c, s) {
     c = cos(p); s = sin(p)
-    m_eigen(A)
+    m_ident(A)
     A[P, P] = c; A[P, Q] = -s
     A[Q, P] = s; A[Q, Q] =  c
 }
