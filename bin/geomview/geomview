@@ -8,6 +8,7 @@ usg () {
     msg 'he geomview wrapper'
     msg '-t x y z   translation'
     msg '-r x y z   rotation in degree'
+    msg '-f zoom    field of view (default is 40)'
     msg '-o PPM     save PPM file and exit'
     msg '-a APPEARANCE load appearance information from a file'
     msg
@@ -15,6 +16,10 @@ usg () {
     msg '    q: quit'
     msg '    s: save snap.ppm'
     msg '    p: panel'
+    msg '    [SPC]: dump orientation and field of view'
+    msg
+    msg 'Env. variables'
+    msg 'WX, WY: resolution of the snapshot'
     msg
     msg 'Examples:'
     msg "$prog -t 0.25 0.25 0                      data/rbc.off"
@@ -57,8 +62,8 @@ do a="$1"; shift
 	   num "$1"; rz="$1"; shift
 	   ;;
        -f) if test $# -le 1; then err '-f needs a number numbers'; fi
-           num "$1"; nonzero "$1"; fov="$1"; shift
-           ;;
+	   num "$1"; nonzero "$1"; fov="$1"; shift
+	   ;;
        -o) if test $# -le 1; then err '-o needs a file'; fi
 	   output="$1"; shift
 	   ;;
