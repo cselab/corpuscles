@@ -19,6 +19,8 @@ output="$1"; shift
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
        -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v output="$output" '
 function ini() {
+    ARGC = 1
+    
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
     OK = 0; EOF = 1; ERR = -1
@@ -172,7 +174,7 @@ BEGIN {
     transform()
     set_fov()
 
-    if (emptyp(output)) {
+    if (eq(output, "-")) {
 	for (;;) {
 	    if (getline s == ERR) break
 	    if (parse(s) != OK) {
@@ -194,4 +196,5 @@ function emptyp(s) { return length(s) == 0 }
 function ang2rad(s) { return pi()*s/180 }
 function rad2ang(s) { return 180*s/pi() }
 function pi() { return 3.141592653589793 }
+function eq(a ,b) { return "" a == "" b }
 ' "$@"
