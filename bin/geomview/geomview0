@@ -55,9 +55,9 @@ function read_transform(T,   s) {
 }
 function write_transform(T,   tx, ty, tz, rx, ry, rz) {
     tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
-    rx = atan2(T[Z,Y], T[Z,Z])
-    ry = atan2(-T[Z,X], sqrt(T[Z,Y]^2 + T[Z,Z]^2))
-    rz = atan2(T[Y,X], T[X,X])
+    rx = atan2(-T[Y,Z], T[Z,Z])
+    ry = atan2(T[X,Z], sqrt(T[Y,Z]^2 + T[Z,Z]^2))
+    rz = atan2(-T[X,Y], T[X,X])
     msg(sprintf("-t %g %g %g -r %g %g %g", tx, ty, tz,
 		rad2ang(rx), rad2ang(ry), rad2ang(rz)))
 }
