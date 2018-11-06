@@ -8,13 +8,13 @@ usg () {
     exit
 }
 
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
 oogl="$1"; shift
 translate="$1"; shift
 rotate="$1"; shift
 fov="$1"; shift
 output="$1"; shift
-
-if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
        -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v output="$output" '
