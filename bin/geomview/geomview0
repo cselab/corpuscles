@@ -1,0 +1,166 @@
+. he.util
+
+prog=he.geomview0
+
+usg () {
+    msg "$prog"
+    msg 'he geomview module'
+    exit
+}
+
+oogl="$1"; shift
+translate="$1"; shift
+rotate="$1"; shift
+output="$1"; shift
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+"$AWK" -v prog="$prog" -v LOG="$LOG" \
+       -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v output="$output" '
+function ini() {
+    X = 1; Y = 2; Z = 3; W = 4
+    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
+    OK = 0; EOF = 1; ERR = -1
+    split(translate, Translate)
+    split(rotate,    Rotate)
+}
+
+function parse(s,   a, n) {
+    n = sub(/^\(/, "", s)
+    if (n != 1) return ERR
+    n = sub(/\)$/, "", s)
+    if (n != 1) return ERR
+    n = split(s, a)
+    if (a[1] == "rawevent")
+       key(a[2])
+    return OK
+}
+
+
+function m_row(s, D, T,  a, i) {
+    n = split(s, a)
+    for (i = 1; i <= n; i++)
+	T[D, i] = a[i]
+}
+function read_transform(T,   s) {
+    g("write transform - worldgeom universe")
+    if (getline s == ERR) err("fail to parse transform")
+    if (s !~ /^transform {/)
+	err(sprintf("expecting transform, got: `%s`", s))
+    getline s; m_row(s, X, T)
+    getline s; m_row(s, Y, T)
+    getline s; m_row(s, Z, T)
+    getline s; m_row(s, W, T)
+    while (getline s != ERR && s !~ /[\t ]}/)  ;
+}
+function write_transform(T,   tx, ty, tz, rx, ry, rz) {
+    tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
+    rx = atan2(T[Z,Y], T[Z,Z])
+    ry = atan2(-T[Z,X], sqrt(T[Z,Y]^2 + T[Z,Z]^2))
+    rz = atan2(T[Y,X], T[X,X])
+    msg(sprintf("-t %g %g %g -r %g %g %g", tx, ty, tz,
+		rad2ang(rx), rad2ang(ry), rad2ang(rz)))
+}
+function key(k,   s,  T) {
+    if      (k == KEY_Q) {
+	read_transform(T)
+	write_transform(T)
+	g("exit")
+    }
+    else if (k == KEY_P) g("ui-panel geomview on")
+    else if (k == KEY_S) {
+	msg("write snap.ppm")
+	g("snapshot Camera snap.ppm")
+    } else if (k == KEY_SPACE) {
+	read_transform(T)
+	write_transform(T)
+    } else err("unknown key: " k)
+}
+
+function reg_key(k) { g(sprintf("interest (rawevent %s)", k)) }
+function geom() {
+    g0("(progn")
+	g(sprintf("geometry obj < %s", oogl))
+	g("bbox-draw obj no")
+    g0(")")
+    reg_key(KEY_Q); reg_key(KEY_S); reg_key(KEY_P); reg_key(KEY_SPACE)
+}
+
+function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
+function g(s) { g0("(" s ")") }
+function g0(s) {
+    if ("" LOG != "0") msg("gcl: " quote(s))
+    printf "%s\n", quote(s) | "cat"
+    close("cat")
+}
+
+function m_ident(A,   i, j) {
+    for (i = 1; i <= W; i++)
+	for (j = 1; j <= W; j++)
+	    A[i,j] = (i == j) + 0
+}
+function m_str(A,   i, j, s) {
+    for (i = 1; (i, 1) in A; i++) {
+	if (i > 1) s = s "\n"
+	for (j = 1; (i, j) in A; j++) {
+	    if (j > 0) s = s " "
+	    s = s sprintf("%.16g", A[i,j])
+	}
+    }
+    return s
+}
+
+function m_mult(A, B,   i, j, k, C) { # A *= B
+    for (i = 1; (i, 1) in A; i++)
+	for (j = 1; (i, j) in A; j++)
+	    for (k = 1; (j, k) in B; k++)
+		C[i,k] += A[i,j] * B[j,k]
+    m_copy(C, A)
+}
+
+function m_copy(A, B,  k) { for (k in A) B[k] = A[k] }
+function m_translate(x, y, z, A) { A[W,X] += x; A[W,Y] += y; A[W,Z] += z }
+function m_rotate(x, y, z, A) { m_rotx(x, A); m_roty(y, A); m_rotz(z, A) }
+function m_rotx(p, A,  T) { m_rot0(p, T, Y, Z); m_mult(A, T) }
+function m_roty(p, A,  T) { m_rot0(p, T, Z, X); m_mult(A, T) }
+function m_rotz(p, A,  T) { m_rot0(p, T, X, Y); m_mult(A, T) }
+function m_rot0(p, A, P, Q,   c, s) {
+    c = cos(p); s = sin(p)
+    m_ident(A)
+    A[P, P] = c; A[P, Q] = -s
+    A[Q, P] = s; A[Q, Q] =  c
+}
+
+function transform(   A) {
+    m_ident(A)
+    m_rotate(ang2rad(Rotate[X]), ang2rad(Rotate[Y]), ang2rad(Rotate[Z]), A)
+    m_translate(Translate[X], Translate[Y], Translate[Z], A)
+    g("xform-set `worldgeom` transform {" m_str(A) "}")
+}
+
+BEGIN {
+    ini()
+    geom()
+    transform()
+
+    if (emptyp(output)) {
+	for (;;) {
+	    if (getline s == ERR) break
+	    if (parse(s) != OK) {
+		msg("fail to parse: " s)
+		break
+	    }
+	}
+    } else {
+	g(sprintf("snapshot Camera `%s`", output))
+	g(sprintf("snapshot Camera `%s`", output)) # TODO
+	g("exit")
+    }
+}
+function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); g("exit") }
+function emptyp(s) { return length(s) == 0 }
+function ang2rad(s) { return pi()*s/180 }
+function rad2ang(s) { return 180*s/pi() }
+function pi() { return 3.141592653589793 }
+' "$@"

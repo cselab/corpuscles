@@ -15,29 +15,17 @@
 /* TODO: from alg */
 int alg_eig_vectors(const real data[6], /**/ real e0[9]);
 
-struct T {
-    int n;
-    real *x, *y, *z;
-};
-
+struct T { int n; };
 static real sum(int n, real *a) { return he_sum_array(n, a); }
-
 int orient_ini(He *he, T **pq) {
     T *q;
-    int n;
     MALLOC(1, &q);
-
-    n = he_nv(he);
-
-    q->n = n;
-    MALLOC(n, &q->x); MALLOC(n, &q->y); MALLOC(n, &q->z);
-
+    q->n = he_nv(he);
     *pq = q;
     return HE_OK;
 }
 
 int orient_fin(T *q) {
-    FREE(q->x); FREE(q->y); FREE(q->z);
     FREE(q);
     return HE_OK;
 }
@@ -83,7 +71,7 @@ int orient_apply(T *q, /**/ real *x, real *y, real *z) {
     real x0, y0, z0;
     real m[6], v[3*3];
     n = q->n;
-    to_cm(n, x, y, z);
+    to_cm(n, /**/ x, y, z);
     moment(n, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
     for (i = 0; i < n; i++)
