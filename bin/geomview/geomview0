@@ -18,11 +18,16 @@ appearance="$1"; shift
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
        -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v appearance="$appearance" -v output="$output" '
-function ini() {
+function ini(   i) {
+    noff = ARGC - 1; ioff = 1
+    for (i = 1; i in ARGV; i++) {
+	offs[i] = ARGV[i]
+	msg("offs: " offs[i])
+    }
     ARGC = 1
-    off = ARGV[1]
     X = 1; Y = 2; Z = 3; W = 4
-    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
+    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
+    KEY_N = 110; KEY_M = 109
     OK = 0; EOF = 1; ERR = -1
     split(translate, Translate)
     split(rotate,    Rotate)
@@ -100,7 +105,14 @@ function parse_key(k,   s,  T, fov) {
 	read_transform(T)
 	fov = read_fov()
 	write_command(T, fov)
-    } else err("unknown key: " k)
+    } else if (k == KEY_N) {
+	if (--ioff < 1) ioff = noff
+	draw()
+    } else if (k == KEY_M) {
+	if (++ioff > noff) ioff = 1
+	draw()
+    }
+    else err("unknown key: " k)
 }
 
 function key0(k) { g(sprintf("interest (rawevent %s)", k)) }
@@ -109,6 +121,8 @@ function key() {
     key0(KEY_S)
     key0(KEY_P)
     key0(KEY_SPACE)
+    key0(KEY_N)
+    key0(KEY_M)
 }
 
 function geom() {
@@ -119,6 +133,12 @@ function geom() {
     else
 	g(sprintf("read appearance { define appearance < `%s`}",
 		  appearance))
+}
+
+function draw(   off) {
+    off = offs[ioff]
+    msg("draw: " off)
+    g(sprintf("read geometry   { define off        < `%s` }", off))
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
@@ -153,7 +173,9 @@ function m_mult(A, B,   i, j, k, C) { # A *= B
     m_copy(C, A)
 }
 
-function m_copy(A, B,  k) { for (k in A) B[k] = A[k] }
+function m_copy(A, B,  k, cnt) {
+    for (k in A) B[k] = A[k]
+}
 function m_translate(x, y, z, A) { A[W,X] += x; A[W,Y] += y; A[W,Z] += z }
 function m_rotate(x, y, z, A) { m_rotx(x, A); m_roty(y, A); m_rotz(z, A) }
 function m_rotx(p, A,  T) { m_rot0(p, T, Y, Z); m_mult(A, T) }
@@ -182,7 +204,7 @@ BEGIN {
     transform()
     set_fov()    
     geom()
-    g(sprintf("read geometry   { define off        < `%s` }", off))
+    draw()
 
     if (eq(output, "-")) {
 	for (;;) {

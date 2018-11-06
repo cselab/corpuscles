@@ -48,9 +48,9 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'; then err "$GEOMVIEW is not found"; fi
 
 tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=-
-while test $# -ne 0
-do a="$1"; shift
-   case "$a" in
+for i
+do shift
+   case "$i" in
        -t) if test $# -le 2; then err '-t needs three numbers'; fi
 	   num "$1"; tx="$1"; shift
 	   num "$1"; ty="$1"; shift
@@ -71,12 +71,12 @@ do a="$1"; shift
 	   filep "$1"; appearance="$1"; shift
 	   ;;
        -*) err "unknown option '$a'" ;;
-       *) off "$a"; off="$a"; shift ;;
+        *) set -- "$@" "$i" ;;
    esac
 done
-if test -z "$off"; then err 'off file is not given'; fi
 
+for i; do off "$i"; done
 
 "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
 	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" \
-	    "$appearance"  "$off"
+	    "$appearance" "$@"
