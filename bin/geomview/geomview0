@@ -13,18 +13,17 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 translate="$1"; shift
 rotate="$1"; shift
 fov="$1"; shift
-output="$1"; shift	  
+output="$1"; shift
 appearance="$1"; shift
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
        -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v appearance="$appearance" -v output="$output" '
 function ini(   i) {
     noff = ARGC - 1; ioff = 1
-    for (i = 1; i in ARGV; i++) {
+    for (i = 1; i in ARGV; i++)
 	offs[i] = ARGV[i]
-	msg("offs: " offs[i])
-    }
     ARGC = 1
+
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
     KEY_N = 110; KEY_M = 109
@@ -137,7 +136,6 @@ function geom() {
 
 function draw(   off) {
     off = offs[ioff]
-    msg("draw: " off)
     g(sprintf("read geometry   { define off        < `%s` }", off))
 }
 
@@ -202,7 +200,7 @@ BEGIN {
     ini()
     key()
     transform()
-    set_fov()    
+    set_fov()
     geom()
     draw()
 

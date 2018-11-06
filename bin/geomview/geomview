@@ -4,7 +4,7 @@ prog=he.geomview
 prog0=he.geomview0
 
 usg () {
-    msg "$prog [-t x y z] [-r x y z] [-a APPEARANCE] [-o PPM] OFF"
+    msg "$prog [-t x y z] [-r x y z] [-a APPEARANCE] [-o PPM] [OFF].."
     msg 'he geomview wrapper'
     msg '-t x y z   translation'
     msg '-r x y z   rotation in degree'
