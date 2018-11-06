@@ -10,14 +10,14 @@ usg () {
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-appearance="$1"; shift
 translate="$1"; shift
 rotate="$1"; shift
 fov="$1"; shift
-output="$1"; shift
+output="$1"; shift	  
+appearance="$1"; shift
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
-       -v appearance="$appearance" -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v output="$output" '
+       -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v appearance="$appearance" -v output="$output" '
 function ini() {
     ARGC = 1
     off = ARGV[1]

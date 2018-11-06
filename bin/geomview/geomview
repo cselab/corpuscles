@@ -78,5 +78,5 @@ if test -z "$off"; then err 'off file is not given'; fi
 
 
 "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
-  "$prog0" "$appearance" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" "$off"
-
+	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" \
+	    "$appearance"  "$off"
