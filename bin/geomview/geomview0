@@ -21,7 +21,6 @@ output="$1"; shift
 function ini() {
     ARGC = 1
     off = ARGV[1]
-
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
     OK = 0; EOF = 1; ERR = -1
@@ -39,7 +38,6 @@ function parse(s,   a, n) {
        parse_key(a[2])
     return OK
 }
-
 
 function m_row(s, D, T,  a, i) {
     n = split(s, a)
@@ -116,11 +114,11 @@ function key() {
 function geom() {
     g("geometry obj appearance { : appearance } { : off }")
     g("bbox-draw obj no")
-    g(sprintf("read geometry   { define off        < `%s` }", off))
     if (eq(appearance, "-"))
 	g("read appearance {define appearance { +edge } material {ks 0}}")
     else
-	g(sprintf("read appearance { define appearance < `%s` }", appearance))
+	g(sprintf("read appearance { define appearance < `%s`}",
+		  appearance))
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
@@ -181,9 +179,10 @@ function set_fov() {
 BEGIN {
     ini()
     key()
-    geom()
     transform()
-    set_fov()
+    set_fov()    
+    geom()
+    g(sprintf("read geometry   { define off        < `%s` }", off))
 
     if (eq(output, "-")) {
 	for (;;) {
