@@ -42,6 +42,7 @@ function m_row(s, D, T,  a, i) {
     for (i = 1; i <= n; i++)
 	T[D, i] = a[i]
 }
+
 function read_transform(T,   s) {
     g("write transform - worldgeom universe")
     if (getline s == ERR) err("fail to parse transform")
@@ -53,6 +54,27 @@ function read_transform(T,   s) {
     getline s; m_row(s, W, T)
     while (getline s != ERR && s !~ /[\t ]}/)  ;
 }
+
+function read_camera_fov(  fov, n) {
+    fov = 50
+    g("write camera - focus")
+    if (getline s == ERR)
+	err("fail to parse camera reply")
+    if (s !~ /^camera {/)
+	err(sprintf("expecting camera, got: `%s`", s))
+    for (n = 1; n > 0; ) {
+	if (getline == ERR)
+	    err("fail to parse camera info")
+	if (/{/) n++
+	if (/}/) n--
+	if (n == 0) break
+	if (/[ \t]*fov/) fov = $2
+    }
+    if (emptyp(fov))
+	err("have not found fov")
+    return fov
+}
+
 function write_transform(T,   tx, ty, tz, rx, ry, rz) {
     tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
     rx = atan2(-T[Y,Z], T[Z,Z])
@@ -61,7 +83,8 @@ function write_transform(T,   tx, ty, tz, rx, ry, rz) {
     msg0(sprintf("-t %g %g %g -r %g %g %g", tx, ty, tz,
 		 rad2ang(rx), rad2ang(ry), rad2ang(rz)))
 }
-function key(k,   s,  T) {
+
+function key(k,   s,  T, fov) {
     if      (k == KEY_Q) {
 	read_transform(T)
 	write_transform(T)
@@ -74,6 +97,8 @@ function key(k,   s,  T) {
     } else if (k == KEY_SPACE) {
 	read_transform(T)
 	write_transform(T)
+	fov = read_camera_fov()
+	msg("fov : " fov)
     } else err("unknown key: " k)
 }
 
