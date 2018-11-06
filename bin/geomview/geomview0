@@ -53,20 +53,25 @@ function read_transform(T,   s) {
     getline s; m_row(s, W, T)
     while (getline s != ERR && s !~ /[\t ]}/)  ;
 }
-function write_transform(T,   rx, ry, rz) {
-    msg(sprintf("%.6g %.6g %.6g",
-		T[W, X], T[W, Y], T[W, Z]))
+function write_transform(T,   tx, ty, tz, rx, ry, rz) {
+    tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
     rx = atan2(T[Z,Y], T[Z,Z])
-    msg(rad2ang(rx))
+    ry = atan2(-T[Z,X], sqrt(T[Z,Y]^2 + T[Z,Z]^2))
+    rz = atan2(T[Y,X], T[X,X])
+    msg(sprintf("-t %g %g %g -r %g %g %g", tx, ty, tz,
+		rad2ang(rx), rad2ang(ry), rad2ang(rz)))
 }
 function key(k,   s,  T) {
-    if      (k == KEY_Q) g("exit")
+    if      (k == KEY_Q) {
+	read_transform(T)
+	write_transform(T)
+	g("exit")
+    }
     else if (k == KEY_P) g("ui-panel geomview on")
     else if (k == KEY_S) {
 	msg("write snap.ppm")
 	g("snapshot Camera snap.ppm")
     } else if (k == KEY_SPACE) {
-	msg("space")
 	read_transform(T)
 	write_transform(T)
     } else err("unknown key: " k)
