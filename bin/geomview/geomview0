@@ -18,7 +18,7 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
        -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v output="$output" '
 function ini() {
-    X = 1; Y = 2; Z = 3
+    X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
     OK = 0; EOF = 1; ERR = -1
     split(translate, Translate)
@@ -36,7 +36,30 @@ function parse(s,   a, n) {
     return OK
 }
 
-function key(k,   s) {
+
+function m_row(s, D, T,  a, i) {
+    n = split(s, a)
+    for (i = 1; i <= n; i++)
+	T[D, i] = a[i]
+}
+function read_transform(T,   s) {
+    g("write transform - worldgeom universe")
+    if (getline s == ERR) err("fail to parse transform")
+    if (s !~ /^transform {/)
+	err(sprintf("expecting transform, got: `%s`", s))
+    getline s; m_row(s, X, T)
+    getline s; m_row(s, Y, T)
+    getline s; m_row(s, Z, T)
+    getline s; m_row(s, W, T)
+    while (getline s != ERR && s !~ /[\t ]}/)  ;
+}
+function write_transform(T,   rx, ry, rz) {
+    msg(sprintf("%.6g %.6g %.6g",
+		T[W, X], T[W, Y], T[W, Z]))
+    rx = atan2(T[Z,Y], T[Z,Z])
+    msg(rad2ang(rx))
+}
+function key(k,   s,  T) {
     if      (k == KEY_Q) g("exit")
     else if (k == KEY_P) g("ui-panel geomview on")
     else if (k == KEY_S) {
@@ -44,7 +67,8 @@ function key(k,   s) {
 	g("snapshot Camera snap.ppm")
     } else if (k == KEY_SPACE) {
 	msg("space")
-	g("write transform /dev/stderr worldgeom universe")
+	read_transform(T)
+	write_transform(T)
     } else err("unknown key: " k)
 }
 
@@ -66,8 +90,8 @@ function g0(s) {
 }
 
 function m_ident(A,   i, j) {
-    for (i = 1; i <= 4; i++)
-	for (j = 1; j <= 4; j++)
+    for (i = 1; i <= W; i++)
+	for (j = 1; j <= W; j++)
 	    A[i,j] = (i == j) + 0
 }
 function m_str(A,   i, j, s) {
@@ -90,7 +114,7 @@ function m_mult(A, B,   i, j, k, C) { # A *= B
 }
 
 function m_copy(A, B,  k) { for (k in A) B[k] = A[k] }
-function m_translate(x, y, z, A) { A[4,X] += x; A[4,Y] += y; A[4,Z] += z }
+function m_translate(x, y, z, A) { A[W,X] += x; A[W,Y] += y; A[W,Z] += z }
 function m_rotate(x, y, z, A) { m_rotx(x, A); m_roty(y, A); m_rotz(z, A) }
 function m_rotx(p, A,  T) { m_rot0(p, T, Y, Z); m_mult(A, T) }
 function m_roty(p, A,  T) { m_rot0(p, T, Z, X); m_mult(A, T) }
@@ -131,6 +155,7 @@ BEGIN {
 function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); g("exit") }
 function emptyp(s) { return length(s) == 0 }
-function ang2rad(s) { return 180/pi()*s }
+function ang2rad(s) { return pi()*s/180 }
+function rad2ang(s) { return 180*s/pi() }
 function pi() { return 3.141592653589793 }
 ' "$@"
