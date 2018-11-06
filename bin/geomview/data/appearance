@@ -1,0 +1,9 @@
+appearance {
++edge
+transparent blending
+linewidth 2
+material {
+  ks 0
+  alpha 0.75
+}
+}
