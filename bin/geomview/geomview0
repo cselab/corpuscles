@@ -11,12 +11,13 @@ usg () {
 oogl="$1"; shift
 translate="$1"; shift
 rotate="$1"; shift
+fov="$1"; shift
 output="$1"; shift
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
-       -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v output="$output" '
+       -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v output="$output" '
 function ini() {
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
@@ -55,8 +56,7 @@ function read_transform(T,   s) {
     while (getline s != ERR && s !~ /[\t ]}/)  ;
 }
 
-function read_camera_fov(  fov, n) {
-    fov = 50
+function read_fov(  fov, n) {
     g("write camera - focus")
     if (getline s == ERR)
 	err("fail to parse camera reply")
@@ -68,26 +68,27 @@ function read_camera_fov(  fov, n) {
 	if (/{/) n++
 	if (/}/) n--
 	if (n == 0) break
-	if (/[ \t]*fov/) fov = $2
+	if (/[ \t]*fov[ \t]/) fov = $2
     }
     if (emptyp(fov))
 	err("have not found fov")
     return fov
 }
 
-function write_transform(T,   tx, ty, tz, rx, ry, rz) {
+function write_command(T, fov,   tx, ty, tz, rx, ry, rz) {
     tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
     rx = atan2(-T[Y,Z], T[Z,Z])
     ry = atan2(T[X,Z], sqrt(T[Y,Z]^2 + T[Z,Z]^2))
     rz = atan2(-T[X,Y], T[X,X])
-    msg0(sprintf("-t %g %g %g -r %g %g %g", tx, ty, tz,
-		 rad2ang(rx), rad2ang(ry), rad2ang(rz)))
+    msg0(sprintf("-t %g %g %g -r %g %g %g -f %g", tx, ty, tz,
+		 rad2ang(rx), rad2ang(ry), rad2ang(rz), fov))
 }
 
 function key(k,   s,  T, fov) {
     if      (k == KEY_Q) {
 	read_transform(T)
-	write_transform(T)
+	fov = read_fov()
+	write_command(T, fov)
 	g("exit")
     }
     else if (k == KEY_P) g("ui-panel geomview on")
@@ -96,9 +97,8 @@ function key(k,   s,  T, fov) {
 	g("snapshot Camera snap.ppm")
     } else if (k == KEY_SPACE) {
 	read_transform(T)
-	write_transform(T)
-	fov = read_camera_fov()
-	msg("fov : " fov)
+	fov = read_fov()
+	write_command(T, fov)
     } else err("unknown key: " k)
 }
 
@@ -162,11 +162,15 @@ function transform(   A) {
     m_translate(Translate[X], Translate[Y], Translate[Z], A)
     g("xform-set `worldgeom` transform {" m_str(A) "}")
 }
+function set_fov() {
+    g(sprintf("merge camera focus {fov %s}", fov))
+}
 
 BEGIN {
     ini()
     geom()
     transform()
+    set_fov()
 
     if (emptyp(output)) {
 	for (;;) {
