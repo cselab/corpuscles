@@ -58,8 +58,8 @@ function write_transform(T,   tx, ty, tz, rx, ry, rz) {
     rx = atan2(-T[Y,Z], T[Z,Z])
     ry = atan2(T[X,Z], sqrt(T[Y,Z]^2 + T[Z,Z]^2))
     rz = atan2(-T[X,Y], T[X,X])
-    msg(sprintf("-t %g %g %g -r %g %g %g", tx, ty, tz,
-		rad2ang(rx), rad2ang(ry), rad2ang(rz)))
+    msg0(sprintf("-t %g %g %g -r %g %g %g", tx, ty, tz,
+		 rad2ang(rx), rad2ang(ry), rad2ang(rz)))
 }
 function key(k,   s,  T) {
     if      (k == KEY_Q) {
@@ -157,7 +157,9 @@ BEGIN {
 	g("exit")
     }
 }
-function msg(s) { printf "%s: %s\n", prog, s | "cat >&2" }
+function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
+function msg0(s) { printf "%s\n", s | "cat >&2" }
+
 function err(s) { msg(s); g("exit") }
 function emptyp(s) { return length(s) == 0 }
 function ang2rad(s) { return pi()*s/180 }
