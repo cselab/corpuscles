@@ -8,19 +8,25 @@ usg () {
     exit
 }
 
-oogl="$1"; shift
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
 translate="$1"; shift
 rotate="$1"; shift
 fov="$1"; shift
 output="$1"; shift
-
-if test $# -ne 0 && test "$1" = -h; then usg; fi
+appearance="$1"; shift
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
-       -v oogl="$oogl" -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v output="$output" '
-function ini() {
+       -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v appearance="$appearance" -v output="$output" '
+function ini(   i) {
+    noff = ARGC - 1; ioff = 1
+    for (i = 1; i in ARGV; i++)
+	offs[i] = ARGV[i]
+    ARGC = 1
+
     X = 1; Y = 2; Z = 3; W = 4
-    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32
+    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
+    KEY_J = 106; KEY_K = 107
     OK = 0; EOF = 1; ERR = -1
     split(translate, Translate)
     split(rotate,    Rotate)
@@ -33,10 +39,9 @@ function parse(s,   a, n) {
     if (n != 1) return ERR
     n = split(s, a)
     if (a[1] == "rawevent")
-       key(a[2])
+       parse_key(a[2])
     return OK
 }
-
 
 function m_row(s, D, T,  a, i) {
     n = split(s, a)
@@ -84,8 +89,8 @@ function write_command(T, fov,   tx, ty, tz, rx, ry, rz) {
 		 rad2ang(rx), rad2ang(ry), rad2ang(rz), fov))
 }
 
-function key(k,   s,  T, fov) {
-    if      (k == KEY_Q) {
+function parse_key(k,   s,  T, fov) {
+    if (k == KEY_Q) {
 	read_transform(T)
 	fov = read_fov()
 	write_command(T, fov)
@@ -99,16 +104,39 @@ function key(k,   s,  T, fov) {
 	read_transform(T)
 	fov = read_fov()
 	write_command(T, fov)
-    } else err("unknown key: " k)
+    } else if (k == KEY_J) {
+	if (--ioff < 1) ioff = noff
+	draw()
+    } else if (k == KEY_K) {
+	if (++ioff > noff) ioff = 1
+	draw()
+    }
+    else err("unknown key: " k)
 }
 
-function reg_key(k) { g(sprintf("interest (rawevent %s)", k)) }
+function key0(k) { g(sprintf("interest (rawevent %s)", k)) }
+function key() {
+    key0(KEY_Q)
+    key0(KEY_S)
+    key0(KEY_P)
+    key0(KEY_SPACE)
+    key0(KEY_J)
+    key0(KEY_K)
+}
+
 function geom() {
-    g0("(progn")
-	g(sprintf("geometry obj < %s", oogl))
-	g("bbox-draw obj no")
-    g0(")")
-    reg_key(KEY_Q); reg_key(KEY_S); reg_key(KEY_P); reg_key(KEY_SPACE)
+    g("geometry obj appearance { : appearance } { : off }")
+    g("bbox-draw obj no")
+    if (eq(appearance, "-"))
+	g("read appearance {define appearance { +edge } material {ks 0}}")
+    else
+	g(sprintf("read appearance { define appearance < `%s`}",
+		  appearance))
+}
+
+function draw(   off) {
+    off = offs[ioff]
+    g(sprintf("read geometry   { define off        < `%s` }", off))
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
@@ -143,7 +171,9 @@ function m_mult(A, B,   i, j, k, C) { # A *= B
     m_copy(C, A)
 }
 
-function m_copy(A, B,  k) { for (k in A) B[k] = A[k] }
+function m_copy(A, B,  k, cnt) {
+    for (k in A) B[k] = A[k]
+}
 function m_translate(x, y, z, A) { A[W,X] += x; A[W,Y] += y; A[W,Z] += z }
 function m_rotate(x, y, z, A) { m_rotx(x, A); m_roty(y, A); m_rotz(z, A) }
 function m_rotx(p, A,  T) { m_rot0(p, T, Y, Z); m_mult(A, T) }
@@ -168,11 +198,13 @@ function set_fov() {
 
 BEGIN {
     ini()
-    geom()
+    key()
     transform()
     set_fov()
+    geom()
+    draw()
 
-    if (emptyp(output)) {
+    if (eq(output, "-")) {
 	for (;;) {
 	    if (getline s == ERR) break
 	    if (parse(s) != OK) {
@@ -194,4 +226,5 @@ function emptyp(s) { return length(s) == 0 }
 function ang2rad(s) { return pi()*s/180 }
 function rad2ang(s) { return 180*s/pi() }
 function pi() { return 3.141592653589793 }
+function eq(a ,b) { return "" a == "" b }
 ' "$@"
