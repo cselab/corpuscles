@@ -186,12 +186,12 @@ static void main0(real *vx, real *vy, real *vz,
     real *queue[] = {XX, YY, ZZ, NULL};
     char file[4048];
 
-    dt_max = 0.001;
+    dt_max = 0.01;
     mu = 100.0;
     h = 0.01*e0;
     end = 10000;
     nsub = 100;
-    T = 0.001;
+    T = 1e-5;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (idump = i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
