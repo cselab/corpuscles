@@ -26,7 +26,7 @@ function ini(   i) {
 
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
-    KEY_N = 110; KEY_M = 109
+    KEY_J = 106; KEY_K = 107
     OK = 0; EOF = 1; ERR = -1
     split(translate, Translate)
     split(rotate,    Rotate)
@@ -104,10 +104,10 @@ function parse_key(k,   s,  T, fov) {
 	read_transform(T)
 	fov = read_fov()
 	write_command(T, fov)
-    } else if (k == KEY_N) {
+    } else if (k == KEY_J) {
 	if (--ioff < 1) ioff = noff
 	draw()
-    } else if (k == KEY_M) {
+    } else if (k == KEY_K) {
 	if (++ioff > noff) ioff = 1
 	draw()
     }
@@ -120,8 +120,8 @@ function key() {
     key0(KEY_S)
     key0(KEY_P)
     key0(KEY_SPACE)
-    key0(KEY_N)
-    key0(KEY_M)
+    key0(KEY_J)
+    key0(KEY_K)
 }
 
 function geom() {
