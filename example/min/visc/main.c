@@ -184,19 +184,20 @@ static real max_vec(real *fx, real *fy, real *fz) {
 
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int cnt, end, i, j, nsub;
+    int cnt, end, i, j, nsub, idump;
     real dt, dt_max, h, mu, rnd;
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
+    char file[4048];
     
     dt_max = 0.001;
     mu = 100.0;
     h = 0.01*e0;
     end = 10000;
     nsub = 100;
-    
+
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
-    for (i = 0; i < end ; i++) {
+    for (idump = i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
         rnd = 0.01*max_vec(vx, vy, vz);
@@ -215,7 +216,6 @@ static void main0(real *vx, real *vy, real *vz,
         if (i % 100 == 0) {
 	  do {
               equiangulate(&cnt);
-              cnt = 0;
               MSG("cnt : %d", cnt);
           } while (cnt > 0);
           punto_fwrite(NV, queue, stdout);
@@ -226,7 +226,8 @@ static void main0(real *vx, real *vy, real *vz,
             MSG("eng: %g", Energy(XX, YY, ZZ));
             A = area(); V = volume();
             MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
-            off_write(XX, YY, ZZ, "q.off");
+            sprintf(file, "%05d.off", idump++);
+            off_write(XX, YY, ZZ, file);
         }
 
     }
