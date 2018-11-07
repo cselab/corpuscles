@@ -48,30 +48,35 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'; then err "$GEOMVIEW is not found"; fi
 
 tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=-
-for i
-do shift
-   case "$i" in
-       -t) if test $# -le 2; then err '-t needs three numbers'; fi
+while test $# -ne 0
+do
+   case "$1" in
+       -t) shift
+	   if test $# -le 2; then err '-t needs three numbers'; fi
 	   num "$1"; tx="$1"; shift
 	   num "$1"; ty="$1"; shift
 	   num "$1"; tz="$1"; shift
 	   ;;
-       -r) if test $# -le 2; then err '-r needs three numbers'; fi
+       -r) shift
+	   if test $# -le 2; then err '-r needs three numbers'; fi
 	   num "$1"; rx="$1"; shift
 	   num "$1"; ry="$1"; shift
 	   num "$1"; rz="$1"; shift
 	   ;;
-       -f) if test $# -le 1; then err '-f needs a number numbers'; fi
+       -f) shift
+	   if test $# -le 1; then err '-f needs a number numbers'; fi
 	   num "$1"; nonzero "$1"; fov="$1"; shift
 	   ;;
-       -o) if test $# -le 1; then err '-o needs a file'; fi
+       -o) shift
+	   if test $# -le 1; then err '-o needs a file'; fi
 	   output="$1"; shift
 	   ;;
-       -a) if test $# -le 1; then err '-o needs a file'; fi
+       -a) shift
+	   if test $# -le 1; then err '-o needs a file'; fi
 	   filep "$1"; appearance="$1"; shift
 	   ;;
        -*) err "unknown option '$a'" ;;
-        *) set -- "$@" "$i" ;;
+	*) break
    esac
 done
 
