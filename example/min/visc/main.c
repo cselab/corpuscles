@@ -191,7 +191,7 @@ static void main0(real *vx, real *vy, real *vz,
     h = 0.01*e0;
     end = 10000;
     nsub = 100;
-    T = 1e-4;
+    T = 1e-5;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (idump = i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
