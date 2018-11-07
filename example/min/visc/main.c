@@ -8,7 +8,6 @@
 #include <real.h>
 
 #include <he/err.h>
-#include <he/punto.h>
 #include <he/vec.h>
 #include <he/macro.h>
 #include <he/util.h>
@@ -41,7 +40,7 @@ static HeFStrain *strain;
 
 static void usg() {
     fprintf(stderr, "%s %s \\\n"
-            "  rVolume Ka Kga {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF > PUNTO\n", me, bending_list());
+            "  rVolume Ka Kga {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF\n", me, bending_list());
     exit(0);
 }
 
@@ -111,23 +110,20 @@ static void euler(real dt,
     }
 }
 
-static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
-    int nv;
-    real r, r0, sx, sy, sz;
-    int i;
-    nv = NV;
-    sx = sy = sz = 0;
-    for (i = 0; i < nv; i++) {
-        r = rand()/(real)RAND_MAX - 0.5;
-        r0 = r * mag;
-        vx[i] += r0; vy[i] += r0; vz[i] += r0;
-    }
-    for (i = 0; i < nv; i++) {
-        sx += vx[i]; sy += vy[i]; sz += vz[i];
-    }
-    sx /= nv; sy /= nv; sz /= nv;
-    for (i = 0; i < nv; i++) {
-        vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
+static void jigle(real mag, /**/
+                  real *x, real *y, real *z,
+                  real *fx, real *fy, real *fz) {
+    int i, j, e;
+    real rnd, a[3], b[3], r[3], u[3];
+    for (e = 0; e < NE; e++) {
+        i = D1[e]; j = D2[e];
+        vec_get(i, x, y, z, a);
+        vec_get(j, x, y, z, b);
+        vec_minus(a, b, r);
+        vec_norm(r, u);
+        rnd = mag * (rand()/(real)RAND_MAX - 0.5);
+        vec_scalar_append(u,  rnd, i, fx, fy, fz);
+        vec_scalar_append(u, -rnd, j, fx, fy, fz);
     }
 }
 
@@ -185,41 +181,39 @@ static real max_vec(real *fx, real *fy, real *fz) {
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
     int cnt, end, i, j, nsub, idump;
-    real dt, dt_max, h, mu, rnd;
+    real dt, dt_max, h, mu, T;
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
     char file[4048];
-    
+
     dt_max = 0.001;
     mu = 100.0;
     h = 0.01*e0;
     end = 10000;
     nsub = 100;
-
+    T = 0.001;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (idump = i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.01*max_vec(vx, vy, vz);
-        jigle(rnd, vx, vy, vz);        
+        jigle(mu*T/sqrt(dt), XX, YY, ZZ, fx, fy, fz);
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
         for (j = 0; j < nsub; j++) {
             ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
+            jigle(mu*T/sqrt(dt), XX, YY, ZZ, fx, fy, fz);            
             visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
             euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
 
         if (i % 100 == 0) {
-	  do {
+          do {
               equiangulate(&cnt);
               MSG("cnt : %d", cnt);
           } while (cnt > 0);
-          punto_fwrite(NV, queue, stdout);
-          printf("\n");
         }
 
         if (i % 100 == 0) {
@@ -238,7 +232,7 @@ int main(int __UNUSED argc, const char *v[]) {
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
     BendingParam bending_param;
-    
+
     argv = v; argv++;
     arg();
     srand(time(NULL));
@@ -246,10 +240,10 @@ int main(int __UNUSED argc, const char *v[]) {
     ini("/dev/stdin");
     V0 = volume(); A0 = target_area(V0, rVolume);
     MSG("target_area: %g", A0);
-    
+
     a0 = A0/NT;
     e0 = eq_tri_edg(a0);
-    
+
     MSG("v0/volume(): %g", V0/volume());
     MSG("a0/area(): %g", A0/area());
     MSG("area, volume, edg: %g %g", A0, V0);
@@ -257,6 +251,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv = 1);
+    x_restore_ini(V0);
     he_f_strain_ini(off, model, strain_param, /**/ &strain);
 
     bending_param.Kb = Kb;
@@ -275,6 +270,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     he_f_strain_fin(strain);
     f_bending_fin();
+    x_restore_fin();
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
