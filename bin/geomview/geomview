@@ -23,9 +23,10 @@ usg () {
     msg 'WX, WY: resolution of the snapshot'
     msg
     msg 'Examples:'
-    msg "$prog -t 0.25 0.25 0                      data/rbc.off"
-    msg "$prog -t 0 -0.1 1.4  -a data/appearance   data/rbc.off"
-    msg "$prog -t -0.25 0 0 -r 0 45 0 -o snap.ppm  data/rbc.off"
+    msg "$prog -t 0.25 0.25 0     data/rbc.off"
+    msg "$prog -a data/appearance data/rbc.off"
+    msg "$prog -o snap.ppm        data/rbc.off"
+    msg "$prog                    data/rbc.off data/sph.off"
     exit
 }
 
