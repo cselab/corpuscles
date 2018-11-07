@@ -35,14 +35,14 @@ static real F1_skalak(void *p0, real I1, __UNUSED real I2) {
     real Ks, Ka;
     p = (P*)p0;
     Ks = p->Ks; Ka = p->Ka;
-    return  2*I1*Ks+Ka/4;
+    return  I1*Ks+Ka/4;
 }
 static real F2_skalak(void *p0, __UNUSED real I1, __UNUSED real I2) {
     P *p;
     real Ka, Ks;
     p = (P*)p0;
     Ka = p->Ka; Ks = p->Ks;
-    return Ka/2-Ks;
+    return -(2*Ks-Ka)/2;
 }
 
 static real F_bug(__UNUSED void *p0, __UNUSED real I1, __UNUSED real I2)  {
