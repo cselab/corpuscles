@@ -4,6 +4,6 @@ appearance {
     linewidth 2
     material {
       ks 0
-     alpha 0.75
+      alpha 0.75
     }
 }
