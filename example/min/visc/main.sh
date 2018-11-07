@@ -2,11 +2,12 @@ set -eu
 
 . he.util
 pi=3.141592653589793
-
 off=$HOME/0.off
-ref=$off
 
-v=0.642
-Ka=5 Kga=0.5 Kb=0.05 Ks=0 Kad=0 DA0D=0 C0=0
+v=0.66
+s=`ae "1/$v^(1/3)"`
+off.scale $s $off > ref.off
 
-./main juelicher $v   $Ka $Kga $ref linear $Ks 0      $Kb $C0 $Kad $DA0D < $off '>' q
+Ka=0 Kga=10 Es=0 Ea=5e3   Kb=0.05 Kad=0 DA0D=0 C0=0
+
+./main juelicher $v   $Ka $Kga ref.off linear $Es $Ea      $Kb $C0 $Kad $DA0D < $off '>' q
