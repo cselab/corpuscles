@@ -22,6 +22,7 @@
 #include "he/memory.h"
 #include "he/off.h"
 #include "he/read.h"
+#include "he/restore.h"
 #include "he/vec.h"
 #include "he/volume.h"
 #include "he/x.h"
@@ -47,6 +48,7 @@ static HeFGompper_Kroll *f_gompper_kroll;
 static HeFMeyer *f_meyer;
 static HeFJuelicher *f_juelicher;
 static Bending *f_bending;
+static Restore *f_restore;
 static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
@@ -386,5 +388,13 @@ int f_bending_force(const real *x, const real *y, const real *z, /**/ real *fx, 
 }
 int f_bending_energy_ver(real **p) {
     return bending_energy_ver(f_bending, p);
+}
+
+int x_restore_ini(real volume) {
+    return restore_ini(volume, he, &f_restore);
+}
+int x_restore_fin() { return restore_fin(f_restore); }
+int x_restore_volume(real *x, real *y, real *z) {
+    return restore_volume(f_restore, he, x, y, z);
 }
 

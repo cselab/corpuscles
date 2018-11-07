@@ -116,3 +116,7 @@ int f_bending_force(const real *x, const real *y, const real *z, /**/ real *fx, 
 int f_bending_energy_ver(/**/ real**);
 
 int equiangulate(int *cnt);
+
+int x_restore_ini(real volume);
+int x_restore_fin();
+int x_restore_volume(real *x, real *y, real *z);
