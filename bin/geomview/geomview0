@@ -104,10 +104,10 @@ function parse_key(k,   s,  T, fov) {
 	read_transform(T)
 	fov = read_fov()
 	write_command(T, fov)
-    } else if (k == KEY_J) {
+    } else if (k == KEY_K) {
 	if (--ioff < 1) ioff = noff
 	draw()
-    } else if (k == KEY_K) {
+    } else if (k == KEY_J) {
 	if (++ioff > noff) ioff = 1
 	draw()
     }
