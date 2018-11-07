@@ -15,6 +15,7 @@ usg () {
     msg 'Keys:'
     msg '    q: quit'
     msg '    s: save snap.ppm'
+    msg '    S: save every snapshot'
     msg '    p: panel'
     msg '  j/k: switch between off files'
     msg '    [SPC]: dump orientation and field of view'

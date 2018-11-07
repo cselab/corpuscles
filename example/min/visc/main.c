@@ -182,41 +182,22 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static int restore_volume(real *fx, real *fy, real *fz) {
-    int j, nsub;
-    real v, dv, q, step, f[3];
-    int m;
-
-    v = volume();
-    dv = V0 - v;
-    if (dv/V0 > -EPS && dv/V0 < EPS)
-        return HE_OK;
-    ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
-    q = 0;
-    for (m = 0; m < NV; m++) {
-        vec_get(m, fx, fy, fz, /**/ f);
-        q += vec_dot(f, f);
-    }
-    step = -dv/q;
-    euler(step, fx, fy, fz, /**/ XX, YY, ZZ);
-    MSG("v: %g %g %g %g", v, volume(), V0, dv);
-    exit(0);
-}
-
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int cnt, end, i;
+    int cnt, end, i, j, nsub, idump;
     real dt, dt_max, h, mu, rnd;
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
+    char file[4048];
     
     dt_max = 0.001;
     mu = 100.0;
     h = 0.01*e0;
     end = 10000;
-    
+    nsub = 100;
+
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
-    for (i = 0; i < end ; i++) {
+    for (idump = i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
         rnd = 0.01*max_vec(vx, vy, vz);
@@ -224,12 +205,17 @@ static void main0(real *vx, real *vy, real *vz,
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-        restore_volume(fx, fy, fz);
+
+        for (j = 0; j < nsub; j++) {
+            ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
+            visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+            euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+            euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+        }
 
         if (i % 100 == 0) {
 	  do {
               equiangulate(&cnt);
-              cnt = 0;
               MSG("cnt : %d", cnt);
           } while (cnt > 0);
           punto_fwrite(NV, queue, stdout);
@@ -240,7 +226,8 @@ static void main0(real *vx, real *vy, real *vz,
             MSG("eng: %g", Energy(XX, YY, ZZ));
             A = area(); V = volume();
             MSG("area, vol, rVolume: %g %g %g", A/A0, V/V0, reduced_volume(A, V));
-            off_write(XX, YY, ZZ, "q.off");
+            sprintf(file, "%05d.off", idump++);
+            off_write(XX, YY, ZZ, file);
         }
 
     }

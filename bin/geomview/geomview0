@@ -23,10 +23,12 @@ function ini(   i) {
     for (i = 1; i in ARGV; i++)
 	offs[i] = ARGV[i]
     ARGC = 1
+    Save = 0 # snapshot every draw()?
 
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
     KEY_J = 106; KEY_K = 107
+    KEY_SS = 83
     OK = 0; EOF = 1; ERR = -1
     split(translate, Translate)
     split(rotate,    Rotate)
@@ -98,17 +100,19 @@ function parse_key(k,   s,  T, fov) {
     }
     else if (k == KEY_P) g("ui-panel geomview on")
     else if (k == KEY_S) {
-	msg("write snap.ppm")
-	g("snapshot Camera snap.ppm")
+	msg0("snap.ppm") snap("snap.ppm")
     } else if (k == KEY_SPACE) {
 	read_transform(T)
 	fov = read_fov()
 	write_command(T, fov)
-    } else if (k == KEY_J) {
+    } else if (k == KEY_K) {
 	if (--ioff < 1) ioff = noff
 	draw()
-    } else if (k == KEY_K) {
+    } else if (k == KEY_J) {
 	if (++ioff > noff) ioff = 1
+	draw()
+    } else if (k == KEY_SS) {
+	Save = !Save
 	draw()
     }
     else err("unknown key: " k)
@@ -122,6 +126,7 @@ function key() {
     key0(KEY_SPACE)
     key0(KEY_J)
     key0(KEY_K)
+    key0(KEY_SS)
 }
 
 function geom() {
@@ -134,9 +139,13 @@ function geom() {
 		  appearance))
 }
 
-function draw(   off) {
+function draw(   off, file) {
     off = offs[ioff]
     g(sprintf("read geometry   { define off        < `%s` }", off))
+    if (Save) {
+	file = sprintf("%05d.ppm", ioff)
+	msg0(file); snap(file)
+    }
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
@@ -196,6 +205,11 @@ function set_fov() {
     g(sprintf("merge camera focus {fov %s}", fov))
 }
 
+function snap(file) {
+    g(sprintf("snapshot Camera `%s`", file))
+    g(sprintf("snapshot Camera `%s`", file)) # TODO
+}
+
 BEGIN {
     ini()
     key()
@@ -203,7 +217,6 @@ BEGIN {
     set_fov()
     geom()
     draw()
-
     if (eq(output, "-")) {
 	for (;;) {
 	    if (getline s == ERR) break
@@ -213,8 +226,7 @@ BEGIN {
 	    }
 	}
     } else {
-	g(sprintf("snapshot Camera `%s`", output))
-	g(sprintf("snapshot Camera `%s`", output)) # TODO
+	snap(output)
 	g("exit")
     }
 }
