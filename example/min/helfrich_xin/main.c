@@ -38,10 +38,10 @@ static int end;
 static real A0, V0, e0;
 static const char **argv;
 static char bending[4049];
-static const char *me = "min/visc";
+static const char *me = "min/helfrich_xin_fv";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D end< OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D end< OFF > PUNTO\n", me);
     fprintf(stderr, "end: number of iterations\n");
     exit(0);
 }
@@ -81,7 +81,16 @@ static int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&rVolume); scl(&Ka); scl(&Kga); scl(&Kv); scl(&Ke); scl(&Kb); scl(&C0);  scl(&Kad); scl(&DA0D); num(&end);
+    scl(&rVolume);
+    scl(&Ka);
+    scl(&Kga);
+    scl(&Kv);
+    scl(&Ke);
+    scl(&Kb);
+    scl(&C0);
+    scl(&Kad);
+    scl(&DA0D);
+    num(&end);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -201,8 +210,8 @@ static void main0(real *vx, real *vy, real *vz,
   real et, eb, ek;
   
   dt_max = 0.01;
-  mu = 100.0;
-  h = 0.01*e0;
+  mu     = 100.0;
+  h      = 0.01*e0;
   
   nsub = 100;
   
@@ -249,57 +258,56 @@ static void main0(real *vx, real *vy, real *vz,
 }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real a0;
-    real *fx, *fy, *fz;
-    real *vx, *vy, *vz;
-    real A, V, Vr;
-    BendingParam bending_param;
-    
-    argv = v; argv++;
-    arg();
-    srand(time(NULL));
-
-    ini("/dev/stdin");
-    V0 = volume();
-    A0 = target_area(V0, rVolume);
-    
-    a0 = A0/NT;
-    e0 = eq_tri_edg(a0);
-
-    V = V0;
-    A = area();
-    Vr= reduced_volume(A,V);
-    
-    MSG("Targeted Area, Volume: %g %g", A0, V0);
-    MSG("V/V0: %g", V/V0);
-    MSG("A/A0: %g", A/A0);
-    MSG("Vr  : %g", Vr);
-
-    f_area_ini(a0,  Ka);
-    f_garea_ini(A0, Kga);
-    f_volume_ini(V0, Kv);
-    f_edg_sq_ini(Ke);
-
-    bending_param.Kb = Kb;
-    bending_param.C0 = C0;
-    bending_param.Kad = Kad;
-    bending_param.DA0D = DA0D;
-    f_bending_ini(bending, bending_param);
-
-    MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
-    MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
-
-    main0(vx, vy, vz, fx, fy, fz);
-
-    FREE(fx); FREE(fy); FREE(fz);
-    FREE(vx); FREE(vy); FREE(vz);
-
-    f_bending_fin();
-    f_edg_sq_fin();
-    f_volume_fin();
-    f_area_fin();
-    f_garea_fin();
-    fin();
-
-    return 0;
+  real a0;
+  real *fx, *fy, *fz;
+  real *vx, *vy, *vz;
+  real A, V, Vr;
+  BendingParam bending_param;
+  
+  argv = v; argv++;
+  arg();
+  srand(time(NULL));
+  
+  ini("/dev/stdin");
+  V0 = volume();
+  A0 = target_area(V0, rVolume);
+  a0 = A0/NT;
+  e0 = eq_tri_edg(a0);
+  
+  V = V0;
+  A = area();
+  Vr= reduced_volume(A,V);
+  
+  MSG("Targeted Area, Volume: %g %g", A0, V0);
+  MSG("V/V0: %g", V/V0);
+  MSG("A/A0: %g", A/A0);
+  MSG("Vr  : %g", Vr);
+  
+  f_area_ini(a0,  Ka);
+  f_garea_ini(A0, Kga);
+  f_volume_ini(V0, Kv);
+  f_edg_sq_ini(Ke);
+  
+  bending_param.Kb = Kb;
+  bending_param.C0 = C0;
+  bending_param.Kad = Kad;
+  bending_param.DA0D = DA0D;
+  f_bending_ini(bending, bending_param);
+  
+  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+  MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
+  
+  main0(vx, vy, vz, fx, fy, fz);
+  
+  FREE(fx); FREE(fy); FREE(fz);
+  FREE(vx); FREE(vy); FREE(vz);
+  
+  f_bending_fin();
+  f_edg_sq_fin();
+  f_volume_fin();
+  f_area_fin();
+  f_garea_fin();
+  fin();
+  
+  return 0;
 }

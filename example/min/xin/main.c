@@ -169,9 +169,9 @@ static void main0(real *vx, real *vy, real *vz,
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         if (i % 1500 == 0) {
             do {
-                //equiangulate(&cnt);
-                cnt = 0;
-                MSG("cnt : %d", cnt);
+	      equiangulate(&cnt);
+	      cnt = 0;
+	      //MSG("cnt : %d", cnt);
             } while (cnt > 0);
             punto_fwrite(NV, queue, stdout);
             printf("\n");
