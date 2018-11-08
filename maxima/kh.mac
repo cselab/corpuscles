@@ -1,0 +1,14 @@
+load("scifac") $
+
+e1: (l1^2 - 1)/2;
+e2: (l2^2 - 1)/2;
+
+/*
+a: l1*l2 - 1;
+b: 1/(2*l1*l2)*(l1^2 + l2^2) - 1; */
+
+e: [I1 =  a + b + a*b,
+    I2 = -1/4*(2*b + 2*a*b - a^2)];
+
+assume(D > 0);
+gcfac(ratsubst(D^2, 4*I2 + 2*I1 + 1, solve(e, [a, b])));

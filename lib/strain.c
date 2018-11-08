@@ -45,6 +45,27 @@ static real F2_skalak(void *p0, __UNUSED real I1, __UNUSED real I2) {
     return -(2*Ks-Ka)/2;
 }
 
+static real F_evans(void *p0, real I1, real I2)  {
+    P *p;
+    real Ks, Ka, I1s, I2s;
+    D = 4*I2 + 2*I1 + 1;
+    return Ks*(sq(I1s)/2+I1s-I2s)/4 + Ka*sq(I2s)/8;
+}
+static real F1_evans(void *p0, real I1, __UNUSED real I2) {
+    P *p;
+    real Ks, Ka;
+    p = (P*)p0;
+    Ks = p->Ks; Ka = p->Ka;
+    return  I1*Ks+Ka/4;
+}
+static real F2_evans(void *p0, __UNUSED real I1, __UNUSED real I2) {
+    P *p;
+    real Ka, Ks;
+    p = (P*)p0;
+    Ka = p->Ka; Ks = p->Ks;
+    return -(2*Ks-Ka)/2;
+}
+
 static real F_linear(void *p0, real I1, real I2)  {
     P *p;
     real Ks, Ka;
@@ -76,6 +97,10 @@ int strain_ini(const char *name, P param, /**/ T **pq) {
         q->F = F_skalak;
         q->F1 = F1_skalak;
         q->F2 = F2_skalak;
+    if (util_eq(name, "evans")) {
+        q->F = F_evans;
+        q->F1 = F1_evans;
+        q->F2 = F2_evans;
     } else if (util_eq(name, "linear")) {
         q->F = F_linear;
         q->F1 = F1_linear;
