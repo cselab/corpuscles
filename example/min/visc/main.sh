@@ -3,11 +3,10 @@ set -eu
 . he.util
 pi=3.141592653589793
 
-off=$HOME/0.off
-#off=$HOME/498.off
-ref=$off
+off=$HOME/e.off
+ref=$HOME/s.off
 
-v=0.45
-Ka=5 Kga=0.5 Ks=0 Kb=0.01 Kad=`ae "10/$pi*$Kb"` DA0D=50 C0=0
+v=0.642
+Ka=5 Kga=0.5 Ks=1 Kb=0.00001 Kad=`ae "2/$pi*$Kb"` DA0D=150 C0=0
 
-./main juelicher $v   $Ka $Kga $ref skalak $Ks 0      $Kb $C0 $Kad $DA0D < $off
+./main juelicher $v   $Ka $Kga $ref linear $Ks 0      $Kb $C0 $Kad $DA0D < $off
