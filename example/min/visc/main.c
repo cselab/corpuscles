@@ -29,7 +29,7 @@ static void zero(int n, real *a) {
 
 #define FMT_IN   XE_REAL_IN
 
-static real rVolume, Ka, Kga;
+static real rVolume, Ka, Kga, Kh;
 static real A0, V0, e0;
 static const char **argv;
 static char bending[4049], model[4049], off[4049];
@@ -40,7 +40,7 @@ static HeFStrain *strain;
 
 static void usg() {
     fprintf(stderr, "%s %s \\\n"
-            "  rVolume Ka Kga {off skalak/linear Ks Ka} {Kb C0 Kad DA0D} < OFF\n", me, bending_list());
+            "  rVolume Ka Kga {off skalak/linear Ks Ka} {Kh} {Kb C0 Kad DA0D} < OFF\n", me, bending_list());
     exit(0);
 }
 
@@ -73,18 +73,20 @@ static void arg() {
     str(bending);
     scl(&rVolume); scl(&Ka); scl(&Kga);
     str(off); str(model); scl(&strain_param.Ks); scl(&strain_param.Ka);
+    scl(&Kh);
     scl(&Kb); scl(&C0);  scl(&Kad); scl(&DA0D);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
-    real a, ga, v, e, b;
+    real a, ga, v, e, h, b;
     a = f_area_energy(x, y, z);
     ga = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
     e = he_f_strain_energy(strain, x, y, z);
+    h = f_harmonic_ref_energy(x, y, z);
     b = f_bending_energy(x, y, z);
-    MSG("a ga v e b: %g %g %g %g %g", a, ga, v, e, b);
-    return a + ga + v + e + b;
+    MSG("a ga v e h b: %g %g %g %g %g %g", a, ga, v, e, h, b);
+    return a + ga + v + e + h + b;
 }
 
 void Force(const real *x, const real *y, const real *z, /**/
@@ -93,6 +95,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
     he_f_strain_force(strain, x, y, z, /**/ fx, fy, fz);
+    f_harmonic_ref_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -190,11 +193,11 @@ static void main0(real *vx, real *vy, real *vz,
     char file[4048];
 
     dt_max = 0.001;
-    mu = 10.0;
+    mu = 1.0;
     h = 0.01*e0;
     end = 1000000;
-    nsub = 100;
-    T = 1e-5;
+    nsub = 10;
+    T = 0;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (idump = i = 0; i < end ; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
@@ -212,7 +215,7 @@ static void main0(real *vx, real *vy, real *vz,
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
 
-        if (i % 100 == 0) {
+        if (i>0 && i % 5000 == 0) {
           do {
               equiangulate(&cnt);
               MSG("cnt : %d", cnt);
@@ -256,6 +259,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_volume_ini(V0, Kv = 1);
     x_restore_ini(V0);
     he_f_strain_ini(off, model, strain_param, /**/ &strain);
+    f_harmonic_ref_ini(Kh, XX, YY, ZZ);
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
@@ -277,6 +281,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
+    f_harmonic_ref_fin();
     fin();
 
     return 0;
