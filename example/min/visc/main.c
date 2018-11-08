@@ -186,10 +186,10 @@ static void main0(real *vx, real *vy, real *vz,
     real *queue[] = {XX, YY, ZZ, NULL};
     char file[4048];
 
-    dt_max = 0.0001;
-    mu = 1.0;
+    dt_max = 0.001;
+    mu = 10.0;
     h = 0.01*e0;
-    end = 100000000;
+    end = 1000000;
     nsub = 100;
     T = 1e-5;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
@@ -203,6 +203,7 @@ static void main0(real *vx, real *vy, real *vz,
 
         for (j = 0; j < nsub; j++) {
             ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
+            jigle(mu*T/sqrt(dt), XX, YY, ZZ, fx, fy, fz);            
             visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
             euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
