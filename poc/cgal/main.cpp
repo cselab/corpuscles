@@ -23,9 +23,8 @@ FT sphere_function (Point_3 p) {
 int main() {
   Tr tr;
   C2t3 c2t3 (tr);
-  Surface_3 surface(sphere_function,
-                    Sphere_3(CGAL::ORIGIN, 2.)); // bounding sphere
-  CGAL::Surface_mesh_default_criteria_3<Tr> criteria(30.,  // angular bound
+  Surface_3 surface(sphere_function, Sphere_3(CGAL::ORIGIN, 2));
+  CGAL::Surface_mesh_default_criteria_3<Tr> criteria(40.,  // angular bound
                                                      0.1,  // radius bound
                                                      0.1); // distance bound
   CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());

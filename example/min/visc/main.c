@@ -45,9 +45,12 @@ static void usg() {
 }
 
 static real sph_volume(real area) { return pow(area, 1.5)/(6*pi); }
-
 static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
+static real target_area(real volume, real v) {
+    real C;
+    C = pow(3, 2/3.0) * pow(4, 1/3.0) * pow(pi, 1/3.0);
+    return C*pow(volume/v, 2.0/3);
+}
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
 static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
@@ -203,7 +206,7 @@ static void main0(real *vx, real *vy, real *vz,
 
         for (j = 0; j < nsub; j++) {
             ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
-            jigle(mu*T/sqrt(dt), XX, YY, ZZ, fx, fy, fz);            
+            jigle(mu*T/sqrt(dt), XX, YY, ZZ, fx, fy, fz);
             visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
             euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
@@ -239,7 +242,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     ini("/dev/stdin");
     V0 = volume(); A0 = target_area(V0, rVolume);
-    MSG("target_area: %g", A0);
+    MSG("volume, area, target area: %g %g %g", V0, area(), A0);
 
     a0 = A0/NT;
     e0 = eq_tri_edg(a0);
