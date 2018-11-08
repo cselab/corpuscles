@@ -19,6 +19,6 @@ then
     mv inter.dat oblate_Vr$Vr.dat
 else
     for Vr in 0.5 0.45 0.4 0.35 0.3 0.25 0.2
-    do sh run_oblate.sh $Vr
+    do sh run_oblate1.sh $Vr
     done
 fi

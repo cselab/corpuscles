@@ -19,6 +19,6 @@ then
     mv inter.dat sphere_Vr$Vr.dat
 else
     for Vr in 0.5 0.45 0.4 0.35 0.3 0.25 0.2
-    do sh run_sphere.sh $Vr
+    do sh run_sphere1.sh $Vr
     done
 fi
