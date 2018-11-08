@@ -228,6 +228,7 @@ static void main0(real *vx, real *vy, real *vz,
       do {
 	equiangulate(&cnt);
 	MSG("cnt : %d", cnt);
+	j++;
       } while (cnt > 0 && j < 10);
       //punto_fwrite(NV, queue, stdout);
       punto_append(NV, queue, "inter.dat");
