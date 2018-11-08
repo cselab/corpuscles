@@ -38,21 +38,15 @@ static int end;
 static real A0, V0, e0;
 static const char **argv;
 static char bending[4049];
-static const char *me = "min/helfrich_xin_fv";
+static const char *me = "min/helfrich_xin_fa";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D end< OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
     fprintf(stderr, "end: number of iterations\n");
     exit(0);
 }
 
-static real sph_volume(real area) { return pow(area, 1.5)/(6*pi); }
-
-static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real target_area(real volume, real v) { return 4.835975862049408*pow(volume, 2.0/3)/pow(v, 2.0/3); }
-
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
-static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 static int num(/**/ int *p) {
@@ -108,14 +102,14 @@ void Force(const real *x, const real *y, const real *z, /**/
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
+    f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
-
-void ForceVolume(const real *x, const real *y, const real *z, /**/
+void ForceArea(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_volume_force(x, y, z, /**/ fx, fy, fz);
+    f_area_force(x, y, z, /**/ fx, fy, fz);
 }
 
 static void euler(real dt,
@@ -225,21 +219,22 @@ static void main0(real *vx, real *vy, real *vz,
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     
-    for (j = 0; j < nsub; j++) {
-      ForceVolume(XX, YY, ZZ, /**/ fx, fy, fz);
+    for (j=0; j < nsub; j++ ) {
+      ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+      
     }
-    
+      
     if (i % 100 == 0) {
-      j=0;
+      j = 0;
       do {
 	equiangulate(&cnt);
 	MSG("cnt : %d", cnt);
 	j++;
       } while (cnt > 0 && j < 10);
-      //punto_fwrite(NV, queue, stdout);
+      
       punto_append(NV, queue, "inter.dat");
       et = Energy(XX, YY, ZZ);
       eb = f_bending_energy(XX, YY, ZZ);
@@ -248,14 +243,19 @@ static void main0(real *vx, real *vy, real *vz,
       MSG("eng: %g %g %g", et, eb, ek); 
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-      printf("eng: %g %g %g\n", et, eb, ek); 
-      printf("dt: %f\n", dt);
-      printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
-      off_write(XX, YY, ZZ, "inter.off");
+	printf("eng: %g %g %g\n", et, eb, ek); 
+	printf("dt: %f\n", dt);
+	printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+	off_write(XX, YY, ZZ, "inter.off");
     }
   }
-    off_write(XX, YY, ZZ, "end.off");            
+  off_write(XX, YY, ZZ, "end.off");
 }
+
+static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real target_volume(real area, real v) { return v*sph_volume(area); }
+static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
+
 
 int main(int __UNUSED argc, const char *v[]) {
   real a0;
@@ -269,14 +269,14 @@ int main(int __UNUSED argc, const char *v[]) {
   srand(time(NULL));
   
   ini("/dev/stdin");
-  V0 = volume();
-  A0 = target_area(V0, rVolume);
+  A0 = area();
   a0 = A0/NT;
+  V0 = target_volume(A0, rVolume);
   e0 = eq_tri_edg(a0);
-  
-  V = V0;
-  A = area();
-  Vr= reduced_volume(A,V);
+
+  A = A0;
+  V = volume();
+  Vr= reduced_volume(A, V);
   
   MSG("Targeted Area, Volume: %g %g", A0, V0);
   MSG("V/V0: %g", V/V0);
