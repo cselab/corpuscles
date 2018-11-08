@@ -1,17 +1,11 @@
-#include <fstream>
-#include <CGAL/Surface_mesh_default_triangulation_3.h>
 #include <CGAL/Complex_2_in_triangulation_3.h>
-#include <CGAL/make_surface_mesh.h>
-#include <CGAL/Implicit_surface_3.h>
-
-#include <CGAL/Surface_mesh_default_triangulation_3.h>
-#include <CGAL/Surface_mesh_default_criteria_3.h>
-#include <CGAL/Complex_2_in_triangulation_3.h>
-#include <CGAL/IO/Complex_2_in_triangulation_3_file_writer.h>
-#include <fstream>
-#include <CGAL/make_surface_mesh.h>
 #include <CGAL/Gray_level_image_3.h>
 #include <CGAL/Implicit_surface_3.h>
+#include <CGAL/IO/Complex_2_in_triangulation_3_file_writer.h>
+#include <CGAL/make_surface_mesh.h>
+#include <CGAL/Surface_mesh_default_criteria_3.h>
+#include <CGAL/Surface_mesh_default_triangulation_3.h>
+#include <fstream>
 
 // default triangulation for Surface_mesher
 typedef CGAL::Surface_mesh_default_triangulation_3 Tr;
@@ -28,20 +22,14 @@ FT sphere_function (Point_3 p) {
   return x2+y2+z2-1;
 }
 int main() {
-  Tr tr;            // 3D-Delaunay triangulation
-  C2t3 c2t3 (tr);   // 2D-complex in 3D-Delaunay triangulation
-  // defining the surface
-  Surface_3 surface(sphere_function,             // pointer to function
+  Tr tr;
+  C2t3 c2t3 (tr);
+  Surface_3 surface(sphere_function,
                     Sphere_3(CGAL::ORIGIN, 2.)); // bounding sphere
-  // Note that "2." above is the *squared* radius of the bounding sphere!
-  // defining meshing criteria
   CGAL::Surface_mesh_default_criteria_3<Tr> criteria(30.,  // angular bound
                                                      0.1,  // radius bound
                                                      0.1); // distance bound
-  // meshing surface
   CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Non_manifold_tag());
-  std::cout << "Final number of points: " << tr.number_of_vertices() << "\n";
-
   std::ofstream out("out.off");
-  CGAL::output_surface_facets_to_off (out, c2t3);
+  CGAL::output_surface_facets_to_off(out, c2t3);
 }
