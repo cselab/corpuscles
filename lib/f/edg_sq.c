@@ -98,20 +98,26 @@ static int zero(int n, int a[]) {
         a[i] = 0;
 }
 static int sq(int x) { return x*x; }
-static int compute_force(He *he, real K, real cutoff, const real *edg, int const *rank,
+static int force(real K, real cutoff, int i, int j,
+                 const real *x, const real *y, const real *z, /**/
+                 real *fx, real *fy, real *fz) {
+    real a[3], b[3], da[3], db[3], edg, coeff;
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    dedg_abs(a, b, /**/ da, db);
+    edg = edg_abs(a, b);
+    coeff = -2*K*dw(cutoff, edg);
+    vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
+    vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
+}
+static int compute_force(He *he, real K, real cutoff, int const *rank,
                          const real *x, const real *y, const real *z, /**/
                          real *fx, real *fy, real *fz) {
     int ne, m, i, j;
-    real a[3], b[3], da[3], db[3], coeff;
     ne = he_ne(he);
     for (m = 0; m < ne; m++) {
         get_ij(m, he, /**/ &i, &j);
-        vec_get(i, x, y, z, /**/ a);
-        vec_get(j, x, y, z, /**/ b);
-        dedg_abs(a, b, /**/ da, db);
-        coeff = -2*K*dw(cutoff, edg[m]);
-        vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
-        vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
+        force(K, cutoff, i, j, x, y, z, fx, fy, fz);
     }
     return HE_OK;
 }
@@ -152,7 +158,7 @@ int he_f_edg_sq_force(T *q, He *he,
 
     compute_rank(he, /**/ rank);
     compute_edg(he, x, y, z, /**/ edg);
-    compute_force(he, K, cutoff, edg, rank, x, y, z, /**/ fx, fy, fz);
+    compute_force(he, K, cutoff, rank, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 
