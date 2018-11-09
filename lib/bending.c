@@ -28,9 +28,29 @@ struct T {struct Vtable *vtable; };
 
 #define SIZE (4048)
 static char List[SIZE];
-static const char *Name[] = {"kantor", "gompper", "gompper_kroll", "juelicher", "meyer", "canham", "gompper_xin", "meyer_xin", "juelicher_xin"};
 typedef int (*TypeIni)(BendingParam, He*, T**);
-static const TypeIni Ini[]  = {bending_kantor_ini, bending_gompper_ini, bending_gompper_kroll_ini, bending_juelicher_ini, bending_meyer_ini, bending_canham_ini, bending_gompper_xin_ini, bending_meyer_xin_ini, bending_juelicher_xin_ini};
+static const char *Name[] = {
+    "kantor",
+    "gompper",
+    "gompper_kroll",
+    "juelicher",
+    "meyer",
+    "canham",
+    "gompper_xin",
+    "meyer_xin",
+    "juelicher_xin"
+};
+static const TypeIni Ini[]  = {
+    bending_kantor_ini,
+    bending_gompper_ini,
+    bending_gompper_kroll_ini,
+    bending_juelicher_ini,
+    bending_meyer_ini,
+    bending_canham_ini,
+    bending_gompper_xin_ini,
+    bending_meyer_xin_ini,
+    bending_juelicher_xin_ini
+};
 
 int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     const int n = sizeof(Name)/sizeof(Name[0]);
