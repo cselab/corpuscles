@@ -63,7 +63,7 @@ int  hdg_edg(int e) { return he_hdg_edg(he, e); }
 int  hdg_tri(int t) { return he_hdg_tri(he, t); }
 int  bnd(int h)     { return he_bnd(he, h); }
 
-real area() { return he_area_tri(he, XX, YY, ZZ); }
+real area()   { return he_area(he, XX, YY, ZZ); }
 real volume() { return he_volume_tri(he, XX, YY, ZZ); }
 
 int off_write(const real *x, const real *y, const real *z, const char *path) {
