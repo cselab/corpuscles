@@ -209,8 +209,8 @@ int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx,
     return he_f_harmonic_force(f_harmonic, he, x, y, z, /**/ fx, fy, fz);
 }
 
-int f_edg_sq_ini(real K) {
-    he_f_edg_sq_ini(K, he, /**/ &f_edg_sq);
+int f_edg_sq_ini(real K, real cutoff) {
+    he_f_edg_sq_ini(K, cutoff, he, /**/ &f_edg_sq);
     return HE_OK;
 }
 int f_edg_sq_fin() {

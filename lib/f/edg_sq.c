@@ -11,12 +11,13 @@
 #include "he/f/edg_sq.h"
 
 #define T HeFEdgSq
+static const real pi = 3.141592653589793115997964;
 
 struct T {
     int ne, nv;
     real *edg;
     int *rank;
-    real K;
+    real K, cutoff;
 };
 
 static real sum_sq(int n, real *a) {
@@ -26,7 +27,7 @@ static real sum_sq(int n, real *a) {
     for (i = 0; i < n; i++) v += a[i]*a[i];
     return v;
 }
-int he_f_edg_sq_ini(real K, He *he, T **pq) {
+int he_f_edg_sq_ini(real K, real cutoff, He *he, T **pq) {
     T *q;
     int nv, ne;
     MALLOC(1, &q);
@@ -39,6 +40,7 @@ int he_f_edg_sq_ini(real K, He *he, T **pq) {
     q->ne = ne;
     q->nv = nv;
     q->K = K;
+    q->cutoff = cutoff;
 
     *pq = q;
     return HE_OK;
@@ -84,12 +86,19 @@ static int compute_edg(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
+static real dw0(real s) {
+    if (s < 1) return 3*s*s - 6;
+    else if (s < 2) return -3*(2-s)*(2-s);
+    else return 0;
+}
+static real dw(real h, real s) { return 1/(3*pi*h*h)*dw0(2*s/h); }
 static int zero(int n, int a[]) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
 }
-static int compute_force(He *he, real K, const real *edg,
+static int sq(int x) { return x*x; }
+static int compute_force(He *he, real K, real cutoff, const real *edg, int const *rank,
                          const real *x, const real *y, const real *z, /**/
                          real *fx, real *fy, real *fz) {
     int ne, m, i, j;
@@ -100,7 +109,7 @@ static int compute_force(He *he, real K, const real *edg,
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         dedg_abs(a, b, /**/ da, db);
-        coeff = 2*K*edg[m];
+        coeff = -2*K*dw(cutoff, edg[m]);
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
     }
@@ -124,7 +133,7 @@ int he_f_edg_sq_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int nv, ne;
-    real *edg, K;
+    real *edg, K, cutoff;
     int *rank;
 
     ne = q->ne;
@@ -134,15 +143,16 @@ int he_f_edg_sq_force(T *q, He *he,
     rank = q->rank;
 
     K  = q->K;
+    cutoff = q->cutoff;
+    
     if (he_ne(he) != ne)
         ERR(HE_INDEX, "he_ne(he)=%d != ne = %d", he_ne(he), ne);
     if (he_nv(he) != nv)
         ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
 
     compute_rank(he, /**/ rank);
-    
     compute_edg(he, x, y, z, /**/ edg);
-    compute_force(he, K, edg, x, y, z, /**/ fx, fy, fz);
+    compute_force(he, K, cutoff, edg, rank, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 
