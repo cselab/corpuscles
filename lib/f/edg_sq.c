@@ -13,8 +13,9 @@
 #define T HeFEdgSq
 
 struct T {
-    int n;
+    int ne;
     real *edg;
+    int *rank;
     real K;
 };
 
@@ -27,13 +28,13 @@ static real sum_sq(int n, real *a) {
 }
 int he_f_edg_sq_ini(real K, He *he, T **pq) {
     T *q;
-    int n;
+    int ne;
     MALLOC(1, &q);
-    n = he_ne(he);
+    ne = he_ne(he);
 
-    MALLOC(n, &q->edg);
+    MALLOC(ne, &q->edg);
 
-    q->n = n;
+    q->ne = ne;
     q->K = K;
 
     *pq = q;
@@ -96,13 +97,13 @@ static void compute_force(He *he, real K, const real *edg,
 int he_f_edg_sq_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
-    int n;
+    int ne;
     real *edg, K;
-    n = q->n;
+    ne = q->ne;
     edg = q->edg;
     K  = q->K;
-    if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+    if (he_ne(he) != ne)
+        ERR(HE_INDEX, "he_ne(he)=%d != ne = %d", he_ne(he), ne);
     compute_edg(he, x, y, z, /**/ edg);
     compute_force(he, K, edg, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
@@ -110,16 +111,16 @@ int he_f_edg_sq_force(T *q, He *he,
 
 real he_f_edg_sq_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
-    int n;
+    int ne;
     real *edg, v, K;
-    n = q->n;
+    ne = q->ne;
     edg = q->edg;
     K  = q->K;
 
-    if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+    if (he_ne(he) != ne)
+        ERR(HE_INDEX, "he_ne(he)=%d != ne = %d", he_ne(he), ne);
 
     compute_edg(he, x, y, z, /**/ edg);
-    v = sum_sq(n, edg);
+    v = sum_sq(ne, edg);
     return K*v;
 }
