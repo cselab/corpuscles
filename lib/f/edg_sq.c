@@ -13,7 +13,7 @@
 #define T HeFEdgSq
 
 struct T {
-    int ne;
+    int ne, nv;
     real *edg;
     int *rank;
     real K;
@@ -37,6 +37,7 @@ int he_f_edg_sq_ini(real K, He *he, T **pq) {
     MALLOC(nv, &q->rank);
 
     q->ne = ne;
+    q->nv = nv;
     q->K = K;
 
     *pq = q;
@@ -106,16 +107,40 @@ static int compute_force(He *he, real K, const real *edg,
     return HE_OK;
 }
 
+static int compute_rank(He *he, /**/ int *rank) {
+    int m, nv, ne, i, j;
+    nv = he_nv(he);
+    ne = he_ne(he);
+    zero(nv, rank);
+    for (m = 0; m < ne; m++) {
+        get_ij(m, he, &i, &j);
+        rank[i] += 1;
+        rank[j] += 1;
+    }
+    return HE_OK;
+}
+
 int he_f_edg_sq_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
-    int ne;
+    int nv, ne;
     real *edg, K;
+    int *rank;
+
     ne = q->ne;
+    nv = q->nv;
+
     edg = q->edg;
+    rank = q->rank;
+
     K  = q->K;
     if (he_ne(he) != ne)
         ERR(HE_INDEX, "he_ne(he)=%d != ne = %d", he_ne(he), ne);
+    if (he_nv(he) != nv)
+        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
+
+    compute_rank(he, /**/ rank);
+    
     compute_edg(he, x, y, z, /**/ edg);
     compute_force(he, K, edg, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
