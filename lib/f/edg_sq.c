@@ -83,13 +83,18 @@ static int compute_edg(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
+static int zero(int n, int a[]) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] = 0;
+}
 static int compute_force(He *he, real K, const real *edg,
                          const real *x, const real *y, const real *z, /**/
                          real *fx, real *fy, real *fz) {
-    int n, m, i, j;
+    int ne, m, i, j;
     real a[3], b[3], da[3], db[3], coeff;
-    n = he_ne(he);
-    for (m = 0; m < n; m++) {
+    ne = he_ne(he);
+    for (m = 0; m < ne; m++) {
         get_ij(m, he, /**/ &i, &j);
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
