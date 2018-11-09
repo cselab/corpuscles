@@ -206,7 +206,7 @@ static void main0(real *vx, real *vy, real *vz,
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
 
-        if (i > 0 && i % 50000000 == 0) {
+        if (i > 0 && i % 500 == 0) {
           do {
               equiangulate(&cnt);
               if (cnt > 10)
