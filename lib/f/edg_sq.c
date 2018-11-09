@@ -11,6 +11,15 @@
 #include "he/f/edg_sq.h"
 
 #define T HeFEdgSq
+
+#    define  nxt(h)     he_nxt(he, h)
+#    define  flp(h)     he_flp(he, h)
+#    define  ver(h)     he_ver(he, h)
+#    define  hdg_ver(v) he_hdg_ver(he, v)
+#    define  hdg_edg(e) he_hdg_edg(he, e)
+#    define  hdg_tri(t) he_hdg_tri(he, t)
+#    define  bnd(h)     he_bnd(he, h)
+
 static const real pi = 3.141592653589793115997964;
 
 struct T {
@@ -58,11 +67,23 @@ int he_f_edg_sq_e(T *q, /**/ real  **pa) {
     return HE_OK;
 }
 
+enum {BULK, BND};
+static int get_ijkl(int h, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
+    int n, nn, nnf, i, j, k, l;
+    if (bnd(h)) return BND;
+
+    n = nxt(h); nn = nxt(nxt(h));
+    nnf = nxt(nxt(flp(h)));
+    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
+
+    *pi = i; *pj = j; *pk = k; *pl = l;
+    return BULK;
+}
 static int get_ij(int m, He *he, /**/ int *pi, int *pj) {
     int h, n, i, j;
-    h = he_hdg_edg(he, m);
-    n = he_nxt(he, h);
-    i = he_ver(he, h); j = he_ver(he, n);
+    h = hdg_edg(m);
+    n = nxt(h);
+    i = ver(h); j = ver(n);
     *pi = i; *pj = j;
     return HE_OK;
 }
@@ -99,6 +120,7 @@ static int zero(int n, int a[]) {
 }
 static int sq(int x) { return x*x; }
 static int force(real K, real cutoff, int i, int j,
+                 const int *rank,
                  const real *x, const real *y, const real *z, /**/
                  real *fx, real *fy, real *fz) {
     real a[3], b[3], da[3], db[3], edg, coeff;
@@ -106,18 +128,18 @@ static int force(real K, real cutoff, int i, int j,
     vec_get(j, x, y, z, /**/ b);
     dedg_abs(a, b, /**/ da, db);
     edg = edg_abs(a, b);
-    coeff = -2*K*dw(cutoff, edg);
+    coeff = 2*K*dw(cutoff, edg) * (1.0/rank[i] + 1.0/rank[j]);
     vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
-    vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
 }
 static int compute_force(He *he, real K, real cutoff, int const *rank,
                          const real *x, const real *y, const real *z, /**/
                          real *fx, real *fy, real *fz) {
-    int ne, m, i, j;
-    ne = he_ne(he);
-    for (m = 0; m < ne; m++) {
-        get_ij(m, he, /**/ &i, &j);
-        force(K, cutoff, i, j, x, y, z, fx, fy, fz);
+    int nh, h, i, j, k, l;
+    nh = he_nh(he);
+    for (h = 0; h < nh; h++) {
+        get_ijkl(h, he, /**/ &i, &j, &k, &l);
+        force(K, cutoff, j, k, rank, x, y, z, fx, fy, fz);
+        force(K, cutoff, i, l, rank, x, y, z, fx, fy, fz);
     }
     return HE_OK;
 }
@@ -150,7 +172,7 @@ int he_f_edg_sq_force(T *q, He *he,
 
     K  = q->K;
     cutoff = q->cutoff;
-    
+
     if (he_ne(he) != ne)
         ERR(HE_INDEX, "he_ne(he)=%d != ne = %d", he_ne(he), ne);
     if (he_nv(he) != nv)

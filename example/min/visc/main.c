@@ -135,17 +135,6 @@ static void jigle(real mag, /**/
     }
 }
 
-static void visc_lang(real mu,
-                      const real *vx, const real *vy, const real *vz, /*io*/
-                      real *fx, real *fy, real *fz) {
-    int i;
-    for (i = 0; i < NV; i++) {
-        fx[i] -= mu*vx[i];
-        fy[i] -= mu*vy[i];
-        fz[i] -= mu*vz[i];
-    }
-}
-
 static void visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
@@ -194,11 +183,11 @@ static void main0(real *vx, real *vy, real *vz,
     real *queue[] = {XX, YY, ZZ, NULL};
     char file[4048];
 
-    dt_max = 0.05;
-    mu = 0;
+    dt_max = 0.001;
+    mu = 1;
     h = 0.01*e0;
     end = 1000000;
-    nsub = 10;
+    nsub = 1;
     T = 0;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (idump = i = 0; i < end ; i++) {
@@ -217,10 +206,11 @@ static void main0(real *vx, real *vy, real *vz,
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
 
-        if (i > 0 && i % 100000000 == 0) {
+        if (i > 0 && i % 50000000 == 0) {
           do {
               equiangulate(&cnt);
-              if (cnt > 0) MSG("cnt : %d", cnt);
+              if (cnt > 10)
+                  MSG("cnt : %d", cnt);
           } while (cnt > 0);
         }
 
@@ -258,12 +248,12 @@ int main(int __UNUSED argc, const char *v[]) {
 
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
-    f_volume_ini(V0, Kv = 0.0);
+    f_volume_ini(V0, Kv = 1);
     x_restore_ini(V0);
     he_f_strain_ini(off, model, strain_param, /**/ &strain);
     f_harmonic_ref_ini(Kh, XX, YY, ZZ);
 
-    cutoff = 2*e0;
+    cutoff = 3*e0;
     f_edg_sq_ini(Ke, cutoff);
 
     bending_param.Kb = Kb;
