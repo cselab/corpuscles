@@ -24,11 +24,10 @@
 (setq file (car args)
       args (cdr args))
 
-(defun bye () (bye0 FAIL))
-(defmfun $quit () (bye0 OK))
-
 (loop for i in args
-      do ($eval_string i))
+      do (prog
+	  (setf (symbol-function 'bye) (bye0 OK))
+          ($eval_string i)))
 
 ($batchload file)
 (bye0 OK)
