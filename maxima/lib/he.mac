@@ -72,4 +72,17 @@ for_tt(
 ne: e;
 alloc(ne, hdg_edg) $
 
-for h : 0 thru nh - 1 do block([e: edg[h]], hdg_edg[e]: h);
+for h : 0 thru nh - 1 do
+  block([e: edg[h]], hdg_edg[e]: h) $
+
+single([L])::=buildq([L], (
+    defstruct(he(splice(L))),
+    new(he(splice(L))))) $
+
+he: single(nv, nt, ne, nh, nxt, flp, ver, tri, edg, hdg_ver, hdg_edg, hdg_tri) $
+
+i: 10;
+he@nxt[he@nxt[he@nxt[i]]];
+alloc(he@nv, rank);
+for i: 0 thru he@nv - 1 do rank[i]:  0;
+for_tt(rank[i]++, rank[j]++, rank[k]++);
