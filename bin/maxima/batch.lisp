@@ -24,7 +24,6 @@
 (setq file (car args)
       args (cdr args))
 
-#+sbcl (setq sb-ext:*muffled-warnings* '(or sb-kernel:redefinition-with-defun sb-kernel:uninteresting-redefinition))
 (defun bye () (bye0 FAIL))
 (defmfun $quit () (bye0 OK))
 
