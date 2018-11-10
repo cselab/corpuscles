@@ -1,11 +1,16 @@
 load("vect.mac") $
 load("he/vec.mac") $
 load("he/tri.mac") $
+load("he/dih.mac") $
 
-vec_any(a) $
-vec_any(b) $
-vec_any(c) $
+vec_any(a);
+vec_any(b);
+vec_any(c);
+vec_any(d);
 
-vec_cross(a, b);
+vec_cross(a, b), numer;
 
-tri_area(a, b, c), numer;
+vec_arg(a, b, c, d);
+dih_angle_sup(a, b, c, d), numer;
+
+
