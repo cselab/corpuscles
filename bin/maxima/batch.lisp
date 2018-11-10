@@ -24,6 +24,7 @@
 (setq file (car args)
       args (cdr args))
 
+(in-package :maxima)
 (disable-some-lisp-warnings)
 (defun bye () (bye0 FAIL))
 (defmfun $quit () (bye0 OK))
