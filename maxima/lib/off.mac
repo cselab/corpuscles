@@ -25,15 +25,18 @@ close(s);
 [tri[0,1], tri[0,2], tri[0,3]];
 [tri[t - 1,1], tri[t - 1,2], tri[t - 1,3]];
 
-[x,  y,  z]:  [ [], [], [] ];
-tt: [ ];
+x: make_array('any, v);
+y: make_array('any, v);
+z: make_array('any, v);
 
-for i: v - 1 thru 0 step - 1 do (
-  push(ver[i, X], x),
-  push(ver[i, Y], y),
-  push(ver[i, Z], z));
+tt: make_array('any, t);
 
-for i: t - 1 thru 0 step - 1 do
-  push([ tri[i, T0], tri[i, T1], tri[i, T2] ], tt);
+for i: 0 thru v - 1 do (
+  x[i]: ver[i, X],
+  y[i]: ver[i, Y],
+  z[i]: ver[i, Z]);
+
+for i: 0 thru t - 1 do
+  tt[i]: [tri[i, T0], tri[i, T1], tri[i, T2]];
 
   /* draw3d(points(x, y, z)); */
