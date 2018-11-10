@@ -1,0 +1,11 @@
+load("vect.mac") $
+load("he/vec.mac") $
+load("he/tri.mac") $
+
+vec_any(a) $
+vec_any(b) $
+vec_any(c) $
+
+vec_cross(a, b);
+
+tri_area(a, b, c), numer;
