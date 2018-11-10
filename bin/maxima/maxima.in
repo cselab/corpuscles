@@ -1,0 +1,58 @@
+. he.util
+
+prog=he.maxima
+: ${MAXIMA=maxima}
+: ${MAXIMA_HOME=@MAXIMA_HOME@}
+
+usg () {
+    msg "$prog [arg:val..] FILE.mac [OPTIONS..]"
+    msg 'run maxima script FILE.mac with arguments'
+    msg "OPTIONS are mpassed to $MAXIMA"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+if ! e "$MAXIMA" --help 1>/dev/null 2>/dev/null
+then err "$MAXIMA is not found"
+fi
+
+batch="$MAXIMA_HOME/he/batch.lisp"
+if ! e test -f "$batch"
+then err "$batch file is not found"
+fi
+
+var() {
+    for i
+    do shift
+       case "$i" in
+	   *:*) set -- "$@" "$i" ;;
+       esac
+    done
+    echo "$@"
+}
+
+rest() {
+    for i
+    do shift
+       case "$i" in
+	   *:*) ;;
+	   *) set -- "$@" "$i" ;;
+       esac
+    done
+    echo "$@"
+}
+
+car() { echo "$1"; }
+cdr() { shift; echo "$@"; }
+
+Var=`var  "$@"`
+r=`rest "$@"`
+
+if test -z "$r"; then err 'FILE.mac is missing'; fi
+Opt=`cdr $r`
+File=`car $r`
+
+if test ! -f "$File"; then err "Not a file '$File'"; fi
+
+"$MAXIMA" "$Opt" --very-quiet --batch-lisp "$batch" ---- "$File" "$Var"
