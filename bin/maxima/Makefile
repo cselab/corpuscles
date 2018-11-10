@@ -1,4 +1,3 @@
-PREFIX = $(HOME)
 S = ../..
 
 B = $(PREFIX)/bin
