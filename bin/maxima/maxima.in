@@ -56,3 +56,5 @@ File=`car $r`
 if test ! -f "$File"; then err "Not a file '$File'"; fi
 
 "$MAXIMA" $Opt --very-quiet --batch-lisp "$batch" ---- "$File" $Var
+
+err 'he.maxima failed'
