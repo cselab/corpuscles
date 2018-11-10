@@ -9,14 +9,14 @@ load("he/off.mac") $
 
 alloc(n, a)::=buildq([n, a], a: make_array('any, n))$
 for_tt([L])::=buildq([L, t: gensym()],
-  for t in listarray(tt) do
-  block([i: t[1], j: t[2], k:  t[3] ],
+  for t: 0 thru nt - 1 do
+  block([i: tt[t, 0], j: tt[t, 1], k:  tt[t, 2]],
     splice(L)));
 
 postfix("++");
 "++"(i)::=buildq([i, o: gensym()], (o: i, i: i + 1, o));
 
-file: "~/he/data/hex/flat.off";
+/* file: "~/he/data/hex/flat.off"; */
 file: "~/0.off"$
 [x, y, z, tt]: off_read(file) $
 
@@ -83,6 +83,6 @@ he: single(nv, nt, ne, nh, nxt, flp, ver, tri, edg, hdg_ver, hdg_edg, hdg_tri) $
 
 i: 10;
 he@nxt[he@nxt[he@nxt[i]]];
-alloc(he@nv, rank);
+alloc(he@nv, rank) $
 for i: 0 thru he@nv - 1 do rank[i]:  0;
 for_tt(rank[i]++, rank[j]++, rank[k]++);
