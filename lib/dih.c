@@ -11,19 +11,14 @@ static const real pi = 3.141592653589793115997964;
   
 real dih_angle(const real a[3], const real b[3], const real c[3], const real d[3]) {
   real ang, ang_s;
-  
   ang_s = dih_angle_sup(a, b, c, d);
-
-  if ( ang_s >= 0 ) {
-    ang = pi - ang_s;
-  }
+  if (ang_s >= 0)
+      ang = pi - ang_s;
   else
-    {
       ang = -pi - ang_s;
-    }
-  
   return ang;
 }
+
 real dih_angle_sup(const real a[3], const real b[3], const real c[3], const real d[3]) {
   /*supplementary angle of dihedral*/
     real x, y, ang, n[3], k[3], nk[3], e[3];
