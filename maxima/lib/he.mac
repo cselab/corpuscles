@@ -8,9 +8,13 @@ load("stringproc") $
 load("he/off.mac") $
 
 alloc(n, a)::=buildq([n, a], a: make_array('any, n))$
-for_tt([L])::=buildq([L, t: gensym()],
+for_tt([L])::=buildq(
+  [L, t: gensym()],
   for t: 0 thru nt - 1 do
-  block([i: tt[t, 0], j: tt[t, 1], k:  tt[t, 2]],
+  block([
+      i: tt[t, 0],
+      j: tt[t, 1],
+      k: tt[t, 2]],
     splice(L)));
 
 postfix("++");
@@ -42,7 +46,7 @@ for_tt(
   setup_hdg(hk : h++, t, k, i),
   nxt[hi]: hj, nxt[hj]: hk, nxt[hk]: hi,
   t++
-) $
+  ) $
 
 setup_flip(i, j):=block([h, f],
   h: hdg[i, j],
@@ -73,16 +77,20 @@ ne: e;
 alloc(ne, hdg_edg) $
 
 for h : 0 thru nh - 1 do
-  block([e: edg[h]], hdg_edg[e]: h) $
+block([e: edg[h]], hdg_edg[e]: h) $
 
 single([L])::=buildq([L], (
     defstruct(he(splice(L))),
     new(he(splice(L))))) $
 
-he: single(nv, nt, ne, nh, nxt, flp, ver, tri, edg, hdg_ver, hdg_edg, hdg_tri) $
+he: single(nv, nt, ne, nh,
+  nxt, flp, ver, tri, edg,
+  hdg_ver, hdg_edg, hdg_tri) $
 
+/*
 i: 10;
 he@nxt[he@nxt[he@nxt[i]]];
 alloc(he@nv, rank) $
 for i: 0 thru he@nv - 1 do rank[i]:  0;
 for_tt(rank[i]++, rank[j]++, rank[k]++);
+*/
