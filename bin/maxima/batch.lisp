@@ -26,7 +26,7 @@
 
 (loop for i in args
       do (prog
-	  (setf (symbol-function 'bye) (bye0 OK))
+	  (setf (symbol-function 'bye) (bye0 FAIL))
           ($eval_string i)))
 
 ($batchload file)
