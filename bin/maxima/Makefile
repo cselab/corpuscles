@@ -1,12 +1,13 @@
 S = ../..
+include $S/conf.mk
 
+PREFIX = $(HOME)
 B = $(PREFIX)/bin
 P = he
 
 M = maxima
 MAXIMA_HOME = $(HOME)/.maxima
 
-include $S/conf.mk
 include $S/make/tool.mk
 
 maxima: maxima.in
