@@ -8,6 +8,9 @@ usg () {
     msg "$prog [arg:val..] FILE.mac [OPTIONS..]"
     msg 'run maxima script FILE.mac with arguments'
     msg "OPTIONS are mpassed to $MAXIMA"
+    msg
+    msg 'Examples'
+    msg "$prog x:10 y:20 FILE.mac"
     exit
 }
 
