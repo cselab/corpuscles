@@ -1,4 +1,5 @@
 ($load "eval_string")
+($load "init-cl.lisp")
 
 (setq OK 0 FAIL 1)
 
