@@ -15,3 +15,5 @@ dih_angle_sup(a, b, c, d), numer;
 
 vec_arg(a, b, c);
 tri_cot(a, b, c), numer;
+
+tri_angle(a, b, c), numer;

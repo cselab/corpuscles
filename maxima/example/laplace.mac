@@ -13,26 +13,26 @@ load("he/edg.mac")$
 file: "~/rbc.off"$
 he: he(file) $
 
-nh: he_nh(he);
-alloc(nh, tb) $
-alloc(nh, tc) $
-
-alloc(nh, sb) $
-alloc(nh, sc) $
-
-alloc(nh, lpx) $
-alloc(nh, lpy) $
-alloc(nh, lpz) $
+nh: he_nh(he) $
+nv: he_nv(he) $
+alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang, n) $
+alloc(nv,   lp, area);
 
 loop_he(he,
   tb[h]: tri_cot(a, b, c),
-  tc[h]: tri_cot(b, c, a));
+  tc[h]: tri_cot(b, c, a),
+  eb[h]: a - b,
+  ec[h]: a - c,
+  sb[h]: edg_sq(a, b),
+  sc[h]: edg_sq(a, c),
+  u[h]: tri_normal(a, b, c),
+  print(i, j, k),
+  ang[h]: tri_angle(a, b, c));
 
 loop_he(he,
-  sb[h]: edg_sq(a, c),
-  sc[h]: edg_sq(a, b));
+  lp[i]   += tb[h]*ec[h] + tc[h]*eb[h],
+  area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
 
-/*
-loop_he(he,
-    lpx[h] += tb[h]
-    */
+A: 0 $
+for v: 0 thru nv - 1 do A += area[v] $
+A;

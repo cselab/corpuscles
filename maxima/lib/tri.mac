@@ -14,8 +14,8 @@ tri_normal(a, b, c):=block([u, v, n],
   n: vec_cross(u, v),
   vec_norm(n));
 
-tri_angle(a, b, c):=block([n, v],
-  n:  a - b,
+tri_angle(a, b, c):=block([u, v],
+  u:  a - b,
   v:  c - b,
   vec_angle(u, v));
 
