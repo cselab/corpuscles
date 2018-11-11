@@ -2,6 +2,6 @@ postfix("++");
 infix("+=");
 
 "++"(i)::=buildq([i, o: gensym()], block([o], o: i, i: i + 1, o));
-"+="(a, b):=buildq([i, o: gensym()], block([o], o: a, a: a + b, o));
+"+="(a, b)::=buildq([a, b, o: gensym()], block([o], o: a, a: a + b, o));
 
 alloc(n, a)::=buildq([n, a], a: make_array('any, n));

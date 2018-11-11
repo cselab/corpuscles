@@ -36,3 +36,19 @@ loop_dih(he, [L])::=buildq(
         c: [x[k], y[k], z[k]],
         d: [x[l], y[l], z[l]],
         splice(L)))));
+
+loop_he(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nh: gensym(), n: gensym(), nn: gensym(), L],
+  block([nh, x, y, z],
+    nh: he_nh(he),
+    x: he_x(he), y: he_y(he), z: he_z(he),
+    for h: 0 thru nh - 1 do
+    block([n, nn, i, j, k, a, b, c],
+      n: he_nxt(he, h),
+      nn: he_nxt(he, n),
+      i: he_ver(he, h),
+      j: he_ver(he, n),
+      k: he_ver(he, nn),
+      a: [x[i], y[i], z[i]],
+      b: [x[j], y[j], z[j]],
+      c: [x[k], y[k], z[k]],
+      splice(L))));

@@ -12,6 +12,11 @@ load("he/tri.mac")$
 file: "~/rbc.off"$
 he: he(file) $
 
-s: 0;
-loop_tri(he, s: s + tri_area(a, b, c));
-s;
+/* s: 0; */
+/* loop_tri(he, s: s + tri_area(a, b, c)); */
+/* s; */
+
+block([s: 0],
+  loop_he(he,
+    s += tri_area(a, b, c)),
+  s/3);
