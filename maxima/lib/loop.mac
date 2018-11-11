@@ -23,15 +23,16 @@ loop_dih(he, [L])::=buildq(
     for e: 0 thru ne - 1 do
     block([h, n, nn, nnf, i, j, k, l, a, b, c, d],
       h: he_hdg_edg(he, e),
-      n: he_nxt(he, h),
-      nn: he_nxt(he, n),
-      nnf: he_nxt(he, he_nxt(he, he_flp(he, h))),
-      i: he_ver(he, nn),
-      j: he_ver(he, h),
-      k: he_ver(he, n),
-      l: he_ver(he, nnf),
-      a: [x[i], y[i], z[i]],
-      b: [x[j], y[j], z[j]],
-      c: [x[k], y[k], z[k]],
-      d: [x[l], y[l], z[l]],
-      splice(L))));
+      if not he_bnd(he, h) then (
+        n: he_nxt(he, h),
+        nn: he_nxt(he, n),
+        nnf: he_nxt(he, he_nxt(he, he_flp(he, h))),
+        i: he_ver(he, nn),
+        j: he_ver(he, h),
+        k: he_ver(he, n),
+        l: he_ver(he, nnf),
+        a: [x[i], y[i], z[i]],
+        b: [x[j], y[j], z[j]],
+        c: [x[k], y[k], z[k]],
+        d: [x[l], y[l], z[l]],
+        splice(L)))));
