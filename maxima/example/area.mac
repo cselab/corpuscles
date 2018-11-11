@@ -14,5 +14,4 @@ he: he(file) $
 
 s: 0;
 loop_tri(he, s: s + tri_area(a, b, c));
-
 s;
