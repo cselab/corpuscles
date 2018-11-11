@@ -8,7 +8,8 @@ he.mac\
 off.mac\
 tri.mac\
 loop.mac\
-vec.mac
+vec.mac\
+util.mac
 
 P = he
 

@@ -11,7 +11,8 @@ load("he/dih.mac")$
 file: "~/rbc.off"$
 he: he(file) $
 
-E(a, b, c, d):=block([t: dih_angle_sup(a, b, c, d)],
+E(a, b, c, d):=block(
+  [t: dih_angle_sup(a, b, c, d)],
   2 * (1 - cos(t)));
 
 eng: 0;
