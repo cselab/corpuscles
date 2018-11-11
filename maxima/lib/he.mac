@@ -86,7 +86,6 @@ single([L])::=buildq([L], (
 he: single(nv, nt, ne, nh,
   nxt, flp, ver, tri, edg,
   hdg_ver, hdg_edg, hdg_tri) $
-
 /*
 i: 10;
 he@nxt[he@nxt[he@nxt[i]]];
