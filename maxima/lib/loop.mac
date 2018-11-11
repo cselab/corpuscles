@@ -1,0 +1,14 @@
+loop_tri(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nt: gensym(), L],
+  block([nt, x, y, z],
+    nt: he_nt(he),
+    x: he_x(he), y: he_y(he), z: he_z(he),
+    for t: 0 thru nt - 1 do
+    block([h, i, j, k, a, b, c],
+      h: he_hdg_tri(he, t),
+      i: he_ver(he, h),
+      j: he_ver(he, he_nxt(he, h)),
+      k: he_ver(he, he_nxt(he, he_nxt(he, h))),
+      a: [x[i], y[i], z[i]],
+      b: [x[j], y[j], z[j]],
+      c: [x[k], y[k], z[k]],
+      splice(L))));

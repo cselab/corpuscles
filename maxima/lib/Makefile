@@ -7,6 +7,7 @@ err.mac\
 he.mac\
 off.mac\
 tri.mac\
+loop.mac\
 vec.mac
 
 P = he

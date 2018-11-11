@@ -80,7 +80,8 @@ he(file):=block([x, y, z, tt, nv, nt, nh, ne, e,
       new(he(splice(L))))),
   single(nv, nt, ne, nh,
     nxt, flp, ver, tri, edg,
-    hdg_ver, hdg_edg, hdg_tri)) $
+    hdg_ver, hdg_edg, hdg_tri,
+    x, y, z)) $
 
 he_nv(he):=he@nv;
 he_nt(he):=he@nt;
@@ -98,3 +99,7 @@ he_bnd(he, h):=is(he@flp[h] = -1) ;
 he_hdg_ver(he, i):=he@hdg_ver[i];
 he_hdg_edg(he, i):=he@hdg_edg[i];
 he_hdg_tri(he, i):=he@hdg_tri[i];
+
+he_x(he):=he@x;
+he_y(he):=he@y;
+he_z(he):=he@z;
