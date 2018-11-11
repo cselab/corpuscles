@@ -1,22 +1,19 @@
+load("vect")$
 load("stringproc")$
+
 load("he/off.mac")$
 load("he/he.mac")$
+load("he/loop.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
+load("he/dih.mac")$
 
-file: "~/0.off"$
-
+file: "~/rbc.off"$
 he: he(file) $
 
-he_tri(he, xx, yy, zz,
-  disp(i));
+E(a, b, c, d):=block([t: dih_angle_sup(a, b, c, d)],
+  2 * (1 - cos(t)));
 
-nt: he_nt(he);
-for t: 0 thru nt - 1 do block([h, i, j, k, x, y, z],
-  x: he_x(he), y: he_y(he), z: he_z(he),
-  h: he_hdg_tri(he, t),
-  i: he_ver(he, h),
-  j: he_ver(he, he_nxt(he, h)),
-  k: he_ver(he, he_nxt(he, he_nxt(he, h))),
-  a: [x[i], y[i], z[i]],
-  b: [x[j], y[j], z[j]],
-  c: [x[k], y[k], z[k]],  
-  disp(a))$
+eng: 0;
+loop_dih(he, eng: eng + E(a, b, c, d));
+eng;
