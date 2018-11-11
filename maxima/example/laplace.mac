@@ -8,6 +8,7 @@ load("he/util.mac")$
 load("he/loop.mac")$
 load("he/vec.mac")$
 load("he/tri.mac")$
+load("he/edg.mac")$
 
 file: "~/rbc.off"$
 he: he(file) $
@@ -16,7 +17,22 @@ nh: he_nh(he);
 alloc(nh, tb) $
 alloc(nh, tc) $
 
-loop_tri(he,
-  print(h, nh),
+alloc(nh, sb) $
+alloc(nh, sc) $
+
+alloc(nh, lpx) $
+alloc(nh, lpy) $
+alloc(nh, lpz) $
+
+loop_he(he,
   tb[h]: tri_cot(a, b, c),
   tc[h]: tri_cot(b, c, a));
+
+loop_he(he,
+  sb[h]: edg_sq(a, c),
+  sc[h]: edg_sq(a, b));
+
+/*
+loop_he(he,
+    lpx[h] += tb[h]
+    */

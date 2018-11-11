@@ -3,6 +3,7 @@ include $S/conf.mk
 
 M=\
 dih.mac\
+edg.mac\
 err.mac\
 he.mac\
 off.mac\
