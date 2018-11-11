@@ -4,6 +4,10 @@ tri_area(a, b, c):=block([u, v, n],
   n: vec_cross(u, v),
   vec_abs(n)/2);
 
+tri_volume(a, b, c):=block([n],
+  n: vec_cross(a, b),
+  vec_dot(c, n)/6);
+
 tri_normal(a, b, c):=block([u, v, n],
   u: b - a,
   v: c - a,
