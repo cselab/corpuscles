@@ -6,8 +6,7 @@
 
 he(file):=block([x, y, z, tt, nv, nt, nh, ne, e,
     nxt, flp, ver, tri, edg, hdg_ver, hdg_edg, hdg_tri],
-  local(setup_hdg, setup_flip, setup_edg, hdg),
-  alloc(n, a)::=buildq([n, a], a: make_array('any, n)),
+  local(setup_hdg, setup_flip, setup_edg, hdg, for_tt),
   for_tt([L])::=buildq(
     [L, t: gensym()],
     for t: 0 thru nt - 1 do

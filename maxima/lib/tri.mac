@@ -19,6 +19,13 @@ tri_angle(a, b, c):=block([n, v],
   v:  c - b,
   vec_angle(u, v));
 
+tri_cot(a, b, c):=block([x, y, u, v],
+  y: 2 * tri_area(a, b, c),
+  u: a - b,
+  v: c - b,
+  x: vec_dot(u, v),
+  x/y);
+
 tri_3to2(a, b, c):=block([ab, ac, ux, uy, wx, wy],
   ab: b - a,
   ac: c - a,

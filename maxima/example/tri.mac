@@ -13,4 +13,5 @@ vec_cross(a, b), numer;
 vec_arg(a, b, c, d);
 dih_angle_sup(a, b, c, d), numer;
 
-
+vec_arg(a, b, c);
+tri_cot(a, b, c), numer;

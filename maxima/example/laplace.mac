@@ -1,0 +1,22 @@
+load("vect")$
+load("stringproc")$
+
+load("he/off.mac")$
+load("he/util.mac")$
+load("he/he.mac")$
+load("he/util.mac")$
+load("he/loop.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
+
+file: "~/rbc.off"$
+he: he(file) $
+
+nh: he_nh(he);
+alloc(nh, tb) $
+alloc(nh, tc) $
+
+loop_tri(he,
+  print(h, nh),
+  tb[h]: tri_cot(a, b, c),
+  tc[h]: tri_cot(b, c, a));
