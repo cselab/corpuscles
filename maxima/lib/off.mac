@@ -1,0 +1,39 @@
+off_n(x):=arrayinfo(x)[3][1] + 1;
+
+off_read(file):=block([X, Y, Z, T0, T1, T2,
+    s, l, v, t, e, ver, tri, x, y, z, tt],
+   X: 0, Y: 1, Z: 2,
+   T0: 1, T1: 2, T2: 3,
+   s: openr(file),
+   l: readline(s),
+   l: readline(s),
+   [v, t, e]: map(parse_string, split(l)),
+   ver: make_array('any, v, 3),
+   read_array(s, ver),
+   tri: make_array('any, t, 1 + 3),
+   read_array(s, tri),
+   close(s),
+   x: make_array('any, v),
+   y: make_array('any, v),
+   z: make_array('any, v),
+   tt: make_array('any, t, 3),
+   for i: 0 thru v - 1 do (
+     x[i]: ver[i, X],
+     y[i]: ver[i, Y],
+     z[i]: ver[i, Z]),
+   for i: 0 thru t - 1 do (
+     tt[i, T0 - 1]: tri[i, T0],
+     tt[i, T1 - 1]: tri[i, T1],
+     tt[i, T2 - 1]: tri[i, T2]),
+   [x, y, z, tt]);
+
+off_write(x, y, z, tt, file):=block([T0, T1, T2, v, t, e],
+  with_stdout(file,
+     T0: 0, T1: 1, T2: 2,
+     printf(true, "OFF~%"),
+     v: off_n(x), t: off_n(tt), e: 0,
+     printf(true, "~d ~d ~d~%", v, t, e),
+     for i: 0 thru v - 1 do
+     printf(true, "~,16e ~,16e ~,16e~%", x[i], y[i], z[i]),
+     for i: 0 thru t - 1 do
+     printf(true, "3 ~d ~d ~d~%", tt[i, T0], tt[i, T1], tt[i, T2])));

@@ -28,6 +28,9 @@ int main(__UNUSED int argc, const char **v) {
     if (eq(op, "abs")) {
         vec(a); vec(b);
         printf("%g\n", edg_abs(a, b));
+    } else if (eq(op, "sq")) {
+        vec(a); vec(b);
+        printf("%g\n", edg_sq(a, b));
     } else if (eq(op, "dabs")) {
         vec(a); vec(b);
         dedg_abs(a, b, /**/ da, db);

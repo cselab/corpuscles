@@ -63,13 +63,14 @@ static void main0() {
     RZERO(NH, &tx); RZERO(NH, &ty); RZERO(NH, &tz);
     RZERO(NV, &vx); RZERO(NV, &vy); RZERO(NV, &vz);
 
-    real *queue[] = {RR, vx, vy, vz, NULL};
 
     mesh_ang(ang);
     mesh_tnormal(/**/ tx, ty, tz);
     mesh_vnormal(ang,   tx, ty, tz, /**/ vx, vy, vz);
 
-    punto_write(NV, queue, "/dev/stdout");
+    real *queue[] = {XX, YY, ZZ, vx, vy, vz, NULL};
+    puts("x y z nx ny nz");
+    punto_fwrite(NV, queue, stdout);
 
     FREE(ang);
     FREE(tx); FREE(ty); FREE(tz);

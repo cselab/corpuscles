@@ -17,17 +17,17 @@ static void get(int t, He *he,
     h = he_hdg_tri(he, t);
     n = he_nxt(he, h);
     nn = he_nxt(he, n);
-    
+
     i = he_ver(he, h);
     j = he_ver(he, n);
     k = he_ver(he, nn);
-    
+
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
 }
 
-real he_area_tri(He *he, const real *x, const real *y, const real *z) {
+real he_area(He *he, const real *x, const real *y, const real *z) {
     int n, m;
     real s;
     real a[3], b[3], c[3];
@@ -80,5 +80,20 @@ int he_area_ver(He *he, const real *x, const real *y, const real *z, /**/ real *
         area[j] += area0;
         area[k] += area0;
     }
+    return HE_OK;
+}
+
+int he_area_tri(He *he, const real *x, const real *y, const real *z, /**/ real *area) {
+    int n, m;
+    real s;
+    real a[3], b[3], c[3];
+
+    n = he_nt(he);
+    s = 0;
+    for (m = 0; m < n; m++) {
+        get(m, he, x, y, z, /**/ a, b, c);
+        area[m] = tri_area(a, b, c);
+    }
+
     return HE_OK;
 }

@@ -1,0 +1,7 @@
+dih_angle_sup(a, b, c, d):=block([n, k, x, nk, y],
+  n: tri_normal(b, c, a),
+  k: tri_normal(c, b, d),
+  x: vec_dot(n, k),
+  nk: vec_cross(n, k),
+  y: vec_abs(nk),
+  atan2(y, x));

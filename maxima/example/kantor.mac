@@ -1,0 +1,21 @@
+load("vect")$
+load("stringproc")$
+
+load("he/off.mac")$
+load("he/util.mac")$
+load("he/he.mac")$
+load("he/loop.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
+load("he/dih.mac")$
+
+file: "~/rbc.off"$
+he: he(file) $
+
+E(a, b, c, d):=block(
+  [t: dih_angle_sup(a, b, c, d)],
+  2 * (1 - cos(t)));
+
+eng: 0;
+loop_dih(he, eng: eng + E(a, b, c, d));
+eng;

@@ -1,0 +1,98 @@
+/* nv, nt, ne, nh
+   nxt, flp
+   ver, tri, edg
+   hdg_ver, hdg_edg, hdg_tri
+   */
+
+he(file):=block([x, y, z, tt, nv, nt, nh, ne, e,
+    nxt, flp, ver, tri, edg, hdg_ver, hdg_edg, hdg_tri],
+  local(setup_hdg, setup_flip, setup_edg, hdg, for_tt),
+  for_tt([L])::=buildq(
+    [L, t: gensym()],
+    for t: 0 thru nt - 1 do
+    block([
+        i: tt[t, 0],
+        j: tt[t, 1],
+        k: tt[t, 2]],
+      splice(L))),
+
+  [x, y, z, tt]: off_read(file),
+  nv: off_n(x),
+  nt: off_n(tt),
+  nh: 3*nt,
+
+  alloc(nv, hdg_ver),
+  alloc(nt, hdg_tri),
+  alloc(nh, nxt), alloc(nh, flp),
+  alloc(nh, ver), alloc(nh, tri), alloc(nh, edg),
+
+  setup_hdg(h, t, i, j):=(
+    hdg[i, j]: h,
+    hdg_tri[t]:  hdg_ver[i]:  h,
+    ver[h]: i, tri[h]: t),
+
+  block(
+    [t: 0, h: 0, hi, hj, hk],
+    for_tt(
+      setup_hdg(hi : h++, t, i, j),
+      setup_hdg(hj : h++, t, j, k),
+      setup_hdg(hk : h++, t, k, i),
+      nxt[hi]: hj, nxt[hj]: hk, nxt[hk]: hi,
+      t++)),
+
+  setup_flip(i, j):=block([h, f],
+    h: hdg[i, j],
+    f: hdg[j, i],
+    if not subvarp(f) then flp[h]: f else flp[h]: -1),
+
+  for_tt(setup_flip(i, j),
+    setup_flip(j, k),
+    setup_flip(k, i)),
+
+  setup_edg(i, j):=block([h, f],
+    h: hdg[i, j],
+    f: hdg[j, i],
+    if not subvarp(h) then (
+      edg[h]: e,
+      if not subvarp(f) then edg[f]: e,
+      kill(hdg[i, j]), kill(hdg[j, i]),
+      e++)),
+
+  e: 0,
+  for_tt(setup_edg(i, j),
+    setup_edg(j, k),
+    setup_edg(k, i)),
+
+  ne: e,
+  alloc(ne, hdg_edg),
+  for h : 0 thru nh - 1 do
+  block([e: edg[h]], hdg_edg[e]: h),
+
+  single([L])::=buildq([L], (
+      defstruct(he(splice(L))),
+      new(he(splice(L))))),
+  single(nv, nt, ne, nh,
+    nxt, flp, ver, tri, edg,
+    hdg_ver, hdg_edg, hdg_tri,
+    x, y, z)) $
+
+he_nv(he):=he@nv;
+he_nt(he):=he@nt;
+he_ne(he):=he@ne;
+he_nh(he):=he@nh;
+
+he_flp(he, h):=he@flp[h];
+he_nxt(he, h):=he@nxt[h];
+he_ver(he, h):=he@ver[h];
+he_edg(he, h):=he@edg[h];
+he_tri(he, h):=he@tri[h];
+
+he_bnd(he, h):=is(he@flp[h] = -1) ;
+
+he_hdg_ver(he, i):=he@hdg_ver[i];
+he_hdg_edg(he, i):=he@hdg_edg[i];
+he_hdg_tri(he, i):=he@hdg_tri[i];
+
+he_x(he):=he@x;
+he_y(he):=he@y;
+he_z(he):=he@z;

@@ -7,7 +7,7 @@ Kad=0
 DA0D=0
 end=5000
 
-off=$HOME/codes/he/data/sph/laplace/Nt1280.off
+off=../../../../../data/sph/laplace/Nt1280.off
 
 if test $# -ne 0
 then
@@ -18,7 +18,6 @@ then
     mv end.off sphere_Vr$Vr.off
     mv inter.dat sphere_Vr$Vr.dat
 else
-    for Vr in 0.95 0.9 0.85 0.8 0.75 0.7 0.65 0.6 0.55 0.5 0.45 0.4 0.35 0.3 0.25 0.2
-    do sh run_sphere.sh $Vr
+    for Vr in 0.64 0.63 0.62 0.61 0.59 0.58 0.57 0.56    do sh run_sphere.sh $Vr
     done
 fi
