@@ -16,7 +16,8 @@ he: he(file) $
 nh: he_nh(he) $
 nv: he_nv(he) $
 alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
-alloc(nv,   lp, area, n);
+calloc(nv, area);
+valloc(nv, lp, n);
 
 loop_he(he,
   tb[h]: tri_cot(a, b, c),
