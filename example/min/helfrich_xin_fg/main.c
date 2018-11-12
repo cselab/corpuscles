@@ -89,7 +89,8 @@ static void arg() {
 
 real Energy(const real *x, const real *y, const real *z) {
     real a, ga, v, e, b;
-    a = f_area_energy(x, y, z);
+    //a = f_area_energy(x, y, z);
+    a = 0;
     ga = f_garea_energy(x, y, z);
     v = f_volume_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
@@ -100,7 +101,7 @@ real Energy(const real *x, const real *y, const real *z) {
 void Force(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_area_force(x, y, z, /**/ fx, fy, fz);
+    //f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
