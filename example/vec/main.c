@@ -37,6 +37,10 @@ int main(__UNUSED int argc, const char **v) {
         vec(a);
         vec_norm(a, b);
         vec_printf(b, "%g");
+    } else if (eq(op, "abs")) {
+        vec(a);
+        s = vec_abs(a);
+        printf("%g\n", s);
     } else if (eq(op, "mean3")) {
         vec(a); vec(b); vec(c);
         vec_mean3(a, b, c, /**/ m);
