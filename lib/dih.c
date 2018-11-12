@@ -39,7 +39,23 @@ real dih_angle_sup(const real a[3], const real b[3], const real c[3], const real
     return ang;
 }
 real dih_cos(const real a[3], const real b[3], const real c[3], const real d[3]) {
-    real ang;
-    ang = dih_angle(a, b, c, d);
-    return cos(ang);
+  
+  real n[3], k[3], cos0;
+  
+  tri_normal(b, c, a,   n);
+  tri_normal(c, b, d,   k);
+  cos0 = -vec_dot(n, k);
+
+  return cos0;
+}
+
+real dih_cos_sup(const real a[3], const real b[3], const real c[3], const real d[3]) {
+  real n[3], k[3], cos0;
+
+  tri_normal(b, c, a,   n);
+  tri_normal(c, b, d,   k);
+
+  cos0 = vec_dot(n, k);
+   
+  return cos0;
 }

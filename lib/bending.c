@@ -155,15 +155,22 @@ static int gompper_area_ver(T *q, /**/ real **e) {
   Gompper *b = CONTAINER_OF(q, Gompper, bending);
     return he_f_gompper_area_ver(b->local, /**/ e);
     return HE_OK;
-
 }
 static int gompper_curva_mean_ver(T *q, /**/ real **e) {
   Gompper *b = CONTAINER_OF(q, Gompper, bending);
   return he_f_gompper_curva_mean_ver(b->local, /**/ e);
   return HE_OK;
-
 }
-static Vtable gompper_vtable = { gompper_fin, gompper_force, gompper_energy, gompper_energy_ver, gompper_area_ver, gompper_curva_mean_ver};
+static int gompper_norm_ver(T *q, /**/ real **e, real **f, real **g) {
+    Gompper *b = CONTAINER_OF(q, Gompper, bending);
+    return he_f_gompper_norm_ver(b->local, /**/ e, f, g);
+}
+static int gompper_laplace_ver(T *q, /**/ real **e, real **f, real **g) {
+    Gompper *b = CONTAINER_OF(q, Gompper, bending);
+    return he_f_gompper_laplace_ver(b->local, /**/ e, f, g);
+}
+static Vtable gompper_vtable = { gompper_fin, gompper_force, gompper_energy, gompper_energy_ver, gompper_area_ver,
+				 gompper_curva_mean_ver, gompper_norm_ver, gompper_laplace_ver};
 int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Gompper *q;
