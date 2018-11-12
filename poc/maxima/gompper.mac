@@ -1,3 +1,17 @@
-m: su(n);
+declare([d, s], linear);
+
+matchdeclare([x, y], all);
+tellsimp(d(F(x)), dF . d(x));
+tellsimp(d(s(x)), d(x));
+tellsimp(d(x . y),   y . d(x) + d(y) . x);
+tellsimp(d(ec * tb), d(ec) * tb + ec * d(tb));
+tellsimp(d(eb * tc), d(eb) * tc + eb * d(tc));
+
+m: s(u);
 n: F(m);
 
+lp: s(tb*ec + tc*eb);
+
+H: lp . n;
+
+expand(d(H)), F(s(u)) = F;

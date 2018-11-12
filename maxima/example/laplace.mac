@@ -44,7 +44,3 @@ loop_ver(he,
 
 loop_ver(he,
   H[i]: vec_dot(lp[i], n[i]));
-
-A: 0 $
-for v: 0 thru nv - 1 do A += area[v] $
-A;
