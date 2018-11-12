@@ -9,6 +9,7 @@ he.mac\
 off.mac\
 tri.mac\
 loop.mac\
+punto.mac\
 vec.mac\
 util.mac
 
