@@ -1,0 +1,55 @@
+load("stringproc")$
+
+load("he/off.mac")$
+load("he/util.mac")$
+load("he/he.mac")$
+load("he/util.mac")$
+load("he/loop.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
+load("he/dtri.mac")$
+load("he/edg.mac")$
+load("he/punto.mac")$
+load("he/dvec.mac")$
+load("he/ten.mac")$
+
+file: "~/he/data/rbc/laplace/0.off"$
+he: he(file) $
+
+nh: he_nh(he) $
+nv: he_nv(he) $
+
+alloc(nh,   u, ang, n, dn) $
+valloc(nv, m)$
+talloc(nv, f)$
+
+/* dF . d(u) */
+
+loop_he(he,
+  u[h]:   tri_normal(a, b, c),
+  ang[h]: tri_angle(a, b, c));
+
+loop_he(he,
+  m[i] += ang[h]*u[h]);
+
+loop_ver(he,
+  dn[i]: dvec_norm(m[i]),
+  n[i]: vec_norm(m[i]));
+
+loop_he(he,
+  dF: dn[i],
+  da: dtri_normal(c, a, b),
+  db: dtri_normal(a, b, c),
+  dc: dtri_normal(b, c, a),
+  f[i] += ten_mult(dF, da),
+  f[j] += ten_mult(dF, db),
+  f[k] += ten_mult(dF, dc));
+
+/* output */
+loop_ver(he,
+  r[i]:  vec_cylindrical_r(a),
+  nr[i]: vec_cylindrical_r(n[i]));
+alloc(nv, r, nr)$
+with_stdout("normal",
+  printf(true, "x y z r nx ny nz nr~%"),
+  punto_write(he, r, n, nr));

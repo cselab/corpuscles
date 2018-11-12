@@ -1,0 +1,13 @@
+load("he/vec.mac") $
+load("he/ten.mac") $
+load("he/dvec.mac") $
+
+vec_ini(a);
+n: vec_norm(a);
+
+A: jacobian(n, a);
+B: expand(dvec_norm(a));
+
+A - B;
+
+ten_mult(A, ten_one()) - A;

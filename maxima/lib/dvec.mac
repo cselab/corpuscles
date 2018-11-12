@@ -1,0 +1,3 @@
+dvec_norm(a):=block(
+  [r: vec_abs(a), n: vec_norm(a), I: ten_one()],
+  1/r*(I - ten_dyadic(n, n)));

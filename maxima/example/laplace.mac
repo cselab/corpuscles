@@ -1,4 +1,3 @@
-load("vect")$
 load("stringproc")$
 
 load("he/off.mac")$
@@ -11,14 +10,14 @@ load("he/tri.mac")$
 load("he/edg.mac")$
 load("he/punto.mac")$
 
-file: "~/0.off"$
+file: "~/he/data/rbc/laplace/1.off"$
 he: he(file) $
 
 nh: he_nh(he) $
 nv: he_nv(he) $
 
 alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
-alloc(nv, H);
+alloc(nv, H, r);
 calloc(nv, area);
 valloc(nv, lp, m, n);
 
@@ -44,8 +43,9 @@ loop_ver(he,
   n[i]: vec_norm(m[i]));
 
 loop_ver(he,
-  H[i]: vec_dot(lp[i], n[i])/area[i]);
+  H[i]: vec_dot(lp[i], n[i])/area[i],
+  r[i]: vec_cylindrical_r(a));
 
 with_stdout("q",
-  printf(true, "x y z H~%"),
-  punto_write(he, H));
+  printf(true, "x y z r area H~%"),
+  punto_write(he, r, area, H));

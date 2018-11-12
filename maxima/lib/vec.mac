@@ -9,9 +9,18 @@ vec_any(a)::=buildq([a],
     L: hi - lo + 1,
     a: [lo + random(L), lo + random(10), lo + random(10)]));
 
-vec_dot(a, b):= express(a . b);
-vec_cross(a, b):= express(a ~ b);
+vec_dot(a, b):= block([X: 1, Y: 2, Z: 3],
+  a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]);
+
+vec_cross(a, b):= block([X: 1, Y: 2, Z: 3],
+  [a[Y]*b[Z]-b[Y]*a[Z],
+   b[X]*a[Z]-a[X]*b[Z],
+   a[X]*b[Y]-b[X]*a[Y]]);
+
 vec_abs(a):=sqrt(vec_dot(a, a));
+vec_cylindrical_r(a):=block([X: 1, Y: 2],
+  sqrt(a[X]*a[X] + a[Y]*a[Y]));
+
 vec_norm(a):=a/vec_abs(a);
 
 vec_project(a, b):=block([n, s],

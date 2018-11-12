@@ -23,10 +23,19 @@ valloc(n, [l])::=
     [a: first(l), r: rest(l), n],
     (alloc0(n, a), util_vzero(a), valloc(n, splice(r))));
 
+talloc(n, [l])::=
+  if not emptyp(l) then
+  buildq(
+    [a: first(l), r: rest(l), n],
+    (alloc0(n, a), util_tzero(a), talloc(n, splice(r))));
+
 util_zero(x):=block([i, n: util_n(x)],
   for i: 0 thru n - 1 do x[i]: 0);
 
 util_vzero(x):=block([i, n: util_n(x)],
   for i: 0 thru n - 1 do x[i]: [0, 0, 0]);
+
+util_tzero(x):=block([i, n: util_n(x)],
+  for i: 0 thru n - 1 do x[i]: ten_zero());
 
 util_n(x):=arrayinfo(x)[3][1] + 1;

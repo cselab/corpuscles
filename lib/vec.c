@@ -201,3 +201,4 @@ int vec_zero(real a[3]) {
     vec_ini(0, 0, 0, /**/ a);
     return HE_OK;
 }
+

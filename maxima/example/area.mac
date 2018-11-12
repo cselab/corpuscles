@@ -1,4 +1,3 @@
-load("vect")$
 load("stringproc")$
 
 load("he/off.mac")$
@@ -12,11 +11,7 @@ load("he/tri.mac")$
 file: "~/rbc.off"$
 he: he(file) $
 
-/* s: 0; */
-/* loop_tri(he, s: s + tri_area(a, b, c)); */
-/* s; */
-
 block([s: 0],
   loop_he(he,
     s += tri_area(a, b, c)),
-  s/3);
+  print(s/3));

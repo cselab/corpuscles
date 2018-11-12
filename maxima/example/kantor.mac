@@ -1,4 +1,3 @@
-load("vect")$
 load("stringproc")$
 
 load("he/off.mac")$

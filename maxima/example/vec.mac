@@ -1,0 +1,8 @@
+load("he/vec.mac") $
+
+vec_any(a);
+
+vec_arg(a);
+
+vec_cylindrical_r(a), numer;
+vec_abs(a), numer;

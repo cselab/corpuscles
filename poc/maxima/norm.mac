@@ -1,0 +1,17 @@
+load("he/vec.mac");
+
+vec_ini(a);
+
+u: vec_norm(a);
+aa: vec_abs(a);
+
+J: [diff(u[1], ax), diff(u[1], ay), diff(u[1], ay)];
+
+J: ratsubst('aa, aa,    J);
+J: ratsubst('ux, ax/'aa, J);
+J: ratsubst('uy, ay/'aa, J);
+
+'aa*J;
+
+aa: vec_abs(a);
+J0: 1/aa*matrix(I - vec_outter(a, a));
