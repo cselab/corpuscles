@@ -15,7 +15,9 @@ he: he(file) $
 
 nh: he_nh(he) $
 nv: he_nv(he) $
+
 alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
+alloc(nv, H);
 calloc(nv, area);
 valloc(nv, lp, n);
 
@@ -30,11 +32,15 @@ loop_he(he,
   ang[h]: tri_angle(a, b, c));
 
 loop_he(he,
-  n[i] += ang[h]*u[h]);
-
-loop_he(he,
+  n[i]    += ang[h]*u[h],
   lp[i]   += tb[h]*ec[h] + tc[h]*eb[h],
   area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
+
+loop_ver(he,
+  n[i]: vec_norm(n[i]));
+
+loop_ver(he,
+  H[i]: vec_dot(lp[i], n[i]));
 
 A: 0 $
 for v: 0 thru nv - 1 do A += area[v] $

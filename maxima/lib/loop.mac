@@ -58,7 +58,7 @@ loop_ver(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nv: gensym(),
     nv: he_nv(he),
     x: he_x(he), y: he_y(he), z: he_z(he),
     for i: 0 thru nv - 1 do
-    block([n, nn, i, j, k, a, b, c],
-      i: he_ver(he, h),
+    block([h, a],
+      h: he_hdg_ver(he, i),
       a: [x[i], y[i], z[i]],
       splice(L))));
