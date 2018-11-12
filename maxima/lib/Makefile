@@ -4,6 +4,7 @@ include $S/conf.mk
 M=\
 dih.mac\
 dvec.mac\
+dtri.mac\
 edg.mac\
 err.mac\
 he.mac\
