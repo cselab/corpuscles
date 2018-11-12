@@ -14,7 +14,7 @@ then
     Vr="$1"
     echo '************'  Vr = $Vr '************'
     #rm inter.dat
-    rm -r $Vr
+    #rm -r $Vr
     mkdir $Vr
     cd $Vr
     ../../../../main juelicher_xin $Vr 3 3 3 0 $Kb $C0 $Kad $DA0D $end < $off > prolate_Vr$Vr.msg &
