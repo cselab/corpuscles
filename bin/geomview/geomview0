@@ -152,7 +152,7 @@ function draw(   off, file) {
 	msg0(file); snap(file)
     }
     if (Report)
-	msg(off)
+	msg0(off)
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
