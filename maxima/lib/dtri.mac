@@ -1,4 +1,6 @@
+/* diff(normal, b) */
 dtri_normal(a, b, c):=block([A, u, n],
   u: a - c,
   n: tri_normal(a, b, c),
+  A: tri_area(a, b, c),
   1/(2*A) * ten_dyadic(vec_cross(u, n), n));
