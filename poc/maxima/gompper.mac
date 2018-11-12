@@ -15,3 +15,5 @@ lp: s(tb*ec + tc*eb);
 H: lp . n;
 
 expand(d(H)), F(s(u)) = F;
+
+expand(d(n));
