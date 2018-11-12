@@ -9,3 +9,5 @@ A: jacobian(n, a);
 B: expand(dvec_norm(a));
 
 A - B;
+
+ten_mult(A, ten_one()) - A;

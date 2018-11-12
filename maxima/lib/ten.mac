@@ -7,4 +7,6 @@ ten_dyadic(a, b):=ten_block(matrix(
     [a[Y]*b[X], a[Y]*b[Y], a[Y]*b[Z]],
     [a[Z]*b[X], a[Z]*b[Y], a[Z]*b[Z]]));
 
+ten_mult(a, b):= a . b;
+
 ten_one():=ident(3);
