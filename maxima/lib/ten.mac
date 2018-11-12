@@ -1,5 +1,5 @@
 ten_block([L])::=buildq([L], block(
-    [X:1, Y:2, Z:2],
+    [X:1, Y:2, Z:3],
     splice(L)));
 
 ten_dyadic(a, b):=ten_block(matrix(
