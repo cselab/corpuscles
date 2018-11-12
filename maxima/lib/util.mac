@@ -10,3 +10,21 @@ alloc(n, [l])::=
   buildq(
     [a: first(l), r: rest(l), n],
     (alloc0(n, a), alloc(n, splice(r))));
+
+calloc(n, [l])::=
+  if not emptyp(l) then
+  buildq(
+    [a: first(l), r: rest(l), n],
+    (alloc0(n, a), util_zero(a), calloc(n, splice(r))));
+
+valloc(n, [l])::=
+  if not emptyp(l) then
+  buildq(
+    [a: first(l), r: rest(l), n],
+    (alloc0(n, a), util_vzero(a), valloc(n, splice(r))));
+
+util_zero(x):=block([i, n: arrayinfo(x)[3][1]],
+  for i: 0 thru n do x[i]: 0);
+
+util_vzero(x):=block([i, n: arrayinfo(x)[3][1]],
+  for i: 0 thru n do x[i]: [0, 0, 0]);

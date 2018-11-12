@@ -4,30 +4,33 @@ prog=he.geomview
 prog0=he.geomview0
 
 usg () {
-    msg "$prog [-t x y z] [-r x y z] [-a APPEARANCE] [-o PPM] [OFF].."
-    msg 'he geomview wrapper'
-    msg '-t x y z   translation'
-    msg '-r x y z   rotation in degree'
-    msg '-f zoom    field of view (default is 40)'
-    msg '-o PPM     save PPM file and exit'
-    msg '-a APPEARANCE load appearance information from a file'
-    msg
-    msg 'Keys:'
-    msg '    q: quit'
-    msg '    s: save snap.ppm'
-    msg '    S: save every snapshot'
-    msg '    p: panel'
-    msg '  j/k: switch between off files'
-    msg '    [SPC]: dump orientation and field of view'
-    msg
-    msg 'Env. variables'
-    msg 'WX, WY: resolution of the snapshot'
-    msg
-    msg 'Examples:'
-    msg "$prog -t 0.25 0.25 0     data/rbc.off"
-    msg "$prog -a data/appearance data/rbc.off"
-    msg "$prog -o snap.ppm        data/rbc.off"
-    msg "$prog                    data/rbc.off data/sph.off"
+    cat <<EOF
+$prog [-t x y z] [-r x y z] [-a APPEARANCE] [-o PPM] [OFF]..
+he geomview wrapper
+-t x y z   translation
+-r x y z   rotation in degree
+-f zoom    field of view (default is 40)
+-o PPM     save PPM file and exit
+-a APPEARANCE load appearance information from a file
+
+Keys:
+    q: quit
+    s: save snap.ppm
+    S: save every snapshot
+    p: panel
+    j/k: switch between off files
+    J: dump file name
+    [SPC]: dump orientation and field of view
+
+Environment variables:
+WX, WY: resolution of the snapshot
+
+Examples:
+$prog -t 0.25 0.25 0     data/rbc.off
+$prog -a data/appearance data/rbc.off
+$prog -o snap.ppm        data/rbc.off
+$prog                    data/rbc.off data/sph.off
+EOF
     exit
 }
 

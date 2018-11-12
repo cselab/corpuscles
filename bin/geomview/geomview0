@@ -24,11 +24,12 @@ function ini(   i) {
 	offs[i] = ARGV[i]
     ARGC = 1
     Save = 0 # snapshot every draw()?
+    Report = 0 # dump file name
 
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
     KEY_J = 106; KEY_K = 107
-    KEY_SS = 83
+    KEY_JJ = 74; KEY_SS = 83
     OK = 0; EOF = 1; ERR = -1
     split(translate, Translate)
     split(rotate,    Rotate)
@@ -111,6 +112,9 @@ function parse_key(k,   s,  T, fov) {
     } else if (k == KEY_J) {
 	if (++ioff > noff) ioff = 1
 	draw()
+    } else if (k == KEY_JJ) {
+	Report = !Report
+	draw()
     } else if (k == KEY_SS) {
 	Save = !Save
 	draw()
@@ -126,6 +130,7 @@ function key() {
     key0(KEY_SPACE)
     key0(KEY_J)
     key0(KEY_K)
+    key0(KEY_JJ)
     key0(KEY_SS)
 }
 
@@ -146,6 +151,8 @@ function draw(   off, file) {
 	file = sprintf("%05d.ppm", ioff)
 	msg0(file); snap(file)
     }
+    if (Report)
+	msg0(off)
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
