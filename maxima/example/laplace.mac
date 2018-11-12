@@ -1,4 +1,3 @@
-load("vect")$
 load("stringproc")$
 
 load("he/off.mac")$
@@ -11,7 +10,7 @@ load("he/tri.mac")$
 load("he/edg.mac")$
 load("he/punto.mac")$
 
-file: "~/he/data/rbc/laplace/1.off"$
+file: "~/he/data/rbc/laplace/0.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -48,5 +47,5 @@ loop_ver(he,
   r[i]: vec_cylindrical_r(a));
 
 with_stdout("q",
-  printf(true, "x y z r H~%"),
-  punto_write(he, r, H));
+  printf(true, "x y z r area H~%"),
+  punto_write(he, r, area H));

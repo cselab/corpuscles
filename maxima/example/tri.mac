@@ -1,4 +1,3 @@
-load("vect") $
 load("he/vec.mac") $
 load("he/tri.mac") $
 load("he/dih.mac") $
