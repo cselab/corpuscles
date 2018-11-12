@@ -1,0 +1,2 @@
+# TEST: 0
+he.shake echo %42 > o.out.txt

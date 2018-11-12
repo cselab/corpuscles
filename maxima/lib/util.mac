@@ -1,0 +1,12 @@
+postfix("++", 81);
+infix("+=", 81, 81);
+
+"++"(i)::=buildq([i, o: gensym()], block([o], o: i, i: i + 1, o));
+"+="(a, b)::=buildq([a, b, o: gensym()], block([o], o: a, a: a + b, o));
+
+alloc0(n, a)::=buildq([n, a], a: make_array('any, n));
+alloc(n, [l])::=
+  if not emptyp(l) then
+  buildq(
+    [a: first(l), r: rest(l), n],
+    (alloc0(n, a), alloc(n, splice(r))));

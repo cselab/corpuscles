@@ -4,16 +4,27 @@ tri_area(a, b, c):=block([u, v, n],
   n: vec_cross(u, v),
   vec_abs(n)/2);
 
+tri_volume(a, b, c):=block([n],
+  n: vec_cross(a, b),
+  vec_dot(c, n)/6);
+
 tri_normal(a, b, c):=block([u, v, n],
   u: b - a,
   v: c - a,
   n: vec_cross(u, v),
   vec_norm(n));
 
-tri_angle(a, b, c):=block([n, v],
-  n:  a - b,
+tri_angle(a, b, c):=block([u, v],
+  u:  a - b,
   v:  c - b,
   vec_angle(u, v));
+
+tri_cot(a, b, c):=block([x, y, u, v],
+  y: 2 * tri_area(a, b, c),
+  u: a - b,
+  v: c - b,
+  x: vec_dot(u, v),
+  x/y);
 
 tri_3to2(a, b, c):=block([ab, ac, ux, uy, wx, wy],
   ab: b - a,

@@ -5,7 +5,9 @@ vec_ini(a)::=buildq([a,
   a: [x, y, z]); 
 
 vec_any(a)::=buildq([a],
-  a: [random(10), random(10), random(10)]); 
+  block([lo: -9, hi: 9, L],
+    L: hi - lo + 1,
+    a: [lo + random(L), lo + random(10), lo + random(10)]));
 
 vec_dot(a, b):= express(a . b);
 vec_cross(a, b):= express(a ~ b);
@@ -36,3 +38,5 @@ vec_angle(a, b):=block([n, x, y, ang],
   y: vec_abs(n),
   x: vec_dot(a, b),
   atan2(y, x));
+
+vec_arg([L]):=printf(true, "~{~g~}~%", flatten(L));

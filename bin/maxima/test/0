@@ -1,0 +1,2 @@
+# TEST: 0
+he.maxima x:1 y:10 data/0.mac  > maxima.out.txt

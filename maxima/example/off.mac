@@ -1,0 +1,6 @@
+load("stringproc") $
+load("he/off.mac") $
+
+file: "~/0.off";
+[x, y, z, tt] : off_read(file) $
+off_write(x, y, z, tt, "o.off");

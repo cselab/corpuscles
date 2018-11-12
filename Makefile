@@ -1,5 +1,18 @@
-D = tool lib pkgconfig bin/shake bin/geomview \
-example/punto example/valid example/area/voronoi example/area/tri example/volume example/vec example/ten example/he
+D = \
+tool\
+pkgconfig\
+lib\
+bin/geomview\
+bin/shake\
+bin/maxima\
+example/area/tri\
+example/area/voronoi\
+example/he\
+example/punto\
+example/ten\
+example/valid\
+example/vec\
+example/volume
 
 install: dir
 test: dir
