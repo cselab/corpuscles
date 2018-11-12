@@ -11,7 +11,7 @@ load("he/tri.mac")$
 load("he/edg.mac")$
 load("he/punto.mac")$
 
-file: "~/0.off"$
+file: "~/he/data/rbc/laplace/1.off"$
 he: he(file) $
 
 nh: he_nh(he) $
