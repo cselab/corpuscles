@@ -9,5 +9,10 @@ ten_dyadic(a, b):=ten_block(matrix(
 
 ten_mult(a, b):= a . b;
 
+ten_vec(t, a):=ten_block(
+  [t[X,X]*a[X] + t[X,Y]*a[Y] + t[X,Z]*a[Z],
+   t[Y,X]*a[X] + t[Y,Y]*a[Y] + t[Y,Z]*a[Z],
+   t[Z,X]*a[X] + t[Z,Y]*a[Y] + t[Z,Z]*a[Z]]);
+
 ten_one():=ident(3);
 ten_zero():=zeromatrix(3, 3);

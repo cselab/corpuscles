@@ -1,4 +1,5 @@
 declare([d, s], linear);
+dotdistrib: true;
 
 matchdeclare([x, y], all);
 tellsimp(d(F(x)), dF . d(x));
@@ -15,4 +16,5 @@ lp: s(tb*ec + tc*eb);
 
 H: lp . n;
 
-expand(d(n));
+dH: d(H);
+ratexpand(subst('F, F(m), dH));
