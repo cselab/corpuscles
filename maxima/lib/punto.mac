@@ -1,1 +1,14 @@
-punto_write([L]):=
+punto_write0([L]):=block([f, n, e],
+  f: first(L),
+  n: util_n(f),
+  for i: 0 thru n - 1 do (
+    for l in L do block([e: l[i]],
+      printf(
+        true,
+        if listp(e) then "~{~,16e ~} " else "~,16e ",
+        e)),
+    newline()));
+
+punto_write(he, [L]):=apply(punto_write0, append(
+    [he_x(he), he_y(he), he_z(he)],
+    L));

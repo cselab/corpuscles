@@ -9,8 +9,9 @@ load("he/loop.mac")$
 load("he/vec.mac")$
 load("he/tri.mac")$
 load("he/edg.mac")$
+load("he/punto.mac")$
 
-file: "~/rbc.off"$
+file: "~/0.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -31,15 +32,20 @@ loop_he(he,
   sb[h]: edg_sq(a, b),
   sc[h]: edg_sq(a, c),
 
-  u[h]: tri_normal(a, b, c),
+  u[h]:   tri_normal(a, b, c),
   ang[h]: tri_angle(a, b, c));
 
 loop_he(he,
   m[i]    += ang[h]*u[h],
-  lp[i]   += tb[h]*ec[h] + tc[h]*eb[h]);
+  lp[i]   += tb[h]*ec[h] + tc[h]*eb[h],
+  area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
 
 loop_ver(he,
   n[i]: vec_norm(m[i]));
 
 loop_ver(he,
-  H[i]: vec_dot(lp[i], n[i]));
+  H[i]: vec_dot(lp[i], n[i])/area[i]);
+
+with_stdout("q",
+  printf(true, "x y z H~%"),
+  punto_write(he, H));
