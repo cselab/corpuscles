@@ -1,18 +1,30 @@
 ($load "eval_string")
 
+(defvar OK)
+(defvar FAIL)
+(defvar args)
+(defvar file)
+
 (setq OK 0 FAIL 1)
 
-(defun bye0 (code)
-  #+(or cmu scl clisp) (ext:quit code)
-  #+sbcl               (sb-ext:quit code)
-  #+allegro            (excl:exit code :quiet t)
-  #+(or mcl openmcl)   (ccl:quit code)
-  #+gcl                (system::quit code)
-  #+ecl                (si:quit code)
-  #+lispworks          (lispworks:quit code)
-  #+abcl               (cl-user::quit code)
-  #+kcl                (lisp::bye code)
-  )
+(defun bye0 (&optional code)
+  #+allegro (excl:exit code)
+  #+clisp (ext:quit code)
+  #+cmu (ext:quit code)
+  #+cormanlisp (win32:exitprocess code)
+  #+gcl (lisp:bye code)
+  #+lispworks (lw:quit :status code)
+  #+lucid (lcl:quit code)
+  #+sbcl (sb-ext:exit :code code :abort t)
+  #+kcl (lisp::bye)
+  #+scl (ext:quit code)
+  #+(or openmcl mcl) (ccl::quit)
+  #+abcl (cl-user::quit)
+  #+ecl (si:quit)
+  #+poplog (poplog::bye)
+  #-(or allegro clisp cmu cormanlisp gcl lispworks lucid sbcl
+	kcl scl openmcl mcl abcl ecl)
+  (error 'not-implemented :proc (list 'quit code)))
 
 (defun get_args (lst)
   (if lst
@@ -24,10 +36,8 @@
 (setq file (car args)
       args (cdr args))
 
-(loop for i in args
-      do (prog
-	  (setf (symbol-function 'bye) (bye0 FAIL))
-          ($eval_string i)))
+(dolist (i args)
+  ($eval_string i))
 
 ($batchload file)
 (bye0 OK)

@@ -15,6 +15,7 @@ maxima: maxima.in
 	chmod a+x $@
 
 
+clean:; rm -f maxima
 conf:; he.install batch.lisp $(MAXIMA_HOME)/he
 install: conf
 test: install conf; atest test/*
