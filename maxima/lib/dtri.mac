@@ -4,3 +4,16 @@ dtri_normal(a, b, c):=block([A, u, n],
   n: tri_normal(a, b, c),
   A: tri_area(a, b, c),
   1/(2*A) * ten_dyadic(vec_cross(u, n), n));
+
+angle0(a, b, n):=block([v, nv, v0],
+  v: b - a,
+  nv: vec_cross(n, v),
+  v0: vec_dot(v, v),
+  nv/v0);
+
+dtri_angle(a, b, c):=block([n, da, db, dc],
+  n: tri_normal(b, c, a),
+  dc: angle0(c, b, n),
+  da: angle0(b, a, n),
+  db: -(dc + da),
+  [da, db, dc]);

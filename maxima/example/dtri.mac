@@ -10,4 +10,10 @@ n: tri_normal(a, b, c);
 A: dtri_normal(a, b, c);
 B: jacobian(n, b);
 
-radcan(A - B);
+/* radcan(A - B); */
+
+vec_any(u);
+vec_any(v);
+vec_any(w);
+vec_arg(u, v, w);
+dtri_angle(u, v, w), numer;
