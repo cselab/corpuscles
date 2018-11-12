@@ -41,6 +41,10 @@ int main(__UNUSED int argc, const char **v) {
         vec(a);
         s = vec_abs(a);
         printf("%g\n", s);
+    } else if (eq(op, "cylindrical_r")) {
+        vec(a);
+        s = vec_cylindrical_r(a);
+        printf("%g\n", s);
     } else if (eq(op, "mean3")) {
         vec(a); vec(b); vec(c);
         vec_mean3(a, b, c, /**/ m);
