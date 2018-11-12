@@ -4,10 +4,11 @@ matchdeclare([x, y], all);
 tellsimp(d(F(x)), dF . d(x));
 tellsimp(d(s(x)), d(x));
 tellsimp(d(x . y),   y . d(x) + d(y) . x);
-tellsimp(d(ec * tb), d(ec) * tb + ec * d(tb));
-tellsimp(d(eb * tc), d(eb) * tc + eb * d(tc));
+tellsimp(d(ec*tb), d(ec)*tb + ec*d(tb));
+tellsimp(d(eb*tc), d(eb)*tc + eb*d(tc));
+tellsimp(d(ang*u), d(ang)*u + d(u)*ang);
 
-m: s(u);
+m: s(ang*u);
 n: F(m);
 
 lp: s(tb*ec + tc*eb);

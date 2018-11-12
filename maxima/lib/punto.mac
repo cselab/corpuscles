@@ -3,10 +3,10 @@ punto_write0([L]):=block([f, n, e],
   n: util_n(f),
   for i: 0 thru n - 1 do (
     for l in L do block([e: l[i]],
-      printf(
-        true,
-        if listp(e) then "~{~,16e ~} " else "~,16e ",
-        e)),
+      if not e then err("hm"),
+      if matrixp(e)   then printf(true, "~{~,16e ~} ", flatten(args(e)))
+      elseif listp(e) then printf(true, "~{~,16e ~} ", e)
+      else                 printf(true, "~,16e ", e)),
     newline()));
 
 punto_write(he, [L]):=apply(punto_write0, append(
