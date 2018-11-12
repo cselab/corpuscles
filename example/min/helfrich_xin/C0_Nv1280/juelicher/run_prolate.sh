@@ -7,7 +7,7 @@ Kad=0
 DA0D=0
 end=5000
 
-off=$HOME/codes/he/data/prolate/laplace/Nt1280/prolate_volume_Vr
+off=../../../../../data/prolate/laplace/Nt1280/prolate_volume_Vr
 
 if test $# -ne 0
 then
