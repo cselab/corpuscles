@@ -6,6 +6,6 @@ vec_ini(a);
 n: vec_norm(a);
 
 A: jacobian(n, a);
-B: expand(dvec_abs(a));
+B: expand(dvec_norm(a));
 
 A - B;
