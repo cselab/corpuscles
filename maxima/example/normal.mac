@@ -10,16 +10,15 @@ load("he/tri.mac")$
 load("he/edg.mac")$
 load("he/punto.mac")$
 
-file: "~/he/data/rbc/laplace/1.off"$
+file: "~/he/data/rbc/laplace/0.off"$
 he: he(file) $
 
 nh: he_nh(he) $
 nv: he_nv(he) $
 
 alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
-alloc(nv, H, r);
-calloc(nv, area);
-valloc(nv, lp, m, n);
+alloc(nv, r, nr);
+valloc(nv, m, n);
 
 loop_he(he,
   tb[h]: tri_cot(a, b, c),
@@ -35,17 +34,15 @@ loop_he(he,
   ang[h]: tri_angle(a, b, c));
 
 loop_he(he,
-  m[i]    += ang[h]*u[h],
-  lp[i]   += tb[h]*ec[h] + tc[h]*eb[h],
-  area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
+  m[i]    += ang[h]*u[h]);
 
 loop_ver(he,
   n[i]: vec_norm(m[i]));
 
 loop_ver(he,
-  H[i]: vec_dot(lp[i], n[i])/area[i],
-  r[i]: vec_cylindrical_r(a));
+  r[i]: vec_cylindrical_r(a),
+  nr[i]: vec_cylindrical_r(n[i]));
 
-with_stdout("q",
-  printf(true, "x y z r area H~%"),
-  punto_write(he, r, area, H));
+with_stdout("normal",
+  printf(true, "x y z r nx ny nz nr~%"),
+  punto_write(he, r, n, nr));
