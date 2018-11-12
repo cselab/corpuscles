@@ -10,3 +10,4 @@ ten_dyadic(a, b):=ten_block(matrix(
 ten_mult(a, b):= a . b;
 
 ten_one():=ident(3);
+ten_zero():=zeromatrix(3, 3);

@@ -9,6 +9,8 @@ load("he/vec.mac")$
 load("he/tri.mac")$
 load("he/edg.mac")$
 load("he/punto.mac")$
+load("he/dvec.mac")$
+load("he/ten.mac")$
 
 file: "~/he/data/rbc/laplace/0.off"$
 he: he(file) $
@@ -16,9 +18,10 @@ he: he(file) $
 nh: he_nh(he) $
 nv: he_nv(he) $
 
-alloc(nh,   u, ang) $
-valloc(nv, m, n)    $
-alloc(nv, r, nr)    $
+alloc(nh,   u, ang, n, dn) $
+valloc(nv, m)$
+
+/* dF . d(u) */
 
 loop_he(he,
   u[h]:   tri_normal(a, b, c),
@@ -28,12 +31,14 @@ loop_he(he,
   m[i] += ang[h]*u[h]);
 
 loop_ver(he,
+  dn[i]: dvec_norm(m[i]),
   n[i]: vec_norm(m[i]));
 
 loop_ver(he,
   r[i]:  vec_cylindrical_r(a),
   nr[i]: vec_cylindrical_r(n[i]));
 
+alloc(nv, r, nr)$
 with_stdout("normal",
   printf(true, "x y z r nx ny nz nr~%"),
   punto_write(he, r, n, nr));
