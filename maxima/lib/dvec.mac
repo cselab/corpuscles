@@ -1,0 +1,2 @@
+dvec_abs(a):=block([r: vec_abs(a), I: ten_one()],
+  1/r*(I - ten_dyadic(a, a)));
