@@ -12,6 +12,10 @@ vec_any(a)::=buildq([a],
 vec_dot(a, b):= express(a . b);
 vec_cross(a, b):= express(a ~ b);
 vec_abs(a):=sqrt(vec_dot(a, a));
+
+vec_cylindrical_r(a):=block([X: 1, Y: 2],
+  sqrt(a[X]*a[X] + a[Y]*a[Y]));
+
 vec_norm(a):=a/vec_abs(a);
 
 vec_project(a, b):=block([n, s],
