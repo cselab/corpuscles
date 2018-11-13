@@ -51,6 +51,7 @@ int dnormal_fin(T *q) {
     return HE_OK;
 }
 
-int dnormal_apply(T *q, He *he, /**/ Ten **pf) {
+int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
+                  /**/ Ten **pf) {
     return HE_OK;
 }
