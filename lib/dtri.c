@@ -69,7 +69,10 @@ int dtri_volume(const real a[3], const  real b[3], const real c[3], /**/ real da
     return HE_OK;
 }
 
-static int normal0(const real a[3], const real b[3], /**/ Ten *t) {
+static int normal0(const real a[3], const real n[3], /**/ Ten *t) {
+    real u[3];
+    vec_cross(a, n, u);
+    ten_dyadic(u, n, t);
     return HE_OK;
 }
 
