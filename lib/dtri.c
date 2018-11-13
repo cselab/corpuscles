@@ -69,10 +69,28 @@ int dtri_volume(const real a[3], const  real b[3], const real c[3], /**/ real da
     return HE_OK;
 }
 
+static int normal0(const real a[3], const real b[3], /**/ Ten *t) {
+    return HE_OK;
+}
+
 int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, Ten *y, Ten *z) {
-    real n[3], A, u[3], v[3], w[3];
+    real n[3], A, u[3], v[3], w[3], coef;
     tri_normal(a, b, c,   n);
     A = tri_area(a, b, c);
+
+    vec_minus(c, b, u);
+    vec_minus(a, c, v);
+    vec_minus(b, a, w);
+
+    normal0(u, n, x);
+    normal0(u, n, y);
+    normal0(u, n, z);
+
+    coef = 1/(2*A);
+    ten_scale(coef, x);
+    ten_scale(coef, y);
+    ten_scale(coef, z);
+    
     /* TODO */
     return HE_OK;
 }
