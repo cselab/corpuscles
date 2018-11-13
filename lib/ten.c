@@ -94,6 +94,15 @@ real ten_trace(const Ten *T) {
     return t[XX] + t[YY] + t[ZZ];
 }
 
+real ten_determinant(const Ten *T) {
+    const real *t;
+    t = T->t;    
+    return  \
+        t[XX]*(t[YY]*t[ZZ]-t[YZ]*t[ZY]) -
+        t[XY]*(t[YX]*t[ZZ]-t[YZ]*t[ZX]) +
+        t[XZ]*(t[YX]*t[ZY]-t[YY]*t[ZX]);
+}
+
 int ten_axpy(real s, const Ten *P, /*io*/ Ten *T) {
     const real *p;
     real *t;

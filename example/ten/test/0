@@ -33,3 +33,6 @@
 
 # TEST: 11
 ./main trace 1 2 3   10 20 30    100 200 300 > ten.out.txt
+
+# TEST: 12
+./main determinant 1 20 30   10 25 39    100 205 300 > ten.out.txt
