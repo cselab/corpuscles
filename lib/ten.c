@@ -10,6 +10,26 @@ enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};
 enum {SIZE = MAX_STRING_SIZE};
 #define FMT_IN   XE_REAL_IN
 
+int ten_col_ini(const real a[3], const real b[3], const real c[3],
+                Ten *T) {
+    real *t;
+    t = T->t;
+    t[XX] = a[X]; t[XY] = b[X]; t[XZ] = c[X];
+    t[YX] = a[Y]; t[YY] = b[Y]; t[YZ] = c[Y];
+    t[ZX] = a[Z]; t[ZY] = b[Z]; t[ZZ] = c[Z];
+    return HE_OK;
+}
+
+int ten_row_ini(const real a[3], const real b[3], const real c[3],
+                 Ten *T) {
+    real *t;
+    t = T->t;
+    t[XX] = a[X]; t[XY] = a[Y]; t[XZ] = a[Z];
+    t[YX] = b[X]; t[YY] = b[Y]; t[YZ] = b[Z];
+    t[ZX] = c[X]; t[ZY] = c[Y]; t[ZZ] = c[Z];
+    return HE_OK;
+}
+
 int ten_dyadic(const real a[3], const real b[3], /**/ Ten *T) {
     real *t;
     t = T->t;

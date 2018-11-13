@@ -1,5 +1,7 @@
 typedef struct Ten { real t[3*3]; } Ten;
 
+int ten_col_ini(const real[3], const real[3], const real[3], /**/ Ten*);
+int ten_row_ini(const real[3], const real[3], const real[3], /**/ Ten*);
 int ten_dyadic(const real[3], const real[3], /**/ Ten*);
 
 int ten_plus(const Ten*, const Ten*, /**/ Ten*);
