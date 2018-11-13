@@ -71,6 +71,10 @@ int main(__UNUSED int argc, const char **v) {
     } else if (eq(op, "determinant")) {
         ten(&T);
         printf("%g\n", ten_determinant(&T));
+    } else if (eq(op, "scale")) {
+        scl(&s); ten(&T);
+        ten_scale(s, &T);
+        ten_printf(&T, "%g");
     } else if (eq(op, "axpy")) {
         scl(&s); ten(&P); ten(&T);
         ten_axpy(s, &P, &T);
