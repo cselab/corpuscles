@@ -130,6 +130,14 @@ int he_hdg_edg(T *q, int e) { V(e, q->ne); return q->hdg_edg[e]; }
 int he_hdg_tri(T *q, int t) { V(t, q->nt); return q->hdg_tri[t]; }
 int he_bnd(T *q, int h)     { V(h, q->nh); return q->flp[h] == -1; }
 
+int he_ijk(T *q, int h, /**/ int *pi, int *pj, int *pk) {
+    int n, nn, i, j, k;
+    n = he_nxt(q, h);
+    nn = he_nxt(q, n);
+    i = he_ver(q, h); j = he_ver(q, n); k = he_ver(q, nn);
+    *pi = i; *pj = j; *pk = k;
+    return HE_OK;
+}
 
 static int set_nxt(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->nxt[h] = i; return HE_OK;}
 static int set_flp(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->flp[h] = i; return HE_OK;}

@@ -12,6 +12,12 @@
 
 #define T Dnormal
 
+#define BEGIN_LOOP_HE                           \
+    nh = he_nh(he);                             \
+    for (h = 0; h < nh; h++) {                  \
+    n = he_nxt(he, h);                          \
+
+
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
 
