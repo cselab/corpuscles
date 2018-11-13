@@ -12,11 +12,14 @@
 
 #define T Dnormal
 
-#define BEGIN_LOOP_HE                           \
-    nh = he_nh(he);                             \
-    for (h = 0; h < nh; h++) {                  \
-    n = he_nxt(he, h);                          \
-
+#define BEGIN_LOOP_HE                            \
+    nh = he_nh(he);                              \
+    for (h = 0; h < nh; h++) {                   \
+    he_ijk(he, h, &i, &j, &k);                   \
+    vec_get(i, x, y, z, a);                      \
+    vec_get(j, x, y, z, b);                      \
+    vec_get(k, x, y, z, c);
+#define END_LOOOP_HE }
 
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
@@ -59,5 +62,12 @@ int dnormal_fin(T *q) {
 
 int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ Ten **pf) {
+    int nh, h, i, j, k;
+    real a[3], b[3], c[3];
+
+    BEGIN_LOOP_HE {
+
+    } END_LOOOP_HE
+
     return HE_OK;
 }
