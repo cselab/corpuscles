@@ -5,17 +5,15 @@
 #include <he/he.h>
 #include <he/normal.h>
 #include <he/memory.h>
-#include <he/punto.h>
 #include <he/sum.h>
 #include <he/ten.h>
-#include <he/vec.h>
 #include <he/y.h>
 
 static He *he;
 static int n;
 static real *x, *y, *z;
 static real *nx, *ny, *nz;
-static real h = 1e-6;
+static real h = 1e-8;
 
 enum {X, Y, Z};
 
@@ -44,6 +42,7 @@ static int fd(int i, /**/ Ten *t) {
     fd0(&x[i], cx);
     fd0(&y[i], cy);
     fd0(&z[i], cz);
+    ten_col_ini(cx, cy, cz, /**/ t);
     return HE_OK;
 }
 
@@ -56,14 +55,14 @@ int main() {
     n = he_nv(he);
     MALLOC(n, &nx); MALLOC(n, &ny); MALLOC(n, &nz);
     MALLOC(n, &dn);
-
-    real *queue[] = {x, y, z, nx, ny, nz, NULL};
-    puts("x y z nx ny nz");
-    //punto_fwrite(n, queue, stdout);
-    Energy(s);
-
     for (i = 0; i < n; i++)
         fd(i, &dn[i]);
+    puts("x y z xx xy xz yx yy yz zx zy zz");
+    for (i = 0; i < n; i++) {
+        printf("%g %g %g ", x[i], y[i], z[i]);
+        ten_line(&dn[i]);
+        puts("");
+    }
 
     FREE(nx); FREE(ny); FREE(nz); FREE(dn);
     y_fin(he, x, y, z);

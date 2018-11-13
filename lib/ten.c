@@ -88,6 +88,12 @@ int ten_add(const Ten *R, /*io*/ Ten *T) {
     return HE_OK;
 }
 
+real ten_trace(const Ten *T) {
+    real *t;
+    r = R->t; t = T->t;
+    return t[XX] + t[YY] + t[ZZ];
+}
+
 int ten_axpy(real s, const Ten *P, /*io*/ Ten *T) {
     const real *p;
     real *t;
@@ -154,6 +160,14 @@ int ten_fprintf(const Ten *T, FILE *stream, const char *fmt0) {
 int ten_printf(const Ten *T, const char *fmt0) {
     if (ten_fprintf(T, stdout, fmt0) != HE_OK)
         ERR(HE_IO, "ten_fprintf failed");
+    return HE_OK;
+}
+
+int ten_line(const Ten *T) {
+    const real *t;
+    t = T->t;
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g %16g %.16g %.16g",
+           t[XX], t[XY], t[XZ], t[YX], t[YY], t[YZ], t[ZX], t[ZY], t[ZZ]);
     return HE_OK;
 }
 
