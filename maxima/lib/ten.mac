@@ -16,3 +16,5 @@ ten_vec(t, a):=ten_block(
 
 ten_one():=ident(3);
 ten_zero():=zeromatrix(3, 3);
+
+ten_arg([L]):=printf(true, "~{~g~}~%", flatten(args(L)));
