@@ -88,6 +88,16 @@ int ten_add(const Ten *R, /*io*/ Ten *T) {
     return HE_OK;
 }
 
+int ten_sub(const Ten *R, /*io*/ Ten *T) {
+    const real *r;
+    real *t;
+    r = R->t; t = T->t;
+    t[XX] -= r[XX]; t[XY] -= r[XY]; t[XZ] -= r[XZ];
+    t[YX] -= r[YX]; t[YY] -= r[YY]; t[YZ] -= r[YZ];
+    t[ZX] -= r[ZX]; t[ZY] -= r[ZY]; t[ZZ] -= r[ZZ];
+    return HE_OK;
+}
+
 real ten_trace(const Ten *T) {
     const real *t;
     t = T->t;
