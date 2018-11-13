@@ -5,8 +5,9 @@
 #include "he/err.h"
 #include "he/he.h"
 #include "he/vec.h"
-//#include "he/dvec.h"
+#include "he/dvec.h"
 #include "he/tri.h"
+#include "he/dtri.h"
 #include "he/ten.h"
 #include "he/memory.h"
 #include "he/dnormal.h"
@@ -68,12 +69,14 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
     real *ang;
     Ten *dn, *f;
     Vec *u, *m, *n;
+    Ten Da, Db, Dc;
 
     u = q->u;
     ang = q->ang;
     m = q->m;
     f = q->f;
     dn = q->dn;
+    n = q->n;
 
     nv = he_nv(he);
     for (i = 0; i < nv; i++) {
@@ -88,8 +91,14 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
     } END_LOOOP;
 
     for (i = 0; i < nv; i++) {
-        //dvec_norm(m[i].v, &dn[i]);
+        vec_norm(m[i].v, n[i].v);
+        dvec_norm(m[i].v, &dn[i]);
     }
+
+    BEGIN_LOOP {
+        dtri_normal(a, b, c, /**/ &Da, &Db, &Dc);
+        /* TODO */
+    } END_LOOOP;
 
     return HE_OK;
 }
