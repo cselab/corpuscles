@@ -62,5 +62,5 @@ loop_ver(he,
 
 with_stdout("normal",
   printf(true,
-    "x y z r nx ny nz nr xx xy xz yx yy yz zx zy zz det tr~%"),
+    "x y z r nx ny nz nr xx xy xz yx yy yz zx zy zz determinant trace~%"),
   punto_write(he, r, n, nr, f, det, tr))$
