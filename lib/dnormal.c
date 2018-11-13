@@ -66,7 +66,7 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
     real a[3], b[3], c[3];
 
     BEGIN_LOOP_HE {
-
+        MSG("ijk: %d %d %d", i, j, i);
     } END_LOOOP_HE
 
     return HE_OK;
