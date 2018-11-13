@@ -39,9 +39,7 @@ loop_ver(he,
   n[i]: vec_norm(m[i]))$
 
 loop_he(he,
-  da: dtri_normal(c, a, b),
-  db: dtri_normal(a, b, c),
-  dc: dtri_normal(b, c, a),
+  [da, db, dc]: dtri_normal(a, b, c),
   f[i] += ang[h]*ten_mult(dn[i], da),
   f[j] += ang[h]*ten_mult(dn[i], db),
   f[k] += ang[h]*ten_mult(dn[i], dc))$
