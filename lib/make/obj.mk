@@ -14,6 +14,7 @@ dedg.s.o\
 dih.s.o\
 dnormal.s.o\
 dtri.s.o\
+dvec.s.o\
 edg.s.o\
 equiangulate.s.o\
 f/area.s.o\
@@ -59,6 +60,7 @@ dedg.d.o\
 dih.d.o\
 dnormal.d.o\
 dtri.d.o\
+dvec.d.o\
 edg.d.o\
 equiangulate.d.o\
 f/area.d.o\

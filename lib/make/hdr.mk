@@ -7,6 +7,7 @@ he/dedg.h\
 he/dih.h\
 he/dnormal.h\
 he/dtri.h\
+he/dvec.h\
 he/edg.h\
 he/equiangulate.h\
 he/err.h\
