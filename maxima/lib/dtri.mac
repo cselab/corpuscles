@@ -1,5 +1,4 @@
-dtri_normal(a, b, c):=block([A, u, n, da, db, dc],
-  u: a - c,
+dtri_normal(a, b, c):=block([A, n, da, db, dc],
   n: tri_normal(a, b, c),
   A: tri_area(a, b, c),
   da: 1/(2*A) * ten_dyadic(vec_cross(c - b, n), n),

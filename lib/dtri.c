@@ -6,6 +6,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/dtri.h"
+#include "he/ten.h"
 
 /* n x (b - a)/|b - a|^2   */
 static int angle0(const real a[3], const real b[3], const real n[3], /**/ real da[3]) {
@@ -65,5 +66,13 @@ int dtri_volume(const real a[3], const  real b[3], const real c[3], /**/ real da
     dvolume(z, a, b, /**/ dc);
     dvolume(z, b, c, /**/ da);
     dvolume(z, c, a, /**/ db);
+    return HE_OK;
+}
+
+int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, Ten *y, Ten *z) {
+    real n[3], A, u[3], v[3], w[3];
+    tri_normal(a, b, c,   n);
+    A = tri_area(a, b, c);
+    /* TODO */
     return HE_OK;
 }

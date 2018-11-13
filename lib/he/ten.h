@@ -10,6 +10,7 @@ int ten_scalar(const Ten*, real, /**/ Ten*);
 int ten_vec(const Ten*, const real[3], /**/ real[3]);
 
 /* y += x */
+int ten_scale(real, /*io*/ Ten*);
 int ten_add(const Ten *x, /*io*/ Ten *y);
 real ten_trace(const Ten*);
 real ten_determinant(const Ten*);

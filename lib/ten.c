@@ -103,6 +103,15 @@ real ten_determinant(const Ten *T) {
         t[XZ]*(t[YX]*t[ZY]-t[YY]*t[ZX]);
 }
 
+int ten_scale(real s, Ten *T) {
+    real *t;
+    t = T->t;
+    t[XX] *= s; t[XY] *= s; t[XZ] *= s;
+    t[YX] *= s; t[YY] *= s; t[YZ] *= s;
+    t[ZX] *= s; t[ZY] *= s; t[ZZ] *= s;
+    return HE_OK;
+}
+
 int ten_axpy(real s, const Ten *P, /*io*/ Ten *T) {
     const real *p;
     real *t;
