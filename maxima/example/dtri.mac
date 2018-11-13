@@ -3,17 +3,13 @@ load("he/vec.mac") $
 load("he/ten.mac") $
 load("he/dtri.mac") $
 
-vec_ini(a); vec_ini(b); vec_ini(c);
+vec_any(a); vec_any(b); vec_any(c);
 
-n: tri_normal(a, b, c);
+[da, db, dc]: dtri_normal(a, b, c) $
 
-A: dtri_normal(a, b, c);
-B: jacobian(n, b);
+radcan(da + db + dc);
 
-/* radcan(A - B); */
+vec_arg(a, b, c);
 
-vec_any(u);
-vec_any(v);
-vec_any(w);
-vec_arg(u, v, w);
-dtri_angle(u, v, w), numer;
+dc[3], numer;
+

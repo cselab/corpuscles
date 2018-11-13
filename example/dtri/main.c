@@ -5,6 +5,7 @@
 #include <real.h>
 #include <he/err.h>
 #include <he/vec.h>
+#include <he/ten.h>
 #include <he/dtri.h>
 #include <he/macro.h>
 #include <he/util.h>
@@ -17,6 +18,7 @@ int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
     real a[3], b[3], c[3], d[3], da[3], db[3], dc[3];
+    Ten Da, Db, Dc;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -46,18 +48,12 @@ int main(__UNUSED int argc, const char **v) {
         vec_printf(da, "%g");
         vec_printf(db, "%g");
         vec_printf(dc, "%g");
-    } else if (eq(op, "normal_x")) {
+    } else if (eq(op, "normal")) {
         vec(a); vec(b); vec(c);
-        dtri_normal_x(a, b, c, /**/ d);
-        vec_printf(d, "%g");
-    } else if (eq(op, "normal_y")) {
-        vec(a); vec(b); vec(c);
-        dtri_normal_y(a, b, c, /**/ d);
-        vec_printf(d, "%g");
-    } else if (eq(op, "normal_z")) {
-        vec(a); vec(b); vec(c);
-        dtri_normal_z(a, b, c, /**/ d);
-        vec_printf(d, "%g");
+        dtri_normal(a, b, c, &Da, &Db, &Dc);
+        ten_printf(&Da, "%g");
+        ten_printf(&Db, "%g");
+        ten_printf(&Dc, "%g");
     } else
         ER("unknown operation '%s'", op);
     return 0;

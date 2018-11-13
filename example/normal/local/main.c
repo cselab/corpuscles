@@ -63,7 +63,6 @@ static void main0() {
     RZERO(NH, &tx); RZERO(NH, &ty); RZERO(NH, &tz);
     RZERO(NV, &vx); RZERO(NV, &vy); RZERO(NV, &vz);
 
-
     mesh_ang(ang);
     mesh_tnormal(/**/ tx, ty, tz);
     mesh_vnormal(ang,   tx, ty, tz, /**/ vx, vy, vz);

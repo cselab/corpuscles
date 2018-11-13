@@ -23,16 +23,24 @@ int scl(/**/ real *p) {
 }
 
 int eq(const char *a, const char *b) { return util_eq(a, b); }
-int main(__UNUSED int c, const char **v) {
+int main(__UNUSED int argc, const char **v) {
     const char *op;
-    real s, a[3], b[3];
+    real s, a[3], b[3], c[3];
     Ten T, R, P;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
     op = *argv++;
-    if (eq(op, "dyadic")) {
+    if (eq(op, "row_ini")) {
+        vec(a); vec(b); vec(c);
+        ten_row_ini(a, b, c, &T);
+        ten_printf(&T, "%g");
+    } else if (eq(op, "col_ini")) {
+        vec(a); vec(b); vec(c);
+        ten_col_ini(a, b, c, &T);
+        ten_printf(&T, "%g");
+    } else if (eq(op, "dyadic")) {
         vec(a);
         vec(b);
         ten_dyadic(a, b, &T);
@@ -56,6 +64,16 @@ int main(__UNUSED int c, const char **v) {
     } else if (eq(op, "add")) {
         ten(&T); ten(&R);
         ten_add(&R, &T);
+        ten_printf(&T, "%g");
+    } else if (eq(op, "trace")) {
+        ten(&T);
+        printf("%g\n", ten_trace(&T));
+    } else if (eq(op, "determinant")) {
+        ten(&T);
+        printf("%g\n", ten_determinant(&T));
+    } else if (eq(op, "scale")) {
+        scl(&s); ten(&T);
+        ten_scale(s, &T);
         ten_printf(&T, "%g");
     } else if (eq(op, "axpy")) {
         scl(&s); ten(&P); ten(&T);

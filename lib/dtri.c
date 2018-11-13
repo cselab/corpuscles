@@ -6,6 +6,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/dtri.h"
+#include "he/ten.h"
 
 /* n x (b - a)/|b - a|^2   */
 static int angle0(const real a[3], const real b[3], const real n[3], /**/ real da[3]) {
@@ -68,30 +69,34 @@ int dtri_volume(const real a[3], const  real b[3], const real c[3], /**/ real da
     return HE_OK;
 }
 
-int dtri_normal(const real a[3], const real b[3], const real c[3], /**/
-              real x[3], real y[3], real z[3]) {
-    enum {X, Y, Z};
-    real A, n[3], e[3], u[3], C;
-    A = tri_area(a, b, c);
-    vec_minus(a, c, /**/ e);
-    tri_normal(a, b, c, /**/ n);
-    vec_cross(e, n, /**/ u);
-    C = 1/(2*A);
-
-    if (x != NULL) vec_scalar(n, C*u[X], /**/ x);
-    if (y != NULL) vec_scalar(n, C*u[Y], /**/ y);
-    if (z != NULL) vec_scalar(n, C*u[Z], /**/ z);
+static int normal0(const real a[3], const real n[3], /**/ Ten *t) {
+    real u[3];
+    vec_cross(a, n, u);
+    ten_dyadic(u, n, t);
     return HE_OK;
 }
 
-int dtri_normal_x(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
-    return dtri_normal(a, b, c, /**/ r, NULL, NULL);
-}
+#define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
+int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, Ten *y, Ten *z) {
+    real n[3], A, u[3], v[3], w[3], coef;
+    tri_normal(a, b, c,   n);
+    A = tri_area(a, b, c);
 
-int dtri_normal_y(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
-    return dtri_normal(a, b, c, /**/ NULL, r, NULL);
-}
+    vec_minus(c, b, u);
+    vec_minus(a, c, v);
+    vec_minus(b, a, w);
 
-int dtri_normal_z(const real a[3], const real b[3], const real c[3], /**/ real r[3]) {
-    return dtri_normal(a, b, c, /**/ NULL, NULL, r);
+    normal0(u, n, x);
+    normal0(v, n, y);
+    normal0(w, n, z);
+
+    NOT_ZERO(A);
+    coef = 1/(2*A);
+    
+    ten_scale(coef, x);
+    ten_scale(coef, y);
+    ten_scale(coef, z);
+    
+    /* TODO */
+    return HE_OK;
 }

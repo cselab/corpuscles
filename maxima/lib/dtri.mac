@@ -1,9 +1,10 @@
-/* diff(normal, b) */
-dtri_normal(a, b, c):=block([A, u, n],
-  u: a - c,
+dtri_normal(a, b, c):=block([A, n, da, db, dc],
   n: tri_normal(a, b, c),
   A: tri_area(a, b, c),
-  1/(2*A) * ten_dyadic(vec_cross(u, n), n));
+  da: 1/(2*A) * ten_dyadic(vec_cross(c - b, n), n),
+  db: 1/(2*A) * ten_dyadic(vec_cross(a - c, n), n),
+  dc: 1/(2*A) * ten_dyadic(vec_cross(b - a, n), n),
+  [da, db, dc]);
 
 angle0(a, b, n):=block([v, nv, v0],
   v: b - a,

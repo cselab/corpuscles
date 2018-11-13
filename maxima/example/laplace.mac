@@ -32,7 +32,7 @@ loop_he(he,
   sc[h]: edg_sq(a, c),
 
   u[h]:   tri_normal(a, b, c),
-  ang[h]: tri_angle(a, b, c));
+  ang[h]: tri_angle(c, a, b));
 
 loop_he(he,
   m[i]    += ang[h]*u[h],
