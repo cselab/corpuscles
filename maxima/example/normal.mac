@@ -15,7 +15,7 @@ load("he/punto.mac")$
 load("he/dvec.mac")$
 load("he/ten.mac")$
 
-file: "~/0.off"$
+file: "~/he/data/rbc/laplace/0.off" $
 he: he(file) $
 
 nh: he_nh(he) $
@@ -43,8 +43,8 @@ loop_he(he,
   db: dtri_normal(a, b, c),
   dc: dtri_normal(b, c, a),
   f[i] += ang[h]*ten_mult(dn[i], da),
-  f[j] += ang[h]*ten_mult(dn[j], db),
-  f[k] += ang[h]*ten_mult(dn[k], dc))$
+  f[j] += ang[h]*ten_mult(dn[i], db),
+  f[k] += ang[h]*ten_mult(dn[i], dc))$
 
 loop_he(he,
   [da, db, dc]: dtri_angle(c, a, b),
