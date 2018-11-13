@@ -1,0 +1,6 @@
+load("he/vec.mac") $
+load("he/ten.mac") $
+load("he/dvec.mac") $
+
+a: [1, 1, 1];
+dvec_norm(a), numer;
