@@ -47,7 +47,7 @@ loop_he(he,
   f[k] += ang[h]*ten_mult(dn[k], dc))$
 
 loop_he(he,
-  [da, db, dc]: dtri_angle(a, b, c),
+  [da, db, dc]: dtri_angle(c, a, b),
   f[i] += ten_dyadic(ten_vec(dn[i], u[h]), da),
   f[j] += ten_dyadic(ten_vec(dn[j], u[h]), db),
   f[k] += ten_dyadic(ten_vec(dn[k], u[h]), dc));
