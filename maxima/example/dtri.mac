@@ -1,4 +1,4 @@
-load("he/tri.mac") $
+xload("he/tri.mac") $
 load("he/vec.mac") $
 load("he/ten.mac") $
 load("he/dtri.mac") $
