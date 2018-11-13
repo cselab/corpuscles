@@ -5,15 +5,9 @@ load("he/dtri.mac") $
 
 vec_ini(a); vec_ini(b); vec_ini(c);
 
-n: tri_normal(a, b, c);
 
-A: dtri_normal(a, b, c);
-B: jacobian(n, b);
+[da, db, dc]: dtri_normal(u, v, w), numer;
 
-/* radcan(A - B); */
+da + db + dc;
 
-vec_any(u);
-vec_any(v);
-vec_any(w);
-vec_arg(u, v, w);
-dtri_angle(u, v, w), numer;
+
