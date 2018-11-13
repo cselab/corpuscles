@@ -10,11 +10,20 @@
 #include <he/ten.h>
 #include <he/y.h>
 
+static int n;
+static real *x, *y, *z;
+static real *nx, *ny, *nz;
+
+
+static int Energy(real *sx, real *sy, real *sz) {
+    *sx = he_sum_array(n, nx);
+    *sy = he_sum_array(n, ny);
+    *sz = he_sum_array(n, nz);
+    return HE_OK;
+}
+
 int main() {
     He *he;
-    int n;
-    real *x, *y, *z;
-    real *nx, *ny, *nz;
     real sx, sy, sz;
     Ten *dn;
 
@@ -28,10 +37,7 @@ int main() {
     real *queue[] = {x, y, z, nx, ny, nz, NULL};
     puts("x y z nx ny nz");
     punto_fwrite(n, queue, stdout);
-
-    sx = he_sum_array(n, nx);
-    sy = he_sum_array(n, ny);
-    sz = he_sum_array(n, nz);
+    Energy(&sx, &sy, &sz);
 
     MSG("n[0]: %g %g %g", nx[0], ny[0], nz[0]);
     MSG("n[n - 1]: %g %g %g", nx[n - 1], ny[n - 1], nz[n - 1]);
