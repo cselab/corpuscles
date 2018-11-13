@@ -8,3 +8,5 @@ int dnormal_ini(He*, /**/ T**);
 int dnormal_fin(T*);
 
 int dnormal_apply(T*, /**/ Ten**);
+
+#undef T
