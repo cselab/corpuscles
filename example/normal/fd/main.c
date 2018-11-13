@@ -8,23 +8,48 @@
 #include <he/punto.h>
 #include <he/sum.h>
 #include <he/ten.h>
+#include <he/vec.h>
 #include <he/y.h>
 
+static He *he;
 static int n;
 static real *x, *y, *z;
 static real *nx, *ny, *nz;
+static real h = 1e-6;
 
+enum {X, Y, Z};
 
-static int Energy(real *sx, real *sy, real *sz) {
-    *sx = he_sum_array(n, nx);
-    *sy = he_sum_array(n, ny);
-    *sz = he_sum_array(n, nz);
+static int Energy(real s[3]) {
+    he_normal_mwa(he, x, y, z, /**/ nx, ny, nz);
+    s[X] = he_sum_array(n, nx);
+    s[Y] = he_sum_array(n, ny);
+    s[Z] = he_sum_array(n, nz);
+    return HE_OK;
+}
+
+static int fd0(real *p, /**/ real f[3]) {
+    real t, hi[3], lo[3];
+    t = *p;
+    *p += h; Energy(hi); *p = t;
+    *p -= h; Energy(lo); *p = t;
+
+    f[X] = (hi[X] - lo[X])/(2*h);
+    f[Y] = (hi[Y] - lo[Y])/(2*h);
+    f[Z] = (hi[Z] - lo[Z])/(2*h);
+    return HE_OK;
+}
+
+static int fd(int i, /**/ Ten *t) {
+    real cx[3], cy[3], cz[3];
+    fd0(&x[i], cx);
+    fd0(&y[i], cy);
+    fd0(&z[i], cz);
     return HE_OK;
 }
 
 int main() {
-    He *he;
-    real sx, sy, sz;
+    int i;
+    real s[3];
     Ten *dn;
 
     y_ini("/dev/stdin", &he, &x, &y, &z);
@@ -32,16 +57,13 @@ int main() {
     MALLOC(n, &nx); MALLOC(n, &ny); MALLOC(n, &nz);
     MALLOC(n, &dn);
 
-    he_normal_mwa(he, x, y, z, /**/ nx, ny, nz);
-
     real *queue[] = {x, y, z, nx, ny, nz, NULL};
     puts("x y z nx ny nz");
-    punto_fwrite(n, queue, stdout);
-    Energy(&sx, &sy, &sz);
+    //punto_fwrite(n, queue, stdout);
+    Energy(s);
 
-    MSG("n[0]: %g %g %g", nx[0], ny[0], nz[0]);
-    MSG("n[n - 1]: %g %g %g", nx[n - 1], ny[n - 1], nz[n - 1]);
-    MSG("sum:  %g %g %g", sx, sy, sz);
+    for (i = 0; i < n; i++)
+        fd(i, &dn[i]);
 
     FREE(nx); FREE(ny); FREE(nz); FREE(dn);
     y_fin(he, x, y, z);
