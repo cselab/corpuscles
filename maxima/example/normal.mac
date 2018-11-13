@@ -15,7 +15,7 @@ load("he/punto.mac")$
 load("he/dvec.mac")$
 load("he/ten.mac")$
 
-file: "~/rbc.off"$
+file: "~/0.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -29,30 +29,28 @@ talloc(nv, f)$
 
 loop_he(he,
   u[h]:   tri_normal(a, b, c),
-  ang[h]: tri_angle(c, a, b));
+  ang[h]: tri_angle(c, a, b))$
 
 loop_he(he,
-  m[i] += ang[h]*u[h]);
+  m[i] += ang[h]*u[h])$
 
 loop_ver(he,
   dn[i]: dvec_norm(m[i]),
-  n[i]: vec_norm(m[i]));
+  n[i]: vec_norm(m[i]))$
 
 loop_he(he,
-  dF: dn[i],
   da: dtri_normal(c, a, b),
   db: dtri_normal(a, b, c),
   dc: dtri_normal(b, c, a),
-  f[i] += ang[h]*ten_mult(dF, da),
-  f[j] += ang[h]*ten_mult(dF, db),
-  f[k] += ang[h]*ten_mult(dF, dc));
+  f[i] += ang[h]*ten_mult(dn[i], da),
+  f[j] += ang[h]*ten_mult(dn[j], db),
+  f[k] += ang[h]*ten_mult(dn[k], dc))$
 
 loop_he(he,
-  dF: dn[i],
   [da, db, dc]: dtri_angle(a, b, c),
-  f[i] += ten_dyadic(ten_vec(dF, u[h]), da),
-  f[j] += ten_dyadic(ten_vec(dF, u[h]), db),
-  f[k] += ten_dyadic(ten_vec(dF, u[h]), dc));
+  f[i] += ten_dyadic(ten_vec(dn[i], u[h]), da),
+  f[j] += ten_dyadic(ten_vec(dn[j], u[h]), db),
+  f[k] += ten_dyadic(ten_vec(dn[k], u[h]), dc));
 
 /* output */
 alloc(nv, r, nr, det, tr)$
@@ -60,8 +58,9 @@ loop_ver(he,
   r[i]:  vec_cylindrical_r(a),
   nr[i]: vec_cylindrical_r(n[i]),
   det[i]: determinant(f[i]),
-  tr[i]: mattrace(f[i]));
+  tr[i]: mattrace(f[i]))$
+
 with_stdout("normal",
   printf(true,
     "x y z r nx ny nz nr fxx fxy fxz fyx fyy fyz fzx fzy fzz det tr~%"),
-  punto_write(he, r, n, nr, f, det, tr));
+  punto_write(he, r, n, nr, f, det, tr))$
