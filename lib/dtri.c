@@ -76,6 +76,7 @@ static int normal0(const real a[3], const real n[3], /**/ Ten *t) {
     return HE_OK;
 }
 
+#define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
 int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, Ten *y, Ten *z) {
     real n[3], A, u[3], v[3], w[3], coef;
     tri_normal(a, b, c,   n);
@@ -86,10 +87,12 @@ int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, 
     vec_minus(b, a, w);
 
     normal0(u, n, x);
-    normal0(u, n, y);
-    normal0(u, n, z);
+    normal0(v, n, y);
+    normal0(w, n, z);
 
+    NOT_ZERO(A);
     coef = 1/(2*A);
+    
     ten_scale(coef, x);
     ten_scale(coef, y);
     ten_scale(coef, z);
