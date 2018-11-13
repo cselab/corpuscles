@@ -49,6 +49,14 @@ int main(__UNUSED int argc, const char **v) {
         vec(a); vec(b); vec(c);
         vec_mean3(a, b, c, /**/ m);
         vec_printf(m, "%g");
+    } else if (eq(op, "add")) {
+        vec(a); vec(b);
+        vec_add(a, b);
+        vec_printf(b, "%g");
+    } else if (eq(op, "axpy")) {
+        scl(&s); vec(a); vec(b);
+        vec_axpy(s, a, b);
+        vec_printf(b, "%g");
     } else if (eq(op, "project")) {
         vec(a); vec(b);
         vec_project(a, b, c);

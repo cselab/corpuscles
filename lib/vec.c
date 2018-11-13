@@ -49,6 +49,20 @@ int vec_minus(const real a[3], const real b[3], /**/ real c[3]) {
     return HE_OK;    
 }
 
+int vec_add(const real a[3], /*io*/ real b[3]) {
+    b[X] += a[X];
+    b[Y] += a[Y];
+    b[Z] += a[Y];
+    return HE_OK;
+}
+
+/* y += a*x */
+int vec_axpy(real a, const real x[3], /*io*/ real y[3]) {
+    y[X] += a*x[X];
+    y[Y] += a*x[Y];
+    y[Z] += a*x[Z];    
+}
+
 int vec_linear_combination(real al, const real a[3], real be, const real b[3],
                             /**/ real c[3]) {
     c[X] = al*a[X] + be*b[X];

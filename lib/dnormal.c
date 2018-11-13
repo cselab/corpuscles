@@ -64,9 +64,16 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ Ten **pf) {
     int nh, h, i, j, k;
     real a[3], b[3], c[3];
+    real *ang;
+    Ten *dn, *f;
+    Vec *u, *m, *n;
+
+    u = q->u;
+    ang = q->ang;
 
     BEGIN_LOOP_HE {
-        MSG("ijk: %d %d %d", i, j, i);
+        tri_normal(a, b, c, /**/ u[h].v);
+        ang[h] = tri_angle(c, a, b);
     } END_LOOOP_HE
 
     return HE_OK;
