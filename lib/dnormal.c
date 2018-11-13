@@ -7,7 +7,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/ten.h"
-
+#include "he/memory.h"
 #include "he/dnormal.h"
 
 #define T Dnormal
