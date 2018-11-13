@@ -89,8 +89,8 @@ int ten_add(const Ten *R, /*io*/ Ten *T) {
 }
 
 real ten_trace(const Ten *T) {
-    real *t;
-    r = R->t; t = T->t;
+    const real *t;
+    t = T->t;
     return t[XX] + t[YY] + t[ZZ];
 }
 

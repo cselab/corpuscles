@@ -65,6 +65,9 @@ int main(__UNUSED int argc, const char **v) {
         ten(&T); ten(&R);
         ten_add(&R, &T);
         ten_printf(&T, "%g");
+    } else if (eq(op, "trace")) {
+        ten(&T);
+        printf("%g", ten_trace(T));
     } else if (eq(op, "axpy")) {
         scl(&s); ten(&P); ten(&T);
         ten_axpy(s, &P, &T);
