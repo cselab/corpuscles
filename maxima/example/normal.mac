@@ -15,7 +15,7 @@ load("he/punto.mac")$
 load("he/dvec.mac")$
 load("he/ten.mac")$
 
-file: "~/he/data/hex/flat.off"$
+file: "~/rbc.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -29,7 +29,7 @@ talloc(nv, f)$
 
 loop_he(he,
   u[h]:   tri_normal(a, b, c),
-  ang[h]: tri_angle(a, b, c));
+  ang[h]: tri_angle(c, a, b));
 
 loop_he(he,
   m[i] += ang[h]*u[h]);
