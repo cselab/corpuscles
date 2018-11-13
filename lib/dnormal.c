@@ -44,7 +44,6 @@ int dnormal_ini(He *he, /**/ T **pq) {
     return HE_OK;
 }
 
-
 int dnormal_fin(T *q) {
     FREE(q->u); FREE(q->ang); FREE(q->n);
     FREE(q->dn); FREE(q->m); FREE(q->f);
@@ -52,6 +51,6 @@ int dnormal_fin(T *q) {
     return HE_OK;
 }
 
-int dnormal_apply(T *q, /**/ Ten **pf) {
-
+int dnormal_apply(T *q, He *he, /**/ Ten **pf) {
+    return HE_OK;
 }
