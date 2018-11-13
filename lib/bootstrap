@@ -25,12 +25,12 @@ nreal () {
 }
 
 format () {
-   xargs -n5 | awk -v v="$1" '
+   awk -v v="$1" '
    BEGIN { printf "%s = \\\n", v }
-   {   if (NR > 1) printf "%s", " \\\n"
+   {   if (NR > 1) printf "%s", "\\\n"
        printf "%s", $0
    }
-   END { printf "%s", "\n" }
+   END { printf "%s", "\n\n" }
 '
 }
 

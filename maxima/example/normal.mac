@@ -39,16 +39,16 @@ loop_ver(he,
   n[i]: vec_norm(m[i]))$
 
 loop_he(he,
-  [da, db, dc]: dtri_normal(a, b, c),
-  f[i] += ang[h]*ten_mult(dn[i], da),
-  f[j] += ang[h]*ten_mult(dn[i], db),
-  f[k] += ang[h]*ten_mult(dn[i], dc))$
+  [Da, Db, Dc]: dtri_normal(a, b, c),
+  f[i] += ang[h]*ten_mult(dn[i], Da),
+  f[j] += ang[h]*ten_mult(dn[i], Db),
+  f[k] += ang[h]*ten_mult(dn[i], Dc))$
 
 loop_he(he,
   [dc, da, db]: dtri_angle(c, a, b),
-  f[i] += ten_dyadic(ten_vec(dn[i], da), u[h]),
-  f[j] += ten_dyadic(ten_vec(dn[i], db), u[h]),
-  f[k] += ten_dyadic(ten_vec(dn[i], dc), u[h]));
+  f[i] += ten_dyadic(ten_vec(dn[i], u[h]), da),
+  f[j] += ten_dyadic(ten_vec(dn[i], u[h]), db),
+  f[k] += ten_dyadic(ten_vec(dn[i], u[h]), dc));
 
 /* output */
 alloc(nv, r, nr, det, tr)$
