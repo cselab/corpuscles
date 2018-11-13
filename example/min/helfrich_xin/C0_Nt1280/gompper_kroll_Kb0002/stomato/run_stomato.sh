@@ -7,7 +7,7 @@ Kad=0
 DA0D=0
 end=50000
 
-off=../prolate_Vr0.45.off
+off=../oblate_Vr0.45.off
 
 if test $# -ne 0
 then
