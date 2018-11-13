@@ -2,8 +2,8 @@ dtri_normal(a, b, c):=block([A, u, n, da, db, dc],
   u: a - c,
   n: tri_normal(a, b, c),
   A: tri_area(a, b, c),
-  da: 1/(2*A) * ten_dyadic(vec_cross(a - c, n), n),
-  db: 1/(2*A) * ten_dyadic(vec_cross(c - b, n), n),
+  da: 1/(2*A) * ten_dyadic(vec_cross(c - b, n), n),
+  db: 1/(2*A) * ten_dyadic(vec_cross(a - c, n), n),
   dc: 1/(2*A) * ten_dyadic(vec_cross(b - a, n), n),
   [da, db, dc]);
 
