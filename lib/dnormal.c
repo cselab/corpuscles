@@ -5,6 +5,7 @@
 #include "he/err.h"
 #include "he/he.h"
 #include "he/vec.h"
+//#include "he/dvec.h"
 #include "he/tri.h"
 #include "he/ten.h"
 #include "he/memory.h"
@@ -12,14 +13,14 @@
 
 #define T Dnormal
 
-#define BEGIN_LOOP_HE                            \
+#define BEGIN_LOOP                               \
     nh = he_nh(he);                              \
     for (h = 0; h < nh; h++) {                   \
     he_ijk(he, h, &i, &j, &k);                   \
     vec_get(i, x, y, z, a);                      \
     vec_get(j, x, y, z, b);                      \
     vec_get(k, x, y, z, c);
-#define END_LOOOP_HE }
+#define END_LOOOP }
 
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
@@ -62,7 +63,7 @@ int dnormal_fin(T *q) {
 
 int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ Ten **pf) {
-    int nh, h, i, j, k;
+    int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
     real *ang;
     Ten *dn, *f;
@@ -70,11 +71,25 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
     u = q->u;
     ang = q->ang;
+    m = q->m;
+    f = q->f;
+    dn = q->dn;
 
-    BEGIN_LOOP_HE {
+    nv = he_nv(he);
+    for (i = 0; i < nv; i++) {
+        vec_zero(m[i].v);
+        ten_zero(&f[i]);
+    }
+
+    BEGIN_LOOP {
         tri_normal(a, b, c, /**/ u[h].v);
         ang[h] = tri_angle(c, a, b);
-    } END_LOOOP_HE
+        vec_axpy(ang[h], u[h].v, /*io*/ m[i].v);
+    } END_LOOOP;
+
+    for (i = 0; i < nv; i++) {
+        //dvec_norm(m[i].v, &dn[i]);
+    }
 
     return HE_OK;
 }
