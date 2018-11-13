@@ -30,3 +30,6 @@
 
 # TEST: 10
 ./main col_ini 1 2 3 10 20 30 100 200 300 > ten.out.txt
+
+# TEST: 11
+./main trace 1 2 3   10 20 30    100 200 300 > ten.out.txt
