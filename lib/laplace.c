@@ -21,7 +21,7 @@
     vec_get(i, x, y, z, a);                      \
     vec_get(j, x, y, z, b);                      \
     vec_get(k, x, y, z, c);
-#define END_LOOOP }
+#define END_LOOP }
 
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
@@ -72,6 +72,11 @@ int laplace_fin(T *q) {
 }
 
 int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
-                  /**/ real **lx, real **ly, real **lz) {
+                  /**/ real **plx, real **ply, real **plz) {
+
+    BEGIN_LOOP {
+        
+    } END_LOOP;
+    
     return HE_OK;
 }

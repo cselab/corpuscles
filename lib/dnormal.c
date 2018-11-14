@@ -21,7 +21,7 @@
     vec_get(i, x, y, z, a);                      \
     vec_get(j, x, y, z, b);                      \
     vec_get(k, x, y, z, c);
-#define END_LOOOP }
+#define END_LOOP }
 
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
@@ -98,7 +98,7 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
         tri_normal(a, b, c, /**/ u[h].v);
         ang[h] = tri_angle(c, a, b);
         vec_axpy(ang[h], u[h].v, /*io*/ m[i].v);
-    } END_LOOOP;
+    } END_LOOP;
 
     for (i = 0; i < nv; i++) {
         vec_norm(m[i].v, n[i].v);
@@ -114,14 +114,14 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
         ten_axpy(ang[h], &Da, &F[i]);
         ten_axpy(ang[h], &Db, &F[j]);
         ten_axpy(ang[h], &Dc, &F[k]);
-    } END_LOOOP;
+    } END_LOOP;
 
     BEGIN_LOOP {
         dtri_angle(c, a, b, dc, da, db);
         QplusAbc(&Dn[i], u[h], da, /*io*/ &F[i]);
         QplusAbc(&Dn[i], u[h], db, /*io*/ &F[j]);
         QplusAbc(&Dn[i], u[h], dc, /*io*/ &F[k]);
-    } END_LOOOP;
+    } END_LOOP;
     *pF = F;
     return HE_OK;
 }
