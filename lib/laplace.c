@@ -28,7 +28,7 @@ struct Vec { real v[3]; };
 
 struct T {
     int nv, nh;
-    real *tb, *tc;
+    real *tb, *tc, *sb, *sc;
     Vec *eb, *ec;
     real *area, *lx, *ly, *lz;
 };
@@ -45,7 +45,12 @@ int laplace_ini(He *he, /**/ T **pq) {
     MALLOC(nh, &q->tc);
     MALLOC(nh, &q->eb);
     MALLOC(nh, &q->ec);
+
+    MALLOC(nh, &q->sb);
+    MALLOC(nh, &q->sc);
+
     MALLOC(nv, &q->area);
+
     MALLOC(nv, &q->lx);
     MALLOC(nv, &q->ly);
     MALLOC(nv, &q->lz);
@@ -58,7 +63,9 @@ int laplace_ini(He *he, /**/ T **pq) {
 
 int laplace_fin(T *q) {
     FREE(q->tb); FREE(q->tc);
-    FREE(q->eb); FREE(q->ec); FREE(q->area);
+    FREE(q->eb); FREE(q->ec);
+    FREE(q->sb); FREE(q->sc);
+    FREE(q->area);
     FREE(q->lx); FREE(q->ly); FREE(q->lz);
     FREE(q);
     return HE_OK;
