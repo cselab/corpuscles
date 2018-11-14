@@ -34,6 +34,7 @@ f/meyer.s.o\
 f/meyer_xin.s.o\
 f/strain.s.o\
 f/volume.s.o\
+laplace.s.o\
 normal.s.o\
 off.s.o\
 orient.s.o\
@@ -80,6 +81,7 @@ f/meyer.d.o\
 f/meyer_xin.d.o\
 f/strain.d.o\
 f/volume.d.o\
+laplace.d.o\
 normal.d.o\
 off.d.o\
 orient.d.o\

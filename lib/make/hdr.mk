@@ -30,6 +30,7 @@ he/f/strain.h\
 he/f/volume.h\
 he/hash.h\
 he/he.h\
+he/laplace.h\
 he/macro.h\
 he/memory.h\
 he/normal.h\
