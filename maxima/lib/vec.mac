@@ -2,7 +2,7 @@ vec_ini(a)::=buildq([a,
     x:  concat(a, 'x),
     y:  concat(a, 'y),
     z:  concat(a, 'z)],
-  a: [x, y, z]); 
+  a: [x, y, z]);
 
 vec_any(a)::=buildq([a, lo: gensym(), hi: gensym(), L: gensym()],
   block([lo: -9, hi: 9, L],
