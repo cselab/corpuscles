@@ -71,7 +71,6 @@ static int QplusAbc(const Ten *A, const Vec b, const real c[3],
     ten_add(&Y, Q);
     return HE_OK;
 }
-
 int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ Ten **pF) {
     int nh, nv, h, i, j, k;
