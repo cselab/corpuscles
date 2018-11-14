@@ -76,7 +76,7 @@ int laplace_fin(T *q) {
 }
 
 int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
-                  /**/ real **plx, real **ply, real **plz) {
+                  /**/ real **plx, real **ply, real **plz, real **parea) {
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
     real *tb, *tc, *sb, *sc, *area;
@@ -125,6 +125,6 @@ int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
         lz[i] = lp[i].v[Z];
     }
 
-    *plx = lx; *ply = ly; *plz = lz;
+    *plx = lx; *ply = ly; *plz = lz; *parea = area;
     return HE_OK;
 }
