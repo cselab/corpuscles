@@ -98,6 +98,10 @@ int ten_sub(const Ten *R, /*io*/ Ten *T) {
     return HE_OK;
 }
 
+int ten_mult(const Ten R, /*io*/ Ten *T) {
+    return HE_OK;
+}
+
 real ten_trace(const Ten *T) {
     const real *t;
     t = T->t;
@@ -106,7 +110,7 @@ real ten_trace(const Ten *T) {
 
 real ten_determinant(const Ten *T) {
     const real *t;
-    t = T->t;    
+    t = T->t;
     return  \
         t[XX]*(t[YY]*t[ZZ]-t[YZ]*t[ZY]) -
         t[XY]*(t[YX]*t[ZZ]-t[YZ]*t[ZX]) +
@@ -223,7 +227,7 @@ int ten_argv(const char **pq[], /**/ Ten *T) {
     t = T->t;
 #   define NXT(d)                                                       \
     do {                                                                \
-        if (*q == NULL) ERR(HE_IO, "not enough args");                   \
+        if (*q == NULL) ERR(HE_IO, "not enough args");                  \
         if (!nxt(*q, &t[d]))                                            \
             ERR(HE_IO, "not a number '%s", *q);                         \
         q++;                                                            \

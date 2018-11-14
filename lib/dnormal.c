@@ -97,6 +97,7 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
     BEGIN_LOOP {
         dtri_normal(a, b, c, /**/ &Da, &Db, &Dc);
+//        ten_mult
         /* TODO */
     } END_LOOOP;
 
