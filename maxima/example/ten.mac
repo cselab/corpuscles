@@ -15,12 +15,19 @@ ten_ini(r);
 ten_ini(t);
 ten_ini(a);
 
-ans: ten_mult(t, r);
 
-with_stdout("p",
-for i in [1, 2, 3] do
-for j in [1, 2, 3] do
-grind(a[i,j] = ans[i,j]));
+with_stdout("r",
+  ans: ten_mult(t, r),
+  for i in [1, 2, 3] do
+  for j in [1, 2, 3] do
+  grind(a[i,j] = ans[i,j]));
+
+with_stdout("l",
+  ans: ten_mult(r, t),
+  for i in [1, 2, 3] do
+  for j in [1, 2, 3] do
+  grind(a[i,j] = ans[i,j]));
+
 
 ten_any(PP);
 ten_any(QQ);

@@ -9,11 +9,14 @@ int ten_minus(const Ten*, const Ten*, /**/ Ten*);
 int ten_scalar(const Ten*, real, /**/ Ten*);
 int ten_vec(const Ten*, const real[3], /**/ real[3]);
 
-/* y *= s, y += x, y -= x, y *= x */
+/* y *= s, y += x, y -= x,  */
 int ten_scale(real, /*io*/ Ten*);
 int ten_add(const Ten *x, /*io*/ Ten *y);
 int ten_sub(const Ten *x, /*io*/ Ten *y);
-int ten_mult(const Ten *x, /*io*/ Ten *y);
+
+/*         y = y * x, y = x * y */
+int ten_mult_right(const Ten *x, /*io*/ Ten *y);
+int ten_mult_left(const Ten *x, /*io*/ Ten *y);
 
 real ten_trace(const Ten*);
 real ten_determinant(const Ten*);

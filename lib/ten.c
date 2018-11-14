@@ -98,7 +98,7 @@ int ten_sub(const Ten *R, /*io*/ Ten *T) {
     return HE_OK;
 }
 
-int ten_mult(const Ten *R, /*io*/ Ten *T) {
+int ten_mult_right(const Ten *R, /*io*/ Ten *T) {
     Ten A;
     const real *r;
     real *t, *a;
@@ -107,14 +107,31 @@ int ten_mult(const Ten *R, /*io*/ Ten *T) {
     a[XX] = t[XZ]*r[ZX]+t[XY]*r[YX]+r[XX]*t[XX];
     a[XY] = t[XZ]*r[ZY]+t[XY]*r[YY]+t[XX]*r[XY];
     a[XZ] = t[XZ]*r[ZZ]+t[XY]*r[YZ]+t[XX]*r[XZ];
-    
     a[YX] = t[YZ]*r[ZX]+r[YX]*t[YY]+r[XX]*t[YX];
     a[YY] = t[YZ]*r[ZY]+r[YY]*t[YY]+r[XY]*t[YX];
     a[YZ] = t[YZ]*r[ZZ]+t[YY]*r[YZ]+r[XZ]*t[YX];
-    
     a[ZX] = r[ZX]*t[ZZ]+r[YX]*t[ZY]+r[XX]*t[ZX];
     a[ZY] = r[ZY]*t[ZZ]+r[YY]*t[ZY]+r[XY]*t[ZX];
     a[ZZ] = r[ZZ]*t[ZZ]+r[YZ]*t[ZY]+r[XZ]*t[ZX];
+    ten_copy(&A, T);
+    return HE_OK;
+}
+
+int ten_mult_left(const Ten *R, /*io*/ Ten *T) {
+    Ten A;
+    const real *r;
+    real *t, *a;
+    r = R->t; t = T->t; a = A.t;
+    ten_copy(T, &A);
+    a[XX] = r[XZ]*t[ZX]+r[XY]*t[YX]+r[XX]*t[XX];
+    a[XY] = r[XZ]*t[ZY]+r[XY]*t[YY]+r[XX]*t[XY];
+    a[XZ] = r[XZ]*t[ZZ]+r[XY]*t[YZ]+r[XX]*t[XZ];
+    a[YX] = r[YZ]*t[ZX]+t[YX]*r[YY]+t[XX]*r[YX];
+    a[YY] = r[YZ]*t[ZY]+r[YY]*t[YY]+t[XY]*r[YX];
+    a[YZ] = r[YZ]*t[ZZ]+r[YY]*t[YZ]+t[XZ]*r[YX];
+    a[ZX] = t[ZX]*r[ZZ]+t[YX]*r[ZY]+t[XX]*r[ZX];
+    a[ZY] = t[ZY]*r[ZZ]+t[YY]*r[ZY]+t[XY]*r[ZX];
+    a[ZZ] = r[ZZ]*t[ZZ]+t[YZ]*r[ZY]+t[XZ]*r[ZX];
     ten_copy(&A, T);
     return HE_OK;
 }
