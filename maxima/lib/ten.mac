@@ -6,6 +6,11 @@ ten_any(a)::=buildq([a, lo: gensym(), hi: gensym(), L: gensym()],
       [lo + random(L), lo + random(L), lo + random(L)],
       [lo + random(L), lo + random(L), lo + random(L)])));
 
+ten_ini(a)::=buildq([a, m: gensym()],
+  a: matrixmap(
+    lambda([i], arraymake(a, [i])),
+    matrix(['XX, 'XY, 'XZ], ['YX, 'YY, 'YZ], ['ZX, 'ZY, 'ZZ])));
+
 ten_block([L])::=buildq([L], block(
     [X:1, Y:2, Z:3],
     splice(L)));
