@@ -27,7 +27,8 @@ int main() {
     for (i = 0; i < n; i++) {
         printf("%g %g %g ", x[i], y[i], z[i]);
         ten_line(&f[i]); printf(" ");
-        printf("%.16g %.16g", ten_trace(f), ten_determinant(f));
+        printf("%.16g %.16g",
+               ten_trace(&f[i]), ten_determinant(&f[i]));
         puts("");
     }
 
