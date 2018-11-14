@@ -1,3 +1,11 @@
+ten_any(a)::=buildq([a, lo: gensym(), hi: gensym(), L: gensym()],
+  block([lo: -9, hi: 9, L],
+    L: hi - lo + 1,
+    a: matrix(
+      [lo + random(L), lo + random(L), lo + random(L)],
+      [lo + random(L), lo + random(L), lo + random(L)],
+      [lo + random(L), lo + random(L), lo + random(L)])));
+
 ten_block([L])::=buildq([L], block(
     [X:1, Y:2, Z:3],
     splice(L)));
