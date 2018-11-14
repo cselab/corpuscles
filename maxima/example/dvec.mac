@@ -2,5 +2,13 @@ load("he/vec.mac") $
 load("he/ten.mac") $
 load("he/dvec.mac") $
 
-a: [1, 1, 1];
-dvec_norm(a), numer;
+/* a: [1, 1, 1];
+dvec_norm(a), numer; */
+
+vec_ini(a);
+vec_ini(b);
+
+m: a - b;
+
+jacobian(m, a);
+jacobian(m, b);
