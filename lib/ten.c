@@ -98,7 +98,11 @@ int ten_sub(const Ten *R, /*io*/ Ten *T) {
     return HE_OK;
 }
 
-int ten_mult(const Ten R, /*io*/ Ten *T) {
+int ten_mult(const Ten *R, /*io*/ Ten *T) {
+    const real *r;
+    real *t;
+    r = R->t; t = T->t;
+
     return HE_OK;
 }
 
