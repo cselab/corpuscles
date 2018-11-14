@@ -196,7 +196,7 @@ static int f2_l2(He *he,
     for (h = 0; h < nh; h++) {
         n = nxt(h); i = ver(h); j = ver(n);
         get2(x, y, z, i, j, /**/ a, b);
-        dedg_abs2(a, b, /**/ da, db);
+        dedg_sq(a, b, /**/ da, db);
         t0 = t[h];
         vec_get(i, lbx, lby, lbz, ll);
         lpl = vec_dot(ll, ll);
