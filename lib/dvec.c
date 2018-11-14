@@ -8,7 +8,7 @@
 
 enum {X, Y, Z};
 
-int dvec_norm(real a[3], Ten *t) {
+int dvec_norm(const real a[3], Ten *t) {
     real r, n[3];
     Ten nn;
     r = vec_abs(a);
