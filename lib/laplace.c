@@ -111,7 +111,6 @@ int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
         sb[h] = edg_sq(a, b);
         sc[h] = edg_sq(a, c);
-
     } END_LOOP;
 
     BEGIN_LOOP {
