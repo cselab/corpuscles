@@ -14,7 +14,7 @@
 int main() {
     Dnormal *dnormal;
     He *he;
-    int n;
+    int n, i;
     real *x, *y, *z;
     Ten *f;
 
@@ -22,6 +22,14 @@ int main() {
     n = he_nv(he);
     dnormal_ini(he, &dnormal);
     dnormal_apply(dnormal, he, x, y, z, /**/ &f);
+
+    puts("x y z xx xy xz yx yy yz zx zy zz trace determinant");
+    for (i = 0; i < n; i++) {
+        printf("%g %g %g ", x[i], y[i], z[i]);
+        ten_line(&f[i]); printf(" ");
+        printf("%.16g %.16g", ten_trace(f), ten_determinant(f));
+        puts("");
+    }
 
     dnormal_fin(dnormal);
     y_fin(he, x, y, z);

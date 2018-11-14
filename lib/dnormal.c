@@ -62,17 +62,18 @@ int dnormal_fin(T *q) {
     return HE_OK;
 }
 
-static int QplusAbc(Ten *A, Vec b, Vec c, /**/ Ten *Q) {
+static int QplusAbc(const Ten *A, const Vec b, const real c[3],
+                    /**/ Ten *Q) {
     real x[3];
     Ten Y;
     ten_vec(A, b.v, /**/ x);
-    ten_dyadic(x, c.v, /**/ &Y);
+    ten_dyadic(x, c, /**/ &Y);
     ten_add(&Y, Q);
     return HE_OK;
 }
 
 int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
-                  /**/ Ten **pf) {
+                  /**/ Ten **pF) {
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
@@ -118,8 +119,10 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
     BEGIN_LOOP {
         dtri_angle(c, a, b, dc, da, db);
-
+        QplusAbc(&Dn[i], u[h], da, /*io*/ &F[i]);
+        QplusAbc(&Dn[i], u[h], db, /*io*/ &F[j]);
+        QplusAbc(&Dn[i], u[h], dc, /*io*/ &F[k]);
     } END_LOOOP;
-
+    *pF = F;
     return HE_OK;
 }

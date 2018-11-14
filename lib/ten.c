@@ -232,7 +232,7 @@ int ten_printf(const Ten *T, const char *fmt0) {
 int ten_line(const Ten *T) {
     const real *t;
     t = T->t;
-    printf("%.16g %.16g %.16g %.16g %.16g %.16g %16g %.16g %.16g",
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g",
            t[XX], t[XY], t[XZ], t[YX], t[YY], t[YZ], t[ZX], t[ZY], t[ZZ]);
     return HE_OK;
 }
