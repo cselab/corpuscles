@@ -62,6 +62,15 @@ int dnormal_fin(T *q) {
     return HE_OK;
 }
 
+static int QplusAbc(Ten *A, Vec b, Vec c, /**/ Ten *Q) {
+    real x[3];
+    Ten Y;
+    ten_vec(A, b.v, /**/ x);
+    ten_dyadic(x, c.v, /**/ &Y);
+    ten_add(&Y, Q);
+    return HE_OK;
+}
+
 int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ Ten **pf) {
     int nh, nv, h, i, j, k;
