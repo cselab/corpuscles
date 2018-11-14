@@ -29,7 +29,7 @@ struct Vec { real v[3]; };
 struct T {
     int nv, nh;
     real *ang;
-    Ten *dn, *f;
+    Ten *Dn, *F;
     Vec *u, *m, *n;
 };
 
@@ -45,9 +45,9 @@ int dnormal_ini(He *he, /**/ T **pq) {
     MALLOC(nh, &q->ang);
 
     MALLOC(nv, &q->n);
-    MALLOC(nv, &q->dn);
+    MALLOC(nv, &q->Dn);
     MALLOC(nv, &q->m);
-    MALLOC(nv, &q->f);
+    MALLOC(nv, &q->F);
 
     q->nv = nv;
     q->nh = nh;
@@ -57,7 +57,7 @@ int dnormal_ini(He *he, /**/ T **pq) {
 
 int dnormal_fin(T *q) {
     FREE(q->u); FREE(q->ang); FREE(q->n);
-    FREE(q->dn); FREE(q->m); FREE(q->f);
+    FREE(q->Dn); FREE(q->m); FREE(q->F);
     FREE(q);
     return HE_OK;
 }
@@ -66,22 +66,23 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ Ten **pf) {
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
+    real da[3], db[3], dc[3];
     real *ang;
-    Ten *dn, *f;
+    Ten *Dn, *F;
     Vec *u, *m, *n;
     Ten Da, Db, Dc;
 
     u = q->u;
     ang = q->ang;
     m = q->m;
-    f = q->f;
-    dn = q->dn;
+    F = q->F;
+    Dn = q->Dn;
     n = q->n;
 
     nv = he_nv(he);
     for (i = 0; i < nv; i++) {
         vec_zero(m[i].v);
-        ten_zero(&f[i]);
+        ten_zero(&F[i]);
     }
 
     BEGIN_LOOP {
@@ -92,20 +93,23 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
     for (i = 0; i < nv; i++) {
         vec_norm(m[i].v, n[i].v);
-        dvec_norm(m[i].v, &dn[i]);
+        dvec_norm(m[i].v, &Dn[i]);
     }
 
     BEGIN_LOOP {
         dtri_normal(a, b, c, /**/ &Da, &Db, &Dc);
-        ten_mult_left(&dn[i], &Da);
-        ten_mult_left(&dn[i], &Db);
-        ten_mult_left(&dn[i], &Dc);
+        ten_mult_left(&Dn[i], &Da);
+        ten_mult_left(&Dn[i], &Db);
+        ten_mult_left(&Dn[i], &Dc);
 
-        ten_axpy(ang[h], &Da, &f[i]);
-        ten_axpy(ang[h], &Db, &f[j]);
-        ten_axpy(ang[h], &Dc, &f[k]);
+        ten_axpy(ang[h], &Da, &F[i]);
+        ten_axpy(ang[h], &Db, &F[j]);
+        ten_axpy(ang[h], &Dc, &F[k]);
+    } END_LOOOP;
 
-        /* TODO */
+    BEGIN_LOOP {
+        dtri_angle(c, a, b, dc, da, db);
+
     } END_LOOOP;
 
     return HE_OK;
