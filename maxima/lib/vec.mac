@@ -7,7 +7,7 @@ vec_ini(a)::=buildq([a,
 vec_any(a)::=buildq([a],
   block([lo: -9, hi: 9, L],
     L: hi - lo + 1,
-    a: [lo + random(L), lo + random(10), lo + random(10)]));
+    a: [lo + random(L), lo + random(L), lo + random(L)]));
 
 vec_dot(a, b):= block([X: 1, Y: 2, Z: 3],
   a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]);
