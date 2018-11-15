@@ -7,6 +7,7 @@ he/dedg.h\
 he/dih.h\
 he/dnormal.h\
 he/dtri.h\
+he/dvec.h\
 he/edg.h\
 he/equiangulate.h\
 he/err.h\
@@ -29,6 +30,7 @@ he/f/strain.h\
 he/f/volume.h\
 he/hash.h\
 he/he.h\
+he/laplace.h\
 he/macro.h\
 he/memory.h\
 he/normal.h\

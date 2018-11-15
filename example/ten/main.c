@@ -65,6 +65,18 @@ int main(__UNUSED int argc, const char **v) {
         ten(&T); ten(&R);
         ten_add(&R, &T);
         ten_printf(&T, "%g");
+    } else if (eq(op, "sub")) {
+        ten(&T); ten(&R);
+        ten_sub(&R, &T);
+        ten_printf(&T, "%g");
+    } else if (eq(op, "mult_right")) {
+        ten(&T); ten(&R);
+        ten_mult_right(&R, &T);
+        ten_printf(&T, "%g");
+    } else if (eq(op, "mult_left")) {
+        ten(&T); ten(&R);
+        ten_mult_left(&R, &T);
+        ten_printf(&T, "%g");
     } else if (eq(op, "trace")) {
         ten(&T);
         printf("%g\n", ten_trace(&T));

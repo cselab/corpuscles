@@ -1,0 +1,2 @@
+# TEST: abs
+./main abs 1 2 3 10 20 30 > main.out.txt

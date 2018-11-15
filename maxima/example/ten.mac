@@ -2,12 +2,36 @@ load("he/vec.mac") $
 load("he/ten.mac") $
 load("he/dvec.mac") $
 
+/*
 vec_ini(a);
 n: vec_norm(a);
 
 A: jacobian(n, a);
 B: expand(dvec_norm(a));
 
-A - B;
+A - B; */
 
-ten_mult(A, ten_one()) - A;
+ten_ini(r);
+ten_ini(t);
+ten_ini(a);
+
+
+with_stdout("r",
+  ans: ten_mult(t, r),
+  for i in [1, 2, 3] do
+  for j in [1, 2, 3] do
+  grind(a[i,j] = ans[i,j]));
+
+with_stdout("l",
+  ans: ten_mult(r, t),
+  for i in [1, 2, 3] do
+  for j in [1, 2, 3] do
+  grind(a[i,j] = ans[i,j]));
+
+
+ten_any(PP);
+ten_any(QQ);
+
+ten_arg(PP, QQ);
+
+R . T;

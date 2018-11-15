@@ -24,6 +24,8 @@ int he_hdg_edg(T*, int e);
 int he_hdg_tri(T*, int t);
 
 int he_bnd(T*, int h); /* 1 for boundary */
+int he_ijk(T*, int h, /**/ int *i, int *j, int *k);
+
 int he_edg_rotate(T*, int e); /* AKA flip edge */
 
 int he_T(T*, int **T0, int **T1, int **T2);

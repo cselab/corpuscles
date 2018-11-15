@@ -1,2 +1,0 @@
-# TEST: 0
-./main < ../../data/rbc/icosahedron/0.off > txt.out.txt

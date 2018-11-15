@@ -14,6 +14,7 @@ dedg.s.o\
 dih.s.o\
 dnormal.s.o\
 dtri.s.o\
+dvec.s.o\
 edg.s.o\
 equiangulate.s.o\
 f/area.s.o\
@@ -33,6 +34,7 @@ f/meyer.s.o\
 f/meyer_xin.s.o\
 f/strain.s.o\
 f/volume.s.o\
+laplace.s.o\
 normal.s.o\
 off.s.o\
 orient.s.o\
@@ -59,6 +61,7 @@ dedg.d.o\
 dih.d.o\
 dnormal.d.o\
 dtri.d.o\
+dvec.d.o\
 edg.d.o\
 equiangulate.d.o\
 f/area.d.o\
@@ -78,6 +81,7 @@ f/meyer.d.o\
 f/meyer_xin.d.o\
 f/strain.d.o\
 f/volume.d.o\
+laplace.d.o\
 normal.d.o\
 off.d.o\
 orient.d.o\
