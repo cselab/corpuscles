@@ -17,12 +17,12 @@ then
     #rm -r $Vr
     mkdir $Vr
     cd $Vr
-    ../../../../main gompper $Vr 3 3 3 0 $Kb $C0 $Kad $DA0D $end < $off > oblate_Vr$Vr.msg &
+    ../../../../main gompper $Vr 3 3 3 0 $Kb $C0 $Kad $DA0D $end < $off > stomato_Vr$Vr.msg &
     #mv end.off oblate_Vr$Vr.off
     #mv inter.dat oblate_Vr$Vr.dat
     cd ..
 else
-    for Vr in 0.65 0.63 0.61 0.59 0.57 0.55 0.53 0.51 0.49 0.47 
+    for Vr in 0.65 0.6 0.55 0.5 0.45 0.4 0.35 0.3 0.25
     do sh run_stomato.sh $Vr
     done
 fi
