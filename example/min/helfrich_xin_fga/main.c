@@ -35,14 +35,16 @@ static void zero(int n, real *a) {
 
 static real rVolume, Ka, Kga, Kv, Ke;
 static int end;
+static int freq;
 static real A0, V0, e0;
 static const char **argv;
 static char bending[4049];
 static const char *me = "min/helfrich_xin_fa";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
+    fprintf(stderr, "freq: frequency of output off files\n");
     exit(0);
 }
 
@@ -85,6 +87,7 @@ static void arg() {
     scl(&Kad);
     scl(&DA0D);
     num(&end);
+    num(&freq);
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -203,7 +206,8 @@ static void main0(real *vx, real *vy, real *vz,
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   real et, eb, ek;
-  
+  char file[4048];
+
   dt_max = 0.01;
   mu     = 100.0;
   h      = 0.01*e0;
@@ -211,7 +215,7 @@ static void main0(real *vx, real *vy, real *vz,
   nsub = 100;
   
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
-  for (i = 0; i < end; i++) {
+  for (i = 0; i <= end; i++) {
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     rnd = 0.01*max_vec(vx, vy, vz);
@@ -228,15 +232,17 @@ static void main0(real *vx, real *vy, real *vz,
       
     }
       
-    if (i % 100 == 0) {
-      j = 0;
-      do {
-	equiangulate(&cnt);
-	MSG("cnt : %d", cnt);
-	j++;
-      } while (cnt > 0 && j < 10);
+    if ( i % 100 == 0 ) {
+
+      if ( i > 0 ) {
+	j = 0;
+	do {
+	  equiangulate(&cnt);
+	  MSG("cnt : %d", cnt);
+	  j++;
+	} while (cnt > 0 && j < 10);
+      }
       
-      punto_append(NV, queue, "inter.dat");
       et = Energy(XX, YY, ZZ);
       eb = f_bending_energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
@@ -244,13 +250,16 @@ static void main0(real *vx, real *vy, real *vz,
       MSG("eng: %g %g %g", et, eb, ek); 
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-	printf("eng: %g %g %g\n", et, eb, ek); 
-	printf("dt: %f\n", dt);
-	printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
-	off_write(XX, YY, ZZ, "inter.off");
+      printf("eng: %g %g %g\n", et, eb, ek); 
+      printf("dt: %f\n", dt);
+      printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+    }
+    
+    if ( i % freq == 0 ) {
+      sprintf(file, "%06d.off", i);
+      off_write(XX, YY, ZZ, file);
     }
   }
-  off_write(XX, YY, ZZ, "end.off");
 }
 
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
