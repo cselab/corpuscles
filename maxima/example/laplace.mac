@@ -20,6 +20,7 @@ alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
 alloc(nv, H, r);
 calloc(nv, area);
 valloc(nv, lp, m, n);
+talloc(nv, f);
 
 loop_he(he,
   tb[h]: tri_cot(a, b, c),
@@ -45,6 +46,20 @@ loop_ver(he,
 loop_ver(he,
   H[i]: vec_dot(lp[i], n[i])/area[i],
   r[i]: vec_cylindrical_r(a));
+
+loop_he(he, /* ec*d(tb) */
+  [da, db, dc]: tri_cot(a, b, c),
+  f[i] += ten_dyadic(ec[h], da),
+  f[j] += ten_dyadic(ec[h], db),
+  f[k] += ten_dyadic(ec[h], dc));
+
+loop_he(he, /* eb*d(tc) */
+  [db, dc, da]: tri_cot(b, c, a),
+  f[i] += ten_dyadic(eb[h], da),
+  f[j] += ten_dyadic(eb[h], db),
+  f[k] += ten_dyadic(eb[h], dc));
+
+/* d(eb)*tc   +   d(ec)*tb */
 
 with_stdout("q",
   printf(true, "x y z r area H~%"),
