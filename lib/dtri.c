@@ -33,8 +33,9 @@ int dtri_cot(const real a[3], const real b[3], const real c[3],   real da[3], re
     real ang, s, da0[3], db0[3], dc0[3];
     ang = tri_angle(a, b, c);
     s = sin(ang);
+    if (s == 0)
+        ERR(HE_NUM, "s = 0");
     s = -1/(s*s);
-    if (s == 0) ERR(HE_NUM, "s = 0");
     dtri_angle(a, b, c,   da0, db0, dc0);
     vec_scalar(da0, s,   da);
     vec_scalar(db0, s,   db);
