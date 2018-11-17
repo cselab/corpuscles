@@ -1,13 +1,30 @@
 set -eu
 
-off=$HOME/codes/he/data/sph/laplace/0.off
+off=../../../sph/laplace/0.off
 
 if test $# -ne 0
 then
     Vr="$1"
-    $HOME/codes/tri/example/sphere2spheroid/main $off oblate volume $Vr > oblate_volume_Vr$Vr.off
+    ../../../../../tri/example/sphere2spheroid/main $off oblate volume $Vr > oblate_volume_Vr$Vr.off
 else
-    for Vr in 0.95 0.9 0.85 0.8 0.75 0.7 0.65 0.6 0.55 0.5 0.45 0.4 0.35 0.3 0.25 0.2 0.15 0.1 0.05
-    do sh generate_oblate_fixed_volume.sh $Vr
+    for i in `seq 0 7`;
+    do
+	Vr=$(echo $i | awk '{print 0.05+$1*0.05}')
+	#echo $Vr
+	bash generate_oblate_fixed_volume.sh $Vr
+    done
+    
+    for i in `seq 0 34`;
+    do
+	Vr=$(echo $i | awk '{print 0.45+$1*0.01}')
+	#echo $Vr
+	bash generate_oblate_fixed_volume.sh $Vr
+    done
+    
+    for i in `seq 0 3`;
+    do
+	Vr=$(echo $i | awk '{print 0.8+$1*0.05}')
+	#echo $Vr
+	bash generate_oblate_fixed_volume.sh $Vr
     done
 fi
