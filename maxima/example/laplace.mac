@@ -8,9 +8,10 @@ load("he/loop.mac")$
 load("he/vec.mac")$
 load("he/tri.mac")$
 load("he/edg.mac")$
+load("he/ten.mac")$
 load("he/punto.mac")$
 
-file: "~/0.off"$
+file: "~/hex.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -60,7 +61,19 @@ loop_he(he, /* eb*d(tc) */
   f[k] += ten_dyadic(eb[h], dc));
 
 /* d(eb)*tc   +   d(ec)*tb */
+loop_he(he, /* ec*d(tb) */
+  [da, db, dc]: dtri_edg(a, b, c),
+  f[i] += ten_dyadic(ec[h], da),
+  f[j] += ten_dyadic(ec[h], db),
+  f[k] += ten_dyadic(ec[h], dc));
+
+loop_he(he, /* eb*d(tc) */
+  [db, dc, da]: dtri_cot(b, c, a),
+  f[i] += ten_dyadic(eb[h], da),
+  f[j] += ten_dyadic(eb[h], db),
+  f[k] += ten_dyadic(eb[h], dc));
+
 
 with_stdout("q",
-  printf(true, "x y z r area H~%"),
-  punto_write(he, r, area, H));
+  printf(true, "x y z r area lpx lpy lpz xx xy xz yx yy yz zx zy zz~%"),
+  punto_write(he, r, area, lp, f));
