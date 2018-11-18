@@ -3,8 +3,13 @@ load("he/vec.mac") $
 load("he/ten.mac") $
 load("he/dtri.mac") $
 
-vec_any(a); vec_any(b); vec_any(c);
+grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);
 
-[da, db, dc]: dtri_cot(a, b, c), numer;
+vec_ini(a); vec_ini(b); vec_ini(c);
+f: tri_cot(a, b, c) $
+[da, db, dc]: dtri_cot(a, b, c) $
+da0: grad(f, a) $
 
-vec_arg(a, b, c);
+radcan(da - da0);
+radcan(db - db0);
+radcan(dc - dc0);
