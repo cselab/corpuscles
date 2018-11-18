@@ -31,7 +31,7 @@ static int get3(const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
-int he_normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
+int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
                   real *normx, real *normy, real *normz) {
     enum {X, Y, Z};
     int t, nt;

@@ -47,7 +47,12 @@ int H_fin(T *q) {
 
 int H_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ real **pH, real **parea) {
-    real *area;
+    real *lx, *ly, *lz, *area;
+    real *nx, *ny, *nz;
+
+    laplace_apply(q->laplace, he, x, y, z, &lx, &ly, &lz, &area);
+    normal_mwa(he, x, y, z, &nx, &ny, &nz);
+
     *parea = area;
     return HE_OK;
 }

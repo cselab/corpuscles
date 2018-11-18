@@ -19,7 +19,7 @@ int main() {
     y_ini("/dev/stdin", &he, &x, &y, &z);
     n = he_nv(he);
     MALLOC(n, &nx); MALLOC(n, &ny); MALLOC(n, &nz);
-    he_normal_mwa(he, x, y, z, /**/ nx, ny, nz);
+    normal_mwa(he, x, y, z, /**/ nx, ny, nz);
 
     real *queue[] = {x, y, z, nx, ny, nz, NULL};
     puts("x y z nx ny nz");

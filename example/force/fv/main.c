@@ -101,7 +101,7 @@ static void main0() {
     bending_force(bending, he, xx, yy, zz, /**/ Fx, Fy, Fz);
     bending_energy_ver(bending, /**/ &eng);
     he_area_ver(he, xx, yy, zz, /**/ area);
-    he_normal_mwa(he, xx, yy, zz, /**/ nx, ny, nz);
+    normal_mwa(he, xx, yy, zz, /**/ nx, ny, nz);
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ &e0, &e1);
         fd = Fx[i]*nx[i] + Fy[i]*ny[i] + Fz[i]*nz[i];
