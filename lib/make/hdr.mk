@@ -13,6 +13,7 @@ he/equiangulate.h\
 he/err.h\
 he/f/area.h\
 he/f/canham.h\
+he/fd.h\
 he/f/dvolume.h\
 he/f/edg_sq.h\
 he/f/garea.h\
@@ -30,6 +31,7 @@ he/f/strain.h\
 he/f/volume.h\
 he/hash.h\
 he/he.h\
+he/H.h\
 he/laplace.h\
 he/macro.h\
 he/memory.h\
