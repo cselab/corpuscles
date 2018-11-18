@@ -8,7 +8,10 @@ grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);
 vec_ini(a); vec_ini(b); vec_ini(c);
 f: tri_cot(a, b, c) $
 [da, db, dc]: dtri_cot(a, b, c) $
+
 da0: grad(f, a) $
+db0: grad(f, b) $
+dc0: grad(f, c) $
 
 radcan(da - da0);
 radcan(db - db0);
