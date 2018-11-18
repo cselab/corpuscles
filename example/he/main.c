@@ -15,12 +15,12 @@ int main() {
     int h, f, i, j;
     const char path[] = "/dev/stdin";
 
-    he_off_ini(path, &off);
+    off_ini(path, &off);
 
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
+    nv = off_nv(off);
+    nt = off_nt(off);
 
-    he_off_tri(off, &tri);
+    off_tri(off, &tri);
     he_read_tri_ini(nv, nt, tri, &read);
     he_ini(read, &he);
 
@@ -35,7 +35,7 @@ int main() {
     }
 
     he_read_fin(read);
-    he_off_fin(off);
+    off_fin(off);
     he_fin(he);
 
     return HE_OK;

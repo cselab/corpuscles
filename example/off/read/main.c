@@ -19,13 +19,13 @@ static void usg() {
 }
 
 static void ini() {
-    he_off_ini("/dev/stdin", &read);
-    nv = he_off_nv(read);
-    nt = he_off_nt(read);
-    he_off_ver(read, &ver);
-    he_off_tri(read, &tri);
+    off_ini("/dev/stdin", &read);
+    nv = off_nv(read);
+    nt = off_nt(read);
+    off_ver(read, &ver);
+    off_tri(read, &tri);
 }
-static void fin() { he_off_fin(read); }
+static void fin() { off_fin(read); }
 
 static void write() {
     int i;

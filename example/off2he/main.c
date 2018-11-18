@@ -10,18 +10,18 @@ static HeOff *off;
 
 void ini() {
     int nv, nt, *tri;
-    he_off_ini("/dev/stdin", &off);
+    off_ini("/dev/stdin", &off);
 
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
+    nv = off_nv(off);
+    nt = off_nt(off);
 
-    he_off_tri(off, &tri);
+    off_tri(off, &tri);
     he_read_tri_ini(nv, nt, tri, &read);
 }
 
 void fin() {
     he_read_fin(read);
-    he_off_fin(off);
+    off_fin(off);
 }
 
 int main() {

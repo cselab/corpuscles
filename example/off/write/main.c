@@ -9,16 +9,16 @@ static real *ver;
 static int  nv, nt, *tri;
 
 static void ini() {
-    he_off_ini("/dev/stdin", &off);
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
-    he_off_ver(off, &ver);
-    he_off_tri(off, &tri);
+    off_ini("/dev/stdin", &off);
+    nv = off_nv(off);
+    nt = off_nt(off);
+    off_ver(off, &ver);
+    off_tri(off, &tri);
 }
-static void fin() { he_off_fin(off); }
+static void fin() { off_fin(off); }
 
 static void main0() {
-    he_off_tri_write(off, tri, "/dev/stdout");
+    off_tri_write(off, tri, "/dev/stdout");
 }
 
 int main() {
