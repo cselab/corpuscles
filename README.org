@@ -1,9 +1,9 @@
-* Introduction
+* Intro
 
 A library for the modelling of surfaces shaped by various forces and
 constraints.
 
-* Installation
+* Install
 
 #+BEGIN_SRC sh
 make PREFIX=$HOME
@@ -11,7 +11,7 @@ make PREFIX=$HOME
 
 `PREFIX` should be on the `PATH`.
 
-* lib
+* Lib
 
 ** Precision
 - prec/d/real.h :: double
