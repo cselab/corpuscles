@@ -14,9 +14,11 @@ n: F(m);
 
 lp: s(tb*ec + tc*eb);
 
-H: lp;
+H: lp . n;
+dH: d(H);
+dH: ratexpand(subst('F, F(m), dH));
 
-d(n);
+diff(dH, d(ang));
+diff(dH, d(u));
 
-dH: d(lp);
-ratexpand(subst('F, F(m), dH));
+diff(dH, d(tc));

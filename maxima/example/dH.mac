@@ -1,0 +1,88 @@
+load("stringproc")$
+
+load("he/off.mac")$
+load("he/util.mac")$
+load("he/he.mac")$
+load("he/util.mac")$
+load("he/loop.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
+load("he/ten.mac")$
+load("he/dtri.mac")$
+load("he/edg.mac")$
+load("he/punto.mac")$
+load("he/dvec.mac")$
+
+file: "~/hex.off"$
+he: he(file) $
+
+nh: he_nh(he) $
+nv: he_nv(he) $
+
+alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
+alloc(nv, H, r);
+calloc(nv, area);
+valloc(nv, lp, m, n);
+valloc(nv, f);
+talloc(nv, dn)$
+
+loop_he(he,
+  tb[h]: tri_cot(a, b, c),
+  tc[h]: tri_cot(b, c, a),
+
+  eb[h]: a - b,
+  ec[h]: a - c,
+
+  sb[h]: edg_sq(a, b),
+  sc[h]: edg_sq(a, c),
+
+  u[h]:   tri_normal(a, b, c),
+  ang[h]: tri_angle(c, a, b));
+
+loop_he(he,
+  m[i]    += ang[h]*u[h],
+  lp[i]   += tb[h]*ec[h] + tc[h]*eb[h],
+  area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
+
+loop_ver(he,
+  n[i]: vec_norm(m[i]));
+
+loop_ver(he,
+  dn[i]: dvec_norm(m[i]));
+
+loop_ver(he,
+  H[i]: vec_dot(lp[i], n[i]),
+  r[i]: vec_cylindrical_r(a));
+
+loop_he(he,
+  [Da, Db, Dc]: dtri_normal(a, b, c),
+  f[i] += ang[h]*ten_vec(ten_mult(dn[i], Da), lp[i]),
+  f[j] += ang[h]*ten_vec(ten_mult(dn[i], Db), lp[i]),
+  f[k] += ang[h]*ten_vec(ten_mult(dn[i], Dc), lp[i]))$
+loop_he(he,
+  [dc, da, db]: dtri_angle(c, a, b),
+  f[i] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), da), lp[i]),
+  f[j] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), db), lp[i]),
+  f[k] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), dc), lp[i]));
+loop_he0(he,
+  [da, db, dc]: dtri_cot(a, b, c),
+  f[i] += ten_vec(ten_dyadic(ec[h], da), n[i]),
+  f[j] += ten_vec(ten_dyadic(ec[h], db), n[i]),
+  f[k] += ten_vec(ten_dyadic(ec[h], dc), n[i]));
+loop_he0(he,
+  [db, dc, da]: dtri_cot(b, c, a),
+  f[i] += ten_vec(ten_dyadic(eb[h], da), n[i]),
+  f[j] += ten_vec(ten_dyadic(eb[h], db), n[i]),
+  f[k] += ten_vec(ten_dyadic(eb[h], dc), n[i]));
+loop_he0(he,
+  [da, db]: dvec_minus(a, b),
+  f[i] += ten_vec(tc[h] * da, n[i]),
+  f[j] += ten_vec(tc[h] * db, n[i]));
+loop_he0(he,
+  [da, dc]: dvec_minus(a, c),
+  f[i] += ten_vec(tb[h] * da, n[i]),
+  f[k] += ten_vec(tb[h] * dc, n[i]));
+
+with_stdout("q",
+  printf(true, "x y z r area H fx fy fz~%"),
+  punto_write(he, r, area, H, f));
