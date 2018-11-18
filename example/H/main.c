@@ -18,11 +18,19 @@ static int n;
 static H *h;
 static real *x, *y, *z;
 
-static real Energy() {
+static real Energy_sum() {
     real *hh, *area;
     H_apply(h, he, x, y, z, /**/ &hh, &area);
     return he_sum_array(n, hh);
 }
+
+static real Energy_one() {
+    real *hh, *area;
+    H_apply(h, he, x, y, z, /**/ &hh, &area);
+    return hh[0];
+}
+
+static real Energy() { return Energy_sum(); }
 
 static real fd0(real *p) {
     real t, hi, lo;

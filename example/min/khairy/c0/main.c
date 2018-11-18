@@ -8,7 +8,6 @@
 #include <real.h>
 
 #include <he/err.h>
-#include <he/punto.h>
 #include <he/vec.h>
 #include <he/macro.h>
 #include <he/util.h>
@@ -91,6 +90,7 @@ real Energy(const real *x, const real *y, const real *z) {
     v = f_volume_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
+    MSG("a ga v e b: %g %g %g %g %g", a, ga, v, e, b);    
     return a + ga + v + e + b;
 }
 
@@ -99,7 +99,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
-    f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
+    f_edg_sq_force(x, y, z, fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -193,23 +193,24 @@ static real max_vec(real *fx, real *fy, real *fz) {
 
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-    int cnt, i, j;
+    int cnt, i, j, idump;
     real dt, dt_max, h, mu, rnd;
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
     int nsub;
-    
+    char file[4048];    
+
     dt_max = 0.01;
-    mu = 100.0;
+    mu = 1;
     h = 0.01*e0;
 
-    nsub = 100;
+    nsub = 1;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
-    for (i = 0; i < end; i++) {
+    for (idump = i = 0; i < end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.01*max_vec(vx, vy, vz);
+        rnd = max_vec(vx, vy, vz);
         jigle(rnd, vx, vy, vz);        
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
@@ -225,11 +226,10 @@ static void main0(real *vx, real *vy, real *vz,
         if (i % 100 == 0) {
             do {
                 equiangulate(&cnt);
-                //cnt = 0;
                 MSG("cnt : %d", cnt);
             } while (cnt > 0);
-            punto_fwrite(NV, queue, stdout);
-            printf("\n");
+            sprintf(file, "%05d.off", idump++);
+            off_write(XX, YY, ZZ, file);
             MSG("dt: %g", dt);
             MSG("eng: %g %g", Energy(XX, YY, ZZ), Kin(vx, vy, vz));
             A = area(); V = volume();
@@ -244,7 +244,6 @@ int main(int __UNUSED argc, const char *v[]) {
     real a0;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
-    real cutoff;
     BendingParam bending_param;
     
     argv = v; argv++;
@@ -264,9 +263,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
-
-    cutoff = 1.0;
-    f_edg_sq_ini(Ke, cutoff);
+    f_edg_sq_ini(Ke);
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
@@ -283,7 +280,6 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(vx); FREE(vy); FREE(vz);
 
     f_bending_fin();
-    f_edg_sq_fin();
     f_volume_fin();
     f_area_fin();
     f_garea_fin();

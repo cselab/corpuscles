@@ -64,21 +64,21 @@ loop_he(he,
   f[i] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), da), lp[i]),
   f[j] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), db), lp[i]),
   f[k] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), dc), lp[i]));
-loop_he0(he,
+loop_he(he,
   [da, db, dc]: dtri_cot(a, b, c),
   f[i] += ten_vec(ten_dyadic(ec[h], da), n[i]),
   f[j] += ten_vec(ten_dyadic(ec[h], db), n[i]),
   f[k] += ten_vec(ten_dyadic(ec[h], dc), n[i]));
-loop_he0(he,
+loop_he(he,
   [db, dc, da]: dtri_cot(b, c, a),
   f[i] += ten_vec(ten_dyadic(eb[h], da), n[i]),
   f[j] += ten_vec(ten_dyadic(eb[h], db), n[i]),
   f[k] += ten_vec(ten_dyadic(eb[h], dc), n[i]));
-loop_he0(he,
+loop_he(he,
   [da, db]: dvec_minus(a, b),
   f[i] += ten_vec(tc[h] * da, n[i]),
   f[j] += ten_vec(tc[h] * db, n[i]));
-loop_he0(he,
+loop_he(he,
   [da, dc]: dvec_minus(a, c),
   f[i] += ten_vec(tb[h] * da, n[i]),
   f[k] += ten_vec(tb[h] * dc, n[i]));
