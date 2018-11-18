@@ -34,7 +34,7 @@ loop_he(he,
   ec[h]: a - c);
 
 loop_he(he,
-  lp[i]   += tb[h]*ec[h] + tc[h]*eb[h]);
+  lp[i] += tb[h]*ec[h] + tc[h]*eb[h]);
 
 loop_he0(he, /* ec*d(tb) */
   [da, db, dc]: dtri_cot(a, b, c),
