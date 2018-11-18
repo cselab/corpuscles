@@ -23,5 +23,5 @@ dtri_cot(a, b, c):=block([ang, s, da, db, dc],
   ang: tri_angle(a, b, c),
   s: sin(ang),
   s: -1/(s*s),
-  dtri_angle(a, b, c,   da, db, dc),
+  [da, db, dc]: dtri_angle(a, b, c),
   [s*da, s*db, s*dc]);
