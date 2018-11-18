@@ -10,6 +10,8 @@
 #include <he/memory.h>
 #include <he/punto.h>
 
+real *tx, *ty, *tz, *ang, *vx, *vy, *vz;
+
 static void get3(int i, int j, int k, /**/
           real a[3], real b[3], real c[3]) {
     vec_get(i, XX, YY, ZZ, a);
@@ -87,7 +89,7 @@ static real sum(int n, real *a) {
 }
 
 static void main0() {
-    RZERO(NH, ang);
+    RZERO(NH, &ang);
     RZERO(NH, &tx); RZERO(NH, &ty); RZERO(NH, &tz); /* tri normal */
     
     RZERO(NV, &vx); RZERO(NV, &vy); RZERO(NV, &vz); /* ver normal */
