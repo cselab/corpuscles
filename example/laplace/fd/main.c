@@ -15,17 +15,27 @@ static Laplace *laplace;
 static int n;
 static real *x, *y, *z, *area;
 static real *lx, *ly, *lz;
-static real h = 1e-8;
+static real h = 1e-6;
 
 enum {X, Y, Z};
 
-static int Energy(real s[3]) {
+static int Energy_sum(real s[3]) {
     laplace_apply(laplace, he, x, y, z, /**/ &lx, &ly, &lz, &area);
     s[X] = he_sum_array(n, lx);
     s[Y] = he_sum_array(n, ly);
     s[Z] = he_sum_array(n, lz);
     return HE_OK;
 }
+
+static int Energy_one(real s[3]) {
+    laplace_apply(laplace, he, x, y, z, /**/ &lx, &ly, &lz, &area);
+    s[X] = lx[0];
+    s[Y] = ly[0];
+    s[Z] = lz[0];
+    return HE_OK;
+}
+
+static int Energy(real s[3]) { return Energy_one(s); }
 
 static int fd0(real *p, /**/ real f[3]) {
     real t, hi[3], lo[3];
