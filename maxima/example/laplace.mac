@@ -48,13 +48,13 @@ loop_ver(he,
   r[i]: vec_cylindrical_r(a));
 
 loop_he(he, /* ec*d(tb) */
-  [da, db, dc]: tri_cot(a, b, c),
+  [da, db, dc]: dtri_cot(a, b, c),
   f[i] += ten_dyadic(ec[h], da),
   f[j] += ten_dyadic(ec[h], db),
   f[k] += ten_dyadic(ec[h], dc));
 
 loop_he(he, /* eb*d(tc) */
-  [db, dc, da]: tri_cot(b, c, a),
+  [db, dc, da]: dtri_cot(b, c, a),
   f[i] += ten_dyadic(eb[h], da),
   f[j] += ten_dyadic(eb[h], db),
   f[k] += ten_dyadic(eb[h], dc));
