@@ -6,4 +6,7 @@ off=`he.path`/sph/laplace/Nt1280.off
 end=999999999
 freq=100
 
-./main meyer_xin 0 0.1 2 1 0.1 0.01 0 0 0 $end $freq < $off
+v=0.45
+ka=0.1 kga=2 kv=1 ke=1e-4 kb=0.01
+
+./main meyer_xin $v $ka $kga $kv $ke $kb 0 0 0 $end $freq < $off
