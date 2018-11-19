@@ -209,7 +209,7 @@ static void main0(real *vx, real *vy, real *vz,
   mu     = 100.0;
   h      = 0.01*e0;
 
-  nsub = 100;
+  nsub = 10;
 
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
