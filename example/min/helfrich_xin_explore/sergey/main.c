@@ -206,7 +206,7 @@ static void main0(real *vx, real *vy, real *vz,
   char file[4048];
 
   dt_max = 0.01;
-  mu     = 10000.0;
+  mu     = 100.0;
   h      = 0.01*e0;
 
   nsub = 100;
@@ -221,11 +221,11 @@ static void main0(real *vx, real *vy, real *vz,
 
     for (j=0; j < nsub; j++ ) {
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
-      equi();
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
+    equi();
 
     if ( i % 100 == 0 ) {
       et = Energy(XX, YY, ZZ);
