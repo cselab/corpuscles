@@ -71,8 +71,8 @@ static void main0() {
     bending_energy_ver(bending, /**/ &eng);
     bending_area_ver(bending, /**/ &area);
     bending_curva_mean_ver(bending, /**/ &cm);
-    //bending_norm_ver(bending, /**/ &nx, &ny, &nz);
-    //bending_laplace_ver(bending, /**/ &lbx, &lby, &lbz);
+    bending_norm_ver(bending, /**/ &nx, &ny, &nz);
+    bending_laplace_ver(bending, /**/ &lbx, &lby, &lbz);
     //printf("%s, %d\n", __FILE__,__LINE__);
     
     MSG("energy: %g", e);
