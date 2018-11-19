@@ -22,7 +22,7 @@ while test $# -ne 0
 do case "$1" in
        -o) shift
 	   if test $# -eq 0; then err '-o needs a file'; fi
-       	   Output="$1"; shift
+	   Output="$1"; shift
 	   ;;
        -*) err "unknown option '$1'" ;;
        *) break ;;
@@ -30,18 +30,17 @@ do case "$1" in
 done
 
 if test -z "$Output"; then err "OUTPUT.MPG is not given"; fi
+if test $# -eq 0; then err 'no IMAGES..'; fi
 
 for i; do filep "$i"; done
 
 t=/tmp/he.ffmpeg.$$
 trap 'rm -f $t' 1 2 3 15
-
 p=`pwd`
 for i; do echo file \'"$p/$i"\'; done > $t
-
-e ffmpeg -safe 0 -f concat -i $t \
+e ffmpeg -r 1/5 -safe 0 -f concat -i $t \
   -y \
-  -loglevel panic \
-  -r 1/5 -c:v libx264 -vf fps=25 -pix_fmt yuv420p "$Output"
+  -loglevel error \
+  -c:v libx264 -vf fps=25 -pix_fmt yuv420p "$Output"
 
 rm -f $t
