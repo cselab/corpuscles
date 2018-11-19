@@ -198,7 +198,7 @@ static void main0(real *vx, real *vy, real *vz,
   char file[4048];
 
   dt_max = 0.01;
-  mu     = 100.0;
+  mu     = 1000.0;
   h      = 0.01*e0;
 
   nsub = 100;
@@ -227,7 +227,6 @@ static void main0(real *vx, real *vy, real *vz,
     }
 
     if ( i % 100 == 0 ) {
-
       et = Energy(XX, YY, ZZ);
       //eb = f_bending_energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
