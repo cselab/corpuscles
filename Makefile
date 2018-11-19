@@ -5,6 +5,7 @@ lib\
 bin/geomview\
 bin/shake\
 bin/maxima\
+bin/ffmpeg\
 example/area/tri\
 example/area/voronoi\
 example/he\
