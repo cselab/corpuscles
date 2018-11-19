@@ -9,30 +9,36 @@ usg () {
 
 : ${FFMPEG=ffmpeg}
 
+filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 if ! e $FFMPEG -version '>/dev/null' '2>/dev/null'
 then err "$FFMPEG command not found"
 fi
 
-t=/tmp/he.ffmpeg.$$
-trap 'rm -f $t' 1 2 3 15
-
 Output=
 while test $# -ne 0
 do case "$1" in
        -o) shift
-	   echo $#
-	   if test $# -le 1; then err '-o needs a file'; fi
+	   if test $# -eq 0; then err '-o needs a file'; fi
        	   Output="$1"; shift
 	   ;;
-       *) shift
-	  ;;
+       -*) err "unknown option '$1'" ;;
+       *) break ;;
    esac
 done
 
-echo $Output
+if test -z "$Output"; then err "OUTPUT.MPG is not given"; fi
 
-# ffmpeg -r 1/5 -i img%03d.png -c:v libx264 -vf fps=25 -pix_fmt yuv420p out.mp4
+for i; do filep "$i"; done
+
+t=/tmp/he.ffmpeg.$$
+trap 'rm -f $t' 1 2 3 15
+
+p=`pwd`
+for i; do echo file \'"$p/$i"\'; done > $t
+
+e ffmpeg -r 1/5 -safe 0 -f concat -i $t -c:v libx264 -vf fps=25 -pix_fmt yuv420p "$Output"
 
 rm -f $t
