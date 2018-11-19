@@ -219,16 +219,14 @@ static void main0(real *vx, real *vy, real *vz,
 
     }
 
-    if ( i % 100 == 0 ) {
-
-        /* if ( i > 0 ) {
-        j = 0;
+    if ( i > 0 ) {
         do {
           equiangulate(&cnt);
-          MSG("cnt : %d", cnt);
-          j++;
-        } while (cnt > 0 && j < 10);
-        } */
+          if (cnt > 10) MSG("cnt : %d", cnt);
+        } while (cnt);
+    }
+
+    if ( i % 100 == 0 ) {
 
       et = Energy(XX, YY, ZZ);
       //eb = f_bending_energy(XX, YY, ZZ);
