@@ -10,7 +10,7 @@ load("he/tri.mac")$
 load("he/edg.mac")$
 load("he/punto.mac")$
 
-file: "~/he/data/rbc/laplace/1.off"$
+file: "~/q.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -45,6 +45,8 @@ loop_ver(he,
 loop_ver(he,
   H[i]: vec_dot(lp[i], n[i]),
   r[i]: vec_cylindrical_r(a));
+
+print(H[0]/area[0]);
 
 with_stdout("q",
   printf(true, "x y z r area H~%"),

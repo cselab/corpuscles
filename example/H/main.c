@@ -76,10 +76,7 @@ int main() {
     punto_fwrite(n, queue, stdout);
     s = he_sum_array(n, hh);
 
-    MSG("h[0]: %g", hh[0]);
-    MSG("h[n - 1]: %g", hh[n - 1]);
-    MSG("sum: %g", s);
-
+    MSG("h[0]: %g", hh[0]/area[0]);
     FREE(rr);
     FREE(fx); FREE(fy); FREE(fz); FREE(ff);
 
