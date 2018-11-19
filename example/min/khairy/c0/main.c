@@ -210,7 +210,7 @@ static void main0(real *vx, real *vy, real *vz,
     for (idump = i = 0; i < end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = max_vec(vx, vy, vz);
+        rnd = 0.01*max_vec(vx, vy, vz);
         jigle(rnd, vx, vy, vz);        
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
