@@ -255,11 +255,11 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->DA0D = DA0D;
 
     if (getenv("MIX")) {
-        MSG("meyer_xin: area_mixed");
+        MSG("area_mixed");
         q->Fare = compute_area_mix;
     }
     else {
-        MSG("meyer_xin: area_voronoi");
+        MSG("area_voronoi");
         q->Fare = compute_area_voronoi;
     }
 
