@@ -1,8 +1,7 @@
 set -eu
 
-rV=0.56 Kb=0.00k1 C0=2.47 Kad=0 Ke=0
+rV=0.56 Ka=0.1 Kga=2 Kv=1 Kb=0.1 C0=2.48 Kad=0 Ke=0 DAD0=0
 end=750000
 off=../../../../data/sph/laplace/0.off
-DAD0=0
 
-./main juelicher_xin $rV   40 40 2  $Ke      $Kb $C0 $Kad $DAD0          $end < $off
+./main juelicher_xin $rV   $Ka $Kga $Kv  $Ke      $Kb $C0 $Kad $DAD0          $end < $off

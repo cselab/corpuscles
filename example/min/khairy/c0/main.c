@@ -201,10 +201,10 @@ static void main0(real *vx, real *vy, real *vz,
     char file[4048];    
 
     dt_max = 0.01;
-    mu = 1;
+    mu = 100;
     h = 0.01*e0;
 
-    nsub = 1;
+    nsub = 100;
 
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (idump = i = 0; i < end; i++) {
