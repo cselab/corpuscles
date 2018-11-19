@@ -197,7 +197,7 @@ static void main0(real *vx, real *vy, real *vz,
   int nsub;
   char file[4048];
 
-  dt_max = 0.001;
+  dt_max = 0.01;
   mu     = 100.0;
   h      = 0.01*e0;
 
@@ -221,14 +221,14 @@ static void main0(real *vx, real *vy, real *vz,
 
     if ( i % 100 == 0 ) {
 
-      if ( i > 0 ) {
+        /* if ( i > 0 ) {
         j = 0;
         do {
           equiangulate(&cnt);
           MSG("cnt : %d", cnt);
           j++;
         } while (cnt > 0 && j < 10);
-      }
+        } */
 
       et = Energy(XX, YY, ZZ);
       //eb = f_bending_energy(XX, YY, ZZ);
