@@ -94,24 +94,24 @@ int main(int __UNUSED argc, const char *v[]) {
     argv = v; argv++;
     arg();
 
-    he_off_ini(path, &off);
+    off_ini(path, &off);
 
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
-    he_off_tri(off, &tri);
+    nv = off_nv(off);
+    nt = off_nt(off);
+    off_tri(off, &tri);
     he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
     MALLOC(nv, &rr); MALLOC(nv, &fm);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
-    he_off_xyz(off, xx, yy, zz);
+    off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
     FREE(rr); FREE(fm);
     FREE(fx); FREE(fy); FREE(fz);
 
-    he_off_fin(off);
+    off_fin(off);
     he_fin(he);
 }

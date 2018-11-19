@@ -1,18 +1,18 @@
-xload("he/tri.mac") $
+load("he/tri.mac") $
 load("he/vec.mac") $
 load("he/ten.mac") $
 load("he/dtri.mac") $
 
+grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);
+
 vec_ini(a); vec_ini(b); vec_ini(c);
+f: tri_cot(a, b, c) $
+[da, db, dc]: dtri_cot(a, b, c) $
 
-n: tri_normal(a, b, c);
+da0: grad(f, a) $
+db0: grad(f, b) $
+dc0: grad(f, c) $
 
-[da, db, dc]: dtri_normal(a, b, c) $
-
-da0: jacobian(n, a)$
-db0: jacobian(n, b)$
-dc0: jacobian(n, c)$
-
-radcan(da0 - da);
-radcan(db0 - db);
-radcan(dc0 - dc);
+radcan(da - da0);
+radcan(db - db0);
+radcan(dc - dc0);

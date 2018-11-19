@@ -13,22 +13,22 @@ static int  nv, nt, *tri;
 static He *he;
 
 static void ini() {
-    he_off_ini("/dev/stdin", &off);
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
-    he_off_ver(off, &ver);
-    he_off_tri(off, &tri);
+    off_ini("/dev/stdin", &off);
+    nv = off_nv(off);
+    nt = off_nt(off);
+    off_ver(off, &ver);
+    off_tri(off, &tri);
     he_read_tri_ini(nv, nt, tri, &read);
     he_ini(read, &he);
 }
 static void fin() {
-    he_off_fin(off);
+    off_fin(off);
     he_read_fin(read);
     he_fin(he);
 }
 
 static void main0() {
-    he_off_he_write(off, he, "/dev/stdout");
+    off_he_write(off, he, "/dev/stdout");
 }
 
 int main() {

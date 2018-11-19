@@ -1,31 +1,44 @@
-* Introduction
+* Intro
 
 A library for the modelling of surfaces shaped by various forces and
 constraints.
 
-* Installation
+* Install
 
 #+BEGIN_SRC sh
 make PREFIX=$HOME
 #+END_SRC
 
-* lib
+`PREFIX` should be on the `PATH`.
+
+* Lib
 
 ** Precision
 - prec/d/real.h :: double
 - prec/s/real.h :: single
 
 ** Math
-- dtri.h ::  derivates for triangles (dtri_area,...)
-- tri.h :: formulars for trianls
-- ten.h :: tensor
-- vec.h :: vectors
+- edg.h, dedg.h :: edges
+- tri.h, dtri.h :: triangles
+- ten.h  :: tensor
+- vec.h, dvec.h :: vectors
 
 ** Utility
 - err.h :: error handling
 - macro.h :: macros
 - memory.h :: memory related
 - util.h  :: uncategorazed
+
+** Mesh properties
+- area.h :: area
+- volume.h :: volume
+- laplace.h :: Laplace operator of coordinates
+- normal.h :: normal
+
+** Mesh transformation
+- equiangulate.h :: equlatirate triangles
+- orient.h :: orient mesh in a direction of eigen values of momentum
+              tensor
 
 ** Half-edg related
 - read.h :: read half-edg to intermediate structure HeRead, used to
@@ -37,10 +50,13 @@ make PREFIX=$HOME
            =ini(n); v = set(i, j); get(i,j)=
            =get(i,j)= return -1 if =(i,j)= was not set
 ** IO
-- off.h :: read OFF files
+- off.h :: read OFF
 - punto.h :: read/write "punto" files
+- vtk.h :: write vtk file
 
 ** X
-- x.h :: simplifyied interface for X
+- x.h :: simplifyied interface for one mesh
+- y.h :: less simplifyied interface mesh
 
 
+* Examples

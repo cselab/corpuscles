@@ -100,11 +100,11 @@ int main(int __UNUSED argc, const char *v[]) {
     argv = v; argv++;
     arg();
 
-    he_off_ini(path, &off);
+    off_ini(path, &off);
 
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
-    he_off_tri(off, &tri);
+    nv = off_nv(off);
+    nt = off_nt(off);
+    off_tri(off, &tri);
     he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
@@ -112,7 +112,7 @@ int main(int __UNUSED argc, const char *v[]) {
     CALLOC(nv, &Fx); CALLOC(nv, &Fy); CALLOC(nv, &Fz);
     MALLOC(nv, &Fm);
 
-    he_off_xyz(off, xx, yy, zz);
+    off_xyz(off, xx, yy, zz);
     
     main0();
 	
@@ -120,6 +120,6 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(rxy);
     FREE(Fx); FREE(Fy); FREE(Fz);
     FREE(Fm);
-    he_off_fin(off);
+    off_fin(off);
     he_fin(he);
 }

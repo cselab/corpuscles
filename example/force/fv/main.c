@@ -101,7 +101,7 @@ static void main0() {
     bending_force(bending, he, xx, yy, zz, /**/ Fx, Fy, Fz);
     bending_energy_ver(bending, /**/ &eng);
     he_area_ver(he, xx, yy, zz, /**/ area);
-    he_normal_mwa(he, xx, yy, zz, /**/ nx, ny, nz);
+    normal_mwa(he, xx, yy, zz, /**/ nx, ny, nz);
     for (i = 0; i < nv; i += every) {
         diff(i, /**/ &e0, &e1);
         fd = Fx[i]*nx[i] + Fy[i]*ny[i] + Fz[i]*nz[i];
@@ -126,11 +126,11 @@ int main(int __UNUSED argc, const char *v[]) {
     argv = v; argv++;
     arg();
 
-    he_off_ini(path, &off);
+    off_ini(path, &off);
 
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
-    he_off_tri(off, &tri);
+    nv = off_nv(off);
+    nt = off_nt(off);
+    off_tri(off, &tri);
     he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
@@ -138,7 +138,7 @@ int main(int __UNUSED argc, const char *v[]) {
     CALLOC(nv, &Fm); CALLOC(nv, &Fx);  CALLOC(nv, &Fy); CALLOC(nv, &Fz);
     MALLOC(nv, &area);
 
-    he_off_xyz(off, xx, yy, zz);
+    off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
@@ -147,6 +147,6 @@ int main(int __UNUSED argc, const char *v[]) {
     FREE(area);
     
 
-    he_off_fin(off);
+    off_fin(off);
     he_fin(he);
 }

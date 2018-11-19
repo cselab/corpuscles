@@ -17,14 +17,14 @@ static int  nv, nt, *tri;
 static BendingParam param;
 
 static void ini() {
-    he_off_ini("/dev/stdin", &read);
-    nv = he_off_nv(read);
-    nt = he_off_nt(read);
-    he_off_tri(read, &tri);
+    off_ini("/dev/stdin", &read);
+    nv = off_nv(read);
+    nt = off_nt(read);
+    off_tri(read, &tri);
     MALLOC(nv, &x); MALLOC(nv, &y); MALLOC(nv, &z);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
-    he_off_xyz(read, x, y, z);
+    off_xyz(read, x, y, z);
     he_tri_ini(nv, nt, tri, &he);
 
     param.Kb = 1;
@@ -33,7 +33,7 @@ static void ini() {
 }
 static void fin() {
     bending_fin(bending);
-    he_off_fin(read);
+    off_fin(read);
     he_fin(he);
     FREE(x); FREE(y); FREE(z);
     FREE(fx); FREE(fy); FREE(fz);

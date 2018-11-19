@@ -15,24 +15,24 @@ int y_ini(const char *path, /**/ He **phe, real **px, real **py, real **pz) {
     He *he;
     real *x, *y, *z;
 
-    status = he_off_ini(path, &off);
+    status = off_ini(path, &off);
     if (status != HE_OK)
-        ERR(HE_IO, "he_off_ini failed");
+        ERR(HE_IO, "off_ini failed");
 
-    nv = he_off_nv(off);
-    nt = he_off_nt(off);
+    nv = off_nv(off);
+    nt = off_nt(off);
 
-    status = he_off_tri(off, &tri);
+    status = off_tri(off, &tri);
     if (status != HE_OK)
-        ERR(HE_IO, "he_off_tri failed");
+        ERR(HE_IO, "off_tri failed");
     
     status = he_tri_ini(nv, nt, tri, &he);
     if (status != HE_OK)
         ERR(HE_IO, "he_tri_ini failed");
 
     MALLOC(nv, &x); MALLOC(nv, &y); MALLOC(nv, &z);
-    he_off_xyz(off, x, y, z);
-    he_off_fin(off);
+    off_xyz(off, x, y, z);
+    off_fin(off);
 
     *phe = he;
     *px = x; *py = y; *pz = z;

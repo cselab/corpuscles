@@ -23,7 +23,7 @@ int dump(void) {
     static int i;
     char name[4048];
     snprintf(name, sizeof(name) - 1, "%05d.off", i++);
-    he_off_he_xyz_write(he, x, y, z, name);
+    off_he_xyz_write(he, x, y, z, name);
     return HE_OK;
 }
 

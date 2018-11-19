@@ -53,6 +53,24 @@ loop_he(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nh: gensym(), 
       c: [x[k], y[k], z[k]],
       splice(L))));
 
+/* TODO */
+loop_he0(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nh: gensym(), n: gensym(), nn: gensym(), L],
+  block([nh, x, y, z],
+    nh: he_nh(he),
+    x: he_x(he), y: he_y(he), z: he_z(he),
+    for h: 0 thru nh - 1 do
+    block([n, nn, i, j, k, a, b, c],
+      n: he_nxt(he, h),
+      nn: he_nxt(he, n),
+      i: he_ver(he, h),
+      if (i # 0) then return(),
+      j: he_ver(he, n),
+      k: he_ver(he, nn),
+      a: [x[i], y[i], z[i]],
+      b: [x[j], y[j], z[j]],
+      c: [x[k], y[k], z[k]],
+      splice(L))));
+
 loop_ver(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nv: gensym(), L],
   block([nv, x, y, z],
     nv: he_nv(he),

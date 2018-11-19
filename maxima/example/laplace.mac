@@ -1,4 +1,5 @@
 load("stringproc")$
+load ("nchrpl") $ /* mattrace */
 
 load("he/off.mac")$
 load("he/util.mac")$
@@ -7,16 +8,19 @@ load("he/util.mac")$
 load("he/loop.mac")$
 load("he/vec.mac")$
 load("he/tri.mac")$
+load("he/dtri.mac")$
 load("he/edg.mac")$
+load("he/dvec.mac")$
+load("he/ten.mac")$
 load("he/punto.mac")$
 
-file: "~/0.off"$
+file: "~/rbc.off" $
 he: he(file) $
 
 nh: he_nh(he) $
 nv: he_nv(he) $
 
-alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
+alloc(nh,   tb, tc, eb, ec, ang) $
 alloc(nv, H, r);
 calloc(nv, area);
 valloc(nv, lp, m, n);
@@ -27,40 +31,42 @@ loop_he(he,
   tc[h]: tri_cot(b, c, a),
 
   eb[h]: a - b,
-  ec[h]: a - c,
-
-  sb[h]: edg_sq(a, b),
-  sc[h]: edg_sq(a, c),
-
-  u[h]:   tri_normal(a, b, c),
-  ang[h]: tri_angle(c, a, b));
+  ec[h]: a - c);
 
 loop_he(he,
-  m[i]    += ang[h]*u[h],
-  lp[i]   += tb[h]*ec[h] + tc[h]*eb[h],
-  area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
+  lp[i] += tb[h]*ec[h] + tc[h]*eb[h]);
 
-loop_ver(he,
-  n[i]: vec_norm(m[i]));
-
-loop_ver(he,
-  H[i]: vec_dot(lp[i], n[i])/area[i],
-  r[i]: vec_cylindrical_r(a));
-
-loop_he(he, /* ec*d(tb) */
-  [da, db, dc]: tri_cot(a, b, c),
+loop_he0(he, /* ec*d(tb) */
+  [da, db, dc]: dtri_cot(a, b, c),
   f[i] += ten_dyadic(ec[h], da),
   f[j] += ten_dyadic(ec[h], db),
   f[k] += ten_dyadic(ec[h], dc));
 
-loop_he(he, /* eb*d(tc) */
-  [db, dc, da]: tri_cot(b, c, a),
+loop_he0(he, /* eb*d(tc) */
+  [db, dc, da]: dtri_cot(b, c, a),
   f[i] += ten_dyadic(eb[h], da),
   f[j] += ten_dyadic(eb[h], db),
   f[k] += ten_dyadic(eb[h], dc));
 
 /* d(eb)*tc   +   d(ec)*tb */
+loop_he0(he,
+  [da, db]: dvec_minus(a, b),
+  f[i] += tc[h] * da,
+  f[j] += tc[h] * db);
+
+loop_he0(he,
+  [da, dc]: dvec_minus(a, c),
+  f[i] += tb[h] * da,
+  f[k] += tb[h] * dc);
+
+/* output */
+alloc(nv, r, nr, det, tr)$
+loop_ver(he,
+  r[i]:  vec_cylindrical_r(a),
+  nr[i]: vec_cylindrical_r(n[i]),
+  det[i]: determinant(f[i]),
+  tr[i]: mattrace(f[i]))$
 
 with_stdout("q",
-  printf(true, "x y z r area H~%"),
-  punto_write(he, r, area, H));
+  printf(true, "x y z lx ly lz r trace determinant xx xy xz yx yy yz zx zy zz~%"),
+  punto_write(he, lp, r, tr, det, f));

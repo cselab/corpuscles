@@ -1,0 +1,7 @@
+dedg_abs(a, b):=block([e],
+  e: vec_norm(b - a),
+  [-e, e]);
+
+dedg_sq(a, b):=block([u],
+  u: b - a,
+  [-2*u, 2*u]);

@@ -1,0 +1,47 @@
+. he.util
+
+prog=he.ffmpeg
+
+usg () {
+    msg "$prog -o OUTPUT.MPG IMAGES.."
+    exit
+}
+
+: ${FFMPEG=ffmpeg}
+
+filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+if ! e $FFMPEG -version '>/dev/null' '2>/dev/null'
+then err "$FFMPEG command not found"
+fi
+
+Output=
+while test $# -ne 0
+do case "$1" in
+       -o) shift
+	   if test $# -eq 0; then err '-o needs a file'; fi
+       	   Output="$1"; shift
+	   ;;
+       -*) err "unknown option '$1'" ;;
+       *) break ;;
+   esac
+done
+
+if test -z "$Output"; then err "OUTPUT.MPG is not given"; fi
+
+for i; do filep "$i"; done
+
+t=/tmp/he.ffmpeg.$$
+trap 'rm -f $t' 1 2 3 15
+
+p=`pwd`
+for i; do echo file \'"$p/$i"\'; done > $t
+
+e ffmpeg -safe 0 -f concat -i $t \
+  -y \
+  -loglevel panic \
+  -r 1/5 -c:v libx264 -vf fps=25 -pix_fmt yuv420p "$Output"
+
+rm -f $t

@@ -1,0 +1,17 @@
+load("he/vec.mac") $
+load("he/ten.mac") $
+load("he/dvec.mac") $
+load("he/dedg.mac") $
+
+grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);
+
+vec_ini(a);
+vec_ini(b);
+
+f: edg_abs(a, b);
+
+[da, db]: dedg_abs(a, b);
+[da0, db0]: [grad(f, a), grad(f, b)];
+
+radcan(da0 - da);
+radcan(db0 - db);

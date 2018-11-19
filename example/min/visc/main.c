@@ -226,7 +226,7 @@ static void main0(real *vx, real *vy, real *vz,
 }
 
 int main(int __UNUSED argc, const char *v[]) {
-    real a0, Kv, cutoff;
+    real a0, Kv;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
     BendingParam bending_param;
@@ -253,8 +253,7 @@ int main(int __UNUSED argc, const char *v[]) {
     he_f_strain_ini(off, model, strain_param, /**/ &strain);
     f_harmonic_ref_ini(Kh, XX, YY, ZZ);
 
-    cutoff = 3*e0;
-    f_edg_sq_ini(Ke, cutoff);
+    f_edg_sq_ini(Ke);
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;

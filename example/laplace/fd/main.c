@@ -3,7 +3,7 @@
 #include <real.h>
 #include <he/err.h>
 #include <he/he.h>
-#include <he/normal.h>
+#include <he/laplace.h>
 #include <he/memory.h>
 #include <he/sum.h>
 #include <he/vec.h>
@@ -11,20 +11,31 @@
 #include <he/y.h>
 
 static He *he;
+static Laplace *laplace;
 static int n;
-static real *x, *y, *z;
-static real *nx, *ny, *nz;
-static real h = 1e-8;
+static real *x, *y, *z, *area;
+static real *lx, *ly, *lz;
+static real h = 1e-6;
 
 enum {X, Y, Z};
 
-static int Energy(real s[3]) {
-    normal_mwa(he, x, y, z, /**/ nx, ny, nz);
-    s[X] = he_sum_array(n, nx);
-    s[Y] = he_sum_array(n, ny);
-    s[Z] = he_sum_array(n, nz);
+static int Energy_sum(real s[3]) {
+    laplace_apply(laplace, he, x, y, z, /**/ &lx, &ly, &lz, &area);
+    s[X] = he_sum_array(n, lx);
+    s[Y] = he_sum_array(n, ly);
+    s[Z] = he_sum_array(n, lz);
     return HE_OK;
 }
+
+static int Energy_one(real s[3]) {
+    laplace_apply(laplace, he, x, y, z, /**/ &lx, &ly, &lz, &area);
+    s[X] = lx[0];
+    s[Y] = ly[0];
+    s[Z] = lz[0];
+    return HE_OK;
+}
+
+static int Energy(real s[3]) { return Energy_one(s); }
 
 static int fd0(real *p, /**/ real f[3]) {
     real t, hi[3], lo[3];
@@ -50,36 +61,36 @@ static int fd(int i, /**/ Ten *t) {
 int main() {
     int i;
     real s[3], rr[3];
-    Ten *dn;
+    Ten *dl;
     real *trace, *determinant, *r;
 
     y_ini("/dev/stdin", &he, &x, &y, &z);
     n = he_nv(he);
-    MALLOC(n, &nx); MALLOC(n, &ny); MALLOC(n, &nz);
-    MALLOC(n, &dn);
+    MALLOC(n, &dl);
     MALLOC(n, &trace); MALLOC(n, &determinant);
     MALLOC(n, &r);
-
+    laplace_ini(he, &laplace);
 
     for (i = 0; i < n; i++) {
-        fd(i, &dn[i]);
-        trace[i] = ten_trace(&dn[i]);
-        determinant[i] = ten_determinant(&dn[i]);
+        fd(i, &dl[i]);
+        trace[i] = ten_trace(&dl[i]);
+        determinant[i] = ten_determinant(&dl[i]);
         vec_get(i, x, y, z, /**/ rr);
         r[i] = vec_cylindrical_r(rr);
     }
     Energy(s);
 
-    puts("x y z nx ny nz r trace determinant xx xy xz yx yy yz zx zy zz");
+    puts("x y z lx ly lz r trace determinant xx xy xz yx yy yz zx zy zz");
     for (i = 0; i < n; i++) {
         printf("%g %g %g ", x[i], y[i], z[i]);
-        printf("%g %g %g ", nx[i], ny[i], nz[i]);
+        printf("%g %g %g ", lx[i], ly[i], lz[i]);
         printf("%g %g %g ", r[i], trace[i], determinant[i]);
-        ten_line(&dn[i]);
+        ten_line(&dl[i]);
         puts("");
     }
 
-    FREE(nx); FREE(ny); FREE(nz); FREE(dn);
+    laplace_fin(laplace);
+    FREE(dl);
     FREE(trace); FREE(determinant);
     FREE(r);
     y_fin(he, x, y, z);

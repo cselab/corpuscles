@@ -67,7 +67,7 @@ real area()   { return he_area(he, XX, YY, ZZ); }
 real volume() { return he_volume_tri(he, XX, YY, ZZ); }
 
 int off_write(const real *x, const real *y, const real *z, const char *path) {
-    return he_off_he_xyz_write(he, x, y, z, path);
+    return off_he_xyz_write(he, x, y, z, path);
 }
 int RZERO(int n, real **pq) { /* alloc and make zero */
     int i;
@@ -84,13 +84,13 @@ int ini(const char *path) {
     real r[3];
     HeRead *read;
 
-    he_off_ini(path, &off);
+    off_ini(path, &off);
 
-    NV = he_off_nv(off);
-    NT = he_off_nt(off);
+    NV = off_nv(off);
+    NT = off_nt(off);
 
-    he_off_tri(off, &tri0);
-    he_off_ver(off, &xyz0);
+    off_tri(off, &tri0);
+    off_ver(off, &xyz0);
     he_read_tri_ini(NV, NT, tri0, &read);
 
     he_ini(read, &he);
@@ -137,7 +137,7 @@ int  fin()      {
     FREE(T0); FREE(T1); FREE(T2);
     FREE(D0); FREE(D1); FREE(D2); FREE(D3);
 
-    he_off_fin(off);
+    off_fin(off);
     he_fin(he);
     return HE_OK;
 }
@@ -209,8 +209,8 @@ int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx,
     return he_f_harmonic_force(f_harmonic, he, x, y, z, /**/ fx, fy, fz);
 }
 
-int f_edg_sq_ini(real K, real cutoff) {
-    he_f_edg_sq_ini(K, cutoff, he, /**/ &f_edg_sq);
+int f_edg_sq_ini(real K) {
+    he_f_edg_sq_ini(K, he, /**/ &f_edg_sq);
     return HE_OK;
 }
 int f_edg_sq_fin() {

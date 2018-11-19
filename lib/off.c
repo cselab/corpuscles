@@ -22,7 +22,7 @@ struct T {
     int nv, nt;
 };
 
-int he_off_ini(const char *path, T **pq) {
+int off_ini(const char *path, T **pq) {
     T *q;
     FILE *f;
     char line[SIZE];
@@ -72,16 +72,16 @@ int he_off_ini(const char *path, T **pq) {
     return HE_OK;
 }
 
-int he_off_fin(T *q) {
+int off_fin(T *q) {
     FREE(q->ver); FREE(q->tri);
     FREE(q);
     return HE_OK;
 }
 
-int he_off_nt(T *q) { return q->nt; }
-int he_off_nv(T *q) { return q->nv; };
-int he_off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
-int he_off_xyz(T *q, real *x, real *y, real *z) {
+int off_nt(T *q) { return q->nt; }
+int off_nv(T *q) { return q->nv; };
+int off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
+int off_xyz(T *q, real *x, real *y, real *z) {
     int i, nv;
     real *ver;
     ver = q->ver;
@@ -91,9 +91,9 @@ int he_off_xyz(T *q, real *x, real *y, real *z) {
     }
     return HE_OK;
 }
-int he_off_tri(T *q, int  **p) { *p = q->tri; return HE_OK; }
+int off_tri(T *q, int  **p) { *p = q->tri; return HE_OK; }
 
-int he_off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) {
+int off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, npv, *tri, m, i, j, k;
     if (fputs("OFF\n", f) == EOF)
         ERR(HE_IO, "fail to write");
@@ -111,18 +111,18 @@ int he_off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *
     return HE_OK;
 }
 
-int he_off_write(T *q, const real *x, const real *y, const real *z, /**/ const char *path) {
+int off_write0(T *q, const real *x, const real *y, const real *z, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
-    if (he_off_fwrite(q, x, y, z, f) != HE_OK)
+    if (off_fwrite(q, x, y, z, f) != HE_OK)
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
 
-int he_off_tri_fwrite(T *q, const int *tri, /**/ FILE *f) {
+int off_tri_fwrite(T *q, const int *tri, /**/ FILE *f) {
     int nv, nt, ne, npv, m, i, j, k;
     real x, y, z;
     const real *ver;
@@ -145,18 +145,18 @@ int he_off_tri_fwrite(T *q, const int *tri, /**/ FILE *f) {
     return HE_OK;
 }
 
-int he_off_tri_write(T *q, const int *tri, /**/ const char *path) {
+int off_tri_write(T *q, const int *tri, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
-    if (he_off_tri_fwrite(q, tri, f) != HE_OK)
+    if (off_tri_fwrite(q, tri, f) != HE_OK)
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
 
-int he_off_he_fwrite(T *q, He *he, /**/ FILE *f) {
+int off_he_fwrite(T *q, He *he, /**/ FILE *f) {
     int nv, nt, ne, npv, m, h, n, nn, i, j, k;
     real x, y, z;
     const real *ver;
@@ -184,18 +184,18 @@ int he_off_he_fwrite(T *q, He *he, /**/ FILE *f) {
     return HE_OK;
 }
 
-int he_off_he_write(T *q, He *he, /**/ const char *path) {
+int off_he_write(T *q, He *he, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
-    if (he_off_he_fwrite(q, he, f) != HE_OK)
+    if (off_he_fwrite(q, he, f) != HE_OK)
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
 
-int he_off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
+int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, npv, m, h, n, nn, i, j, k;
     if (fputs("OFF\n", f) == EOF)
         ERR(HE_IO, "fail to write");
@@ -214,11 +214,11 @@ int he_off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /*
     return HE_OK;
 }
 
-int he_off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ const char *path) {
+int off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
-    if (he_off_he_xyz_fwrite(he, x, y, z, f) != HE_OK)
+    if (off_he_xyz_fwrite(he, x, y, z, f) != HE_OK)
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);

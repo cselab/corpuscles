@@ -68,15 +68,15 @@ do case "$1" in
 	   num "$1"; rz="$1"; shift
 	   ;;
        -f) shift
-	   if test $# -le 1; then err '-f needs a number'; fi
+	   if test $# -eq 0; then err '-f needs a number'; fi
 	   num "$1"; nonzero "$1"; fov="$1"; shift
 	   ;;
        -a) shift
-	   if test $# -le 1; then err '-o needs a file'; fi
+	   if test $# -eq 0; then err '-o needs a file'; fi
 	   filep "$1"; appearance="$1"; shift
 	   ;;
        -o) shift
-	   if test $# -le 1; then err '-o needs a file'; fi
+	   if test $# -eq 0; then err '-o needs a file'; fi
 	   output="$1"; shift
 	   ;;
        -*) err "unknown option '$1'" ;;
@@ -85,6 +85,10 @@ do case "$1" in
 done
 
 for i; do off "$i"; done
+
+if test "$LOG" != 0
+then msg "-wpos $WX,$WY"
+fi
 
 "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
 	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" \
