@@ -4,6 +4,7 @@ prog=he.ffmpeg
 
 usg () {
     msg "$prog -o OUTPUT.mp4 IMAGES.."
+    msg "-r rate    frame rate (default: 5)"
     exit
 }
 
@@ -17,12 +18,16 @@ if ! e $FFMPEG -version '>/dev/null' '2>/dev/null'
 then err "$FFMPEG command not found"
 fi
 
-Output=
+Output= R=5
 while test $# -ne 0
 do case "$1" in
        -o) shift
 	   if test $# -eq 0; then err '-o needs a file'; fi
 	   Output="$1"; shift
+	   ;;
+       -r) shift
+	   if test $# -eq 0; then err '-o needs a number'; fi
+	   R="$1"; shift
 	   ;;
        -*) err "unknown option '$1'" ;;
        *) break ;;
@@ -40,7 +45,7 @@ p=`pwd`
 for i; do echo file \'"$p/$i"\'; done > $t
 e ffmpeg \
   -fflags +genpts \
-   -r 5 \
+   -r $R \
   -safe 0 -f concat -i $t \
   -y \
   -loglevel error \
