@@ -7,4 +7,12 @@ usg () {
     exit
 }
 
+: ${FFMPEG=ffmpeg}
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+if ! e $FFMPEG -version '>/dev/null' '2>/dev/null'
+then err "$FFMPEG command not found"
+fi
+
+# ffmpeg -r 1/5 -i img%03d.png -c:v libx264 -vf fps=25 -pix_fmt yuv420p out.mp4
