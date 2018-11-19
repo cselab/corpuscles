@@ -90,7 +90,7 @@ real Energy(const real *x, const real *y, const real *z) {
     v = f_volume_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
-    MSG("a ga v e b: %g %g %g %g %g", a, ga, v, e, b);    
+    MSG("a ga v e b: %g %g %g %g %g", a, ga, v, e, b);
     return a + ga + v + e + b;
 }
 
@@ -198,7 +198,7 @@ static void main0(real *vx, real *vy, real *vz,
     real A, V;
     real *queue[] = {XX, YY, ZZ, NULL};
     int nsub;
-    char file[4048];    
+    char file[4048];
 
     dt_max = 0.01;
     mu = 100;
@@ -210,8 +210,7 @@ static void main0(real *vx, real *vy, real *vz,
     for (idump = i = 0; i < end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
         dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-        rnd = 0.01*max_vec(vx, vy, vz);
-        jigle(rnd, vx, vy, vz);        
+        jigle(rnd = 0, vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
@@ -237,7 +236,7 @@ static void main0(real *vx, real *vy, real *vz,
             off_write(XX, YY, ZZ, "q.off");
         }
     }
-    off_write(XX, YY, ZZ, "end.off");            
+    off_write(XX, YY, ZZ, "end.off");
 }
 
 int main(int __UNUSED argc, const char *v[]) {
@@ -245,17 +244,17 @@ int main(int __UNUSED argc, const char *v[]) {
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
     BendingParam bending_param;
-    
+
     argv = v; argv++;
     arg();
     srand(time(NULL));
 
     ini("/dev/stdin");
     V0 = volume(); A0 = target_area(V0, rVolume);
-    
+
     a0 = A0/NT;
     e0 = eq_tri_edg(a0);
-    
+
     MSG("v0/volume(): %g", V0/volume());
     MSG("a0/area(): %g", A0/area());
     MSG("area, volume, edg: %g %g", A0, V0);
