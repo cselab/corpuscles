@@ -20,7 +20,7 @@ nh: he_nh(he) $
 nv: he_nv(he) $
 
 alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
-alloc(nv, H, r);
+alloc(nv, H, ff, r);
 calloc(nv, area);
 valloc(nv, lp, m, n);
 valloc(nv, f);
@@ -57,13 +57,13 @@ loop_ver(he,
 loop_he(he,
   [Da, Db, Dc]: dtri_normal(a, b, c),
   f[i] += ang[h]*ten_vec(ten_mult(dn[i], Da), lp[i]),
-  f[j] += ang[h]*ten_vec(ten_mult(dn[i], Db), lp[i]),
-  f[k] += ang[h]*ten_vec(ten_mult(dn[i], Dc), lp[i]))$
+  f[j] += ang[h]*ten_vec(ten_mult(dn[j], Db), lp[i]),
+  f[k] += ang[h]*ten_vec(ten_mult(dn[k], Dc), lp[i]))$
 loop_he(he,
   [dc, da, db]: dtri_angle(c, a, b),
   f[i] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), da), lp[i]),
-  f[j] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), db), lp[i]),
-  f[k] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), dc), lp[i]));
+  f[j] += ten_vec(ten_dyadic(ten_vec(dn[j], u[h]), db), lp[i]),
+  f[k] += ten_vec(ten_dyadic(ten_vec(dn[k], u[h]), dc), lp[i]));
 loop_he(he,
   [da, db, dc]: dtri_cot(a, b, c),
   f[i] += ten_vec(ten_dyadic(ec[h], da), n[i]),
@@ -83,6 +83,12 @@ loop_he(he,
   f[i] += ten_vec(tb[h] * da, n[i]),
   f[k] += ten_vec(tb[h] * dc, n[i]));
 
+loop_ver(he,
+  ff[i]: vec_abs(f[i]));
+
 with_stdout("q",
   printf(true, "x y z r area H fx fy fz~%"),
   punto_write(he, r, area, H, f));
+
+ten_block(
+  print(ff[0]/area[0], f[0][Z]/area[0]));
