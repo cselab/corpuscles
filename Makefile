@@ -4,6 +4,7 @@ pkgconfig\
 lib\
 bin/geomview\
 bin/shake\
+bin/orient\
 bin/maxima\
 bin/ffmpeg\
 example/area/tri\

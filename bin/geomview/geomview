@@ -44,6 +44,12 @@ num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
 num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
 nonzero () { if test "$1" = 0; then err 'cannot be zero'; fi; }
 
+gview () {
+      "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
+	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" \
+	    "$appearance" "$@"
+}
+
 off0() {
     test -f "$1" &&
 	"$AWK" '{ if ("" $0 ~ /OFF/) exit 0; else exit 1 }' "$1"
@@ -83,7 +89,7 @@ do case "$1" in
 	   ;;
        -O) shift; output=-O ;;
        -p) shift
-       	   if test $# -eq 0; then err '-p needs a command'; fi
+	   if test $# -eq 0; then err '-p needs a command'; fi
 	   process="$1"; shift
 	   ;;
        -*) err "unknown option '$1'" ;;
@@ -94,6 +100,20 @@ done
 if test $# -eq 0; then err 'no input files'; fi
 for i; do off "$i"; done
 
-"$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
-	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" \
-	    "$appearance" "$@"
+if test $process = -
+then gview "$@"
+else t=/tmp/he.geomview.$$
+     mkdir -p $t
+     trap 'rm -rf $t' 1 2 3 4 15
+     i=0
+     for f
+     do shift
+	i=`expr $i + 1`
+	o=`printf %s/%05d $t $i`
+	e $process "$f" '>' $o
+	if test $? -ne 0; then err "'$process $f' failed"; fi
+	set -- "$@" $o
+     done
+     gview "$@"
+     rm -rf $t
+fi
