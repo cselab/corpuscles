@@ -17,3 +17,5 @@ tri_cot(a, b, c), numer;
 
 tri_angle(a, b, c), numer;
 
+tri_area(a, b, c), numer;
+vec_arg(a, b, c);
