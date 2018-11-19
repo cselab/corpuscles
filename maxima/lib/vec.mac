@@ -17,6 +17,11 @@ vec_cross(a, b):= block([X: 1, Y: 2, Z: 3],
    b[X]*a[Z]-a[X]*b[Z],
    a[X]*b[Y]-b[X]*a[Y]]);
 
+vec_ten(a, t):=ten_block(
+  [t[X,X]*a[X] + t[Y,X]*a[Y] + t[Z,X]*a[Z],
+   t[X,Y]*a[X] + t[Y,Y]*a[Y] + t[Z,Y]*a[Z],
+   t[X,Z]*a[X] + t[Y,Z]*a[Y] + t[Z,Z]*a[Z]]);
+
 vec_abs(a):=sqrt(vec_dot(a, a));
 vec_cylindrical_r(a):=block([X: 1, Y: 2],
   sqrt(a[X]*a[X] + a[Y]*a[Y]));
@@ -49,3 +54,6 @@ vec_angle(a, b):=block([n, x, y, ang],
   atan2(y, x));
 
 vec_arg([L]):=printf(true, "~{~f ~}~%", flatten(L));
+
+
+

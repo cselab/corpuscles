@@ -13,7 +13,8 @@ load("he/edg.mac")$
 load("he/punto.mac")$
 load("he/dvec.mac")$
 
-file: "~/q.off"$
+/* file: "~/q.off"$ */
+file: "~/he/data/rbc/laplace/0.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -54,41 +55,46 @@ loop_ver(he,
   H[i]: vec_dot(lp[i], n[i]),
   r[i]: vec_cylindrical_r(a));
 
+dy(a, b):=ten_dyadic(a, b);
+vt(a, b):=vec_ten(a, b);
+tv(a, b):=ten_vec(a, b);
 loop_he(he,
   [Da, Db, Dc]: dtri_normal(a, b, c),
-  f[i] += ang[h]*ten_vec(ten_mult(dn[i], Da), lp[i]),
-  f[j] += ang[h]*ten_vec(ten_mult(dn[j], Db), lp[i]),
-  f[k] += ang[h]*ten_vec(ten_mult(dn[k], Dc), lp[i]))$
+  dF: dn[i],
+  f[i] += ang[h]*vt(vt(lp[i], dF), Da),
+  f[j] += ang[h]*vt(vt(lp[i], dF), Db),
+  f[k] += ang[h]*vt(vt(lp[i], dF), Dc));
 loop_he(he,
   [dc, da, db]: dtri_angle(c, a, b),
-  f[i] += ten_vec(ten_dyadic(ten_vec(dn[i], u[h]), da), lp[i]),
-  f[j] += ten_vec(ten_dyadic(ten_vec(dn[j], u[h]), db), lp[i]),
-  f[k] += ten_vec(ten_dyadic(ten_vec(dn[k], u[h]), dc), lp[i]));
+  dF: dn[i],
+  f[i] += tv(dy(vt(lp[i], dF), da), u[h]),
+  f[j] += tv(dy(vt(lp[i], dF), db), u[h]),
+  f[k] += tv(dy(vt(lp[i], dF), dc), u[h]));
 loop_he(he,
   [da, db, dc]: dtri_cot(a, b, c),
-  f[i] += ten_vec(ten_dyadic(ec[h], da), n[i]),
-  f[j] += ten_vec(ten_dyadic(ec[h], db), n[i]),
-  f[k] += ten_vec(ten_dyadic(ec[h], dc), n[i]));
+  f[i] += tv(dy(n[i], ec[h]), da),
+  f[j] += tv(dy(n[i], ec[h]), db),
+  f[k] += tv(dy(n[i], ec[h]), dc));
 loop_he(he,
   [db, dc, da]: dtri_cot(b, c, a),
-  f[i] += ten_vec(ten_dyadic(eb[h], da), n[i]),
-  f[j] += ten_vec(ten_dyadic(eb[h], db), n[i]),
-  f[k] += ten_vec(ten_dyadic(eb[h], dc), n[i]));
+  f[i] += tv(dy(n[i], eb[h]), da),
+  f[j] += tv(dy(n[i], eb[h]), db),
+  f[k] += tv(dy(n[i], eb[h]), dc));
 loop_he(he,
-  [da, db]: dvec_minus(a, b),
-  f[i] += ten_vec(tc[h] * da, n[i]),
-  f[j] += ten_vec(tc[h] * db, n[i]));
+  [Da, Db]: dvec_minus(a, b),
+  f[i] += vt(n[i], tc[h] * Da),
+  f[j] += vt(n[i], tc[h] * Db));
 loop_he(he,
-  [da, dc]: dvec_minus(a, c),
-  f[i] += ten_vec(tb[h] * da, n[i]),
-  f[k] += ten_vec(tb[h] * dc, n[i]));
+  [Da, Dc]: dvec_minus(a, c),
+  f[i] += vt(n[i], tb[h] * Da),
+  f[k] += vt(n[i], tb[h] * Dc));
 
 loop_ver(he,
   ff[i]: vec_abs(f[i]));
 
 with_stdout("q",
-  printf(true, "x y z r area H fx fy fz~%"),
-  punto_write(he, r, area, H, f));
+  printf(true, "x y z r area H fx fy fz ff~%"),
+  punto_write(he, r, area, H, f, ff));
 
 ten_block(
-  print(ff[0]/area[0], f[0][Z]/area[0]));
+  print(ff[0]/area[0]));

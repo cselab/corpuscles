@@ -12,7 +12,7 @@
 
 enum {X, Y, Z};
 
-static const real step = 1e-8;
+static const real step = 1e-6;
 static He *he;
 static int n;
 static H *h;
@@ -78,7 +78,7 @@ int main() {
 
     //MSG("H, f, area %g %g %g", hh[0]/area[0], ff[0]/area[0], area[0]);
 
-    MSG("%g %g", ff[0]/area[0], fz[0]/area[0]);
+    MSG("%g", ff[0]/area[0]);
     FREE(rr);
     FREE(fx); FREE(fy); FREE(fz); FREE(ff);
 
