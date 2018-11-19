@@ -2,7 +2,7 @@ declare([d, s], linear);
 dotdistrib: true;
 
 matchdeclare([x, y], all);
-tellsimp(d(x . y),   y . d(x) + x . d(y));
+/* tellsimp(d(x . y),   y . d(x) + x . d(y)); */ 
 tellsimp(d(F(x)), dF . d(x));
 tellsimp(d(s(x)), d(x));
 tellsimp(d(ec*tb), d(ec)*tb + ec.d(tb));
@@ -18,6 +18,5 @@ H: lp . n;
 dH: d(H);
 dH: ratexpand(subst('F, F(m), dH));
 
-diff(dH, d(ec));
 
-dH;
+
