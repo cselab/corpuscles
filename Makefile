@@ -3,10 +3,11 @@ tool\
 pkgconfig\
 lib\
 bin/geomview\
+bin/ffmpeg\
 bin/shake\
 bin/orient\
 bin/maxima\
-bin/ffmpeg\
+bin/path\
 example/area/tri\
 example/area/voronoi\
 example/he\

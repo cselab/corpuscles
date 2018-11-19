@@ -1,0 +1,19 @@
+. he.util
+
+prog=he.path
+: ${h=1e-4}
+
+usg () {
+    msg "$prog returns he path"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+path="%path%"
+
+if ! test -d "$path"
+then err "no '$path' dierecoty"
+fi
+
+echo "$path"
