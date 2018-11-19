@@ -26,6 +26,8 @@
 
 static const real pi = 3.141592653589793115997964;
 
+static real mcot(const real a[3], const real b[3], const real c[3]) { return mcot(a, b, c); }
+
 struct T {
   real Kb, C0, Kad, DA0D;
   
@@ -143,9 +145,9 @@ static real compute_area_voronoi(T *q, He *he,
     vec_minus(c, a,  u);
     ca2 = vec_dot(u, u);
     
-    cota = tri_cot(c, a, b);
-    cotb = tri_cot(a, b, c);
-    cotc = tri_cot(b, c, a);
+    cota = mcot(c, a, b);
+    cotb = mcot(a, b, c);
+    cotc = mcot(b, c, a);
     
     area[i] += ( ab2*cotc + ca2*cotb ) / 8;
     area[j] += ( bc2*cota + ab2*cotc ) / 8;
@@ -217,9 +219,9 @@ static real compute_area_mix(T *q, He *he,
             vec_minus(c, a,  u);
             ca2 = vec_dot(u, u);
 
-            cota = tri_cot(c, a, b);
-            cotb = tri_cot(a, b, c);
-            cotc = tri_cot(b, c, a);
+            cota = mcot(c, a, b);
+            cotb = mcot(a, b, c);
+            cotc = mcot(b, c, a);
 
             area[i] += ( ab2*cotc + ca2*cotb ) / 8;
             area[j] += ( bc2*cota + ab2*cotc ) / 8;
@@ -335,7 +337,7 @@ static int compute_cot(T *q, He *he, const real *x, const real *y, const real *z
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
         get3(x, y, z, i, j, k, /**/ a, b, c);
-        tt = tri_cot(b, c, a);
+        tt = mcot(b, c, a);
         cot[h] += tt;
         if (!bnd(h)) cot[flp(h)] += tt;
     }
