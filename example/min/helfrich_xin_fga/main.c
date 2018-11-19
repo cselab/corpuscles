@@ -39,7 +39,7 @@ static int freq;
 static real A0, V0, e0;
 static const char **argv;
 static char bending[4049];
-static const char *me = "min/helfrich_xin_fa";
+static const char *me = "min/helfrich_xin_fga";
 
 static void usg() {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
