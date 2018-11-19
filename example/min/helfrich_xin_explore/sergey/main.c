@@ -225,7 +225,7 @@ static void main0(real *vx, real *vy, real *vz,
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
-    //equi();
+    equi();
 
     if ( i % 100 == 0 ) {
       et = Energy(XX, YY, ZZ);
