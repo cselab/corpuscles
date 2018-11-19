@@ -15,7 +15,8 @@ example/punto\
 example/ten\
 example/valid\
 example/vec\
-example/volume
+example/volume\
+data
 
 install: dir
 test: dir
