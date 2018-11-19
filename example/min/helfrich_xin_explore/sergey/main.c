@@ -188,6 +188,14 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
+static int equi() {
+    int cnt, j;
+    for (j = 0; cnt > 0 && j < 1000; j++) {
+        equiangulate(&cnt);
+        if (cnt > 10) MSG("cnt : %d", cnt);
+    }
+}
+
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
@@ -213,17 +221,10 @@ static void main0(real *vx, real *vy, real *vz,
 
     for (j=0; j < nsub; j++ ) {
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
+      equi();
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-
-    }
-
-    if ( i > 0 ) {
-        do {
-          equiangulate(&cnt);
-          if (cnt > 10) MSG("cnt : %d", cnt);
-        } while (cnt);
     }
 
     if ( i % 100 == 0 ) {
