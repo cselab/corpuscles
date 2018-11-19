@@ -137,26 +137,6 @@ static void euler(real dt,
     }
 }
 
-static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
-    int nv;
-    real r, r0, sx, sy, sz;
-    int i;
-    nv = NV;
-    sx = sy = sz = 0;
-    for (i = 0; i < nv; i++) {
-        r = rand()/(real)RAND_MAX - 0.5;
-        r0 = r * mag;
-        vx[i] += r0; vy[i] += r0; vz[i] += r0;
-    }
-    for (i = 0; i < nv; i++) {
-        sx += vx[i]; sy += vy[i]; sz += vz[i];
-    }
-    sx /= nv; sy /= nv; sz /= nv;
-    for (i = 0; i < nv; i++) {
-        vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
-    }
-}
-
 static void visc_lang(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
@@ -227,8 +207,6 @@ static void main0(real *vx, real *vy, real *vz,
   for (i = 0; i <= end; i++) {
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-    rnd = 0.01*max_vec(vx, vy, vz);
-    jigle(rnd, vx, vy, vz);
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
