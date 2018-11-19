@@ -13,7 +13,7 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 path="%path%"
 
 if ! test -d "$path"
-then err "no '$path' dierecoty"
+then msg "no '$path' dierecoty"
 fi
 
 echo "$path"
