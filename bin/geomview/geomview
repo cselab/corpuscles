@@ -32,6 +32,7 @@ $prog -t 0.25 0.25 0     data/rbc.off
 $prog -a data/appearance data/rbc.off
 $prog -o snap.ppm        data/rbc.off
 $prog                    data/rbc.off data/sph.off
+$prog -p he.orient       data/rbc.off data/sph.off
 EOF
     exit
 }
