@@ -39,6 +39,9 @@ trap 'rm -f $t' 1 2 3 15
 p=`pwd`
 for i; do echo file \'"$p/$i"\'; done > $t
 
-e ffmpeg -r 1/5 -safe 0 -f concat -i $t -c:v libx264 -vf fps=25 -pix_fmt yuv420p "$Output"
+e ffmpeg -safe 0 -f concat -i $t \
+  -y \
+  -loglevel panic \
+  -r 1/5 -c:v libx264 -vf fps=25 -pix_fmt yuv420p "$Output"
 
 rm -f $t
