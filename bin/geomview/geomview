@@ -91,15 +91,8 @@ do case "$1" in
    esac
 done
 
+if test $# -eq 0; then err 'no input files'; fi
 for i; do off "$i"; done
-
-if test "$LOG" != 0
-then msg "-wpos $WX,$WY"
-fi
-
-if test $# -eq 0
-then err 'no input files'
-fi
 
 "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
 	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" \
