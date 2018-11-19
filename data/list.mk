@@ -1,7 +1,4 @@
 H =\
-'./ath/configuration_off_xin/biconcave/biconcave_laplace.off'\
-'./ath/configuration_off_xin/biconcave/biconcave_laplace_s.off'\
-'./ath/configuration_off_xin/biconcave/biconcave_laplace_ss.off'\
 './configuration_off_xin/biconcave/biconcave_laplace.off'\
 './configuration_off_xin/biconcave/biconcave_laplace_s.off'\
 './configuration_off_xin/biconcave/biconcave_laplace_ss.off'\
