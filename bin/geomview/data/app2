@@ -1,0 +1,10 @@
+appearance {
+    +edge
+    transparent blending
+    linewidth 1
+    shading smooth
+    material {
+      ks 0
+      alpha 0.4
+    }
+}
