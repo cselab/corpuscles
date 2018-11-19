@@ -13,7 +13,7 @@ load("he/edg.mac")$
 load("he/punto.mac")$
 load("he/dvec.mac")$
 
-file: "~/hex.off"$
+file: "~/q.off"$
 he: he(file) $
 
 nh: he_nh(he) $
