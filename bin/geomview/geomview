@@ -7,11 +7,12 @@ usg () {
     cat <<EOF
 $prog [-t x y z] [-r x y z] [-a APPEARANCE] [-o PPM] [OFF]..
 he geomview wrapper
--t x y z   translation
--r x y z   rotation in degree
--f zoom    field of view (default is 40)
--o PPM     save PPM file and exit
--O         save all PPM files and exit
+-t x y z      translation
+-r x y z      rotation in degree
+-f zoom       field of view (default is 40)
+-o PPM        save PPM file and exit
+-O            save all PPM files and exit
+-p command    process every off file by running `command' < IN.off > OUT.off
 -a APPEARANCE load appearance information from a file
 
 Keys:
@@ -53,7 +54,7 @@ filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'; then err "$GEOMVIEW is not found"; fi
 
-tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=-
+tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=- process=-
 while test $# -ne 0
 do case "$1" in
        -t) shift
@@ -81,6 +82,10 @@ do case "$1" in
 	   output="$1"; shift
 	   ;;
        -O) shift; output=-O ;;
+       -p) shift
+       	   if test $# -eq 0; then err '-p needs a command'; fi
+	   process="$1"; shift
+	   ;;
        -*) err "unknown option '$1'" ;;
 	*) break
    esac
