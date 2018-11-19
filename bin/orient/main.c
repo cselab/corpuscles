@@ -1,11 +1,14 @@
 #include <stdio.h>
-#include <math.h>
+#include <stdlib.h>
 
 #include <real.h>
 #include <he/memory.h>
 #include <he/off.h>
 #include <he/orient.h>
 #include <he/he.h>
+#include <he/err.h>
+#include <he/util.h>
+#include <he/macro.h>
 #include <he/y.h>
 
 static int nv;
@@ -13,14 +16,36 @@ static real *x, *y, *z;
 static He *he;
 static Orient *orient;
 
+static const char *me = "he.orient";
+
+static void usg(void) {
+    fprintf(stderr, "%s < IN.off > OUT.off\n", me);
+    exit(2);
+}
+
+static int eq(const char **a, const char *b) {
+    return (*a != NULL) && util_eq(*a, b);
+};
+
 static void main0() {
     real *queue[] = {x, y, z, NULL};
     orient_apply(orient, x, y, z);
     off_he_xyz_fwrite(he, x, y, z, stdout);
 }
 
-int main() {
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+int main(__UNUSED int c, const char **v) {
+    const char *f;
+    const char *stream = "/dev/stdin";
+    v++;
+    if (eq(v, "-h"))
+        usg();
+    f = (*v == NULL) ? stream : *v;
+
+    if (y_ini(f, &he, &x, &y, &z) != HE_OK) {
+        fprintf(stderr, "%s: fail to open '%s'", me, f);
+        exit(1);
+    }
+    
     nv = he_nv(he);
     orient_ini(he, &orient);
     main0();
