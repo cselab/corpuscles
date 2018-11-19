@@ -11,6 +11,7 @@ he geomview wrapper
 -r x y z   rotation in degree
 -f zoom    field of view (default is 40)
 -o PPM     save PPM file and exit
+-O         save all PPM files and exit
 -a APPEARANCE load appearance information from a file
 
 Keys:
