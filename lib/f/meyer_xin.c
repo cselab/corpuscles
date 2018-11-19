@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include "real.h"
 #include "he/memory.h"
@@ -253,7 +254,14 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->Kad  = Kad;
     q->DA0D = DA0D;
 
-    q->Fare = compute_area_voronoi;
+    if (getenv("MIX")) {
+        MSG("meyer_xin: area_mixed");
+        q->Fare = compute_area_mix;
+    }
+    else {
+        MSG("meyer_xin: area_voronoi");
+        q->Fare = compute_area_voronoi;
+    }
 
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
