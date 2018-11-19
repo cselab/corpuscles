@@ -86,6 +86,10 @@ done
 
 for i; do off "$i"; done
 
+if test "$LOG" != 0
+then msg "-wpos $WX,$WY"
+fi
+
 "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
 	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov "$output" \
 	    "$appearance" "$@"
