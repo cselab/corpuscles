@@ -12,7 +12,7 @@ he geomview wrapper
 -f zoom       field of view (default is 40)
 -o PPM        save PPM file and exit
 -O            save all PPM files and exit
--p command    process every off file by running `command' < IN.off > OUT.off
+-p command    process every off file by running command < IN.off > OUT.off
 -a APPEARANCE load appearance information from a file
 
 Keys:
