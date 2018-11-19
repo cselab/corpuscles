@@ -20,6 +20,8 @@ static const char *me = "he.orient";
 
 static void usg(void) {
     fprintf(stderr, "%s < IN.off > OUT.off\n", me);
+    fprintf(stderr, "%s   IN.off > OUT.off\n", me);
+    fputs("put mesh in a center of mass frame, orient axis\n", stderr);
     exit(2);
 }
 
@@ -45,7 +47,7 @@ int main(__UNUSED int c, const char **v) {
         fprintf(stderr, "%s: fail to open '%s'", me, f);
         exit(1);
     }
-    
+
     nv = he_nv(he);
     orient_ini(he, &orient);
     main0();
