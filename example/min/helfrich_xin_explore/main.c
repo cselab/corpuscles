@@ -37,6 +37,7 @@ static real rVolume, Ka, Kga, Kv, Ke;
 static int end;
 static int freq;
 static real A0, V0, e0;
+static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
 static char bending[4049];
 static const char *me = "min/helfrich_xin_fga";
@@ -97,6 +98,15 @@ real Energy(const real *x, const real *y, const real *z) {
     v = f_volume_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
+    
+
+    et  = a + ga + v + e + b;
+    ea  = a;
+    ega = ga;
+    ev  = v;
+    ee  = e;
+    eb  = b;
+    
     return a + ga + v + e + b;
 }
 
@@ -205,7 +215,6 @@ static void main0(real *vx, real *vy, real *vz,
   real A, V, Vr;
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
-  real et, eb, ek;
   char file[4048];
 
   dt_max = 0.01;
@@ -244,13 +253,14 @@ static void main0(real *vx, real *vy, real *vz,
       }
       
       et = Energy(XX, YY, ZZ);
-      eb = f_bending_energy(XX, YY, ZZ);
+      //eb = f_bending_energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
+      et = et + ek;
       A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("eng: %g %g %g", et, eb, ek); 
+      MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-      printf("eng: %g %g %g\n", et, eb, ek); 
+      printf("eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
       printf("dt: %f\n", dt);
       printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
     }
