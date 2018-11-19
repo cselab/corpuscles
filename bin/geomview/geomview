@@ -79,6 +79,7 @@ do case "$1" in
 	   if test $# -eq 0; then err '-o needs a file'; fi
 	   output="$1"; shift
 	   ;;
+       -O) shift; output=-O ;;
        -*) err "unknown option '$1'" ;;
 	*) break
    esac
@@ -88,6 +89,10 @@ for i; do off "$i"; done
 
 if test "$LOG" != 0
 then msg "-wpos $WX,$WY"
+fi
+
+if test $# -eq 0
+then err 'no input files'
 fi
 
 "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \

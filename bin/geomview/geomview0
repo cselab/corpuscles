@@ -232,6 +232,11 @@ BEGIN {
 		break
 	    }
 	}
+    } else if (eq(output, "-O")) {
+	Save = 1
+	for (ioff = 1; ioff <= noff; ioff++)
+	    draw()
+	g("exit")
     } else {
 	snap(output)
 	g("exit")
