@@ -1,0 +1,11 @@
+main () {
+    printf "%s" 'H ='
+    for i in `find . -name '*.off' | sort`
+    do printf '%s\n' "\\"
+       printf '%s' \'$i\'
+    done
+    printf "\n"
+}
+
+main > list.mk
+   
