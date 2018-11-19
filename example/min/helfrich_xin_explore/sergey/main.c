@@ -213,6 +213,7 @@ static void main0(real *vx, real *vy, real *vz,
 
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
+    equi();
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
@@ -220,12 +221,12 @@ static void main0(real *vx, real *vy, real *vz,
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
     for (j=0; j < nsub; j++ ) {
+      equi();
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
-    equi();
 
     if ( i % 100 == 0 ) {
       et = Energy(XX, YY, ZZ);
