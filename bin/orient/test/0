@@ -1,0 +1,2 @@
+# TEST: 0
+he.orient < data/kantor.off > o.out.kantor
