@@ -26,7 +26,7 @@
 
 static const real pi = 3.141592653589793115997964;
 
-static real mcot(const real a[3], const real b[3], const real c[3]) { return max(0, tri_cot(a, b, c)); }
+static real mcot(const real a[3], const real b[3], const real c[3]) { return tri_cot(a, b, c); }
 
 struct T {
   real Kb, C0, Kad, DA0D;
