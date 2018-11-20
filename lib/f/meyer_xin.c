@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include "real.h"
 #include "he/memory.h"
@@ -25,9 +26,11 @@
 
 static const real pi = 3.141592653589793115997964;
 
+static real mcot(const real a[3], const real b[3], const real c[3]) { return tri_cot(a, b, c); }
+
 struct T {
   real Kb, C0, Kad, DA0D;
-  
+
   int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
 
@@ -42,6 +45,8 @@ struct T {
   real energy_total_local;
   real energy_total_nonlocal;
   int nv, ne, nt, nh;
+  /* how to compute area? */
+  real (*Fare)(T*, He*, const real*, const real*, const real*, real *area);
 };
 
 static void zero(int n, real *a) {
@@ -102,91 +107,9 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     *pi = i; *pj = j; *pk = k; *pl = l;
     return BULK;
 }
-int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
-    T *q;
-    int nv, ne, nt, nh;
-
-    MALLOC(1, &q);
-
-    nv = he_nv(he);
-    ne = he_ne(he);
-    nt = he_nt(he);
-    nh = he_nh(he);
-
-    q->nv = nv;
-    q->ne = ne;
-    q->nt = nt;
-    q->nh = nh;
-
-    q->Kb   = Kb;
-    q->C0   = C0;
-    q->Kad  = Kad;
-    q->DA0D = DA0D;
-
-    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
-    MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
-
-    MALLOC(nh, &q->cot);
-    MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
-    MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
-    MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
-    MALLOC(nv, &q->energy_local); MALLOC(nv, &q->area);
-    MALLOC(nv, &q->lbH);
-    
-    q->energy_total = 0;
-    q->energy_total_local = 0;
-    q->energy_total_nonlocal = 0;
-    
-    *pq = q;
-    return HE_OK;
-}
-int he_f_meyer_xin_fin(T *q) {
-    FREE(q->T0); FREE(q->T1); FREE(q->T2);
-    FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
-    FREE(q->cot);
-    FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
-    FREE(q->normx);FREE(q->normy);FREE(q->normz);
-    FREE(q->curva_mean);FREE(q->curva_gauss);
-    FREE(q->energy_local); FREE(q->area);
-    FREE(q->lbH);
-    FREE(q);
-    return HE_OK;
-}
-int he_f_meyer_xin_area_ver(T *q, /**/ real **pa) {
-    *pa = q->area;
-    return HE_OK;
-}
-int he_f_meyer_xin_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
-    *px = q->lbx;
-    *py = q->lby;
-    *pz = q->lbz;
-    return HE_OK;
-}
-int he_f_meyer_xin_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
-    *px = q->normx;
-    *py = q->normy;
-    *pz = q->normz;
-    return HE_OK;
-}
-int he_f_meyer_xin_curva_mean_ver(T *q, /**/ real **pa) {
-    *pa = q->curva_mean;
-    return HE_OK;
-}
-int he_f_meyer_xin_curva_gauss_ver(T *q, /**/ real **pa) {
-    *pa = q->curva_gauss;
-    return HE_OK;
-}
-int he_f_meyer_xin_energy_ver(T *q, /**/ real**pa) {
-    *pa = q->energy_local;
-    return HE_OK;
-}
-int he_f_meyer_xin_laplace_H_ver(T *q, /**/ real **px ) {
-    *px = q->lbH;
-    return HE_OK;
-}
 static real compute_area_voronoi(T *q, He *he,
-				 const real *x, const real *y, const real *z, /**/
-				 real *area) {
+                                 const real *x, const real *y, const real *z, /**/
+                                 real *area) {
   enum {X, Y, Z};
   int t, nt, nv;
   int i, j, k;
@@ -196,47 +119,47 @@ static real compute_area_voronoi(T *q, He *he,
   real cota,cotb,cotc;
   real ab2, bc2, ca2, area_tot_tri;
   HeSum *sum;
-  
+
   nt = he_nt(he);
   nv = he_nv(he);
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   he_sum_ini(&sum);
-  
+
   zero(nv, area);
-  
+
   area_tot_tri = 0;
   for ( t = 0; t < nt; t++ ) {
     i = T0[t]; j = T1[t]; k = T2[t];
-    
+
     get3(x, y, z, i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
-    
+
     he_sum_add(sum, area0);
-    
+
     vec_minus(a, b,  u);
     ab2 = vec_dot(u, u);
-    
+
     vec_minus(b, c, u);
     bc2 = vec_dot(u, u);
-    
+
     vec_minus(c, a,  u);
     ca2 = vec_dot(u, u);
-    
-    cota = tri_cot(c, a, b);
-    cotb = tri_cot(a, b, c);
-    cotc = tri_cot(b, c, a);
-    
+
+    cota = mcot(c, a, b);
+    cotb = mcot(a, b, c);
+    cotc = mcot(b, c, a);
+
     area[i] += ( ab2*cotc + ca2*cotb ) / 8;
     area[j] += ( bc2*cota + ab2*cotc ) / 8;
     area[k] += ( ca2*cotb + bc2*cota ) / 8;
-    
+
   }/*end for loop*/
-  
+
   area_tot_tri = he_sum_get(sum);
-  
+
   he_sum_fin(sum);
   return area_tot_tri;
-  
+
 }
 static real compute_area_mix(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
@@ -296,9 +219,9 @@ static real compute_area_mix(T *q, He *he,
             vec_minus(c, a,  u);
             ca2 = vec_dot(u, u);
 
-            cota = tri_cot(c, a, b);
-            cotb = tri_cot(a, b, c);
-            cotc = tri_cot(b, c, a);
+            cota = mcot(c, a, b);
+            cotb = mcot(a, b, c);
+            cotc = mcot(b, c, a);
 
             area[i] += ( ab2*cotc + ca2*cotb ) / 8;
             area[j] += ( bc2*cota + ab2*cotc ) / 8;
@@ -310,10 +233,101 @@ static real compute_area_mix(T *q, He *he,
 
     he_sum_fin(sum);
     return area_tot_tri;
+}
 
+int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
+    T *q;
+    int nv, ne, nt, nh;
+
+    MALLOC(1, &q);
+
+    nv = he_nv(he);
+    ne = he_ne(he);
+    nt = he_nt(he);
+    nh = he_nh(he);
+
+    q->nv = nv;
+    q->ne = ne;
+    q->nt = nt;
+    q->nh = nh;
+
+    q->Kb   = Kb;
+    q->C0   = C0;
+    q->Kad  = Kad;
+    q->DA0D = DA0D;
+
+    if (getenv("MIX")) {
+        MSG("area_mixed");
+        q->Fare = compute_area_mix;
+    }
+    else {
+        MSG("area_voronoi");
+        q->Fare = compute_area_voronoi;
+    }
+
+    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
+    MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
+
+    MALLOC(nh, &q->cot);
+    MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
+    MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
+    MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
+    MALLOC(nv, &q->energy_local); MALLOC(nv, &q->area);
+    MALLOC(nv, &q->lbH);
+
+    q->energy_total = 0;
+    q->energy_total_local = 0;
+    q->energy_total_nonlocal = 0;
+
+    *pq = q;
+    return HE_OK;
+}
+int he_f_meyer_xin_fin(T *q) {
+    FREE(q->T0); FREE(q->T1); FREE(q->T2);
+    FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
+    FREE(q->cot);
+    FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
+    FREE(q->normx);FREE(q->normy);FREE(q->normz);
+    FREE(q->curva_mean);FREE(q->curva_gauss);
+    FREE(q->energy_local); FREE(q->area);
+    FREE(q->lbH);
+    FREE(q);
+    return HE_OK;
+}
+int he_f_meyer_xin_area_ver(T *q, /**/ real **pa) {
+    *pa = q->area;
+    return HE_OK;
+}
+int he_f_meyer_xin_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
+    *px = q->lbx;
+    *py = q->lby;
+    *pz = q->lbz;
+    return HE_OK;
+}
+int he_f_meyer_xin_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
+    *px = q->normx;
+    *py = q->normy;
+    *pz = q->normz;
+    return HE_OK;
+}
+int he_f_meyer_xin_curva_mean_ver(T *q, /**/ real **pa) {
+    *pa = q->curva_mean;
+    return HE_OK;
+}
+int he_f_meyer_xin_curva_gauss_ver(T *q, /**/ real **pa) {
+    *pa = q->curva_gauss;
+    return HE_OK;
+}
+int he_f_meyer_xin_energy_ver(T *q, /**/ real**pa) {
+    *pa = q->energy_local;
+    return HE_OK;
+}
+int he_f_meyer_xin_laplace_H_ver(T *q, /**/ real **px ) {
+    *px = q->lbH;
+    return HE_OK;
 }
 static int compute_cot(T *q, He *he, const real *x, const real *y, const real *z,
-		       /**/ real *cot) {
+                       /**/ real *cot) {
     int nh, h, n, nn;
     int i, j, k;
     real a[3], b[3], c[3], tt;
@@ -323,7 +337,7 @@ static int compute_cot(T *q, He *he, const real *x, const real *y, const real *z
         n = nxt(h); nn = nxt(n);
         i = ver(h); j = ver(n); k = ver(nn);
         get3(x, y, z, i, j, k, /**/ a, b, c);
-        tt = tri_cot(b, c, a);
+        tt = mcot(b, c, a);
         cot[h] += tt;
         if (!bnd(h)) cot[flp(h)] += tt;
     }
@@ -335,13 +349,13 @@ static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
   real a[3], b[3], c[3], u[3];
   real *area, *cot;
   real tt;
-  
+
   nh = he_nh(he);
   nv = he_nv(he);
-  
+
   area = q->area;
   cot  = q->cot;
-  
+
   zero(nv, lbx);
 
   for (h = 0; h < nh; h++) {
@@ -349,13 +363,13 @@ static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
     i = ver(h); j = ver(n);
     lbx[i] -= cot[h]*(x[i] - x[j])/2;
   }
-  
+
   for (i = 0; i < nv; i++ ) {
     lbx[i] /=area[i];
   }
-  
+
   return HE_OK;
-  
+
 }
 static int compute_norm(T *q, He *he,
                         const real *x, const real *y, const real *z, /**/
@@ -385,11 +399,11 @@ static int compute_norm(T *q, He *he,
         vec_scalar_append(u, theta_b, j, normx, normy, normz);
         vec_scalar_append(u, theta_c, k, normx, normy, normz);
     }
-    
+
     for (i = 0; i < nv; i++) {
         vec_get(i, normx, normy, normz, /**/ u);
         vec_norm(u, /**/ u0);
-	vec_negative(u0, u); /*This reverses the sign of norm to be inwards*/
+        vec_negative(u0, u); /*This reverses the sign of norm to be inwards*/
         vec_set(u, i, /**/ normx, normy, normz);
     }
     return HE_OK;
@@ -468,31 +482,31 @@ real he_f_meyer_xin_energy(T *q, He *he,
   real *normx, *normy, *normz;
   real *curva_mean;
   real *energy_local, *area, *cot;
-  
+
   real Kb, C0, Kad, DA0D;
   int  nv, nt;
-  
+
   real H0;
   real mH0, mH1, mH2;
   real energy1, energy2, energy3, energy4, energy5, energy6;
   real energy_tot;
   real energy_tot_local, energy_tot_nonlocal;
-  
+
   Kb   = q->Kb;
   C0   = q->C0;
   Kad  = q->Kad;
   DA0D = q->DA0D;
-  
+
   H0  = C0/2.0;
-  
+
   nv = he_nv(he);
   nt = he_nt(he);
-  
+
   if (nv != q->nv )
     ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", nv, q->nv);
   if (nt != q->nt )
         ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", nt, q->nt);
-  
+
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
@@ -500,42 +514,41 @@ real he_f_meyer_xin_energy(T *q, He *he,
   energy_local = q->energy_local;
   area = q->area;
   cot  = q->cot;
-  
+
   for (t = 0; t < nt; t++) {
     get_ijk(t, he, /**/ &i, &j, &k);
     T0[t] = i; T1[t] = j; T2[t] = k;
   }
-  
-  //mH0 = compute_area_mix(q, he, x, y, z, area);
-  mH0 = compute_area_voronoi(q, he, x, y, z, area);
-  
+
+  mH0 = q->Fare(q, he, x, y, z, area);
+
   compute_cot(q, he, x, y, z, cot);
   compute_lb(q, he, x, lbx);
   compute_lb(q, he, y, lby);
   compute_lb(q, he, z, lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
   compute_curva_mean(q, he, /**/ curva_mean);
-  
+
   mH1 = 0;
   mH2 = 0;
-  
+
   for ( v = 0; v < nv; v++ ) {
     mH1 += curva_mean[v]*area[v];
     mH2 += curva_mean[v]*curva_mean[v]*area[v];
     energy_local[v] = 2*Kb*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
   }
-  
+
   energy1 = 2*Kb*mH2;
   energy2 = 2*pi*Kad*mH1*mH1/mH0;
   energy3 =-4*Kb*H0*mH1;
   energy4 =-2*pi*Kad*DA0D*mH1/mH0;
   energy5 = 2*Kb*H0*H0*mH0;
   energy6 = pi*Kad*DA0D*DA0D/2/mH0;
-  
+
   energy_tot_local = energy1 + energy3 + energy5;
   energy_tot_nonlocal = energy2 + energy4 + energy6;
   energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
-  
+
   //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
   //printf("enegy local, nonlocal: %f, %f \n", energy_tot_local, energy_tot_nonlocal);
   return energy_tot;
@@ -564,7 +577,7 @@ int he_f_meyer_xin_force(T *q, He *he,
     real H0;
     real mH0, mH1;
     real tt;
-    
+
     HeSum *sum;
 
     Kb   = q->Kb;
@@ -597,10 +610,8 @@ int he_f_meyer_xin_force(T *q, He *he,
         get_ijkl(e, he, /**/ &i, &j, &k, &l);
         D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
     }
+    mH0 = q->Fare(q, he, x, y, z, area);
 
-    //mH0 = compute_area_mix(q, he, x, y, z, area);
-    mH0 = compute_area_voronoi(q, he, x, y, z, area);
-  
     compute_cot(q, he, x, y, z, cot);
     compute_lb(q, he, x, lbx);
     compute_lb(q, he, y, lby);
@@ -610,41 +621,41 @@ int he_f_meyer_xin_force(T *q, He *he,
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
     compute_lb(q, he, curva_mean, lbH);
-   
+
     he_sum_ini(&sum);
-    
-    
+
+
     for (v = 0; v < nv; v++) {
-      
+
       fm = +2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
 
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
-      
+
       fm = +2*Kb*lbH[v];
-      
+
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
-      
+
       he_sum_add(sum, curva_mean[v] * area[v]);
     }
-    
+
     mH1 = he_sum_get(sum);
     he_sum_fin(sum);
 
     tt = 2*mH1-DA0D;
-    
+
     for ( v = 0; v < nv; v++ ) {
-      
+
       fm = -pi*Kad*(tt*2*curva_gauss[v]/mH0 - tt*tt*curva_mean[v]/mH0/mH0);
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
-      
+
     }
 
-    
+
     return HE_OK;
 }
