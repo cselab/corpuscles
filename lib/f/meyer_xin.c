@@ -468,9 +468,6 @@ static int compute_curva_gauss(T *q, He *he,
 
     for ( i = 0; i < nv; i++ ) {
         curva_gauss[i] = ( curva_gauss[i] + 2 * pi ) / area[i];
-//        if (curva_gauss[i] >  5) curva_gauss[i] = 5;
-//        if (curva_gauss[i] < -5) curva_gauss[i] = -5;
-
     }
 
     return HE_OK;
