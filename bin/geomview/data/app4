@@ -5,7 +5,7 @@ appearance {
     shading smooth
     material {
       ks 0
-      *alpha 1.000000
+      *alpha 0.4
       ambient 0.776471 1.000000 0.000000
       *diffuse 0.776471 1.000000 0.000000
     }
