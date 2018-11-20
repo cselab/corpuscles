@@ -1,8 +1,8 @@
 set -eu
 
 make
-off=`he.path`/sph/laplace/Nt1280.off
-#off=0.off
+#off=`he.path`/sph/laplace/Nt1280.off
+off=0.off
 end=999999999
 freq=100
 
