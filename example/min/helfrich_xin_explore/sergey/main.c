@@ -205,11 +205,11 @@ static void main0(real *vx, real *vy, real *vz,
   int nsub;
   char file[4048];
 
-  dt_max = 0.01;
-  mu     = 10.0;
+  dt_max = 0.001;
+  mu     = 1.0;
   h      = 0.01*e0;
 
-  nsub = 1;
+  nsub = 10;
 
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
