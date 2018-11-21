@@ -8,8 +8,8 @@ C0=0
 Kad=0
 DA0D=0
 Vstart=1.0
-Vend=0.8
-numVr=4
+Vend=0.5
+numVr=8
 stepVr=20000
 freq=200
 
