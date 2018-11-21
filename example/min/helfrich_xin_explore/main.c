@@ -222,7 +222,6 @@ static void main0(real *vx, real *vy, real *vz,
   h      = 0.01*e0;
   
   nsub = 100;
-  
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
