@@ -23,13 +23,13 @@ else
     do
 	Vr=$(echo $i | awk '{print 0.6+$1*0.02}')
 	echo $Vr
-	#bash run.sh $Vr
+	bash run.sh $Vr
     done
     for i in `seq 1 2`;
     do
 	Vr=$(echo $i | awk '{print 0.85+$1*0.05}')
 	echo $Vr
-	#bash run.sh $Vr
+	bash run.sh $Vr
     done
     
 fi
