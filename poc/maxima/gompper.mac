@@ -1,22 +1,29 @@
 declare([d, s], linear);
 dotdistrib: true;
 
+iso(e, v):=second(partition(e, d(v))) $
+
 matchdeclare([x, y], all);
-/* tellsimp(d(x . y),   y . d(x) + x . d(y)); */ 
-tellsimp(d(F(x)), dF . d(x));
+tellsimp(d(lp . nn),   lp . d(nn) + nn . d(lp));
+tellsimp(d(n(x)), dn . d(x));
 tellsimp(d(s(x)), d(x));
 tellsimp(d(ec*tb), d(ec)*tb + ec.d(tb));
 tellsimp(d(eb*tc), d(eb)*tc + eb.d(tc));
-tellsimp(d(ang*u), d(ang).u + d(u)*ang);
+tellsimp(d(ang*u), d(u)*ang + u.d(ang));
 
 m: s(ang*u);
-n: F(m);
+nn: n(m);
 
-lp: s(tb*ec + tc*eb);
+lp0: s(tb*ec + tc*eb);
+tellsimp(d(lp), d(lp0));
 
-H: lp . n;
+H: lp . nn;
+
 dH: d(H);
-dH: ratexpand(subst('F, F(m), dH));
+dH: ratexpand(subst('nn, n(m), dH));
 
+iso(dH, u);
+iso(dH, ang);
 
-
+iso(dH, tb);
+iso(dH, ec);

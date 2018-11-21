@@ -13,8 +13,13 @@ load("he/edg.mac")$
 load("he/punto.mac")$
 load("he/dvec.mac")$
 
-/* file: "~/q.off"$ */
-file: "~/he/data/rbc/laplace/0.off"$
+dy(a, b):=ten_dyadic(a, b);
+vt(a, b):=vec_ten(a, b);
+tv(a, b):=ten_vec(a, b);
+vv(a, b):=vec_dot(a, b);
+
+/* file: "~/he/data/rbc/laplace/0.off"$ */
+file: "~/q.off"$
 he: he(file) $
 
 nh: he_nh(he) $
@@ -48,50 +53,47 @@ loop_he(he,
 loop_ver(he,
   n[i]: vec_norm(m[i]));
 
-loop_ver(he,
-  dn[i]: dvec_norm(m[i]));
+loop_ver(he, dn[i]: dvec_norm(m[i]));
 
 loop_ver(he,
   H[i]: vec_dot(lp[i], n[i]),
   r[i]: vec_cylindrical_r(a));
 
-dy(a, b):=ten_dyadic(a, b);
-vt(a, b):=vec_ten(a, b);
-tv(a, b):=ten_vec(a, b);
-loop_he(he,
+/* loop_ver(lp[i]: [1, 1, 1]); */
+loop_ver(he, n[i]: [1, 1, 1], dn[i]: [0, 0, 0]);
+
+loop_0(he,
   [Da, Db, Dc]: dtri_normal(a, b, c),
-  dF: dn[i],
-  f[i] += ang[h]*vt(vt(lp[i], dF), Da),
-  f[j] += ang[h]*vt(vt(lp[i], dF), Db),
-  f[k] += ang[h]*vt(vt(lp[i], dF), Dc));
-loop_he(he,
+  F: dn[i],
+  f[i] += ang[h]*vt(vt(lp[i], F), Da),
+  f[j] += ang[h]*vt(vt(lp[i], F), Db),
+  f[k] += ang[h]*vt(vt(lp[i], F), Dc));
+loop_0(he,
   [dc, da, db]: dtri_angle(c, a, b),
-  dF: dn[i],
-  f[i] += tv(dy(vt(lp[i], dF), da), u[h]),
-  f[j] += tv(dy(vt(lp[i], dF), db), u[h]),
-  f[k] += tv(dy(vt(lp[i], dF), dc), u[h]));
+  F: dn[i],
+  f[i] += tv(vv(lp[i], u[h])*F, da),
+  f[j] += tv(vv(lp[i], u[h])*F, db),
+  f[k] += tv(vv(lp[i], u[h])*F, dc));
+
 loop_he(he,
   [da, db, dc]: dtri_cot(a, b, c),
-  f[i] += tv(dy(n[i], ec[h]), da),
-  f[j] += tv(dy(n[i], ec[h]), db),
-  f[k] += tv(dy(n[i], ec[h]), dc));
+  f[i] += tv(dy(ec[i], da), n[i]),
+  f[j] += tv(dy(ec[i], db), n[i]),
+  f[k] += tv(dy(ec[i], dc), n[i]));
 loop_he(he,
   [db, dc, da]: dtri_cot(b, c, a),
-  f[i] += tv(dy(n[i], eb[h]), da),
-  f[j] += tv(dy(n[i], eb[h]), db),
-  f[k] += tv(dy(n[i], eb[h]), dc));
+  for d in [i, j, k] do
+  f[i] += tv(dy(eb[h], da), n[i]));
+
 loop_he(he,
-  [Da, Db]: dvec_minus(a, b),
-  f[i] += vt(n[i], tc[h] * Da),
-  f[j] += vt(n[i], tc[h] * Db));
+ f[i] += tc[h]*n[i],
+ f[j] -= tc[h]*n[i]);
 loop_he(he,
-  [Da, Dc]: dvec_minus(a, c),
-  f[i] += vt(n[i], tb[h] * Da),
-  f[k] += vt(n[i], tb[h] * Dc));
+ f[i] += tb[h]*n[i],
+ f[k] -= tb[h]*n[i]);
 
 loop_ver(he,
   ff[i]: vec_abs(f[i]));
-
 with_stdout("q",
   printf(true, "x y z r area H fx fy fz ff~%"),
   punto_write(he, r, area, H, f, ff));

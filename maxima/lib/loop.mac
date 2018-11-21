@@ -1,3 +1,5 @@
+loop_0(he, [L])::='done;
+
 loop_tri(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nt: gensym(), L],
   block([nt, x, y, z],
     nt: he_nt(he),

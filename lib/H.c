@@ -61,8 +61,15 @@ int H_apply(T *q, He *he, const real *x, const real *y, const real *z,
     laplace_apply(q->laplace, he, x, y, z, &lx, &ly, &lz, &area);
     normal_mwa(he, x, y, z, /**/ nx, ny, nz);
 
-    for (i = 0; i < nv; i++)
-        hh[i] = lx[i]*nx[i] + ly[i]*ny[i] + lz[i]*nz[i];
+    if (getenv("NORM"))
+        for (i = 0; i < nv; i++)
+            hh[i] = nx[i] + ny[i] + nz[i];
+    else if (getenv("LP"))
+        for (i = 0; i < nv; i++)
+            hh[i] = lx[i] + ly[i] + lz[i];
+    else
+        for (i = 0; i < nv; i++)
+            hh[i] = lx[i]*nx[i] + ly[i]*ny[i] + lz[i]*nz[i];
 
     *pH = q->hh;
     *parea = area;
