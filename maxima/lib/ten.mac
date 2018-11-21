@@ -11,6 +11,11 @@ ten_ini(a)::=buildq([a, m: gensym()],
     lambda([i], arraymake(a, [i])),
     matrix(['XX, 'XY, 'XZ], ['YX, 'YY, 'YZ], ['ZX, 'ZY, 'ZZ])));
 
+ten_ten(a, b):=(
+  if not matrixp(a) then error("a is not matrix"),
+  if not matrixp(b) then error("b is not matrix"),
+  a . b) $
+
 ten_block([L])::=buildq([L], block(
     [X:1, Y:2, Z:3],
     splice(L)));
