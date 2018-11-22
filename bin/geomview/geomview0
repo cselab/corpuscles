@@ -247,7 +247,6 @@ function snap0(file,   reply, status) {
     g(sprintf("snapshot Camera `%s`", file)) # TODO
     g("echo done\\n") # synchronize
     status = getline reply
-    msg("reply")
     if (!eq(reply, "done"))
 	err("snap0 failed")
 }
