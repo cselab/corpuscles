@@ -285,7 +285,7 @@ static void main0(real *vx, real *vy, real *vz,
       MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
       A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("A/A0, V/V0, Vr: %g %g %g %g", A/A0, V/V0, Vr);
+      MSG("A/A0, V/V0, Vr: %g %g %g ", A/A0, V/V0, Vr);
       printf("eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
       printf("dt: %f\n", dt);
       printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
