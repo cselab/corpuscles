@@ -25,11 +25,21 @@ if ! e test -f "$batch"
 then err "$batch file is not found"
 fi
 
+tostring () (
+    awk -v q=\" -v i="$1" \
+' BEGIN {
+    split(i, a, "=")
+    print a[1] ":" q a[2] q
+}'
+)
+
 var() {
     for i
     do shift
        case "$i" in
 	   *:*) set -- "$@" "$i" ;;
+	   *=*)	i=`tostring "$i"`
+		set -- "$@" "$i" ;;
        esac
     done
     echo "$@"
@@ -39,6 +49,7 @@ rest() {
     for i
     do shift
        case "$i" in
+	   *=*) ;;
 	   *:*) ;;
 	   *) set -- "$@" "$i" ;;
        esac
@@ -50,6 +61,7 @@ car() { echo "$1"; }
 cdr() { shift; echo "$@"; }
 
 Var=`var  "$@"`
+echo $Var >&2
 r=`rest "$@"`
 
 if test -z "$r"; then err 'FILE.mac is missing'; fi
