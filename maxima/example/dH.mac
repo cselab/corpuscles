@@ -19,7 +19,9 @@ tv(a, b):=ten_vec(a, b);
 tt(a, b):=ten_ten(a, b);
 vv(a, b):=vec_dot(a, b);
 
-file: "~/q.off"$
+/* file: "~/q.off"$ */
+
+file: "~/he/data/rbc/laplace/0.off";
 he: he(file) $
 
 nh: he_nh(he) $
@@ -59,7 +61,7 @@ loop_ver(he,
   H[i]: vec_dot(lp[i], n[i]),
   r[i]: vec_cylindrical_r(a));
 
-loop_ver(he, lp[i]: [1, 1, 1]);
+/* loop_ver(he, lp[i]: [1, 0, 0]); */
 /* loop_ver(he, n[i]: [1, 1, 1]); */
 
 loop_he(he,
@@ -71,24 +73,23 @@ loop_he(he,
 loop_he(he,
   [dc, da, db]: dtri_angle(c, a, b),
   F: dn[i],
-  f[i] += vt(lp[i], F*vv(u[h], da)),
-  f[j] += vt(lp[i], F*vv(u[h], db)),
-  f[k] += vt(lp[i], F*vv(u[h], dc)));
-
-loop_0(he,
+  f[i] += vt(lp[i], tt(F, dy(u[h], da))),
+  f[j] += vt(lp[i], tt(F, dy(u[h], db))),
+  f[k] += vt(lp[i], tt(F, dy(u[h], dc))));
+loop_he(he,
   [da, db, dc]: dtri_cot(a, b, c),
-  f[i] += tv(dy(n[i], ec[h]), da),
-  f[j] += tv(dy(n[i], ec[h]), db),
-  f[k] += tv(dy(n[i], ec[h]), dc));
-loop_0(he,
+  f[i] += vt(n[i], dy(ec[h], da)),
+  f[j] += vt(n[i], dy(ec[h], db)),
+  f[k] += vt(n[i], dy(ec[h], dc)));
+loop_he(he,
   [db, dc, da]: dtri_cot(b, c, a),
-  f[i] += tv(dy(n[i], eb[h]), da),
-  f[j] += tv(dy(n[i], eb[h]), db),
-  f[k] += tv(dy(n[i], eb[h]), dc));
-loop_0(he,
+  f[i] += vt(n[i], dy(eb[h], da)),
+  f[j] += vt(n[i], dy(eb[h], db)),
+  f[k] += vt(n[i], dy(eb[h], dc)));
+loop_he(he,
  f[i] += tc[h]*n[i],
  f[j] -= tc[h]*n[i]);
-loop_0(he,
+loop_he(he,
  f[i] += tb[h]*n[i],
  f[k] -= tb[h]*n[i]);
 

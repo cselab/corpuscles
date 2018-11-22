@@ -64,7 +64,7 @@ int H_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
     if (getenv("NORM"))
         for (i = 0; i < nv; i++)
-            hh[i] = nx[i] + ny[i] + nz[i];
+            hh[i] = nx[i];
     else if (getenv("LP"))
         for (i = 0; i < nv; i++)
             hh[i] = lx[i] + ly[i] + lz[i];
