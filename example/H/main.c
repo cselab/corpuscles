@@ -76,8 +76,6 @@ int main() {
     punto_fwrite(n, queue, stdout);
     s = he_sum_array(n, hh);
 
-    //MSG("H, f, area %g %g %g", hh[0]/area[0], ff[0]/area[0], area[0]);
-
     MSG("%g", ff[0]/area[0]);
     FREE(rr);
     FREE(fx); FREE(fy); FREE(fz); FREE(ff);

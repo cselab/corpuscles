@@ -19,7 +19,6 @@ tv(a, b):=ten_vec(a, b);
 tt(a, b):=ten_ten(a, b);
 vv(a, b):=vec_dot(a, b);
 
-/* file: "~/he/data/rbc/laplace/0.off"$ */
 file: "~/q.off"$
 he: he(file) $
 
@@ -62,13 +61,14 @@ loop_ver(he,
 
 loop_ver(he, lp[i]: [1, 1, 1]);
 /* loop_ver(he, n[i]: [1, 1, 1]); */
+
 loop_he(he,
   [Da, Db, Dc]: dtri_normal(a, b, c),
   F: dn[i],
   f[i] += ang[h]*vt(lp[i], tt(F, Da)),
   f[j] += ang[h]*vt(lp[i], tt(F, Db)),
   f[k] += ang[h]*vt(lp[i], tt(F, Dc)));
-loop_0(he,
+loop_he(he,
   [dc, da, db]: dtri_angle(c, a, b),
   F: dn[i],
   f[i] += vt(lp[i], F*vv(u[h], da)),
@@ -98,5 +98,4 @@ with_stdout("q",
   printf(true, "x y z r area H fx fy fz ff~%"),
   punto_write(he, r, area, H, f, ff));
 
-ten_block(
-  print(ff[0]/area[0]));
+print(ff[0]/area[0]);
