@@ -1,0 +1,14 @@
+set -e -u
+
+size=30
+
+f="$1"; shift
+i="$1"; shift
+o="$1"; shift
+
+l=`off.rvolume "$f"`
+l=`printf 'Vr=%.2f' $l`
+
+b=$(basename $o .ppm)
+
+composite -pointsize $size label:$l "$i" "$b.png"
