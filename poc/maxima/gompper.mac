@@ -5,7 +5,7 @@ dotassoc: false;
 iso(e, v):=second(partition(e, d(v))) $
 
 matchdeclare([x, y], all);
-tellsimp(d(lp . nn),   d(nn) . lp + nn . d(lp));
+tellsimp(d(lp . nn),   lp.d(nn) + nn.d(lp));
 tellsimp(d(n(x)), dn . d(x));
 tellsimp(d(s(x)), d(x));
 tellsimp(d(ec*tb), d(ec)*tb + ec.d(tb));

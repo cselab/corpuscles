@@ -12,7 +12,7 @@
 
 enum {X, Y, Z};
 
-static const real step = 1e-6;
+static const real step = 1e-8;
 static He *he;
 static int n;
 static H *h;
