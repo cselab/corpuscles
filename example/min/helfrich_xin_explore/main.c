@@ -24,6 +24,8 @@
 
 static const real pi = 3.141592653589793115997964;
 
+static const real tolerA = 1.0e-3;
+
 static real Kb, C0, Kad, DA0D;
 static void zero(int n, real *a) {
     int i;
@@ -213,6 +215,7 @@ static void main0(real *vx, real *vy, real *vz,
   int cnt, i, j;
   real dt, dt_max, h, mu, rnd;
   real A, V, Vr;
+  real errA;
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   char file[4048];
@@ -232,14 +235,28 @@ static void main0(real *vx, real *vy, real *vz,
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     
-    for (j=0; j < nsub; j++ ) {
+    
+    
+    j = 0;
+    A  = area();
+    errA = (A-A0)/A0;
+    if (errA<0) {
+      errA=-errA;
+    }
+    
+    while ( j < nsub && errA > tolerA ) {
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-      
+      j++;
+      A  = area();
+      errA = (A-A0)/A0;
+      if (errA<0) {
+	errA=-errA;
+      }
     }
-      
+
     if ( i % 100 == 0 ) {
 
       if ( i > 0 ) {
@@ -252,7 +269,6 @@ static void main0(real *vx, real *vy, real *vz,
       }
       
       et = Energy(XX, YY, ZZ);
-      //eb = f_bending_energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
       et = et + ek;
       A = area(); V = volume(); Vr=reduced_volume(A,V);
