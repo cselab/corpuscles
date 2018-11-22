@@ -223,10 +223,29 @@ function set_fov() {
     g(sprintf("merge camera focus {fov %s}", fov))
 }
 
-function snap(file) {
-    msg(Tmp)
+function snap(file,   c) {
+    file = "\"" file "\""
+    if (!Icommand) {
+	snap0(Tmp)
+	c = sprintf("mv %s %s", Tmp, file)
+	sys0(c)
+    }
+    else {
+	snap0(Tmp)
+	c = icommand
+	gsub("%i", Tmp, c)
+	gsub("%o", file, c)
+	sys0(c)
+    }
+}
+
+function snap0(file,   reply) {
     g(sprintf("snapshot Camera `%s`", file))
     g(sprintf("snapshot Camera `%s`", file)) # TODO
+    g("echo done\\n") # synchronize
+    getline reply
+    if (!eq(reply, "done"))
+	err("snap0 failed")
 }
 
 BEGIN {
