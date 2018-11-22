@@ -61,9 +61,6 @@ loop_ver(he,
   H[i]: vec_dot(lp[i], n[i]),
   r[i]: vec_cylindrical_r(a));
 
-/* loop_ver(he, lp[i]: [1, 0, 0]); */
-/* loop_ver(he, n[i]: [1, 1, 1]); */
-
 loop_he(he,
   [Da, Db, Dc]: dtri_normal(a, b, c),
   F: dn[i],
@@ -87,11 +84,11 @@ loop_he(he,
   f[j] += vt(n[i], dy(eb[h], db)),
   f[k] += vt(n[i], dy(eb[h], dc)));
 loop_he(he,
- f[i] += tc[h]*n[i],
- f[j] -= tc[h]*n[i]);
+  f[i] += tc[h]*n[i],
+  f[j] -= tc[h]*n[i]);
 loop_he(he,
- f[i] += tb[h]*n[i],
- f[k] -= tb[h]*n[i]);
+  f[i] += tb[h]*n[i],
+  f[k] -= tb[h]*n[i]);
 
 loop_ver(he,
   ff[i]: vec_abs(f[i]));
