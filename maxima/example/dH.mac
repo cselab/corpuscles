@@ -19,9 +19,7 @@ tv(a, b):=ten_vec(a, b);
 tt(a, b):=ten_ten(a, b);
 vv(a, b):=vec_dot(a, b);
 
-print(i);
 he: he(i) $
-
 
 nh: he_nh(he) $
 nv: he_nv(he) $
@@ -83,10 +81,8 @@ loop_he(he,
   f[j] += vt(n[i], dy(eb[h], db)),
   f[k] += vt(n[i], dy(eb[h], dc)));
 loop_he(he,
-  f[i] += tc[h]*n[i],
-  f[j] -= tc[h]*n[i]);
-loop_he(he,
-  f[i] += tb[h]*n[i],
+  f[i] += (tc[h] + tb[h])*n[i],
+  f[j] -= tc[h]*n[i],
   f[k] -= tb[h]*n[i]);
 
 loop_ver(he,
