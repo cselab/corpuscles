@@ -15,9 +15,11 @@ rotate="$1"; shift
 fov="$1"; shift
 output="$1"; shift
 appearance="$1"; shift
+command="$1"; shift
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" \
-       -v translate="$translate" -v rotate="$rotate" -v fov="$fov" -v appearance="$appearance" -v output="$output" '
+       -v translate="$translate" -v rotate="$rotate" -v fov="$fov" \
+       -v output="$output" -v appearance="$appearance" -v command="$command" '
 function ini(   i) {
     noff = ARGC - 1; ioff = 1
     for (i = 1; i in ARGV; i++)
@@ -151,14 +153,16 @@ function draw(   off, file) {
 	file = sprintf("%05d.ppm", ioff)
 	msg0(file); snap(file)
     }
-    if (Report)
+    if (Report) {
 	msg0(off)
+	sys(command)
+    }
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
 function g(s) { g0("(" s ")") }
 function g0(s) {
-    if ("" LOG != "0") msg("gcl: " quote(s))
+    if (!eq(LOG, "0")) msg("gcl: " quote(s))
     printf "%s\n", quote(s) | "cat"
     close("cat")
 }
@@ -251,4 +255,7 @@ function ang2rad(s) { return pi()*s/180 }
 function rad2ang(s) { return 180*s/pi() }
 function pi() { return 3.141592653589793 }
 function eq(a ,b) { return "" a == "" b }
+function sys(e) {
+    msg("sys: " e)
+}
 ' "$@"
