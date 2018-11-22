@@ -23,7 +23,7 @@ then
 	mkdir $Vr
     fi
     cd $Vr
-    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off$Vr > Vr$Vr.msg
+    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
 else
     for i in `seq 0 4`;
     do
