@@ -5,3 +5,5 @@ install:
 	for i in $H; \
 	do he.install "$$i" "$$path"; \
 	done
+clean:
+.PHONY: install clean
