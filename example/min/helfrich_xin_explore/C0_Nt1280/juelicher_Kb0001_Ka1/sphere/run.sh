@@ -1,12 +1,11 @@
 set -eu
 
-Kb=0.001
 Ka=1
 Kga=2
 Kv=1
 Ke=0
 
-Kb=0.01
+Kb=0.001
 C0=0
 Kad=0
 DA0D=0
@@ -24,7 +23,7 @@ then
 	mkdir $Vr
     fi
     cd $Vr
-    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
+    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off$Vr > Vr$Vr.msg
 else
     for i in `seq 0 4`;
     do

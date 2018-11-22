@@ -1,12 +1,11 @@
 set -eu
 
-Kb=0.001
 Ka=1
 Kga=2
 Kv=1
 Ke=0
 
-Kb=0.01
+Kb=0.001
 C0=0
 Kad=0
 DA0D=0
