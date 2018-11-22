@@ -1,0 +1,9 @@
+size=100
+
+f="$1"; shift
+i="$1"; shift
+o="$1"; shift
+
+l=`off.rvolume "$f"`
+l=`printf '%.2f' $l`
+composite -pointsize $size label:$l "$i" "$o"

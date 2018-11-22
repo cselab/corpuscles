@@ -238,7 +238,7 @@ function snap(file,   c, out) {
 	gsub("%f", off, c)
 	gsub("%i", input, c)
 	gsub("%o", out, c)
-	msg(c)
+	sys0(c)
     }
 }
 
@@ -291,14 +291,14 @@ function sys(c,  file) {
 	gsub("%f", file, c)
     else
 	c = c " " file
-    c = sprintf("(%s) >&2", c)
     sys0(c)
 }
- 
+
 function sys0(c,   s) {
+    c = sprintf("(%s) >&2", c)
     s = system(c)
     if (!eq(LOG, "0"))
-	msg("system: " quote(c))
+	msg("system: " c)
     if (s != 0) {
 	msg(sprintf("command: \"%s\" failed", c))
 	g("exit")
