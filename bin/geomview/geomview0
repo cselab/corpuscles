@@ -223,19 +223,22 @@ function set_fov() {
     g(sprintf("merge camera focus {fov %s}", fov))
 }
 
-function snap(file,   c) {
-    file = "\"" file "\""
+function snap(file,   c, out) {
+    off = "\"" offs[ioff] "\""
+    out = "\"" file "\""
+    input = Tmp
     if (!Icommand) {
-	snap0(Tmp)
-	c = sprintf("mv %s %s", Tmp, file)
+	snap0(input)
+	c = sprintf("mv %s %s", input, out)
 	sys0(c)
     }
     else {
-	snap0(Tmp)
+	snap0(input)
 	c = icommand
-	gsub("%i", Tmp, c)
-	gsub("%o", file, c)
-	sys0(c)
+	gsub("%f", off, c)
+	gsub("%i", input, c)
+	gsub("%o", out, c)
+	msg(c)
     }
 }
 
