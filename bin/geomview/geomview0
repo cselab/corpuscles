@@ -26,7 +26,9 @@ function ini(   i) {
 	offs[i] = ARGV[i]
     ARGC = 1
     Save = 0 # snapshot every draw()?
-    Report = 0 # dump file name
+
+    Command = !eq(command, "-")
+    Report  = Command
 
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
@@ -153,10 +155,10 @@ function draw(   off, file) {
 	file = sprintf("%05d.ppm", ioff)
 	msg0(file); snap(file)
     }
-    if (Report) {
-	msg0(off)
+    if (Report && Command)
 	sys(command)
-    }
+    else if (Report)
+	msg0(off)
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
@@ -255,7 +257,24 @@ function ang2rad(s) { return pi()*s/180 }
 function rad2ang(s) { return 180*s/pi() }
 function pi() { return 3.141592653589793 }
 function eq(a ,b) { return "" a == "" b }
-function sys(e) {
-    msg("sys: " e)
+function sys(c,  file) {
+    file = "\""  offs[ioff]  "\""
+    if (c ~ /%/)
+	gsub("%%", file, c)
+    else
+	c = c " " file
+    c = sprintf("(%s) >&2", c)
+    sys0(c)
 }
+ 
+function sys0(c,   s) {
+    s = system(c)
+    if (!eq(LOG, "0"))
+	msg("system: " quote(c))
+    if (s != 0) {
+	msg(sprintf("command: \"%s\" failed", c))
+	g("exit")
+    }
+}
+
 ' "$@"
