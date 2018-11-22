@@ -44,14 +44,17 @@ static real A0, V0, e0;
 static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
 static char bending[4049];
-static const char *me = "min/helfrich_xin_fga";
+static const char *me = "min/shwell";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
-    fprintf(stderr, "Vrstart Vrend: reduced volume start and end\n");
-    fprintf(stderr, "numVr: number of incremental Vr\n");
-    fprintf(stderr, "stepVr: number of steps at each Vr\n");
-    fprintf(stderr, "freq: frequency of output off files\n");
+    fprintf(stderr, "%s kantor|gompper|juelicher_xin|meyer_xin\n", me);
+    fprintf(stderr, "Ka Kga Kv Ke  : local area, global area, global volume, and edge constraints \n");
+    fprintf(stderr, "Kb C0 Kad DA0D: local bending, sponta curva, non-local bending, sponta area-dffierence \n");
+    fprintf(stderr, "Vrstart Vrend : reduced volume start and end\n");
+    fprintf(stderr, "numVr         : number of incremental Vr\n");
+    fprintf(stderr, "stepVr        : number of steps at each Vr\n");
+    fprintf(stderr, "freq          : frequency of output off files\n");
+    fprintf(stderr, "...           : < file.off > output.msg\n");
     exit(0);
 }
 
@@ -223,6 +226,7 @@ static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
   real dt, dt_max, h, mu, rnd;
+  real At, Vt, Vrt;
   real A, V, Vr;
   real errA;
   real *queue[] = {XX, YY, ZZ, NULL};
@@ -235,9 +239,37 @@ static void main0(real *vx, real *vy, real *vz,
 
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
+
+  At  = A0;
+
+  Vrt = Vrstart + dVr;
+  Vt  = target_volume(A0, Vrt);
+  f_volume_ini(Vt, Kv);
+      
+  MSG("Targeted A, V, Vr: %g %g %g", At, Vt, Vrt);
+  MSG("V/Vt: %g", V/Vt);
+  MSG("A/At: %g", A/At);
+  MSG("Vr  : %g", Vr);
   
   for (i = 0; i <= end; i++) {
     
+    if ( i > 0 && i % stepVr == 0 ) {
+
+      f_volume_fin();
+      
+      Vrt = Vrstart + i / stepVr * dVr + dVr;
+      Vt  = target_volume(A0, Vrt);
+
+      if ( i != end) {
+	f_volume_ini(Vt, Kv);      
+	MSG("Targeted A, V, Vr: %g %g %g", At, Vt, Vrt);
+	MSG("V/Vt: %g", V/Vt);
+	MSG("A/At: %g", A/At);
+	MSG("Vr  : %g", Vr);
+      }
+
+    }
+
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     rnd = 0.01*max_vec(vx, vy, vz);
@@ -279,16 +311,15 @@ static void main0(real *vx, real *vy, real *vz,
       }
       
       et = Energy(XX, YY, ZZ);
-      //eb = f_bending_energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
       et = et + ek;
       MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
       A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("A/A0, V/V0, Vr: %g %g %g ", A/A0, V/V0, Vr);
+      MSG("A/At, V/Vt, Vr: %g %g %g ", A/At, V/Vt, Vr);
       printf("eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
       printf("dt: %f\n", dt);
-      printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+      printf("A/At, V/Vt, Vr: %g %g %g\n", A/At, V/Vt, Vr);
       
     }//i%100
     
@@ -296,18 +327,8 @@ static void main0(real *vx, real *vy, real *vz,
       sprintf(file, "%06d.off", i);
       off_write(XX, YY, ZZ, file);
     }
-
-    if ( i > 0 && i % stepVr == 0 ) {
-      f_volume_fin();
-      Vr = Vrstart + i / stepVr * dVr + dVr;
-      V0 = target_volume(A0, Vr);
-      f_volume_ini(V0, Kv);
-      MSG("Targeted A, V, Vr: %g %g %g", A0, V0, Vr);
-
-    }
     
   }//i < end
-
   
 }
 
@@ -325,29 +346,32 @@ int main(int __UNUSED argc, const char *v[]) {
   
   ini("/dev/stdin");
   A0 = area();
+  V0 = volume();
   a0 = A0/NT;
   e0 = eq_tri_edg(a0);
 
-  A = A0;
-  V = volume();
-  Vr= reduced_volume(A, V);
+  /*A  = A0;
+  V  = volume();
+  Vr = reduced_volume(A, V);*/
 
-  dVr=(Vrend-Vrstart)/numVr;
-  end=numVr*stepVr;
-  Vr0 = Vrstart + dVr;
-  V0  = target_volume(A0, Vr0);
-    
+  dVr = (Vrend-Vrstart)/numVr;
+  end = numVr*stepVr;
+  
   MSG("Vrstart, Vrend, dVr: %g %g %g", Vrstart, Vrend, dVr);
   MSG("numVr, stepVr, freq: %d %d %d", numVr, stepVr, freq);
   MSG("end: %d", end);
+
+  /*Vr0 = Vrstart + dVr;
+  V0  = target_volume(A0, Vr0);
+    
   MSG("Targeted A, V, Vr: %g %g %g", A0, V0, Vr0);
   MSG("V/V0: %g", V/V0);
   MSG("A/A0: %g", A/A0);
-  MSG("Vr  : %g", Vr);
+  MSG("Vr  : %g", Vr);*/
   
   f_area_ini(a0,  Ka);
   f_garea_ini(A0, Kga);
-  f_volume_ini(V0, Kv);
+  //f_volume_ini(V0, Kv);
   f_edg_sq_ini(Ke);
   
   bending_param.Kb = Kb;
@@ -366,7 +390,7 @@ int main(int __UNUSED argc, const char *v[]) {
   
   f_bending_fin();
   f_edg_sq_fin();
-  f_volume_fin();
+  //f_volume_fin();
   f_area_fin();
   f_garea_fin();
   fin();
