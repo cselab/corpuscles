@@ -19,10 +19,9 @@ tv(a, b):=ten_vec(a, b);
 tt(a, b):=ten_ten(a, b);
 vv(a, b):=vec_dot(a, b);
 
-/* file: "~/q.off"$ */
+print(i);
+he: he(i) $
 
-file: "~/he/data/rbc/laplace/0.off";
-he: he(file) $
 
 nh: he_nh(he) $
 nv: he_nv(he) $
@@ -92,7 +91,7 @@ loop_he(he,
 
 loop_ver(he,
   ff[i]: vec_abs(f[i]));
-with_stdout("q",
+with_stdout(o,
   printf(true, "x y z r area H fx fy fz ff~%"),
   punto_write(he, r, area, H, f, ff));
 

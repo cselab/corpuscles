@@ -1,0 +1,3 @@
+# cTEST: dH
+he.maxima dH.mac i:\"data/q.off\" o:\"o\"
+cp o o.out.txt
