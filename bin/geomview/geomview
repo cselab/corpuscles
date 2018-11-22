@@ -51,7 +51,7 @@ nonzero () { if test "$1" = 0; then err 'cannot be zero'; fi; }
 gview () {
       "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
 	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov \
-	    \""$output"\" \""$appearance"\" \""$command"\" \
+	    \""$output"\" \""$appearance"\" \""$command"\" \""$icommand"\" \
 	    "$@"
 }
 

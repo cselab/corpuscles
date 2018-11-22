@@ -16,10 +16,14 @@ fov="$1"; shift
 output="$1"; shift
 appearance="$1"; shift
 command="$1"; shift
+icommand="$1"; shift
 
-"$AWK" -v prog="$prog" -v LOG="$LOG" \
+Tmp=/tmp/he.geomview.$$.ppm
+trap 'rm -f $Tmp; echo 2' 1 2 3 15
+
+"$AWK" -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
        -v translate="$translate" -v rotate="$rotate" -v fov="$fov" \
-       -v output="$output" -v appearance="$appearance" -v command="$command" '
+       -v output="$output" -v appearance="$appearance" -v command="$command" -v icommand="$icommand" '
 function ini(   i) {
     noff = ARGC - 1; ioff = 1
     for (i = 1; i in ARGV; i++)
@@ -27,6 +31,7 @@ function ini(   i) {
     ARGC = 1
     Save = 0 # snapshot every draw()?
 
+    Icommand = !eq(icommand, "-")
     Command = !eq(command, "-")
     Report  = Command
 
@@ -219,6 +224,7 @@ function set_fov() {
 }
 
 function snap(file) {
+    msg(Tmp)
     g(sprintf("snapshot Camera `%s`", file))
     g(sprintf("snapshot Camera `%s`", file)) # TODO
 }
@@ -251,7 +257,7 @@ BEGIN {
 function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function msg0(s) { printf "%s\n", s | "cat >&2" }
 
-function err(s) { msg(s); g("exit") }
+function err(s) { msg(s); g("exit"); exit(2) }
 function emptyp(s) { return length(s) == 0 }
 function ang2rad(s) { return pi()*s/180 }
 function rad2ang(s) { return 180*s/pi() }
@@ -278,3 +284,7 @@ function sys0(c,   s) {
 }
 
 ' "$@"
+
+status=$?
+rm -f $Tmp
+exit $status
