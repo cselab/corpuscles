@@ -24,6 +24,8 @@
 
 static const real pi = 3.141592653589793115997964;
 
+static const real tolerA = 1.0e-3;
+
 static real Kb, C0, Kad, DA0D;
 static void zero(int n, real *a) {
     int i;
@@ -35,6 +37,8 @@ static void zero(int n, real *a) {
 
 static real rVolume, Ka, Kga, Kv, Ke;
 static int end;
+static real Vrstart, Vrend, dVr;
+static int numVr, stepVr;
 static int freq;
 static real A0, V0, e0;
 static real et, eb, ek, ea, ega, ev, ee;
@@ -44,7 +48,9 @@ static const char *me = "min/helfrich_xin_fga";
 
 static void usg() {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
-    fprintf(stderr, "end: number of iterations\n");
+    fprintf(stderr, "Vrstart Vrend: reduced volume start and end\n");
+    fprintf(stderr, "numVr: number of incremental Vr\n");
+    fprintf(stderr, "stepVr: number of steps at each Vr\n");
     fprintf(stderr, "freq: frequency of output off files\n");
     exit(0);
 }
@@ -78,7 +84,6 @@ static int str(/**/ char *p) {
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
     str(bending);
-    scl(&rVolume);
     scl(&Ka);
     scl(&Kga);
     scl(&Kv);
@@ -87,8 +92,12 @@ static void arg() {
     scl(&C0);
     scl(&Kad);
     scl(&DA0D);
-    num(&end);
+    scl(&Vrstart);
+    scl(&Vrend);
+    num(&numVr);
+    num(&stepVr);
     num(&freq);
+    
 }
 
 real Energy(const real *x, const real *y, const real *z) {
@@ -122,7 +131,6 @@ void Force(const real *x, const real *y, const real *z, /**/
 void ForceArea(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    //f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -207,12 +215,16 @@ static real max_vec(real *fx, real *fy, real *fz) {
     }
     return m;
 }
+static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
+static real target_volume(real area, real v) { return v*sph_volume(area); }
+static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
   real dt, dt_max, h, mu, rnd;
   real A, V, Vr;
+  real errA;
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   char file[4048];
@@ -220,10 +232,12 @@ static void main0(real *vx, real *vy, real *vz,
   dt_max = 0.01;
   mu     = 100.0;
   h      = 0.01*e0;
-  
+
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
+  
   for (i = 0; i <= end; i++) {
+    
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     rnd = 0.01*max_vec(vx, vy, vz);
@@ -231,15 +245,28 @@ static void main0(real *vx, real *vy, real *vz,
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+
+    j = 0;
+    A  = area();
+    errA = (A-A0)/A0;
+    if (errA<0) {
+      errA=-errA;
+    }
     
-    for (j=0; j < nsub; j++ ) {
+    while ( j < nsub && errA > tolerA ) {
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-      
+      j++;
+      A  = area();
+      errA = (A-A0)/A0;
+      if (errA<0) {
+	errA=-errA;
+      }
     }
-      
+    //MSG("j: %d", j); 5 iterations to achive 1.0e-3 error!
+    
     if ( i % 100 == 0 ) {
 
       if ( i > 0 ) {
@@ -255,32 +282,41 @@ static void main0(real *vx, real *vy, real *vz,
       //eb = f_bending_energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
       et = et + ek;
-      A = area(); V = volume(); Vr=reduced_volume(A,V);
       MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
-      MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
+      A = area(); V = volume(); Vr=reduced_volume(A,V);
+      MSG("A/A0, V/V0, Vr: %g %g %g %g", A/A0, V/V0, Vr);
       printf("eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
       printf("dt: %f\n", dt);
       printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
-    }
+      
+    }//i%100
     
     if ( i % freq == 0 ) {
       sprintf(file, "%06d.off", i);
       off_write(XX, YY, ZZ, file);
     }
-  }
+
+    if ( i > 0 && i % stepVr == 0 ) {
+      f_volume_fin();
+      Vr = Vrstart + i / stepVr * dVr + dVr;
+      V0 = target_volume(A0, Vr);
+      f_volume_ini(V0, Kv);
+      MSG("Targeted A, V, Vr: %g %g %g", A0, V0, Vr);
+
+    }
+    
+  }//i < end
+
+  
 }
-
-static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
-static real target_volume(real area, real v) { return v*sph_volume(area); }
-static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
-
 
 int main(int __UNUSED argc, const char *v[]) {
   real a0;
   real *fx, *fy, *fz;
   real *vx, *vy, *vz;
   real A, V, Vr;
+  real Vr0;
   BendingParam bending_param;
   
   argv = v; argv++;
@@ -290,14 +326,21 @@ int main(int __UNUSED argc, const char *v[]) {
   ini("/dev/stdin");
   A0 = area();
   a0 = A0/NT;
-  V0 = target_volume(A0, rVolume);
   e0 = eq_tri_edg(a0);
 
   A = A0;
   V = volume();
   Vr= reduced_volume(A, V);
-  
-  MSG("Targeted Area, Volume: %g %g", A0, V0);
+
+  dVr=(Vrend-Vrstart)/numVr;
+  end=numVr*stepVr;
+  Vr0 = Vrstart + dVr;
+  V0  = target_volume(A0, Vr0);
+    
+  MSG("Vrstart, Vrend, dVr: %g %g %g", Vrstart, Vrend, dVr);
+  MSG("numVr, stepVr, freq: %d %d %d", numVr, stepVr, freq);
+  MSG("end: %d", end);
+  MSG("Targeted A, V, Vr: %g %g %g", A0, V0, Vr0);
   MSG("V/V0: %g", V/V0);
   MSG("A/A0: %g", A/A0);
   MSG("Vr  : %g", Vr);
