@@ -106,7 +106,7 @@ function parse_key(k,   s,  T, fov) {
 	read_transform(T)
 	fov = read_fov()
 	write_command(T, fov)
-	g("exit")
+	gexit(0)
     }
     else if (k == KEY_P) g("ui-panel geomview on")
     else if (k == KEY_S) {
@@ -242,11 +242,11 @@ function snap(file,   c, out) {
     }
 }
 
-function snap0(file,   reply) {
+function snap0(file,   reply, status) {
     g(sprintf("snapshot Camera `%s`", file))
     g(sprintf("snapshot Camera `%s`", file)) # TODO
     g("echo done\\n") # synchronize
-    getline reply
+    status = getline reply
     if (!eq(reply, "done"))
 	err("snap0 failed")
 }
@@ -270,16 +270,20 @@ BEGIN {
 	Save = 1
 	for (ioff = 1; ioff <= noff; ioff++)
 	    draw()
-	g("exit")
+	gexit(0)
     } else {
 	snap(output)
-	g("exit")
+	gexit(0)
     }
+}
+function gexit(s) {
+    g("exit")
+    exit(s)
 }
 function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function msg0(s) { printf "%s\n", s | "cat >&2" }
 
-function err(s) { msg(s); g("exit"); exit(2) }
+function err(s) { msg(s); gexit(2) }
 function emptyp(s) { return length(s) == 0 }
 function ang2rad(s) { return pi()*s/180 }
 function rad2ang(s) { return 180*s/pi() }
