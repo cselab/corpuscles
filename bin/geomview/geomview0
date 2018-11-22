@@ -260,7 +260,7 @@ function eq(a ,b) { return "" a == "" b }
 function sys(c,  file) {
     file = "\""  offs[ioff]  "\""
     if (c ~ /%/)
-	gsub("%%", file, c)
+	gsub("%f", file, c)
     else
 	c = c " " file
     c = sprintf("(%s) >&2", c)
