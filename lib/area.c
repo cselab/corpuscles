@@ -79,11 +79,9 @@ int he_area_ver(He *he, const real *x, const real *y, const real *z, /**/ real *
 
 int he_area_tri(He *he, const real *x, const real *y, const real *z, /**/ real *area) {
     int n, m;
-    real s;
     real a[3], b[3], c[3];
 
     n = he_nt(he);
-    s = 0;
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b, c);
         area[m] = tri_area(a, b, c);
