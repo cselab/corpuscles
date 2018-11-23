@@ -1,0 +1,2 @@
+# TEST: 0
+./main < `he.path`/rbc/laplace/0.off > main.out.txt
