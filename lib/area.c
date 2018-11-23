@@ -6,6 +6,7 @@
 #include "he/he.h"
 #include "he/vec.h"
 #include "he/tri.h"
+#include "he/sum.h"
 
 #include "he/area.h"
 
@@ -25,13 +26,18 @@ real he_area(He *he, const real *x, const real *y, const real *z) {
     int n, m;
     real s;
     real a[3], b[3], c[3];
+    HeSum *sum;
 
     n = he_nt(he);
-    s = 0;
+    he_sum_ini(&sum);
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b, c);
-        s += tri_area(a, b, c);
+        s = tri_area(a, b, c);
+        he_sum_add(sum, s);
     }
+
+    s = he_sum_get(sum);
+    he_sum_fin(sum);
     return s;
 }
 
