@@ -7,8 +7,10 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/dtri.h"
+#include "he/sum.h"
 
 #include "he/f/garea.h"
+
 
 #define T HeFGarea
 
@@ -90,15 +92,6 @@ static void compute_force(real K, real A0, real A, He *he,
     }
 }
 
-static real sum(int n, real *a) {
-    int t;
-    real s;
-    s = 0;
-    for (t = 0; t < n; t++)
-        s += a[t];
-    return s;
-}
-
 int he_f_garea_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
@@ -113,7 +106,7 @@ int he_f_garea_force(T *q, He *he,
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(he, x, y, z, /**/ area);
-    A = sum(n, area);
+    A = he_sum_array(n, area);
     compute_force(K, A0, A,   he, x, y, z, /**/ fx, fy, fz);
 
     return HE_OK;
@@ -132,6 +125,6 @@ real he_f_garea_energy(T *q, He *he,
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(he, x, y, z, /**/ area);    
-    A = sum(n, area);
+    A = he_sum_array(n, area);
     return K/A0*(A - A0)*(A - A0);
 }
