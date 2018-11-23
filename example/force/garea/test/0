@@ -1,2 +1,2 @@
-# nTEST: 0
+# cTEST: 0
 ./main < `he.path`/rbc/laplace/0.off | uscale 1e6 > main.out.txt
