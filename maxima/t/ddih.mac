@@ -1,0 +1,24 @@
+load("he/vec.mac") $
+load("he/tri.mac") $
+load("he/ten.mac") $
+load("he/dvec.mac") $
+load("he/edg.mac") $
+load("he/dedg.mac") $
+load("he/dih.mac") $
+load("he/ddih.mac") $
+load("he/util.mac") $
+
+vec_ini(a)$ vec_ini(b)$ vec_ini(c)$ vec_ini(d) $
+
+[f, df]: [ dih_angle_sup , ddih_angle_sup];
+
+[da, db, dc, dd]: df(a, b, c, d);
+
+x: f(a, b, c, d);
+da0: util_grad(x, a) $
+db0: util_grad(x, b) $
+dc0: util_grad(x, c) $
+dd0: util_grad(x, d) $
+
+assume(cy>0,  dx>0, cx>0);
+radcan(da0[1] - da[1]), ax = 0, ay = 0, az = 0, bx = 0, by = 0, bz = 1, cx;

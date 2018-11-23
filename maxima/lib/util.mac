@@ -44,3 +44,5 @@ util_tzero(x):=block([i, n: util_n(x)],
   for i: 0 thru n - 1 do x[i]: ten_zero());
 
 util_n(x):=arrayinfo(x)[3][1] + 1;
+
+util_grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);

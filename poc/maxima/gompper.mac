@@ -6,6 +6,7 @@ iso(e, v):=second(partition(e, d(v))) $
 
 matchdeclare([x, y], all);
 tellsimp(d(lp . nn),   lp.d(nn) + nn.d(lp));
+tellsimp(d(lp . lp),   2*lp.d(lp));
 tellsimp(d(n(x)), dn . d(x));
 tellsimp(d(s(x)), d(x));
 tellsimp(d(ec*tb), d(ec)*tb + ec.d(tb));
@@ -18,13 +19,12 @@ nn: n(m);
 lp0: s(tb*ec + tc*eb);
 tellsimp(d(lp), d(lp0));
 
-H: lp . nn;
+H: lp . lp;
 
 dH: d(H);
 dH: ratexpand(subst('nn, n(m), dH));
 
 iso(dH, u);
 iso(dH, ang);
-
 iso(dH, tb);
-iso(dH, ec);
+iso(dH, eb);

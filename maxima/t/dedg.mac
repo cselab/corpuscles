@@ -1,0 +1,20 @@
+load("he/vec.mac") $
+load("he/ten.mac") $
+load("he/dvec.mac") $
+load("he/edg.mac") $
+load("he/dedg.mac") $
+load("he/util.mac") $
+
+vec_ini(a)$ vec_ini(b)$
+
+[f, df]: [edg_abs, dedg_abs];
+vv[f, df]: [edg_sq,  dedg_sq];
+
+[da, db]: df(a, b);
+ab: f(a, b);
+da0: util_grad(ab, a);
+db0: util_grad(ab, b);
+
+[da - da0];
+[db - db0];
+
