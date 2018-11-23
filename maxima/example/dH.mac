@@ -13,6 +13,9 @@ load("he/edg.mac")$
 load("he/punto.mac")$
 load("he/dvec.mac")$
 
+if not stringp(o) then o: "q";
+if not stringp(i) then i: "data/q.off";
+
 dy(a, b):=ten_dyadic(a, b);
 vt(a, b):=vec_ten(a, b);
 tv(a, b):=ten_vec(a, b);

@@ -19,7 +19,7 @@ nn: n(m);
 lp0: s(tb*ec + tc*eb);
 tellsimp(d(lp), d(lp0));
 
-H: lp . lp;
+H: lp . nn;
 
 dH: d(H);
 dH: ratexpand(subst('nn, n(m), dH));
