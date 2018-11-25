@@ -1,7 +1,7 @@
 . he.util
 
-prog=he.geomview
-prog0=he.geomview0
+prog=he.gshell
+prog0=he.gshell0
 
 usg () {
     cat <<\EOF
@@ -12,7 +12,7 @@ he geomview wrapper
 -f zoom       field of view (default is 40)
 -o PPM        save PPM file and exit
 -O            save all PPM files and exit
--p command    process every off file by running `command' < IN.off > OUT.off
+-p command    process every off file by running command < IN.off > OUT.off
 -c command    run command on every file and write output to stderr, %f is replaced by a file name
 -i command    run command on every image, %i replaced by input; %o is replaced by output
 -a APPEARANCE load appearance information from a file
