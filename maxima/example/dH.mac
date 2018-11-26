@@ -59,8 +59,9 @@ loop_he(he,
   area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
 
 loop_ver(he,
-  dn: dvec_norm(m[i]),
-  ldn[i]: vt(lp[i], dn));
+  [m: m[i], lp: lp[i]],
+  dn: dvec_norm(m),
+  ldn[i]: vt(lp, dn));
 
 loop_ver(he,
   H[i]: vec_dot(lp[i], n[i]),
