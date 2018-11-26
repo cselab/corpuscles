@@ -16,6 +16,9 @@ load("he/dvec.mac")$
 if not stringp(o) then o: "q";
 if not stringp(i) then i: "data/q.off";
 
+P: 'H;
+define(Q(H), diff(P, 'H));
+
 dy(a, b):=ten_dyadic(a, b);
 vt(a, b):=vec_ten(a, b);
 tv(a, b):=ten_vec(a, b);
@@ -69,34 +72,38 @@ loop_ver(he,
   r[i]: vec_cylindrical_r(a));
 
 loop_he(he,
-  [ang: ang[h], ldn: ldn[i]],
+  [ang: ang[h], ldn: ldn[i], H: H[i], C],
   [Da, Db, Dc]: dtri_normal(a, b, c),
-  f[i] += ang*vt(ldn, Da),
-  f[j] += ang*vt(ldn, Db),
-  f[k] += ang*vt(ldn, Dc));
+  C: Q(H)*ang,
+  f[i] += C*vt(ldn, Da),
+  f[j] += C*vt(ldn, Db),
+  f[k] += C*vt(ldn, Dc));
 loop_he(he,
-  [ldn: ldn[i], u: u[h]],
+  [ldn: ldn[i], u: u[h], H: H[i], C],
   [dc, da, db]: dtri_angle(c, a, b),
-  f[i] += vv(ldn, u)*da,
-  f[j] += vv(ldn, u)*db,
-  f[k] += vv(ldn, u)*dc);
+  C: Q(H)*vv(ldn, u),
+  f[i] += C*da,
+  f[j] += C*db,
+  f[k] += C*dc);
 loop_he(he,
-  [n: n[i], ec: ec[h]],
+  [n: n[i], ec: ec[h], H: H[i], C],
   [da, db, dc]: dtri_cot(a, b, c),
-  f[i] += vv(n, ec)*da,
-  f[j] += vv(n, ec)*db,
-  f[k] += vv(n, ec)*dc);
+  C: Q(H)*vv(n, ec),
+  f[i] += C*da,
+  f[j] += C*db,
+  f[k] += C*dc);
 loop_he(he,
-  [n: n[i], eb: eb[h]],
+  [n: n[i], eb: eb[h], H: H[i], C],
   [db, dc, da]: dtri_cot(b, c, a),
-  f[i] += vv(n, eb)*da,
-  f[j] += vv(n, eb)*db,
-  f[k] += vv(n, eb)*dc);
+  C: Q(H)*vv(n, eb),
+  f[i] += C*da,
+  f[j] += C*db,
+  f[k] += C*dc);
 loop_he(he,
-  [tc: tc[h], tb: tb[h], n: n[i]],
-  f[i] += (tc + tb)*n,
-  f[j] -= tc*n,
-  f[k] -= tb*n);
+  [tc: tc[h], tb: tb[h], n: n[i], H: H[i]],
+  f[i] += Q(H)*(tc + tb)*n,
+  f[j] -= Q(H)*tc*n,
+  f[k] -= Q(H)*tb*n);
 
 loop_ver(he,
   ff[i]: vec_abs(f[i]));
