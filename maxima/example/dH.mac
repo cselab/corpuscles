@@ -54,12 +54,12 @@ loop_he(he,
   [ang: ang[h], u: u[h]],
   m[i]    += ang*u);
 
-loop_ver(he,
-  n[i]: vec_norm(m[i]));
-
 loop_he(he,
   lp[i]   += tb[h]*ec[h] + tc[h]*eb[h],
   area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
+
+loop_ver(he,
+  n[i]: vec_norm(m[i]));
 
 loop_ver(he,
   [m: m[i], lp: lp[i], n: n[i]],
@@ -117,4 +117,4 @@ with_stdout(o,
   printf(true, "x y z r area H fx fy fz ff~%"),
   punto_write(he, r, area, H, f, ff));
 
-print(ff[0]/area[0]);
+print(u[0]);
