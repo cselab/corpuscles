@@ -81,7 +81,6 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     u = q->u;
     ang = q->ang;
     m = q->m;
-    F = q->F;
     Dn = q->Dn;
     n = q->n;
 
