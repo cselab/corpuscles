@@ -7,7 +7,7 @@ iso(e, v):=second(partition(e, d(v))) $
 notone(e):=e # 1;
 matchdeclare([x, y], notone);
 tellsimp(d(x^2), 2*x*d(x));
-tellsimp(d(x/y), d(x)/y - x*d(y)/y^2);
+tellsimp(d(1/x), -d(x)/x^2);
 tellsimp(d(lp . nn),   lp.d(nn) + nn.d(lp));
 tellsimp(d(lp . lp),   2*lp.d(lp));
 tellsimp(d(n(x)), dn . d(x));
@@ -26,17 +26,26 @@ area0: s(tb*sc + tc*sb);
 
 tellsimp(d(lp), d(lp0));
 tellsimp(d(area), d(area0));
+tellsimp(d(P('area, 'H)), S*d('area) + Q*d('H));
 
-H2: (lp . nn)^2/(2*area);
-
+H: lp . nn;
+H2: P('area, 'H);
 dH: d(H2);
+dH: subst(H, 'H, dH);
+
 dH: ratexpand(subst('nn, n(m), dH));
 dH: ratexpand(subst('H,  'lp . 'nn, dH));
 
-dH: ratexpand(area * dH);
+dH: ratexpand(dH);
+
+iso(dH, sc);
+iso(dH, sb);
+
+iso(dH, tb);
+iso(dH, tc);
+
+iso(dH, eb);
+iso(dH, ec);
 
 iso(dH, u);
-iso(dH, ang);
-iso(dH, tb);
-iso(dH, eb);
-iso(dH, sc);
+iso(dH, u);
