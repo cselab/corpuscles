@@ -87,50 +87,11 @@ static int QplusAbc(const Ten *A, const Vec b, const real c[3],
 int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
-    real da[3], db[3], dc[3];
-    real *ang;
-    Ten *Dn, *F;
-    Vec *u, *m, *n;
-    Ten Da, Db, Dc;
 
-    u = q->u;
-    ang = q->ang;
-    m = q->m;
-    n = q->n;
-
+    nh = he_nh(he);
     nv = he_nv(he);
-    for (i = 0; i < nv; i++) {
-        vec_zero(m[i].v);
-        ten_zero(&F[i]);
-    }
 
     BEGIN_LOOP {
-        tri_normal(a, b, c, /**/ u[h].v);
-        ang[h] = tri_angle(c, a, b);
-        vec_axpy(ang[h], u[h].v, /*io*/ m[i].v);
-    } END_LOOP;
-
-    for (i = 0; i < nv; i++) {
-        vec_norm(m[i].v, n[i].v);
-        //dvec_norm(m[i].v, &Dn[i]);
-    }
-
-    BEGIN_LOOP {
-        dtri_normal(a, b, c, /**/ &Da, &Db, &Dc);
-        ten_mult_left(&Dn[i], &Da);
-        ten_mult_left(&Dn[i], &Db);
-        ten_mult_left(&Dn[i], &Dc);
-
-        ten_axpy(ang[h], &Da, &F[i]);
-        ten_axpy(ang[h], &Db, &F[j]);
-        ten_axpy(ang[h], &Dc, &F[k]);
-    } END_LOOP;
-
-    BEGIN_LOOP {
-        dtri_angle(c, a, b, dc, da, db);
-        QplusAbc(&Dn[i], u[h], da, /*io*/ &F[i]);
-        QplusAbc(&Dn[i], u[h], db, /*io*/ &F[j]);
-        QplusAbc(&Dn[i], u[h], dc, /*io*/ &F[k]);
     } END_LOOP;
 
     return HE_OK;
