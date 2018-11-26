@@ -37,7 +37,6 @@ int dh_ini(He *he, /**/ T **pq) {
     int nv, nh;
     T *q;
     MALLOC(1, &q);
-
     nv = he_nv(he);
     nh = he_nh(he);
 
