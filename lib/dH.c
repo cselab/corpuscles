@@ -33,7 +33,7 @@ typedef struct Vec Vec;
 struct Vec { real v[3]; };
 
 static real Q(real area, real H) { return 1.0; }
-static real P(real area, real H) { return   H; }
+static real S(real area, real H) { return   H; }
 
 struct T {
     int nv, nh;
@@ -168,6 +168,15 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     BEGIN_HE {
         dtri_angle(c, a, b,  dc, da, db);
         C = Q(area[i], H[i]) * vec_dot(ldn[i].v, u[h].v);
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dtri_cot(a, b, c,  da, db, dc);
+        C = Q(area[i], H[i]) * vec_dot(n[i].v, ec[h].v) +
+            S(area[i], H[i]) * sc[h];
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, db, f[j].v);
         vec_axpy(C, dc, f[k].v);
