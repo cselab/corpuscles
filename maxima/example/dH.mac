@@ -64,33 +64,39 @@ loop_ver(he,
   ldn[i]: vt(lp, dn));
 
 loop_ver(he,
-  H[i]: vec_dot(lp[i], n[i]),
+  [n: n[i], lp: lp[i]],
+  H[i]: vec_dot(lp, n),
   r[i]: vec_cylindrical_r(a));
 
 loop_he(he,
+  [ang: ang[h], ldn: ldn[i]],
   [Da, Db, Dc]: dtri_normal(a, b, c),
-  f[i] += ang[h]*vt(ldn[i], Da),
-  f[j] += ang[h]*vt(ldn[i], Db),
-  f[k] += ang[h]*vt(ldn[i], Dc));
+  f[i] += ang*vt(ldn, Da),
+  f[j] += ang*vt(ldn, Db),
+  f[k] += ang*vt(ldn, Dc));
 loop_he(he,
+  [ldn: ldn[i], u: u[h]],
   [dc, da, db]: dtri_angle(c, a, b),
-  f[i] += vv(ldn[i], u[h])*da,
-  f[j] += vv(ldn[i], u[h])*db,
-  f[k] += vv(ldn[i], u[h])*dc);
+  f[i] += vv(ldn, u)*da,
+  f[j] += vv(ldn, u)*db,
+  f[k] += vv(ldn, u)*dc);
 loop_he(he,
+  [n: n[i], ec: ec[h]],
   [da, db, dc]: dtri_cot(a, b, c),
-  f[i] += vv(n[i], ec[h])*da,
-  f[j] += vv(n[i], ec[h])*db,
-  f[k] += vv(n[i], ec[h])*dc);
+  f[i] += vv(n, ec)*da,
+  f[j] += vv(n, ec)*db,
+  f[k] += vv(n, ec)*dc);
 loop_he(he,
+  [n: n[i], eb: eb[h]],
   [db, dc, da]: dtri_cot(b, c, a),
-  f[i] += vv(n[i], eb[h])*da,
-  f[j] += vv(n[i], eb[h])*db,
-  f[k] += vv(n[i], eb[h])*dc);
+  f[i] += vv(n, eb)*da,
+  f[j] += vv(n, eb)*db,
+  f[k] += vv(n, eb)*dc);
 loop_he(he,
-  f[i] += (tc[h] + tb[h])*n[i],
-  f[j] -= tc[h]*n[i],
-  f[k] -= tb[h]*n[i]);
+  [tc: tc[h], tb: tb[h], n: n[i]],
+  f[i] += (tc + tb)*n,
+  f[j] -= tc*n,
+  f[k] -= tb*n);
 
 loop_ver(he,
   ff[i]: vec_abs(f[i]));
