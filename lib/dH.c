@@ -107,6 +107,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     Vec *f;
 
     Ten Dn, Da, Db, Dc;
+    real da[3], db[3], dc[3];
     real C;
 
     A(tb); A(tc); A(sb); A(sc); A(ang);
@@ -116,8 +117,6 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     nh = he_nh(he);
     nv = he_nv(he);
-
-    MSG("nv: %d", nv);
 
     BEGIN_VER {
         vec_zero(m[i].v);
@@ -155,12 +154,19 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_HE {
         dtri_normal(a, b, c,   &Da, &Db, &Dc);
-        C = Q(area[i], H[i]) * ang[i];
+        C = Q(area[i], H[i]) * ang[h];
+
+        vec_ten(ldn[i].v, &Da,  da);
+        vec_ten(ldn[i].v, &Db,  db);
+        vec_ten(ldn[i].v, &Dc,  dc);
+
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
     } END_HE;
 
-    MSG("area: %g", area[0]);
-    vec_fprintf(ldn[0].v, stderr, "%g");
-    vec_fprintf(n[0].v, stderr, "%g");
+    vec_fprintf(f[0].v, stderr, "%g");
+    vec_fprintf(f[nv - 1].v, stderr, "%g");
 
     return HE_OK;
 #   undef A

@@ -73,6 +73,9 @@ loop_he(he,
   C: Q(area, H)*ang,
   f[i] += C*vt(ldn, Da), f[j] += C*vt(ldn, Db), f[k] += C*vt(ldn, Dc));
 
+print(f[0]);
+print(f[nv - 1]);
+
 loop_he(he,
   [ldn: ldn[i], u: u[h], H: H[i], area: area[i], C],
   [dc, da, db]: dtri_angle(c, a, b),
@@ -116,5 +119,3 @@ loop_ver(he,
 with_stdout(o,
   printf(true, "x y z r area H fx fy fz ff~%"),
   punto_write(he, r, area, H, f, ff));
-
-print(u[0]);
