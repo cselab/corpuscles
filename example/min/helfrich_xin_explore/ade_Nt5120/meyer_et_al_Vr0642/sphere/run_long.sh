@@ -19,7 +19,7 @@ A=$(echo  $pi | awk '{print $1*4.0}')
 end=200000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt1280.off
+off=$(he.path)/sph/laplace/Nt5120.off
 
 if test $# -ne 0
 then
@@ -39,9 +39,9 @@ then
     cd $na
     ../../../../main meyer_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
 else
-    for i in `seq 0 5`;
+    for i in `seq 0 7`;
     do
-	Da1=$(echo $i | awk '{print (0.2+$1*0.02)}')
+	Da1=$(echo $i | awk '{print (0.17+$1*0.01)}')
 	#echo $Da1
 	bash run_long.sh $Da1
     done
