@@ -47,12 +47,12 @@ int dh_ini(He *he, /**/ T **pq) {
     M(nh, sc);
     M(nh, ang);
 
+    M(nv, H);
+    M(nv, area);
+
     M(nh, eb);
     M(nh, ec);
     M(nh, u);
-
-    M(nv, H);
-    M(nv, area);
 
     M(nv, lp);
     M(nv, m);
@@ -68,23 +68,9 @@ int dh_ini(He *he, /**/ T **pq) {
 
 int dh_fin(T *q) {
 #   define F(x) FREE(q->x)
-    F(tb);
-    F(tc);
-    F(sb);
-    F(sc);
-    F(ang);
-
-    F(eb);
-    F(ec);
-    F(u);
-
-    F(H);
-    F(area);
-
-    F(lp);
-    F(m);
-    F(n);
-    F(ldn);
+    F(tb); F(tc); F(sb); F(sc); F(ang);
+    F(H); F(area);
+    F(eb); F(ec); F(u); F(lp); F(m); F(n); F(ldn);
     return HE_OK;
 #   undef F    
 }
