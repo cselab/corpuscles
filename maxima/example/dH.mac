@@ -48,7 +48,8 @@ loop_he(he,
   ang[h]: tri_angle(c, a, b));
 
 loop_he(he,
-  m[i]    += ang[h]*u[h]);
+  [ang: ang[h], u: u[h]],
+  m[i]    += ang*u);
 
 loop_ver(he,
   n[i]: vec_norm(m[i]));

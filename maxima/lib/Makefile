@@ -13,7 +13,6 @@ he.mac\
 off.mac\
 tri.mac\
 loop.mac\
-loop2.mac\
 punto.mac\
 ten.mac\
 vec.mac\
