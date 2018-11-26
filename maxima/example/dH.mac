@@ -16,8 +16,8 @@ load("he/dvec.mac")$
 
 if not stringp(o) then o: "q";
 if not stringp(i) then i: "data/q.off";
+if     atom(P)    then P: 'H;
 
-P: 'H^2/'area;
 define(Q('area, 'H), diff(P, 'H));
 define(S('area, 'H), diff(P, 'area));
 
