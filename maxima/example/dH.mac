@@ -17,7 +17,8 @@ if not stringp(o) then o: "q";
 if not stringp(i) then i: "data/q.off";
 
 P: 'H;
-define(Q(H), diff(P, 'H));
+define(Q('area, 'H), diff(P, 'H));
+define(S('area, 'H), diff(P, 'area));
 
 dy(a, b):=ten_dyadic(a, b);
 vt(a, b):=vec_ten(a, b);
@@ -68,32 +69,34 @@ loop_ver(he,
   ldn[i]: vt(lp, dn));
 
 loop_he(he,
-  [ang: ang[h], ldn: ldn[i], H: H[i], C],
+  [ang: ang[h], ldn: ldn[i], H: H[i], area: area[i], C],
   [Da, Db, Dc]: dtri_normal(a, b, c),
-  C: Q(H)*ang,
+  C: Q(area, H)*ang,
   f[i] += C*vt(ldn, Da), f[j] += C*vt(ldn, Db), f[k] += C*vt(ldn, Dc));
 
 loop_he(he,
-  [ldn: ldn[i], u: u[h], H: H[i], C],
+  [ldn: ldn[i], u: u[h], H: H[i], area: area[i], C],
   [dc, da, db]: dtri_angle(c, a, b),
-  C: Q(H)*vv(ldn, u),
+  C: Q(area, H)*vv(ldn, u),
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
 
 loop_he(he,
-  [n: n[i], ec: ec[h], H: H[i], C],
+  [n: n[i], ec: ec[h], H: H[i], area: area[i], C],
   [da, db, dc]: dtri_cot(a, b, c),
-  C: Q(H)*vv(n, ec),
+  C: Q(area, H)*vv(n, ec),
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
 
 loop_he(he,
-  [n: n[i], eb: eb[h], H: H[i], C],
+  [n: n[i], eb: eb[h], H: H[i], area: area[i], C],
   [db, dc, da]: dtri_cot(b, c, a),
-  C: Q(H)*vv(n, eb),
+  C: Q(area, H)*vv(n, eb),
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
 
 loop_he(he,
-  [tc: tc[h], tb: tb[h], n: n[i], H: H[i]],
-  f[i] += Q(H)*(tc + tb)*n, f[j] -= Q(H)*tc*n, f[k] -= Q(H)*tb*n);
+  [tc: tc[h], tb: tb[h], n: n[i], H: H[i], area: area[i]],
+  f[i] += Q(area, H)*(tc + tb)*n,
+  f[j] -= Q(area, H)*tc*n,
+  f[k] -= Q(area, H)*tb*n);
 
 loop_ver(he,
   r[i]: vec_cylindrical_r(a),
