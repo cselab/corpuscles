@@ -8,6 +8,7 @@
 #include "he/dvec.h"
 #include "he/tri.h"
 #include "he/edg.h"
+#include "he/dedg.h"
 #include "he/dtri.h"
 #include "he/ten.h"
 #include "he/memory.h"
@@ -33,7 +34,7 @@ typedef struct Vec Vec;
 struct Vec { real v[3]; };
 
 static real Q(real area, real H) { return 1.0; }
-static real S(real area, real H) { return   H; }
+static real S(real area, real H) { return 0.0; }
 
 struct T {
     int nv, nh;
@@ -189,6 +190,27 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, db, f[j].v);
         vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dedg_sq(a, b,  da, db);
+        C = S(area[i], H[i])*tc[h];
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dedg_sq(a, c,  da, dc);
+        C = S(area[i], H[i])*tb[h];
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        C = Q(area[i], H[i]);
+        vec_axpy( C*(tc[h] + tb[h]), n[i].v, f[i].v);
+        vec_axpy(-C*tc[h], n[i].v, f[j].v);
+        vec_axpy(-C*tb[h], n[i].v, f[k].v);
     } END_HE;
 
     vec_fprintf(f[0].v, stderr, "%g");
