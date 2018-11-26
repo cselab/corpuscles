@@ -28,7 +28,7 @@ struct Vec { real v[3]; };
 
 struct T {
     int nv, nh;
-    real *ang;
+    real *tb, *tc, eb;
     Ten *Dn;
     Vec *u, *m, *n;
 };
