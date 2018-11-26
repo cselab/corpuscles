@@ -85,14 +85,14 @@ loop_he(he,
   C: Q(area, H)*vv(n, ec) + S(area, H)*sc,
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
 
-print(f[0]);
-print(f[nv - 1]);
-
 loop_he(he,
   [n: n[i], eb: eb[h], sb: sb[h], H: H[i], area: area[i], C],
   [db, dc, da]: dtri_cot(b, c, a),
   C: Q(area, H)*vv(n, eb) + S(area, H)*sb,
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
+
+print(f[0]);
+print(f[nv - 1]);
 
 loop_he(he,
   [tc: tc[h], H: H[i], area: area[i]],

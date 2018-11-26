@@ -175,8 +175,17 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_HE {
         dtri_cot(a, b, c,  da, db, dc);
-        C = Q(area[i], H[i]) * vec_dot(n[i].v, ec[h].v) +
-            S(area[i], H[i]) * sc[h];
+        C = Q(area[i], H[i])*vec_dot(n[i].v, ec[h].v) +
+            S(area[i], H[i])*sc[h];
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dtri_cot(b, c, a,  db, dc, da);
+        C = Q(area[i], H[i])*vec_dot(n[i].v, eb[h].v) +
+            S(area[i], H[i])*sb[h];
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, db, f[j].v);
         vec_axpy(C, dc, f[k].v);
