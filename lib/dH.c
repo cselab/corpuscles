@@ -85,7 +85,7 @@ static int QplusAbc(const Ten *A, const Vec b, const real c[3],
     return HE_OK;
 }
 int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
-#define A(f) f = q->f
+#   define A(f) f = q->f
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
 
@@ -102,9 +102,15 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     MSG("nv: %d", nv);
 
+    for (i = 0; i < nv; i++) {
+        vec_zero(m[i].v);
+        vec_zero(lp[i].v);
+        area[i] = 0;
+    }
+
     BEGIN_LOOP {
     } END_LOOP;
 
     return HE_OK;
-#undef A
+#   undef A
 }
