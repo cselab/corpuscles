@@ -14,14 +14,19 @@
 
 #define T Dh
 
-#define BEGIN_LOOP                               \
+#define BEGIN_HE                                 \
     nh = he_nh(he);                              \
     for (h = 0; h < nh; h++) {                   \
     he_ijk(he, h, &i, &j, &k);                   \
     vec_get(i, x, y, z, a);                      \
     vec_get(j, x, y, z, b);                      \
     vec_get(k, x, y, z, c);
-#define END_LOOP }
+#define END_HE }
+
+#define BEGIN_VER                                \
+    nv = he_nv(he);                              \
+    for (i = 0; i < nv; i++) {
+#define END_VER }
 
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
@@ -102,14 +107,14 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     MSG("nv: %d", nv);
 
-    for (i = 0; i < nv; i++) {
+    BEGIN_VER {
         vec_zero(m[i].v);
         vec_zero(lp[i].v);
         area[i] = 0;
-    }
+    } END_VER;
 
-    BEGIN_LOOP {
-    } END_LOOP;
+    BEGIN_HE {
+    } END_HE;
 
     return HE_OK;
 #   undef A
