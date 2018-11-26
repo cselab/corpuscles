@@ -28,9 +28,8 @@ struct Vec { real v[3]; };
 
 struct T {
     int nv, nh;
-    real *tb, *tc, eb;
-    Ten *Dn;
-    Vec *u, *m, *n;
+    real *tb, *tc, *sb, *sc, *ang;
+    Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
 };
 
 int dh_ini(He *he, /**/ T **pq) {
@@ -44,7 +43,6 @@ int dh_ini(He *he, /**/ T **pq) {
     MALLOC(nh, &q->ang);
 
     MALLOC(nv, &q->n);
-    MALLOC(nv, &q->Dn);
     MALLOC(nv, &q->m);
 
     q->nv = nv;
@@ -55,7 +53,7 @@ int dh_ini(He *he, /**/ T **pq) {
 
 int dh_fin(T *q) {
     FREE(q->u); FREE(q->ang); FREE(q->n);
-    FREE(q->Dn); FREE(q->m);
+    FREE(q->m);
     FREE(q);
     return HE_OK;
 }
@@ -81,7 +79,6 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     u = q->u;
     ang = q->ang;
     m = q->m;
-    Dn = q->Dn;
     n = q->n;
 
     nv = he_nv(he);
@@ -98,7 +95,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     for (i = 0; i < nv; i++) {
         vec_norm(m[i].v, n[i].v);
-        dvec_norm(m[i].v, &Dn[i]);
+        //dvec_norm(m[i].v, &Dn[i]);
     }
 
     BEGIN_LOOP {
