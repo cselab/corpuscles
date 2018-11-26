@@ -32,12 +32,10 @@ he: he(i) $
 nh: he_nh(he) $
 nv: he_nv(he) $
 
-alloc(nh,   tb, tc, eb, ec, sb, sc, u, ang) $
+alloc(nh,   tb, tc, sb, sc, ang,    eb, ec, u) $
 alloc(nv, H, ff, r);
 calloc(nv, area);
-valloc(nv, lp, m, n);
-valloc(nv, f);
-talloc(nv, ldn)$
+valloc(nv, lp, m, n, f, ldn);
 
 loop_he(he,
   tb[h]: tri_cot(a, b, c),

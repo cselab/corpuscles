@@ -4,6 +4,7 @@ he/bending.h\
 he/container.h\
 he/ddih.h\
 he/dedg.h\
+he/dH.h\
 he/dih.h\
 he/dnormal.h\
 he/dtri.h\
