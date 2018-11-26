@@ -61,6 +61,10 @@ int main(__UNUSED int argc, const char **v) {
         ten(&T); vec(a);
         ten_vec(&T, a, b);
         vec_printf(b, "%g");
+    } else if (eq(op, "vec_ten")) {
+        vec(a); ten(&T);
+        vec_ten(a, &T, b);
+        vec_printf(b, "%g");
     } else if (eq(op, "add")) {
         ten(&T); ten(&R);
         ten_add(&R, &T);

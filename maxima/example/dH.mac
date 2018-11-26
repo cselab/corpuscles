@@ -109,6 +109,9 @@ loop_he(he,
   f[j] -= Q(area, H)*tc*n,
   f[k] -= Q(area, H)*tb*n);
 
+print(f[0]);
+print(f[nv - 1]);
+
 loop_ver(he,
   r[i]: vec_cylindrical_r(a),
   ff[i]: vec_abs(f[i]));
@@ -116,5 +119,3 @@ loop_ver(he,
 with_stdout(o,
   printf(true, "x y z r area H fx fy fz ff~%"),
   punto_write(he, r, area, H, f, ff));
-
-print(u[0]);

@@ -8,6 +8,7 @@ int ten_plus(const Ten*, const Ten*, /**/ Ten*);
 int ten_minus(const Ten*, const Ten*, /**/ Ten*);
 int ten_scalar(const Ten*, real, /**/ Ten*);
 int ten_vec(const Ten*, const real[3], /**/ real[3]);
+int vec_ten(const real[3], const Ten*, /**/ real[3]);
 
 /* y *= s, y += x, y -= x,  */
 int ten_scale(real, /*io*/ Ten*);

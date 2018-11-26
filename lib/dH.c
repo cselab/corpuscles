@@ -8,6 +8,7 @@
 #include "he/dvec.h"
 #include "he/tri.h"
 #include "he/edg.h"
+#include "he/dedg.h"
 #include "he/dtri.h"
 #include "he/ten.h"
 #include "he/memory.h"
@@ -32,11 +33,15 @@
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
 
+static real Q(void *p, real area, real H) { return 1.0; }
+static real S(void *p, real area, real H) { return 0.0; }
+
 struct T {
     int nv, nh;
     real *tb, *tc, *sb, *sc, *ang;
-    real *H, *area;
+    real *qq, *ss, *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
+    Vec *f;
 };
 
 int dh_ini(He *he, /**/ T **pq) {
@@ -47,23 +52,11 @@ int dh_ini(He *he, /**/ T **pq) {
     nv = he_nv(he);
     nh = he_nh(he);
 
-    M(nh, tb);
-    M(nh, tc);
-    M(nh, sb);
-    M(nh, sc);
-    M(nh, ang);
-
-    M(nv, H);
-    M(nv, area);
-
-    M(nh, eb);
-    M(nh, ec);
-    M(nh, u);
-
-    M(nv, lp);
-    M(nv, m);
-    M(nv, n);
-    M(nv, ldn);
+    M(nh, tb); M(nh, tc); M(nh, sb);
+    M(nh, sc); M(nh, ang);
+    M(nv, qq); M(nv, ss); M(nv, H); M(nv, area);
+    M(nh, eb); M(nh, ec); M(nh, u);
+    M(nv, lp); M(nv, m); M(nv, n); M(nv, ldn); M(nv, f);
 
     q->nv = nv;
     q->nh = nh;
@@ -75,8 +68,9 @@ int dh_ini(He *he, /**/ T **pq) {
 int dh_fin(T *q) {
 #   define F(x) FREE(q->x)
     F(tb); F(tc); F(sb); F(sc); F(ang);
-    F(H); F(area);
+    F(qq); F(ss); F(H); F(area);
     F(eb); F(ec); F(u); F(lp); F(m); F(n); F(ldn);
+    F(f);
     return HE_OK;
 #   undef F
 }
@@ -96,21 +90,27 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     real a[3], b[3], c[3];
 
     real *tb, *tc, *sb, *sc, *ang;
-    real *H, *area;
+    real*qq, *ss, *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
+    Vec *f;
+
+    Ten Dn, Da, Db, Dc;
+    real da[3], db[3], dc[3];
+    real C;
+    void *p;
 
     A(tb); A(tc); A(sb); A(sc); A(ang);
-    A(H); A(area);
+    A(qq); A(ss); A(H); A(area);
     A(eb); A(ec); A(u); A(lp); A(m); A(n); A(ldn);
+    A(f);
 
     nh = he_nh(he);
     nv = he_nv(he);
 
-    MSG("nv: %d", nv);
-
     BEGIN_VER {
         vec_zero(m[i].v);
         vec_zero(lp[i].v);
+        vec_zero(f[i].v);
         area[i] = 0;
     } END_VER;
 
@@ -136,10 +136,70 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_VER {
         vec_norm(m[i].v,  n[i].v);
+        H[i] = vec_dot(lp[i].v, n[i].v);
+        dvec_norm(m[i].v, &Dn);
+        vec_ten(lp[i].v, &Dn,   ldn[i].v);
     } END_VER;
 
-    MSG("area: %g", area[0]);
+    BEGIN_HE {
+        dtri_normal(a, b, c,   &Da, &Db, &Dc);
+        C = Q(p, area[i], H[i]) * ang[h];
 
+        vec_ten(ldn[i].v, &Da,  da);
+        vec_ten(ldn[i].v, &Db,  db);
+        vec_ten(ldn[i].v, &Dc,  dc);
+
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dtri_angle(c, a, b,  dc, da, db);
+        C = Q(p, area[i], H[i]) * vec_dot(ldn[i].v, u[h].v);
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dtri_cot(a, b, c,  da, db, dc);
+        C = Q(p, area[i], H[i])*vec_dot(n[i].v, ec[h].v) +
+            S(p, area[i], H[i])*sc[h];
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dtri_cot(b, c, a,  db, dc, da);
+        C = Q(p, area[i], H[i])*vec_dot(n[i].v, eb[h].v) +
+            S(p, area[i], H[i])*sb[h];
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dedg_sq(a, b,  da, db);
+        C = S(p, area[i], H[i])*tc[h];
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+    } END_HE;
+
+    BEGIN_HE {
+        dedg_sq(a, c,  da, dc);
+        C = S(p, area[i], H[i])*tb[h];
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
+    BEGIN_HE {
+        C = Q(p, area[i], H[i]);
+        vec_axpy( C*(tc[h] + tb[h]), n[i].v, f[i].v);
+        vec_axpy(-C*tc[h], n[i].v, f[j].v);
+        vec_axpy(-C*tb[h], n[i].v, f[k].v);
+    } END_HE;
 
     return HE_OK;
 #   undef A
