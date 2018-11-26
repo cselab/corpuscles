@@ -71,8 +71,7 @@ static int QplusAbc(const Ten *A, const Vec b, const real c[3],
     ten_add(&Y, Q);
     return HE_OK;
 }
-int dh_apply(T *q, He *he, const real *x, const real *y, const real *z,
-                  /**/ Ten **pF) {
+int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
     real da[3], db[3], dc[3];
@@ -122,6 +121,6 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z,
         QplusAbc(&Dn[i], u[h], db, /*io*/ &F[j]);
         QplusAbc(&Dn[i], u[h], dc, /*io*/ &F[k]);
     } END_LOOP;
-    *pF = F;
+
     return HE_OK;
 }
