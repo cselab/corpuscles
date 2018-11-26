@@ -10,7 +10,7 @@
 #include "he/dtri.h"
 #include "he/ten.h"
 #include "he/memory.h"
-#include "he/dh.h"
+#include "he/dH.h"
 
 #define T Dh
 

@@ -11,6 +11,7 @@ area.s.o\
 bending.s.o\
 ddih.s.o\
 dedg.s.o\
+dH.s.o\
 dih.s.o\
 dnormal.s.o\
 dtri.s.o\
@@ -59,6 +60,7 @@ area.d.o\
 bending.d.o\
 ddih.d.o\
 dedg.d.o\
+dH.d.o\
 dih.d.o\
 dnormal.d.o\
 dtri.d.o\
