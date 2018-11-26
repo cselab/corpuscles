@@ -1,0 +1,20 @@
+ddih_angle_sup(a, b, c, d):=block([da, db, dc, dd],
+  [da, db, dc, dd]: ddih_angle(a, b, c, d),
+  [-da, -db, -dc, -dd]);
+
+ddih_angle(a, b, c, d):=block([n, k, e, An, Ak, da, db, cn, bn, bk, ck,
+                               dc, dd],
+  n: tri_normal(a, b, c),
+  k: tri_normal(c, b, d),
+  e: edg_abs(c, b),
+  An: tri_area(a, b, c),
+  Ak: tri_area(c, b, d),
+  da: e*n/(2*An),
+  db: e*k/(2*Ak),
+  cn: tri_cot(b, c, a),
+  bn: tri_cot(a, b, c),
+  bk: tri_cot(c, b, d),
+  ck: tri_cot(d, c, b),
+  dc: -bn/e*n - bk/e*k,
+  dd: -cn/e*n - ck/e*k,
+  [da, db, dc, dd]);

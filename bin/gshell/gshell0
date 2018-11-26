@@ -1,0 +1,59 @@
+. he.util
+
+prog=he.gshell0
+
+usg () {
+    msg "$prog"
+    msg 'he geomview shell'
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+"$AWK" -v prog="$prog" -v LOG="$LOG" '
+BEGIN {
+    ini()
+    geom()
+    draw()
+}
+
+{
+   print	
+}
+
+function geom() {
+    g("geometry obj appearance { : appearance } { : off }")
+    g("bbox-draw obj no")
+    g("read appearance {define appearance { +edge } material {ks 0}}")
+}
+
+function draw() {
+    off = offs[ioff]
+    g(sprintf("read geometry   { define off        < `%s` }", off))
+}
+
+function ini(   i) {
+    noff = ARGC - 1; ioff = 1
+    for (i = 1; i in ARGV; i++)
+	offs[i] = ARGV[i]
+    ARGC = 1
+}
+
+function gexit(s) {
+    g("exit")
+    exit(s)
+}
+function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
+function g(s) { g0("(" s ")") }
+function g0(s) {
+    if (!eq(LOG, "0")) msg("gcl: " quote(s))
+    printf "%s\n", quote(s) | "cat"
+    close("cat")
+}
+function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
+function msg0(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { msg(s); gexit(2) }
+function eq(a ,b) { return "" a == "" b }
+
+' "$@"
+

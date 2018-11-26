@@ -6,13 +6,22 @@ load("he/dtri.mac") $
 grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);
 
 vec_ini(a); vec_ini(b); vec_ini(c);
-f: tri_cot(a, b, c) $
-[da, db, dc]: dtri_cot(a, b, c) $
 
-da0: grad(f, a) $
-db0: grad(f, b) $
-dc0: grad(f, c) $
+[Da, Db, Dc]: dtri_normal(a, b, c);
 
-radcan(da - da0);
-radcan(db - db0);
-radcan(dc - dc0);
+n: tri_normal(a, b, c);
+
+Da0: jacobian(n, a);
+Db0: jacobian(n, b);
+Dc0: jacobian(n, c);
+
+radcan(Da - Da0);
+radcan(Db - Db0);
+radcan(Dc - Dc0);
+
+[da, db, dc]: dtri_angle(a, b, c);
+ang: tri_angle(a, b, c);
+
+[da0, db0, dc0]: [grad(ang, a), grad(ang, b), ograd(ang, c)];
+
+radcan(da[1] - da0[1]);

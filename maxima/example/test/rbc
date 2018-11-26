@@ -1,0 +1,4 @@
+# nTEST: rbc
+i=`he.path`/rbc/laplace/0.off
+he.maxima dH.mac i=$i o=o
+uscale 1e6 o > o.out.txt

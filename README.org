@@ -5,11 +5,13 @@ constraints.
 
 * Install
 
+Requires 'pkg-config', 'libgsl', 'make', 'gcc-c`
+
 #+BEGIN_SRC sh
 make PREFIX=$HOME
 #+END_SRC
 
-`PREFIX` should be on the `PATH`.
+'PREFIX/bin' should be on the 'PATH'.
 
 * Lib
 

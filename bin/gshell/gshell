@@ -1,0 +1,39 @@
+. he.util
+
+prog=he.gshell
+prog0=he.gshell0
+
+usg () {
+    cat <<\EOF
+$prog [OFF]..
+EOF
+    exit
+}
+
+: ${GEOMVIEW=geomview}
+: ${WX=800}
+: ${WY=600}
+
+num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
+num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
+nonzero () { if test "$1" = 0; then err 'cannot be zero'; fi; }
+
+gview () {
+      "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
+	    "$prog0" "$@"
+}
+
+off0() {
+    test -f "$1" &&
+	"$AWK" '{ if ("" $0 ~ /OFF/) exit 0; else exit 1 }' "$1"
+}
+off()   { if ! off0 "$1"; then err "not an off file '$1'"; fi; }
+filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'; then err "$GEOMVIEW is not found"; fi
+
+if test $# -eq 0; then err 'no input files'; fi
+for i; do off "$i"; done
+
+gview "$@"

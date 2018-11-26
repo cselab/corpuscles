@@ -3,8 +3,6 @@ load("he/ten.mac") $
 load("he/dvec.mac") $
 load("he/dedg.mac") $
 
-grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);
-
 vec_ini(a);
 vec_ini(b);
 
