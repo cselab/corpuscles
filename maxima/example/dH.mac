@@ -81,16 +81,30 @@ loop_he(he,
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
 
 loop_he(he,
-  [n: n[i], ec: ec[h], H: H[i], area: area[i], C],
+  [n: n[i], ec: ec[h], sc: sc[h], H: H[i], area: area[i], C],
   [da, db, dc]: dtri_cot(a, b, c),
   C: Q(area, H)*vv(n, ec),
+  f[i] += C*da, f[j] += C*db, f[k] += C*dc,
+  C: S(area, H)*sc,
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
 
 loop_he(he,
-  [n: n[i], eb: eb[h], H: H[i], area: area[i], C],
+  [n: n[i], eb: eb[h], sb: sb[h], H: H[i], area: area[i], C],
   [db, dc, da]: dtri_cot(b, c, a),
-  C: Q(area, H)*vv(n, eb),
+  C: Q(area, H)*vv(n, eb) + S(area, H)*sb,
   f[i] += C*da, f[j] += C*db, f[k] += C*dc);
+
+loop_he(he,
+  [tc: tc[h], H: H[i], area: area[i]],
+  [da, db]: dedg_sq(a, b),
+  C: S(area, H)*tc,
+  f[i] += C*da, f[j] += C*db);
+
+loop_he(he,
+  [tb: tb[h], H: H[i], area: area[i]],
+  [da, dc]: dedg_sq(a, c),
+  C: S(area, H)*tb,
+  f[i] += C*da, f[k] += C*dc);
 
 loop_he(he,
   [tc: tc[h], tb: tb[h], n: n[i], H: H[i], area: area[i]],
@@ -101,6 +115,7 @@ loop_he(he,
 loop_ver(he,
   r[i]: vec_cylindrical_r(a),
   ff[i]: vec_abs(f[i]));
+
 with_stdout(o,
   printf(true, "x y z r area H fx fy fz ff~%"),
   punto_write(he, r, area, H, f, ff));
