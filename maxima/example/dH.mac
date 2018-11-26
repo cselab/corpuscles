@@ -62,50 +62,41 @@ loop_he(he,
   area[i] += tb[h]*sc[h] + tc[h]*sb[h]);
 
 loop_ver(he,
-  [m: m[i], lp: lp[i]],
+  [m: m[i], lp: lp[i], n: n[i]],
   dn: dvec_norm(m),
-  ldn[i]: vt(lp, dn));
-
-loop_ver(he,
-  [n: n[i], lp: lp[i]],
   H[i]: vec_dot(lp, n),
-  r[i]: vec_cylindrical_r(a));
+  ldn[i]: vt(lp, dn));
 
 loop_he(he,
   [ang: ang[h], ldn: ldn[i], H: H[i], C],
   [Da, Db, Dc]: dtri_normal(a, b, c),
   C: Q(H)*ang,
-  f[i] += C*vt(ldn, Da),
-  f[j] += C*vt(ldn, Db),
-  f[k] += C*vt(ldn, Dc));
+  f[i] += C*vt(ldn, Da), f[j] += C*vt(ldn, Db), f[k] += C*vt(ldn, Dc));
+
 loop_he(he,
   [ldn: ldn[i], u: u[h], H: H[i], C],
   [dc, da, db]: dtri_angle(c, a, b),
   C: Q(H)*vv(ldn, u),
-  f[i] += C*da,
-  f[j] += C*db,
-  f[k] += C*dc);
+  f[i] += C*da, f[j] += C*db, f[k] += C*dc);
+
 loop_he(he,
   [n: n[i], ec: ec[h], H: H[i], C],
   [da, db, dc]: dtri_cot(a, b, c),
   C: Q(H)*vv(n, ec),
-  f[i] += C*da,
-  f[j] += C*db,
-  f[k] += C*dc);
+  f[i] += C*da, f[j] += C*db, f[k] += C*dc);
+
 loop_he(he,
   [n: n[i], eb: eb[h], H: H[i], C],
   [db, dc, da]: dtri_cot(b, c, a),
   C: Q(H)*vv(n, eb),
-  f[i] += C*da,
-  f[j] += C*db,
-  f[k] += C*dc);
+  f[i] += C*da, f[j] += C*db, f[k] += C*dc);
+
 loop_he(he,
   [tc: tc[h], tb: tb[h], n: n[i], H: H[i]],
-  f[i] += Q(H)*(tc + tb)*n,
-  f[j] -= Q(H)*tc*n,
-  f[k] -= Q(H)*tb*n);
+  f[i] += Q(H)*(tc + tb)*n, f[j] -= Q(H)*tc*n, f[k] -= Q(H)*tb*n);
 
 loop_ver(he,
+  r[i]: vec_cylindrical_r(a),
   ff[i]: vec_abs(f[i]));
 with_stdout(o,
   printf(true, "x y z r area H fx fy fz ff~%"),
