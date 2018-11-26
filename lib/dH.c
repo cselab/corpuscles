@@ -165,6 +165,14 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
         vec_axpy(C, dc, f[k].v);
     } END_HE;
 
+    BEGIN_HE {
+        dtri_angle(c, a, b,  dc, da, db);
+        C = Q(area[i], H[i]) * vec_dot(ldn[i].v, u[h].v);
+        vec_axpy(C, da, f[i].v);
+        vec_axpy(C, db, f[j].v);
+        vec_axpy(C, dc, f[k].v);
+    } END_HE;
+
     vec_fprintf(f[0].v, stderr, "%g");
     vec_fprintf(f[nv - 1].v, stderr, "%g");
 
