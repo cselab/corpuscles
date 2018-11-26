@@ -29,9 +29,9 @@ with_stdout("l",
   grind(a[i,j] = ans[i,j]));
 
 
-ten_any(PP);
-ten_any(QQ);
+vec_any(v);
+ten_any(P);
 
-ten_arg(PP, QQ);
+ten_arg(v, P);
 
-R . T;
+vec_ten(v, P);
