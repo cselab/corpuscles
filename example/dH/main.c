@@ -34,12 +34,12 @@ int main() {
         rr[i] = vec_cylindrical_r(r);
         ff[i] = vec_abs(f);
     }
-    
+
     puts("x y z r fx fy fz ff");
-    real *queue[] = {x, y, z, r, fx, fy, fz, ff, NULL};    
+    real *queue[] = {x, y, z, rr, fx, fy, fz, ff, NULL};
     punto_fwrite(n, queue, stdout);
 
-    dh_fin(dh);    
+    dh_fin(dh);
     FREE(fx); FREE(fy); FREE(fz); FREE(ff); FREE(rr);
     y_fin(he, x, y, z);
     return HE_OK;
