@@ -29,33 +29,64 @@ struct Vec { real v[3]; };
 struct T {
     int nv, nh;
     real *tb, *tc, *sb, *sc, *ang;
+    real *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
 };
 
 int dh_ini(He *he, /**/ T **pq) {
+#   define M(n, f) MALLOC(n, &q->f)
     int nv, nh;
     T *q;
     MALLOC(1, &q);
     nv = he_nv(he);
     nh = he_nh(he);
 
-    MALLOC(nh, &q->u);
-    MALLOC(nh, &q->ang);
+    M(nh, tb);
+    M(nh, tc);
+    M(nh, sb);
+    M(nh, sc);
+    M(nh, ang);
 
-    MALLOC(nv, &q->n);
-    MALLOC(nv, &q->m);
+    M(nh, eb);
+    M(nh, ec);
+    M(nh, u);
+
+    M(nv, H);
+    M(nv, area);
+
+    M(nv, lp);
+    M(nv, m);
+    M(nv, n);
+    M(nv, ldn);
 
     q->nv = nv;
     q->nh = nh;
     *pq = q;
     return HE_OK;
+#   undef M           
 }
 
 int dh_fin(T *q) {
-    FREE(q->u); FREE(q->ang); FREE(q->n);
-    FREE(q->m);
-    FREE(q);
+#   define F(x) FREE(q->x)
+    F(tb);
+    F(tc);
+    F(sb);
+    F(sc);
+    F(ang);
+
+    F(eb);
+    F(ec);
+    F(u);
+
+    F(H);
+    F(area);
+
+    F(lp);
+    F(m);
+    F(n);
+    F(ldn);
     return HE_OK;
+#   undef F    
 }
 
 static int QplusAbc(const Ten *A, const Vec b, const real c[3],
