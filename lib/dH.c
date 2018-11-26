@@ -29,7 +29,7 @@ struct Vec { real v[3]; };
 struct T {
     int nv, nh;
     real *ang;
-    Ten *Dn, *F;
+    Ten *Dn;
     Vec *u, *m, *n;
 };
 
@@ -46,7 +46,6 @@ int dh_ini(He *he, /**/ T **pq) {
     MALLOC(nv, &q->n);
     MALLOC(nv, &q->Dn);
     MALLOC(nv, &q->m);
-    MALLOC(nv, &q->F);
 
     q->nv = nv;
     q->nh = nh;
@@ -56,7 +55,7 @@ int dh_ini(He *he, /**/ T **pq) {
 
 int dh_fin(T *q) {
     FREE(q->u); FREE(q->ang); FREE(q->n);
-    FREE(q->Dn); FREE(q->m); FREE(q->F);
+    FREE(q->Dn); FREE(q->m);
     FREE(q);
     return HE_OK;
 }
