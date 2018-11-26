@@ -32,11 +32,15 @@
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
 
+static real Q(real area, real H) { return 1.0; }
+static real P(real area, real H) { return   H; }
+
 struct T {
     int nv, nh;
     real *tb, *tc, *sb, *sc, *ang;
     real *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
+    Vec *f;
 };
 
 int dh_ini(He *he, /**/ T **pq) {
@@ -64,6 +68,7 @@ int dh_ini(He *he, /**/ T **pq) {
     M(nv, m);
     M(nv, n);
     M(nv, ldn);
+    M(nv, f);
 
     q->nv = nv;
     q->nh = nh;
@@ -77,6 +82,7 @@ int dh_fin(T *q) {
     F(tb); F(tc); F(sb); F(sc); F(ang);
     F(H); F(area);
     F(eb); F(ec); F(u); F(lp); F(m); F(n); F(ldn);
+    F(f);
     return HE_OK;
 #   undef F
 }
@@ -98,11 +104,15 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     real *tb, *tc, *sb, *sc, *ang;
     real *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
-    Ten Dn;
+    Vec *f;
+
+    Ten Dn, Da, Db, Dc;
+    real C;
 
     A(tb); A(tc); A(sb); A(sc); A(ang);
     A(H); A(area);
     A(eb); A(ec); A(u); A(lp); A(m); A(n); A(ldn);
+    A(f);
 
     nh = he_nh(he);
     nv = he_nv(he);
@@ -112,6 +122,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     BEGIN_VER {
         vec_zero(m[i].v);
         vec_zero(lp[i].v);
+        vec_zero(f[i].v);
         area[i] = 0;
     } END_VER;
 
@@ -137,13 +148,19 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_VER {
         vec_norm(m[i].v,  n[i].v);
-        dvec_norm(m[i].v, &Dn);
         H[i] = vec_dot(lp[i].v, n[i].v);
-        vec_ten(ldn[i].v, &Dn,   ldn[i].v);
+        dvec_norm(m[i].v, &Dn);
+        vec_ten(lp[i].v, &Dn,   ldn[i].v);
     } END_VER;
 
-    MSG("area: %g", area[0]);
+    BEGIN_HE {
+        dtri_normal(a, b, c,   &Da, &Db, &Dc);
+        C = Q(area[i], H[i]) * ang[i];
+    } END_HE;
 
+    MSG("area: %g", area[0]);
+    vec_fprintf(ldn[0].v, stderr, "%g");
+    vec_fprintf(n[0].v, stderr, "%g");
 
     return HE_OK;
 #   undef A
