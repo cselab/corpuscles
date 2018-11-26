@@ -33,8 +33,8 @@
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
 
-static real Q(real area, real H) { return 1.0; }
-static real S(real area, real H) { return 0.0; }
+static real Q(void *p, real area, real H) { return 1.0; }
+static real S(void *p, real area, real H) { return 0.0; }
 
 struct T {
     int nv, nh;
@@ -110,6 +110,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     Ten Dn, Da, Db, Dc;
     real da[3], db[3], dc[3];
     real C;
+    void *p;
 
     A(tb); A(tc); A(sb); A(sc); A(ang);
     A(H); A(area);
@@ -155,7 +156,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_HE {
         dtri_normal(a, b, c,   &Da, &Db, &Dc);
-        C = Q(area[i], H[i]) * ang[h];
+        C = Q(p, area[i], H[i]) * ang[h];
 
         vec_ten(ldn[i].v, &Da,  da);
         vec_ten(ldn[i].v, &Db,  db);
@@ -168,7 +169,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_HE {
         dtri_angle(c, a, b,  dc, da, db);
-        C = Q(area[i], H[i]) * vec_dot(ldn[i].v, u[h].v);
+        C = Q(p, area[i], H[i]) * vec_dot(ldn[i].v, u[h].v);
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, db, f[j].v);
         vec_axpy(C, dc, f[k].v);
@@ -176,8 +177,8 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_HE {
         dtri_cot(a, b, c,  da, db, dc);
-        C = Q(area[i], H[i])*vec_dot(n[i].v, ec[h].v) +
-            S(area[i], H[i])*sc[h];
+        C = Q(p, area[i], H[i])*vec_dot(n[i].v, ec[h].v) +
+            S(p, area[i], H[i])*sc[h];
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, db, f[j].v);
         vec_axpy(C, dc, f[k].v);
@@ -185,8 +186,8 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_HE {
         dtri_cot(b, c, a,  db, dc, da);
-        C = Q(area[i], H[i])*vec_dot(n[i].v, eb[h].v) +
-            S(area[i], H[i])*sb[h];
+        C = Q(p, area[i], H[i])*vec_dot(n[i].v, eb[h].v) +
+            S(p, area[i], H[i])*sb[h];
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, db, f[j].v);
         vec_axpy(C, dc, f[k].v);
@@ -194,20 +195,20 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_HE {
         dedg_sq(a, b,  da, db);
-        C = S(area[i], H[i])*tc[h];
+        C = S(p, area[i], H[i])*tc[h];
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, db, f[j].v);
     } END_HE;
 
     BEGIN_HE {
         dedg_sq(a, c,  da, dc);
-        C = S(area[i], H[i])*tb[h];
+        C = S(p, area[i], H[i])*tb[h];
         vec_axpy(C, da, f[i].v);
         vec_axpy(C, dc, f[k].v);
     } END_HE;
 
     BEGIN_HE {
-        C = Q(area[i], H[i]);
+        C = Q(p, area[i], H[i]);
         vec_axpy( C*(tc[h] + tb[h]), n[i].v, f[i].v);
         vec_axpy(-C*tc[h], n[i].v, f[j].v);
         vec_axpy(-C*tb[h], n[i].v, f[k].v);
