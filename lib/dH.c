@@ -39,7 +39,7 @@ static real S(void *p, real area, real H) { return 0.0; }
 struct T {
     int nv, nh;
     real *tb, *tc, *sb, *sc, *ang;
-    real *H, *area;
+    real *qq, *ss, *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
     Vec *f;
 };
@@ -54,7 +54,7 @@ int dh_ini(He *he, /**/ T **pq) {
 
     M(nh, tb); M(nh, tc); M(nh, sb);
     M(nh, sc); M(nh, ang);
-    M(nv, H); M(nv, area);
+    M(nv, qq); M(nv, ss); M(nv, H); M(nv, area);
     M(nh, eb); M(nh, ec); M(nh, u);
     M(nv, lp); M(nv, m); M(nv, n); M(nv, ldn); M(nv, f);
 
@@ -68,7 +68,7 @@ int dh_ini(He *he, /**/ T **pq) {
 int dh_fin(T *q) {
 #   define F(x) FREE(q->x)
     F(tb); F(tc); F(sb); F(sc); F(ang);
-    F(H); F(area);
+    F(qq); F(ss); F(H); F(area);
     F(eb); F(ec); F(u); F(lp); F(m); F(n); F(ldn);
     F(f);
     return HE_OK;
@@ -90,7 +90,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     real a[3], b[3], c[3];
 
     real *tb, *tc, *sb, *sc, *ang;
-    real *H, *area;
+    real*qq, *ss, *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
     Vec *f;
 
@@ -100,7 +100,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     void *p;
 
     A(tb); A(tc); A(sb); A(sc); A(ang);
-    A(H); A(area);
+    A(qq); A(ss); A(H); A(area);
     A(eb); A(ec); A(u); A(lp); A(m); A(n); A(ldn);
     A(f);
 
