@@ -63,7 +63,7 @@ int dh_ini(He *he, /**/ T **pq) {
     q->nh = nh;
     *pq = q;
     return HE_OK;
-#   undef M           
+#   undef M
 }
 
 int dh_fin(T *q) {
@@ -72,7 +72,7 @@ int dh_fin(T *q) {
     F(H); F(area);
     F(eb); F(ec); F(u); F(lp); F(m); F(n); F(ldn);
     return HE_OK;
-#   undef F    
+#   undef F
 }
 
 static int QplusAbc(const Ten *A, const Vec b, const real c[3],
@@ -85,14 +85,26 @@ static int QplusAbc(const Ten *A, const Vec b, const real c[3],
     return HE_OK;
 }
 int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+#define A(f) f = q->f
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
 
+    real *tb, *tc, *sb, *sc, *ang;
+    real *H, *area;
+    Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
+
+    A(tb); A(tc); A(sb); A(sc); A(ang);
+    A(H); A(area);
+    A(eb); A(ec); A(u); A(lp); A(m); A(n); A(ldn);
+
     nh = he_nh(he);
     nv = he_nv(he);
+
+    MSG("nv: %d", nv);
 
     BEGIN_LOOP {
     } END_LOOP;
 
     return HE_OK;
+#undef A
 }
