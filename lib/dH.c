@@ -7,6 +7,7 @@
 #include "he/vec.h"
 #include "he/dvec.h"
 #include "he/tri.h"
+#include "he/edg.h"
 #include "he/dtri.h"
 #include "he/ten.h"
 #include "he/memory.h"
@@ -114,7 +115,31 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     } END_VER;
 
     BEGIN_HE {
+        tb[h] = tri_cot(a, b, c);
+        tc[h] = tri_cot(b, c, a);
+        vec_minus(a, b,   eb[h].v);
+        vec_minus(a, c,   ec[h].v);
+
+        sb[h] = edg_sq(a, b);
+        sc[h] = edg_sq(a, c);
+
+        tri_normal(a, b, c,   u[h].v);
+        ang[h] = tri_angle(c, a, b);
     } END_HE;
+
+    BEGIN_HE {
+        vec_axpy(ang[h], u[h].v,   m[i].v);
+        vec_axpy(tb[h], ec[h].v,   lp[i].v);
+        vec_axpy(tc[h], eb[h].v,   lp[i].v);
+        area[i] += tb[h]*sc[h] + tc[h]*sb[h];
+    } END_HE;
+
+    BEGIN_VER {
+        vec_norm(m[i].v,  n[i].v);
+    } END_VER;
+
+    MSG("area: %g", area[0]);
+
 
     return HE_OK;
 #   undef A
