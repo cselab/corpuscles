@@ -78,6 +78,15 @@ int ten_vec(const Ten *T, const real a[3], /**/ real b[3]) {
     return HE_OK;
 }
 
+int vec_ten(const real a[3], const Ten *T, /**/ real b[3]) {
+    const real *t;
+    t = T->t;
+    b[X] = a[X]*t[XX] + a[Y]*t[YX] + a[Z]*t[ZX];
+    b[Y] = a[X]*t[XY] + a[Y]*t[YY] + a[Z]*t[ZY];
+    b[Z] = a[X]*t[XZ] + a[Y]*t[YZ] + a[Z]*t[ZZ];
+    return HE_OK;
+}
+
 int ten_add(const Ten *R, /*io*/ Ten *T) {
     const real *r;
     real *t;

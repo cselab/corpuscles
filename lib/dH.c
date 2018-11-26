@@ -98,6 +98,7 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
     real *tb, *tc, *sb, *sc, *ang;
     real *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
+    Ten Dn;
 
     A(tb); A(tc); A(sb); A(sc); A(ang);
     A(H); A(area);
@@ -136,6 +137,9 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
 
     BEGIN_VER {
         vec_norm(m[i].v,  n[i].v);
+        dvec_norm(m[i].v, &Dn);
+        H[i] = vec_dot(lp[i].v, n[i].v);
+        vec_ten(ldn[i].v, &Dn,   ldn[i].v);
     } END_VER;
 
     MSG("area: %g", area[0]);
