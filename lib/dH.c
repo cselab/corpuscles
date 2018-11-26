@@ -52,24 +52,11 @@ int dh_ini(He *he, /**/ T **pq) {
     nv = he_nv(he);
     nh = he_nh(he);
 
-    M(nh, tb);
-    M(nh, tc);
-    M(nh, sb);
-    M(nh, sc);
-    M(nh, ang);
-
-    M(nv, H);
-    M(nv, area);
-
-    M(nh, eb);
-    M(nh, ec);
-    M(nh, u);
-
-    M(nv, lp);
-    M(nv, m);
-    M(nv, n);
-    M(nv, ldn);
-    M(nv, f);
+    M(nh, tb); M(nh, tc); M(nh, sb);
+    M(nh, sc); M(nh, ang);
+    M(nv, H); M(nv, area);
+    M(nh, eb); M(nh, ec); M(nh, u);
+    M(nv, lp); M(nv, m); M(nv, n); M(nv, ldn); M(nv, f);
 
     q->nv = nv;
     q->nh = nh;
@@ -213,9 +200,6 @@ int dh_apply(T *q, He *he, const real *x, const real *y, const real *z, /**/ rea
         vec_axpy(-C*tc[h], n[i].v, f[j].v);
         vec_axpy(-C*tb[h], n[i].v, f[k].v);
     } END_HE;
-
-    vec_fprintf(f[0].v, stderr, "%g");
-    vec_fprintf(f[nv - 1].v, stderr, "%g");
 
     return HE_OK;
 #   undef A
