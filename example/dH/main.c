@@ -13,8 +13,8 @@
 #include <he/punto.h>
 #include <he/y.h>
 
-static real ddh(void *p, real area, real H) { return   2*H/area; }
-static real dda(void *p, real area, real H) { return  -(H*H)/(area*area); }
+static real ddh(void *p, real area, real H) { return   4*H/area; }
+static real dda(void *p, real area, real H) { return  -(2*H*H)/(area*area); }
 
 int main() {
     Dh *dh;
@@ -44,6 +44,8 @@ int main() {
         rr[i] = vec_cylindrical_r(r);
         ff[i] = vec_abs(f);
     }
+
+    MSG("area: %g", he_sum_array(n, area));
 
     puts("x y z r fx fy fz ff area H");
     real *queue[] = {x, y, z, rr, fx, fy, fz, ff, area, H, NULL};
