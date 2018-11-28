@@ -9,7 +9,7 @@ freq=200
 
 off=$(he.path)/sph/laplace/Nt1280.off
 
-(cd ../../.. && make)
+(cd ../../.. && make clean && make)
 
 if test $# -ne 0
 then
