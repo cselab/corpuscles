@@ -1,0 +1,14 @@
+. he.util
+
+prog=he.run
+
+: ${VAL=}
+: ${TIM=}
+
+usg () {
+    msg "$prog 'prog' [args ...]"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
