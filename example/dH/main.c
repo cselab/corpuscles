@@ -24,7 +24,6 @@ int main() {
     real *fx, *fy, *fz, *ff;
     real r[3], f[3];
     dHParam param;
-
     param.dh = ddh;
     param.da = dda;
 
