@@ -20,7 +20,7 @@ int main() {
     Dh *dh;
     He *he;
     int n, i;
-    real *x, *y, *z, *rr;
+    real *x, *y, *z, *rr, *area, *H;
     real *fx, *fy, *fz, *ff;
     real r[3], f[3];
     dHParam param;
@@ -35,6 +35,9 @@ int main() {
     MALLOC(n, &rr);
 
     dh_apply(dh, param, he, x, y, z, /**/ fx, fy, fz);
+    dh_area(dh, &area);
+    dh_H(dh, &H);
+
     for (i = 0; i < n; i++) {
         vec_get(i, x, y, z, /**/ r);
         vec_get(i, fx, fy, fz, /**/ f);
@@ -42,8 +45,8 @@ int main() {
         ff[i] = vec_abs(f);
     }
 
-    puts("x y z r fx fy fz ff");
-    real *queue[] = {x, y, z, rr, fx, fy, fz, ff, NULL};
+    puts("x y z r fx fy fz ff area H");
+    real *queue[] = {x, y, z, rr, fx, fy, fz, ff, area, H, NULL};
     punto_fwrite(n, queue, stdout);
 
     dh_fin(dh);

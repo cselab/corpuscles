@@ -76,6 +76,7 @@ int dh_apply(T *q, dHParam param, He *he, const real *x, const real *y, const re
 #   define A(f) f = q->f
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
+    const real *v;
 
     real *tb, *tc, *sb, *sc, *ang;
     real*ddh, *dda, *H, *area;
@@ -195,6 +196,22 @@ int dh_apply(T *q, dHParam param, He *he, const real *x, const real *y, const re
         vec_axpy(-C*tb[h], n[i].v, f[k].v);
     } END_HE;
 
+    BEGIN_VER {
+        v = f[i].v;
+        vec_append(v, i, fx, fy, fz);
+    } END_VER;
+
     return HE_OK;
 #   undef A
+}
+
+
+int dh_area(T *q, real **parea) {
+    *parea = q->area;
+    return HE_OK;
+}
+
+int dh_H(T *q, real **pH) {
+    *pH = q->H;
+    return HE_OK;
 }
