@@ -18,6 +18,7 @@ then
     fi
     cd $Vr
     ../../../../main juelicher_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
+    #../../../../main gompper_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
 else
     for i in `seq 0 8`;
     do
