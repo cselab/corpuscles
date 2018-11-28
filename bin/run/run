@@ -26,4 +26,6 @@ then
 elif test ! -z "${GDB+x}"
 then
     e "$GDB_EXEC" "$GDB" "$main" "$@"
-else e "$main" "$@"; fi
+else
+    e "$main" "$@"
+fi
