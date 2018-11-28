@@ -111,11 +111,6 @@ real he_f_gompper_xin_energy(T *q, He *he,
 #   undef A
 }
 
-int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
-    *pa = q->energy;
-    return HE_OK;
-}
-
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *fx_tot, real *fy_tot, real *fz_tot) {
@@ -123,4 +118,9 @@ int he_f_gompper_xin_force(T *q, He *he,
 
     return HE_OK;
 #   undef A
+}
+
+int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
+    *pa = q->energy;
+    return HE_OK;
 }
