@@ -1,9 +1,9 @@
 # TEST: 0
-./main data/0 > punto.out.txt
+he.run ./main data/0 > punto.out.txt
 
 # TEST: 1
-./main data/1 > punto.out.txt
+he.run ./main data/1 > punto.out.txt
 
 # TEST: 2
-./main data/1 out.txt
+he.run ./main data/1 out.txt
 cp out.txt punto.out.txt
