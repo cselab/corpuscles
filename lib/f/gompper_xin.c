@@ -9,6 +9,7 @@
 #include "he/dtri.h"
 #include "he/dedg.h"
 #include "he/sum.h"
+#include "he/dH.h"
 #include "he/macro.h"
 
 #include "he/f/gompper_xin.h"
@@ -23,6 +24,7 @@
 struct T {
     real Kb, H0;
     real *energy;
+    Dh *dh;
 };
 
 int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
@@ -36,41 +38,53 @@ int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D
     q->Kb = Kb;
     q->H0 = C0/2;
 
+    dh_ini(he, &q->dh);
+
     *pq = q;
     return HE_OK;
 }
 
 int he_f_gompper_xin_fin(T *q) {
+    dh_fin(q->dh);
     FREE(q->energy);
     FREE(q);
     return HE_OK;
 }
 
-int he_f_gompper_xin_force(T *q, He *he,
-                           const real *x, const real *y, const real *z, /**/
-                           real *fx_tot, real *fy_tot, real *fz_tot) {
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
+}
+static int scale(int n, real sc, /*io*/ real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] *= sc;
     return HE_OK;
 }
-
 real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
 #   define A(f) f = q->f
     int nv, i;
     real *energy;
     real Kb, H0;
+    dHParam p;
 
     A(energy); A(Kb); A(H0);
 
     nv = he_nv(he);
-    BEGIN_VER {
-        energy[i] = 0;
-    } END_VER;
-
+    zero(nv, energy);
+    
     return he_sum_array(nv, energy);
 #   undef A
 }
 
 int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
+    return HE_OK;
+}
+
+int he_f_gompper_xin_force(T *q, He *he,
+                           const real *x, const real *y, const real *z, /**/
+                           real *fx_tot, real *fy_tot, real *fz_tot) {
     return HE_OK;
 }
