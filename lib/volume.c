@@ -28,6 +28,7 @@ real he_volume_tri(He *he, const real *x, const real *y, const real *z) {
     real a[3], b[3], c[3];
     HeSum *sum;
 
+    he_sum_ini(&sum);
     n = he_nt(he);
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b, c);
