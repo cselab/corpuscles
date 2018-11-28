@@ -1,4 +1,4 @@
-#include <math.h>
+#include <tgmath.h>
 #include <stdio.h>
 
 #include "real.h"
@@ -33,6 +33,7 @@
 typedef struct Vec Vec;
 struct Vec { real v[3]; };
 
+/* h := H*a     E = H*a = h;     E = H^2*a  = h^2/a  */
 static real Q(void *p, real area, real H) { return 1.0; }
 static real S(void *p, real area, real H) { return 0.0; }
 
