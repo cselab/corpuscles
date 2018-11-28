@@ -13,8 +13,8 @@
 #include <he/punto.h>
 #include <he/y.h>
 
-static real ddh(void *p, real area, real H) { return 1.0; }
-static real dda(void *p, real area, real H) { return 0.0; }
+static real ddh(void *p, real area, real H) { return   2*H/area; }
+static real dda(void *p, real area, real H) { return  -(H*H)/(area*area); }
 
 int main() {
     Dh *dh;
