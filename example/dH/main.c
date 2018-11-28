@@ -34,7 +34,7 @@ int main() {
     CALLOC(n, &fx); CALLOC(n, &fy); CALLOC(n, &fz); MALLOC(n, &ff);
     MALLOC(n, &rr);
 
-    dh_apply(dh, param, he, x, y, z, /**/ fx, fy, fz);
+    dh_force(dh, param, he, x, y, z, /**/ fx, fy, fz);
     dh_area(dh, &area);
     dh_h(dh, &H);
 

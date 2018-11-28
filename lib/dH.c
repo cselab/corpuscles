@@ -123,7 +123,7 @@ int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
 #   undef A
 }
 
-int dh_apply(T *q, dHParam param, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+int dh_force(T *q, dHParam param, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
 #   define A(f) f = q->f
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
