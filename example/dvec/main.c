@@ -13,8 +13,8 @@
 #define FMT_IN   XE_REAL_IN
 static const char **argv;
 
-void vec(/**/ real a[3]) { vec_argv(&argv, a); }
-int eq(const char *a, const char *b) { return util_eq(a, b); }
+static void vec(/**/ real a[3]) { vec_argv(&argv, a); }
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
     real a[3], b[3];
