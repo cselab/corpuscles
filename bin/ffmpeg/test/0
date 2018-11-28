@@ -1,0 +1,3 @@
+# TEST: 0
+he.ffmpeg
+echo $? > o.out.txt
