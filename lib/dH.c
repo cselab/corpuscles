@@ -43,10 +43,16 @@ struct T {
 
 static int normal(const real a[3], const real b[3], const real c[3],
                   real u[3]) {
-    return tri_normal(a, b, c, u);
+    int status;
+    status = tri_normal(a, b, c, u);
+    vec_neg(/**/ u);
+    return status;
 }
 static int dnormal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, Ten *y, Ten *z) {
-    return dtri_normal(a, b, c,   x, y, z);
+    int status;
+    status = dtri_normal(a, b, c,   x, y, z);
+    ten_neg(x); ten_neg(y); ten_neg(z);
+    return status;
 }
 
 int dh_ini(He *he, /**/ T **pq) {
