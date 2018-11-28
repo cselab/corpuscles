@@ -136,6 +136,11 @@ int dh_apply(T *q, dHParam param, He *he, const real *x, const real *y, const re
         vec_ten(lp[i].v, &Dn,   ldn[i].v);
     } END_VER;
 
+    BEGIN_VER {
+        ddh[i] = DH(p, area[i], H[i]);
+        dda[i] = DA(p, area[i], H[i]);
+    } END_VER;
+
     BEGIN_HE {
         dtri_normal(a, b, c,   &Da, &Db, &Dc);
         C = DH(p, area[i], H[i]) * ang[h];
