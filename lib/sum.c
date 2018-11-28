@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <math.h>
+#include <tgmath.h>
 
 #include "he/memory.h"
 #include "he/err.h"

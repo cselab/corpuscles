@@ -10,6 +10,8 @@ int vec_minus(const real[3], const real[3], /**/ real[3]);
 int vec_add(const real[3], /*io*/ real[3]);
 /* y += a*x */
 int vec_axpy(real a, const real x[3], /*io*/ real y[3]);
+/* x = -x */
+int vec_neg(/*io*/ real[3]);
 
  /* al*a + be*b */
 int vec_linear_combination(real, const real[3], real, const real[3], /**/ real[3]);

@@ -271,7 +271,7 @@ static int compute_energy_local(Param param, int nv, real *area, real *H, /**/ r
 }
 
 real he_f_juelicher_xin_energy(T *q, He *he,
-                        const real *x, const real *y, const real *z) {
+                               const real *x, const real *y, const real *z) {
     Size size;
     Param param;
     real K, H0, Kad, DA0D;

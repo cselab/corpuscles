@@ -21,14 +21,14 @@ tellsimp(d(ang*u), d(u)*ang + u.d(ang));
 m: s(ang*u);
 nn: n(m);
 
-lp0: s(tb*ec + tc*eb);
-area0: s(tb*sc + tc*sb);
+lp0: -s(tb*ec + tc*eb)/2;
+area0: s(tb*sc + tc*sb)/8;
 
 tellsimp(d(lp), d(lp0));
 tellsimp(d(area), d(area0));
 tellsimp(d(P('area, 'H)), S*d('area) + Q*d('H));
 
-H: lp . nn;
+H: (lp . nn)/2;
 H2: P('area, 'H);
 dH: d(H2);
 dH: subst(H, 'H, dH);
@@ -38,14 +38,16 @@ dH: ratexpand(subst('H,  'lp . 'nn, dH));
 
 dH: ratexpand(dH);
 
-iso(dH, sc);
-iso(dH, sb);
+iso(dH, u);
+iso(dH, ang);
 
 iso(dH, tb);
 iso(dH, tc);
 
+iso(dH, sc);
+iso(dH, sb);
+
 iso(dH, eb);
 iso(dH, ec);
 
-iso(dH, u);
-iso(dH, u);
+

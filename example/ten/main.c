@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <tgmath.h>
 
 #include <real.h>
 #include <he/err.h>
@@ -72,6 +72,10 @@ int main(__UNUSED int argc, const char **v) {
     } else if (eq(op, "sub")) {
         ten(&T); ten(&R);
         ten_sub(&R, &T);
+        ten_printf(&T, "%g");
+    } else if (eq(op, "neg")) {
+        ten(&T);
+        ten_neg(&T);
         ten_printf(&T, "%g");
     } else if (eq(op, "mult_right")) {
         ten(&T); ten(&R);

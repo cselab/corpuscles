@@ -13,13 +13,19 @@
 #include <he/punto.h>
 #include <he/y.h>
 
+static real ddh(void *p, real area, real H) { return   4*H/area; }
+static real dda(void *p, real area, real H) { return  -(2*H*H)/(area*area); }
+
 int main() {
     Dh *dh;
     He *he;
     int n, i;
-    real *x, *y, *z, *rr;
+    real *x, *y, *z, *rr, *area, *H;
     real *fx, *fy, *fz, *ff;
     real r[3], f[3];
+    dHParam param;
+    param.dh = ddh;
+    param.da = dda;
 
     y_ini("/dev/stdin", &he, &x, &y, &z);
     n = he_nv(he);
@@ -27,7 +33,10 @@ int main() {
     CALLOC(n, &fx); CALLOC(n, &fy); CALLOC(n, &fz); MALLOC(n, &ff);
     MALLOC(n, &rr);
 
-    dh_apply(dh, he, x, y, z, /**/ fx, fy, fz);
+    dh_force(dh, param, he, x, y, z, /**/ fx, fy, fz);
+    dh_area(dh, &area);
+    dh_h(dh, &H);
+
     for (i = 0; i < n; i++) {
         vec_get(i, x, y, z, /**/ r);
         vec_get(i, fx, fy, fz, /**/ f);
@@ -35,8 +44,10 @@ int main() {
         ff[i] = vec_abs(f);
     }
 
-    puts("x y z r fx fy fz ff");
-    real *queue[] = {x, y, z, rr, fx, fy, fz, ff, NULL};
+    MSG("area: %g", he_sum_array(n, area));
+
+    puts("x y z r fx fy fz ff area H");
+    real *queue[] = {x, y, z, rr, fx, fy, fz, ff, area, H, NULL};
     punto_fwrite(n, queue, stdout);
 
     dh_fin(dh);

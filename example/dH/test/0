@@ -1,0 +1,3 @@
+# nTEST: 0
+i=`he.path`/rbc/laplace/0.off
+./main < $i | uscale 1e6 > main.out.txt

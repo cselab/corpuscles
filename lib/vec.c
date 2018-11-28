@@ -1,4 +1,4 @@
-#include <math.h>
+#include <tgmath.h>
 #include <stdio.h>
 
 #include "real.h"
@@ -46,7 +46,7 @@ int vec_minus(const real a[3], const real b[3], /**/ real c[3]) {
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
     c[Z] = a[Z] - b[Z];
-    return HE_OK;    
+    return HE_OK;
 }
 
 int vec_add(const real a[3], /*io*/ real b[3]) {
@@ -60,7 +60,13 @@ int vec_add(const real a[3], /*io*/ real b[3]) {
 int vec_axpy(real a, const real x[3], /*io*/ real y[3]) {
     y[X] += a*x[X];
     y[Y] += a*x[Y];
-    y[Z] += a*x[Z];    
+    y[Z] += a*x[Z];
+    return HE_OK;
+}
+
+int vec_neg(real x[3]) {
+    x[X] = -x[X]; x[Y] = -x[Y]; x[Z] = -x[Z];
+    return HE_OK;
 }
 
 int vec_linear_combination(real al, const real a[3], real be, const real b[3],
@@ -68,7 +74,7 @@ int vec_linear_combination(real al, const real a[3], real be, const real b[3],
     c[X] = al*a[X] + be*b[X];
     c[Y] = al*a[Y] + be*b[Y];
     c[Z] = al*a[Z] + be*b[Z];
-    return HE_OK;    
+    return HE_OK;
 }
 
 int vec_scalar(const real a[3], real s, /**/ real b[3]) {
@@ -215,4 +221,3 @@ int vec_zero(real a[3]) {
     vec_ini(0, 0, 0, /**/ a);
     return HE_OK;
 }
-

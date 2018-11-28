@@ -8,6 +8,7 @@
 #include "he/err.h"
 #include "he/he.h"
 #include "he/container.h"
+#include "he/macro.h"
 #include "he/util.h"
 
 #include "he/f/kantor.h"
@@ -131,7 +132,7 @@ static int kantor_area_ver(T *q, /**/ real **e) {
   Kantor *b = CONTAINER_OF(q, Kantor, bending);
   return he_f_kantor_area_ver(b->local, /**/ e);
 }
-static int kantor_curva_mean_ver(T *q, /**/ real **e) {
+static int kantor_curva_mean_ver(__UNUSED T *q, /**/ __UNUSED real **e) {
   return HE_OK;
 }
 static Vtable kantor_vtable = { kantor_fin, kantor_force, kantor_energy, kantor_energy_ver, kantor_area_ver, kantor_curva_mean_ver};

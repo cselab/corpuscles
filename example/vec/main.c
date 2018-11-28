@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <tgmath.h>
 
 #include <real.h>
 #include <he/err.h>
@@ -57,6 +57,10 @@ int main(__UNUSED int argc, const char **v) {
         scl(&s); vec(a); vec(b);
         vec_axpy(s, a, b);
         vec_printf(b, "%g");
+    } else if (eq(op, "neg")) {
+        vec(a);
+        vec_neg(a);
+        vec_printf(a, "%g");
     } else if (eq(op, "project")) {
         vec(a); vec(b);
         vec_project(a, b, c);

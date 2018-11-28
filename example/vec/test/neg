@@ -1,0 +1,2 @@
+# TEST: neg
+./main neg 1 2 3 > vec.out.txt

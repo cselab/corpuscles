@@ -10,10 +10,11 @@ int ten_scalar(const Ten*, real, /**/ Ten*);
 int ten_vec(const Ten*, const real[3], /**/ real[3]);
 int vec_ten(const real[3], const Ten*, /**/ real[3]);
 
-/* y *= s, y += x, y -= x,  */
+/* y *= s, y += x, y -= x,  x = -x */
 int ten_scale(real, /*io*/ Ten*);
 int ten_add(const Ten *x, /*io*/ Ten *y);
 int ten_sub(const Ten *x, /*io*/ Ten *y);
+int ten_neg(Ten *x);
 
 /*         y = y * x, y = x * y */
 int ten_mult_right(const Ten *x, /*io*/ Ten *y);
