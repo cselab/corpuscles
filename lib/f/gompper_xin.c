@@ -21,8 +21,10 @@
     for (i = 0; i < nv; i++) {
 #define END_VER }
 
+static const real pi = 3.141592653589793115997964;
+
 struct T {
-    real Kb, H0;
+    real Kb, H0, Kad, DA0D;
     real *energy, *fx, *fy, *fz;
     Dh *dh;
 };
@@ -59,7 +61,7 @@ static int scale(real sc, int n, /*io*/ real *a) {
         a[i] *= sc;
     return HE_OK;
 }
-int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
+int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     T *q;
     int nv;
 
@@ -70,6 +72,8 @@ int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D
 
     q->Kb = Kb;
     q->H0 = C0/2;
+    q->Kad = Kad;
+    q->DA0D = DA0D;
 
     dh_ini(he, &q->dh);
 
@@ -100,11 +104,12 @@ real he_f_gompper_xin_energy(T *q, He *he,
     int nv;
     real *energy;
     Dh *dh;
-    real Kb, H0;
+    real Kb, H0, Kad, DA0D;
 
-    real *area, *h;
+    real *area, *h, local, global, Area, Ha, diff;
 
-    A(energy); A(Kb); A(H0); A(dh);
+    A(Kb); A(H0); A(Kad); A(DA0D);
+    A(energy); A(dh);
 
     nv = he_nv(he);
 
@@ -114,8 +119,13 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     compute_energy(H0, nv, area, h, energy);
     scale(2*Kb, nv, energy);
+    local = he_sum_array(nv, energy);
 
-    return he_sum_array(nv, energy);
+    Area = he_sum_array(nv, area);
+    Ha = he_sum_array(nv, h);
+    diff = Ha - DA0D/2;
+    global = (2*pi*Kad)*diff*diff/Area;
+    return local + global;
 #   undef A
 }
 
