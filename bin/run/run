@@ -4,6 +4,7 @@ prog=he.run
 
 : ${VALGRIND=valgrind}
 : ${TIME=time}
+: ${GDB_EXEC=gdb}
 
 usg () {
     msg "$prog 'prog' [args ...]"
@@ -17,7 +18,12 @@ then err "'prog' is missing"; fi
 main="$1"; shift
 
 if test ! -z "${VAL+x}"
-then e "$VALGRIND" "$VAL" "$main" "$@"
+then
+    e "$VALGRIND" "$VAL" "$main" "$@"
 elif test ! -z "${TIM+x}"
-then e "$TIME" "$TIM" "$main" "$@"
+then
+    e "$TIME" "$TIM" "$main" "$@"
+elif test ! -z "${GDB+x}"
+then
+    e "$GDB_EXEC" "$GDB" "$main" "$@"
 else e "$main" "$@"; fi
