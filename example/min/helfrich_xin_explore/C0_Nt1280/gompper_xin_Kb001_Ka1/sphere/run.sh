@@ -9,6 +9,8 @@ freq=200
 
 off=$(he.path)/sph/laplace/Nt1280.off
 
+(cd ../../.. && make)
+
 if test $# -ne 0
 then
     Vr="$1"
