@@ -1,2 +1,2 @@
-# sTEST: gompper_xin_h_ade
+# nTEST: gompper_xin_h_ade
 ./main gompper_xin 1 2 3 4 < `he.path`/rbc/laplace/0.off  | uscale 1000 > q.out.txt
