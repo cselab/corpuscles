@@ -43,8 +43,10 @@ struct T {
 
 static int normal(const real a[3], const real b[3], const real c[3],
                   real u[3]) {
-    tri_normal(a, b, c, u);
-    return HE_OK;
+    return tri_normal(a, b, c, u);
+}
+static int dnormal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, Ten *y, Ten *z) {
+    return dtri_normal(a, b, c,   x, y, z);
 }
 
 int dh_ini(He *he, /**/ T **pq) {
@@ -109,7 +111,7 @@ int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
         sb[h] = edg_sq(a, b);
         sc[h] = edg_sq(a, c);
 
-        tri_normal(a, b, c,   u[h].v);
+        normal(a, b, c,   u[h].v);
         ang[h] = tri_angle(c, a, b);
     } END_HE;
 
@@ -175,7 +177,7 @@ int dh_force(T *q, dHParam param, He *he, const real *x, const real *y, const re
         sb[h] = edg_sq(a, b);
         sc[h] = edg_sq(a, c);
 
-        tri_normal(a, b, c,   u[h].v);
+        normal(a, b, c,   u[h].v);
         ang[h] = tri_angle(c, a, b);
     } END_HE;
 
@@ -199,7 +201,7 @@ int dh_force(T *q, dHParam param, He *he, const real *x, const real *y, const re
     } END_VER;
 
     BEGIN_HE {
-        dtri_normal(a, b, c,   &Da, &Db, &Dc);
+        dnormal(a, b, c,   &Da, &Db, &Dc);
         C = ddh[i]*ang[h]/2;
 
         vec_ten(ldn[i].v, &Da,  da);
