@@ -27,14 +27,22 @@ struct T {
     Dh *dh;
 };
 
-static real sq(real x) { return x*x; }
 static real e(real H0, real area, real h) {
-    real H;
-    H = h/area; /* TODO */
-    return sq(H + H0);
+    h = h/area - H0; /* TODO */
+    return h*h;
 }
-static real ddh(void *p, real area, real H) { return   4*H/area; }
-static real dda(void *p, real area, real H) { return  -(2*H*H)/(area*area); }
+static real ddh(void *p, real area, real h) {
+    real H0;
+    H0 = *(real*)p;
+    h = h/area - H0;
+    return 2*h;
+}
+static real dda(void *p, real area, real h) {
+    real H0;
+    H0 = *(real*)p;
+    h = h/area - H0;
+    return  -h*(h + 2*H0);
+}
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
