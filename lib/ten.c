@@ -107,6 +107,15 @@ int ten_sub(const Ten *R, /*io*/ Ten *T) {
     return HE_OK;
 }
 
+int ten_neg(/*io*/ Ten *R) {
+    real *r;
+    r = R->t;
+    r[XX] = -r[XX]; r[XY] = -r[XY]; r[XZ] = -r[XZ];
+    r[YX] = -r[YX]; r[YY] = -r[YY]; r[YZ] = -r[YZ];
+    r[ZX] = -r[ZX]; r[ZY] = -r[ZY]; r[ZZ] = -r[ZZ];
+    return HE_OK;
+}
+
 int ten_mult_right(const Ten *R, /*io*/ Ten *T) {
     Ten A;
     const real *r;

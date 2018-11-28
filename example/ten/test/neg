@@ -1,0 +1,2 @@
+# TEST: neg
+./main neg 1 2 3 10 20 30 100 200 300   > ten.out.txt

@@ -73,6 +73,10 @@ int main(__UNUSED int argc, const char **v) {
         ten(&T); ten(&R);
         ten_sub(&R, &T);
         ten_printf(&T, "%g");
+    } else if (eq(op, "neg")) {
+        ten(&T);
+        ten_neg(&T);
+        ten_printf(&T, "%g");
     } else if (eq(op, "mult_right")) {
         ten(&T); ten(&R);
         ten_mult_right(&R, &T);
