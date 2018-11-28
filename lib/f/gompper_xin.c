@@ -27,6 +27,19 @@ struct T {
     Dh *dh;
 };
 
+static real ddh(void *p, real area, real H) { return   4*H/area; }
+static real dda(void *p, real area, real H) { return  -(2*H*H)/(area*area); }
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
+}
+static int scale(int n, real sc, /*io*/ real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] *= sc;
+    return HE_OK;
+}
+
 int he_f_gompper_xin_ini(real Kb, real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
     int nv;
@@ -51,25 +64,16 @@ int he_f_gompper_xin_fin(T *q) {
     return HE_OK;
 }
 
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++) a[i] = 0;
-}
-static int scale(int n, real sc, /*io*/ real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] *= sc;
-    return HE_OK;
-}
 real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
 #   define A(f) f = q->f
     int nv, i;
     real *energy;
     real Kb, H0;
-    dHParam p;
-
+    dHParam param;
     A(energy); A(Kb); A(H0);
+    param.dh = ddh;
+    param.da = dda;
 
     nv = he_nv(he);
     zero(nv, energy);
