@@ -76,15 +76,6 @@ int dh_fin(T *q) {
 #   undef F
 }
 
-static int QplusAbc(const Ten *A, const Vec b, const real c[3],
-                    /**/ Ten *Q) {
-    real x[3];
-    Ten Y;
-    ten_vec(A, b.v, /**/ x);
-    ten_dyadic(x, c, /**/ &Y);
-    ten_add(&Y, Q);
-    return HE_OK;
-}
 int dh_apply(T *q, dHParam param, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
 #   define A(f) f = q->f
     int nh, nv, h, i, j, k;
