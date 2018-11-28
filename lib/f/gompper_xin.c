@@ -27,6 +27,12 @@ struct T {
     Dh *dh;
 };
 
+static real sq(real x) { return x*x; }
+static real e(real H0, real area, real h) {
+    real H;
+    H = h/area; /* TODO */
+    return sq(H - H0);
+}
 static real ddh(void *p, real area, real H) { return   4*H/area; }
 static real dda(void *p, real area, real H) { return  -(2*H*H)/(area*area); }
 static void zero(int n, real *a) {
@@ -64,20 +70,35 @@ int he_f_gompper_xin_fin(T *q) {
     return HE_OK;
 }
 
+static int compute_energy(real H0, int n,
+                           const real *h, const real *area,
+                           /**/ real *energy) {
+    int i;
+    for (i = 0; i < n; i++) {
+        energy[i] = area[i]*e(H0, h[i], area[i]);
+    }
+    return HE_OK;
+}
 real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
 #   define A(f) f = q->f
     int nv, i;
     real *energy;
+    Dh *dh;
     real Kb, H0;
-    dHParam param;
-    A(energy); A(Kb); A(H0);
-    param.dh = ddh;
-    param.da = dda;
+    
+    real *area, *h;
+
+    A(energy); A(Kb); A(H0); A(dh);
 
     nv = he_nv(he);
-    zero(nv, energy);
-    
+
+    dh_area_h(dh, he, x, y, z);
+    dh_area(dh, &area);
+    dh_h(dh, &h);
+
+    compute_energy(H0, nv, h, area, energy);
+
     return he_sum_array(nv, energy);
 #   undef A
 }
