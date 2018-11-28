@@ -48,6 +48,8 @@ void energy_meyer_et_al1() {
   real area_tot_tri, area_tot_mix;
   real energy_tot;
 
+  real C0, H0;
+
   MALLOC(NV, &lbx);
   MALLOC(NV, &lby);
   MALLOC(NV, &lbz);
@@ -55,6 +57,9 @@ void energy_meyer_et_al1() {
   MALLOC(NV, &energy);
   MALLOC(NV, &area);
 
+  C0 = 0;
+  H0 = C0/2.0;
+  
   for (v = 0; v < NV; v++) {
     
     lbx[v] = 0;
@@ -199,7 +204,7 @@ void energy_meyer_et_al1() {
     curva_mean[v] /= len;
     curva_mean[v] /= 2;
     
-    energy[v] = 2 * curva_mean[v]* curva_mean[v] * area[v];
+    energy[v] = 2 * (curva_mean[v] - H0) * (curva_mean[v] - H0) * area[v];
 
     /*for verification*/
     area_tot_mix += area[v];
@@ -250,6 +255,8 @@ void energy_meyer_et_al2() {
   real ab2, bc2, ca2;
   real area_tot_tri, area_tot_mix;
   real energy_tot;
+
+  real C0, H0;
   
   MALLOC(NV, &lbx);
   MALLOC(NV, &lby);
@@ -257,6 +264,9 @@ void energy_meyer_et_al2() {
   MALLOC(NV, &curva_mean);
   MALLOC(NV, &energy);
   MALLOC(NV, &area);
+
+  C0 = 0;
+  H0 = C0/2.0;
   
   for (v = 0; v < NV; v++) {
     lbx[v] = 0;
@@ -402,7 +412,7 @@ void energy_meyer_et_al2() {
     curva_mean[v] /= len;
     curva_mean[v] /= 2;
     
-    energy[v] = 2 * curva_mean[v]* curva_mean[v] * area[v];
+    energy[v] = 2 * (curva_mean[v]-H0) * (curva_mean[v]-H0) * area[v];
 
     /*for verification*/
     area_tot_mix += area[v];

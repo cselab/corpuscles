@@ -42,14 +42,14 @@ static void vabs(int n, real *x, real *y, real *z, /**/ real *r) {
 }
 
 static void write(real *fx, real *fy, real *fz,
-                  real *A) {
+                  real *A1, real *A2, real *A3) {
 
   real *fm;;
   RZERO(NV, &fm);
   vabs(NV, fx, fy, fz, /**/ fm);
   
-  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 fx; 6 fy; 7 fz; 8 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, A, NULL};
+  printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 fx; 6 fy; 7 fz; 8 area(J); 9 area(GK); 10 area(mix); \n");
+  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, A1, A2, A3, NULL};
   punto_fwrite(NV, queue, stdout);
   
   FREE(fm);
@@ -119,22 +119,31 @@ void force_kantor_nelson() {
     Version: Xin Bian, 14 June 2018 @CSE Lab, ETH Zurich*/
   
   enum {X, Y, Z};
-  int e, hedge, t;
+  int v, e, hedge, t, h;
   int i, j, k, l;
   real a[3], b[3], c[3], d[3];
-  real da[3], db[3], dc[3], dd[3];   
-  real *area;
+  real da[3], db[3], dc[3], dd[3];
+  real u[3];
+  real *area1, *area2, *area3;
   real *fx, *fy, *fz;
   real coef, coef1, coef2;
   real theta0, area0, aream, arean;
   real theta;
-
+  real len2;
+  int  obtuse;
+  int h0, n, nn, fnn;
+  real ci, cl, cil;
+  real cota, cotb, cotc;
+  real ab2, bc2, ca2;
+ 
   
-  coef1   = 2.0*sqrt(3.0);
-  //coef1   = 2.0;
+  //coef1   = 2.0*sqrt(3.0);
+  coef1   = 2.0;
   theta0 = 0;
   
-  MALLOC(NV, &area);
+  MALLOC(NV, &area1);
+  MALLOC(NV, &area2);
+  MALLOC(NV, &area3);
   MALLOC(NV, &fx);
   MALLOC(NV, &fy);
   MALLOC(NV, &fz);
@@ -144,7 +153,9 @@ void force_kantor_nelson() {
     fx[i] = 0;
     fy[i] = 0;
     fz[i] = 0;
-    area[i] = 0;
+    area1[i] = 0;
+    area2[i] = 0;
+    area3[i] = 0;
     
   }
   
@@ -187,7 +198,6 @@ void force_kantor_nelson() {
     we use convention of Juelicher 1996 so that
     the area of each triangle is equally splitted 
     into three vertices.*/
-  
   for (t = 0; t < NT; t++) {
     
     i = T0[t]; j = T1[t]; k = T2[t];
@@ -195,16 +205,124 @@ void force_kantor_nelson() {
     get3(i, j, k, a, b, c);
     area0 = tri_area(a, b, c);
     
-    area[i] += area0/3;
-    area[j] += area0/3;
-    area[k] += area0/3;
+    area1[i] += area0/3;
+    area1[j] += area0/3;
+    area1[k] += area0/3;
 
   }
 
-  write(/*i*/ fx, fy, fz, area);
+  //use Gompper and Kroll's way to calculate area  
+   for (v = 0; v < NV; v++) {
+    
+    h0 = h = hdg_ver(v);
+    
+    do {
+
+      if (bnd(h)) break;
+
+      n = nxt(h); nn = nxt(n); fnn = nxt(nxt(flp(h)));
+      j = ver(h); k = ver(n); i = ver(nn); l = ver(fnn);
+
+      get4(i, j, k, l, /**/ a, b, c, d);
+      
+      ci  = tri_cot(c, a, b);
+      cl  = tri_cot(b, d, c);
+      cil = ci + cl;
+      
+      vec_minus(b, c,  u);
+      len2 = vec_dot(u, u);
+
+      area0    = cil * len2 / 8;
+      area2[j] += area0;
+            
+      h = nxt(flp(h));
+      
+    } while (h != h0);
+    
+  }
+   
+
+    //use Meyer et al's way to calculate area
+   for ( t = 0; t < NT; t++ ) {
+    
+    /*At first, assume it is not an obtuse triangle*/
+    obtuse = 0;
+    
+    i = T0[t]; j = T1[t]; k = T2[t];
+    
+    get3(i, j, k, a, b, c);
+    area0 = tri_area(a, b, c);
+
+    cota = tri_cot(c, a, b);
+    cotb = tri_cot(a, b, c);
+    cotc = tri_cot(b, c, a);
+
+    vec_minus(a, b,  u);
+    ab2 = vec_dot(u, u);
+
+    vec_minus(b, c, u);
+    bc2 = vec_dot(u, u);
+
+    vec_minus(c, a,  u);
+    ca2 = vec_dot(u, u);
+
+    
+    /*check if angle a is obtuse*/
+    theta0 = tri_angle(c, a, b);
+    
+    if ( theta0 > pi/2.0 ) {
+      
+      area3[i] += area0/2;
+      area3[j] += area0/4;
+      area3[k] += area0/4;
+      
+      obtuse = 1;
+    }
+    else {
+      /*check if angle b is obtuse*/
+      theta0=tri_angle(a, b, c);
+      
+      if ( theta0 > pi/2.0 ) {
+	
+	area3[j] += area0/2;
+	area3[i] += area0/4;
+	area3[k] += area0/4;
+	
+	obtuse = 1;
+      }
+      else {
+	/*check if angle c is obtuse*/
+	theta0=tri_angle(b, c, a);
+	
+	if ( theta0 > pi/2.0 ) {
+	  
+	  area3[k] += area0/2;
+	  area3[i] += area0/4;
+	  area3[j] += area0/4;
+	  
+	  obtuse = 1;
+	}
+	
+      }
+      
+    }
+   
+    if ( obtuse == 0 ) {
+      
+      area3[i] += ( ab2*cotc + ca2*cotb ) / 8;
+      area3[j] += ( bc2*cota + ab2*cotc ) / 8;
+      area3[k] += ( ca2*cotb + bc2*cota ) / 8;
+      
+    }
+    
+  }
+
+   write(/*i*/ fx, fy, fz, area1, area2, area3);
 
   
-  FREE(area);
+  FREE(area1);
+  FREE(area2);
+  FREE(area3);
   FREE(fx); FREE(fy); FREE(fz);
 }
 
