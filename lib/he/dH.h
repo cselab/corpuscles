@@ -14,7 +14,9 @@ int dh_ini(He*, /**/ T**);
 int dh_fin(T*);
 int dh_apply(T*, dHParam, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
+int dh_area_h(T*, He*, const real *x, const real *y, const real *z);
+
 int dh_area(T*, real**);
-int dh_H(T*, real**);
+int dh_h(T*, real**);
 
 #undef T

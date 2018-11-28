@@ -36,7 +36,7 @@ int main() {
 
     dh_apply(dh, param, he, x, y, z, /**/ fx, fy, fz);
     dh_area(dh, &area);
-    dh_H(dh, &H);
+    dh_h(dh, &H);
 
     for (i = 0; i < n; i++) {
         vec_get(i, x, y, z, /**/ r);

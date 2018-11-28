@@ -72,6 +72,57 @@ int dh_fin(T *q) {
 #   undef F
 }
 
+int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
+#   define A(f) f = q->f
+    int nh, nv, h, i, j, k;
+    real a[3], b[3], c[3], n[3];
+
+    real *tb, *tc, *sb, *sc, *ang;
+    real *H, *area;
+    Vec *eb, *ec, *u, *lp, *m;
+
+    A(tb); A(tc); A(sb); A(sc); A(ang);
+    A(H); A(area);
+    A(eb); A(ec); A(u); A(lp); A(m);
+
+    nh = he_nh(he);
+    nv = he_nv(he);
+
+    BEGIN_VER {
+        vec_zero(m[i].v);
+        vec_zero(lp[i].v);
+        area[i] = 0;
+    } END_VER;
+
+    BEGIN_HE {
+        tb[h] = tri_cot(a, b, c);
+        tc[h] = tri_cot(b, c, a);
+        vec_minus(b, a,   eb[h].v);
+        vec_minus(c, a,   ec[h].v);
+
+        sb[h] = edg_sq(a, b);
+        sc[h] = edg_sq(a, c);
+
+        tri_normal(a, b, c,   u[h].v);
+        ang[h] = tri_angle(c, a, b);
+    } END_HE;
+
+    BEGIN_HE {
+        vec_axpy(ang[h], u[h].v, m[i].v);
+        vec_axpy(tb[h]/2, ec[h].v, lp[i].v);
+        vec_axpy(tc[h]/2, eb[h].v, lp[i].v);
+        area[i] += (tb[h]*sc[h] + tc[h]*sb[h])/8;
+    } END_HE;
+
+    BEGIN_VER {
+        vec_norm(m[i].v,  n);
+        H[i] = vec_dot(lp[i].v, n)/2;
+    } END_VER;
+
+    return HE_OK;
+#   undef A
+}
+
 int dh_apply(T *q, dHParam param, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
 #   define A(f) f = q->f
     int nh, nv, h, i, j, k;
@@ -214,7 +265,7 @@ int dh_area(T *q, real **parea) {
     return HE_OK;
 }
 
-int dh_H(T *q, real **pH) {
+int dh_h(T *q, real **pH) {
     *pH = q->H;
     return HE_OK;
 }
