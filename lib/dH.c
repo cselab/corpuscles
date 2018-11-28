@@ -41,6 +41,12 @@ struct T {
     Vec *f;
 };
 
+static int normal(const real a[3], const real b[3], const real c[3],
+                  real u[3]) {
+    tri_normal(a, b, c, u);
+    return HE_OK;
+}
+
 int dh_ini(He *he, /**/ T **pq) {
 #   define M(n, f) MALLOC(n, &q->f)
     int nv, nh;
