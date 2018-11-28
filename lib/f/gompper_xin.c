@@ -89,11 +89,11 @@ static int compute_energy(real H0, int n,
 real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
 #   define A(f) f = q->f
-    int nv, i;
+    int nv;
     real *energy;
     Dh *dh;
     real Kb, H0;
-    
+
     real *area, *h;
 
     A(energy); A(Kb); A(H0); A(dh);
@@ -102,8 +102,8 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     dh_area_h(dh, he, x, y, z);
     dh_area(dh, &area);
-    dh_h(dh, &h);    
-    
+    dh_h(dh, &h);
+
     compute_energy(H0, nv, area, h, energy);
     scale(2*Kb, nv, energy);
 
@@ -119,5 +119,8 @@ int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *fx_tot, real *fy_tot, real *fz_tot) {
+#   define A(f) f = q->f
+
     return HE_OK;
+#   undef A
 }
