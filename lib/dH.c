@@ -289,7 +289,6 @@ int dh_h(T *q, real **pH) {
     return HE_OK;
 }
 
-
 int dh_norm(T *q, real **pnx, real **pny, real **pnz) {
 #   define G(f) f = q->f
     int nv, i;
