@@ -12,7 +12,6 @@
 #include "he/util.h"
 
 #include "he/f/kantor.h"
-#include "he/f/juelicher.h"
 #include "he/f/juelicher_xin.h"
 #include "he/f/gompper.h"
 #include "he/f/gompper_kroll.h"
@@ -33,7 +32,6 @@ static const char *Name[] = {
     "kantor",
     "gompper",
     "gompper_kroll",
-    "juelicher",
     "meyer",
     "gompper_xin",
     "meyer_xin",
@@ -43,7 +41,6 @@ static const TypeIni Ini[]  = {
     bending_kantor_ini,
     bending_gompper_ini,
     bending_gompper_kroll_ini,
-    bending_juelicher_ini,
     bending_meyer_ini,
     bending_gompper_xin_ini,
     bending_meyer_xin_ini,
@@ -253,54 +250,6 @@ int bending_gompper_kroll_ini(BendingParam param, He *he, /**/ T **pq) {
     return he_f_gompper_kroll_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
 /* end gompper_kroll */
-
-/* begin juelicher */
-typedef struct Juelicher Juelicher;
-struct Juelicher {T bending; HeFJuelicher *local; };
-static int juelicher_fin(T *q) {
-    int status;
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    status = he_f_juelicher_fin(b->local);
-    FREE(q);
-    return status;
-}
-static int juelicher_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_force(b->local, he, x, y, z, /**/ fx, fy, fz);
-}
-static real juelicher_energy(T *q, He *he, const real *x, const real *y, const real *z) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_energy(b->local, he, x, y, z);
-}
-static int juelicher_energy_ver(T *q, /**/ real **e) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_energy_ver(b->local, /**/ e);
-}
-static int juelicher_area_ver(T *q, /**/ real **e) {
-  Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-  return he_f_juelicher_area_ver(b->local, /**/ e);
-}
-static int juelicher_curva_mean_ver(T *q, /**/ real **e) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_curva_mean_ver(b->local, /**/ e);
-}
-static Vtable juelicher_vtable = { juelicher_fin, juelicher_force, juelicher_energy, juelicher_energy_ver, juelicher_area_ver, juelicher_curva_mean_ver};
-int bending_juelicher_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb, C0, Kad, DA0D;
-    Juelicher *q;
-    Kb  = param.Kb;
-    C0 = param.C0;
-    Kad = param.Kad;
-    DA0D = param.DA0D;
-
-    MALLOC(1, &q);
-    q->bending.vtable = &juelicher_vtable;
-    *pq = &q->bending;
-    return he_f_juelicher_ini(Kb, C0, Kad, DA0D, he, &q->local);
-}
-/* end juelicher */
-
 
 /* begin juelicher_xin */
 typedef struct JuelicherXin JuelicherXin;

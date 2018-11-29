@@ -21,7 +21,6 @@ he/f/gompper_kroll.h\
 he/f/gompper_xin.h\
 he/f/harmonic.h\
 he/f/harmonic_ref.h\
-he/f/juelicher.h\
 he/f/juelicher_xin.h\
 he/f/kantor.h\
 he/f/meyer.h\

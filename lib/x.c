@@ -14,7 +14,6 @@
 #include "he/f/gompper_kroll.h"
 #include "he/f/harmonic.h"
 #include "he/f/harmonic_ref.h"
-#include "he/f/juelicher.h"
 #include "he/f/kantor.h"
 #include "he/f/meyer.h"
 #include "he/f/volume.h"
@@ -46,7 +45,6 @@ static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
 static HeFGompper_Kroll *f_gompper_kroll;
 static HeFMeyer *f_meyer;
-static HeFJuelicher *f_juelicher;
 static Bending *f_bending;
 static Restore *f_restore;
 static HeOff *off;
@@ -252,29 +250,6 @@ real f_kantor_energy(const real *x, const real *y, const real *z) {
 }
 int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_kantor_force(f_kantor, he, x, y, z, /**/ fx, fy, fz);
-}
-int f_juelicher_ini(real K, real C0, real Kad, real DA0D) {
-    he_f_juelicher_ini(K, C0, Kad, DA0D, he, /**/ &f_juelicher);
-    return HE_OK;
-}
-int f_juelicher_fin() {
-    he_f_juelicher_fin(f_juelicher);
-    return HE_OK;
-}
-real f_juelicher_energy(const real *x, const real *y, const real *z) {
-    return he_f_juelicher_energy(f_juelicher, he, x, y, z);
-}
-int f_juelicher_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
-    return he_f_juelicher_force(f_juelicher, he, x, y, z, /**/ fx, fy, fz);
-}
-int f_juelicher_energy_ver(real **p) {
-    return he_f_juelicher_energy_ver(f_juelicher, p);
-}
-int f_juelicher_area_ver(real **p) {
-    return he_f_juelicher_area_ver(f_juelicher, p);
-}
-int f_juelicher_curva_mean_ver(real **p) {
-    return he_f_juelicher_curva_mean_ver(f_juelicher, p);
 }
 int f_gompper_ini(real Kb, real C0, real Kad, real DA0D) {
   he_f_gompper_ini(Kb, C0, Kad, DA0D, he, /**/ &f_gompper);

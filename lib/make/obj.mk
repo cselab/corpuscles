@@ -27,7 +27,6 @@ f/gompper_kroll.s.o\
 f/gompper_xin.s.o\
 f/harmonic.s.o\
 f/harmonic_ref.s.o\
-f/juelicher.s.o\
 f/juelicher_xin.s.o\
 f/kantor.s.o\
 f/meyer.s.o\
@@ -75,7 +74,6 @@ f/gompper_kroll.d.o\
 f/gompper_xin.d.o\
 f/harmonic.d.o\
 f/harmonic_ref.d.o\
-f/juelicher.d.o\
 f/juelicher_xin.d.o\
 f/kantor.d.o\
 f/meyer.d.o\
