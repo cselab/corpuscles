@@ -11,21 +11,23 @@ usg () {
     exit
 }
 
+gdb0() {
+    e "$GDB_EXEC" "$GDB" "$@"
+}
+
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0
 then err "'prog' is missing"; fi
 
-main="$1"; shift
-
 if test ! -z "${VAL+x}"
 then
-    e "$VALGRIND" "$VAL" "$main" "$@"
+    e "$VALGRIND" "$VAL" "$@"
 elif test ! -z "${TIM+x}"
 then
-    e "$TIME" "$TIM" "$main" "$@"
+    e "$TIME" "$TIM" "$@"
 elif test ! -z "${GDB+x}"
 then
-    e "$GDB_EXEC" "$GDB" "$main" "$@"
+    gdb0 "$@"
 else
-    e "$main" "$@"
+    e "$@"
 fi
