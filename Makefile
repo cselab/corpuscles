@@ -8,6 +8,7 @@ bin/shake\
 bin/orient\
 bin/maxima\
 bin/path\
+bin/run\
 example/area/tri\
 example/area/voronoi\
 example/he\

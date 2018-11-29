@@ -30,6 +30,7 @@ f/harmonic_ref.s.o\
 f/juelicher_xin.s.o\
 f/kantor.s.o\
 f/meyer_xin.s.o\
+force.s.o\
 f/strain.s.o\
 f/volume.s.o\
 H.s.o\
@@ -76,6 +77,7 @@ f/harmonic_ref.d.o\
 f/juelicher_xin.d.o\
 f/kantor.d.o\
 f/meyer_xin.d.o\
+force.d.o\
 f/strain.d.o\
 f/volume.d.o\
 H.d.o\

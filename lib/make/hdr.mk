@@ -24,6 +24,7 @@ he/f/harmonic_ref.h\
 he/f/juelicher_xin.h\
 he/f/kantor.h\
 he/f/meyer_xin.h\
+he/force.h\
 he/f/strain.h\
 he/f/volume.h\
 he/hash.h\
