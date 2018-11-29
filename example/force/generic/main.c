@@ -13,6 +13,7 @@
 #include <he/util.h>
 #include <he/macro.h>
 #include <he/vec.h>
+#include <he/fd.h>
 #include <he/y.h>
 
 #define FMT_IN   XE_REAL_IN
@@ -21,10 +22,12 @@ static const char **argv;
 static char name[4048];
 
 static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr, *area;
+static real *gx, *gy, *gz;
 static int nv, nt;
 static He *he;
 static Force *force;
 static real param[99];
+static real delta = 1e-6;
 
 static const char *me = "bending";
 
@@ -69,12 +72,13 @@ static void main0() {
 
     force_ini(name, param, he,  &force);
     force_force(force, he, x, y, z, /**/ fx, fy, fz);
+    fd(force, he, delta, x, y, z, /**/ gx, gy, gz);
     e = force_energy(force, he, x, y, z);
     he_area_ver(he, x, y, z, /**/ area);
 
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
-    MSG("f0: %g %g %g", fx[nv - 1], fy[nv  - 1], fz[nv - 1]);
+    MSG("g0: %g %g %g", gx[0], gy[0], gz[0]);
 
     for (i = 0; i < nv; i++) {
         vec_get(i, x, y, z, /**/ r);
@@ -83,8 +87,8 @@ static void main0() {
         fm[i] = vec_abs(f);
     }
 
-    char *key = "r x y z fm fx fy fz area";
-    real *queue[] = {rr, x, y, z, fm, fx, fy, fz, area, NULL};
+    char *key = "r x y z fm fx fy fz area gx gy gz";
+    real *queue[] = {rr, x, y, z, fm, fx, fy, fz, area, gx, gy, gz, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
     force_fin(force);
@@ -100,11 +104,13 @@ int main(int __UNUSED argc, const char *v[]) {
 
     MALLOC(nv, &rr); MALLOC(nv, &fm); MALLOC(nv, &area);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
+    MALLOC(nv, &gx); MALLOC(nv, &gy); MALLOC(nv, &gz);
 
     main0();
 
     FREE(rr); FREE(fm);
     FREE(fx); FREE(fy); FREE(fz);
+    FREE(gx); FREE(gy); FREE(gz);    
 
     y_fin(he, x, y, z);
 }
