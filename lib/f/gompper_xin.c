@@ -26,6 +26,7 @@ static const real pi = 3.141592653589793115997964;
 struct T {
     real Kb, H0, Kad, DA0D;
     real *energy, *fx, *fy, *fz;
+    real *gx, *gy, *gz;
     Dh *dh;
 };
 
@@ -78,13 +79,15 @@ static int scale(real sc, int n, /*io*/ real *a) {
     return HE_OK;
 }
 int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
+#   define M(n, f) MALLOC(n, &q->f)
     T *q;
     int nv;
 
     MALLOC(1, &q);
     nv = he_nv(he);
-    MALLOC(nv, &q->energy);
-    MALLOC(nv, &q->fx); MALLOC(nv, &q->fy); MALLOC(nv, &q->fz);
+    M(nv, energy);
+    M(nv, fx); M(nv, fy); M(nv, fz);
+    M(nv, gx); M(nv, gy); M(nv, gz);
 
     q->Kb = Kb;
     q->H0 = C0/2;
@@ -95,12 +98,14 @@ int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) 
 
     *pq = q;
     return HE_OK;
+#   undef M
 }
 
 int he_f_gompper_xin_fin(T *q) {
     dh_fin(q->dh);
     FREE(q->energy);
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
+    FREE(q->gx); FREE(q->gy); FREE(q->gz);
     FREE(q);
     return HE_OK;
 }
@@ -153,17 +158,20 @@ int he_f_gompper_xin_force(T *q, He *he,
     Dh *dh;
     real Kb, H0;
     real *area, *h;
-    real *fx, *fy, *fz;
+    real *fx, *fy, *fz, *gx, *gy, *gz;
     dHParam param;
-    A(Kb); A(H0); A(dh); A(fx); A(fy); A(fz);
+    A(Kb); A(H0); A(dh);
+    A(fx); A(fy); A(fz);
+    A(gx); A(gy); A(gz);
 
     param.dh = ddh_local;
     param.da = dda_local;
     param.p  = (void*)&H0;
-    
+
     nv = he_nv(he);
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
-    
+    zero(nv, gx); zero(nv, gy); zero(nv, gz);
+
     dh_force(dh, param, he, x, y, z, /**/ fx, fy, fz);
 
     scale(2*Kb, nv, fx);
