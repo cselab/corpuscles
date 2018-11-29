@@ -29,22 +29,38 @@ struct T {
     Dh *dh;
 };
 
-static real e(real H0, real area, real h) {
+static real e_local(real H0, real area, real h) {
     h = h/area - H0; /* TODO */
     return h*h;
 }
-static real ddh(void *p, real area, real h) {
+static real ddh_local(void *p, real area, real h) {
     real H0;
     H0 = *(real*)p;
     h = h/area - H0;
     return 2*h;
 }
-static real dda(void *p, real area, real h) {
+static real dda_local(void *p, real area, real h) {
     real H0;
     H0 = *(real*)p;
     h = h/area - H0;
     return  -h*(h + 2*H0);
 }
+
+
+static real e_global(real Area, real diff) {
+    return diff*diff/Area;
+}
+static real ddh_global(void *p, __UNUSED real area_, __UNUSED real h_) {
+    real d_over_A;
+    d_over_A = *(real*)p;
+    return 2*d_over_A;
+}
+static real dda_global(void *p, __UNUSED real area_, __UNUSED real h_) {
+    real d_over_A;
+    d_over_A = *(real*)p;
+    return -(d_over_A*d_over_A);
+}
+
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
@@ -94,7 +110,7 @@ static int compute_energy(real H0, int n,
                            /**/ real *energy) {
     int i;
     for (i = 0; i < n; i++) {
-        energy[i] = area[i]*e(H0, area[i], h[i]);
+        energy[i] = area[i]*e_local(H0, area[i], h[i]);
     }
     return HE_OK;
 }
@@ -124,7 +140,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     Area = he_sum_array(nv, area);
     Ha = he_sum_array(nv, h);
     diff = Ha - DA0D/2;
-    global = (2*pi*Kad)*diff*diff/Area;
+    global = (2*pi*Kad)*e_global(Area, diff);
     return local + global;
 #   undef A
 }
@@ -141,8 +157,8 @@ int he_f_gompper_xin_force(T *q, He *he,
     dHParam param;
     A(Kb); A(H0); A(dh); A(fx); A(fy); A(fz);
 
-    param.dh = ddh;
-    param.da = dda;
+    param.dh = ddh_local;
+    param.da = dda_local;
     param.p  = (void*)&H0;
     
     nv = he_nv(he);
