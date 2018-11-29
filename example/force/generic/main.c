@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <tgmath.h>
 #include <string.h>
 
 #include <real.h>
@@ -9,7 +8,6 @@
 #include <he/punto.h>
 #include <he/area.h>
 #include <he/he.h>
-#include <he/off.h>
 #include <he/memory.h>
 #include <he/err.h>
 #include <he/util.h>
