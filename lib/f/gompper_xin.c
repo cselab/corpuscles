@@ -122,7 +122,9 @@ static int compute_energy(real H0, int n,
 }
 real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
-#   define A(f) f = q->f
+    /* get, set */
+#   define G(f) f = q->f
+#   define S(f) q->f = f
     int nv;
     real *energy;
     Dh *dh;
@@ -130,8 +132,8 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     real *area, *h, local, global, Area, Ha, diff;
 
-    A(Kb); A(H0); A(Kad); A(DA0D);
-    A(energy); A(dh); A(area);
+    G(Kb); G(H0); G(Kad); G(DA0D);
+    G(energy); G(dh);
 
     nv = he_nv(he);
 
@@ -147,14 +149,21 @@ real he_f_gompper_xin_energy(T *q, He *he,
     Ha = he_sum_array(nv, h);
     diff = Ha - DA0D/2;
     global = (2*pi*Kad)*e_global(Area, diff);
+
+    S(area);
+
     return local + global;
+
 #   undef A
+#   undef S
 }
 
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *hx, real *hy, real *hz) {
-#   define A(f) f = q->f
+    /* get, set */
+#   define G(f) f = q->f
+#   define S(f) q->f = f
     int nv;
     Dh *dh;
     real Kb, H0, Kad, DA0D;
@@ -163,10 +172,10 @@ int he_f_gompper_xin_force(T *q, He *he,
     real Area, Ha, diff, d_over_A, C;
     dHParam param;
 
-    A(Kb); A(H0); A(Kad); A(DA0D);
-    A(dh);
-    A(fx); A(fy); A(fz);
-    A(gx); A(gy); A(gz);
+    G(Kb); G(H0); G(Kad); G(DA0D);
+    G(dh);
+    G(fx); G(fy); G(fz);
+    G(gx); G(gy); G(gz);
 
     nv = he_nv(he);
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
@@ -197,8 +206,12 @@ int he_f_gompper_xin_force(T *q, He *he,
     scale(C, nv, gx); scale(C, nv, gy); scale(C, nv, gz);
     plus(nv, gx, hx); plus(nv, gy, hy); plus(nv, gz, hz);
 
+    S(area);
+
     return HE_OK;
+
 #   undef A
+#   undef S
 }
 
 int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
