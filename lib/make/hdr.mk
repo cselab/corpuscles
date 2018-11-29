@@ -2,6 +2,7 @@ H = \
 he/area.h\
 he/bending.h\
 he/container.h\
+he/da.h\
 he/ddih.h\
 he/dedg.h\
 he/dH.h\

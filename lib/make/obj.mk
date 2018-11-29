@@ -9,6 +9,7 @@ util.o
 O_S = \
 area.s.o\
 bending.s.o\
+da.s.o\
 ddih.s.o\
 dedg.s.o\
 dH.s.o\
@@ -56,6 +57,7 @@ y.s.o
 O_D = \
 area.d.o\
 bending.d.o\
+da.d.o\
 ddih.d.o\
 dedg.d.o\
 dH.d.o\
