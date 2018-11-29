@@ -16,19 +16,20 @@
 
 #define T Force
 
-struct T {struct Vtable *vtable; };
+struct T
+{
+    struct Vtable *vtable;
+};
 
 #define SIZE (4048)
 static char List[SIZE];
 typedef int (*TypeIni)(const real*, He*, T**);
 
-static const char *Name[] =
-{
+static const char *Name[] = {
     "area",
 };
 
-static const TypeIni Ini[] =
-{
+static const TypeIni Ini[] = {
     force_area_ini,
 };
 
@@ -60,8 +61,7 @@ const char *force_list()
 }
 
 typedef struct Vtable Vtable;
-struct Vtable
-{
+struct Vtable {
     int (*fin)(T*);
     int (*force)(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
     real (*energy)(T*, He*, const real *x, const real *y, const real *z);
@@ -88,7 +88,8 @@ struct Area {
     HeFArea *local;
 };
 
-static int area_fin(T *q) {
+static int area_fin(T *q)
+{
     int status;
     Area *b = CONTAINER_OF(q, Area, force);
     status = he_f_area_fin(b->local);
@@ -97,12 +98,14 @@ static int area_fin(T *q) {
 }
 
 static int area_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz) {
+                               /**/ real *fx, real *fy, real *fz)
+{
     Area *b = CONTAINER_OF(q, Area, force);
     return he_f_area_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
 
-static real area_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+static real area_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
     Area *b = CONTAINER_OF(q, Area, force);
     return he_f_area_energy(b->local, he, x, y, z);
 }
@@ -112,7 +115,9 @@ static Vtable area_vtable = {
     area_force,
     area_energy
 };
-int force_area_ini(const real *param, He *he, /**/ T **pq) {
+
+int force_area_ini(const real *param, He *he, /**/ T **pq)
+{
     real a0, K;
     Area *q;
     a0 = *param++;
