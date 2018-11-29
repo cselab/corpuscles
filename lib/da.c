@@ -126,6 +126,7 @@ int da_force(T *q, dAParam param, He *he, const real *x, const real *y, const re
 
     BEGIN_VER {
         area[i] = 0;
+        vec_zero(f[i].v);
     } END_VER;
 
     BEGIN_HE {
