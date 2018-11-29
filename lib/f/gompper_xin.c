@@ -131,7 +131,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
 int he_f_gompper_xin_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
-                           real *fx_tot, real *fy_tot, real *fz_tot) {
+                           real *hx, real *hy, real *hz) {
 #   define A(f) f = q->f
     int nv;
     Dh *dh;
@@ -154,9 +154,9 @@ int he_f_gompper_xin_force(T *q, He *he,
     scale(2*Kb, nv, fy);
     scale(2*Kb, nv, fz);
 
-    plus(nv, fx, fx_tot);
-    plus(nv, fy, fy_tot);
-    plus(nv, fz, fz_tot);
+    plus(nv, fx, hx);
+    plus(nv, fy, hy);
+    plus(nv, fz, hz);
 
     return HE_OK;
 #   undef A
