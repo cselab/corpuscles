@@ -12,12 +12,9 @@
 #include "he/util.h"
 
 #include "he/f/kantor.h"
-#include "he/f/juelicher.h"
 #include "he/f/juelicher_xin.h"
 #include "he/f/gompper.h"
 #include "he/f/gompper_kroll.h"
-#include "he/f/meyer.h"
-#include "he/f/canham.h"
 #include "he/f/gompper_xin.h"
 #include "he/f/meyer_xin.h"
 
@@ -34,9 +31,6 @@ static const char *Name[] = {
     "kantor",
     "gompper",
     "gompper_kroll",
-    "juelicher",
-    "meyer",
-    "canham",
     "gompper_xin",
     "meyer_xin",
     "juelicher_xin"
@@ -45,9 +39,6 @@ static const TypeIni Ini[]  = {
     bending_kantor_ini,
     bending_gompper_ini,
     bending_gompper_kroll_ini,
-    bending_juelicher_ini,
-    bending_meyer_ini,
-    bending_canham_ini,
     bending_gompper_xin_ini,
     bending_meyer_xin_ini,
     bending_juelicher_xin_ini
@@ -257,54 +248,6 @@ int bending_gompper_kroll_ini(BendingParam param, He *he, /**/ T **pq) {
 }
 /* end gompper_kroll */
 
-/* begin juelicher */
-typedef struct Juelicher Juelicher;
-struct Juelicher {T bending; HeFJuelicher *local; };
-static int juelicher_fin(T *q) {
-    int status;
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    status = he_f_juelicher_fin(b->local);
-    FREE(q);
-    return status;
-}
-static int juelicher_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_force(b->local, he, x, y, z, /**/ fx, fy, fz);
-}
-static real juelicher_energy(T *q, He *he, const real *x, const real *y, const real *z) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_energy(b->local, he, x, y, z);
-}
-static int juelicher_energy_ver(T *q, /**/ real **e) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_energy_ver(b->local, /**/ e);
-}
-static int juelicher_area_ver(T *q, /**/ real **e) {
-  Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-  return he_f_juelicher_area_ver(b->local, /**/ e);
-}
-static int juelicher_curva_mean_ver(T *q, /**/ real **e) {
-    Juelicher *b = CONTAINER_OF(q, Juelicher, bending);
-    return he_f_juelicher_curva_mean_ver(b->local, /**/ e);
-}
-static Vtable juelicher_vtable = { juelicher_fin, juelicher_force, juelicher_energy, juelicher_energy_ver, juelicher_area_ver, juelicher_curva_mean_ver};
-int bending_juelicher_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb, C0, Kad, DA0D;
-    Juelicher *q;
-    Kb  = param.Kb;
-    C0 = param.C0;
-    Kad = param.Kad;
-    DA0D = param.DA0D;
-
-    MALLOC(1, &q);
-    q->bending.vtable = &juelicher_vtable;
-    *pq = &q->bending;
-    return he_f_juelicher_ini(Kb, C0, Kad, DA0D, he, &q->local);
-}
-/* end juelicher */
-
-
 /* begin juelicher_xin */
 typedef struct JuelicherXin JuelicherXin;
 struct JuelicherXin {T bending; HeFJuelicherXin *local; };
@@ -352,104 +295,6 @@ int bending_juelicher_xin_ini(BendingParam param, He *he, /**/ T **pq) {
 }
 /* end juelicher_xin */
 
-
-/* begin meyer */
-typedef struct Meyer Meyer;
-struct Meyer {T bending; HeFMeyer *local; };
-static int meyer_fin(T *q) {
-    int status;
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    status = he_f_meyer_fin(b->local);
-    FREE(q);
-    return status;
-}
-static int meyer_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz) {
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    return he_f_meyer_force(b->local, he, x, y, z, /**/ fx, fy, fz);
-}
-static real meyer_energy(T *q, He *he, const real *x, const real *y, const real *z) {
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    return he_f_meyer_energy(b->local, he, x, y, z);
-}
-static int meyer_energy_ver(T *q, /**/ real **e) {
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    return he_f_meyer_energy_ver(b->local, /**/ e);
-}
-static int meyer_area_ver(T *q, /**/ real **e) {
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    return he_f_meyer_area_ver(b->local, /**/ e);
-}
-static int meyer_curva_mean_ver(T *q, /**/ real **e) {
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    return he_f_meyer_curva_mean_ver(b->local, /**/ e);
-}
-static int meyer_norm_ver(T *q, /**/ real **e, real **f, real **g) {
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    return he_f_meyer_norm_ver(b->local, /**/ e, f, g);
-}
-static int meyer_laplace_ver(T *q, /**/ real **e, real **f, real **g) {
-    Meyer *b = CONTAINER_OF(q, Meyer, bending);
-    return he_f_meyer_laplace_ver(b->local, /**/ e, f, g);
-}
-static Vtable meyer_vtable = { meyer_fin, meyer_force, meyer_energy, meyer_energy_ver,
-			       meyer_area_ver, meyer_curva_mean_ver, meyer_norm_ver, meyer_laplace_ver};
-int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb, C0, Kad, DA0D;
-    Meyer *q;
-    Kb  = param.Kb;
-    C0 = param.C0;
-    Kad = param.Kad;
-    DA0D = param.DA0D;
-
-    MALLOC(1, &q);
-    q->bending.vtable = &meyer_vtable;
-    *pq = &q->bending;
-    return he_f_meyer_ini(Kb, C0, Kad, DA0D, he, &q->local);
-}
-/* end meyer */
-
-
-/* begin canham */
-typedef struct Canham Canham;
-struct Canham {T bending; HeFCanham *local; };
-static int canham_fin(T *q) {
-    int status;
-    Canham *b = CONTAINER_OF(q, Canham, bending);
-    status = he_f_canham_fin(b->local);
-    FREE(q);
-    return status;
-}
-static int canham_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz) {
-    Canham *b = CONTAINER_OF(q, Canham, bending);
-    return he_f_canham_force(b->local, he, x, y, z, /**/ fx, fy, fz);
-}
-static real canham_energy(T *q, He *he, const real *x, const real *y, const real *z) {
-    Canham *b = CONTAINER_OF(q, Canham, bending);
-    return he_f_canham_energy(b->local, he, x, y, z);
-}
-static int canham_energy_ver(T *q, /**/ real **e) {
-    Canham *b = CONTAINER_OF(q, Canham, bending);
-    return he_f_canham_energy_ver(b->local, /**/ e);
-}
-static Vtable canham_vtable = { canham_fin, canham_force, canham_energy, canham_energy_ver};
-int bending_canham_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb, C0, Kad, DA0D;
-    Canham *q;
-    Kb  = param.Kb;
-    C0 = param.C0;
-    Kad = param.Kad;
-    DA0D = param.DA0D;
-
-    MALLOC(1, &q);
-    q->bending.vtable = &canham_vtable;
-    *pq = &q->bending;
-    return he_f_canham_ini(Kb, C0, Kad, DA0D, he, &q->local);
-}
-/* end canham */
-
-
 /* begin gompper_xin */
 typedef struct GompperXin GompperXin;
 struct GompperXin {T bending; HeFGompperXin *local; };
@@ -473,7 +318,20 @@ static int gompper_xin_energy_ver(T *q, /**/ real **e) {
     GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
     return he_f_gompper_xin_energy_ver(b->local, /**/ e);
 }
-static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver};
+static int gompper_xin_area_ver(T *q, /**/ real **e) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_area_ver(b->local, /**/ e);
+}
+static int gompper_xin_curva_mean_ver(T *q, /**/ real **e) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_curva_mean_ver(b->local, /**/ e);
+}
+static int gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_norm_ver(b->local, /**/ x, y, z);
+}
+
+static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver, gompper_xin_area_ver, gompper_xin_curva_mean_ver, gompper_xin_norm_ver };
 int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     GompperXin *q;

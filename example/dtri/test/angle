@@ -1,2 +1,2 @@
 # TEST: angle
-./main angle -1.0 -3.0 0.0 -2.0 -6.0 0.0 -3.0 -3.0 -3.0 > dtri.out.txt
+he.run ./main angle -1.0 -3.0 0.0 -2.0 -6.0 0.0 -3.0 -3.0 -3.0 > dtri.out.txt

@@ -13,7 +13,6 @@ he/edg.h\
 he/equiangulate.h\
 he/err.h\
 he/f/area.h\
-he/f/canham.h\
 he/f/dvolume.h\
 he/f/edg_sq.h\
 he/f/garea.h\
@@ -22,10 +21,8 @@ he/f/gompper_kroll.h\
 he/f/gompper_xin.h\
 he/f/harmonic.h\
 he/f/harmonic_ref.h\
-he/f/juelicher.h\
 he/f/juelicher_xin.h\
 he/f/kantor.h\
-he/f/meyer.h\
 he/f/meyer_xin.h\
 he/f/strain.h\
 he/f/volume.h\

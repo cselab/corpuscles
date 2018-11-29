@@ -19,7 +19,6 @@ dvec.s.o\
 edg.s.o\
 equiangulate.s.o\
 f/area.s.o\
-f/canham.s.o\
 f/dvolume.s.o\
 f/edg_sq.s.o\
 f/garea.s.o\
@@ -28,10 +27,8 @@ f/gompper_kroll.s.o\
 f/gompper_xin.s.o\
 f/harmonic.s.o\
 f/harmonic_ref.s.o\
-f/juelicher.s.o\
 f/juelicher_xin.s.o\
 f/kantor.s.o\
-f/meyer.s.o\
 f/meyer_xin.s.o\
 f/strain.s.o\
 f/volume.s.o\
@@ -68,7 +65,6 @@ dvec.d.o\
 edg.d.o\
 equiangulate.d.o\
 f/area.d.o\
-f/canham.d.o\
 f/dvolume.d.o\
 f/edg_sq.d.o\
 f/garea.d.o\
@@ -77,10 +73,8 @@ f/gompper_kroll.d.o\
 f/gompper_xin.d.o\
 f/harmonic.d.o\
 f/harmonic_ref.d.o\
-f/juelicher.d.o\
 f/juelicher_xin.d.o\
 f/kantor.d.o\
-f/meyer.d.o\
 f/meyer_xin.d.o\
 f/strain.d.o\
 f/volume.d.o\

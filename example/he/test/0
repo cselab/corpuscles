@@ -1,2 +1,2 @@
 # TEST: 0
-./main < ../../data/hex/flat.off > he.out.txt
+he.run ./main < ../../data/hex/flat.off > he.out.txt

@@ -1,2 +1,0 @@
-# nTEST: canham_h
-./main canham 2 0 0 0 < `he.path`/rbc/laplace/0.off  | uscale 1000 > q.out.txt

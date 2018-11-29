@@ -256,14 +256,10 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->Kad  = Kad;
     q->DA0D = DA0D;
 
-    if (getenv("MIX")) {
-        MSG("area_mixed");
+    if (getenv("MIX"))
         q->Fare = compute_area_mix;
-    }
-    else {
-        MSG("area_voronoi");
+    else
         q->Fare = compute_area_voronoi;
-    }
 
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
