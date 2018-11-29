@@ -12,7 +12,6 @@
 #include "he/util.h"
 
 #include "he/f/area.h"
-
 #include "he/force.h"
 
 #define T Force
@@ -22,15 +21,19 @@ struct T {struct Vtable *vtable; };
 #define SIZE (4048)
 static char List[SIZE];
 typedef int (*TypeIni)(const real*, He*, T**);
-static const char *Name[] = {
+
+static const char *Name[] =
+{
     "area",
 };
 
-static const TypeIni Ini[]  = {
+static const TypeIni Ini[] =
+{
     force_area_ini,
 };
 
-int force_ini(const char *name, const real *param, He *he, T **pq) {
+int force_ini(const char *name, const real *param, He *he, T **pq)
+{
     const int n = sizeof(Name)/sizeof(Name[0]);
     int i;
     for (i = 0; i < n; i++)
@@ -43,7 +46,8 @@ int force_ini(const char *name, const real *param, He *he, T **pq) {
     ERR(HE_INDEX, "");
 }
 
-const char *force_list() {
+const char *force_list()
+{
     const int n = sizeof(Name)/sizeof(Name[0]);
     const char *sep = "/";
     int i;
@@ -56,19 +60,25 @@ const char *force_list() {
 }
 
 typedef struct Vtable Vtable;
-struct Vtable {
+struct Vtable
+{
     int (*fin)(T*);
     int (*force)(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
     real (*energy)(T*, He*, const real *x, const real *y, const real *z);
 };
 
-int force_fin(T *q) {
+int force_fin(T *q)
+{
     return q->vtable->fin(q);
 }
-int force_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+
+int force_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz)
+{
     return q->vtable->force(q, he, x, y, z, fx, fy, fz);
 }
-real force_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+
+real force_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
     return q->vtable->energy(q, he, x, y, z);
 }
 
@@ -97,7 +107,11 @@ static real area_energy(T *q, He *he, const real *x, const real *y, const real *
     return he_f_area_energy(b->local, he, x, y, z);
 }
 
-static Vtable area_vtable = { area_fin, area_force, area_energy};
+static Vtable area_vtable = {
+    area_fin,
+    area_force,
+    area_energy
+};
 int force_area_ini(const real *param, He *he, /**/ T **pq) {
     real a0, K;
     Area *q;
