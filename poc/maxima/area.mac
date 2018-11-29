@@ -1,0 +1,35 @@
+declare([d, s], linear);
+dotdistrib: true;
+dotassoc: false;
+
+iso(e, v):=second(partition(e, d(v))) $
+
+notone(e):=e # 1;
+matchdeclare([x, y], notone);
+tellsimp(d(x^2), 2*x*d(x));
+tellsimp(d(1/x), -d(x)/x^2);
+tellsimp(d(lp . nn),   lp.d(nn) + nn.d(lp));
+tellsimp(d(lp . lp),   2*lp.d(lp));
+tellsimp(d(n(x)), dn . d(x));
+tellsimp(d(s(x)), d(x));
+tellsimp(d(ec*tb), d(ec)*tb + ec.d(tb));
+tellsimp(d(eb*tc), d(eb)*tc + eb.d(tc));
+tellsimp(d(sc*tb), d(sc)*tb + sc*d(tb));
+tellsimp(d(sb*tc), d(sb)*tc + sb*d(tc));
+tellsimp(d(ang*u), d(u)*ang + u.d(ang));
+
+m: s(ang*u);
+nn: n(m);
+
+lp0: -s(tb*ec + tc*eb)/2;
+area0: s(tb*sc + tc*sb)/8;
+
+tellsimp(d(lp), d(lp0));
+tellsimp(d(area), d(area0));
+tellsimp(d(P('area)), S*d('area));
+
+E: P(area);
+dE: d(E);
+dE: subst(H, 'H, dE);
+
+
