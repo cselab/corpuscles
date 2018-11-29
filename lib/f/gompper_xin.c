@@ -27,7 +27,6 @@ struct T {
     real Kb, H0, Kad, DA0D;
     real *energy, *fx, *fy, *fz;
     real *gx, *gy, *gz;
-    real *area, *h; /* from Dh */
     Dh *dh;
 
     int nv;
@@ -93,7 +92,7 @@ static int div(int n, const real *a, const real *b, /*io*/ real *c) {
 
 int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
 #   define M(n, f) MALLOC(n, &q->f)
-#   define S(f) q->f = f    
+#   define S(f) q->f = f
     T *q;
     int nv;
 
@@ -106,17 +105,17 @@ int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) 
 
     S(nv);
     S(Kb); q->H0 = C0/2; S(Kad); S(DA0D);
-    
+
     dh_ini(he, &q->dh);
 
     *pq = q;
     return HE_OK;
-#   undef S 
+#   undef S
 #   undef M
 }
 
 int he_f_gompper_xin_fin(T *q) {
-#   define F(x) FREE(q->x)    
+#   define F(x) FREE(q->x)
     dh_fin(q->dh);
     F(energy);
     F(fx); F(fy); F(fz);
@@ -124,7 +123,7 @@ int he_f_gompper_xin_fin(T *q) {
     F(H);
     FREE(q);
     return HE_OK;
-#   undef F    
+#   undef F
 }
 
 static int compute_energy(real H0, int n,
@@ -140,7 +139,6 @@ real he_f_gompper_xin_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
     /* get, set */
 #   define G(f) f = q->f
-#   define S(f) q->f = f
     int nv;
     real *energy;
     Dh *dh;
@@ -166,8 +164,6 @@ real he_f_gompper_xin_energy(T *q, He *he,
     diff = Ha - DA0D/2;
     global = (2*pi*Kad)*e_global(Area, diff);
 
-    S(area); S(h);
-
     return local + global;
 
 #   undef A
@@ -179,7 +175,6 @@ int he_f_gompper_xin_force(T *q, He *he,
                            real *hx, real *hy, real *hz) {
     /* get, set */
 #   define G(f) f = q->f
-#   define S(f) q->f = f
     int nv;
     Dh *dh;
     real Kb, H0, Kad, DA0D;
@@ -222,8 +217,6 @@ int he_f_gompper_xin_force(T *q, He *he,
     scale(C, nv, gx); scale(C, nv, gy); scale(C, nv, gz);
     plus(nv, gx, hx); plus(nv, gy, hy); plus(nv, gz, hz);
 
-    S(area); S(h);
-
     return HE_OK;
 
 #   undef A
@@ -236,17 +229,25 @@ int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
 }
 
 int he_f_gompper_xin_area_ver(T *q, /**/ real **pa) {
-    *pa = q->area;
-    return HE_OK;
+    return dh_area(q->dh, pa);
 }
 
 int he_f_gompper_xin_curva_mean_ver(T *q, /**/ real **pa) {
 #   define G(f) f = q->f
     int nv;
+    Dh *dh;
     real *H, *area, *h;
-    G(nv); G(H); G(area); G(h); 
+    G(nv); G(dh); G(H);
+    dh_area(dh, &area);
+    dh_area(dh, &h);    
+    
     div(nv, h, area, /**/ H);
     *pa = q->H;
+
     return HE_OK;
-#   undef G    
+#   undef G
+}
+
+int he_f_gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
+    return dh_norm(q->dh, x, y, z);
 }

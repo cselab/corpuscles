@@ -39,6 +39,8 @@ struct T {
     real *ddh, *dda, *H, *area;
     Vec *eb, *ec, *u, *lp, *m, *n, *ldn;
     Vec *f;
+
+    real *nx, *ny, *nz;
 };
 
 static int normal(const real a[3], const real b[3], const real c[3],
@@ -68,6 +70,7 @@ int dh_ini(He *he, /**/ T **pq) {
     M(nv, ddh); M(nv, dda); M(nv, H); M(nv, area);
     M(nh, eb); M(nh, ec); M(nh, u);
     M(nv, lp); M(nv, m); M(nv, n); M(nv, ldn); M(nv, f);
+    M(nv, nx); M(nv, ny); M(nv, nz);
 
     q->nv = nv;
     q->nh = nh;
@@ -80,14 +83,16 @@ int dh_fin(T *q) {
 #   define F(x) FREE(q->x)
     F(tb); F(tc); F(sb); F(sc); F(ang);
     F(ddh); F(dda); F(H); F(area);
-    F(eb); F(ec); F(u); F(lp); F(m); F(n); F(ldn);
-    F(f);
+    F(eb); F(ec); F(u);
+    F(lp); F(m); F(n); F(ldn); F(f);
+    F(nx); F(ny); F(nz);
+
     return HE_OK;
 #   undef F
 }
 
 int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
-#   define A(f) f = q->f
+#   define G(f) f = q->f
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3], n[3];
 
@@ -95,9 +100,9 @@ int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
     real *H, *area;
     Vec *eb, *ec, *u, *lp, *m;
 
-    A(tb); A(tc); A(sb); A(sc); A(ang);
-    A(H); A(area);
-    A(eb); A(ec); A(u); A(lp); A(m);
+    G(tb); G(tc); G(sb); G(sc); G(ang);
+    G(H); G(area);
+    G(eb); G(ec); G(u); G(lp); G(m);
 
     nh = he_nh(he);
     nv = he_nv(he);
@@ -138,7 +143,7 @@ int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
 }
 
 int dh_force(T *q, dHParam param, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
-#   define A(f) f = q->f
+#   define G(f) f = q->f
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
     const real *v;
@@ -159,10 +164,10 @@ int dh_force(T *q, dHParam param, He *he, const real *x, const real *y, const re
     DA = param.da;
     p = param.p;
 
-    A(tb); A(tc); A(sb); A(sc); A(ang);
-    A(ddh); A(dda); A(H); A(area);
-    A(eb); A(ec); A(u); A(lp); A(m); A(n); A(ldn);
-    A(f);
+    G(tb); G(tc); G(sb); G(sc); G(ang);
+    G(ddh); G(dda); G(H); G(area);
+    G(eb); G(ec); G(u); G(lp); G(m); G(n); G(ldn);
+    G(f);
 
     nh = he_nh(he);
     nv = he_nv(he);
@@ -282,4 +287,24 @@ int dh_area(T *q, real **parea) {
 int dh_h(T *q, real **pH) {
     *pH = q->H;
     return HE_OK;
+}
+
+
+int dh_norm(T *q, real **pnx, real **pny, real **pnz) {
+#   define G(f) f = q->f
+    int nv, i;
+    real *nx, *ny, *nz;
+    const Vec* n;
+
+    G(nv);
+    G(nx); G(ny); G(nz); G(n);
+
+    nv = q->nv;
+    for (i = 0; i < nv; i++)
+        vec_set(n[i].v, i, nx, ny, nz);
+
+    *pnx = nx; *pny = ny; *pnz = nz;
+
+    return HE_OK;
+#   undef G
 }

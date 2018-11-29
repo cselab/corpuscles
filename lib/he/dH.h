@@ -18,5 +18,6 @@ int dh_area_h(T*, He*, const real *x, const real *y, const real *z);
 
 int dh_area(T*, real**);
 int dh_h(T*, real**);
+int dh_norm(T*, real**, real**, real**);
 
 #undef T
