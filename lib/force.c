@@ -117,7 +117,7 @@ static real area_energy(T *q, He *he, const real *x, const real *y, const real *
 static Vtable area_vtable = {
     area_fin,
     area_force,
-    area_energy
+    area_energy,
 };
 
 int force_area_ini(const real *param, He *he, /**/ T **pq)
@@ -132,7 +132,6 @@ int force_area_ini(const real *param, He *he, /**/ T **pq)
     return he_f_area_ini(a0, K, he, &q->local);
 }
 /* end area */
-
 
 /* begin garea */
 typedef struct Garea Garea;
@@ -165,7 +164,7 @@ static real garea_energy(T *q, He *he, const real *x, const real *y, const real 
 static Vtable garea_vtable = {
     garea_fin,
     garea_force,
-    garea_energy
+    garea_energy,
 };
 
 int force_garea_ini(const real *param, He *he, /**/ T **pq)

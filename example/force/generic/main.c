@@ -7,6 +7,7 @@
 
 #include <he/force.h>
 #include <he/punto.h>
+#include <he/area.h>
 #include <he/he.h>
 #include <he/off.h>
 #include <he/memory.h>
@@ -21,7 +22,7 @@
 static const char **argv;
 static char name[4048];
 
-static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr;
+static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr, *area;
 static int nv, nt;
 static He *he;
 static Force *force;
@@ -71,6 +72,7 @@ static void main0() {
     force_ini(name, param, he,  &force);
     force_force(force, he, x, y, z, /**/ fx, fy, fz);
     e = force_energy(force, he, x, y, z);
+    he_area_ver(he, x, y, z, /**/ area);
 
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
@@ -83,8 +85,8 @@ static void main0() {
         fm[i] = vec_abs(f);
     }
 
-    char *key = "r x y z fm fx fy fz";
-    real *queue[] = {rr, x, y, z, fm, fx, fy, fz, NULL};
+    char *key = "r x y z fm fx fy fz area";
+    real *queue[] = {rr, x, y, z, fm, fx, fy, fz, area, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
     force_fin(force);
@@ -98,7 +100,7 @@ int main(int __UNUSED argc, const char *v[]) {
     nv = he_nv(he);
     nt = he_nt(he);
 
-    MALLOC(nv, &rr); MALLOC(nv, &fm);
+    MALLOC(nv, &rr); MALLOC(nv, &fm); MALLOC(nv, &area);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
     main0();
