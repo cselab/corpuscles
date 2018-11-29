@@ -13,5 +13,6 @@ int force_energy_ver(T*, /**/ real**);
 const char* force_list();
 
 int force_area_ini(const real *param, He*, /**/ T**);
+int force_garea_ini(const real *param, He*, /**/ T**);
 
 #undef T
