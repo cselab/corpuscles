@@ -19,7 +19,6 @@ dvec.s.o\
 edg.s.o\
 equiangulate.s.o\
 f/area.s.o\
-f/canham.s.o\
 f/dvolume.s.o\
 f/edg_sq.s.o\
 f/garea.s.o\
@@ -68,7 +67,6 @@ dvec.d.o\
 edg.d.o\
 equiangulate.d.o\
 f/area.d.o\
-f/canham.d.o\
 f/dvolume.d.o\
 f/edg_sq.d.o\
 f/garea.d.o\
