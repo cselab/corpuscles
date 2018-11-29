@@ -27,6 +27,7 @@ struct T {
     real Kb, H0, Kad, DA0D;
     real *energy, *fx, *fy, *fz;
     real *gx, *gy, *gz;
+    real *area; /* from Dh */
     Dh *dh;
 };
 
@@ -130,7 +131,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     real *area, *h, local, global, Area, Ha, diff;
 
     A(Kb); A(H0); A(Kad); A(DA0D);
-    A(energy); A(dh);
+    A(energy); A(dh); A(area);
 
     nv = he_nv(he);
 
@@ -202,5 +203,10 @@ int he_f_gompper_xin_force(T *q, He *he,
 
 int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
+    return HE_OK;
+}
+
+int he_f_gompper_xin_area_ver(T *q, /**/ real **pa) {
+    *pa = q->area;
     return HE_OK;
 }
