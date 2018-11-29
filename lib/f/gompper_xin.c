@@ -156,31 +156,45 @@ int he_f_gompper_xin_force(T *q, He *he,
 #   define A(f) f = q->f
     int nv;
     Dh *dh;
-    real Kb, H0;
+    real Kb, H0, Kad, DA0D;
     real *area, *h;
     real *fx, *fy, *fz, *gx, *gy, *gz;
+    real Area, Ha, diff, d_over_A, C;
     dHParam param;
-    A(Kb); A(H0); A(dh);
+
+    A(Kb); A(H0); A(Kad); A(DA0D);
+    A(dh);
     A(fx); A(fy); A(fz);
     A(gx); A(gy); A(gz);
-
-    param.dh = ddh_local;
-    param.da = dda_local;
-    param.p  = (void*)&H0;
 
     nv = he_nv(he);
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
     zero(nv, gx); zero(nv, gy); zero(nv, gz);
 
+    param.dh = ddh_local;
+    param.da = dda_local;
+    param.p  = (void*)&H0;
     dh_force(dh, param, he, x, y, z, /**/ fx, fy, fz);
 
-    scale(2*Kb, nv, fx);
-    scale(2*Kb, nv, fy);
-    scale(2*Kb, nv, fz);
+    dh_area(dh, &area);
+    dh_h(dh, &h);
 
-    plus(nv, fx, hx);
-    plus(nv, fy, hy);
-    plus(nv, fz, hz);
+    scale(2*Kb, nv, fx); scale(2*Kb, nv, fy); scale(2*Kb, nv, fz);
+    plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
+
+    Area = he_sum_array(nv, area);
+    Ha = he_sum_array(nv, h);
+    diff = Ha - DA0D/2;
+    d_over_A = diff/Area;
+
+    param.dh = ddh_global;
+    param.da = dda_global;
+    param.p  = (void*)&d_over_A;
+    dh_force(dh, param, he, x, y, z, /**/ gx, gy, gz);
+
+    C = 2*pi*Kad;
+    scale(C, nv, gx); scale(C, nv, gy); scale(C, nv, gz);
+    plus(nv, gx, hx); plus(nv, gy, hy); plus(nv, gz, hz);
 
     return HE_OK;
 #   undef A
