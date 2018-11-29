@@ -63,13 +63,14 @@ static void arg() {
 
 static void main0() {
     int i;
-    real e, r[3], f[3], *area;
+    real e, r[3], f[3], *area, *H;
 
     bending_ini(name, param, he,  &bending);
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
     bending_area_ver(bending, /**/ &area);
+    bending_curva_mean_ver(bending, /**/ &H);
 
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
@@ -81,8 +82,8 @@ static void main0() {
         fm[i] = vec_abs(f);
     }
 
-    char *key = "r x y z fm fx fy fz eng area";
-    real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, area, NULL};
+    char *key = "r x y z fm fx fy fz eng area H";
+    real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, area, H, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);

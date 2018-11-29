@@ -322,7 +322,12 @@ static int gompper_xin_area_ver(T *q, /**/ real **e) {
     GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
     return he_f_gompper_xin_area_ver(b->local, /**/ e);
 }
-static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver, gompper_xin_area_ver };
+static int gompper_xin_curva_mean_ver(T *q, /**/ real **e) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_curva_mean_ver(b->local, /**/ e);
+}
+
+static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver, gompper_xin_area_ver, gompper_xin_curva_mean_ver };
 int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     GompperXin *q;
