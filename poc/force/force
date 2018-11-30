@@ -16,17 +16,32 @@ $prog FILE.tmpl > FILE.c
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 "$AWK" -v prog=$prog '
+function read_conf(conf,   L, l, i, j, n) {
+    while (getline l < conf > 0) {
+	sub(/#.*/, "")
+	if (!emptyp(l))
+	    L[++i] = l
+    }
+    close(conf)
+    n = i
+    for (i = 0; i < n; ) {
+	j++
+	Name[j] = L[++i]
+	Type[j] = L[++i]
+	Fin[j]  = L[++i]
+	Force[j] = L[++i]
+	Energy[j] = L[++i]
+	Ini[j] = L[++i]
+	Splice[j] = L[++i]
+    }
+}
+
 BEGIN {
     Tab = "    "
-    split("area garea", Name)
-    split("HeFArea HeFGarea", Type)
-    split("he_f_area_fin   he_f_garea_fin", Fin)
-    split("he_f_area_force he_f_garea_force", Force)
-    split("he_f_area_energy he_f_garea_energy", Energy)
-    split("he_f_area_ini he_f_garea_ini", Ini)
-    split("real,real real,real", Splice)
 
-    file = ARGV[1]
+    read_conf(ARGV[1])
+
+    file = ARGV[2]
     while (getline < file > 0)
 	L[++I] = $0
     close(file)
@@ -139,6 +154,7 @@ function tprint(s) { print Tab s }
 function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function msg0(s) { printf "%s\n", s | "cat >&2" }
 function err(s) { msg(s); gexit(2) }
+function emptyp(s) { return s ~ /^[ \t]*$/ }
 
 function capitalize(s,   f, r) {
     f = substr(s, 1, 1)
