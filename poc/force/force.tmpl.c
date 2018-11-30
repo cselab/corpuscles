@@ -117,26 +117,22 @@ static int %name%_fin(T *q)
     FREE(q);
     return status;
 }
-
 static int %name%_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz)
 {
     %Name% *b = CONTAINER_OF(q, %Name%, force);
     return %force%(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
-
 static real %name%_energy(T *q, He *he, const real *x, const real *y, const real *z)
 {
     %Name% *b = CONTAINER_OF(q, %Name%, force);
     return %energy%(b->local, he, x, y, z);
 }
-
 static Vtable %name%_vtable = {
     %name%_fin,
     %name%_force,
     %name%_energy,
 };
-
 int force_%name%_ini(const real *param, He *he, /**/ T **pq)
 {
     %Name% *q;

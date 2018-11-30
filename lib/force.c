@@ -122,26 +122,22 @@ static int area_fin(T *q)
     FREE(q);
     return status;
 }
-
 static int area_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz)
 {
     Area *b = CONTAINER_OF(q, Area, force);
     return he_f_area_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
-
 static real area_energy(T *q, He *he, const real *x, const real *y, const real *z)
 {
     Area *b = CONTAINER_OF(q, Area, force);
     return he_f_area_energy(b->local, he, x, y, z);
 }
-
 static Vtable area_vtable = {
     area_fin,
     area_force,
     area_energy,
 };
-
 int force_area_ini(const real *param, He *he, /**/ T **pq)
 {
     Area *q;
@@ -165,26 +161,22 @@ static int garea_fin(T *q)
     FREE(q);
     return status;
 }
-
 static int garea_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz)
 {
     Garea *b = CONTAINER_OF(q, Garea, force);
     return he_f_garea_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
-
 static real garea_energy(T *q, He *he, const real *x, const real *y, const real *z)
 {
     Garea *b = CONTAINER_OF(q, Garea, force);
     return he_f_garea_energy(b->local, he, x, y, z);
 }
-
 static Vtable garea_vtable = {
     garea_fin,
     garea_force,
     garea_energy,
 };
-
 int force_garea_ini(const real *param, He *he, /**/ T **pq)
 {
     Garea *q;
@@ -208,26 +200,22 @@ static int volume_fin(T *q)
     FREE(q);
     return status;
 }
-
 static int volume_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz)
 {
     Volume *b = CONTAINER_OF(q, Volume, force);
     return he_f_volume_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
-
 static real volume_energy(T *q, He *he, const real *x, const real *y, const real *z)
 {
     Volume *b = CONTAINER_OF(q, Volume, force);
     return he_f_volume_energy(b->local, he, x, y, z);
 }
-
 static Vtable volume_vtable = {
     volume_fin,
     volume_force,
     volume_energy,
 };
-
 int force_volume_ini(const real *param, He *he, /**/ T **pq)
 {
     Volume *q;
