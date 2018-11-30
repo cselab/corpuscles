@@ -26,10 +26,10 @@ static real *gx, *gy, *gz;
 static int nv, nt;
 static He *he;
 static Force *force;
-static real param[99];
+static real param[999];
 static real delta = 1e-6;
 
-static const char *me = "bending";
+static const char *me = "force/generic";
 
 static void usg() {
     const char *list;
