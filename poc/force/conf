@@ -28,8 +28,8 @@ real,real
 #include "he/f/juelicher_xin.h"
 juelicher_xin
 HeFJuelicherXin
-he_juelicher_xin_fin
-he_juelicher_xin_force
-he_juelicher_xin_energy
-he_juelicher_xin_ini
+he_f_juelicher_xin_fin
+he_f_juelicher_xin_force
+he_f_juelicher_xin_energy
+he_f_juelicher_xin_ini
 real,real,real,real
