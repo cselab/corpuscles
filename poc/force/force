@@ -23,6 +23,8 @@ BEGIN {
     split("he_f_area_fin   he_f_garea_fin", Fin)
     split("he_f_area_force he_f_garea_force", Force)
     split("he_f_area_energy he_f_garea_energy", Energy)
+    split("he_f_area_ini he_f_garea_ini", Ini)
+    split("real,real real,real", Splice)
 
     file = ARGV[1]
     while (getline < file > 0)
@@ -46,7 +48,9 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 	    hi0 = i - 1
 	    for (j = 1; j in Name; j++) {
 		set(j)
+		printf "\n/* begin %s */\n", name
 		loop(lo0, hi0)
+		printf "/* end %s */\n", name
 	    }
 	    i++
 	} else {
@@ -59,9 +63,18 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 function set(j) {
     name = Name[j]
     type = Type[j]
+    ini  = Ini[j]
     fin  = Fin[j]
     force = Force[j]
     energy = Energy[j]
+    splice = param(Splice[j])
+}
+
+function param(s,   n, a, ans) {
+    n = split(s, a, ",")
+    for (i = 1; i <= n; i++)
+	ans = ans "*param++, "
+    return ans
 }
 
 function pprint(l) {
@@ -69,9 +82,12 @@ function pprint(l) {
     gsub(/%Name%/, capitalize(name), l)
 
     gsub(/%type%/, type, l)
+    gsub(/%ini%/, ini, l)
     gsub(/%fin%/, fin, l)
     gsub(/%force%/, force, l)
     gsub(/%energy%/, energy, l)
+
+    gsub(/%splice%/, splice, l)
 
     print l
 }

@@ -120,13 +120,10 @@ static Vtable %name%_vtable = {
 
 int force_%name%_ini(const real *param, He *he, /**/ T **pq)
 {
-    real a0, K;
     %Name% *q;
-    a0 = *param++;
-    K = *param++;
     MALLOC(1, &q);
     q->force.vtable = &%name%_vtable;
     *pq = &q->force;
-    return he_f_%name%_ini(a0, K, he, &q->local);
+    return %ini%(%splice% he, &q->local);
 }
 //%end
