@@ -13,17 +13,8 @@ real force_energy(T*, He*, const real *x, const real *y, const real *z);
 const char* force_list();
 int force_narg(const char*);
 
-
-/* begin area */
 int force_area_ini(const real *param, He*, /**/ T**);
-/* end area */
-
-/* begin garea */
 int force_garea_ini(const real *param, He*, /**/ T**);
-/* end garea */
-
-/* begin volume */
 int force_volume_ini(const real *param, He*, /**/ T**);
-/* end volume */
 
 #undef T

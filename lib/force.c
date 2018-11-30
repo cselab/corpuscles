@@ -109,8 +109,6 @@ real force_energy(T *q, He *he, const real *x, const real *y, const real *z)
     return q->vtable->energy(q, he, x, y, z);
 }
 
-
-/* begin area */
 typedef struct Area Area;
 struct Area {
     T force;
@@ -154,9 +152,6 @@ int force_area_ini(const real *param, He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_area_ini(g1, g2,  he, &q->local);
 }
-/* end area */
-
-/* begin garea */
 typedef struct Garea Garea;
 struct Garea {
     T force;
@@ -200,9 +195,6 @@ int force_garea_ini(const real *param, He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_garea_ini(g1, g2,  he, &q->local);
 }
-/* end garea */
-
-/* begin volume */
 typedef struct Volume Volume;
 struct Volume {
     T force;
@@ -246,4 +238,3 @@ int force_volume_ini(const real *param, He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_volume_ini(g1, g2,  he, &q->local);
 }
-/* end volume */

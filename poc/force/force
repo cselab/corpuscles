@@ -66,9 +66,9 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 	    hi0 = i - 1
 	    for (j = 1; j in Name; j++) {
 		set(j)
-		printf "\n/* begin %s */\n", name
+		#printf "\n/* begin %s */\n", name
 		loop(lo0, hi0)
-		printf "/* end %s */\n", name
+		#printf "/* end %s */\n", name
 	    }
 	    i++
 	} else if (pat(i, "decl")) {
