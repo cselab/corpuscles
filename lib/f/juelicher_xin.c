@@ -79,7 +79,7 @@ static int scale(int n, real sc, /*io*/ real *a) {
 }
 
 int he_f_juelicher_xin_ini(real K, real C0, real Kad, real DA0D,
-                    He *he, T **pq) {
+                           He *he, T **pq) {
     T *q;
     int nv, ne, nt;
     Size size;
