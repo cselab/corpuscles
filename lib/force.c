@@ -14,6 +14,7 @@
 #include "he/f/area.h"
 #include "he/f/garea.h"
 #include "he/f/volume.h"
+#include "he/f/juelicher_xin.h"
 
 #include "he/force.h"
 
@@ -32,18 +33,21 @@ static const char *Name[] = {
     "area",
     "garea",
     "volume",
+    "juelicher_xin",
 };
 
 static int Narg[] = {
     2,
     2,
     2,
+    4,
 };
 
 static const TypeIni Ini[] = {
     force_area_ini,
     force_garea_ini,
     force_volume_ini,
+    force_juelicher_xin_ini,
 };
 
 int force_ini(const char *name, const real *param, He *he, T **pq)
@@ -226,4 +230,45 @@ int force_volume_ini(const real *param, He *he, /**/ T **pq)
     q->force.vtable = &volume_vtable;
     *pq = &q->force;
     return he_f_volume_ini(g1, g2,  he, &q->local);
+}
+typedef struct Juelicher_xin Juelicher_xin;
+struct Juelicher_xin {
+    T force;
+    HeFJuelicherXin *local;
+};
+static int juelicher_xin_fin(T *q)
+{
+    int status;
+    Juelicher_xin *b = CONTAINER_OF(q, Juelicher_xin, force);
+    status = he_f_juelicher_xin_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int juelicher_xin_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Juelicher_xin *b = CONTAINER_OF(q, Juelicher_xin, force);
+    return he_f_juelicher_xin_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real juelicher_xin_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Juelicher_xin *b = CONTAINER_OF(q, Juelicher_xin, force);
+    return he_f_juelicher_xin_energy(b->local, he, x, y, z);
+}
+static Vtable juelicher_xin_vtable = {
+    juelicher_xin_fin,
+    juelicher_xin_force,
+    juelicher_xin_energy,
+};
+int force_juelicher_xin_ini(const real *param, He *he, /**/ T **pq)
+{
+    Juelicher_xin *q;
+    real g1 = *param++;
+    real g2 = *param++;
+    real g3 = *param++;
+    real g4 = *param++;
+    MALLOC(1, &q);
+    q->force.vtable = &juelicher_xin_vtable;
+    *pq = &q->force;
+    return he_f_juelicher_xin_ini(g1, g2, g3, g4,  he, &q->local);
 }
