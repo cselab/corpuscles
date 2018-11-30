@@ -30,9 +30,11 @@ typedef int (*TypeIni)(const real*, He*, T**);
 static const char *Name[] = {
     "area",
     "garea",
+    "volume",
 };
 
 static int Narg[] = {
+    2,
     2,
     2,
 };
@@ -40,6 +42,7 @@ static int Narg[] = {
 static const TypeIni Ini[] = {
     force_area_ini,
     force_garea_ini,
+    force_volume_ini,
 };
 
 int force_ini(const char *name, const real *param, He *he, T **pq)
@@ -198,3 +201,49 @@ int force_garea_ini(const real *param, He *he, /**/ T **pq)
     return he_f_garea_ini(g1, g2,  he, &q->local);
 }
 /* end garea */
+
+/* begin volume */
+typedef struct Volume Volume;
+struct Volume {
+    T force;
+    HeFVolume *local;
+};
+static int volume_fin(T *q)
+{
+    int status;
+    Volume *b = CONTAINER_OF(q, Volume, force);
+    status = he_f_volume_fin(b->local);
+    FREE(q);
+    return status;
+}
+
+static int volume_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Volume *b = CONTAINER_OF(q, Volume, force);
+    return he_f_volume_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+
+static real volume_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Volume *b = CONTAINER_OF(q, Volume, force);
+    return he_f_volume_energy(b->local, he, x, y, z);
+}
+
+static Vtable volume_vtable = {
+    volume_fin,
+    volume_force,
+    volume_energy,
+};
+
+int force_volume_ini(const real *param, He *he, /**/ T **pq)
+{
+    Volume *q;
+    real g1 = *param++;
+    real g2 = *param++;
+    MALLOC(1, &q);
+    q->force.vtable = &volume_vtable;
+    *pq = &q->force;
+    return he_f_volume_ini(g1, g2,  he, &q->local);
+}
+/* end volume */
