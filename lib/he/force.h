@@ -15,5 +15,6 @@ int force_narg(const char*);
 
 int force_area_ini(const real *param, He*, /**/ T**);
 int force_garea_ini(const real *param, He*, /**/ T**);
+int force_volume_ini(const real *param, He*, /**/ T**);
 
 #undef T
