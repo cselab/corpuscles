@@ -32,7 +32,7 @@ static const char *Name[] = {
     "garea",
 };
 
-static const char *Narg[] = {
+static int Narg[] = {
     2,
     2,
 };
