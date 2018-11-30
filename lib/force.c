@@ -13,6 +13,7 @@
 
 #include "he/f/area.h"
 #include "he/f/garea.h"
+#include "he/f/volume.h"
 
 #include "he/force.h"
 

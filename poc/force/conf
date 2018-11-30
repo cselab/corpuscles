@@ -1,3 +1,4 @@
+#include "he/f/area.h"
 area
 HeFArea
 he_f_area_fin
@@ -6,6 +7,7 @@ he_f_area_energy
 he_f_area_ini
 real,real
 
+#include "he/f/garea.h"
 garea
 HeFGarea
 he_f_garea_fin
@@ -14,6 +16,7 @@ he_f_garea_energy
 he_f_garea_ini
 real,real
 
+#include "he/f/volume.h"
 volume
 HeFVolume
 he_f_volume_fin

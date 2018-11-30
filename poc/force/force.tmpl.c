@@ -11,8 +11,7 @@
 #include "he/macro.h"
 #include "he/util.h"
 
-#include "he/f/area.h"
-#include "he/f/garea.h"
+//%header
 
 #include "he/force.h"
 

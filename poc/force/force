@@ -26,6 +26,7 @@ function read_conf(conf,   L, l, i, j, n) {
     n = i
     for (i = 0; i < n; ) {
 	j++
+	Header[j] = L[++i]
 	Name[j] = L[++i]
 	Type[j] = L[++i]
 	Fin[j]  = L[++i]
@@ -50,7 +51,10 @@ BEGIN {
 
 function loop(lo, hi,   i, j, lo0, hi0) {
     for (i = lo; i <= hi;) {
-	if (pat(i, "name")) {
+	if (pat(i, "header")) {
+	    p_header()
+	    i++
+	} else if (pat(i, "name")) {
 	    p_name()
 	    i++
 	} else if (pat(i, "narg")) {
@@ -82,6 +86,7 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 }
 
 function set(j) {
+    header = Header[j]
     name = Name[j]
     type = Type[j]
     ini  = Ini[j]
@@ -136,6 +141,11 @@ function p_ini(   i) {
 function p_decl(   i) {
     for (i = 1; i <= narg; i++)
 	tprint(sprintf("real %s = %s;", var(i), "*param++"))
+}
+
+function p_header(   i) {
+    for (i = 1; i in Name; i++)
+	pprint(Header[i])
 }
 
 function var(i) { return sprintf("g%d", i) }
