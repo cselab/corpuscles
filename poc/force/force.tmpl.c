@@ -84,49 +84,49 @@ real force_energy(T *q, He *he, const real *x, const real *y, const real *z)
     return q->vtable->energy(q, he, x, y, z);
 }
 
-/* begin area */
-typedef struct Area Area;
-struct Area {
+//%begin
+typedef struct %Name% %Name%;
+struct %Name% {
     T force;
-    HeFArea *local;
+    %type% *local;
 };
-static int area_fin(T *q)
+static int %name%_fin(T *q)
 {
     int status;
-    Area *b = CONTAINER_OF(q, Area, force);
-    status = he_f_area_fin(b->local);
+    %Name% *b = CONTAINER_OF(q, %Name%, force);
+    status = %fin%(b->local);
     FREE(q);
     return status;
 }
 
-static int area_force(T *q, He *he, const real *x, const real *y, const real *z,
+static int %name%_force(T *q, He *he, const real *x, const real *y, const real *z,
                                /**/ real *fx, real *fy, real *fz)
 {
-    Area *b = CONTAINER_OF(q, Area, force);
-    return he_f_area_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+    %Name% *b = CONTAINER_OF(q, %Name%, force);
+    return %force%(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
 
-static real area_energy(T *q, He *he, const real *x, const real *y, const real *z)
+static real %name%_energy(T *q, He *he, const real *x, const real *y, const real *z)
 {
-    Area *b = CONTAINER_OF(q, Area, force);
-    return he_f_area_energy(b->local, he, x, y, z);
+    %Name% *b = CONTAINER_OF(q, %Name%, force);
+    return %energy%(b->local, he, x, y, z);
 }
 
-static Vtable area_vtable = {
-    area_fin,
-    area_force,
-    area_energy,
+static Vtable %name%_vtable = {
+    %name%_fin,
+    %name%_force,
+    %name%_energy,
 };
 
-int force_area_ini(const real *param, He *he, /**/ T **pq)
+int force_%name%_ini(const real *param, He *he, /**/ T **pq)
 {
     real a0, K;
-    Area *q;
+    %Name% *q;
     a0 = *param++;
     K = *param++;
     MALLOC(1, &q);
-    q->force.vtable = &area_vtable;
+    q->force.vtable = &%name%_vtable;
     *pq = &q->force;
-    return he_f_area_ini(a0, K, he, &q->local);
+    return he_f_%name%_ini(a0, K, he, &q->local);
 }
-/* end area */
+//%end

@@ -15,29 +15,65 @@ $prog FILE.tmpl > FILE.c
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-"$AWK" '
+"$AWK" -v prog=$prog '
 BEGIN {
     Tab = "    "
     split("area garea", Name)
+    split("HeFArea HeFGarea", Type)
+    split("he_f_area_fin   he_f_garea_fin", Fin)
+    split("he_f_area_force he_f_garea_force", Force)
+    split("he_f_area_energy he_f_garea_energy", Energy)
 
     file = ARGV[1]
     while (getline < file > 0)
 	L[++I] = $0
     close(file)
-    for (I = 1;;) {
-	if (!(I in L)) break
-	l = L[I]; split(l, a)
-	if (pat("name")) {
+    loop(1, I)
+}
+
+function loop(lo, hi,   i, j, lo0, hi0) {
+    for (i = lo; i <= hi;) {
+	if (pat(i, "name")) {
 	    p_name()
-	    I++
-	} else if (pat("ini")) {
+	    i++
+	} else if (pat(i, "ini")) {
 	    p_ini()
-	    I++
+	    i++
+	} else if (pat(i, "begin")) {
+	    i++
+	    lo0 = i
+	    for (; i <= hi && !pat(i, "end"); i++) ;
+	    hi0 = i - 1
+	    for (j = 1; j in Name; j++) {
+		set(j)
+		loop(lo0, hi0)
+	    }
+	    i++
 	} else {
-	    #print l
-	    I++
+	    pprint(L[i])
+	    i++
 	}
     }
+}
+
+function set(j) {
+    name = Name[j]
+    type = Type[j]
+    fin  = Fin[j]
+    force = Force[j]
+    energy = Energy[j]
+}
+
+function pprint(l) {
+    gsub(/%name%/, name, l)
+    gsub(/%Name%/, capitalize(name), l)
+
+    gsub(/%type%/, type, l)
+    gsub(/%fin%/, fin, l)
+    gsub(/%force%/, force, l)
+    gsub(/%energy%/, energy, l)
+
+    print l
 }
 
 function p_name(   i) {
@@ -50,7 +86,8 @@ function p_ini(   i) {
 	tprint("force_" Name[i] "_ini" ",")
 }
 
-function pat(p) {
+function pat(i, p,   l, a) {
+    l = L[i]; split(l, a)
     if (!eq(a[1], "//%" p)) return 0
     sub(/[ \t]*\/\/%/, "")
     sub(/^[^ \t]*/, "")
@@ -59,7 +96,16 @@ function pat(p) {
 
 function q(s) { return "\"" s "\"" }
 function eq(a, b) { return "" a == "" b }
-
 function tprint(s) { print Tab s }
+function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
+function msg0(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { msg(s); gexit(2) }
+
+function capitalize(s,   f, r) {
+    f = substr(s, 1, 1)
+    r = substr(s, 2)
+    f = toupper(f)
+    return f r
+}
 
 ' "$@"
