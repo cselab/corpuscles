@@ -58,12 +58,15 @@ static int str(/**/ char *p) {
     return HE_OK;
 }
 static void arg() {
+    int narg, i;
     if (*argv != NULL && eq(*argv, "-h")) {
         usg();
         exit(0);
     }
     str(name);
-    scl(&param[0]); scl(&param[1]);
+    narg = force_narg(name);
+    for (i = 0; i < narg; i++)
+        scl(&param[i]);
 }
 
 static void main0() {
