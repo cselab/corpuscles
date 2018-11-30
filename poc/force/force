@@ -1,0 +1,65 @@
+. he.util
+
+prog=he.force
+
+: ${VALGRIND=valgrind}
+: ${TIME=time}
+: ${GDB_EXEC=gdb}
+
+usg () {
+    cat <<!
+$prog FILE.tmpl > FILE.c
+!
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+"$AWK" '
+BEGIN {
+    Tab = "    "
+    split("area garea", Name)
+
+    file = ARGV[1]
+    while (getline < file > 0)
+	L[++I] = $0
+    close(file)
+    for (I = 1;;) {
+	if (!(I in L)) break
+	l = L[I]; split(l, a)
+	if (pat("name")) {
+	    p_name()
+	    I++
+	} else if (pat("ini")) {
+	    p_ini()
+	    I++
+	} else {
+	    #print l
+	    I++
+	}
+    }
+}
+
+function p_name(   i) {
+    for (i = 1; i in Name; i++)
+	tprint(q(Name[i]) ",")
+}
+
+function p_ini(   i) {
+    for (i = 1; i in Name; i++)
+	tprint("force_" Name[i] "_ini" ",")
+}
+
+function pat(p) {
+    if (!eq(a[1], "//%" p)) return 0
+    sub(/[ \t]*\/\/%/, "")
+    sub(/^[^ \t]*/, "")
+    return 1
+}
+
+function q(s) { return "\"" s "\"" }
+function eq(a, b) { return "" a == "" b }
+
+function tprint(s) { print Tab s }
+
+' "$@"

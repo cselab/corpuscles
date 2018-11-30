@@ -28,13 +28,11 @@ static char List[SIZE];
 typedef int (*TypeIni)(const real*, He*, T**);
 
 static const char *Name[] = {
-    "area",
-    "garea",
+//%name
 };
 
 static const TypeIni Ini[] = {
-    force_area_ini,
-    force_garea_ini,
+//%ini
 };
 
 int force_ini(const char *name, const real *param, He *he, T **pq)
@@ -132,50 +130,3 @@ int force_area_ini(const real *param, He *he, /**/ T **pq)
     return he_f_area_ini(a0, K, he, &q->local);
 }
 /* end area */
-
-/* begin garea */
-typedef struct Garea Garea;
-struct Garea {
-    T force;
-    HeFGarea *local;
-};
-static int garea_fin(T *q)
-{
-    int status;
-    Garea *b = CONTAINER_OF(q, Garea, force);
-    status = he_f_garea_fin(b->local);
-    FREE(q);
-    return status;
-}
-
-static int garea_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz)
-{
-    Garea *b = CONTAINER_OF(q, Garea, force);
-    return he_f_garea_force(b->local, he, x, y, z, /**/ fx, fy, fz);
-}
-
-static real garea_energy(T *q, He *he, const real *x, const real *y, const real *z)
-{
-    Garea *b = CONTAINER_OF(q, Garea, force);
-    return he_f_garea_energy(b->local, he, x, y, z);
-}
-
-static Vtable garea_vtable = {
-    garea_fin,
-    garea_force,
-    garea_energy,
-};
-
-int force_garea_ini(const real *param, He *he, /**/ T **pq)
-{
-    real a0, K;
-    Garea *q;
-    a0 = *param++;
-    K = *param++;
-    MALLOC(1, &q);
-    q->force.vtable = &garea_vtable;
-    *pq = &q->force;
-    return he_f_garea_ini(a0, K, he, &q->local);
-}
-/* end garea */
