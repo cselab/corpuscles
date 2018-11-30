@@ -121,6 +121,7 @@ static Vtable %name%_vtable = {
 int force_%name%_ini(const real *param, He *he, /**/ T **pq)
 {
     %Name% *q;
+//%decl
     MALLOC(1, &q);
     q->force.vtable = &%name%_vtable;
     *pq = &q->force;

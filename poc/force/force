@@ -53,6 +53,9 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 		printf "/* end %s */\n", name
 	    }
 	    i++
+	} else if (pat(i, "decl")) {
+	    p_decl()
+	    i++
 	} else {
 	    pprint(L[i])
 	    i++
@@ -67,13 +70,18 @@ function set(j) {
     fin  = Fin[j]
     force = Force[j]
     energy = Energy[j]
+    narg = get_narg(Splice[j])
     splice = param(Splice[j])
 }
 
-function param(s,   n, a, ans) {
-    n = split(s, a, ",")
+function get_narg(s) {
+    return gsub(/,/, "", s) + 1
+}
+
+function param(s,   ans) {
+    n = get_narg(s)
     for (i = 1; i <= n; i++)
-	ans = ans "*param++, "
+	ans = ans var(i) ", "
     return ans
 }
 
@@ -101,6 +109,13 @@ function p_ini(   i) {
     for (i = 1; i in Name; i++)
 	tprint("force_" Name[i] "_ini" ",")
 }
+
+function p_decl(   i) {
+    for (i = 1; i <= narg; i++)
+	tprint(sprintf("real %s = %s;", var(i), "*param++"))
+}
+
+function var(i) { return sprintf("g%d", i) }
 
 function pat(i, p,   l, a) {
     l = L[i]; split(l, a)
