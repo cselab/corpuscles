@@ -38,6 +38,9 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 	if (pat(i, "name")) {
 	    p_name()
 	    i++
+	} else if (pat(i, "narg")) {
+	    p_narg()
+	    i++
 	} else if (pat(i, "ini")) {
 	    p_ini()
 	    i++
@@ -103,6 +106,11 @@ function pprint(l) {
 function p_name(   i) {
     for (i = 1; i in Name; i++)
 	tprint(q(Name[i]) ",")
+}
+
+function p_narg(   i) {
+    for (i = 1; i in Name; i++)
+	tprint(get_narg(Splice[i]) ",")
 }
 
 function p_ini(   i) {

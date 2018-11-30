@@ -31,6 +31,10 @@ static const char *Name[] = {
 //%name
 };
 
+static int Narg[] = {
+//%narg
+};
+
 static const TypeIni Ini[] = {
 //%ini
 };
@@ -48,6 +52,21 @@ int force_ini(const char *name, const real *param, He *he, T **pq)
         MSG("%s", Name[i]);
     ERR(HE_INDEX, "");
 }
+
+int force_narg(const char *name)
+{
+    const int n = sizeof(Name)/sizeof(Name[0]);
+    int i;
+    for (i = 0; i < n; i++)
+        if (util_eq(name, Name[i]))
+            return Narg[i];
+    MSG("unknown force: '%s'", name);
+    MSG("possible values:");
+    for (i = 0; i < n; i++)
+        MSG("%s", Name[i]);
+    ERR(HE_INDEX, "");
+}
+
 
 const char *force_list()
 {
