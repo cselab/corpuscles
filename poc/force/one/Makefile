@@ -1,17 +1,14 @@
 S = ../../..
 
-all: force.h force.c
+all: gompper_xin.h gompper_xin.c
 
-force.h: tmpl.h 
-	./force $^ > $@
-
-force.c: tmpl.c
-	./force $^ > $@
+gompper_xin.h: gompper_xin.tmpl.h; ./force $^ > $@
+gompper_xin.c: gompper_xin.tmpl.c; ./force $^ > $@
 
 diff: all
-	diff force.h ref.h
-	diff force.c ref.c
+	diff gompper_xin.h ref.h
+	diff gompper_xin.c ref.c
 
-clean:; rm force.h force.c
+clean:; rm -f gompper_xin.h gompper_xin.c
 
 .PHONY: clean diff all
