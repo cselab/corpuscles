@@ -17,6 +17,7 @@
 #include "he/f/juelicher_xin.h"
 #include "he/f/edg_sq.h"
 #include "he/f/harmonic.h"
+#include "he/f/area_voronoi.h"
 
 #include "he/force.h"
 
@@ -38,6 +39,7 @@ static const char *Name[] = {
     "juelicher_xin",
     "edg_sq",
     "harmonic",
+    "area_voronoi",
 };
 
 static int Narg[] = {
@@ -46,6 +48,7 @@ static int Narg[] = {
     2,
     4,
     1,
+    2,
     2,
 };
 
@@ -56,6 +59,7 @@ static const TypeIni Ini[] = {
     force_juelicher_xin_ini,
     force_edg_sq_ini,
     force_harmonic_ini,
+    force_area_voronoi_ini,
 };
 
 int force_ini(const char *name, const real *param, He *he, T **pq)
@@ -356,4 +360,43 @@ int force_harmonic_ini(const real *param, He *he, /**/ T **pq)
     q->force.vtable = &harmonic_vtable;
     *pq = &q->force;
     return he_f_harmonic_ini(g1, g2,  he, &q->local);
+}
+typedef struct Area_voronoi Area_voronoi;
+struct Area_voronoi {
+    T force;
+    HeFAreaVoronoi *local;
+};
+static int area_voronoi_fin(T *q)
+{
+    int status;
+    Area_voronoi *b = CONTAINER_OF(q, Area_voronoi, force);
+    status = he_f_area_voronoi_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int area_voronoi_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Area_voronoi *b = CONTAINER_OF(q, Area_voronoi, force);
+    return he_f_area_voronoi_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real area_voronoi_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Area_voronoi *b = CONTAINER_OF(q, Area_voronoi, force);
+    return he_f_area_voronoi_energy(b->local, he, x, y, z);
+}
+static Vtable area_voronoi_vtable = {
+    area_voronoi_fin,
+    area_voronoi_force,
+    area_voronoi_energy,
+};
+int force_area_voronoi_ini(const real *param, He *he, /**/ T **pq)
+{
+    Area_voronoi *q;
+    real g1 = *param++;
+    real g2 = *param++;
+    MALLOC(1, &q);
+    q->force.vtable = &area_voronoi_vtable;
+    *pq = &q->force;
+    return he_f_area_voronoi_ini(g1, g2,  he, &q->local);
 }
