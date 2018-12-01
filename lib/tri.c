@@ -25,7 +25,7 @@ static real kahan_area0(real a, real b, real c) {
     s = (a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c));
     if (s < 0)
         ERR(HE_NUM, "s < 0: a = %g, b = %g, c = %g", a, b, c);
-    return REAL_SQRT(s)/4;
+    return sqrt(s)/4;
 }
 
 static real kahan_area(const real r0[3], const real r1[3], const real r2[3]) {
