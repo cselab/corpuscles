@@ -2,8 +2,8 @@ install: $L $H
 	he.install $L $(PREFIX)/lib
 	he.install $H $(PREFIX)/include
 
-libhe_s.a: $O $(O_S); ar rv $@ $O $(O_S) && ranlib $@
-libhe_d.a: $O $(O_D); ar rv $@ $O $(O_D) && ranlib $@
+libhe_s.a: $O $(O_S); ar r $@ $O $(O_S) && ranlib $@
+libhe_d.a: $O $(O_D); ar r $@ $O $(O_D) && ranlib $@
 $O : $H $I
 
 %.o:   %.c; $(CC)                         -I. $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<
