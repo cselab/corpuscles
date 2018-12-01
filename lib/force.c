@@ -16,6 +16,7 @@
 #include "he/f/volume.h"
 #include "he/f/juelicher_xin.h"
 #include "he/f/edg_sq.h"
+#include "he/f/harmonic.h"
 
 #include "he/force.h"
 
@@ -36,6 +37,7 @@ static const char *Name[] = {
     "volume",
     "juelicher_xin",
     "edg_sq",
+    "harmonic",
 };
 
 static int Narg[] = {
@@ -44,6 +46,7 @@ static int Narg[] = {
     2,
     4,
     1,
+    2,
 };
 
 static const TypeIni Ini[] = {
@@ -52,6 +55,7 @@ static const TypeIni Ini[] = {
     force_volume_ini,
     force_juelicher_xin_ini,
     force_edg_sq_ini,
+    force_harmonic_ini,
 };
 
 int force_ini(const char *name, const real *param, He *he, T **pq)
@@ -313,4 +317,43 @@ int force_edg_sq_ini(const real *param, He *he, /**/ T **pq)
     q->force.vtable = &edg_sq_vtable;
     *pq = &q->force;
     return he_f_edg_sq_ini(g1,  he, &q->local);
+}
+typedef struct Harmonic Harmonic;
+struct Harmonic {
+    T force;
+    HeFHarmonic *local;
+};
+static int harmonic_fin(T *q)
+{
+    int status;
+    Harmonic *b = CONTAINER_OF(q, Harmonic, force);
+    status = he_f_harmonic_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int harmonic_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Harmonic *b = CONTAINER_OF(q, Harmonic, force);
+    return he_f_harmonic_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real harmonic_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Harmonic *b = CONTAINER_OF(q, Harmonic, force);
+    return he_f_harmonic_energy(b->local, he, x, y, z);
+}
+static Vtable harmonic_vtable = {
+    harmonic_fin,
+    harmonic_force,
+    harmonic_energy,
+};
+int force_harmonic_ini(const real *param, He *he, /**/ T **pq)
+{
+    Harmonic *q;
+    real g1 = *param++;
+    real g2 = *param++;
+    MALLOC(1, &q);
+    q->force.vtable = &harmonic_vtable;
+    *pq = &q->force;
+    return he_f_harmonic_ini(g1, g2,  he, &q->local);
 }

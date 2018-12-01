@@ -41,3 +41,13 @@ he_f_edg_sq_fin
 he_f_edg_sq_force
 he_f_edg_sq_energy
 he_f_edg_sq_ini
+real
+
+#include "he/f/harmonic.h"
+harmonic
+HeFHarmonic
+he_f_harmonic_fin
+he_f_harmonic_force
+he_f_harmonic_energy
+he_f_harmonic_ini
+real,real
