@@ -2,11 +2,11 @@ S = ../..
 
 all: force.h force.c
 
-force.h: conf force.tmpl.h
-	./force conf $< > $@
+force.h: conf force.tmpl.h 
+	./force $^ > $@
 
 force.c: conf force.tmpl.c
-	./force conf $< > $@
+	./force $^ > $@
 
 install: force.h force.c
 	cp force.h $S/lib/he/force.h
