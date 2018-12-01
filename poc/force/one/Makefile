@@ -1,5 +1,9 @@
 S = ../../..
-M = gompper_xin.h gompper_xin.c area_voronoi.h area_voronoi.c
+M = \
+gompper_xin.h\
+gompper_xin.c\
+area_voronoi.h\
+area_voronoi.c
 
 all: $M
 
@@ -13,6 +17,10 @@ diff: all
 	diff gompper_xin.h ref.h
 	diff gompper_xin.c ref.c
 
+install: all
+	cp area_voronoi.h $S/lib/he/f
+	cp area_voronoi.c $S/lib/f
+
 clean:; rm -f $M
 
-.PHONY: clean diff all
+.PHONY: clean diff all install

@@ -14,6 +14,7 @@ he/edg.h\
 he/equiangulate.h\
 he/err.h\
 he/f/area.h\
+he/f/area_voronoi.h\
 he/fd.h\
 he/f/dvolume.h\
 he/f/edg_sq.h\
