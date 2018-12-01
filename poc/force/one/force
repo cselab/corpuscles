@@ -13,7 +13,7 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 "$AWK" -v prog=$prog '
 function ini() {
-    name = "gompper_xin"
+    name = get_name(ARGV[1])
     Name = capitalize(name)
 }
 BEGIN {
@@ -48,5 +48,8 @@ function capitalize(s,   n, c, r) {
     return r
 }
 function ch(i, s) { return substr(s, i, 1) }
-
+function get_name(f) {
+    sub(/\..*/, "", f)
+    return f
+}
 ' "$@"
