@@ -41,15 +41,6 @@ real he_area(He *he, const real *x, const real *y, const real *z) {
     return s;
 }
 
-static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
-    *pi = i; *pj = j; *pk = k;
-    return HE_OK;
-}
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
@@ -73,7 +64,7 @@ int he_area_ver(He *he, const real *x, const real *y, const real *z, /**/ real *
 
     zero(nv, area);
     for (t = 0; t < nt; t++) {
-        get_ijk(t, he, &i, &j, &k);
+        he_tri_ijk(t, he, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
         area0 = tri_area(a, b, c)/3;
         area[i] += area0;
