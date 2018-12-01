@@ -24,7 +24,7 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-    real Kb, H0, Kad, DA0D;
+    real a0, K;
     real *energy;
     real *fx, *fy, *fz;
     real *gx, *gy, *gz;
@@ -34,8 +34,8 @@ struct T {
     real *H;
 };
 
-static real e_local(real H0, real area, real h) {
-    h = h/area - H0; /* TODO */
+static real e_local(real area, real h) {
+    h = h/area;
     return h*h;
 }
 static real ddh_local(void *p, real area, real h) {
@@ -91,7 +91,7 @@ static int div(int n, const real *a, const real *b, /*io*/ real *c) {
     return HE_OK;
 }
 
-int he_f_area_voronoi_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
+int he_f_area_voronoi_ini(real a0, real K, He *he, T **pq) {
 #   define M(n, f) MALLOC(n, &q->f)
 #   define S(f) q->f = f
     T *q;
@@ -105,7 +105,7 @@ int he_f_area_voronoi_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq)
     M(nv, H);
 
     S(nv);
-    S(Kb); q->H0 = C0/2; S(Kad); S(DA0D);
+    S(a0); S(K);
 
     dh_ini(he, &q->dh);
 
@@ -127,12 +127,12 @@ int he_f_area_voronoi_fin(T *q) {
 #   undef F
 }
 
-static int compute_energy(real H0, int n,
+static int compute_energy(int n,
                            const real *area, const real *h,
                            /**/ real *energy) {
     int i;
     for (i = 0; i < n; i++) {
-        energy[i] = area[i]*e_local(H0, area[i], h[i]);
+        energy[i] = area[i]*e_local(area[i], h[i]);
     }
     return HE_OK;
 }
@@ -143,11 +143,11 @@ real he_f_area_voronoi_energy(T *q, He *he,
     int nv;
     real *energy;
     Dh *dh;
-    real Kb, H0, Kad, DA0D;
+    real a0, K;
 
     real *area, *h, local, global, Area, Ha, diff;
 
-    G(Kb); G(H0); G(Kad); G(DA0D);
+    G(a0); G(K);
     G(energy); G(dh);
 
     nv = he_nv(he);
@@ -156,16 +156,9 @@ real he_f_area_voronoi_energy(T *q, He *he,
     dh_area(dh, &area);
     dh_h(dh, &h);
 
-    compute_energy(H0, nv, area, h, energy);
-    scale(2*Kb, nv, energy);
-    local = he_sum_array(nv, energy);
-
-    Area = he_sum_array(nv, area);
-    Ha = he_sum_array(nv, h);
-    diff = Ha - DA0D/2;
-    global = (2*pi*Kad)*e_global(Area, diff);
-
-    return local + global;
+    compute_energy(nv, area, h, energy);
+    scale(K/a0, nv, energy);
+    return he_sum_array(nv, energy);
 
 #   undef A
 #   undef S
@@ -178,13 +171,13 @@ int he_f_area_voronoi_force(T *q, He *he,
 #   define G(f) f = q->f
     int nv;
     Dh *dh;
-    real Kb, H0, Kad, DA0D;
+    real a0, K;
     real *area, *h;
     real *fx, *fy, *fz, *gx, *gy, *gz;
     real Area, Ha, diff, d_over_A, C;
     dHParam param;
 
-    G(Kb); G(H0); G(Kad); G(DA0D);
+    G(a0); G(K);
     G(dh);
     G(fx); G(fy); G(fz);
     G(gx); G(gy); G(gz);
@@ -195,28 +188,15 @@ int he_f_area_voronoi_force(T *q, He *he,
 
     param.dh = ddh_local;
     param.da = dda_local;
-    param.p  = (void*)&H0;
+    param.p  = (void*)&K;
     dh_force(dh, param, he, x, y, z, /**/ fx, fy, fz);
 
     dh_area(dh, &area);
     dh_h(dh, &h);
 
-    scale(2*Kb, nv, fx); scale(2*Kb, nv, fy); scale(2*Kb, nv, fz);
+    C = K/a0;
+    scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
-
-    Area = he_sum_array(nv, area);
-    Ha = he_sum_array(nv, h);
-    diff = Ha - DA0D/2;
-    d_over_A = diff/Area;
-
-    param.dh = ddh_global;
-    param.da = dda_global;
-    param.p  = (void*)&d_over_A;
-    dh_force(dh, param, he, x, y, z, /**/ gx, gy, gz);
-
-    C = 2*pi*Kad;
-    scale(C, nv, gx); scale(C, nv, gy); scale(C, nv, gz);
-    plus(nv, gx, hx); plus(nv, gy, hy); plus(nv, gz, hz);
 
     return HE_OK;
 
