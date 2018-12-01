@@ -4,7 +4,7 @@ prog=he.force
 
 usg () {
     cat <<!
-$prog CONF FILE.tmpl > FILE.c
+$prog FILE.tmpl > FILE.c
 !
     exit
 }
