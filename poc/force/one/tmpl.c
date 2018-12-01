@@ -222,32 +222,3 @@ int he_f_gompper_xin_force(T *q, He *he,
 #   undef A
 #   undef S
 }
-
-int he_f_gompper_xin_energy_ver(T *q, /**/ real**pa) {
-    *pa = q->energy;
-    return HE_OK;
-}
-
-int he_f_gompper_xin_area_ver(T *q, /**/ real **pa) {
-    return dh_area(q->dh, pa);
-}
-
-int he_f_gompper_xin_curva_mean_ver(T *q, /**/ real **pa) {
-#   define G(f) f = q->f
-    int nv;
-    Dh *dh;
-    real *H, *area, *h;
-    G(nv); G(dh); G(H);
-    dh_area(dh, &area);
-    dh_area(dh, &h);
-
-    div(nv, h, area, /**/ H);
-    *pa = q->H;
-
-    return HE_OK;
-#   undef G
-}
-
-int he_f_gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
-    return dh_norm(q->dh, x, y, z);
-}
