@@ -25,13 +25,13 @@ static const real pi = 3.141592653589793115997964;
 
 struct T {
     real Kb, H0, Kad, DA0D;
-    real *energy;
-    real *fx, *fy, *fz;
-    real *gx, *gy, *gz;
+    //%array nv energy
+    //%array nv fx fy fz
+    //%array nv gx gy gz
     Dh *dh;
 
     int nv;
-    real *H;
+    //%array nv H
 };
 
 static real e_local(real H0, real area, real h) {
@@ -99,10 +99,7 @@ int he_f_%name%_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
 
     MALLOC(1, &q);
     nv = he_nv(he);
-    M(nv, energy);
-    M(nv, fx); M(nv, fy); M(nv, fz);
-    M(nv, gx); M(nv, gy); M(nv, gz);
-    M(nv, H);
+    //%malloc
 
     S(nv);
     S(Kb); q->H0 = C0/2; S(Kad); S(DA0D);
@@ -118,10 +115,7 @@ int he_f_%name%_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
 int he_f_%name%_fin(T *q) {
 #   define F(x) FREE(q->x)
     dh_fin(q->dh);
-    F(energy);
-    F(fx); F(fy); F(fz);
-    F(gx); F(gy); F(gz);
-    F(H);
+    //%free
     FREE(q);
     return HE_OK;
 #   undef F

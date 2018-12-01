@@ -20,8 +20,18 @@ BEGIN {
     ini()
 }
 
-pat("alloc") {
-    print "preved"
+pat("array") {
+    p_array()
+    next
+}
+
+pat("malloc") {
+    tprint(Malloc)
+    next
+}
+
+pat("free") {
+    tprint(Free)
     next
 }
 
@@ -31,12 +41,31 @@ pat("alloc") {
     print
 }
 
+function p_array(   n, v, i, s, malloc, free) {
+    if (NF < 2)
+	err("%array needs at least two args")
+    n = $1
+    for (i = 2; i <= NF; i++) {
+	v = $i
+	s = append(", ", "*" v, s)
+	malloc = append(" ", sprintf("M(%s, %s);", n, v), malloc)
+	free = append(" ", sprintf("F(%s);", v), free)
+    }
+    Free = append("\n", free, Free)
+    Malloc = append("\n", malloc, Malloc)
+    tprint("real " s ";")
+}
+
 function q(s) { return "\"" s "\"" }
 function eq(a, b) { return "" a == "" b }
-function tprint(s) { print Tab s }
+function tprint(s,    n, a, i) {
+    n = split(s, a, "\n")
+    for (i = 1; i <= n; i++)
+	print Tab a[i]
+}
 function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function msg0(s) { printf "%s\n", s | "cat >&2" }
-function err(s) { msg(s); gexit(2) }
+function err(s) { msg(s); exit(2) }
 function emptyp(s) { return s ~ /^[ \t]*$/ }
 function capitalize(s,   n, c, r) {
     n = length(s)
@@ -58,8 +87,14 @@ function get_name(f) {
     return f
 }
 
-function pat(p) {
+function append(sep, v, s) {
+    return emptyp(s) ? v : s sep v
+}
+
+function pat(p) { # sets Tab
     if (!eq($1, "//%" p)) return 0
+    Tab = $0
+    sub(/\/.*/, "", Tab)
     sub(/[ \t]*\/\/%/, "")
     sub(/^[^ \t]*/, "")
     return 1
