@@ -21,8 +21,6 @@
     for (i = 0; i < nv; i++) {
 #define END_VER }
 
-static const real pi = 3.141592653589793115997964;
-
 struct T {
     real a0, K;
     //%array nv energy
@@ -59,14 +57,6 @@ static int scale(real sc, int n, /*io*/ real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] *= sc;
-    return HE_OK;
-}
-static int div(int n, const real *a, const real *b, /*io*/ real *c) {
-    int i;
-    for (i = 0; i < n; i++) {
-        if (b[i] == 0) ERR(HE_NUM, "b[%d] == 0", i);
-        c[i] = a[i]/b[i];
-    }
     return HE_OK;
 }
 
