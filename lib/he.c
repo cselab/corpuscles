@@ -139,6 +139,14 @@ int he_ijk(T *q, int h, /**/ int *pi, int *pj, int *pk) {
     return HE_OK;
 }
 
+int he_tri_ijk(T *q, int t, /**/ int *i, int *j, int *k) {
+    int h;
+    h = he_hdg_tri(q, t);
+    he_ijk(q, h, i, j, k);
+    return HE_OK;
+}
+
+
 static int set_nxt(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->nxt[h] = i; return HE_OK;}
 static int set_flp(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->flp[h] = i; return HE_OK;}
 static int set_ver(T *q, int h, int i) { V(h, q->nh); V(i, q->nv); q->ver[h] = i; return HE_OK;}
