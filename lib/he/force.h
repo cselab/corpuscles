@@ -18,5 +18,6 @@ int force_area_ini(const real *param, He*, /**/ T**);
 int force_garea_ini(const real *param, He*, /**/ T**);
 int force_volume_ini(const real *param, He*, /**/ T**);
 int force_juelicher_xin_ini(const real *param, He*, /**/ T**);
+int force_edg_sq_ini(const real *param, He*, /**/ T**);
 
 #undef T

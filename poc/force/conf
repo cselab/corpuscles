@@ -33,3 +33,11 @@ he_f_juelicher_xin_force
 he_f_juelicher_xin_energy
 he_f_juelicher_xin_ini
 real,real,real,real
+
+#include "he/f/edg_sq.h"
+edg_sq
+HeFEdgSq
+he_f_edg_sq_fin
+he_f_edg_sq_force
+he_f_edg_sq_energy
+he_f_edg_sq_ini

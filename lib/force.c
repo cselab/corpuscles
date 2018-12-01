@@ -15,6 +15,7 @@
 #include "he/f/garea.h"
 #include "he/f/volume.h"
 #include "he/f/juelicher_xin.h"
+#include "he/f/edg_sq.h"
 
 #include "he/force.h"
 
@@ -34,6 +35,7 @@ static const char *Name[] = {
     "garea",
     "volume",
     "juelicher_xin",
+    "edg_sq",
 };
 
 static int Narg[] = {
@@ -41,6 +43,7 @@ static int Narg[] = {
     2,
     2,
     4,
+    1,
 };
 
 static const TypeIni Ini[] = {
@@ -48,6 +51,7 @@ static const TypeIni Ini[] = {
     force_garea_ini,
     force_volume_ini,
     force_juelicher_xin_ini,
+    force_edg_sq_ini,
 };
 
 int force_ini(const char *name, const real *param, He *he, T **pq)
@@ -271,4 +275,42 @@ int force_juelicher_xin_ini(const real *param, He *he, /**/ T **pq)
     q->force.vtable = &juelicher_xin_vtable;
     *pq = &q->force;
     return he_f_juelicher_xin_ini(g1, g2, g3, g4,  he, &q->local);
+}
+typedef struct Edg_sq Edg_sq;
+struct Edg_sq {
+    T force;
+    HeFEdgSq *local;
+};
+static int edg_sq_fin(T *q)
+{
+    int status;
+    Edg_sq *b = CONTAINER_OF(q, Edg_sq, force);
+    status = he_f_edg_sq_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int edg_sq_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Edg_sq *b = CONTAINER_OF(q, Edg_sq, force);
+    return he_f_edg_sq_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real edg_sq_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Edg_sq *b = CONTAINER_OF(q, Edg_sq, force);
+    return he_f_edg_sq_energy(b->local, he, x, y, z);
+}
+static Vtable edg_sq_vtable = {
+    edg_sq_fin,
+    edg_sq_force,
+    edg_sq_energy,
+};
+int force_edg_sq_ini(const real *param, He *he, /**/ T **pq)
+{
+    Edg_sq *q;
+    real g1 = *param++;
+    MALLOC(1, &q);
+    q->force.vtable = &edg_sq_vtable;
+    *pq = &q->force;
+    return he_f_edg_sq_ini(g1,  he, &q->local);
 }
