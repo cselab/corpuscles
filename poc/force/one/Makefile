@@ -8,6 +8,10 @@ force.h: tmpl.h
 force.c: tmpl.c
 	./force $^ > $@
 
+diff: all
+	diff force.h ref.h
+	diff force.c ref.c
+
 clean:; rm force.h force.c
 
-.PHONY: clean all
+.PHONY: clean diff all

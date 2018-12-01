@@ -12,9 +12,9 @@
 #include "he/dH.h"
 #include "he/macro.h"
 
-#include "he/f/gompper_xin.h"
+#include "he/f/%name%.h"
 
-#define T HeFGompperXin
+#define T HeF%Name%
 
 #define BEGIN_VER                                \
     nv = he_nv(he);                              \
@@ -90,7 +90,7 @@ static int div(int n, const real *a, const real *b, /*io*/ real *c) {
     return HE_OK;
 }
 
-int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
+int he_f_%name%_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
 #   define M(n, f) MALLOC(n, &q->f)
 #   define S(f) q->f = f
     T *q;
@@ -114,7 +114,7 @@ int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) 
 #   undef M
 }
 
-int he_f_gompper_xin_fin(T *q) {
+int he_f_%name%_fin(T *q) {
 #   define F(x) FREE(q->x)
     dh_fin(q->dh);
     F(energy);
@@ -135,7 +135,7 @@ static int compute_energy(real H0, int n,
     }
     return HE_OK;
 }
-real he_f_gompper_xin_energy(T *q, He *he,
+real he_f_%name%_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
     /* get, set */
 #   define G(f) f = q->f
@@ -170,7 +170,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
 #   undef S
 }
 
-int he_f_gompper_xin_force(T *q, He *he,
+int he_f_%name%_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
                            real *hx, real *hy, real *hz) {
     /* get, set */
