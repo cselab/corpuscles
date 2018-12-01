@@ -27,7 +27,6 @@ struct T {
     real a0, K;
     real *energy;
     real *fx, *fy, *fz;
-    real *gx, *gy, *gz;
     Dh *dh;
 
     int nv;
@@ -86,7 +85,6 @@ int he_f_area_voronoi_ini(real a0, real K, He *he, T **pq) {
     nv = he_nv(he);
     M(nv, energy);
     M(nv, fx); M(nv, fy); M(nv, fz);
-    M(nv, gx); M(nv, gy); M(nv, gz);
     M(nv, H);
 
     S(nv);
@@ -105,7 +103,6 @@ int he_f_area_voronoi_fin(T *q) {
     dh_fin(q->dh);
     F(energy);
     F(fx); F(fy); F(fz);
-    F(gx); F(gy); F(gz);
     F(H);
     FREE(q);
     return HE_OK;
@@ -158,18 +155,16 @@ int he_f_area_voronoi_force(T *q, He *he,
     Dh *dh;
     real a0, K;
     real *area, *h;
-    real *fx, *fy, *fz, *gx, *gy, *gz;
+    real *fx, *fy, *fz;
     real Area, Ha, diff, d_over_A, C;
     dHParam param;
 
     G(a0); G(K);
     G(dh);
     G(fx); G(fy); G(fz);
-    G(gx); G(gy); G(gz);
 
     nv = he_nv(he);
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
-    zero(nv, gx); zero(nv, gy); zero(nv, gz);
 
     param.dh = ddh_local;
     param.da = dda_local;

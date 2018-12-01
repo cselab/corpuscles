@@ -27,7 +27,6 @@ struct T {
     real a0, K;
     //%array nv energy
     //%array nv fx fy fz
-    //%array nv gx gy gz
     Dh *dh;
 
     int nv;
@@ -152,18 +151,16 @@ int he_f_%name%_force(T *q, He *he,
     Dh *dh;
     real a0, K;
     real *area, *h;
-    real *fx, *fy, *fz, *gx, *gy, *gz;
+    real *fx, *fy, *fz;
     real Area, Ha, diff, d_over_A, C;
     dHParam param;
 
     G(a0); G(K);
     G(dh);
     G(fx); G(fy); G(fz);
-    G(gx); G(gy); G(gz);
 
     nv = he_nv(he);
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
-    zero(nv, gx); zero(nv, gy); zero(nv, gz);
 
     param.dh = ddh_local;
     param.da = dda_local;
