@@ -64,7 +64,7 @@ int he_area_ver(He *he, const real *x, const real *y, const real *z, /**/ real *
 
     zero(nv, area);
     for (t = 0; t < nt; t++) {
-        he_tri_ijk(t, he, &i, &j, &k);
+        he_tri_ijk(he, t, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
         area0 = tri_area(a, b, c)/3;
         area[i] += area0;

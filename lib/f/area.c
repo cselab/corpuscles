@@ -50,19 +50,11 @@ int he_f_area_da(T *q, /**/ real  **pa) {
     return HE_OK;
 }
 
-static void get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
-    *pi = i; *pj = j; *pk = k;
-}
 static void get(int t, He *he,
                 const real *x, const real *y, const real *z, /**/
                 real a[3], real b[3], real c[3]) {
     int i, j, k;
-    get_ijk(t, he, &i, &j, &k);
+    he_tri_ijk(he, t, &i, &j, &k);
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
@@ -84,7 +76,7 @@ static void compute_force(real K, real a0, real *darea, He *he, const real *x, c
     real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
     n = he_nt(he);
     for (t = 0; t < n; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
+        he_tri_ijk(he, t, /**/ &i, &j, &k);
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
