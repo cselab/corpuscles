@@ -51,21 +51,6 @@ static real dda_local(void *p, real area, real h) {
     return  -h*(h + 2*H0);
 }
 
-
-static real e_global(real Area, real diff) {
-    return diff*diff/Area;
-}
-static real ddh_global(void *p, __UNUSED real area_, __UNUSED real h_) {
-    real d_over_A;
-    d_over_A = *(real*)p;
-    return 2*d_over_A;
-}
-static real dda_global(void *p, __UNUSED real area_, __UNUSED real h_) {
-    real d_over_A;
-    d_over_A = *(real*)p;
-    return -(d_over_A*d_over_A);
-}
-
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
