@@ -1,4 +1,4 @@
-S = ../..
+S = ../../..
 
 all: force.h force.c
 
