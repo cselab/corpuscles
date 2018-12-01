@@ -20,6 +20,11 @@ BEGIN {
     ini()
 }
 
+pat("alloc") {
+    print "preved"
+    next
+}
+
 {
     gsub("%name%", name)
     gsub("%Name%", Name)
@@ -52,4 +57,12 @@ function get_name(f) {
     sub(/\..*/, "", f)
     return f
 }
+
+function pat(p) {
+    if (!eq($1, "//%" p)) return 0
+    sub(/[ \t]*\/\/%/, "")
+    sub(/^[^ \t]*/, "")
+    return 1
+}
+
 ' "$@"
