@@ -10,6 +10,7 @@
 #include "he/dedg.h"
 #include "he/sum.h"
 #include "he/dH.h"
+#include "he/da.h"
 #include "he/macro.h"
 
 #include "he/f/%name%.h"
@@ -28,14 +29,16 @@ struct T {
     //%array nv energy
     //%array nv fx fy fz
     Dh *dh;
+    Da *da;
 
     int nv;
     //%array nv H
 };
 
-static real e_local(real area, real h) {
-    h = h/area;
-    return h*h;
+static real e(real area0, real area) {
+    real d;
+    d = area - area0;
+    return d*d;
 }
 static real ddh_local(void *p, real area, real h) {
     real H0;
@@ -89,6 +92,7 @@ int he_f_%name%_ini(real a0, real K, He *he, T **pq) {
     S(a0); S(K);
 
     dh_ini(he, &q->dh);
+    da_ini(he, &q->da);
 
     *pq = q;
     return HE_OK;
@@ -99,6 +103,7 @@ int he_f_%name%_ini(real a0, real K, He *he, T **pq) {
 int he_f_%name%_fin(T *q) {
 #   define F(x) FREE(q->x)
     dh_fin(q->dh);
+    da_fin(q->da);
     //%free
     FREE(q);
     return HE_OK;
@@ -106,12 +111,11 @@ int he_f_%name%_fin(T *q) {
 }
 
 static int compute_energy(int n,
-                           const real *area, const real *h,
-                           /**/ real *energy) {
+                          real area0, const real *area,
+                          /**/ real *energy) {
     int i;
-    for (i = 0; i < n; i++) {
-        energy[i] = area[i]*e_local(area[i], h[i]);
-    }
+    for (i = 0; i < n; i++)
+        energy[i] = e(area0, area[i]);
     return HE_OK;
 }
 real he_f_%name%_energy(T *q, He *he,
@@ -120,21 +124,20 @@ real he_f_%name%_energy(T *q, He *he,
 #   define G(f) f = q->f
     int nv;
     real *energy;
-    Dh *dh;
+    Da *da;
     real a0, K;
 
-    real *area, *h, local, global, Area, Ha, diff;
+    real *area;
 
     G(a0); G(K);
-    G(energy); G(dh);
+    G(energy); G(da);
 
     nv = he_nv(he);
 
-    dh_area_h(dh, he, x, y, z);
-    dh_area(dh, &area);
-    dh_h(dh, &h);
+    da_compute_area(da, he, x, y, z);
+    da_area(da, &area);
 
-    compute_energy(nv, area, h, energy);
+    compute_energy(nv, a0, area, /**/ energy);
     scale(K/a0, nv, energy);
     return he_sum_array(nv, energy);
 
