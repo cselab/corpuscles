@@ -128,7 +128,7 @@ int strain_force_3d(void *param,
     vec_linear_combination(dwx, ex,  dwy, ey, /**/ dc);
     if (!assert_force_3d(a, b, c, da, db, dc))
         ERR(HE_NUM, "bad 3d forces in triangle");
-    area = REAL_ABS(area);
+    area = fabs(area);
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
     vec_scalar(dc, area, /**/ dc_tot);
@@ -157,7 +157,7 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
               &I1, &I2, &A);
 
     deng = F(param, I1, I2);
-    eng = deng * REAL_ABS(A);
+    eng = deng * fabs(A);
 
     *p_eng = eng;
     *p_deng = deng;
