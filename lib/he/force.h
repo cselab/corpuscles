@@ -1,22 +1,35 @@
-#define T Force
+#include "he/f/area.h"
+area
+HeFArea
+he_f_area_fin
+he_f_area_force
+he_f_area_energy
+he_f_area_ini
+real,real
 
-typedef struct He He;
-typedef struct T T;
+#include "he/f/garea.h"
+garea
+HeFGarea
+he_f_garea_fin
+he_f_garea_force
+he_f_garea_energy
+he_f_garea_ini
+real,real
 
-int force_ini(const char *name, const real *param, He*, /**/ T**);
-int force_argv(const char **pargv[], He*, /**/ T**); /* TODO */
-int force_fin(T*);
-int force_force(T*, He*, const real *x, const real *y, const real *z,
-                /**/ real *fx, real *fy, real *fz);
-real force_energy(T*, He*, const real *x, const real *y, const real *z);
+#include "he/f/volume.h"
+volume
+HeFVolume
+he_f_volume_fin
+he_f_volume_force
+he_f_volume_energy
+he_f_volume_ini
+real,real
 
-const char* force_list();
-int force_narg(const char*);
-
-
-int force_area_ini(const real *param, He*, /**/ T**);
-int force_garea_ini(const real *param, He*, /**/ T**);
-int force_volume_ini(const real *param, He*, /**/ T**);
-int force_juelicher_xin_ini(const real *param, He*, /**/ T**);
-
-#undef T
+#include "he/f/juelicher_xin.h"
+juelicher_xin
+HeFJuelicherXin
+he_f_juelicher_xin_fin
+he_f_juelicher_xin_force
+he_f_juelicher_xin_energy
+he_f_juelicher_xin_ini
+real,real,real,real
