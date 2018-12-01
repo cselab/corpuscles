@@ -2,10 +2,6 @@
 
 prog=he.force
 
-: ${VALGRIND=valgrind}
-: ${TIME=time}
-: ${GDB_EXEC=gdb}
-
 usg () {
     cat <<!
 $prog FILE.tmpl > FILE.c
