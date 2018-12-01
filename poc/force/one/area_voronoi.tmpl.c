@@ -9,7 +9,6 @@
 #include "he/dtri.h"
 #include "he/dedg.h"
 #include "he/sum.h"
-#include "he/dH.h"
 #include "he/da.h"
 #include "he/macro.h"
 
@@ -28,7 +27,6 @@ struct T {
     real a0, K;
     //%array nv energy
     //%array nv fx fy fz
-    Dh *dh;
     Da *da;
 
     int nv;
@@ -40,17 +38,11 @@ static real e(real area0, real area) {
     d = area - area0;
     return d*d;
 }
-static real ddh_local(void *p, real area, real h) {
-    real H0;
-    H0 = *(real*)p;
-    h = h/area - H0;
-    return 2*h;
-}
-static real dda_local(void *p, real area, real h) {
-    real H0;
-    H0 = *(real*)p;
-    h = h/area - H0;
-    return  -h*(h + 2*H0);
+static real dda(void *p, real area) {
+    real area0, d;
+    area0 = *(real*)p;
+    d = area - area0;
+    return 2*d;
 }
 
 static void zero(int n, real *a) {
@@ -91,7 +83,6 @@ int he_f_%name%_ini(real a0, real K, He *he, T **pq) {
     S(nv);
     S(a0); S(K);
 
-    dh_ini(he, &q->dh);
     da_ini(he, &q->da);
 
     *pq = q;
@@ -102,7 +93,6 @@ int he_f_%name%_ini(real a0, real K, He *he, T **pq) {
 
 int he_f_%name%_fin(T *q) {
 #   define F(x) FREE(q->x)
-    dh_fin(q->dh);
     da_fin(q->da);
     //%free
     FREE(q);
@@ -151,34 +141,28 @@ int he_f_%name%_force(T *q, He *he,
     /* get, set */
 #   define G(f) f = q->f
     int nv;
-    Dh *dh;
     real a0, K;
-    real *area, *h;
     real *fx, *fy, *fz;
-    real Area, Ha, diff, d_over_A, C;
-    dHParam param;
+    real C;
+    Da *da;
+    dAParam param;
 
     G(a0); G(K);
-    G(dh);
+    G(da);
     G(fx); G(fy); G(fz);
 
     nv = he_nv(he);
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
 
-    param.dh = ddh_local;
-    param.da = dda_local;
-    param.p  = (void*)&K;
-    dh_force(dh, param, he, x, y, z, /**/ fx, fy, fz);
-
-    dh_area(dh, &area);
-    dh_h(dh, &h);
+    param.da = dda;
+    param.p  = (void*)&a0;
+    da_force(da, param, he, x, y, z, /**/ fx, fy, fz);
 
     C = K/a0;
     scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
 
     return HE_OK;
-
 #   undef A
 #   undef S
 }
