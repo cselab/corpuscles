@@ -161,7 +161,6 @@ function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function msg0(s) { printf "%s\n", s | "cat >&2" }
 function err(s) { msg(s); gexit(2) }
 function emptyp(s) { return s ~ /^[ \t]*$/ }
-
 function capitalize(s,   f, r) {
     f = substr(s, 1, 1)
     r = substr(s, 2)

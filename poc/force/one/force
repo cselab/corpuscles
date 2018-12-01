@@ -12,146 +12,16 @@ $prog FILE.tmpl > FILE.c
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 "$AWK" -v prog=$prog '
-function read_conf(conf,   L, l, i, j, n) {
-    while (getline l < conf > 0) {
-	sub(/#.*/, "")
-	if (!emptyp(l))
-	    L[++i] = l
-    }
-    close(conf)
-    n = i
-    for (i = 0; i < n; ) {
-	j++
-	Header[j] = L[++i]
-	Name[j] = L[++i]
-	Type[j] = L[++i]
-	Fin[j]  = L[++i]
-	Force[j] = L[++i]
-	Energy[j] = L[++i]
-	Ini[j] = L[++i]
-	Splice[j] = L[++i]
-    }
+function ini() {
+    name = "gompper_xin"
 }
-
 BEGIN {
-    Tab = "    "
-
-    read_conf(ARGV[1])
-
-    file = ARGV[2]
-    while (getline < file > 0)
-	L[++I] = $0
-    close(file)
-    loop(1, I)
+    ini()
 }
 
-function loop(lo, hi,   i, j, lo0, hi0) {
-    for (i = lo; i <= hi;) {
-	if (pat(i, "header")) {
-	    p_header()
-	    i++
-	} else if (pat(i, "name")) {
-	    p_name()
-	    i++
-	} else if (pat(i, "narg")) {
-	    p_narg()
-	    i++
-	} else if (pat(i, "ini")) {
-	    p_ini()
-	    i++
-	} else if (pat(i, "begin")) {
-	    i++
-	    lo0 = i
-	    for (; i <= hi && !pat(i, "end"); i++) ;
-	    hi0 = i - 1
-	    for (j = 1; j in Name; j++) {
-		set(j)
-		#printf "\n/* begin %s */\n", name
-		loop(lo0, hi0)
-		#printf "/* end %s */\n", name
-	    }
-	    i++
-	} else if (pat(i, "decl")) {
-	    p_decl()
-	    i++
-	} else {
-	    pprint(L[i])
-	    i++
-	}
-    }
-}
-
-function set(j) {
-    header = Header[j]
-    name = Name[j]
-    type = Type[j]
-    ini  = Ini[j]
-    fin  = Fin[j]
-    force = Force[j]
-    energy = Energy[j]
-    narg = get_narg(Splice[j])
-    splice = param(Splice[j])
-}
-
-function get_narg(s) {
-    return gsub(/,/, "", s) + 1
-}
-
-function param(s,   ans) {
-    n = get_narg(s)
-    for (i = 1; i <= n; i++)
-	ans = ans var(i) ", "
-    return ans
-}
-
-function pprint(l) {
-    gsub(/%name%/, name, l)
-    gsub(/%Name%/, capitalize(name), l)
-
-    gsub(/%type%/, type, l)
-    gsub(/%ini%/, ini, l)
-    gsub(/%fin%/, fin, l)
-    gsub(/%force%/, force, l)
-    gsub(/%energy%/, energy, l)
-
-    gsub(/%splice%/, splice, l)
-
-    print l
-}
-
-function p_name(   i) {
-    for (i = 1; i in Name; i++)
-	tprint(q(Name[i]) ",")
-}
-
-function p_narg(   i) {
-    for (i = 1; i in Name; i++)
-	tprint(get_narg(Splice[i]) ",")
-}
-
-function p_ini(   i) {
-    for (i = 1; i in Name; i++)
-	tprint("force_" Name[i] "_ini" ",")
-}
-
-function p_decl(   i) {
-    for (i = 1; i <= narg; i++)
-	tprint(sprintf("real %s = %s;", var(i), "*param++"))
-}
-
-function p_header(   i) {
-    for (i = 1; i in Name; i++)
-	pprint(Header[i])
-}
-
-function var(i) { return sprintf("g%d", i) }
-
-function pat(i, p,   l, a) {
-    l = L[i]; split(l, a)
-    if (!eq(a[1], "//%" p)) return 0
-    sub(/[ \t]*\/\/%/, "")
-    sub(/^[^ \t]*/, "")
-    return 1
+{
+    gsub("%name%", name)
+    print
 }
 
 function q(s) { return "\"" s "\"" }
@@ -161,12 +31,10 @@ function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function msg0(s) { printf "%s\n", s | "cat >&2" }
 function err(s) { msg(s); gexit(2) }
 function emptyp(s) { return s ~ /^[ \t]*$/ }
-
 function capitalize(s,   f, r) {
     f = substr(s, 1, 1)
     r = substr(s, 2)
     f = toupper(f)
     return f r
 }
-
 ' "$@"
