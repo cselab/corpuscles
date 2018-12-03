@@ -30,16 +30,8 @@ struct T {
     //%array nv H
 };
 
-static real e(real area0, real area) {
-    real d;
-    d = area - area0;
-    return d*d;
-}
-static real dda(void *p, real area) {
-    real area0, d;
-    area0 = *(real*)p;
-    d = area - area0;
-    return 2*d;
+static real dda(__UNUSED void *p, __UNUSED real area) {
+    return 1;
 }
 
 static void zero(int n, real *a) {
@@ -96,7 +88,7 @@ real he_f_%name%_energy(T *q, He *he,
     int nv;
     Da *da;
     real A0, K;
-    real A, *area, d;
+    real C, A, *area, d;
 
     G(A0); G(K);
     G(da);
@@ -108,7 +100,8 @@ real he_f_%name%_energy(T *q, He *he,
 
     A = he_sum_array(nv, area);
     d = A - A0;
-    return K/A0*d*d;
+    C = K/A0;
+    return C*d*d;
 #   undef A
 #   undef S
 }
@@ -121,7 +114,8 @@ int he_f_%name%_force(T *q, He *he,
     int nv;
     real A0, K;
     real *fx, *fy, *fz;
-    real C;
+    real *area;
+    real A, C;
     Da *da;
     dAParam param;
 
@@ -133,10 +127,11 @@ int he_f_%name%_force(T *q, He *he,
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
 
     param.da = dda;
-    param.p  = (void*)&A0;
     da_force(da, param, he, x, y, z, /**/ fx, fy, fz);
+    da_area(da, &area);
 
-    C = K/A0;
+    A = he_sum_array(nv, area);
+    C = 2*(K/A0)*(A - A0);
     scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
 
