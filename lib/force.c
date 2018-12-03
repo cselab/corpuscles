@@ -18,6 +18,7 @@
 #include "he/f/edg_sq.h"
 #include "he/f/harmonic.h"
 #include "he/f/area_voronoi.h"
+#include "he/f/garea_voronoi.h"
 
 #include "he/force.h"
 
@@ -40,6 +41,7 @@ static const char *Name[] = {
     "edg_sq",
     "harmonic",
     "area_voronoi",
+    "garea_voronoi",
 };
 
 static int Narg[] = {
@@ -48,6 +50,7 @@ static int Narg[] = {
     2,
     4,
     1,
+    2,
     2,
     2,
 };
@@ -60,6 +63,7 @@ static const TypeIni Ini[] = {
     force_edg_sq_ini,
     force_harmonic_ini,
     force_area_voronoi_ini,
+    force_garea_voronoi_ini,
 };
 
 int force_ini(const char *name, void **param, He *he, T **pq)
@@ -399,4 +403,43 @@ int force_area_voronoi_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &area_voronoi_vtable;
     *pq = &q->force;
     return he_f_area_voronoi_ini(g1, g2,  he, &q->local);
+}
+typedef struct Garea_voronoi Garea_voronoi;
+struct Garea_voronoi {
+    T force;
+    HeFGareaVoronoi *local;
+};
+static int garea_voronoi_fin(T *q)
+{
+    int status;
+    Garea_voronoi *b = CONTAINER_OF(q, Garea_voronoi, force);
+    status = he_f_garea_voronoi_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int garea_voronoi_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Garea_voronoi *b = CONTAINER_OF(q, Garea_voronoi, force);
+    return he_f_garea_voronoi_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real garea_voronoi_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Garea_voronoi *b = CONTAINER_OF(q, Garea_voronoi, force);
+    return he_f_garea_voronoi_energy(b->local, he, x, y, z);
+}
+static Vtable garea_voronoi_vtable = {
+    garea_voronoi_fin,
+    garea_voronoi_force,
+    garea_voronoi_energy,
+};
+int force_garea_voronoi_ini(void *param[], He *he, /**/ T **pq)
+{
+    Garea_voronoi *q;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
+    MALLOC(1, &q);
+    q->force.vtable = &garea_voronoi_vtable;
+    *pq = &q->force;
+    return he_f_garea_voronoi_ini(g1, g2,  he, &q->local);
 }

@@ -19,6 +19,7 @@ he/fd.h\
 he/f/dvolume.h\
 he/f/edg_sq.h\
 he/f/garea.h\
+he/f/garea_voronoi.h\
 he/f/gompper.h\
 he/f/gompper_kroll.h\
 he/f/gompper_xin.h\

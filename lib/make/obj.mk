@@ -25,6 +25,7 @@ fd.s.o\
 f/dvolume.s.o\
 f/edg_sq.s.o\
 f/garea.s.o\
+f/garea_voronoi.s.o\
 f/gompper.s.o\
 f/gompper_kroll.s.o\
 f/gompper_xin.s.o\
@@ -75,6 +76,7 @@ fd.d.o\
 f/dvolume.d.o\
 f/edg_sq.d.o\
 f/garea.d.o\
+f/garea_voronoi.d.o\
 f/gompper.d.o\
 f/gompper_kroll.d.o\
 f/gompper_xin.d.o\

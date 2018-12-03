@@ -20,5 +20,6 @@ int force_juelicher_xin_ini(void *param[], He*, /**/ T**);
 int force_edg_sq_ini(void *param[], He*, /**/ T**);
 int force_harmonic_ini(void *param[], He*, /**/ T**);
 int force_area_voronoi_ini(void *param[], He*, /**/ T**);
+int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
 
 #undef T

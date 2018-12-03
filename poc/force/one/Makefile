@@ -25,6 +25,8 @@ diff: all
 install: all
 	cp area_voronoi.h $S/lib/he/f
 	cp area_voronoi.c $S/lib/f
+	cp garea_voronoi.h $S/lib/he/f
+	cp garea_voronoi.c $S/lib/f
 
 clean:; rm -f $M
 

@@ -60,3 +60,12 @@ he_f_area_voronoi_force
 he_f_area_voronoi_energy
 he_f_area_voronoi_ini
 real,real
+
+#include "he/f/garea_voronoi.h"
+garea_voronoi
+HeFGareaVoronoi
+he_f_garea_voronoi_fin
+he_f_garea_voronoi_force
+he_f_garea_voronoi_energy
+he_f_garea_voronoi_ini
+real,real
