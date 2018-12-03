@@ -43,6 +43,11 @@ int f_area_voronoi_fin();
 real f_area_voronoi_energy(const real *x, const real *y, const real *z);
 int  f_area_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
+int f_garea_voronoi_ini(real a0, real K);
+int f_garea_voronoi_fin();
+real f_garea_voronoi_energy(const real *x, const real *y, const real *z);
+int  f_garea_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+
 int f_garea_ini(real a0, real K);
 int f_garea_fin();
 real f_garea_energy(const real *x, const real *y, const real *z);

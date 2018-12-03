@@ -11,6 +11,7 @@
 #include "he/f/area_voronoi.h"
 #include "he/f/edg_sq.h"
 #include "he/f/garea.h"
+#include "he/f/garea_voronoi.h"
 #include "he/f/gompper.h"
 #include "he/f/gompper_kroll.h"
 #include "he/f/harmonic.h"
@@ -36,6 +37,7 @@ real *RR, *TH;
 static He      *he;
 static HeFArea *f_area;
 static HeFAreaVoronoi *f_area_voronoi;
+static HeFGareaVoronoi *f_garea_voronoi;
 static HeFGarea *f_garea;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
@@ -170,6 +172,21 @@ real f_area_voronoi_energy(const real *x, const real *y, const real *z) {
 }
 int f_area_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_area_voronoi_force(f_area_voronoi, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_garea_voronoi_ini(real a0, real K) {
+    he_f_garea_voronoi_ini(a0, K, he, /**/ &f_garea_voronoi);
+    return HE_OK;
+}
+int f_garea_voronoi_fin() {
+    he_f_garea_voronoi_fin(f_garea_voronoi);
+    return HE_OK;
+}
+real f_garea_voronoi_energy(const real *x, const real *y, const real *z) {
+    return he_f_garea_voronoi_energy(f_garea_voronoi, he, x, y, z);
+}
+int f_garea_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_garea_voronoi_force(f_garea_voronoi, he, x, y, z, /**/ fx, fy, fz);
 }
 
 int f_garea_ini(real a0, real K) {
