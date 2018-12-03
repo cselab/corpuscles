@@ -37,6 +37,7 @@ f/meyer_xin.s.o\
 force.s.o\
 f/strain.s.o\
 f/volume.s.o\
+f/volume_normal.s.o\
 H.s.o\
 laplace.s.o\
 normal.s.o\
@@ -88,6 +89,7 @@ f/meyer_xin.d.o\
 force.d.o\
 f/strain.d.o\
 f/volume.d.o\
+f/volume_normal.d.o\
 H.d.o\
 laplace.d.o\
 normal.d.o\
