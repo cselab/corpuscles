@@ -136,7 +136,7 @@ function p_ini(   i) {
 
 function p_decl(   i) {
     for (i = 1; i <= narg; i++)
-	tprint(sprintf("real %s = %s;", var(i), "*param++"))
+	tprint(sprintf("real %s = *(real*)%s;", var(i), "*param++"))
 }
 
 function p_header(   i) {

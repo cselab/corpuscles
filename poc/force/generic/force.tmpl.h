@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-int force_ini(const char *name, const real *param, He*, /**/ T**);
+int force_ini(const char *name, void **param, He*, /**/ T**);
 int force_argv(const char **pargv[], He*, /**/ T**); /* TODO */
 int force_fin(T*);
 int force_force(T*, He*, const real *x, const real *y, const real *z,
@@ -13,9 +13,8 @@ real force_energy(T*, He*, const real *x, const real *y, const real *z);
 const char* force_list();
 int force_narg(const char*);
 
-
 //%begin
-int force_%name%_ini(const real *param, He*, /**/ T**);
+int force_%name%_ini(void *param[], He*, /**/ T**);
 //%end
 
 #undef T

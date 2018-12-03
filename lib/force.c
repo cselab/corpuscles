@@ -30,7 +30,7 @@ struct T
 
 #define SIZE (4048)
 static char List[SIZE];
-typedef int (*TypeIni)(const real*, He*, T**);
+typedef int (*TypeIni)(void**, He*, T**);
 
 static const char *Name[] = {
     "area",
@@ -62,7 +62,7 @@ static const TypeIni Ini[] = {
     force_area_voronoi_ini,
 };
 
-int force_ini(const char *name, const real *param, He *he, T **pq)
+int force_ini(const char *name, void **param, He *he, T **pq)
 {
     const int n = sizeof(Name)/sizeof(Name[0]);
     int i;
@@ -155,11 +155,11 @@ static Vtable area_vtable = {
     area_force,
     area_energy,
 };
-int force_area_ini(const real *param, He *he, /**/ T **pq)
+int force_area_ini(void *param[], He *he, /**/ T **pq)
 {
     Area *q;
-    real g1 = *param++;
-    real g2 = *param++;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
     MALLOC(1, &q);
     q->force.vtable = &area_vtable;
     *pq = &q->force;
@@ -194,11 +194,11 @@ static Vtable garea_vtable = {
     garea_force,
     garea_energy,
 };
-int force_garea_ini(const real *param, He *he, /**/ T **pq)
+int force_garea_ini(void *param[], He *he, /**/ T **pq)
 {
     Garea *q;
-    real g1 = *param++;
-    real g2 = *param++;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
     MALLOC(1, &q);
     q->force.vtable = &garea_vtable;
     *pq = &q->force;
@@ -233,11 +233,11 @@ static Vtable volume_vtable = {
     volume_force,
     volume_energy,
 };
-int force_volume_ini(const real *param, He *he, /**/ T **pq)
+int force_volume_ini(void *param[], He *he, /**/ T **pq)
 {
     Volume *q;
-    real g1 = *param++;
-    real g2 = *param++;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
     MALLOC(1, &q);
     q->force.vtable = &volume_vtable;
     *pq = &q->force;
@@ -272,13 +272,13 @@ static Vtable juelicher_xin_vtable = {
     juelicher_xin_force,
     juelicher_xin_energy,
 };
-int force_juelicher_xin_ini(const real *param, He *he, /**/ T **pq)
+int force_juelicher_xin_ini(void *param[], He *he, /**/ T **pq)
 {
     Juelicher_xin *q;
-    real g1 = *param++;
-    real g2 = *param++;
-    real g3 = *param++;
-    real g4 = *param++;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
+    real g3 = *(real*)*param++;
+    real g4 = *(real*)*param++;
     MALLOC(1, &q);
     q->force.vtable = &juelicher_xin_vtable;
     *pq = &q->force;
@@ -313,10 +313,10 @@ static Vtable edg_sq_vtable = {
     edg_sq_force,
     edg_sq_energy,
 };
-int force_edg_sq_ini(const real *param, He *he, /**/ T **pq)
+int force_edg_sq_ini(void *param[], He *he, /**/ T **pq)
 {
     Edg_sq *q;
-    real g1 = *param++;
+    real g1 = *(real*)*param++;
     MALLOC(1, &q);
     q->force.vtable = &edg_sq_vtable;
     *pq = &q->force;
@@ -351,11 +351,11 @@ static Vtable harmonic_vtable = {
     harmonic_force,
     harmonic_energy,
 };
-int force_harmonic_ini(const real *param, He *he, /**/ T **pq)
+int force_harmonic_ini(void *param[], He *he, /**/ T **pq)
 {
     Harmonic *q;
-    real g1 = *param++;
-    real g2 = *param++;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
     MALLOC(1, &q);
     q->force.vtable = &harmonic_vtable;
     *pq = &q->force;
@@ -390,11 +390,11 @@ static Vtable area_voronoi_vtable = {
     area_voronoi_force,
     area_voronoi_energy,
 };
-int force_area_voronoi_ini(const real *param, He *he, /**/ T **pq)
+int force_area_voronoi_ini(void *param[], He *he, /**/ T **pq)
 {
     Area_voronoi *q;
-    real g1 = *param++;
-    real g2 = *param++;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
     MALLOC(1, &q);
     q->force.vtable = &area_voronoi_vtable;
     *pq = &q->force;

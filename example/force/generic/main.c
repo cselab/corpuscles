@@ -26,7 +26,10 @@ static real *gx, *gy, *gz;
 static int nv, nt;
 static He *he;
 static Force *force;
-static real param[999];
+
+static real   param[999];
+static void *vparam[999];
+
 static real delta = 1e-6;
 
 static const char *me = "force/generic";
@@ -65,15 +68,17 @@ static void arg() {
     }
     str(name);
     narg = force_narg(name);
-    for (i = 0; i < narg; i++)
+    for (i = 0; i < narg; i++) {
         scl(&param[i]);
+        vparam[i] = &param[i];
+    }
 }
 
 static void main0() {
     int i;
     real e, r[3], f[3];
 
-    force_ini(name, param, he,  &force);
+    force_ini(name, vparam, he,  &force);
     force_force(force, he, x, y, z, /**/ fx, fy, fz);
     fd(force, he, delta, x, y, z, /**/ gx, gy, gz);
     e = force_energy(force, he, x, y, z);
@@ -113,7 +118,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     FREE(rr); FREE(fm);
     FREE(fx); FREE(fy); FREE(fz);
-    FREE(gx); FREE(gy); FREE(gz);    
+    FREE(gx); FREE(gy); FREE(gz);
 
     y_fin(he, x, y, z);
 }

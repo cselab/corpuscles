@@ -24,7 +24,7 @@ struct T
 
 #define SIZE (4048)
 static char List[SIZE];
-typedef int (*TypeIni)(const real*, He*, T**);
+typedef int (*TypeIni)(void**, He*, T**);
 
 static const char *Name[] = {
 //%name
@@ -38,7 +38,7 @@ static const TypeIni Ini[] = {
 //%ini
 };
 
-int force_ini(const char *name, const real *param, He *he, T **pq)
+int force_ini(const char *name, void **param, He *he, T **pq)
 {
     const int n = sizeof(Name)/sizeof(Name[0]);
     int i;
@@ -132,7 +132,7 @@ static Vtable %name%_vtable = {
     %name%_force,
     %name%_energy,
 };
-int force_%name%_ini(const real *param, He *he, /**/ T **pq)
+int force_%name%_ini(void *param[], He *he, /**/ T **pq)
 {
     %Name% *q;
 //%decl
