@@ -100,7 +100,8 @@ int main(int __UNUSED argc, const char *v[]) {
     H1+=H[i]*area[i];
     H2+=H[i]*H[i]*area[i];
   }
-  printf("H0, H1, H2 = %f,%f, %f\n", H0, H1, H2);
+  //printf("#H0 H1 H2\n");
+  printf("%f %f %f\n", H0, H1, H2);
   
   
   FREE(xx); FREE(yy); FREE(zz);
