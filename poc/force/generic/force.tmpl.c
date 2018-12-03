@@ -17,6 +17,10 @@
 
 #define T Force
 
+//%begin
+static int force_%name%_ini(void *param[], He*, /**/ T**);
+//%end
+
 struct T
 {
     struct Vtable *vtable;

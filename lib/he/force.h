@@ -13,13 +13,4 @@ real force_energy(T*, He*, const real *x, const real *y, const real *z);
 const char* force_list();
 int force_narg(const char*);
 
-int force_area_ini(void *param[], He*, /**/ T**);
-int force_garea_ini(void *param[], He*, /**/ T**);
-int force_volume_ini(void *param[], He*, /**/ T**);
-int force_juelicher_xin_ini(void *param[], He*, /**/ T**);
-int force_edg_sq_ini(void *param[], He*, /**/ T**);
-int force_harmonic_ini(void *param[], He*, /**/ T**);
-int force_area_voronoi_ini(void *param[], He*, /**/ T**);
-int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
-
 #undef T

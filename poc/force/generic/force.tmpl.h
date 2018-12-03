@@ -13,8 +13,4 @@ real force_energy(T*, He*, const real *x, const real *y, const real *z);
 const char* force_list();
 int force_narg(const char*);
 
-//%begin
-int force_%name%_ini(void *param[], He*, /**/ T**);
-//%end
-
 #undef T

@@ -24,6 +24,15 @@
 
 #define T Force
 
+static int force_area_ini(void *param[], He*, /**/ T**);
+static int force_garea_ini(void *param[], He*, /**/ T**);
+static int force_volume_ini(void *param[], He*, /**/ T**);
+static int force_juelicher_xin_ini(void *param[], He*, /**/ T**);
+static int force_edg_sq_ini(void *param[], He*, /**/ T**);
+static int force_harmonic_ini(void *param[], He*, /**/ T**);
+static int force_area_voronoi_ini(void *param[], He*, /**/ T**);
+static int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
+
 struct T
 {
     struct Vtable *vtable;
