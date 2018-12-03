@@ -48,7 +48,6 @@ static void usg() {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");
-    exit(0);
 }
 
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }

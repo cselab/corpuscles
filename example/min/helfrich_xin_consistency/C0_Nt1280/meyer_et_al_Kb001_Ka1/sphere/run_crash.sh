@@ -8,8 +8,9 @@ end=200000
 freq=500
 Vr=0.4
 
-# $(he.path)/sph/laplace/Nt1280.off
+# off=$(he.path)/sph/laplace/Nt1280.off
 off=start/main.off
+#off=~/hex.off
 make
 
-./voronoi meyer_xin $Vr 10 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
+he.run ./voronoi meyer_xin $Vr 10 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg

@@ -10,16 +10,15 @@
 
 #include "he/volume.h"
 
-static void get(int t, He *he,
+static int get(int t, He *he,
                 const real *x, const real *y, const real *z,
                 /**/ real a[3], real b[3], real c[3]) {
-    int h;
     int i, j, k;
-    h = he_hdg_tri(he, t);
-    he_ijk(he, h, &i, &j, &k);
+    he_tri_ijk(he, t, &i, &j, &k);
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
+    return HE_OK;
 }
 
 real he_volume_tri(He *he, const real *x, const real *y, const real *z) {
@@ -33,7 +32,7 @@ real he_volume_tri(He *he, const real *x, const real *y, const real *z) {
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b, c);
         v = tri_volume(a, b, c);
-        he_sum_add(sum, V);
+        he_sum_add(sum, v);
     }
     V = he_sum_get(sum);
     he_sum_fin(sum);

@@ -272,6 +272,8 @@ static void main0(real *vx, real *vy, real *vz,
       ek = Kin(vx, vy, vz);
       et = et + ek;
       A = area(); V = volume(); Vr=reduced_volume(A,V);
+      MSG("v: %g", V);
+      exit(0);
       MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
