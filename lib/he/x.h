@@ -34,8 +34,14 @@ int RZERO(int, real**);
 
 /* forces */
 int f_area_ini(real a0, real K);
-int f_area_fin();real f_area_energy(const real *x, const real *y, const real *z);
+int f_area_fin();
+real f_area_energy(const real *x, const real *y, const real *z);
 int  f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
+
+int f_area_voronoi_ini(real a0, real K);
+int f_area_voronoi_fin();
+real f_area_voronoi_energy(const real *x, const real *y, const real *z);
+int  f_area_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 
 int f_garea_ini(real a0, real K);
 int f_garea_fin();
