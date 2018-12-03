@@ -12,6 +12,7 @@
 #include "he/util.h"
 
 //%header
+#define SIZE (4048)
 
 #include "he/force.h"
 
@@ -77,12 +78,23 @@ int force_narg(const char *name)
     ERR(HE_INDEX, "");
 }
 
-int force_argv(const char **pargv[], He *he, /**/ T **pq) {
-    const char **argv;
+static int str(char **pargv[], char *p) {
+    char **argv;
     argv = *pargv;
 
+    if (*argv == NULL) {
+        ERR(HE_IO, "not enough args");
+    }
+    strncpy(p, *argv, SIZE - 1);
+    argv++;
 
     *pargv = argv;
+    return HE_OK;
+}
+
+int force_argv(char **pargv[], He *he, /**/ T **pq) {
+    char name[SIZE];
+    str(pargv, name);
     return HE_OK;
 }
 
