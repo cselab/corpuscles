@@ -3,7 +3,9 @@ M = \
 gompper_xin.h\
 gompper_xin.c\
 area_voronoi.h\
-area_voronoi.c
+area_voronoi.c\
+garea_voronoi.h\
+garea_voronoi.c
 
 all: $M
 
@@ -12,6 +14,9 @@ gompper_xin.c: gompper_xin.tmpl.c; ./force $^ > $@
 
 area_voronoi.h: area_voronoi.tmpl.h; ./force $^ > $@
 area_voronoi.c: area_voronoi.tmpl.c; ./force $^ > $@
+
+garea_voronoi.h: garea_voronoi.tmpl.h; ./force $^ > $@
+garea_voronoi.c: garea_voronoi.tmpl.c; ./force $^ > $@
 
 diff: all
 	diff gompper_xin.h ref.h
