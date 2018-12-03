@@ -24,6 +24,7 @@ static int force_%name%_ini(void *param[], He*, /**/ T**);
 struct T
 {
     struct Vtable *vtable;
+    const char *name;
 };
 
 #define SIZE (4048)
@@ -44,11 +45,17 @@ static const TypeIni Ini[] = {
 
 int force_ini(const char *name, void **param, He *he, T **pq)
 {
+    int status;
+    T *q;
     const int n = sizeof(Name)/sizeof(Name[0]);
     int i;
     for (i = 0; i < n; i++)
-        if (util_eq(name, Name[i]))
-            return Ini[i](param, he, pq);
+        if (util_eq(name, Name[i])) {
+            status = Ini[i](param, he, &q);
+            q->name = Name[i];
+            *pq = q;
+            return status;
+        }
     MSG("unknown force: '%s'", name);
     MSG("possible values:");
     for (i = 0; i < n; i++)
@@ -104,6 +111,11 @@ int force_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ 
 real force_energy(T *q, He *he, const real *x, const real *y, const real *z)
 {
     return q->vtable->energy(q, he, x, y, z);
+}
+
+const char *force_name(T *q)
+{
+    return q->name;
 }
 
 //%begin

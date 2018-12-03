@@ -84,6 +84,7 @@ static void main0() {
     e = force_energy(force, he, x, y, z);
     he_area_ver(he, x, y, z, /**/ area);
 
+    MSG("name: %s", force_name(force));
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
     MSG("g0: %g %g %g", gx[0], gy[0], gz[0]);
