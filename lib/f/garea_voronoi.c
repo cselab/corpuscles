@@ -22,8 +22,7 @@
 #define END_VER }
 
 struct T {
-    real a0, K;
-    real *energy;
+    real A0, K;
     real *fx, *fy, *fz;
     Da *da;
 
@@ -60,7 +59,7 @@ static int scale(real sc, int n, /*io*/ real *a) {
     return HE_OK;
 }
 
-int he_f_garea_voronoi_ini(real a0, real K, He *he, T **pq) {
+int he_f_garea_voronoi_ini(real A0, real K, He *he, T **pq) {
 #   define M(n, f) MALLOC(n, &q->f)
 #   define S(f) q->f = f
     T *q;
@@ -68,12 +67,11 @@ int he_f_garea_voronoi_ini(real a0, real K, He *he, T **pq) {
 
     MALLOC(1, &q);
     nv = he_nv(he);
-    M(nv, energy);
     M(nv, fx); M(nv, fy); M(nv, fz);
     M(nv, H);
 
     S(nv);
-    S(a0); S(K);
+    S(A0); S(K);
 
     da_ini(he, &q->da);
 
@@ -86,7 +84,6 @@ int he_f_garea_voronoi_ini(real a0, real K, He *he, T **pq) {
 int he_f_garea_voronoi_fin(T *q) {
 #   define F(x) FREE(q->x)
     da_fin(q->da);
-    F(energy);
     F(fx); F(fy); F(fz);
     F(H);
     FREE(q);
@@ -94,37 +91,25 @@ int he_f_garea_voronoi_fin(T *q) {
 #   undef F
 }
 
-static int compute_energy(int n,
-                          real area0, const real *area,
-                          /**/ real *energy) {
-    int i;
-    for (i = 0; i < n; i++)
-        energy[i] = e(area0, area[i]);
-    return HE_OK;
-}
 real he_f_garea_voronoi_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
     /* get, set */
 #   define G(f) f = q->f
     int nv;
-    real *energy;
     Da *da;
-    real a0, K;
+    real A0, K;
+    real A, *area;
 
-    real *area;
-
-    G(a0); G(K);
-    G(energy); G(da);
+    G(A0); G(K);
+    G(da);
 
     nv = he_nv(he);
 
     da_compute_area(da, he, x, y, z);
     da_area(da, &area);
 
-    compute_energy(nv, a0, area, /**/ energy);
-    scale(K/a0, nv, energy);
-    return he_sum_array(nv, energy);
-
+    A = he_sum_array(nv, area);
+    return K/A0*(A - A0);
 #   undef A
 #   undef S
 }
@@ -135,13 +120,13 @@ int he_f_garea_voronoi_force(T *q, He *he,
     /* get, set */
 #   define G(f) f = q->f
     int nv;
-    real a0, K;
+    real A0, K;
     real *fx, *fy, *fz;
     real C;
     Da *da;
     dAParam param;
 
-    G(a0); G(K);
+    G(A0); G(K);
     G(da);
     G(fx); G(fy); G(fz);
 
@@ -149,10 +134,10 @@ int he_f_garea_voronoi_force(T *q, He *he,
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
 
     param.da = dda;
-    param.p  = (void*)&a0;
+    param.p  = (void*)&A0;
     da_force(da, param, he, x, y, z, /**/ fx, fy, fz);
 
-    C = K/a0;
+    C = K/A0;
     scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
 
