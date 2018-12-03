@@ -95,7 +95,7 @@ static void arg() {
 
 real Energy(const real *x, const real *y, const real *z) {
     real a, ga, v, e, b;
-    a = f_area_voronoi_energy(x, y, z);
+    a = f_area_energy(x, y, z);
     ga = f_garea_voronoi_energy(x, y, z);
     v = f_volume_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
@@ -115,7 +115,7 @@ real Energy(const real *x, const real *y, const real *z) {
 void Force(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_area_voronoi_force(x, y, z, /**/ fx, fy, fz);
+    f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_voronoi_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
@@ -272,8 +272,6 @@ static void main0(real *vx, real *vy, real *vz,
       ek = Kin(vx, vy, vz);
       et = et + ek;
       A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("v: %g", V);
-      exit(0);
       MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
@@ -320,7 +318,7 @@ int main(int __UNUSED argc, const char *v[]) {
   MSG("A/A0: %g", A/A0);
   MSG("Vr  : %g", Vr);
   
-  f_area_voronoi_ini(A0/NV,  Ka);
+  f_area_ini(A0/NV,  Ka);
   f_garea_voronoi_ini(A0, Kga);
   f_volume_ini(V0, Kv);
   f_edg_sq_ini(Ke);
@@ -342,7 +340,7 @@ int main(int __UNUSED argc, const char *v[]) {
   f_bending_fin();
   f_edg_sq_fin();
   f_volume_fin();
-  f_area_voronoi_fin();
+  f_area_fin();
   f_garea_voronoi_fin();
   fin();
   
