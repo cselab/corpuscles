@@ -37,11 +37,11 @@ then
     cd $Da1
     ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
 else
-    for i in `seq 0 10`;
+    for i in `seq 0 7`;
     do
-	Da1=$(echo $i | awk '{print (0.1+$1*0.02)}')
+	Da1=$(echo $i | awk '{print (0.16+$1*0.02)}')
 	#echo $Da1
-	bash run.sh $Da1
+	bash run.sh $Da1 &
     done
 
 fi
