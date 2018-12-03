@@ -8,8 +8,10 @@
 #include "he/equiangulate.h"
 #include "he/err.h"
 #include "he/f/area.h"
+#include "he/f/area_voronoi.h"
 #include "he/f/edg_sq.h"
 #include "he/f/garea.h"
+#include "he/f/garea_voronoi.h"
 #include "he/f/gompper.h"
 #include "he/f/gompper_kroll.h"
 #include "he/f/harmonic.h"
@@ -25,7 +27,6 @@
 #include "he/volume.h"
 #include "he/x.h"
 
-static const real pi = 3.141592653589793115997964;
 int NV, NE, NT, NH;
 int *T0, *T1, *T2;
 int *D0, *D1, *D2, *D3;
@@ -35,6 +36,8 @@ real *RR, *TH;
 
 static He      *he;
 static HeFArea *f_area;
+static HeFAreaVoronoi *f_area_voronoi;
+static HeFGareaVoronoi *f_garea_voronoi;
 static HeFGarea *f_garea;
 static HeFVolume *f_volume;
 static HeFHarmonic *f_harmonic;
@@ -140,6 +143,7 @@ int  fin()      {
 int equiangulate(int *cnt) {
     return he_equiangulate(he, XX, YY, ZZ, cnt);
 }
+
 int f_area_ini(real a0, real K) {
     he_f_area_ini(a0, K, he, /**/ &f_area);
     return HE_OK;
@@ -153,6 +157,36 @@ real f_area_energy(const real *x, const real *y, const real *z) {
 }
 int f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_area_voronoi_ini(real a0, real K) {
+    he_f_area_voronoi_ini(a0, K, he, /**/ &f_area_voronoi);
+    return HE_OK;
+}
+int f_area_voronoi_fin() {
+    he_f_area_voronoi_fin(f_area_voronoi);
+    return HE_OK;
+}
+real f_area_voronoi_energy(const real *x, const real *y, const real *z) {
+    return he_f_area_voronoi_energy(f_area_voronoi, he, x, y, z);
+}
+int f_area_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_area_voronoi_force(f_area_voronoi, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_garea_voronoi_ini(real a0, real K) {
+    he_f_garea_voronoi_ini(a0, K, he, /**/ &f_garea_voronoi);
+    return HE_OK;
+}
+int f_garea_voronoi_fin() {
+    he_f_garea_voronoi_fin(f_garea_voronoi);
+    return HE_OK;
+}
+real f_garea_voronoi_energy(const real *x, const real *y, const real *z) {
+    return he_f_garea_voronoi_energy(f_garea_voronoi, he, x, y, z);
+}
+int f_garea_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_garea_voronoi_force(f_garea_voronoi, he, x, y, z, /**/ fx, fy, fz);
 }
 
 int f_garea_ini(real a0, real K) {
