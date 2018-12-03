@@ -9,4 +9,5 @@ end=99999999
 off=$(he.path)/sph/laplace/Nt1280.off
 make
 
-he.run ./voronoi meyer_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
+he.run ./voronoi meyer_xin $Vr 1 2 2 0 \
+       $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
