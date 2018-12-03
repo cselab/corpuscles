@@ -94,15 +94,15 @@ int dh_fin(T *q) {
 int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
 #   define G(f) f = q->f
     int nh, nv, h, i, j, k;
-    real a[3], b[3], c[3], n[3];
+    real a[3], b[3], c[3];
 
     real *tb, *tc, *sb, *sc, *ang;
     real *H, *area;
-    Vec *eb, *ec, *u, *lp, *m;
+    Vec *eb, *ec, *u, *lp, *m, *n;
 
     G(tb); G(tc); G(sb); G(sc); G(ang);
     G(H); G(area);
-    G(eb); G(ec); G(u); G(lp); G(m);
+    G(eb); G(ec); G(u); G(lp); G(m); G(n);
 
     nh = he_nh(he);
     nv = he_nv(he);
@@ -134,8 +134,8 @@ int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
     } END_HE;
 
     BEGIN_VER {
-        vec_norm(m[i].v,  n);
-        H[i] = vec_dot(lp[i].v, n)/2;
+        vec_norm(m[i].v,  n[i].v);
+        H[i] = vec_dot(lp[i].v, n[i].v)/2;
     } END_VER;
 
     return HE_OK;

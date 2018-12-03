@@ -9,8 +9,9 @@
 #include "he/dtri.h"
 #include "he/dedg.h"
 #include "he/sum.h"
-#include "he/da.h"
+#include "he/dH.h"
 #include "he/macro.h"
+#include "he/volume.h"
 
 #include "he/f/volume_normal.h"
 
@@ -22,21 +23,19 @@
 #define END_VER }
 
 struct T {
-    real A0, K;
-    real *fx, *fy, *fz;
-    Da *da;
+    real v0, K;
+    Dh *dh;
 
     int nv;
     real *H;
 };
 
-static real dda(__UNUSED void *p, __UNUSED real area) {
-    return 1;
-}
-
-static void zero(int n, real *a) {
+static int axypz(int n, real a, const real *x, const real *y,
+                 /**/ real *z) {
     int i;
-    for (i = 0; i < n; i++) a[i] = 0;
+    for (i = 0; i < n; i++)
+        z[i] += a*x[i]*y[i];
+    return HE_OK;
 }
 static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
@@ -44,14 +43,8 @@ static int plus(int n, const real *a, /*io*/ real *b) {
         b[i] += a[i];
     return HE_OK;
 }
-static int scale(real sc, int n, /*io*/ real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] *= sc;
-    return HE_OK;
-}
 
-int he_f_volume_normal_ini(real A0, real K, He *he, T **pq) {
+int he_f_volume_normal_ini(real v0, real K, He *he, T **pq) {
 #   define M(n, f) MALLOC(n, &q->f)
 #   define S(f) q->f = f
     T *q;
@@ -59,13 +52,12 @@ int he_f_volume_normal_ini(real A0, real K, He *he, T **pq) {
 
     MALLOC(1, &q);
     nv = he_nv(he);
-    M(nv, fx); M(nv, fy); M(nv, fz);
     M(nv, H);
 
     S(nv);
-    S(A0); S(K);
+    S(v0); S(K);
 
-    da_ini(he, &q->da);
+    dh_ini(he, &q->dh);
 
     *pq = q;
     return HE_OK;
@@ -75,8 +67,7 @@ int he_f_volume_normal_ini(real A0, real K, He *he, T **pq) {
 
 int he_f_volume_normal_fin(T *q) {
 #   define F(x) FREE(q->x)
-    da_fin(q->da);
-    F(fx); F(fy); F(fz);
+    dh_fin(q->dh);
     F(H);
     FREE(q);
     return HE_OK;
@@ -87,22 +78,14 @@ real he_f_volume_normal_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
     /* get, set */
 #   define G(f) f = q->f
-    int nv;
-    Da *da;
-    real A0, K;
-    real C, A, *area, d;
+    real v0, K;
+    real C, V, d;
 
-    G(A0); G(K);
-    G(da);
+    G(v0); G(K);
 
-    nv = he_nv(he);
-
-    da_compute_area(da, he, x, y, z);
-    da_area(da, &area);
-
-    A = he_sum_array(nv, area);
-    d = A - A0;
-    C = K/A0;
+    V = he_volume_tri(he, x, y, z);
+    d = V - v0;
+    C = K/v0;
     return C*d*d;
 #   undef A
 #   undef S
@@ -110,32 +93,31 @@ real he_f_volume_normal_energy(T *q, He *he,
 
 int he_f_volume_normal_force(T *q, He *he,
                            const real *x, const real *y, const real *z, /**/
-                           real *hx, real *hy, real *hz) {
+                           real *fx, real *fy, real *fz) {
     /* get, set */
 #   define G(f) f = q->f
     int nv;
-    real A0, K;
-    real *fx, *fy, *fz;
+    real v0, K;
     real *area;
-    real A, C;
-    Da *da;
-    dAParam param;
+    real *nx, *ny, *nz;
+    real C, V, d;
+    Dh *dh;
 
-    G(A0); G(K);
-    G(da);
-    G(fx); G(fy); G(fz);
+    G(v0); G(K);
+    G(dh);
 
     nv = he_nv(he);
-    zero(nv, fx); zero(nv, fy); zero(nv, fz);
 
-    param.da = dda;
-    da_force(da, param, he, x, y, z, /**/ fx, fy, fz);
-    da_area(da, &area);
+    dh_area_h(dh, he, x, y, z);
+    dh_area(dh, &area);
+    dh_norm(dh, &nx, &ny, &nz);
 
-    A = he_sum_array(nv, area);
-    C = 2*(K/A0)*(A - A0);
-    scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
-    plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
+    V = he_volume_tri(he, x, y, z);
+    d = V - v0;
+    C = -2*(K/v0)*d; /* TODO: invert nomral */
+    axypz(nv, C, area, nx, fx);
+    axypz(nv, C, area, ny, fy);
+    axypz(nv, C, area, nz, fz);
 
     return HE_OK;
 #   undef A
