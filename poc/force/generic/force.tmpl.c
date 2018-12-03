@@ -77,6 +77,14 @@ int force_narg(const char *name)
     ERR(HE_INDEX, "");
 }
 
+int force_argv(const char **pargv[], He *he, /**/ T **pq) {
+    const char **argv;
+    argv = *pargv;
+
+
+    *pargv = argv;
+    return HE_OK;
+}
 
 const char *force_list()
 {
