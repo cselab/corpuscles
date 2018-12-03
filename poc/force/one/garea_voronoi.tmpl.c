@@ -96,7 +96,7 @@ real he_f_%name%_energy(T *q, He *he,
     int nv;
     Da *da;
     real A0, K;
-    real A, *area;
+    real A, *area, d;
 
     G(A0); G(K);
     G(da);
@@ -107,7 +107,8 @@ real he_f_%name%_energy(T *q, He *he,
     da_area(da, &area);
 
     A = he_sum_array(nv, area);
-    return K/A0*(A - A0);
+    d = A - A0;
+    return K/A0*d*d;
 #   undef A
 #   undef S
 }
