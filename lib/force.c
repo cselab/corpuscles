@@ -492,7 +492,7 @@ int force_garea_voronoi_ini(void *param[], He *he, /**/ T **pq)
 typedef struct Volume_normal Volume_normal;
 struct Volume_normal {
     T force;
-    HeFGareaVoronoi *local;
+    HeFVolumeNormal *local;
 };
 static int volume_normal_fin(T *q)
 {

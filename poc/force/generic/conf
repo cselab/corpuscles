@@ -72,7 +72,7 @@ real,real
 
 #include "he/f/volume_normal.h"
 volume_normal
-HeFGareaVoronoi
+HeFVolumeNormal
 he_f_volume_normal_fin
 he_f_volume_normal_force
 he_f_volume_normal_energy
