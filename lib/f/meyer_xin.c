@@ -44,12 +44,14 @@ struct T {
     int nv, ne, nt, nh;
     real (*compute_area)(T*, He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
+    int (*compute_H)(T*, He*, /**/ real*);
 };
 
-static void zero(int n, real *a) {
+static int zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
+    return HE_OK;
 }
 
 static int get3(const real *x, const real *y, const real *z,
@@ -102,18 +104,24 @@ static int norm_mwn(__UNUSED T *q, He *he,
 static int norm_lap(T *q, He *he,
                     const real *x, const real *y, const real *z, /**/
                     real *nx, real *ny, real *nz) {
-    int nv, i;
+    int nv, i, status;
     const real *lbx, *lby, *lbz;
-    real lb[3], n[3];
+    real lb[3], n[3], u[3];
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+    status = normal_mwa(he, x, y, z,  nx, ny, nz);
 
     nv = he_nv(he);
     for (i = 0; i < nv; i++) {
         vec_get(i, lbx, lby, lbz, lb);
-        vec_norm(lb, n);
-        vec_set(n,  i, nx, ny, nz);
+        vec_get(i, nx, ny, nz, n);
+        vec_norm(lb, u);
+
+        if (vec_dot(n, lb) < 0)
+            vec_neg(u);
+
+        vec_set(u,  i, nx, ny, nz);
     }
-    return HE_OK;
+    return status;
 }
 
 static real area_voronoi(T *q, He *he,
@@ -245,6 +253,50 @@ static real area_mix(T *q, He *he,
     return area_tot_tri;
 }
 
+static int H_norm(T *q, He *he, /**/ real *H) {
+    enum {X, Y, Z};
+    int i, nv;
+    real *lbx, *lby, *lbz;
+    real *normx, *normy, *normz;
+    real u[3], v[3];
+
+    nv  = he_nv(he);
+    lbx = q->lbx;
+    lby = q->lby;
+    lbz = q->lbz;
+
+    normx = q->normx;
+    normy = q->normy;
+    normz = q->normz;
+    for ( i = 0; i < nv; i++ ) {
+        vec_get(i, lbx, lby, lbz, u);
+        vec_get(i, normx, normy, normz, v);
+        H[i] = vec_dot(u, v)/2;
+    }
+    return HE_OK;
+}
+
+static int H_lap(T *q, He *he, /**/ real *H) {
+    enum {X, Y, Z};
+    int i, nv;
+    real *lbx, *lby, *lbz, *nx, *ny, *nz;
+    real lb[3], n[3];
+
+    nv  = he_nv(he);
+    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+    nx = q->normx; ny = q->normy; nz = q->normz;
+
+    for (i = 0; i < nv; i++ ) {
+        vec_get(i, nx, ny, nz, n);
+        vec_get(i, lbx, lby, lbz, lb);
+        H[i] = vec_abs(lb)/2;
+        if (vec_dot(n, lb) < 0)
+            H[i] = -H[i];
+    }
+    return HE_OK;
+}
+
+
 int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt, nh;
@@ -271,10 +323,14 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     else
         q->compute_area = area_voronoi;
 
-    if (getenv("LAP"))
+    if (getenv("LAP")) {
+        MSG("LAP");
         q->compute_norm = norm_lap;
-    else
+        q->compute_H = H_lap;
+    } else {
         q->compute_norm = norm_mwn;
+        q->compute_H = H_norm;
+    }
 
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
@@ -377,31 +433,6 @@ static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
     return HE_OK;
 
 }
-static int compute_H(T *q, He *he, /**/ real *H) {
-    enum {X, Y, Z};
-    int i, nv;
-    real *lbx, *lby, *lbz;
-    real *normx, *normy, *normz;
-    real u[3], v[3];
-
-    nv  = he_nv(he);
-    lbx = q->lbx;
-    lby = q->lby;
-    lbz = q->lbz;
-
-    normx = q->normx;
-    normy = q->normy;
-    normz = q->normz;
-
-    for ( i = 0; i < nv; i++ ) {
-        vec_get(i, lbx, lby, lbz, u);
-        vec_get(i, normx, normy, normz, v);
-        H[i] = vec_dot(u, v)/2;
-    }
-
-    return HE_OK;
-
-}
 static int compute_K(T *q, He *he,
                      const real *x, const real *y, const real *z, /**/
                      real *K) {
@@ -484,7 +515,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
     compute_lb(q, he, y, lby);
     compute_lb(q, he, z, lbz);
     q->compute_norm(q, he, x, y, z, normx, normy, normz);
-    compute_H(q, he, /**/ H);
+    q->compute_H(q, he, /**/ H);
 
     mH1 = 0;
     mH2 = 0;
@@ -566,24 +597,18 @@ int he_f_meyer_xin_force(T *q, He *he,
     compute_lb(q, he, y, lby);
     compute_lb(q, he, z, lbz);
     q->compute_norm(q, he, x, y, z, normx, normy, normz);
-    compute_H(q, he, H);
+    q->compute_H(q, he, H);
     compute_K(q, he, x, y, z, K);
-
     compute_lb(q, he, H, lbH);
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-        fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-K[v]);
-        fx[v] += fm * normx[v] * area[v];
-        fy[v] += fm * normy[v] * area[v];
-        fz[v] += fm * normz[v] * area[v];
-
-        fm = +2*Kb*lbH[v];
-
-        fx[v] += fm * normx[v] * area[v];
-        fy[v] += fm * normy[v] * area[v];
-        fz[v] += fm * normz[v] * area[v];
-        he_sum_add(sum, H[v] * area[v]);
+        fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-K[v]) + 2*Kb*lbH[v];
+        fm *= area[v];
+        fx[v] += fm*normx[v];
+        fy[v] += fm*normy[v];
+        fz[v] += fm*normz[v];
+        he_sum_add(sum, H[v]*area[v]);
     }
     mH1 = he_sum_get(sum);
     he_sum_fin(sum);
