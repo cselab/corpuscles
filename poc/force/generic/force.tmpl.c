@@ -22,8 +22,7 @@
 static int force_%name%_ini(void *param[], He*, /**/ T**);
 //%end
 
-struct T
-{
+struct T {
     struct Vtable *vtable;
     const char *name;
 };
