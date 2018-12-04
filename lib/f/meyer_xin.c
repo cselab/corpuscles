@@ -641,15 +641,6 @@ int he_f_meyer_xin_force(T *q, He *he,
       he_sum_add(sum, curva_mean[v] * area[v]);
     }
 
-    if (p_str = getenv("PRESSURE")) {
-        p = atof(p_str);
-        for (v = 0; v < nv; v++) {
-            fx[v] += p*normx[v];
-            fy[v] += p*normy[v];
-            fz[v] += p*normz[v];
-        }
-    }
-
     mH1 = he_sum_get(sum);
     he_sum_fin(sum);
 

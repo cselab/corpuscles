@@ -36,8 +36,7 @@ static int force_area_voronoi_ini(void *param[], He*, /**/ T**);
 static int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
 static int force_volume_normal_ini(void *param[], He*, /**/ T**);
 
-struct T
-{
+struct T {
     struct Vtable *vtable;
     const char *name;
 };
