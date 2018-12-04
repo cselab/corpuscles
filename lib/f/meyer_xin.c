@@ -635,9 +635,6 @@ int he_f_meyer_xin_force(T *q, He *he,
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
-
     }
-
-
     return HE_OK;
 }
