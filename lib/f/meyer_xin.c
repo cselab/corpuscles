@@ -12,6 +12,7 @@
 #include "he/tri.h"
 #include "he/sum.h"
 #include "he/normal.h"
+#include "he/macro.h"
 
 #include "he/f/meyer_xin.h"
 
@@ -84,7 +85,7 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     return BULK;
 }
 
-static int norm_mwn(T *q, He *he,
+static int norm_mwn(__UNUSED T *q, He *he,
                     const real *x, const real *y, const real *z, /**/
                     real *normx, real *normy, real *normz) {
     int status, i, n;
@@ -96,6 +97,23 @@ static int norm_mwn(T *q, He *he,
         normz[i] = -normz[i];
     }
     return status;
+}
+
+static int norm_lap(T *q, He *he,
+                    const real *x, const real *y, const real *z, /**/
+                    real *nx, real *ny, real *nz) {
+    int nv, i;
+    const real *lbx, *lby, *lbz;
+    real lb[3], n[3];
+    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+
+    nv = he_nv(he);
+    for (i = 0; i < nv; i++) {
+        vec_get(i, lbx, lby, lbz, lb);
+        vec_norm(lb, n);
+        vec_set(n,  i, nx, ny, nz);
+    }
+    return HE_OK;
 }
 
 static real area_voronoi(T *q, He *he,
@@ -252,7 +270,11 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
         q->compute_area = area_mix;
     else
         q->compute_area = area_voronoi;
-    q->compute_norm = norm_mwn;
+
+    if (getenv("LAP"))
+        q->compute_norm = norm_lap;
+    else
+        q->compute_norm = norm_mwn;
 
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
