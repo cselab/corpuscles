@@ -52,15 +52,6 @@ static void zero(int n, real *a) {
         a[i] = 0;
 }
 
-static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = hdg_tri(t);
-    n = nxt(h);
-    nn = nxt(n);
-    i = ver(h); j = ver(n); k = ver(nn);
-    *pi = i; *pj = j; *pk = k;
-    return HE_OK;
-}
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
