@@ -11,6 +11,7 @@
 #include "he/ddih.h"
 #include "he/tri.h"
 #include "he/sum.h"
+#include "he/normal.h"
 
 #include "he/f/meyer_xin.h"
 
@@ -41,7 +42,7 @@ struct T {
     real energy_total_nonlocal;
     int nv, ne, nt, nh;
     real (*compute_area)(T*, He*, const real*, const real*, const real*, real *area);
-    real (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
+    int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
 };
 
 static void zero(int n, real *a) {
@@ -82,6 +83,21 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     *pi = i; *pj = j; *pk = k; *pl = l;
     return BULK;
 }
+
+static int norm_mwn(T *q, He *he,
+                    const real *x, const real *y, const real *z, /**/
+                    real *normx, real *normy, real *normz) {
+    int status, i, n;
+    n = he_nv(he);
+    status = normal_mwa(he, x, y, z,  normx, normy, normz);
+    for (i = 0; i < n; i++) {
+        normx[i] = -normx[i];
+        normy[i] = -normy[i];
+        normz[i] = -normz[i];
+    }
+    return status;
+}
+
 static real area_voronoi(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
@@ -236,6 +252,7 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
         q->compute_area = area_mix;
     else
         q->compute_area = area_voronoi;
+    q->compute_norm = norm_mwn;
 
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
@@ -337,41 +354,6 @@ static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
 
     return HE_OK;
 
-}
-static int compute_norm(T *q, He *he,
-                        const real *x, const real *y, const real *z, /**/
-                        real *normx, real *normy, real *normz) {
-    enum {X, Y, Z};
-    int t, nt;
-    int i, j, k, nv;
-    real a[3], b[3], c[3], u[3], u0[3];
-    int *T0, *T1, *T2;
-    real theta_a, theta_b, theta_c;
-
-    nt = he_nt(he);
-    nv = he_nv(he);
-    he_T(he, &T0, &T1, &T2);
-
-    zero(nv, normx); zero(nv, normy); zero(nv, normz);
-    for ( t = 0; t < nt; t++ ) {
-        i = T0[t]; j = T1[t]; k = T2[t];
-        get3(x, y, z, i, j, k, a, b, c);
-        theta_a = tri_angle(c, a, b);
-        theta_b = tri_angle(a, b, c);
-        theta_c = tri_angle(b, c, a);
-        tri_normal(a, b, c, u);
-        vec_scalar_append(u, theta_a, i, normx, normy, normz);
-        vec_scalar_append(u, theta_b, j, normx, normy, normz);
-        vec_scalar_append(u, theta_c, k, normx, normy, normz);
-    }
-
-    for (i = 0; i < nv; i++) {
-        vec_get(i, normx, normy, normz, /**/ u);
-        vec_norm(u, /**/ u0);
-        vec_negative(u0, u); /*This reverses the sign of norm to be inwards*/
-        vec_set(u, i, /**/ normx, normy, normz);
-    }
-    return HE_OK;
 }
 static int compute_H(T *q, He *he, /**/ real *H) {
     enum {X, Y, Z};
@@ -479,7 +461,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
     compute_lb(q, he, x, lbx);
     compute_lb(q, he, y, lby);
     compute_lb(q, he, z, lbz);
-    compute_norm(q, he, x, y, z, normx, normy, normz);
+    q->compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_H(q, he, /**/ H);
 
     mH1 = 0;
@@ -561,7 +543,7 @@ int he_f_meyer_xin_force(T *q, He *he,
     compute_lb(q, he, x, lbx);
     compute_lb(q, he, y, lby);
     compute_lb(q, he, z, lbz);
-    compute_norm(q, he, x, y, z, normx, normy, normz);
+    q->compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_H(q, he, H);
     compute_K(q, he, x, y, z, K);
 
