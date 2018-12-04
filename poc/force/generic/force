@@ -97,8 +97,7 @@ function set(j) {
 function get_type(s, type,    n, i) {
     delete type
     n = get_narg(s)
-    for (i = 1; i <= n; i++)
-	type[i] = "real"
+    split(s, type, ",")
 }
 
 function get_narg(s) {
@@ -143,10 +142,9 @@ function p_ini(   i) {
 }
 
 function p_decl(   i) {
-    for (i = 1; i <= narg; i++) {
+    for (i = 1; i <= narg; i++)
 	tprint(sprintf("%s %s = *(%s*)%s;",
 		       arg_type[i], var(i), arg_type[i], "*param++"))
-    }
 }
 
 function p_header(   i) {
