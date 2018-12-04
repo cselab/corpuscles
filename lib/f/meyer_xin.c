@@ -37,7 +37,7 @@ struct T {
   real *cot;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
-  real *curva_mean, *curva_gauss;
+  real *H, *curva_gauss;
   real *energy_local, *area;
   real *lbH;
 
@@ -256,7 +256,7 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
     MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
-    MALLOC(nv, &q->curva_mean);  MALLOC(nv, &q->curva_gauss);
+    MALLOC(nv, &q->H);  MALLOC(nv, &q->curva_gauss);
     MALLOC(nv, &q->energy_local); MALLOC(nv, &q->area);
     MALLOC(nv, &q->lbH);
 
@@ -273,7 +273,7 @@ int he_f_meyer_xin_fin(T *q) {
     FREE(q->cot);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
-    FREE(q->curva_mean);FREE(q->curva_gauss);
+    FREE(q->H);FREE(q->curva_gauss);
     FREE(q->energy_local); FREE(q->area);
     FREE(q->lbH);
     FREE(q);
@@ -296,7 +296,7 @@ int he_f_meyer_xin_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
     return HE_OK;
 }
 int he_f_meyer_xin_curva_mean_ver(T *q, /**/ real **pa) {
-    *pa = q->curva_mean;
+    *pa = q->H;
     return HE_OK;
 }
 int he_f_meyer_xin_curva_gauss_ver(T *q, /**/ real **pa) {
@@ -393,7 +393,7 @@ static int compute_norm(T *q, He *he,
     }
     return HE_OK;
 }
-static int compute_curva_mean(T *q, He *he, /**/ real *curva_mean) {
+static int compute_H(T *q, He *he, /**/ real *H) {
     enum {X, Y, Z};
     int i, nv;
     real *lbx, *lby, *lbz;
@@ -412,7 +412,7 @@ static int compute_curva_mean(T *q, He *he, /**/ real *curva_mean) {
     for ( i = 0; i < nv; i++ ) {
         vec_get(i, lbx, lby, lbz, u);
         vec_get(i, normx, normy, normz, v);
-        curva_mean[i] = vec_dot(u, v)/2;
+        H[i] = vec_dot(u, v)/2;
     }
 
     return HE_OK;
@@ -465,7 +465,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
   int *T0, *T1, *T2;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
-  real *curva_mean;
+  real *H;
   real *energy_local, *area, *cot;
 
   real Kb, C0, Kad, DA0D;
@@ -495,7 +495,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
-  curva_mean   = q->curva_mean;
+  H   = q->H;
   energy_local = q->energy_local;
   area = q->area;
   cot  = q->cot;
@@ -512,15 +512,15 @@ real he_f_meyer_xin_energy(T *q, He *he,
   compute_lb(q, he, y, lby);
   compute_lb(q, he, z, lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
-  compute_curva_mean(q, he, /**/ curva_mean);
+  compute_H(q, he, /**/ H);
 
   mH1 = 0;
   mH2 = 0;
 
   for ( v = 0; v < nv; v++ ) {
-    mH1 += curva_mean[v]*area[v];
-    mH2 += curva_mean[v]*curva_mean[v]*area[v];
-    energy_local[v] = 2*Kb*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
+    mH1 += H[v]*area[v];
+    mH2 += H[v]*H[v]*area[v];
+    energy_local[v] = 2*Kb*(H[v]-H0)*(H[v]-H0)*area[v];
   }
 
   energy1 = 2*Kb*mH2;
@@ -554,7 +554,7 @@ int he_f_meyer_xin_force(T *q, He *he,
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *area, *cot;
-    real *curva_gauss, *curva_mean;
+    real *curva_gauss, *H;
     real *lbH;
     real fm;
 
@@ -584,7 +584,7 @@ int he_f_meyer_xin_force(T *q, He *he,
     cot = q->cot;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     normx = q->normx; normy = q->normy; normz = q->normz;
-    curva_mean  = q->curva_mean;
+    H  = q->H;
     curva_gauss = q->curva_gauss;
     area    = q->area;
     lbH = q->lbH;
@@ -605,14 +605,14 @@ int he_f_meyer_xin_force(T *q, He *he,
     compute_lb(q, he, y, lby);
     compute_lb(q, he, z, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
-    compute_curva_mean(q, he, curva_mean);
+    compute_H(q, he, H);
     compute_curva_gauss(q, he, x, y, z, curva_gauss);
 
-    compute_lb(q, he, curva_mean, lbH);
+    compute_lb(q, he, H, lbH);
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-      fm = +2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
+      fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-curva_gauss[v]);
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
@@ -622,7 +622,7 @@ int he_f_meyer_xin_force(T *q, He *he,
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
-      he_sum_add(sum, curva_mean[v] * area[v]);
+      he_sum_add(sum, H[v] * area[v]);
     }
     mH1 = he_sum_get(sum);
     he_sum_fin(sum);
@@ -631,7 +631,7 @@ int he_f_meyer_xin_force(T *q, He *he,
 
     for ( v = 0; v < nv; v++ ) {
 
-      fm = -pi*Kad*(tt*2*curva_gauss[v]/mH0 - tt*tt*curva_mean[v]/mH0/mH0);
+      fm = -pi*Kad*(tt*2*curva_gauss[v]/mH0 - tt*tt*H[v]/mH0/mH0);
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
