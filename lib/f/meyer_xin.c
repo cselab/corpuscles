@@ -37,7 +37,7 @@ struct T {
   real *cot;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
-  real *H, *curva_gauss;
+  real *H, *K;
   real *energy_local, *area;
   real *lbH;
 
@@ -256,7 +256,7 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
     MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
-    MALLOC(nv, &q->H);  MALLOC(nv, &q->curva_gauss);
+    MALLOC(nv, &q->H);  MALLOC(nv, &q->K);
     MALLOC(nv, &q->energy_local); MALLOC(nv, &q->area);
     MALLOC(nv, &q->lbH);
 
@@ -273,7 +273,7 @@ int he_f_meyer_xin_fin(T *q) {
     FREE(q->cot);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
-    FREE(q->H);FREE(q->curva_gauss);
+    FREE(q->H);FREE(q->K);
     FREE(q->energy_local); FREE(q->area);
     FREE(q->lbH);
     FREE(q);
@@ -299,8 +299,8 @@ int he_f_meyer_xin_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->H;
     return HE_OK;
 }
-int he_f_meyer_xin_curva_gauss_ver(T *q, /**/ real **pa) {
-    *pa = q->curva_gauss;
+int he_f_meyer_xin_K_ver(T *q, /**/ real **pa) {
+    *pa = q->K;
     return HE_OK;
 }
 int he_f_meyer_xin_energy_ver(T *q, /**/ real**pa) {
@@ -418,9 +418,9 @@ static int compute_H(T *q, He *he, /**/ real *H) {
     return HE_OK;
 
 }
-static int compute_curva_gauss(T *q, He *he,
+static int compute_K(T *q, He *he,
                                   const real *x, const real *y, const real *z, /**/
-                                  real *curva_gauss) {
+                                  real *K) {
 
     int *T0, *T1, *T2;
     real *area;
@@ -435,7 +435,7 @@ static int compute_curva_gauss(T *q, He *he,
     T1 = q->T1;
     T2 = q->T2;
     area = q->area;
-    zero(nv,  curva_gauss);
+    zero(nv,  K);
 
     for ( t = 0; t < nt; t++ ) {
         i = T0[t]; j = T1[t]; k = T2[t];
@@ -446,13 +446,13 @@ static int compute_curva_gauss(T *q, He *he,
         theta_b = tri_angle(a, b, c);
         theta_c = tri_angle(b, c, a);
 
-        curva_gauss[i] -= theta_a;
-        curva_gauss[j] -= theta_b;
-        curva_gauss[k] -= theta_c;
+        K[i] -= theta_a;
+        K[j] -= theta_b;
+        K[k] -= theta_c;
     }
 
     for ( i = 0; i < nv; i++ ) {
-        curva_gauss[i] = ( curva_gauss[i] + 2 * pi ) / area[i];
+        K[i] = ( K[i] + 2 * pi ) / area[i];
     }
 
     return HE_OK;
@@ -534,8 +534,6 @@ real he_f_meyer_xin_energy(T *q, He *he,
   energy_tot_nonlocal = energy2 + energy4 + energy6;
   energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
 
-  //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
-  //printf("enegy local, nonlocal: %f, %f \n", energy_tot_local, energy_tot_nonlocal);
   return energy_tot;
 
 }
@@ -554,7 +552,7 @@ int he_f_meyer_xin_force(T *q, He *he,
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *area, *cot;
-    real *curva_gauss, *H;
+    real *K, *H;
     real *lbH;
     real fm;
 
@@ -585,7 +583,7 @@ int he_f_meyer_xin_force(T *q, He *he,
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     normx = q->normx; normy = q->normy; normz = q->normz;
     H  = q->H;
-    curva_gauss = q->curva_gauss;
+    K = q->K;
     area    = q->area;
     lbH = q->lbH;
 
@@ -606,13 +604,13 @@ int he_f_meyer_xin_force(T *q, He *he,
     compute_lb(q, he, z, lbz);
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_H(q, he, H);
-    compute_curva_gauss(q, he, x, y, z, curva_gauss);
+    compute_K(q, he, x, y, z, K);
 
     compute_lb(q, he, H, lbH);
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-      fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-curva_gauss[v]);
+      fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-K[v]);
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
@@ -631,7 +629,7 @@ int he_f_meyer_xin_force(T *q, He *he,
 
     for ( v = 0; v < nv; v++ ) {
 
-      fm = -pi*Kad*(tt*2*curva_gauss[v]/mH0 - tt*tt*H[v]/mH0/mH0);
+      fm = -pi*Kad*(tt*2*K[v]/mH0 - tt*tt*H[v]/mH0/mH0);
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
