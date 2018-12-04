@@ -41,6 +41,7 @@ struct T {
     real energy_total_nonlocal;
     int nv, ne, nt, nh;
     real (*compute_area)(T*, He*, const real*, const real*, const real*, real *area);
+    real (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
 };
 
 static void zero(int n, real *a) {
@@ -81,9 +82,9 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
     *pi = i; *pj = j; *pk = k; *pl = l;
     return BULK;
 }
-static real compute_area_voronoi(T *q, He *he,
-                                 const real *x, const real *y, const real *z, /**/
-                                 real *area) {
+static real area_voronoi(T *q, He *he,
+                         const real *x, const real *y, const real *z, /**/
+                         real *area) {
     enum {X, Y, Z};
     int t, nt, nv;
     int i, j, k;
@@ -134,11 +135,11 @@ static real compute_area_voronoi(T *q, He *he,
 
     he_sum_fin(sum);
     return area_tot_tri;
-
 }
-static real compute_area_mix(T *q, He *he,
-                             const real *x, const real *y, const real *z, /**/
-                             real *area) {
+
+static real area_mix(T *q, He *he,
+                     const real *x, const real *y, const real *z, /**/
+                     real *area) {
     enum {X, Y, Z};
     int t, nt, nv;
     int i, j, k;
@@ -232,9 +233,9 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->DA0D = DA0D;
 
     if (getenv("MIX"))
-        q->compute_area = compute_area_mix;
+        q->compute_area = area_mix;
     else
-        q->compute_area = compute_area_voronoi;
+        q->compute_area = area_voronoi;
 
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
