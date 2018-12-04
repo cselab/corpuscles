@@ -41,7 +41,7 @@ struct T {
   real energy_total_nonlocal;
   int nv, ne, nt, nh;
   /* how to compute area? */
-  real (*Fare)(T*, He*, const real*, const real*, const real*, real *area);
+  real (*compute_area)(T*, He*, const real*, const real*, const real*, real *area);
 };
 
 static void zero(int n, real *a) {
@@ -233,9 +233,9 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->DA0D = DA0D;
 
     if (getenv("MIX"))
-        q->Fare = compute_area_mix;
+        q->compute_area = compute_area_mix;
     else
-        q->Fare = compute_area_voronoi;
+        q->compute_area = compute_area_voronoi;
 
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
@@ -473,7 +473,7 @@ real he_f_meyer_xin_energy(T *q, He *he,
   area = q->area;
   cot  = q->cot;
 
-  mH0 = q->Fare(q, he, x, y, z, area);
+  mH0 = q->compute_area(q, he, x, y, z, area);
 
   compute_cot(q, he, x, y, z, cot);
   compute_lb(q, he, x, lbx);
@@ -555,7 +555,7 @@ int he_f_meyer_xin_force(T *q, He *he,
     K = q->K;
     area    = q->area;
     lbH = q->lbH;
-    mH0 = q->Fare(q, he, x, y, z, area);
+    mH0 = q->compute_area(q, he, x, y, z, area);
 
     compute_cot(q, he, x, y, z, cot);
     compute_lb(q, he, x, lbx);
