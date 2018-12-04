@@ -31,8 +31,6 @@ static real mcot(const real a[3], const real b[3], const real c[3]) { return tri
 struct T {
   real Kb, C0, Kad, DA0D;
 
-  int *D0, *D1, *D2, *D3;
-
   real *cot;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
@@ -250,8 +248,6 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     else
         q->Fare = compute_area_voronoi;
 
-    MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
-
     MALLOC(nh, &q->cot);
     MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
     MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
@@ -267,7 +263,6 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     return HE_OK;
 }
 int he_f_meyer_xin_fin(T *q) {
-    FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
     FREE(q->cot);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
     FREE(q->normx);FREE(q->normy);FREE(q->normz);
@@ -562,8 +557,8 @@ int he_f_meyer_xin_force(T *q, He *he,
     ne = he_ne(he);
 
     he_T(he, &T0, &T1, &T2);
+    he_D(he, &D0, &D1, &D2, &D3);
 
-    D0 = q->D0; D1 = q->D1; D2 = q->D2; D3 = q->D3;
     cot = q->cot;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
     normx = q->normx; normy = q->normy; normz = q->normz;
@@ -571,11 +566,6 @@ int he_f_meyer_xin_force(T *q, He *he,
     K = q->K;
     area    = q->area;
     lbH = q->lbH;
-
-    for (e = 0; e < ne; e++) {
-        get_ijkl(e, he, /**/ &i, &j, &k, &l);
-        D0[e] = i; D1[e] = j; D2[e] = k; D3[e] = l;
-    }
     mH0 = q->Fare(q, he, x, y, z, area);
 
     compute_cot(q, he, x, y, z, cot);
