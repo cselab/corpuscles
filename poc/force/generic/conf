@@ -69,3 +69,12 @@ he_f_garea_voronoi_force
 he_f_garea_voronoi_energy
 he_f_garea_voronoi_ini
 real,real
+
+#include "he/f/volume_normal.h"
+volume_normal
+HeFVolumeNormal
+he_f_volume_normal_fin
+he_f_volume_normal_force
+he_f_volume_normal_energy
+he_f_volume_normal_ini
+real,real

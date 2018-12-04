@@ -18,6 +18,7 @@
 #include "he/f/harmonic_ref.h"
 #include "he/f/kantor.h"
 #include "he/f/volume.h"
+#include "he/f/volume_normal.h"
 #include "he/he.h"
 #include "he/memory.h"
 #include "he/off.h"
@@ -40,6 +41,7 @@ static HeFAreaVoronoi *f_area_voronoi;
 static HeFGareaVoronoi *f_garea_voronoi;
 static HeFGarea *f_garea;
 static HeFVolume *f_volume;
+static HeFVolumeNormal *f_volume_normal;
 static HeFHarmonic *f_harmonic;
 static HeFEdgSq *f_edg_sq;
 static HeFHarmonicRef *f_harmonic_ref;
@@ -172,6 +174,21 @@ real f_area_voronoi_energy(const real *x, const real *y, const real *z) {
 }
 int f_area_voronoi_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     return he_f_area_voronoi_force(f_area_voronoi, he, x, y, z, /**/ fx, fy, fz);
+}
+
+int f_volume_normal_ini(real a0, real K) {
+    he_f_volume_normal_ini(a0, K, he, /**/ &f_volume_normal);
+    return HE_OK;
+}
+int f_volume_normal_fin() {
+    he_f_volume_normal_fin(f_volume_normal);
+    return HE_OK;
+}
+real f_volume_normal_energy(const real *x, const real *y, const real *z) {
+    return he_f_volume_normal_energy(f_volume_normal, he, x, y, z);
+}
+int f_volume_normal_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
+    return he_f_volume_normal_force(f_volume_normal, he, x, y, z, /**/ fx, fy, fz);
 }
 
 int f_garea_voronoi_ini(real a0, real K) {

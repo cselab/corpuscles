@@ -19,6 +19,7 @@
 #include "he/f/harmonic.h"
 #include "he/f/area_voronoi.h"
 #include "he/f/garea_voronoi.h"
+#include "he/f/volume_normal.h"
 #define SIZE (4048)
 
 #include "he/force.h"
@@ -33,6 +34,7 @@ static int force_edg_sq_ini(void *param[], He*, /**/ T**);
 static int force_harmonic_ini(void *param[], He*, /**/ T**);
 static int force_area_voronoi_ini(void *param[], He*, /**/ T**);
 static int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
+static int force_volume_normal_ini(void *param[], He*, /**/ T**);
 
 struct T
 {
@@ -53,6 +55,7 @@ static const char *Name[] = {
     "harmonic",
     "area_voronoi",
     "garea_voronoi",
+    "volume_normal",
 };
 
 static int Narg[] = {
@@ -61,6 +64,7 @@ static int Narg[] = {
     2,
     4,
     1,
+    2,
     2,
     2,
     2,
@@ -75,6 +79,7 @@ static const TypeIni Ini[] = {
     force_harmonic_ini,
     force_area_voronoi_ini,
     force_garea_voronoi_ini,
+    force_volume_normal_ini,
 };
 
 int force_ini(const char *name, void **param, He *he, T **pq)
@@ -111,24 +116,45 @@ int force_narg(const char *name)
     ERR(HE_INDEX, "");
 }
 
-static int str(char **pargv[], char *p) {
-    char **argv;
+static int scl(const char **pargv[], real *p) {
+    const char **argv;
     argv = *pargv;
-
-    if (*argv == NULL) {
+    if (*argv == NULL)
         ERR(HE_IO, "not enough args");
-    }
-    strncpy(p, *argv, SIZE - 1);
+    if (sscanf(*argv, XE_REAL_IN, p) != 1)
+        ER("not a number '%s'", *argv);
     argv++;
 
     *pargv = argv;
     return HE_OK;
 }
 
-int force_argv(char **pargv[], He *he, /**/ T **pq) {
-    char name[SIZE];
-    str(pargv, name);
+static int str(const char **pargv[], char *p) {
+    const char **argv;
+    argv = *pargv;
+
+    if (*argv == NULL)
+        ERR(HE_IO, "not enough args");
+
+    strncpy(p, *argv, SIZE - 1);
+    argv++;
+    *pargv = argv;
     return HE_OK;
+}
+
+int force_argv(const char **pargv[], He *he, /**/ T **pq) {
+    real   param[999];
+    void *vparam[999];
+    char name[SIZE];
+    int narg, i;
+
+    str(pargv, name);
+    narg = force_narg(name);
+    for (i = 0; i < narg; i++) {
+        scl(pargv, &param[i]);
+        vparam[i] = &param[i];
+    }
+    return force_ini(name, vparam, he,  pq);
 }
 
 const char *force_list()
@@ -483,4 +509,43 @@ int force_garea_voronoi_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &garea_voronoi_vtable;
     *pq = &q->force;
     return he_f_garea_voronoi_ini(g1, g2,  he, &q->local);
+}
+typedef struct Volume_normal Volume_normal;
+struct Volume_normal {
+    T force;
+    HeFVolumeNormal *local;
+};
+static int volume_normal_fin(T *q)
+{
+    int status;
+    Volume_normal *b = CONTAINER_OF(q, Volume_normal, force);
+    status = he_f_volume_normal_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int volume_normal_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Volume_normal *b = CONTAINER_OF(q, Volume_normal, force);
+    return he_f_volume_normal_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real volume_normal_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Volume_normal *b = CONTAINER_OF(q, Volume_normal, force);
+    return he_f_volume_normal_energy(b->local, he, x, y, z);
+}
+static Vtable volume_normal_vtable = {
+    volume_normal_fin,
+    volume_normal_force,
+    volume_normal_energy,
+};
+int force_volume_normal_ini(void *param[], He *he, /**/ T **pq)
+{
+    Volume_normal *q;
+    real g1 = *(real*)*param++;
+    real g2 = *(real*)*param++;
+    MALLOC(1, &q);
+    q->force.vtable = &volume_normal_vtable;
+    *pq = &q->force;
+    return he_f_volume_normal_ini(g1, g2,  he, &q->local);
 }

@@ -139,37 +139,6 @@ static void euler(real dt,
     }
 }
 
-static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
-    int nv;
-    real r, r0, sx, sy, sz;
-    int i;
-    nv = NV;
-    sx = sy = sz = 0;
-    for (i = 0; i < nv; i++) {
-        r = rand()/(real)RAND_MAX - 0.5;
-        r0 = r * mag;
-        vx[i] += r0; vy[i] += r0; vz[i] += r0;
-    }
-    for (i = 0; i < nv; i++) {
-        sx += vx[i]; sy += vy[i]; sz += vz[i];
-    }
-    sx /= nv; sy /= nv; sz /= nv;
-    for (i = 0; i < nv; i++) {
-        vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
-    }
-}
-
-static void visc_lang(real mu,
-                      const real *vx, const real *vy, const real *vz, /*io*/
-                      real *fx, real *fy, real *fz) {
-    int i;
-    for (i = 0; i < NV; i++) {
-        fx[i] -= mu*vx[i];
-        fy[i] -= mu*vy[i];
-        fz[i] -= mu*vz[i];
-    }
-}
-
 static void visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
@@ -221,7 +190,7 @@ static void main0(real *vx, real *vy, real *vz,
   char file[4048];
 
   dt_max = 0.01;
-  mu     = 100.0;
+  mu     = 10.0;
   h      = 0.01*e0;
   
   nsub = 100;
@@ -229,13 +198,9 @@ static void main0(real *vx, real *vy, real *vz,
   for (i = 0; i <= end; i++) {
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-    rnd = 0.01*max_vec(vx, vy, vz);
-    jigle(rnd, vx, vy, vz);        
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-    
-    
     
     j = 0;
     A  = area();
@@ -257,17 +222,13 @@ static void main0(real *vx, real *vy, real *vz,
       }
     }
 
-    if ( i % 100 == 0 ) {
+    do {
+        equiangulate(&cnt);
+        if (cnt > 10)
+            MSG("cnt : %d", cnt);
+    } while (cnt > 0);
 
-      if ( i > 0 ) {
-	j = 0;
-	do {
-	  equiangulate(&cnt);
-	  MSG("cnt : %d", cnt);
-	  j++;
-	} while (cnt > 0 && j < 10);
-      }
-      
+    if ( i % 100 == 0 ) {
       et = Energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
       et = et + ek;

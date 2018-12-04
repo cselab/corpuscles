@@ -22,8 +22,7 @@
 static int force_%name%_ini(void *param[], He*, /**/ T**);
 //%end
 
-struct T
-{
+struct T {
     struct Vtable *vtable;
     const char *name;
 };
@@ -78,24 +77,45 @@ int force_narg(const char *name)
     ERR(HE_INDEX, "");
 }
 
-static int str(char **pargv[], char *p) {
-    char **argv;
+static int scl(const char **pargv[], real *p) {
+    const char **argv;
     argv = *pargv;
-
-    if (*argv == NULL) {
+    if (*argv == NULL)
         ERR(HE_IO, "not enough args");
-    }
-    strncpy(p, *argv, SIZE - 1);
+    if (sscanf(*argv, XE_REAL_IN, p) != 1)
+        ER("not a number '%s'", *argv);
     argv++;
 
     *pargv = argv;
     return HE_OK;
 }
 
-int force_argv(char **pargv[], He *he, /**/ T **pq) {
-    char name[SIZE];
-    str(pargv, name);
+static int str(const char **pargv[], char *p) {
+    const char **argv;
+    argv = *pargv;
+
+    if (*argv == NULL)
+        ERR(HE_IO, "not enough args");
+
+    strncpy(p, *argv, SIZE - 1);
+    argv++;
+    *pargv = argv;
     return HE_OK;
+}
+
+int force_argv(const char **pargv[], He *he, /**/ T **pq) {
+    real   param[999];
+    void *vparam[999];
+    char name[SIZE];
+    int narg, i;
+
+    str(pargv, name);
+    narg = force_narg(name);
+    for (i = 0; i < narg; i++) {
+        scl(pargv, &param[i]);
+        vparam[i] = &param[i];
+    }
+    return force_ini(name, vparam, he,  pq);
 }
 
 const char *force_list()

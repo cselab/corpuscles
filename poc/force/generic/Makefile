@@ -12,7 +12,7 @@ install: force.h force.c
 	cp force.h $S/lib/he/force.h
 	cp force.c $S/lib/force.c
 
-clean:; rm force.h force.c
+clean:; rm -f force.h force.c
 
 
 .PHONY: clean install all

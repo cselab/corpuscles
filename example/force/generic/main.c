@@ -19,17 +19,12 @@
 #define FMT_IN   XE_REAL_IN
 
 static const char **argv;
-static char name[4048];
 
 static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr, *area;
 static real *gx, *gy, *gz;
 static int nv, nt;
 static He *he;
 static Force *force;
-
-static real   param[999];
-static void *vparam[999];
-
 static real delta = 1e-6;
 
 static const char *me = "force/generic";
@@ -40,45 +35,10 @@ static void usg() {
     fprintf(stderr, "%s %s [args..] < OFF > PUNTO\n", me, list);
 }
 
-static int eq(const char *a, const char *b) { return util_eq(a, b); }
-static int scl(/**/ real *p) {
-    if (*argv == NULL) {
-        usg();
-        ER("not enough args");
-    }
-    if (sscanf(*argv, FMT_IN, p) != 1)
-        ER("not a number '%s'", *argv);
-    argv++;
-    return HE_OK;
-}
-static int str(/**/ char *p) {
-    if (*argv == NULL) {
-        usg();
-        ER("not enough args");
-    }
-    strncpy(p, *argv, 4047);
-    argv++;
-    return HE_OK;
-}
-static void arg() {
-    int narg, i;
-    if (*argv != NULL && eq(*argv, "-h")) {
-        usg();
-        exit(0);
-    }
-    str(name);
-    narg = force_narg(name);
-    for (i = 0; i < narg; i++) {
-        scl(&param[i]);
-        vparam[i] = &param[i];
-    }
-}
-
 static void main0() {
     int i;
     real e, r[3], f[3];
 
-    force_ini(name, vparam, he,  &force);
     force_force(force, he, x, y, z, /**/ fx, fy, fz);
     fd(force, he, delta, x, y, z, /**/ gx, gy, gz);
     e = force_energy(force, he, x, y, z);
@@ -103,11 +63,10 @@ static void main0() {
     force_fin(force);
 }
 
-int main(int __UNUSED argc, const char *v[]) {
-    argv = v; argv++;
-    arg();
-
+int main(int __UNUSED argc, const char *argv[]) {
+    argv++;
     y_ini("/dev/stdin", &he, &x, &y, &z);
+    force_argv(&argv, he,  &force);
     nv = he_nv(he);
     nt = he_nt(he);
 
