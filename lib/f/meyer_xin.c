@@ -31,7 +31,6 @@ static real mcot(const real a[3], const real b[3], const real c[3]) { return tri
 struct T {
   real Kb, C0, Kad, DA0D;
 
-  int *T0, *T1, *T2;
   int *D0, *D1, *D2, *D3;
 
   real *cot;
@@ -111,7 +110,8 @@ static real compute_area_voronoi(T *q, He *he,
 
   nt = he_nt(he);
   nv = he_nv(he);
-  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+
+  he_T(he, &T0, &T1, &T2);
   he_sum_ini(&sum);
 
   zero(nv, area);
@@ -166,7 +166,7 @@ static real compute_area_mix(T *q, He *he,
 
     nt = he_nt(he);
     nv = he_nv(he);
-    T0 = q->T0; T1 = q->T1; T2 = q->T2;
+    he_T(he, &T0, &T1, &T2);
     he_sum_ini(&sum);
 
     zero(nv, area);
@@ -250,7 +250,6 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     else
         q->Fare = compute_area_voronoi;
 
-    MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
 
     MALLOC(nh, &q->cot);
@@ -268,7 +267,6 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     return HE_OK;
 }
 int he_f_meyer_xin_fin(T *q) {
-    FREE(q->T0); FREE(q->T1); FREE(q->T2);
     FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
     FREE(q->cot);
     FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
@@ -368,9 +366,7 @@ static int compute_norm(T *q, He *he,
 
     nt = he_nt(he);
     nv = he_nv(he);
-    T0 = q->T0;
-    T1 = q->T1;
-    T2 = q->T2;
+    he_T(he, &T0, &T1, &T2);
 
     zero(nv, normx); zero(nv, normy); zero(nv, normz);
     for ( t = 0; t < nt; t++ ) {
@@ -421,19 +417,17 @@ static int compute_H(T *q, He *he, /**/ real *H) {
 static int compute_K(T *q, He *he,
                                   const real *x, const real *y, const real *z, /**/
                                   real *K) {
-
-    int *T0, *T1, *T2;
     real *area;
     int t, nt;
     int i, j, k, nv;
     real a[3], b[3], c[3];
     real theta_a, theta_b, theta_c;
+    int *T0, *T1, *T2;
 
     nt = he_nt(he);
     nv = he_nv(he);
-    T0 = q->T0;
-    T1 = q->T1;
-    T2 = q->T2;
+    he_T(he, &T0, &T1, &T2);
+
     area = q->area;
     zero(nv,  K);
 
@@ -487,23 +481,13 @@ real he_f_meyer_xin_energy(T *q, He *he,
   nv = he_nv(he);
   nt = he_nt(he);
 
-  if (nv != q->nv )
-    ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", nv, q->nv);
-  if (nt != q->nt )
-        ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", nt, q->nt);
-
-  T0 = q->T0; T1 = q->T1; T2 = q->T2;
+  he_T(he, &T0, &T1, &T2);
   lbx = q->lbx; lby = q->lby; lbz = q->lbz;
   normx = q->normx; normy = q->normy; normz = q->normz;
   H   = q->H;
   energy_local = q->energy_local;
   area = q->area;
   cot  = q->cot;
-
-  for (t = 0; t < nt; t++) {
-    get_ijk(t, he, /**/ &i, &j, &k);
-    T0[t] = i; T1[t] = j; T2[t] = k;
-  }
 
   mH0 = q->Fare(q, he, x, y, z, area);
 
@@ -577,7 +561,8 @@ int he_f_meyer_xin_force(T *q, He *he,
     nt = he_nt(he);
     ne = he_ne(he);
 
-    T0 = q->T0; T1 = q->T1; T2 = q->T2;
+    he_T(he, &T0, &T1, &T2);
+
     D0 = q->D0; D1 = q->D1; D2 = q->D2; D3 = q->D3;
     cot = q->cot;
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
@@ -586,11 +571,6 @@ int he_f_meyer_xin_force(T *q, He *he,
     K = q->K;
     area    = q->area;
     lbH = q->lbH;
-
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        T0[t] = i; T1[t] = j; T2[t] = k;
-    }
 
     for (e = 0; e < ne; e++) {
         get_ijkl(e, he, /**/ &i, &j, &k, &l);
