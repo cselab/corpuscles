@@ -91,13 +91,21 @@ function set(j) {
     energy = Energy[j]
     narg = get_narg(Splice[j])
     splice = param(Splice[j])
+    get_type(Splice[j], arg_type)
+}
+
+function get_type(s, type,    n, i) {
+    delete type
+    n = get_narg(s)
+    for (i = 1; i <= n; i++)
+	type[i] = "real"
 }
 
 function get_narg(s) {
     return gsub(/,/, "", s) + 1
 }
 
-function param(s,   ans) {
+function param(s,   n, i, ans) {
     n = get_narg(s)
     for (i = 1; i <= n; i++)
 	ans = ans var(i) ", "
@@ -135,8 +143,10 @@ function p_ini(   i) {
 }
 
 function p_decl(   i) {
-    for (i = 1; i <= narg; i++)
-	tprint(sprintf("real %s = *(real*)%s;", var(i), "*param++"))
+    for (i = 1; i <= narg; i++) {
+	tprint(sprintf("%s %s = *(%s*)%s;",
+		       arg_type[i], var(i), arg_type[i], "*param++"))
+    }
 }
 
 function p_header(   i) {
