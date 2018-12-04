@@ -622,12 +622,8 @@ int he_f_meyer_xin_force(T *q, He *he,
     compute_lb(q, he, curva_mean, lbH);
 
     he_sum_ini(&sum);
-
-
     for (v = 0; v < nv; v++) {
-
       fm = +2*2*Kb*(curva_mean[v]-H0)*(curva_mean[v]*curva_mean[v]+curva_mean[v]*H0-curva_gauss[v]);
-
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
@@ -637,10 +633,8 @@ int he_f_meyer_xin_force(T *q, He *he,
       fx[v] += fm * normx[v] * area[v];
       fy[v] += fm * normy[v] * area[v];
       fz[v] += fm * normz[v] * area[v];
-
       he_sum_add(sum, curva_mean[v] * area[v]);
     }
-
     mH1 = he_sum_get(sum);
     he_sum_fin(sum);
 
