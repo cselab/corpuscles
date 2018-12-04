@@ -27,21 +27,20 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-  real Kb, C0, Kad, DA0D;
+    real Kb, C0, Kad, DA0D;
 
-  real *cot;
-  real *lbx, *lby, *lbz;
-  real *normx, *normy, *normz;
-  real *H, *K;
-  real *energy_local, *area;
-  real *lbH;
+    real *cot;
+    real *lbx, *lby, *lbz;
+    real *normx, *normy, *normz;
+    real *H, *K;
+    real *energy_local, *area;
+    real *lbH;
 
-  real energy_total;
-  real energy_total_local;
-  real energy_total_nonlocal;
-  int nv, ne, nt, nh;
-  /* how to compute area? */
-  real (*compute_area)(T*, He*, const real*, const real*, const real*, real *area);
+    real energy_total;
+    real energy_total_local;
+    real energy_total_nonlocal;
+    int nv, ne, nt, nh;
+    real (*compute_area)(T*, He*, const real*, const real*, const real*, real *area);
 };
 
 static void zero(int n, real *a) {
@@ -85,61 +84,61 @@ static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
 static real compute_area_voronoi(T *q, He *he,
                                  const real *x, const real *y, const real *z, /**/
                                  real *area) {
-  enum {X, Y, Z};
-  int t, nt, nv;
-  int i, j, k;
-  real a[3], b[3], c[3], u[3];
-  int *T0, *T1, *T2;
-  real area0;
-  real cota,cotb,cotc;
-  real ab2, bc2, ca2, area_tot_tri;
-  HeSum *sum;
+    enum {X, Y, Z};
+    int t, nt, nv;
+    int i, j, k;
+    real a[3], b[3], c[3], u[3];
+    int *T0, *T1, *T2;
+    real area0;
+    real cota,cotb,cotc;
+    real ab2, bc2, ca2, area_tot_tri;
+    HeSum *sum;
 
-  nt = he_nt(he);
-  nv = he_nv(he);
+    nt = he_nt(he);
+    nv = he_nv(he);
 
-  he_T(he, &T0, &T1, &T2);
-  he_sum_ini(&sum);
+    he_T(he, &T0, &T1, &T2);
+    he_sum_ini(&sum);
 
-  zero(nv, area);
+    zero(nv, area);
 
-  area_tot_tri = 0;
-  for ( t = 0; t < nt; t++ ) {
-    i = T0[t]; j = T1[t]; k = T2[t];
+    area_tot_tri = 0;
+    for ( t = 0; t < nt; t++ ) {
+        i = T0[t]; j = T1[t]; k = T2[t];
 
-    get3(x, y, z, i, j, k, a, b, c);
-    area0 = tri_area(a, b, c);
+        get3(x, y, z, i, j, k, a, b, c);
+        area0 = tri_area(a, b, c);
 
-    he_sum_add(sum, area0);
+        he_sum_add(sum, area0);
 
-    vec_minus(a, b,  u);
-    ab2 = vec_dot(u, u);
+        vec_minus(a, b,  u);
+        ab2 = vec_dot(u, u);
 
-    vec_minus(b, c, u);
-    bc2 = vec_dot(u, u);
+        vec_minus(b, c, u);
+        bc2 = vec_dot(u, u);
 
-    vec_minus(c, a,  u);
-    ca2 = vec_dot(u, u);
+        vec_minus(c, a,  u);
+        ca2 = vec_dot(u, u);
 
-    cota = tri_cot(c, a, b);
-    cotb = tri_cot(a, b, c);
-    cotc = tri_cot(b, c, a);
+        cota = tri_cot(c, a, b);
+        cotb = tri_cot(a, b, c);
+        cotc = tri_cot(b, c, a);
 
-    area[i] += ( ab2*cotc + ca2*cotb ) / 8;
-    area[j] += ( bc2*cota + ab2*cotc ) / 8;
-    area[k] += ( ca2*cotb + bc2*cota ) / 8;
+        area[i] += ( ab2*cotc + ca2*cotb ) / 8;
+        area[j] += ( bc2*cota + ab2*cotc ) / 8;
+        area[k] += ( ca2*cotb + bc2*cota ) / 8;
 
-  }/*end for loop*/
+    }/*end for loop*/
 
-  area_tot_tri = he_sum_get(sum);
+    area_tot_tri = he_sum_get(sum);
 
-  he_sum_fin(sum);
-  return area_tot_tri;
+    he_sum_fin(sum);
+    return area_tot_tri;
 
 }
 static real compute_area_mix(T *q, He *he,
-                         const real *x, const real *y, const real *z, /**/
-                         real *area) {
+                             const real *x, const real *y, const real *z, /**/
+                             real *area) {
     enum {X, Y, Z};
     int t, nt, nv;
     int i, j, k;
@@ -311,31 +310,31 @@ static int compute_cot(T *q, He *he, const real *x, const real *y, const real *z
     return HE_OK;
 }
 static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
-  enum {X, Y, Z};
-  int i, j, h, n, nv, nh;
-  real a[3], b[3], c[3], u[3];
-  real *area, *cot;
-  real tt;
+    enum {X, Y, Z};
+    int i, j, h, n, nv, nh;
+    real a[3], b[3], c[3], u[3];
+    real *area, *cot;
+    real tt;
 
-  nh = he_nh(he);
-  nv = he_nv(he);
+    nh = he_nh(he);
+    nv = he_nv(he);
 
-  area = q->area;
-  cot  = q->cot;
+    area = q->area;
+    cot  = q->cot;
 
-  zero(nv, lbx);
+    zero(nv, lbx);
 
-  for (h = 0; h < nh; h++) {
-    n = nxt(h);
-    i = ver(h); j = ver(n);
-    lbx[i] -= cot[h]*(x[i] - x[j])/2;
-  }
+    for (h = 0; h < nh; h++) {
+        n = nxt(h);
+        i = ver(h); j = ver(n);
+        lbx[i] -= cot[h]*(x[i] - x[j])/2;
+    }
 
-  for (i = 0; i < nv; i++ ) {
-    lbx[i] /=area[i];
-  }
+    for (i = 0; i < nv; i++ ) {
+        lbx[i] /=area[i];
+    }
 
-  return HE_OK;
+    return HE_OK;
 
 }
 static int compute_norm(T *q, He *he,
@@ -399,8 +398,8 @@ static int compute_H(T *q, He *he, /**/ real *H) {
 
 }
 static int compute_K(T *q, He *he,
-                                  const real *x, const real *y, const real *z, /**/
-                                  real *K) {
+                     const real *x, const real *y, const real *z, /**/
+                     real *K) {
     real *area;
     int t, nt;
     int i, j, k, nv;
@@ -436,78 +435,78 @@ static int compute_K(T *q, He *he,
     return HE_OK;
 }
 real he_f_meyer_xin_energy(T *q, He *he,
-                       const real *x, const real *y, const real *z) {
-  enum {X, Y, Z};
-  int v, t;
-  int i, j, k;
-  int *T0, *T1, *T2;
-  real *lbx, *lby, *lbz;
-  real *normx, *normy, *normz;
-  real *H;
-  real *energy_local, *area, *cot;
+                           const real *x, const real *y, const real *z) {
+    enum {X, Y, Z};
+    int v, t;
+    int i, j, k;
+    int *T0, *T1, *T2;
+    real *lbx, *lby, *lbz;
+    real *normx, *normy, *normz;
+    real *H;
+    real *energy_local, *area, *cot;
 
-  real Kb, C0, Kad, DA0D;
-  int  nv, nt;
+    real Kb, C0, Kad, DA0D;
+    int  nv, nt;
 
-  real H0;
-  real mH0, mH1, mH2;
-  real energy1, energy2, energy3, energy4, energy5, energy6;
-  real energy_tot;
-  real energy_tot_local, energy_tot_nonlocal;
+    real H0;
+    real mH0, mH1, mH2;
+    real energy1, energy2, energy3, energy4, energy5, energy6;
+    real energy_tot;
+    real energy_tot_local, energy_tot_nonlocal;
 
-  Kb   = q->Kb;
-  C0   = q->C0;
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
+    Kb   = q->Kb;
+    C0   = q->C0;
+    Kad  = q->Kad;
+    DA0D = q->DA0D;
 
-  H0  = C0/2.0;
+    H0  = C0/2.0;
 
-  nv = he_nv(he);
-  nt = he_nt(he);
+    nv = he_nv(he);
+    nt = he_nt(he);
 
-  he_T(he, &T0, &T1, &T2);
-  lbx = q->lbx; lby = q->lby; lbz = q->lbz;
-  normx = q->normx; normy = q->normy; normz = q->normz;
-  H   = q->H;
-  energy_local = q->energy_local;
-  area = q->area;
-  cot  = q->cot;
+    he_T(he, &T0, &T1, &T2);
+    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
+    normx = q->normx; normy = q->normy; normz = q->normz;
+    H   = q->H;
+    energy_local = q->energy_local;
+    area = q->area;
+    cot  = q->cot;
 
-  mH0 = q->compute_area(q, he, x, y, z, area);
+    mH0 = q->compute_area(q, he, x, y, z, area);
 
-  compute_cot(q, he, x, y, z, cot);
-  compute_lb(q, he, x, lbx);
-  compute_lb(q, he, y, lby);
-  compute_lb(q, he, z, lbz);
-  compute_norm(q, he, x, y, z, normx, normy, normz);
-  compute_H(q, he, /**/ H);
+    compute_cot(q, he, x, y, z, cot);
+    compute_lb(q, he, x, lbx);
+    compute_lb(q, he, y, lby);
+    compute_lb(q, he, z, lbz);
+    compute_norm(q, he, x, y, z, normx, normy, normz);
+    compute_H(q, he, /**/ H);
 
-  mH1 = 0;
-  mH2 = 0;
+    mH1 = 0;
+    mH2 = 0;
 
-  for ( v = 0; v < nv; v++ ) {
-    mH1 += H[v]*area[v];
-    mH2 += H[v]*H[v]*area[v];
-    energy_local[v] = 2*Kb*(H[v]-H0)*(H[v]-H0)*area[v];
-  }
+    for ( v = 0; v < nv; v++ ) {
+        mH1 += H[v]*area[v];
+        mH2 += H[v]*H[v]*area[v];
+        energy_local[v] = 2*Kb*(H[v]-H0)*(H[v]-H0)*area[v];
+    }
 
-  energy1 = 2*Kb*mH2;
-  energy2 = 2*pi*Kad*mH1*mH1/mH0;
-  energy3 =-4*Kb*H0*mH1;
-  energy4 =-2*pi*Kad*DA0D*mH1/mH0;
-  energy5 = 2*Kb*H0*H0*mH0;
-  energy6 = pi*Kad*DA0D*DA0D/2/mH0;
+    energy1 = 2*Kb*mH2;
+    energy2 = 2*pi*Kad*mH1*mH1/mH0;
+    energy3 =-4*Kb*H0*mH1;
+    energy4 =-2*pi*Kad*DA0D*mH1/mH0;
+    energy5 = 2*Kb*H0*H0*mH0;
+    energy6 = pi*Kad*DA0D*DA0D/2/mH0;
 
-  energy_tot_local = energy1 + energy3 + energy5;
-  energy_tot_nonlocal = energy2 + energy4 + energy6;
-  energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
+    energy_tot_local = energy1 + energy3 + energy5;
+    energy_tot_nonlocal = energy2 + energy4 + energy6;
+    energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
 
-  return energy_tot;
+    return energy_tot;
 
 }
 int he_f_meyer_xin_force(T *q, He *he,
-                     const real *x, const real *y, const real *z, /**/
-                     real *fx, real *fy, real *fz) {
+                         const real *x, const real *y, const real *z, /**/
+                         real *fx, real *fy, real *fz) {
     enum {X, Y, Z};
     int v, e, t;
     int i, j, k, l;
@@ -569,17 +568,17 @@ int he_f_meyer_xin_force(T *q, He *he,
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-      fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-K[v]);
-      fx[v] += fm * normx[v] * area[v];
-      fy[v] += fm * normy[v] * area[v];
-      fz[v] += fm * normz[v] * area[v];
+        fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-K[v]);
+        fx[v] += fm * normx[v] * area[v];
+        fy[v] += fm * normy[v] * area[v];
+        fz[v] += fm * normz[v] * area[v];
 
-      fm = +2*Kb*lbH[v];
+        fm = +2*Kb*lbH[v];
 
-      fx[v] += fm * normx[v] * area[v];
-      fy[v] += fm * normy[v] * area[v];
-      fz[v] += fm * normz[v] * area[v];
-      he_sum_add(sum, H[v] * area[v]);
+        fx[v] += fm * normx[v] * area[v];
+        fy[v] += fm * normy[v] * area[v];
+        fz[v] += fm * normz[v] * area[v];
+        he_sum_add(sum, H[v] * area[v]);
     }
     mH1 = he_sum_get(sum);
     he_sum_fin(sum);
@@ -588,10 +587,10 @@ int he_f_meyer_xin_force(T *q, He *he,
 
     for ( v = 0; v < nv; v++ ) {
 
-      fm = -pi*Kad*(tt*2*K[v]/mH0 - tt*tt*H[v]/mH0/mH0);
-      fx[v] += fm * normx[v] * area[v];
-      fy[v] += fm * normy[v] * area[v];
-      fz[v] += fm * normz[v] * area[v];
+        fm = -pi*Kad*(tt*2*K[v]/mH0 - tt*tt*H[v]/mH0/mH0);
+        fx[v] += fm * normx[v] * area[v];
+        fy[v] += fm * normy[v] * area[v];
+        fz[v] += fm * normz[v] * area[v];
     }
     return HE_OK;
 }
