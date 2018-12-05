@@ -20,10 +20,10 @@
 #include <he/ddih.h>
 #include <he/dtri.h>
 #include <he/f/edg_sq.h>
-#include <he/f/volume_normal.h>
 #include <he/f/garea.h>
-#include <he/f/area.h>
+#include <he/f/area_sq.h>
 #include <he/f/meyer.h>
+#include <he/f/volume_normal.h>
 #include <he/volume.h>
 #include <he/he.h>
 #include <he/area.h>
@@ -45,7 +45,7 @@ static HeFMeyer *f_bending;
 static HeFEdgSq *f_edg_sq;
 static HeFVolumeNormal *f_volume_normal;
 static HeFGarea *f_garea;
-static HeFArea *f_area;
+static HeFAreaSq *f_area;
 
 static real rVolume, Ka, Kga, Kv, Ke;
 static int end;
@@ -112,7 +112,7 @@ static void arg() {
 
 real Energy(const real *x, const real *y, const real *z) {
     real a, ga, v, e, b;
-    a = he_f_area_energy(f_area, he, x, y, z);
+    a = he_f_area_sq_energy(f_area, he, x, y, z);
     ga = he_f_garea_energy(f_garea, he, x, y, z);
     v = he_f_volume_normal_energy(f_volume_normal, he, x, y, z);
     e = he_f_edg_sq_energy(f_edg_sq, he, x, y, z);
@@ -130,7 +130,7 @@ real Energy(const real *x, const real *y, const real *z) {
 
 void Force(const real *x, const real *y, const real *z) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
+    he_f_area_sq_force(f_area, he, x, y, z, /**/ fx, fy, fz);
     he_f_garea_force(f_garea, he, x, y, z, /**/ fx, fy, fz);
     he_f_volume_normal_force(f_volume_normal, he, x, y, z, /**/ fx, fy, fz);
     he_f_edg_sq_force(f_edg_sq, he, x, y, z, /**/ fx, fy, fz);
@@ -202,7 +202,7 @@ static void main0(real *vx, real *vy, real *vz,
   real errA;
   int nsub;
 
-  dt_max = 0.01;
+  dt_max = 0.05;
   mu     = 10.0;
   h      = 0.01*e0;
   
@@ -309,7 +309,7 @@ int main(int __UNUSED argc, const char *v[]) {
   MSG("A/A0: %g", A/A0);
   MSG("Vr  : %g", Vr);
   
-  he_f_area_ini(A0/NV,  Ka, he, &f_area);
+  he_f_area_sq_ini(Ka, he, &f_area);
   he_f_garea_ini(A0, Kga, he, &f_garea);
   he_f_volume_normal_ini(V0, Kv, he, &f_volume_normal);
   he_f_edg_sq_ini(Ke, he, &f_edg_sq);
@@ -326,7 +326,7 @@ int main(int __UNUSED argc, const char *v[]) {
   he_f_meyer_fin(f_bending);
   he_f_edg_sq_fin(f_edg_sq);
   he_f_volume_normal_fin(f_volume_normal);
-  he_f_area_fin(f_area);
+  he_f_area_sq_fin(f_area);
   he_f_garea_fin(f_garea);
   y_fin(he, XX, YY, ZZ);
   

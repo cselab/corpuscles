@@ -20,6 +20,7 @@
 #include "he/f/area_voronoi.h"
 #include "he/f/garea_voronoi.h"
 #include "he/f/volume_normal.h"
+#include "he/f/area_sq.h"
 #define SIZE (4048)
 
 #include "he/force.h"
@@ -35,6 +36,7 @@ static int force_harmonic_ini(void *param[], He*, /**/ T**);
 static int force_area_voronoi_ini(void *param[], He*, /**/ T**);
 static int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
 static int force_volume_normal_ini(void *param[], He*, /**/ T**);
+static int force_area_sq_ini(void *param[], He*, /**/ T**);
 
 struct T {
     struct Vtable *vtable;
@@ -55,6 +57,7 @@ static const char *Name[] = {
     "area_voronoi",
     "garea_voronoi",
     "volume_normal",
+    "area_sq",
 };
 
 static int Narg[] = {
@@ -67,6 +70,7 @@ static int Narg[] = {
     2,
     2,
     2,
+    1,
 };
 
 static const TypeIni Ini[] = {
@@ -79,6 +83,7 @@ static const TypeIni Ini[] = {
     force_area_voronoi_ini,
     force_garea_voronoi_ini,
     force_volume_normal_ini,
+    force_area_sq_ini,
 };
 
 int force_ini(const char *name, void **param, He *he, T **pq)
@@ -547,4 +552,42 @@ int force_volume_normal_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &volume_normal_vtable;
     *pq = &q->force;
     return he_f_volume_normal_ini(g1, g2,  he, &q->local);
+}
+typedef struct Area_sq Area_sq;
+struct Area_sq {
+    T force;
+    HeFAreaSq *local;
+};
+static int area_sq_fin(T *q)
+{
+    int status;
+    Area_sq *b = CONTAINER_OF(q, Area_sq, force);
+    status = he_f_area_sq_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int area_sq_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Area_sq *b = CONTAINER_OF(q, Area_sq, force);
+    return he_f_area_sq_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real area_sq_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Area_sq *b = CONTAINER_OF(q, Area_sq, force);
+    return he_f_area_sq_energy(b->local, he, x, y, z);
+}
+static Vtable area_sq_vtable = {
+    area_sq_fin,
+    area_sq_force,
+    area_sq_energy,
+};
+int force_area_sq_ini(void *param[], He *he, /**/ T **pq)
+{
+    Area_sq *q;
+    real g1 = *(real*)*param++;
+    MALLOC(1, &q);
+    q->force.vtable = &area_sq_vtable;
+    *pq = &q->force;
+    return he_f_area_sq_ini(g1,  he, &q->local);
 }
