@@ -34,7 +34,7 @@ static const char *Name[] = {
     "gompper_kroll",
     "gompper_xin",
     "meyer_xin",
-    "juelicher_xin"
+    "juelicher_xin",
     "meyer",
 };
 static const TypeIni Ini[]  = {
