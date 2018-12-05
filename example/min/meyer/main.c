@@ -19,11 +19,11 @@
 #include <he/off.h>
 #include <he/ddih.h>
 #include <he/dtri.h>
-#include <he/bending.h>
 #include <he/f/edg_sq.h>
 #include <he/f/volume_normal.h>
 #include <he/f/garea.h>
 #include <he/f/area.h>
+#include <he/f/meyer.h>
 #include <he/volume.h>
 #include <he/he.h>
 #include <he/area.h>
@@ -41,7 +41,7 @@ static void zero(int n, real *a) {
     for (i = 0; i < n; i++) a[i] = 0;
 }
 
-static Bending *f_bending;
+static HeFMeyer *f_bending;
 static HeFEdgSq *f_edg_sq;
 static HeFVolumeNormal *f_volume_normal;
 static HeFGarea *f_garea;
@@ -104,7 +104,7 @@ real Energy(const real *x, const real *y, const real *z) {
     ga = he_f_garea_energy(f_garea, he, x, y, z);
     v = he_f_volume_normal_energy(f_volume_normal, he, x, y, z);
     e = he_f_edg_sq_energy(f_edg_sq, he, x, y, z);
-    b = bending_energy(f_bending, he, x, y, z);
+    b = he_f_meyer_energy(f_bending, he, x, y, z);
 
     et  = a + ga + v + e + b;
     ea  = a;
@@ -123,7 +123,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     he_f_garea_force(f_garea, he, x, y, z, /**/ fx, fy, fz);
     he_f_volume_normal_force(f_volume_normal, he, x, y, z, /**/ fx, fy, fz);
     he_f_edg_sq_force(f_edg_sq, he, x, y, z, /**/ fx, fy, fz);
-    bending_force(f_bending, he, x, y, z, /**/ fx, fy, fz);
+    he_f_meyer_force(f_bending, he, x, y, z, /**/ fx, fy, fz);
 }
 void ForceArea(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
@@ -263,7 +263,6 @@ int main(int __UNUSED argc, const char *v[]) {
   real *fx, *fy, *fz;
   real *vx, *vy, *vz;
   real A, V, Vr;
-  BendingParam bending_param;
   
   argv = v; argv++;
   arg();
@@ -292,9 +291,7 @@ int main(int __UNUSED argc, const char *v[]) {
   he_f_garea_ini(A0, Kga, he, &f_garea);
   he_f_volume_normal_ini(V0, Kv, he, &f_volume_normal);
   he_f_edg_sq_ini(Ke, he, &f_edg_sq);
-  
-  bending_param.Kb = Kb;
-  bending_ini("meyer", bending_param, he, &f_bending);
+  he_f_meyer_ini(Kb, he, &f_bending);
   
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
@@ -304,7 +301,7 @@ int main(int __UNUSED argc, const char *v[]) {
   FREE(fx); FREE(fy); FREE(fz);
   FREE(vx); FREE(vy); FREE(vz);
   
-  bending_fin(f_bending);
+  he_f_meyer_fin(f_bending);
   he_f_edg_sq_fin(f_edg_sq);
   he_f_volume_normal_fin(f_volume_normal);
   he_f_area_fin(f_area);
