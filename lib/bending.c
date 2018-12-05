@@ -449,16 +449,13 @@ static int meyer_laplace_ver(T *q, /**/ real **e, real **f, real **g) {
 static Vtable meyer_vtable = { meyer_fin, meyer_force, meyer_energy, meyer_energy_ver,
                                meyer_area_ver, meyer_curva_mean_ver, meyer_norm_ver, meyer_laplace_ver};
 int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
-    real Kb, C0, Kad, DA0D;
+    real Kb;
     Meyer *q;
     Kb  = param.Kb;
-    C0 = param.C0;
-    Kad = param.Kad;
-    DA0D = param.DA0D;
 
     MALLOC(1, &q);
     q->bending.vtable = &meyer_vtable;
     *pq = &q->bending;
-    return he_f_meyer_ini(Kb, C0, Kad, DA0D, he, &q->local);
+    return he_f_meyer_ini(Kb, he, &q->local);
 }
 /* end meyer */

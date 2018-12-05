@@ -255,9 +255,6 @@ static int H_lap(T *q, He *he, /**/ real *H) {
 
 
 int he_f_meyer_ini(real Kb,
-                   __UNUSED real C0,
-                   __UNUSED real Kad,
-                   __UNUSED real DA0D,
                    He *he,
                    T **pq) {
     T *q;
