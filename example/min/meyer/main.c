@@ -27,6 +27,7 @@
 #include <he/volume.h>
 #include <he/he.h>
 #include <he/area.h>
+#include <he/vtk.h>
 #include <he/y.h>
 
 #define FMT_IN   XE_REAL_IN
@@ -55,8 +56,8 @@ static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
 static const char *me = "min/meyer";
 static He *he;
+static real *XX, *YY, *ZZ, *fx, *fy, *fz;
 
-static real *XX, *YY, *ZZ;
 static int NV, NE, NT;
 
 static void usg() {
@@ -116,8 +117,7 @@ real Energy(const real *x, const real *y, const real *z) {
     return a + ga + v + e + b;
 }
 
-void Force(const real *x, const real *y, const real *z, /**/
-           real *fx, real *fy, real *fz) {
+void Force(const real *x, const real *y, const real *z) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     he_f_area_force(f_area, he, x, y, z, /**/ fx, fy, fz);
     he_f_garea_force(f_garea, he, x, y, z, /**/ fx, fy, fz);
@@ -190,7 +190,6 @@ static void main0(real *vx, real *vy, real *vz,
   real A, V, Vr;
   real errA;
   int nsub;
-  char file[4048];
 
   dt_max = 0.01;
   mu     = 10.0;
@@ -199,7 +198,7 @@ static void main0(real *vx, real *vy, real *vz,
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
-    Force(XX, YY, ZZ, /**/ fx, fy, fz);
+    Force(XX, YY, ZZ);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
@@ -247,8 +246,14 @@ static void main0(real *vx, real *vy, real *vz,
     }
     
     if ( i % freq == 0 ) {
-      sprintf(file, "%08d.off", i);
-      off_he_xyz_write(he, XX, YY, ZZ, file);
+        char off[4048], vtk[4048];
+        sprintf(off, "%08d.off", i);
+        sprintf(vtk, "%08d.vtk", i);
+        
+        off_he_xyz_write(he, XX, YY, ZZ, off);
+        const real *scalars[] = {fx, fy, fz};
+        const char *names[]   = {"fx", "fy", "fz"};
+        he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
   }
 }
@@ -260,7 +265,6 @@ static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 int main(int __UNUSED argc, const char *v[]) {
   real a0;
-  real *fx, *fy, *fz;
   real *vx, *vy, *vz;
   real A, V, Vr;
   
