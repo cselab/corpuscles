@@ -42,7 +42,7 @@ struct T {
     real energy_total_local;
     real energy_total_nonlocal;
     int nv, ne, nt, nh;
-    real (*compute_area)(T*, He*, const real*, const real*, const real*, real *area);
+    real (*compute_area)(He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
     int (*compute_H)(T*, He*, /**/ real*);
 };
@@ -61,30 +61,6 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
     return HE_OK;
-}
-static int get4(const real *x, const real *y, const real *z,
-                int i, int j, int k, int l, /**/
-                real a[3], real b[3], real c[3], real d[3]) {
-
-    vec_get(i, x, y, z, a);
-    vec_get(j, x, y, z, b);
-    vec_get(k, x, y, z, c);
-    vec_get(l, x, y, z, d);
-    return HE_OK;
-}
-
-enum {BULK, BND};
-static int get_ijkl(int e, He *he, /**/ int *pi, int *pj, int *pk, int *pl) {
-    int h, n, nn, nnf, i, j, k, l;
-    h = he_hdg_edg(he, e);
-    if (bnd(h)) return BND;
-
-    h = hdg_edg(e); n = nxt(h); nn = nxt(nxt(h));
-    nnf = nxt(nxt(flp(h)));
-    j = ver(h); k = ver(n); i = ver(nn); l = ver(nnf);
-
-    *pi = i; *pj = j; *pk = k; *pl = l;
-    return BULK;
 }
 
 static int norm_mwn(__UNUSED T *q, He *he,
@@ -124,7 +100,7 @@ static int norm_lap(T *q, He *he,
     return status;
 }
 
-static real area_voronoi(T *q, He *he,
+static real area_voronoi(He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
     enum {X, Y, Z};
@@ -179,7 +155,7 @@ static real area_voronoi(T *q, He *he,
     return area_tot_tri;
 }
 
-static real area_mix(T *q, He *he,
+static real area_mix(He *he,
                      const real *x, const real *y, const real *z, /**/
                      real *area) {
     enum {X, Y, Z};
@@ -388,7 +364,7 @@ int he_f_meyer_xin_laplace_H_ver(T *q, /**/ real **px ) {
     *px = q->lbH;
     return HE_OK;
 }
-static int compute_cot(T *q, He *he, const real *x, const real *y, const real *z,
+static int compute_cot(He *he, const real *x, const real *y, const real *z,
                        /**/ real *cot) {
     int nh, h, n, nn;
     int i, j, k;
@@ -408,9 +384,7 @@ static int compute_cot(T *q, He *he, const real *x, const real *y, const real *z
 static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
     enum {X, Y, Z};
     int i, j, h, n, nv, nh;
-    real a[3], b[3], c[3], u[3];
     real *area, *cot;
-    real tt;
 
     nh = he_nh(he);
     nv = he_nv(he);
@@ -473,8 +447,7 @@ static int compute_K(T *q, He *he,
 real he_f_meyer_xin_energy(T *q, He *he,
                            const real *x, const real *y, const real *z) {
     enum {X, Y, Z};
-    int v, t;
-    int i, j, k;
+    int v;
     int *T0, *T1, *T2;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
@@ -482,13 +455,12 @@ real he_f_meyer_xin_energy(T *q, He *he,
     real *energy_local, *area, *cot;
 
     real Kb, C0, Kad, DA0D;
-    int  nv, nt;
+    int  nv;
 
     real H0;
     real mH0, mH1, mH2;
     real energy1, energy2, energy3, energy4, energy5, energy6;
     real energy_tot;
-    real energy_tot_local, energy_tot_nonlocal;
 
     Kb   = q->Kb;
     C0   = q->C0;
@@ -498,7 +470,6 @@ real he_f_meyer_xin_energy(T *q, He *he,
     H0  = C0/2.0;
 
     nv = he_nv(he);
-    nt = he_nt(he);
 
     he_T(he, &T0, &T1, &T2);
     lbx = q->lbx; lby = q->lby; lbz = q->lbz;
@@ -508,9 +479,9 @@ real he_f_meyer_xin_energy(T *q, He *he,
     area = q->area;
     cot  = q->cot;
 
-    mH0 = q->compute_area(q, he, x, y, z, area);
+    mH0 = q->compute_area(he, x, y, z, area);
 
-    compute_cot(q, he, x, y, z, cot);
+    compute_cot(he, x, y, z, cot);
     compute_lb(q, he, x, lbx);
     compute_lb(q, he, y, lby);
     compute_lb(q, he, z, lbz);
@@ -533,8 +504,6 @@ real he_f_meyer_xin_energy(T *q, He *he,
     energy5 = 2*Kb*H0*H0*mH0;
     energy6 = pi*Kad*DA0D*DA0D/2/mH0;
 
-    energy_tot_local = energy1 + energy3 + energy5;
-    energy_tot_nonlocal = energy2 + energy4 + energy6;
     energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
 
     return energy_tot;
@@ -544,14 +513,10 @@ int he_f_meyer_xin_force(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *fx, real *fy, real *fz) {
     enum {X, Y, Z};
-    int v, e, t;
-    int i, j, k, l;
-    int nv, nt, ne;
-    real a[3], b[3], c[3], d[3], u[3];
+    int v;
+    int nv;
     int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
-    real coti, cotl, cotil;
-    real cota, cotb, cotc;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *area, *cot;
@@ -563,10 +528,6 @@ int he_f_meyer_xin_force(T *q, He *he,
     real H0;
     real mH0, mH1;
     real tt;
-
-    const char *p_str;
-    real p;
-
     HeSum *sum;
 
     Kb   = q->Kb;
@@ -577,8 +538,6 @@ int he_f_meyer_xin_force(T *q, He *he,
     H0   = C0/2.0;
 
     nv = he_nv(he);
-    nt = he_nt(he);
-    ne = he_ne(he);
 
     he_T(he, &T0, &T1, &T2);
     he_D(he, &D0, &D1, &D2, &D3);
@@ -590,9 +549,9 @@ int he_f_meyer_xin_force(T *q, He *he,
     K = q->K;
     area    = q->area;
     lbH = q->lbH;
-    mH0 = q->compute_area(q, he, x, y, z, area);
+    mH0 = q->compute_area(he, x, y, z, area);
 
-    compute_cot(q, he, x, y, z, cot);
+    compute_cot(he, x, y, z, cot);
     compute_lb(q, he, x, lbx);
     compute_lb(q, he, y, lby);
     compute_lb(q, he, z, lbz);
