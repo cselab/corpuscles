@@ -273,9 +273,7 @@ static int H_lap(T *q, He *he, /**/ real *H) {
 }
 
 
-int he_f_meyer_ini(real Kb,
-                   __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D,
-                   He *he, T **pq) {
+int he_f_meyer_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt, nh;
 
@@ -455,11 +453,10 @@ real he_f_meyer_energy(T *q, He *he,
 
     real Kb;
     int  nv;
-
-    real mH1, mH2;
-    real energy;
+    real mH2;
 
     Kb   = q->Kb;
+
     nv = he_nv(he);
 
     he_T(he, &T0, &T1, &T2);
@@ -477,18 +474,13 @@ real he_f_meyer_energy(T *q, He *he,
     q->compute_norm(q, he, x, y, z, normx, normy, normz);
     q->compute_H(q, he, /**/ H);
 
-    mH1 = 0;
     mH2 = 0;
-
     for ( v = 0; v < nv; v++ ) {
-        mH1 += H[v]*area[v];
         mH2 += H[v]*H[v]*area[v];
         energy_local[v] = 2*Kb*(H[v])*(H[v])*area[v];
     }
-    energy = 2*Kb*mH2;
 
-    return energy;
-
+    return 2*Kb*mH2;
 }
 int he_f_meyer_force(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
@@ -506,7 +498,6 @@ int he_f_meyer_force(T *q, He *he,
     real fm;
 
     real Kb;
-
     HeSum *sum;
 
     Kb   = q->Kb;
@@ -542,6 +533,6 @@ int he_f_meyer_force(T *q, He *he,
         fz[v] += fm*normz[v];
         he_sum_add(sum, H[v]*area[v]);
     }
-
+    he_sum_fin(sum);
     return HE_OK;
 }
