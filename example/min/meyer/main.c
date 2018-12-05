@@ -18,9 +18,13 @@
 #include <he/ddih.h>
 #include <he/dtri.h>
 #include <he/bending.h>
+#include <he/f/edg_sq.h>
+#include <he/f/volume_normal.h>
+#include <he/f/garea.h>
+#include <he/f/area.h>
 #include <he/x.h>
-#include <alg/x.h>
-#include <alg/min.h>
+
+#define FMT_IN   XE_REAL_IN
 
 static const real pi = 3.141592653589793115997964;
 
@@ -32,8 +36,11 @@ static void zero(int n, real *a) {
     for (i = 0; i < n; i++) a[i] = 0;
 }
 
-
-#define FMT_IN   XE_REAL_IN
+static Bending *f_bending;
+static HeFEdgSq *f_edg_sq;
+static HeFVolumeNormal *f_volume_normal;
+static HeFGarea *f_garea;
+static HeFArea *f_area;
 
 static real rVolume, Ka, Kga, Kv, Ke;
 static int end;
