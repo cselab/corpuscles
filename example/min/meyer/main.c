@@ -41,7 +41,7 @@ static int freq;
 static real A0, V0, e0;
 static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
-static const char *me = "min/helfrich_xin_fga";
+static const char *me = "min/meyer";
 
 static void usg() {
     fprintf(stderr, "%s rVolume Ka Kga Kv Ke Kb < OFF > msg\n", me);
@@ -86,7 +86,7 @@ real Energy(const real *x, const real *y, const real *z) {
     real a, ga, v, e, b;
     a = f_area_energy(x, y, z);
     ga = f_garea_voronoi_energy(x, y, z);
-    v = f_volume_energy(x, y, z);
+    v = f_volume_normal_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
     
@@ -106,7 +106,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_voronoi_force(x, y, z, /**/ fx, fy, fz);
-    f_volume_force(x, y, z, /**/ fx, fy, fz);
+    f_volume_normal_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
@@ -269,7 +269,7 @@ int main(int __UNUSED argc, const char *v[]) {
   
   f_area_ini(A0/NV,  Ka);
   f_garea_voronoi_ini(A0, Kga);
-  f_volume_ini(V0, Kv);
+  f_volume_normal_ini(V0, Kv);
   f_edg_sq_ini(Ke);
   
   bending_param.Kb = Kb;
@@ -285,7 +285,7 @@ int main(int __UNUSED argc, const char *v[]) {
   
   f_bending_fin();
   f_edg_sq_fin();
-  f_volume_fin();
+  f_volume_normal_fin();
   f_area_fin();
   f_garea_voronoi_fin();
   fin();

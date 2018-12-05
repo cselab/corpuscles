@@ -3,7 +3,8 @@ set -eu
 Kb=0.01
 Vr=0.4
 freq=100
-end=100
+
+: ${end=100}
 
 off=data/main.off
 #off=$(he.path)/sph/laplace/Nt1280.off
