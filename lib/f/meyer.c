@@ -10,7 +10,6 @@
 #include "he/dih.h"
 #include "he/ddih.h"
 #include "he/tri.h"
-#include "he/sum.h"
 #include "he/normal.h"
 #include "he/macro.h"
 
@@ -46,6 +45,13 @@ static int zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
+    return HE_OK;
+}
+
+static int scale(real sc, int n, /*io*/ real *a) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] *= sc;
     return HE_OK;
 }
 
@@ -471,7 +477,6 @@ int he_f_meyer_force(T *q, He *he,
     real fm;
 
     real Kb;
-    HeSum *sum;
 
     Kb   = q->Kb;
 
@@ -498,15 +503,14 @@ int he_f_meyer_force(T *q, He *he,
     compute_K(q, he, x, y, z, K);
     compute_lb(q, he, H, lbH);
 
-    he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-        fm = +2*2*Kb*(H[v])*(H[v]*H[v]-K[v]) + 2*Kb*lbH[v];
+        fm = lbH[v]+2*H[v]*(H[v]*H[v]-K[v]);
         fm *= area[v];
+        fm *= 2*Kb;
         fx[v] += fm*normx[v];
         fy[v] += fm*normy[v];
         fz[v] += fm*normz[v];
-        he_sum_add(sum, H[v]*area[v]);
     }
-    he_sum_fin(sum);
+    
     return HE_OK;
 }

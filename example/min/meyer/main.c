@@ -189,7 +189,7 @@ static void main0(real *vx, real *vy, real *vz,
   int nsub;
   char file[4048];
 
-  dt_max = 0.0001;
+  dt_max = 0.01;
   mu     = 10.0;
   h      = 0.01*e0;
   
