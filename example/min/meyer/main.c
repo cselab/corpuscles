@@ -190,8 +190,8 @@ static void main0(real *vx, real *vy, real *vz,
   real errA;
   int nsub;
 
-  dt_max = 0.05;
-  mu     = 1.0;
+  dt_max = 0.02;
+  mu     = 200.0;
   h      = 0.01*e0;
   
   nsub = 100;
