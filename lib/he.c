@@ -146,6 +146,18 @@ int he_tri_ijk(T *q, int t, /**/ int *i, int *j, int *k) {
     return HE_OK;
 }
 
+int he_edg_ij(T *q, int e, /**/ int *pi, int *pj) {
+    int h, n, i, j;
+    h = he_hdg_edg(q, e);
+    n = he_nxt(q, h);
+
+    i = he_ver(q, h);
+    j = he_ver(q, n);
+
+    *pi = i; *pj = j;
+    return HE_OK;
+}
+
 
 static int set_nxt(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->nxt[h] = i; return HE_OK;}
 static int set_flp(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->flp[h] = i; return HE_OK;}
