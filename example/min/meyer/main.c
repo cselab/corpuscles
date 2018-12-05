@@ -182,10 +182,9 @@ static real max_vec(real *fx, real *fy, real *fz) {
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
-  real dt, dt_max, h, mu, rnd;
+  real dt, dt_max, h, mu;
   real A, V, Vr;
   real errA;
-  real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   char file[4048];
 
