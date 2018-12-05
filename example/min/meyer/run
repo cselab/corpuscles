@@ -2,13 +2,13 @@ set -eu
 
 Kb=0.01
 Vr=0.4
-freq=100
 
 : ${end=100}
+: ${freq=100}
 
-off=data/main.off
-#off=$(he.path)/sph/laplace/Nt1280.off
+#off=data/main.off
+off=$(he.path)/sph/laplace/Nt1280.off
 make
 
-he.run ./main $Vr 1 2 2 0 \
+he.run ./main $Vr 1e-2 20 20 0.1 \
        $Kb $end $freq < $off > Vr$Vr.msg

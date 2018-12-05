@@ -33,8 +33,7 @@
 #define FMT_IN   XE_REAL_IN
 
 static const real pi = 3.141592653589793115997964;
-
-static const real tolerA = 1.0e-3;
+static const real tolerA = 1;
 
 static real Kb;
 static void zero(int n, real *a) {
@@ -56,9 +55,21 @@ static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
 static const char *me = "min/meyer";
 static He *he;
-static real *XX, *YY, *ZZ, *fx, *fy, *fz;
+static real *XX, *YY, *ZZ, *fx, *fy, *fz, *fm;
 
 static int NV, NE, NT;
+
+static int max_index(int n, real a[]) {
+    int i, j;
+    real m;
+    j = 0; m = a[j];
+    for (i = 0; i < n; i++)
+        if (a[i] > m) {
+            j = i;
+            m = a[i];
+        }
+    return j;
+}
 
 static void usg() {
     fprintf(stderr, "%s rVolume Ka Kga Kv Ke Kb < OFF > msg\n", me);
@@ -246,14 +257,22 @@ static void main0(real *vx, real *vy, real *vz,
     }
     
     if ( i % freq == 0 ) {
+        real *f, *fa, *fb, *fc;
+        int j;
         char off[4048], vtk[4048];
         sprintf(off, "%08d.off", i);
         sprintf(vtk, "%08d.vtk", i);
-        
         off_he_xyz_write(he, XX, YY, ZZ, off);
-        const real *scalars[] = {fx, fy, fz};
-        const char *names[]   = {"fx", "fy", "fz"};
+
+        he_f_meyer_components(f_bending, &f, &fa, &fb, &fc);
+
+        const real *scalars[] = {fx, fy, fz, f, fa, fb, fc, NULL};
+        const char *names[]   = {"fx", "fy", "fz", "f", "fa", "fb", "fc", NULL};
         he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
+
+        j = max_index(NV, f);
+        MSG("%d", j);
+        
     }
   }
 }
@@ -261,7 +280,6 @@ static void main0(real *vx, real *vy, real *vz,
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
 static real target_volume(real area, real v) { return v*sph_volume(area); }
 static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
-
 
 int main(int __UNUSED argc, const char *v[]) {
   real a0;
@@ -297,12 +315,12 @@ int main(int __UNUSED argc, const char *v[]) {
   he_f_edg_sq_ini(Ke, he, &f_edg_sq);
   he_f_meyer_ini(Kb, he, &f_bending);
   
-  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz); MALLOC(NV, &fm);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
   
   main0(vx, vy, vz, fx, fy, fz);
   
-  FREE(fx); FREE(fy); FREE(fz);
+  FREE(fx); FREE(fy); FREE(fz); FREE(fm);
   FREE(vx); FREE(vy); FREE(vz);
   
   he_f_meyer_fin(f_bending);

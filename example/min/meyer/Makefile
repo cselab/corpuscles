@@ -1,7 +1,7 @@
 include ../../../conf.mk
 M = main
 PREC = d
-HE_CFLAGS = -O0 -g `alg.conf --cflags $(PREC)`
+HE_CFLAGS = `alg.conf --cflags $(PREC)`
 HE_LDFLAGS = `alg.conf --libs $(PREC)`
 
 all: $M
