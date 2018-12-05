@@ -29,7 +29,7 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
-    real Kb;
+    real Kb, C0, Kad, DA0D;
 
     real *cot;
     real *lbx, *lby, *lbz;
@@ -273,7 +273,7 @@ static int H_lap(T *q, He *he, /**/ real *H) {
 }
 
 
-int he_f_meyer_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real DA0D, He *he, T **pq) {
+int he_f_meyer_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     T *q;
     int nv, ne, nt, nh;
 
@@ -290,6 +290,9 @@ int he_f_meyer_ini(real Kb, __UNUSED real C0, __UNUSED real Kad, __UNUSED real D
     q->nh = nh;
 
     q->Kb   = Kb;
+    q->C0   = C0;
+    q->Kad  = Kad;
+    q->DA0D = DA0D;
 
     if (getenv("MIX"))
         q->compute_area = area_mix;
@@ -451,11 +454,20 @@ real he_f_meyer_energy(T *q, He *he,
     real *H;
     real *energy_local, *area, *cot;
 
-    real Kb;
+    real Kb, C0, Kad, DA0D;
     int  nv;
-    real mH2;
+
+    real H0;
+    real mH0, mH1, mH2;
+    real energy1, energy2, energy3, energy4, energy5, energy6;
+    real energy_tot;
 
     Kb   = q->Kb;
+    C0   = q->C0;
+    Kad  = q->Kad;
+    DA0D = q->DA0D;
+
+    H0  = C0/2.0;
 
     nv = he_nv(he);
 
@@ -467,6 +479,8 @@ real he_f_meyer_energy(T *q, He *he,
     area = q->area;
     cot  = q->cot;
 
+    mH0 = q->compute_area(he, x, y, z, area);
+
     compute_cot(he, x, y, z, cot);
     compute_lb(q, he, x, lbx);
     compute_lb(q, he, y, lby);
@@ -474,13 +488,26 @@ real he_f_meyer_energy(T *q, He *he,
     q->compute_norm(q, he, x, y, z, normx, normy, normz);
     q->compute_H(q, he, /**/ H);
 
+    mH1 = 0;
     mH2 = 0;
+
     for ( v = 0; v < nv; v++ ) {
+        mH1 += H[v]*area[v];
         mH2 += H[v]*H[v]*area[v];
-        energy_local[v] = 2*Kb*(H[v])*(H[v])*area[v];
+        energy_local[v] = 2*Kb*(H[v]-H0)*(H[v]-H0)*area[v];
     }
 
-    return 2*Kb*mH2;
+    energy1 = 2*Kb*mH2;
+    energy2 = 2*pi*Kad*mH1*mH1/mH0;
+    energy3 =-4*Kb*H0*mH1;
+    energy4 =-2*pi*Kad*DA0D*mH1/mH0;
+    energy5 = 2*Kb*H0*H0*mH0;
+    energy6 = pi*Kad*DA0D*DA0D/2/mH0;
+
+    energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
+
+    return energy_tot;
+
 }
 int he_f_meyer_force(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
@@ -497,10 +524,18 @@ int he_f_meyer_force(T *q, He *he,
     real *lbH;
     real fm;
 
-    real Kb;
+    real Kb, C0, Kad, DA0D;
+    real H0;
+    real mH0, mH1;
+    real tt;
     HeSum *sum;
 
     Kb   = q->Kb;
+    C0   = q->C0;
+    Kad  = q->Kad;
+    DA0D = q->DA0D;
+
+    H0   = C0/2.0;
 
     nv = he_nv(he);
 
@@ -514,6 +549,7 @@ int he_f_meyer_force(T *q, He *he,
     K = q->K;
     area    = q->area;
     lbH = q->lbH;
+    mH0 = q->compute_area(he, x, y, z, area);
 
     compute_cot(he, x, y, z, cot);
     compute_lb(q, he, x, lbx);
@@ -526,13 +562,24 @@ int he_f_meyer_force(T *q, He *he,
 
     he_sum_ini(&sum);
     for (v = 0; v < nv; v++) {
-        fm = +2*2*Kb*(H[v])*(H[v]*H[v]-K[v]) + 2*Kb*lbH[v];
+        fm = +2*2*Kb*(H[v]-H0)*(H[v]*H[v]+H[v]*H0-K[v]) + 2*Kb*lbH[v];
         fm *= area[v];
         fx[v] += fm*normx[v];
         fy[v] += fm*normy[v];
         fz[v] += fm*normz[v];
         he_sum_add(sum, H[v]*area[v]);
     }
+    mH1 = he_sum_get(sum);
     he_sum_fin(sum);
+
+    tt = 2*mH1-DA0D;
+
+    for ( v = 0; v < nv; v++ ) {
+
+        fm = -pi*Kad*(tt*2*K[v]/mH0 - tt*tt*H[v]/mH0/mH0);
+        fx[v] += fm * normx[v] * area[v];
+        fy[v] += fm * normy[v] * area[v];
+        fz[v] += fm * normz[v] * area[v];
+    }
     return HE_OK;
 }
