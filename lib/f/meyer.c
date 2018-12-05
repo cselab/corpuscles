@@ -42,7 +42,7 @@ struct T {
     real energy_total_local;
     real energy_total_nonlocal;
     int nv, ne, nt, nh;
-    real (*compute_area)(He*, const real*, const real*, const real*, real *area);
+    int (*compute_area)(He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
     int (*compute_H)(T*, He*, /**/ real*);
 };
@@ -100,7 +100,7 @@ static int norm_lap(T *q, He *he,
     return status;
 }
 
-static real area_voronoi(He *he,
+static int area_voronoi(He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *area) {
     enum {X, Y, Z};
@@ -108,27 +108,19 @@ static real area_voronoi(He *he,
     int i, j, k;
     real a[3], b[3], c[3], u[3];
     int *T0, *T1, *T2;
-    real area0;
     real cota,cotb,cotc;
-    real ab2, bc2, ca2, area_tot_tri;
-    HeSum *sum;
+    real ab2, bc2, ca2;
 
     nt = he_nt(he);
     nv = he_nv(he);
 
     he_T(he, &T0, &T1, &T2);
-    he_sum_ini(&sum);
-
     zero(nv, area);
 
-    area_tot_tri = 0;
     for ( t = 0; t < nt; t++ ) {
         i = T0[t]; j = T1[t]; k = T2[t];
 
         get3(x, y, z, i, j, k, a, b, c);
-        area0 = tri_area(a, b, c);
-
-        he_sum_add(sum, area0);
 
         vec_minus(a, b,  u);
         ab2 = vec_dot(u, u);
@@ -148,14 +140,10 @@ static real area_voronoi(He *he,
         area[k] += ( ca2*cotb + bc2*cota ) / 8;
 
     }/*end for loop*/
-
-    area_tot_tri = he_sum_get(sum);
-
-    he_sum_fin(sum);
-    return area_tot_tri;
+    return HE_OK;
 }
 
-static real area_mix(He *he,
+static int area_mix(He *he,
                      const real *x, const real *y, const real *z, /**/
                      real *area) {
     enum {X, Y, Z};
@@ -166,24 +154,19 @@ static real area_mix(He *he,
     real area0;
     real theta_a, theta_b, theta_c;
     real cota,cotb,cotc;
-    real ab2, bc2, ca2, area_tot_tri;
-    HeSum *sum;
+    real ab2, bc2, ca2;
 
     nt = he_nt(he);
     nv = he_nv(he);
     he_T(he, &T0, &T1, &T2);
-    he_sum_ini(&sum);
 
     zero(nv, area);
 
-    area_tot_tri = 0;
     for ( t = 0; t < nt; t++ ) {
         i = T0[t]; j = T1[t]; k = T2[t];
 
         get3(x, y, z, i, j, k, a, b, c);
         area0 = tri_area(a, b, c);
-
-        he_sum_add(sum, area0);
 
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
@@ -223,10 +206,7 @@ static real area_mix(He *he,
         }
 
     }/*end for loop*/
-    area_tot_tri = he_sum_get(sum);
-
-    he_sum_fin(sum);
-    return area_tot_tri;
+    return HE_OK;
 }
 
 static int H_norm(T *q, He *he, /**/ real *H) {
