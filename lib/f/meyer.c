@@ -37,11 +37,6 @@ struct T {
     real *H, *K;
     real *energy_local, *area;
     real *lbH;
-
-    real energy_total;
-    real energy_total_local;
-    real energy_total_nonlocal;
-    int nv, ne, nt, nh;
     int (*compute_area)(He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
     int (*compute_H)(T*, He*, /**/ real*);
@@ -260,20 +255,12 @@ int he_f_meyer_ini(real Kb,
                    He *he,
                    T **pq) {
     T *q;
-    int nv, ne, nt, nh;
+    int nv, nh;
 
     MALLOC(1, &q);
 
     nv = he_nv(he);
-    ne = he_ne(he);
-    nt = he_nt(he);
     nh = he_nh(he);
-
-    q->nv = nv;
-    q->ne = ne;
-    q->nt = nt;
-    q->nh = nh;
-
     q->Kb   = Kb;
 
     if (getenv("MIX"))
@@ -296,10 +283,6 @@ int he_f_meyer_ini(real Kb,
     MALLOC(nv, &q->H);  MALLOC(nv, &q->K);
     MALLOC(nv, &q->energy_local); MALLOC(nv, &q->area);
     MALLOC(nv, &q->lbH);
-
-    q->energy_total = 0;
-    q->energy_total_local = 0;
-    q->energy_total_nonlocal = 0;
 
     *pq = q;
     return HE_OK;
