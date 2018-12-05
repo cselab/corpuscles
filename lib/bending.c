@@ -29,22 +29,22 @@ struct T {struct Vtable *vtable; };
 static char List[SIZE];
 typedef int (*TypeIni)(BendingParam, He*, T**);
 static const char *Name[] = {
-    "kantor",
     "gompper",
     "gompper_kroll",
     "gompper_xin",
-    "meyer_xin",
     "juelicher_xin",
+    "kantor",
     "meyer",
+    "meyer_xin",
 };
 static const TypeIni Ini[]  = {
-    bending_kantor_ini,
     bending_gompper_ini,
     bending_gompper_kroll_ini,
     bending_gompper_xin_ini,
-    bending_meyer_xin_ini,
-    bending_meyer_ini,
     bending_juelicher_xin_ini
+    bending_kantor_ini,
+    bending_meyer_ini,
+    bending_meyer_xin_ini,
 };
 
 int bending_ini(const char *name, BendingParam param, He *he, T **pq) {

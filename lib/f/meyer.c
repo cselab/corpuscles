@@ -13,8 +13,6 @@
 #include "he/sum.h"
 #include "he/normal.h"
 #include "he/macro.h"
-#include "he/dtri.h"
-#include "he/dH.h"
 
 #include "he/f/meyer.h"
 
@@ -624,17 +622,5 @@ int he_f_meyer_force(T *q, He *he,
         fy[v] += fm * normy[v] * area[v];
         fz[v] += fm * normz[v] * area[v];
     }
-
-
-    /// e*dA
-    /*Dh *dh;
-    dHParam param;
-    int nh, h;
-    real da[3], db[3], dc[3];
-    nh = he_nh(he);
-    dh_ini(he, &dh);
-    dh_force(he, param, he, x, y, z, fx, fy, fz);
-    dh_fin(dh); */
-
     return HE_OK;
 }
