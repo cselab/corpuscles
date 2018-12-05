@@ -36,6 +36,7 @@ struct T {
     real *H, *K;
     real *energy_local, *area;
     real *lbH;
+    real *f, *fa, *fb, *fc;
     int (*compute_area)(He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
     int (*compute_H)(T*, He*, /**/ real*);
@@ -257,15 +258,15 @@ static int H_lap(T *q, He *he, /**/ real *H) {
 int he_f_meyer_ini(real Kb,
                    He *he,
                    T **pq) {
+#   define M(n, f) MALLOC(n, &q->f)
+#   define S(f) q->f = f
     T *q;
     int nv, nh;
 
     MALLOC(1, &q);
-
     nv = he_nv(he);
     nh = he_nh(he);
     q->Kb   = Kb;
-
     if (getenv("MIX"))
         q->compute_area = area_mix;
     else
@@ -280,25 +281,31 @@ int he_f_meyer_ini(real Kb,
         q->compute_H = H_norm;
     }
 
-    MALLOC(nh, &q->cot);
-    MALLOC(nv, &q->lbx); MALLOC(nv, &q->lby); MALLOC(nv, &q->lbz);
-    MALLOC(nv, &q->normx); MALLOC(nv, &q->normy); MALLOC(nv, &q->normz);
-    MALLOC(nv, &q->H);  MALLOC(nv, &q->K);
-    MALLOC(nv, &q->energy_local); MALLOC(nv, &q->area);
-    MALLOC(nv, &q->lbH);
+    M(nh, cot);
+    M(nv, lbx); M(nv, lby); M(nv, lbz);
+    M(nv, normx); M(nv, normy); M(nv, normz);
+    M(nv, H);  M(nv, K);
+    M(nv, area); M(nv, energy_local);
+    M(nv, lbH);
+    M(nv, f); M(nv, fa); M(nv, fb); M(nv, fc);
 
     *pq = q;
     return HE_OK;
+#   undef M
+#   undef S
 }
 int he_f_meyer_fin(T *q) {
-    FREE(q->cot);
-    FREE(q->lbx); FREE(q->lby); FREE(q->lbz);
-    FREE(q->normx);FREE(q->normy);FREE(q->normz);
-    FREE(q->H);FREE(q->K);
-    FREE(q->energy_local); FREE(q->area);
-    FREE(q->lbH);
+#   define F(x) FREE(q->x)
+    F(cot);
+    F(lbx); F(lby); F(lbz);
+    F(normx); F(normy); F(normz);
+    F(H); F(K);
+    F(area); F(energy_local);
+    F(lbH);
+    F(f); F(fa); F(fb); F(fc);
     FREE(q);
     return HE_OK;
+#   undef F
 }
 int he_f_meyer_area_ver(T *q, /**/ real **pa) {
     *pa = q->area;
@@ -330,6 +337,13 @@ int he_f_meyer_energy_ver(T *q, /**/ real**pa) {
 }
 int he_f_meyer_laplace_H_ver(T *q, /**/ real **px ) {
     *px = q->lbH;
+    return HE_OK;
+}
+int he_f_meyer_components(T *q, /**/ real **f, real **fa, real **fb, real **fc) {
+    *f = q->f;
+    *fa = q->fa;
+    *fb = q->fb;
+    *fc = q->fc;
     return HE_OK;
 }
 static int compute_cot(He *he, const real *x, const real *y, const real *z,
@@ -461,6 +475,7 @@ real he_f_meyer_energy(T *q, He *he,
 int he_f_meyer_force(T *q, He *he,
                          const real *x, const real *y, const real *z, /**/
                          real *fx, real *fy, real *fz) {
+#   define G(f) f = q->f
     enum {X, Y, Z};
     int v;
     int nv;
@@ -470,7 +485,7 @@ int he_f_meyer_force(T *q, He *he,
     real *normx, *normy, *normz;
     real *area, *cot;
     real *K, *H;
-    real *lbH;
+    real *lbH, *f, *fa, *fb, *fc;
     real fm;
 
     real Kb;
@@ -482,13 +497,13 @@ int he_f_meyer_force(T *q, He *he,
     he_T(he, &T0, &T1, &T2);
     he_D(he, &D0, &D1, &D2, &D3);
 
-    cot = q->cot;
-    lbx = q->lbx; lby = q->lby; lbz = q->lbz;
-    normx = q->normx; normy = q->normy; normz = q->normz;
-    H  = q->H;
-    K = q->K;
-    area    = q->area;
-    lbH = q->lbH;
+    G(cot);
+    G(lbx); G(lby); G(lbz);
+    G(normx); G(normy); G(normz);
+    G(H);
+    G(K);
+    G(area);
+    G(lbH); G(f); G(fa); G(fb); G(fc);
     q->compute_area(he, x, y, z, area);
 
     compute_cot(he, x, y, z, cot);
@@ -507,7 +522,13 @@ int he_f_meyer_force(T *q, He *he,
         fx[v] += fm*normx[v];
         fy[v] += fm*normy[v];
         fz[v] += fm*normz[v];
+
+        fa[v] = fabs(lbH[v]);
+        fb[v] = fabs(2*H[v]*K[v]);
+        fc[v] = fabs(H[v]*H[v]*H[v]);
+        f[v] = fabs(lbH[v]+2*H[v]*(H[v]*H[v]-K[v]));
     }
-    
+
     return HE_OK;
+#   undef G
 }
