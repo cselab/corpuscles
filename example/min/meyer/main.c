@@ -26,7 +26,7 @@ static const real pi = 3.141592653589793115997964;
 
 static const real tolerA = 1.0e-3;
 
-static real Kb, C0, Kad, DA0D;
+static real Kb;
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
@@ -41,11 +41,10 @@ static int freq;
 static real A0, V0, e0;
 static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
-static char bending[4049];
 static const char *me = "min/helfrich_xin_fga";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
+    fprintf(stderr, "%s rVolume Ka Kga Kv Ke Kb < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");
     exit(0);
@@ -71,24 +70,14 @@ static int scl(/**/ real *p) {
     argv++;
     return HE_OK;
 }
-static int str(/**/ char *p) {
-    if (*argv == NULL) ER("not enough args");
-    strncpy(p, *argv, 4048);
-    argv++;
-    return HE_OK;
-}
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
-    str(bending);
     scl(&rVolume);
     scl(&Ka);
     scl(&Kga);
     scl(&Kv);
     scl(&Ke);
     scl(&Kb);
-    scl(&C0);
-    scl(&Kad);
-    scl(&DA0D);
     num(&end);
     num(&freq);
 }
@@ -284,10 +273,7 @@ int main(int __UNUSED argc, const char *v[]) {
   f_edg_sq_ini(Ke);
   
   bending_param.Kb = Kb;
-  bending_param.C0 = C0;
-  bending_param.Kad = Kad;
-  bending_param.DA0D = DA0D;
-  f_bending_ini(bending, bending_param);
+  f_bending_ini("meyer", bending_param);
   
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
