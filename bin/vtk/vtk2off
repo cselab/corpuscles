@@ -3,16 +3,35 @@
 prog=he.vtk2off
 
 usg () {
-    msg "$prog"
+    msg "$prog [-l low] [-h hi] --[scalar] [FILE.vtk]"
     exit
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-"$AWK" -v prog=$prog '
+num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
+num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
+
+sc= l= h= verbose= file=
+while test $# -ne 0
+do case "$1" in
+       -l) shift
+	   if test $# -le 0; then err '-l needs an agrument'; fi
+	   num "$1"; l="$1"; shift ;;
+       -h) shift
+	   if test $# -le 0; then err '-h needs an agrument'; fi
+	   num "$1"; h="$1"; shift ;;
+       --*) sc="$1"; shift ;;
+       -*) err "unknown option '$1'" ;;
+       *) file="$1"; shift ;;
+   esac
+done
+
+"$AWK" -v prog=$prog -v sc="$sc" -v l="$l" -v h="$h" -v LOG="$LOG" '
 BEGIN {
-    sc = "fx"
+    sub(/^--/, "", sc)
     Sc = !emptyp(sc)
+    Log = !eq(LOG, "0")
 }
 
 {
@@ -37,35 +56,38 @@ function tri_avg(t, a,   i, j, k) {
     return (a[i] + a[j] + a[k])/3
 }
 
-function colormap(v, mi, ma,   r, g, b, d) {
+function colormap(v, mi, ma) {
    if (v < mi) v = mi
    if (v > ma) v = ma
-   d = ma - mi
-   v -= mi
-   v /= d
-   if (v < 1/4) {
-       r = 0; g = 4*v; b = 1
-   } else if (v < 1/2) {
-       r = 0; g = 1; b = 2 - 4*v
-   }
-   else if (v < 3/4) {
-       r = 4*v - 2; g = 1; b = 0
+   v = 4*(v - mi)/(ma - mi)
+   R = 0; G = B = 1
+   if (v < 1)
+       G = v
+   else if (v < 2)
+       B = 2 - v
+   else if (v < 3) {
+       R = v - 2; B = 0
    } else {
-       r = 1; g = 4 - 4*v; b = 0
+       R = 1; G = 4 - v; B = 0
    }
-   R = r; G = g; B = b
 }
 
 function map_color(   i, mi, ma, e) {
     mi = ma = scalar[0]
     for (i = 0; i < nt; i++) {
-	e = tri[i] = tri_avg(i, y)
+	e = tri[i] = tri_avg(i, scalar)
 	if (e > ma) ma = e
 	if (e < mi) mi = e
     }
+    
+    if (emptyp(l)) l = mi
+    if (emptyp(h)) h = ma
+    if (Log)
+	msg(l " " h)
+
     for (i = 0; i < nt; i++) {
 	e = tri[i]
-	colormap(e, mi, ma)
+	colormap(e, l, h)
 	tri[i] = R " " G " " B
     }
 }
@@ -136,4 +158,4 @@ function msg0(s) { printf "%s\n", s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
 function emptyp(s) { return s ~ /^[\t ]*$/ }
 function eq(a, b) { return "" a == "" b }
-' "$@"
+' "$file"
