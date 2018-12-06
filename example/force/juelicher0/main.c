@@ -14,7 +14,7 @@
 #include <he/util.h>
 #include <he/x.h>
 
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 
 static real K, C0, Kad;
 static real *FX, *FY, *FZ;

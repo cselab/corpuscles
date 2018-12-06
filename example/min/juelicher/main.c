@@ -18,7 +18,7 @@
 #include <alg/x.h>
 #include <alg/min.h>
 
-#define FMT_IN   (XE_REAL_IN)
+#define FMT_IN   (HE_REAL_IN)
 
 static real *lentheta, *AREA, *curva_mean;
 static real Ka, Kga, Kv, Kb, Ke;

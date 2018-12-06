@@ -30,7 +30,7 @@
 #include <he/vtk.h>
 #include <he/y.h>
 
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 
 static const real pi = 3.141592653589793115997964;
 static const real tolerA = 1;

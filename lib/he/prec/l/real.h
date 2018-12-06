@@ -1,3 +1,3 @@
 typedef long double real;
-#define XE_REAL_IN  "%Lf"
-#define XE_REAL_OUT "%.16Lg"
+#define HE_REAL_IN  "%Lf"
+#define HE_REAL_OUT "%.16Lg"
