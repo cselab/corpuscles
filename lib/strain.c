@@ -48,6 +48,8 @@ static real F2_skalak(void *p0, __UNUSED real I1, __UNUSED real I2) {
 static real F_evans(void *p0, real I1, real I2)  {
     P *p;
     real Ks, Ka, I1s, I2s;
+    p = (P*)p0;
+    Ka = p->Ka; Ks = p->Ks;
     return Ks*(sq(I1s)/2+I1s-I2s)/4 + Ka*sq(I2s)/8;
 }
 static real F1_evans(void *p0, real I1, __UNUSED real I2) {
