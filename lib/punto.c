@@ -6,7 +6,7 @@
 #include "he/err.h"
 
 #define FMT_IN   XE_REAL_IN
-#define FMT_OUT  "%.16g"
+#define FMT_OUT  XE_REAL_OUT
 
 #define SIZE (MAX_STRING_SIZE)
 
