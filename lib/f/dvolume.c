@@ -69,7 +69,7 @@ static void compute_volume(He *he, const real *x, const real *y, const real *z, 
     }
 }
 
-static void compute_force(real v,
+static void compute_force(
                           He *he, const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
     int n, t, i, j, k;
@@ -91,14 +91,13 @@ int he_f_dvolume_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *volume, v;
+    real *volume;
     n = q->n;
     volume = q->volume;
     if (he_nt(he) != n)
         ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
     compute_volume(he, x, y, z, /**/ volume);
-    v = sum(n, volume);
-    compute_force(v, he, x, y, z, /**/ fx, fy, fz);
+    compute_force(he, x, y, z, /**/ fx, fy, fz);
     return HE_OK;
 }
 
