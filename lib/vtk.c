@@ -8,7 +8,7 @@
 #include "he/he.h"
 
 #define FMT_IN   HE_REAL_IN
-#define FMT_OUT  "%.16g"
+#define FMT_OUT  HE_REAL_OUT
 
 #define SIZE (MAX_STRING_SIZE)
 
