@@ -1,7 +1,7 @@
 include ../../../conf.mk
 
 M = main
-PREC = l
+PREC = d
 HE_CFLAGS =  `he.conf --cflags $(PREC)`
 HE_LDFLAGS = `he.conf --libs $(PREC)`
 

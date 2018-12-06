@@ -23,7 +23,7 @@ int main() {
     A = he_area(he, x, y, z);
     he_area_tri(he, x, y, z, /**/ area);
 
-    MSG("area: %.16Lg", A);
+    MSG("area: " HE_REAL_OUT, A);
 
     real *queue[] = {area, NULL};
     puts("area");

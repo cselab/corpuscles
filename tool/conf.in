@@ -26,7 +26,7 @@ case "$a" in
     *) err "unknown argument '$a'" ;;
 esac
 
-if test $# -eq 0; then err 'expection precision: s/d'; fi
+if test $# -eq 0; then err 'expectint precision: s/d'; fi
 p="$1"; shift
 case "$p" in
     s|d|l) ;;
