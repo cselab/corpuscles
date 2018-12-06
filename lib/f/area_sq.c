@@ -53,7 +53,7 @@ static void get(int t, He *he,
     vec_get(k, x, y, z, /**/ c);
 }
 static void compute_area(He *he, const real *x, const real *y, const real *z, /**/ real *area) {
-    real one, a[3], b[3], c[3];
+    real a[3], b[3], c[3];
     int n, t;
     n = he_nt(he);
     for (t = 0; t < n; t++) {
