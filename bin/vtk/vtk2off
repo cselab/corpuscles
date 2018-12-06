@@ -59,7 +59,12 @@ function tri_avg(t, a,   i, j, k) {
 function colormap(v, mi, ma) {
    if (v < mi) v = mi
    if (v > ma) v = ma
-   v = 4*(v - mi)/(ma - mi)
+
+   if (ma != mi)
+       v = 4*(v - mi)/(ma - mi)
+   else
+       v = 0
+
    R = 0; G = B = 1
    if (v < 1)
        G = v
@@ -79,7 +84,7 @@ function map_color(   i, mi, ma, e) {
 	if (e > ma) ma = e
 	if (e < mi) mi = e
     }
-    
+
     if (emptyp(l)) l = mi
     if (emptyp(h)) h = ma
     if (Log)
@@ -144,6 +149,9 @@ function data(   i) {
 	if (L[I] ~ /^SCALARS/ &&
 	    eq(idx(2), sc)) break
     }
+    if (I > N)
+	err(sprintf("no scalar \"%s\"", sc))
+
     while (++I <= N && L[I] !~ /^LOOKUP_TABLE/) ;
     for (i = 0; i < nv; i++)
 	scalar[i] = L[++I]

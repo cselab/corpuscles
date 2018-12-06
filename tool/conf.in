@@ -10,7 +10,7 @@ usg () {
     msg 'OPTIONS'
     msg '  --libs          the pre-processor and compile flags'
     msg '  --cflags        the link flags'
-    msg  ' PRECISION=[sd]  s: single, d: double'
+    msg  ' PRECISION=[sdl]  s: single, d: double, l: long double'
     exit
 }
 
@@ -29,7 +29,7 @@ esac
 if test $# -eq 0; then err 'expection precision: s/d'; fi
 p="$1"; shift
 case "$p" in
-    s|d) ;;
+    s|d|l) ;;
     *) err "unknown PRECISION '$a'" ;;
 esac
 
