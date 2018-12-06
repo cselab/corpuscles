@@ -6,4 +6,5 @@ install:
 	do he.install "$$i" "$$path"; \
 	done
 clean:
-.PHONY: install clean
+test:
+.PHONY: install clean test
