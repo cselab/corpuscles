@@ -78,3 +78,12 @@ he_f_volume_normal_force
 he_f_volume_normal_energy
 he_f_volume_normal_ini
 real,real
+
+#include "he/f/area_sq.h"
+area_sq
+HeFAreaSq
+he_f_area_sq_fin
+he_f_area_sq_force
+he_f_area_sq_energy
+he_f_area_sq_ini
+real

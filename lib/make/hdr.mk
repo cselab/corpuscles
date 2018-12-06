@@ -14,6 +14,7 @@ he/edg.h\
 he/equiangulate.h\
 he/err.h\
 he/f/area.h\
+he/f/area_sq.h\
 he/f/area_voronoi.h\
 he/fd.h\
 he/f/dvolume.h\
@@ -27,6 +28,7 @@ he/f/harmonic.h\
 he/f/harmonic_ref.h\
 he/f/juelicher_xin.h\
 he/f/kantor.h\
+he/f/meyer.h\
 he/f/meyer_xin.h\
 he/force.h\
 he/f/strain.h\

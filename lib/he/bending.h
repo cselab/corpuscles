@@ -28,5 +28,6 @@ int bending_meyer_ini(BendingParam, He*, /**/ T**);
 int bending_canham_ini(BendingParam, He*, /**/ T**);
 int bending_gompper_xin_ini(BendingParam, He*, /**/ T**);
 int bending_meyer_xin_ini(BendingParam, He*, /**/ T**);
+int bending_meyer_ini(BendingParam, He*, /**/ T**);
 
 #undef T

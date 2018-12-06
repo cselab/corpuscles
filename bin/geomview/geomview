@@ -111,7 +111,9 @@ do case "$1" in
 done
 
 if test $# -eq 0; then err 'no input files'; fi
-for i; do off "$i"; done
+if test $process = -
+then for i; do off "$i"; done
+fi
 
 if test $process = -
 then gview "$@"

@@ -1,0 +1,161 @@
+. he.util
+
+prog=he.vtk2off
+
+usg () {
+    msg "$prog [-l low] [-h hi] --[scalar] [FILE.vtk]"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
+num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
+
+sc= l= h= verbose= file=
+while test $# -ne 0
+do case "$1" in
+       -l) shift
+	   if test $# -le 0; then err '-l needs an agrument'; fi
+	   num "$1"; l="$1"; shift ;;
+       -h) shift
+	   if test $# -le 0; then err '-h needs an agrument'; fi
+	   num "$1"; h="$1"; shift ;;
+       --*) sc="$1"; shift ;;
+       -*) err "unknown option '$1'" ;;
+       *) file="$1"; shift ;;
+   esac
+done
+
+"$AWK" -v prog=$prog -v sc="$sc" -v l="$l" -v h="$h" -v LOG="$LOG" '
+BEGIN {
+    sub(/^--/, "", sc)
+    Sc = !emptyp(sc)
+    Log = !eq(LOG, "0")
+}
+
+{
+    sub(/#.*/, "")
+    if (!emptyp($0))
+	L[++N] = $0
+}
+
+END {
+    point()
+    if (Sc) data()
+
+    if (Sc) {
+	map_color()
+	write_color()
+    }
+    else write_black()
+}
+
+function tri_avg(t, a,   i, j, k) {
+    i = t0[t]; j = t1[t]; k = t2[t]
+    return (a[i] + a[j] + a[k])/3
+}
+
+function colormap(v, mi, ma) {
+   if (v < mi) v = mi
+   if (v > ma) v = ma
+   v = 4*(v - mi)/(ma - mi)
+   R = 0; G = B = 1
+   if (v < 1)
+       G = v
+   else if (v < 2)
+       B = 2 - v
+   else if (v < 3) {
+       R = v - 2; B = 0
+   } else {
+       R = 1; G = 4 - v; B = 0
+   }
+}
+
+function map_color(   i, mi, ma, e) {
+    mi = ma = scalar[0]
+    for (i = 0; i < nt; i++) {
+	e = tri[i] = tri_avg(i, scalar)
+	if (e > ma) ma = e
+	if (e < mi) mi = e
+    }
+    
+    if (emptyp(l)) l = mi
+    if (emptyp(h)) h = ma
+    if (Log)
+	msg(l " " h)
+
+    for (i = 0; i < nt; i++) {
+	e = tri[i]
+	colormap(e, l, h)
+	tri[i] = R " " G " " B
+    }
+}
+
+function write_black(   i) {
+    print "OFF"
+    print nv, nt, ne = 0
+    for (i = 0; i < nv; i++)
+	print x[i], y[i], z[i]
+    for (i = 0; i < nt; i++)
+	print 3, t0[i], t1[i], t2[i]
+}
+
+function write_color(   i) {
+    print "OFF"
+    print nv, nt, ne = 0
+    for (i = 0; i < nv; i++)
+	print x[i], y[i], z[i]
+    for (i = 0; i < nt; i++)
+	print 3, t0[i], t1[i], t2[i], tri[i]
+}
+
+function point(   i) {
+    while (++I <= N && L[I] !~ /^ASCII/) ;
+    if (I > N)	err("not ascii vtk file")
+
+    while (++I <= N && L[I] !~ /^DATASET[\t ]+POLYDATA/) ;
+    if (I > N)	err("no DATASET POLYDATA")
+
+    while (++I <= N && L[I] !~ /^POINTS/) ;
+    if (I > N)	err("no POINTS")
+    nv = idx(2)
+    for (i = 0; i < nv; i++) {
+	I++
+	x[i] = idx(1)
+	y[i] = idx(2)
+	z[i] = idx(3)
+    }
+    while (++I <= N && L[I] !~ /^POLYGONS/) ;
+    if (I > N)	err("no POLYGONS")
+    nt = idx(2)
+
+    for (i = 0; i < nt; i++) {
+	I++
+	t0[i] = idx(2)
+	t1[i] = idx(3)
+	t2[i] = idx(4)
+    }
+}
+
+function data(   i) {
+    for (;;) {
+	if (++I > N) break
+	if (L[I] ~ /^SCALARS/ &&
+	    eq(idx(2), sc)) break
+    }
+    while (++I <= N && L[I] !~ /^LOOKUP_TABLE/) ;
+    for (i = 0; i < nv; i++)
+	scalar[i] = L[++I]
+}
+
+function idx(i,   a) {
+    split(L[I], a)
+    return a[i]
+}
+function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
+function msg0(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function emptyp(s) { return s ~ /^[\t ]*$/ }
+function eq(a, b) { return "" a == "" b }
+' "$file"

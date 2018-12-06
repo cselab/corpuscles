@@ -20,6 +20,7 @@ dvec.s.o\
 edg.s.o\
 equiangulate.s.o\
 f/area.s.o\
+f/area_sq.s.o\
 f/area_voronoi.s.o\
 fd.s.o\
 f/dvolume.s.o\
@@ -33,6 +34,7 @@ f/harmonic.s.o\
 f/harmonic_ref.s.o\
 f/juelicher_xin.s.o\
 f/kantor.s.o\
+f/meyer.s.o\
 f/meyer_xin.s.o\
 force.s.o\
 f/strain.s.o\
@@ -72,6 +74,7 @@ dvec.d.o\
 edg.d.o\
 equiangulate.d.o\
 f/area.d.o\
+f/area_sq.d.o\
 f/area_voronoi.d.o\
 fd.d.o\
 f/dvolume.d.o\
@@ -85,6 +88,7 @@ f/harmonic.d.o\
 f/harmonic_ref.d.o\
 f/juelicher_xin.d.o\
 f/kantor.d.o\
+f/meyer.d.o\
 f/meyer_xin.d.o\
 force.d.o\
 f/strain.d.o\
