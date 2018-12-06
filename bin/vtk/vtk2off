@@ -1,0 +1,10 @@
+. he.util
+
+prog=he.path
+
+usg () {
+    msg "$prog returns he path"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
