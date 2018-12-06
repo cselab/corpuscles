@@ -16,13 +16,14 @@ int main() {
     real *area;
 
     y_ini("/dev/stdin", &he, &x, &y, &z);
+
     n = he_nt(he);
     MALLOC(n, &area);
 
     A = he_area(he, x, y, z);
     he_area_tri(he, x, y, z, /**/ area);
 
-    MSG("area: %.16g", A);
+    MSG("area: %.16Lg", A);
 
     real *queue[] = {area, NULL};
     puts("area");
