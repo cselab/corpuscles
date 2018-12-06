@@ -82,7 +82,6 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
   int nv, ne, nt, nh;
   MALLOC(1, &q);
 
-  //printf("size of q %g", sizeof(q));
   nv = he_nv(he);
   ne = he_ne(he);
   nt = he_nt(he);
