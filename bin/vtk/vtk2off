@@ -8,3 +8,50 @@ usg () {
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+"$AWK" -v prog=$prog '
+{
+    sub(/#.*/, "")
+    if (!emptyp($0))
+	L[++N] = $0
+}
+
+END {
+    while (++I <= N && L[I] !~ /^ASCII/) ;
+    if (I > N)	err("not ascii vtk file")
+
+    while (++I <= N && L[I] !~ /^DATASET[\t ]+POLYDATA/) ;
+    if (I > N)	err("no DATASET POLYDATA")
+
+    while (++I <= N && L[I] !~ /^POINTS/) ;
+    if (I > N)	err("no POINTS")
+    nv = idx(2)
+    for (i = 0; i < nv; i++) {
+	I++
+	x[i] = idx(1)
+	y[i] = idx(2)
+	z[i] = idx(3)
+    }
+    while (++I <= N && L[I] !~ /^POLYGONS/) ;
+    if (I > N)	err("no POLYGONS")
+    nt = idx(2)
+
+    for (i = 0; i < nt; i++) {
+	I++
+	t0[i] = idx(2)
+	t1[i] = idx(3)
+	t2[i] = idx(4)
+    }
+
+    print L[++I]
+}
+
+function idx(i,   a) {
+    split(L[I], a)
+    return a[i]
+}
+function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
+function msg0(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function emptyp(s) { return s ~ /^[\t ]*$/ }
+' "$@"
