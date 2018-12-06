@@ -9,6 +9,7 @@ bin/orient\
 bin/maxima\
 bin/path\
 bin/run\
+bin/vtk\
 example/area/tri\
 example/area/voronoi\
 example/he\

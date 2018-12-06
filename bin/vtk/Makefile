@@ -12,6 +12,6 @@ path = $(HOME)/.he
 include $S/make/tool.mk
 
 test:
-clean:; rm -f conf
+clean:
 
 .PHONY: clean install test
