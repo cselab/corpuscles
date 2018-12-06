@@ -190,8 +190,8 @@ static void main0(real *vx, real *vy, real *vz,
   real errA;
   int nsub;
 
-  dt_max = 0.02;
-  mu     = 200.0;
+  dt_max = 0.01;
+  mu     = 1000.0;
   h      = 0.01*e0;
   
   nsub = 100;
@@ -223,7 +223,7 @@ static void main0(real *vx, real *vy, real *vz,
       }
     }
 
-    int fr = 1;
+    int fr = 10000;
     if (i > fr && i % fr == 0) {
         do {
             he_equiangulate(he, XX, YY, ZZ, &cnt);

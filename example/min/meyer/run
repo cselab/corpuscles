@@ -3,12 +3,13 @@ set -eu
 Kb=0.01
 Vr=0.4
 
-: ${end=100}
-: ${freq=100}
+: ${end=9999999999999}
+: ${freq=1000}
 
 #off=data/mit.off
-off=$(he.path)/oblate/laplace/Nt1280/oblate_volume_Vr0.4.off
+off=$(he.path)/oblate/laplace/Nt5120/oblate_volume_Vr0.4.off
 make
 
-he.run ./main $Vr 0.25 1 1 0.004375 \
+# 0.004375
+he.run ./main $Vr 0.25 1 1 0 \
        $Kb $end $freq < $off > Vr$Vr.msg
