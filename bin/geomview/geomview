@@ -115,7 +115,7 @@ if test "$process" = -
 then for i; do off "$i"; done
 fi
 
-if test $process = -
+if test "$process" = -
 then gview "$@"
 else t=/tmp/he.geomview.$$
      mkdir -p $t
