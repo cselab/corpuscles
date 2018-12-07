@@ -15,6 +15,7 @@
 enum {SIZE = MAX_STRING_SIZE};
 
 #define FMT HE_REAL_IN
+#define OUT HE_REAL_OUT
 
 struct T {
     real *ver; /* x[0] y[0] z[0] ... */
@@ -102,7 +103,7 @@ int off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) 
 
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (m = 0; m < nv; m++)
-        fprintf(f, "%.16e %.16e %.16e\n", x[m], y[m], z[m]);
+        fprintf(f, OUT " " OUT " " OUT "\n", x[m], y[m], z[m]);
 
     for (m = 0; m < nt; m++) {
         i = *tri++; j = *tri++; k = *tri++;
@@ -135,7 +136,7 @@ int off_tri_fwrite(T *q, const int *tri, /**/ FILE *f) {
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (i = m = 0; m < nv; m++) {
         x = ver[i++]; y = ver[i++]; z = ver[i++];
-        fprintf(f, "%.16e %.16e %.16e\n", x, y, z);
+        fprintf(f, OUT " " OUT " " OUT "\n", x, y, z);
     }
 
     for (m = 0; m < nt; m++) {
@@ -171,7 +172,7 @@ int off_he_fwrite(T *q, He *he, /**/ FILE *f) {
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (i = m = 0; m < nv; m++) {
         x = ver[i++]; y = ver[i++]; z = ver[i++];
-        fprintf(f, "%.16e %.16e %.16e\n", x, y, z);
+        fprintf(f, OUT " " OUT " " OUT "\n", x, y, z);
     }
 
     for (m = 0; m < nt; m++) {
@@ -201,9 +202,8 @@ int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ 
         ERR(HE_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
     fprintf(f, "%d %d %d\n", nv, nt, ne);
-    for (m = 0; m < nv; m++) {
-        fprintf(f, "%.16e %.16e %.16e\n", x[m], y[m], z[m]);
-    }
+    for (m = 0; m < nv; m++)
+        fprintf(f, OUT " " OUT " " OUT "\n", x[m], y[m], z[m]);
     for (m = 0; m < nt; m++) {
         h = he_hdg_tri(he, m);
         n = he_nxt(he, h);
