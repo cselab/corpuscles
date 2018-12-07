@@ -77,19 +77,11 @@ static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
 }
-static real sum(int n, const  real *volume) {
-    int t;
-    real v;
-    v = 0;
-    for (t = 0; t < n; t++) v += volume[t];
-    return v;
-}
 int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
   T *q;
   int nv, ne, nt, nh;
   MALLOC(1, &q);
 
-  //printf("size of q %g", sizeof(q));
   nv = he_nv(he);
   ne = he_ne(he);
   nt = he_nt(he);
@@ -253,7 +245,7 @@ static int compute_norm(T *q, He *he,
     }
     return HE_OK;
 }
-static int compute_curva_mean(T *q, He *he,
+static int compute_curva_mean(He *he,
 			      real *lbx, real *lby, real *lbz,
 			      real *normx, real *normy, real *normz,
 			      /**/ real *curva_mean) {
@@ -292,7 +284,6 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   real mH0, mH1, mH2;
   real energy1, energy2, energy3, energy4, energy5, energy6;
   real energy_tot;
-  real energy_tot_local, energy_tot_nonlocal;
 
   Kb   = q->Kb;
   C0   = q->C0;
@@ -328,7 +319,7 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   compute_laplace(he, y, cot, area, /**/ lby);
   compute_laplace(he, z, cot, area, /**/ lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
-  compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
+  compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
 
   mH1 = 0;
   mH2 = 0;
@@ -346,8 +337,6 @@ real he_f_gompper_kroll_energy(T *q, He *he,
   energy5 = 2*Kb*H0*H0*mH0;
   energy6 = pi*Kad*DA0D*DA0D/2/mH0;
   
-  energy_tot_local = energy1 + energy3 + energy5;
-  energy_tot_nonlocal = energy2 + energy4 + energy6;
   energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
   
   //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
@@ -363,23 +352,21 @@ int he_f_gompper_kroll_force(T *q, He *he,
   int h, n, nn, fnf;
   int *T0, *T1, *T2;
 
-  real Kb, C0, Kad, DA0D, H0;
+  real Kb, C0, H0;
   real *len2, *cot;
   real *lbx, *lby, *lbz;
   real *normx, *normy, *normz;
   real *curva_mean;
   real *area;
-  real cm_integral, area_tot;
+  real cm_integral;
 
   real cot1, area1, rsq;
   real a[3], b[3], c[3], d[3], r[3];
   real lbi[3], lbisq, lbisq_der[3];
   real coef, coef1, coef2;
-  real doef, doef1, doef2;
   real da1[3], db1[3], dc[3];
   real da2[3], db2[3], dd[3];
-  real df[3], dcm[3];
-  real coef3;
+  real df[3];
 
   T0 = q->T0; T1 = q->T1; T2 = q->T2;
   len2 = q->len2; cot = q->cot;
@@ -395,8 +382,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
   
   Kb   = q->Kb;
   C0   = q->C0;
-  Kad  = q->Kad;
-  DA0D = q->DA0D;
 
   H0 = C0/2.0;
   
@@ -424,8 +409,7 @@ int he_f_gompper_kroll_force(T *q, He *he,
   compute_laplace(he, y, cot, area, /**/ lby);
   compute_laplace(he, z, cot, area, /**/ lbz);
   compute_norm(q, he, x, y, z, normx, normy, normz);
-  compute_curva_mean(q, he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
-  area_tot   =sum(nv, area);
+  compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
   
   cm_integral = 0;
   for (i = 0; i < nv; i++) {
@@ -505,8 +489,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
     vec_scalar_append(da2, coef, i, /**/ fx, fy, fz);
     vec_scalar_append(db2, coef, j, /**/ fx, fy, fz);
     vec_scalar_append(dd,  coef, l, /**/ fx, fy, fz);
-
-    coef3 = coef1 + coef2;
     
     /*###################################
       ###################################

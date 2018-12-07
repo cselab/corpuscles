@@ -111,11 +111,11 @@ do case "$1" in
 done
 
 if test $# -eq 0; then err 'no input files'; fi
-if test $process = -
+if test "$process" = -
 then for i; do off "$i"; done
 fi
 
-if test $process = -
+if test "$process" = -
 then gview "$@"
 else t=/tmp/he.geomview.$$
      mkdir -p $t

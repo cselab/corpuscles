@@ -82,7 +82,7 @@ static int scl(const char **pargv[], real *p) {
     argv = *pargv;
     if (*argv == NULL)
         ERR(HE_IO, "not enough args");
-    if (sscanf(*argv, XE_REAL_IN, p) != 1)
+    if (sscanf(*argv, HE_REAL_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
 

@@ -12,7 +12,7 @@
 #include <alg/x.h>
 #include <alg/min.h>
 
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 
 static real Ka, Kv, Ke, Kb;
 static real A0, V0;

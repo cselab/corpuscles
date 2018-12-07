@@ -12,7 +12,7 @@
 #include <he/dih.h>
 #include <he/ddih.h>
 
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 static const char **argv;
 static const real h = 1e-6;
 

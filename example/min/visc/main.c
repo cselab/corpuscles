@@ -27,7 +27,7 @@ static void zero(int n, real *a) {
 }
 
 
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 
 static real rVolume, Ka, Kga, Kh, Ke;
 static real A0, V0, e0;

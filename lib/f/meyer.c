@@ -49,13 +49,6 @@ static int zero(int n, real *a) {
     return HE_OK;
 }
 
-static int scale(real sc, int n, /*io*/ real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] *= sc;
-    return HE_OK;
-}
-
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {

@@ -18,8 +18,6 @@ struct T {
     HeFDvolume *dvolume;
 };
 
-static real sum(int n, real *a) { return he_sum_array(n, a); }
-
 int restore_ini(real volume, He *he, T **pq) {
     T *q;
     int n;

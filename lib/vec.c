@@ -7,7 +7,7 @@
 #include "he/vec.h"
 
 enum {X, Y, Z};
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 enum {SIZE = MAX_STRING_SIZE};
 
 int vec_ini(real x, real y, real z, /**/ real a[3]) {

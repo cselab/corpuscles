@@ -17,7 +17,7 @@
 #include <he/area.h>
 #include <he/normal.h>
 
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 
 static const char **argv;
 static char name[4048];

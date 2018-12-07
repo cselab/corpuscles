@@ -8,7 +8,7 @@
 enum {X, Y, Z};
 enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};
 enum {SIZE = MAX_STRING_SIZE};
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 
 int ten_col_ini(const real a[3], const real b[3], const real c[3],
                 Ten *T) {

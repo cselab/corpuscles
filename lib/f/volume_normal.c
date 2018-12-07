@@ -37,12 +37,6 @@ static int axypz(int n, real a, const real *x, const real *y,
         z[i] += a*x[i]*y[i];
     return HE_OK;
 }
-static int plus(int n, const real *a, /*io*/ real *b) {
-    int i;
-    for (i = 0; i < n; i++)
-        b[i] += a[i];
-    return HE_OK;
-}
 
 int he_f_volume_normal_ini(real v0, real K, He *he, T **pq) {
 #   define M(n, f) MALLOC(n, &q->f)

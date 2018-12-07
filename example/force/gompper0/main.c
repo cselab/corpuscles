@@ -13,7 +13,7 @@
 #include <he/util.h>
 #include <he/x.h>
 
-#define FMT_IN   XE_REAL_IN
+#define FMT_IN   HE_REAL_IN
 
 static real Kb, C0, Kad, DA0D;
 static real *ENG, *AREA;

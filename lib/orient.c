@@ -40,6 +40,7 @@ static int mult(const real m[3*3], real *px, real *py, real *pz) {
     z0 = x*m[XZ] + y*m[YZ] + z*m[ZZ];
 
     *px = x0; *py = y0; *pz = z0;
+    return HE_OK;
 }
 
 static int moment(int n, const real *xx, const real *yy, const real *zz, /**/ real m[6]) {
@@ -64,11 +65,11 @@ static int to_cm(int n, /**/ real *xx, real *yy, real *zz) {
     for (i = 0; i < n; i++) {
         xx[i] -= x; yy[i] -= y; zz[i] -= z;
     }
+    return HE_OK;
 }
 
 int orient_apply(T *q, /**/ real *x, real *y, real *z) {
-    int n, i, j;
-    real x0, y0, z0;
+    int n, i;
     real m[6], v[3*3];
     n = q->n;
     to_cm(n, /**/ x, y, z);

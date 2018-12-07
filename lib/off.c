@@ -14,7 +14,7 @@
 #define T HeOff
 enum {SIZE = MAX_STRING_SIZE};
 
-#define FMT XE_REAL_IN
+#define FMT HE_REAL_IN
 
 struct T {
     real *ver; /* x[0] y[0] z[0] ... */
