@@ -70,9 +70,9 @@ int filter_apply(T *q, He *he,
         u = tri_angle(c, a, b);
         v = tri_angle(a, b, c);
         w = tri_angle(b, c, a);
-        B[i] += u*a[i];
-        B[j] += v*a[j];
-        B[k] += w*a[k];
+        B[i] += u*A[i];
+        B[j] += v*A[j];
+        B[k] += w*A[k];
     }
     copy(nv, B, A);
     return HE_OK;
