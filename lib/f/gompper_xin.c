@@ -239,7 +239,7 @@ int he_f_gompper_xin_curva_mean_ver(T *q, /**/ real **pa) {
     real *H, *area, *h;
     G(nv); G(dh); G(H);
     dh_area(dh, &area);
-    dh_area(dh, &h);
+    dh_h(dh, &h);
 
     div(nv, h, area, /**/ H);
     *pa = q->H;
