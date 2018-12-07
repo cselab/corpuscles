@@ -66,6 +66,6 @@ loop_ver(he,
 lap(H, lpH);
 
 loop_ver(he,
-  fm[i]: 2 * (lpH[i] + 2*H[i]*(H[i]^2 - K[i])));
+  fm[i]: 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i])));
 
 print(fm[0]);
