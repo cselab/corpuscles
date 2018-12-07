@@ -56,6 +56,7 @@ static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
 static const char *me = "min/meyer";
 static He *he;
+static Filter *filter;
 static real *XX, *YY, *ZZ, *fx, *fy, *fz, *fm;
 
 static int NV, NE, NT;
@@ -302,6 +303,8 @@ int main(int __UNUSED argc, const char *v[]) {
   he_f_volume_normal_ini(V0, Kv, he, &f_volume_normal);
   he_f_edg_sq_ini(Ke, he, &f_edg_sq);
   he_f_meyer_ini(Kb, he, &f_bending);
+
+  filter_ini(he, &filter);
   
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz); MALLOC(NV, &fm);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
