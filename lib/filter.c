@@ -10,7 +10,7 @@
 
 #define T Filter
 
-struct T { real *B; };
+struct T { real *B, *sum; };
 
 int filter_ini(He *he, T **pq) {
     T *q;
@@ -19,6 +19,7 @@ int filter_ini(He *he, T **pq) {
 
     n = he_nv(he);
     MALLOC(n, &q->B);
+    MALLOC(n, &q->sum);
 
     *pq = q;
     return HE_OK;
@@ -26,6 +27,7 @@ int filter_ini(He *he, T **pq) {
 
 int filter_fin(T *q) {
     FREE(q->B);
+    FREE(q->sum);
     FREE(q);
     return HE_OK;
 }
@@ -37,10 +39,12 @@ static int zero(int n, real *a) {
     return HE_OK;
 }
 
-static int copy(int n, const real *a, real *b) {
+static int div(int n, const real *a, const real *b, /*io*/ real *c) {
     int i;
-    for (i = 0; i < n; i++)
-        b[i] = a[i];
+    for (i = 0; i < n; i++) {
+        if (b[i] == 0) ERR(HE_NUM, "b[%d] == 0", i);
+        c[i] = a[i]/b[i];
+    }
     return HE_OK;
 }
 
@@ -58,12 +62,16 @@ int filter_apply(T *q, He *he,
                  /*io*/ real *A) {
     int nv, nt, t, i, j, k;
     real u, v, w;
-    real *B;
+    real *B, *sum;
     real a[3], b[3], c[3];
     nv = he_nv(he);
     nt = he_nt(he);
     B = q->B;
+    sum = q->sum;
+
     zero(nv, B);
+    zero(nv, sum);
+
     for (t = 0; t < nt; t++) {
         he_tri_ijk(he, t, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
@@ -73,7 +81,12 @@ int filter_apply(T *q, He *he,
         B[i] += u*A[i];
         B[j] += v*A[j];
         B[k] += w*A[k];
+
+        sum[i] += u;
+        sum[j] += v;
+        sum[k] += w;
     }
-    copy(nv, B, A);
+
+    div(nv, B, sum, A);
     return HE_OK;
 }

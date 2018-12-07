@@ -58,6 +58,8 @@ static const char *me = "min/meyer";
 static He *he;
 static Filter *filter;
 static real *XX, *YY, *ZZ, *fx, *fy, *fz, *fm;
+static real *vx, *vy, *vz;
+static real *fx, *fy, *fz;
 
 static int NV, NE, NT;
 
@@ -184,8 +186,16 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static void main0(real *vx, real *vy, real *vz,
-                  real *fx, real *fy, real *fz) {
+static int step(real dt) {
+    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+    filter_apply(filter, he, XX, YY, ZZ, XX);
+    filter_apply(filter, he, XX, YY, ZZ, YY);
+    filter_apply(filter, he, XX, YY, ZZ, ZZ);
+    return HE_OK;
+}
+
+static void main0() {
   int cnt, i, j;
   real dt, dt_max, h, mu;
   real A, V, Vr;
@@ -202,8 +212,7 @@ static void main0(real *vx, real *vy, real *vz,
     Force(XX, YY, ZZ);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+    step(dt);
     
     j = 0;
     A  = he_area(he, XX, YY, ZZ);
@@ -212,11 +221,11 @@ static void main0(real *vx, real *vy, real *vz,
       errA=-errA;
     }
     
-    while ( j < nsub && errA > tolerA ) {
+    while (j < nsub && errA > tolerA) {
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+      step(dt);
+      
       j++;
       A  = he_area(he, XX, YY, ZZ);
       errA = (A-A0)/A0;
@@ -272,7 +281,6 @@ static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 int main(int __UNUSED argc, const char *v[]) {
   real a0;
-  real *vx, *vy, *vz;
   real A, V, Vr;
   
   argv = v; argv++;
@@ -309,16 +317,18 @@ int main(int __UNUSED argc, const char *v[]) {
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz); MALLOC(NV, &fm);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
   
-  main0(vx, vy, vz, fx, fy, fz);
+  main0();
   
   FREE(fx); FREE(fy); FREE(fz); FREE(fm);
   FREE(vx); FREE(vy); FREE(vz);
-  
+
+  filter_fin(filter);
   he_f_meyer_fin(f_bending);
   he_f_edg_sq_fin(f_edg_sq);
   he_f_volume_normal_fin(f_volume_normal);
   he_f_area_fin(f_area);
   he_f_garea_fin(f_garea);
+  
   y_fin(he, XX, YY, ZZ);
   
   return 0;
