@@ -7,26 +7,27 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/punto.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/equiangulate.h>
-#include <he/util.h>
-#include <he/memory.h>
-#include <he/tri.h>
-#include <he/dedg.h>
-#include <he/off.h>
+#include <he/area.h>
 #include <he/ddih.h>
+#include <he/dedg.h>
 #include <he/dtri.h>
+#include <he/equiangulate.h>
+#include <he/err.h>
+#include <he/f/area.h>
 #include <he/f/edg_sq.h>
 #include <he/f/garea.h>
-#include <he/f/area.h>
+#include <he/filter.h>
 #include <he/f/meyer.h>
 #include <he/f/volume_normal.h>
-#include <he/volume.h>
 #include <he/he.h>
-#include <he/area.h>
+#include <he/macro.h>
+#include <he/memory.h>
+#include <he/off.h>
+#include <he/punto.h>
+#include <he/tri.h>
+#include <he/util.h>
+#include <he/vec.h>
+#include <he/volume.h>
 #include <he/vtk.h>
 #include <he/y.h>
 
