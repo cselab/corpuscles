@@ -17,7 +17,7 @@ tri_normal(a, b, c):=block([u, v, n],
 tri_angle(a, b, c):=block([u, v],
   u:  a - b,
   v:  c - b,
-  vec_angle(u, v));
+  abs(vec_angle(u, v)));
 
 tri_cot(a, b, c):=block([x, y, u, v],
   y: 2 * tri_area(a, b, c),
