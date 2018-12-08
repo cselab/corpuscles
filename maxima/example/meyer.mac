@@ -32,9 +32,9 @@ he: he(i) $
 nh: he_nh(he) $
 nv: he_nv(he) $
 
-alloc(nh,   tb, tc, sb, sc, r, H, fm) $
+alloc(nh,   tb, tc, sb, sc, r, H, fm, ang) $
 calloc(nv, area, K, lpH);
-valloc(nv, lp, f);
+valloc(nv, lp, f, m, n);
 
 loop_he(he,
   tb[h]: tri_cot(a, b, c),
@@ -43,7 +43,18 @@ loop_he(he,
   sc[h]: edg_sq(a, c));
 
 loop_he(he,
+  u[h]:   tri_normal(a, b, c),
+  ang[h]: tri_angle(c, a, b))$
+
+loop_he(he,
+  m[i] += ang[h]*u[h])$
+
+loop_ver(he,
+  n[i]: vec_norm(m[i]))$
+
+loop_he(he,
   area[i] += (tb[h]*sc[h] + tc[h]*sb[h])/8);
+
 
 loop_tri(he,
   K[i] += tri_angle(c, a, b),
@@ -60,7 +71,8 @@ lap(r, ans):=(
 loop_ver(he, r[i]: a);
 lap(r, lp);
 loop_ver(he,
-  H[i]: vec_abs(lp[i])/2);
+  H[i]: vec_abs(lp[i])/2,
+  if vec_dot(n[i], lp[i]) < 0 then H[i]: -H[i]);
 
 lap(H, lpH);
 loop_ver(he, lpH[i]: -lpH[i]);
@@ -68,11 +80,12 @@ loop_ver(he, lpH[i]: -lpH[i]);
 loop_ver(he,
   fm[i]: 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i])));
 
-print(fm[0]*area[0]);
-
 loop_ver(he,
   r[i]: vec_cylindrical_r(a),
   ff[i]: vec_abs(f[i]));
 with_stdout(o,
   printf(true, "x y z r area H fx fy fz fm K lpl~%"),
   punto_write(he, r, area, H, f, fm, K, lpH));
+
+block([i: 0],
+  print(fm[i]*lp[i]*area[i]/vec_abs(lp[i])));
