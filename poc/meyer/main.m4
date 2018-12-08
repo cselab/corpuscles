@@ -16,20 +16,22 @@ BEGIN {
     read()
 
     BEGIN_T
-        tb[h] = tri_cot(a, b, c)
-        tc[h] = tri_cot(b, c, a)
+	tb[h] = tri_cot(a, b, c)
+	tc[h] = tri_cot(b, c, a)
 	ang[h] = tri_angle(c, a, b)
 
-        sb = edg_sq(a, b)
+	sb = edg_sq(a, b)
 	sc = edg_sq(a, c)
 	area[i] += (tb[h]*sc + tc[h]*sb)/8
+	K[i] += ang[h]
     END_T
 
-    
     BEGIN_V
-        s += area[i]
+        K[i] = (2*pi - K[i])/area[i]
     END_V
-    print s
+
+    print K[0]
+    print ang[0]
 }
 
 function read(   v, t, h, i, j, k) {
@@ -48,7 +50,10 @@ function read(   v, t, h, i, j, k) {
     }
 }
 
-function ini() { X = 0; Y = 1; Z = 2 }
+function ini() {
+    pi = 3.141592653589793115997964
+    X = 0; Y = 1; Z = 2
+}
 function get3(i, j, k, a, b, c) {
     get(i, a); get(j, b); get(k, c)
 }

@@ -55,7 +55,6 @@ loop_ver(he,
 loop_he(he,
   area[i] += tb[h]*sc[h] + tc[h]*sb[h])/8;
 
-
 loop_tri(he,
   K[i] += tri_angle(c, a, b),
   K[j] += tri_angle(a, b, c),
@@ -88,4 +87,6 @@ with_stdout(o,
   punto_write(he, r, area, H, f, fm, K, lpH));
 
 block([i: 0],
+  print(K[i]),
+  print(ang[i]),
   print(fm[i]*lp[i]*area[i]/vec_abs(lp[i])));
