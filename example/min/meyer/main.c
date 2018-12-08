@@ -208,7 +208,7 @@ static void main0() {
   real errA;
   int nsub;
 
-  dt_max = 0.1;
+  dt_max = 0.01;
   mu     = 0.0;
   h      = 0.01*e0;
   
