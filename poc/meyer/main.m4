@@ -55,7 +55,6 @@ BEGIN {
     BEGIN_V
        vec_get(i, lp,   lp0)
        H[i] = vec_abs(lp0)/2
-       msg(vec_dot_i(i, n, lp))
        if (vec_dot_i(i, n, lp) < 0)
 	   H[i] = -H[i]
     END_V
@@ -66,7 +65,6 @@ BEGIN {
         fm[i] = 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i]))
     END_V
 
-    i = 0
     print "r fm H K lpl"
     BEGIN_V
         rr = vec_cylindrical_r(a)
