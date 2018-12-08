@@ -60,31 +60,24 @@ static int get3(const real *x, const real *y, const real *z,
 int filter_apply(T *q, He *he,
                  const real *x, const real *y, const real *z,
                  /*io*/ real *A) {
-    int nv, nt, t, i, j, k;
+    int nv, nh, h, i, j, k;
     real u, v, w;
     real *B, *sum;
     real a[3], b[3], c[3];
     nv = he_nv(he);
-    nt = he_nt(he);
+    nh = he_nh(he);
     B = q->B;
     sum = q->sum;
 
     zero(nv, B);
     zero(nv, sum);
 
-    for (t = 0; t < nt; t++) {
-        he_tri_ijk(he, t, &i, &j, &k);
+    for (h = 0; h < nh; h++) {
+        he_ijk(he, h, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
         u = tri_angle(c, a, b);
-        v = tri_angle(a, b, c);
-        w = tri_angle(b, c, a);
-        B[i] += u*A[i];
-        B[j] += v*A[j];
-        B[k] += w*A[k];
-
-        sum[i] += u;
-        sum[j] += v;
-        sum[k] += w;
+        B[i] += A[i] + A[j] + A[k];
+        sum[i] += 3;
     }
 
     div(nv, B, sum, A);
