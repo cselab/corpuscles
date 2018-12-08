@@ -1,19 +1,18 @@
-define(`BEGIN_T', `dnl
+define(`BEGIN_T', `
 for (h = 0; h in ii; h++) {
-    t = int(h/3)
     i = ii[h]; j = jj[h]; k = kk[h]
-    get3(i, j, k, a, b, c)')dnl
+    get3(i, j, k, a, b, c)')
 define(`END_T', }
-)dnl
-define(`BEGIN_V', `dnl
+)
+define(`BEGIN_V', `
 for (i = 0; i < nv; i++) {
-    get(i, a)')dnl
+    get(i, a)')
 define(`END_V', }
-)dnl
-dnl
-define(`LPL',`dnl
-pushdef(`f', `$1')dnl
-pushdef(`g', `$2')dnl
+)
+
+define(`LPL',`
+pushdef(`f', `$1')
+pushdef(`g', `$2')
 BEGIN_T
     g(i) -= tb[h]*(f(i) - f(k)) + tc[h]*(f(i) - f(j))
 END_T
@@ -21,7 +20,7 @@ BEGIN_V
     g(i) /= 2*area[i]
 END_V
 popdef(`f')
-popdef(`g')')dnl
+popdef(`g')')
 "${AWK=awk}" '
 BEGIN {
     ini()
@@ -30,15 +29,16 @@ BEGIN {
     BEGIN_T
 	tb[h] = tri_cot(a, b, c)
 	tc[h] = tri_cot(b, c, a)
-	ang[h] = tri_angle(c, a, b)
 
 	tri_normal(a, b, c,   u)
 
 	sb = edg_sq(a, b)
 	sc = edg_sq(a, c)
+	ang = tri_angle(c, a, b)
+
 	area[i] += (tb[h]*sc + tc[h]*sb)/8
-	vec_axpy(i, ang[h], u,  n)
-	K[i] += ang[h]
+	vec_axpy(i, ang, u,  n)
+	K[i] += ang
     END_T
 
     BEGIN_V
@@ -188,7 +188,7 @@ function vec_axpy(i, a, x, y) {
 
 function vec_cylindrical_r(a) {
     return sqrt(a[X]*a[X] + a[Y]*a[Y])
-}
+1}
 
 function msg(s) { print s | "cat >&2" }
 '
