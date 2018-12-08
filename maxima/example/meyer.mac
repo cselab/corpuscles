@@ -53,7 +53,7 @@ loop_ver(he,
   n[i]: vec_norm(m[i]))$
 
 loop_he(he,
-  area[i] += (tb[h]*sc[h] + tc[h]*sb[h])/8);
+  area[i] += tb[h]*sc[h] + tc[h]*sb[h])/8;
 
 
 loop_tri(he,

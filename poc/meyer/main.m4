@@ -1,28 +1,35 @@
-define(`BEGIN_L1', `dnl
-for (t = 0; (h = 3*t) in ii; t++) {
-    i = ii[h]; j = jj[h]; k = kk[h]
-    get3(i, j, k, a, b, c)')dnl
-define(`END_L1', }
-)dnl
-define(`BEGIN_L3', `dnl
+define(`BEGIN_T', `dnl
 for (h = 0; h in ii; h++) {
     t = int(h/3)
     i = ii[h]; j = jj[h]; k = kk[h]
     get3(i, j, k, a, b, c)')dnl
-define(`END_L3', }
+define(`END_T', }
+)dnl
+define(`BEGIN_V', `dnl
+for (i = 0; i < nv; i++) {
+    get(i, a)')dnl
+define(`END_V', }
 )dnl
 "${AWK=awk}" '
 BEGIN {
     ini()
     read()
 
-    BEGIN_L3
+    BEGIN_T
         tb[h] = tri_cot(a, b, c)
         tc[h] = tri_cot(b, c, a)
-        sb[h] = edg_sq(a, b)
-	sc[h] = edg_sq(a, c)
 	ang[h] = tri_angle(c, a, b)
-    END_L3
+
+        sb = edg_sq(a, b)
+	sc = edg_sq(a, c)
+	area[i] += (tb[h]*sc + tc[h]*sb)/8
+    END_T
+
+    
+    BEGIN_V
+        s += area[i]
+    END_V
+    print s
 }
 
 function read(   v, t, h, i, j, k) {
