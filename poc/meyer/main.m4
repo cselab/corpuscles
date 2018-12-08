@@ -15,7 +15,7 @@ define(`LPL',`dnl
 pushdef(`f', `$1')dnl
 pushdef(`g', `$2')dnl
 BEGIN_T
-    g(i) += tb[h]*(f(i) - f(k)) + tc[h]*(f(i) - f(j))
+    g(i) -= tb[h]*(f(i) - f(k)) + tc[h]*(f(i) - f(j))
 END_T
 BEGIN_V
     g(i) /= 2*area[i]
@@ -55,12 +55,23 @@ BEGIN {
     BEGIN_V
        vec_get(i, lp,   lp0)
        H[i] = vec_abs(lp0)/2
+       msg(vec_dot_i(i, n, lp))
+       if (vec_dot_i(i, n, lp) < 0)
+	   H[i] = -H[i]
     END_V
-
     LPL(`H[$1]', `lpH[$1]')
 
-    #print lpH[0], lp[0, X], lp[0, X], lp[0, Z]
-    print n[0, X], n[0, Y], n[0, Z]
+    BEGIN_V
+        lpH[i] = -lpH[i]
+        fm[i] = 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i]))
+    END_V
+
+    i = 0
+    print "r fm H K lpl"
+    BEGIN_V
+        rr = vec_cylindrical_r(a)
+        print rr, fm[i], H[i], K[i], lpH[i]
+    END_V
 }
 
 function read(   v, t, h, i, j, k) {
@@ -127,6 +138,12 @@ function vec_dot(a, b) {
     return a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]
 }
 
+function vec_dot_i(i, a, b,   a0, b0) {
+    vec_get(i, a, a0)
+    vec_get(i, b, b0)
+    return vec_dot(a0, b0)
+}
+
 function edg_sq(a, b,   u) {
     vec_minus(b, a, u)
     return vec_dot(u, u)
@@ -170,4 +187,10 @@ function vec_axpy(i, a, x, y) {
     y[i, Y] += a*x[Y]
     y[i, Z] += a*x[Z]
 }
+
+function vec_cylindrical_r(a) {
+    return sqrt(a[X]*a[X] + a[Y]*a[Y])
+}
+
+function msg(s) { print s | "cat >&2" }
 '

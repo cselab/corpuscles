@@ -81,11 +81,11 @@ loop_ver(he,
   fm[i]: 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i])));
 
 loop_ver(he,
-  r[i]: vec_cylindrical_r(a),
-  ff[i]: vec_abs(f[i]));
+  r[i]: vec_cylindrical_r(a))$
+
 with_stdout(o,
   printf(true, "x y z r area H fx fy fz fm K lpl~%"),
   punto_write(he, r, area, H, f, fm, K, lpH));
 
 block([i: 0],
-  print(n[i]));
+  print(fm[i], lpH[i]));
