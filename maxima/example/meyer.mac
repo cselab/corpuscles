@@ -49,9 +49,8 @@ loop_tri(he,
   K[i] += tri_angle(c, a, b),
   K[j] += tri_angle(a, b, c),
   K[k] += tri_angle(b, c, a));
-loop_ver(he,
-  block([numer: true],
-    K[i] : 2*%pi - K[i]));
+loop_ver(he, [numer: true],
+  K[i] : (2*%pi - K[i])/area[i]);
 
 lap(r, ans):=(
   loop_he(he,
@@ -64,8 +63,16 @@ loop_ver(he,
   H[i]: vec_abs(lp[i])/2);
 
 lap(H, lpH);
+loop_ver(he, lpH[i]: -lpH[i]);
 
 loop_ver(he,
   fm[i]: 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i])));
 
-print(fm[0]);
+print(fm[0]*area[0]);
+
+loop_ver(he,
+  r[i]: vec_cylindrical_r(a),
+  ff[i]: vec_abs(f[i]));
+with_stdout(o,
+  printf(true, "x y z r area H fx fy fz fm~%"),
+  punto_write(he, r, area, H, f, fm));
