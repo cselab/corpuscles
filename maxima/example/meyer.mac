@@ -74,5 +74,5 @@ loop_ver(he,
   r[i]: vec_cylindrical_r(a),
   ff[i]: vec_abs(f[i]));
 with_stdout(o,
-  printf(true, "x y z r area H fx fy fz fm~%"),
-  punto_write(he, r, area, H, f, fm));
+  printf(true, "x y z r area H fx fy fz fm K lpl~%"),
+  punto_write(he, r, area, H, f, fm, K, lpH));
