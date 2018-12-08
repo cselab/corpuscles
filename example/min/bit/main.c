@@ -258,16 +258,6 @@ static void main0(real *vx, real *vy, real *vz,
     }
 
     if ( i % 100 == 0 ) {
-
-      if ( i > 0 ) {
-	j = 0;
-	do {
-	  equiangulate(&cnt);
-	  MSG("cnt : %d", cnt);
-	  j++;
-	} while (cnt > 0 && j < 10);
-      }
-      
       et = Energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
       et = et + ek;
