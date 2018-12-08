@@ -571,7 +571,6 @@ int he_f_meyer_xin_force(T *q, He *he,
     }
     mH1 = he_sum_get(sum);
     he_sum_fin(sum);
-
     tt = 2*mH1-DA0D;
 
     for ( v = 0; v < nv; v++ ) {

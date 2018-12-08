@@ -76,8 +76,8 @@ int filter_apply(T *q, He *he,
         he_ijk(he, h, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
         u = tri_angle(c, a, b);
-        B[i] += A[i] + A[j] + A[k];
-        sum[i] += 3;
+        B[i] += (A[j] + A[i] + A[k])*u;
+        sum[i] += 3*u;
     }
 
     div(nv, B, sum, A);

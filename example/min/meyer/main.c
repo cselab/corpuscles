@@ -19,6 +19,7 @@
 #include <he/filter.h>
 #include <he/f/meyer.h>
 #include <he/f/volume_normal.h>
+#include <he/filter.h>
 #include <he/he.h>
 #include <he/macro.h>
 #include <he/memory.h>
@@ -186,12 +187,17 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static int step(real dt) {
-    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+static int filter0() {
     filter_apply(filter, he, XX, YY, ZZ, vx);
     filter_apply(filter, he, XX, YY, ZZ, vy);
     filter_apply(filter, he, XX, YY, ZZ, vz);
+    return HE_OK;
+}
+
+static int step(real dt) {
+    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+    filter0();
     return HE_OK;
 }
 
@@ -202,8 +208,8 @@ static void main0() {
   real errA;
   int nsub;
 
-  dt_max = 0.025;
-  mu     = 1000.0;
+  dt_max = 0.1;
+  mu     = 0.0;
   h      = 0.01*e0;
   
   nsub = 100;
@@ -234,7 +240,7 @@ static void main0() {
       }
     }
 
-    int fr = 10000;
+    int fr = 1;
     if (i > fr && i % fr == 0) {
         do {
             he_equiangulate(he, XX, YY, ZZ, &cnt);
