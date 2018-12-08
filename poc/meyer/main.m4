@@ -29,9 +29,6 @@ BEGIN {
     BEGIN_V
         K[i] = (2*pi - K[i])/area[i]
     END_V
-
-    print K[0]
-    print ang[0]
 }
 
 function read(   v, t, h, i, j, k) {
