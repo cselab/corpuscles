@@ -189,9 +189,9 @@ static real max_vec(real *fx, real *fy, real *fz) {
 static int step(real dt) {
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-    filter_apply(filter, he, XX, YY, ZZ, XX);
-    filter_apply(filter, he, XX, YY, ZZ, YY);
-    filter_apply(filter, he, XX, YY, ZZ, ZZ);
+    filter_apply(filter, he, XX, YY, ZZ, vx);
+    filter_apply(filter, he, XX, YY, ZZ, vy);
+    filter_apply(filter, he, XX, YY, ZZ, vz);
     return HE_OK;
 }
 
@@ -202,7 +202,7 @@ static void main0() {
   real errA;
   int nsub;
 
-  dt_max = 0.005;
+  dt_max = 0.025;
   mu     = 1000.0;
   h      = 0.01*e0;
   
