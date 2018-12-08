@@ -69,7 +69,7 @@ real tri_angle(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     real u[3], v[3];
     vec_minus(a, b, u);
     vec_minus(c, b, v);
-    return vec_angle(u, v);
+    return fabs(vec_angle(u, v));
 }
 
 #define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
