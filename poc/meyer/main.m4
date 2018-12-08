@@ -10,6 +10,18 @@ for (i = 0; i < nv; i++) {
     get(i, a)')dnl
 define(`END_V', }
 )dnl
+dnl
+define(`LPL',`dnl
+pushdef(`f', `$1')dnl
+pushdef(`g', `$2')dnl
+BEGIN_T
+    g(i) += tb[h]*(f(i) - f(k)) + tc[h]*(f(i) - f(j))
+END_T
+BEGIN_V
+    g(i) /= 2*area[i]
+END_V
+popdef(`f')
+popdef(`g')')dnl
 "${AWK=awk}" '
 BEGIN {
     ini()
@@ -29,6 +41,12 @@ BEGIN {
     BEGIN_V
         K[i] = (2*pi - K[i])/area[i]
     END_V
+
+    LPL(`r[$1, X]', `lp[$1, X]')
+    LPL(`r[$1, Y]', `lp[$1, Y]')
+    LPL(`r[$1, Z]', `lp[$1, Z]')
+
+    print lp[0, X], lp[0, X], lp[0, Z]
 }
 
 function read(   v, t, h, i, j, k) {
