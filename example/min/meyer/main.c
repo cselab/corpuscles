@@ -7,26 +7,27 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/punto.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/equiangulate.h>
-#include <he/util.h>
-#include <he/memory.h>
-#include <he/tri.h>
-#include <he/dedg.h>
-#include <he/off.h>
+#include <he/area.h>
 #include <he/ddih.h>
+#include <he/dedg.h>
 #include <he/dtri.h>
+#include <he/equiangulate.h>
+#include <he/err.h>
+#include <he/f/area.h>
 #include <he/f/edg_sq.h>
 #include <he/f/garea.h>
-#include <he/f/area.h>
+#include <he/filter.h>
 #include <he/f/meyer.h>
 #include <he/f/volume_normal.h>
-#include <he/volume.h>
 #include <he/he.h>
-#include <he/area.h>
+#include <he/macro.h>
+#include <he/memory.h>
+#include <he/off.h>
+#include <he/punto.h>
+#include <he/tri.h>
+#include <he/util.h>
+#include <he/vec.h>
+#include <he/volume.h>
 #include <he/vtk.h>
 #include <he/y.h>
 
@@ -55,7 +56,10 @@ static real et, eb, ek, ea, ega, ev, ee;
 static const char **argv;
 static const char *me = "min/meyer";
 static He *he;
+static Filter *filter;
 static real *XX, *YY, *ZZ, *fx, *fy, *fz, *fm;
+static real *vx, *vy, *vz;
+static real *fx, *fy, *fz;
 
 static int NV, NE, NT;
 
@@ -182,8 +186,16 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static void main0(real *vx, real *vy, real *vz,
-                  real *fx, real *fy, real *fz) {
+static int step(real dt) {
+    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+    filter_apply(filter, he, XX, YY, ZZ, XX);
+    filter_apply(filter, he, XX, YY, ZZ, YY);
+    filter_apply(filter, he, XX, YY, ZZ, ZZ);
+    return HE_OK;
+}
+
+static void main0() {
   int cnt, i, j;
   real dt, dt_max, h, mu;
   real A, V, Vr;
@@ -200,8 +212,7 @@ static void main0(real *vx, real *vy, real *vz,
     Force(XX, YY, ZZ);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+    step(dt);
     
     j = 0;
     A  = he_area(he, XX, YY, ZZ);
@@ -210,11 +221,11 @@ static void main0(real *vx, real *vy, real *vz,
       errA=-errA;
     }
     
-    while ( j < nsub && errA > tolerA ) {
+    while (j < nsub && errA > tolerA) {
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+      step(dt);
+      
       j++;
       A  = he_area(he, XX, YY, ZZ);
       errA = (A-A0)/A0;
@@ -270,7 +281,6 @@ static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 int main(int __UNUSED argc, const char *v[]) {
   real a0;
-  real *vx, *vy, *vz;
   real A, V, Vr;
   
   argv = v; argv++;
@@ -301,20 +311,24 @@ int main(int __UNUSED argc, const char *v[]) {
   he_f_volume_normal_ini(V0, Kv, he, &f_volume_normal);
   he_f_edg_sq_ini(Ke, he, &f_edg_sq);
   he_f_meyer_ini(Kb, he, &f_bending);
+
+  filter_ini(he, &filter);
   
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz); MALLOC(NV, &fm);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
   
-  main0(vx, vy, vz, fx, fy, fz);
+  main0();
   
   FREE(fx); FREE(fy); FREE(fz); FREE(fm);
   FREE(vx); FREE(vy); FREE(vz);
-  
+
+  filter_fin(filter);
   he_f_meyer_fin(f_bending);
   he_f_edg_sq_fin(f_edg_sq);
   he_f_volume_normal_fin(f_volume_normal);
   he_f_area_fin(f_area);
   he_f_garea_fin(f_garea);
+  
   y_fin(he, XX, YY, ZZ);
   
   return 0;

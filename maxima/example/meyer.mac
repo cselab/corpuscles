@@ -1,0 +1,71 @@
+load("stringproc")$
+
+load("he/off.mac")$
+load("he/util.mac")$
+load("he/he.mac")$
+load("he/util.mac")$
+load("he/loop.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
+load("he/ten.mac")$
+load("he/dtri.mac")$
+load("he/edg.mac")$
+load("he/dedg.mac")$
+load("he/punto.mac")$
+load("he/dvec.mac")$
+
+if not stringp(o) then o: "q";
+if not stringp(i) then i: "data/q.off";
+if     atom(P)    then P: 'H;
+
+define(Q('area, 'H), diff(P, 'H));
+define(S('area, 'H), diff(P, 'area));
+
+dy(a, b):=ten_dyadic(a, b);
+vt(a, b):=vec_ten(a, b);
+tv(a, b):=ten_vec(a, b);
+tt(a, b):=ten_ten(a, b);
+vv(a, b):=vec_dot(a, b);
+
+he: he(i) $
+
+nh: he_nh(he) $
+nv: he_nv(he) $
+
+alloc(nh,   tb, tc, sb, sc, r, H, fm) $
+calloc(nv, area, K, lpH);
+valloc(nv, lp, f);
+
+loop_he(he,
+  tb[h]: tri_cot(a, b, c),
+  tc[h]: tri_cot(b, c, a),
+  sb[h]: edg_sq(a, b),
+  sc[h]: edg_sq(a, c));
+
+loop_he(he,
+  area[i] += (tb[h]*sc[h] + tc[h]*sb[h])/8);
+
+loop_tri(he,
+  K[i] += tri_angle(c, a, b),
+  K[j] += tri_angle(a, b, c),
+  K[k] += tri_angle(b, c, a));
+loop_ver(he,
+  block([numer: true],
+    K[i] : 2*%pi - K[i]));
+
+lap(r, ans):=(
+  loop_he(he,
+    ans[i]   += tb[h]*(r[i] - r[k]) + tc[h]*(r[i] - r[j])),
+  loop_ver(he, ans[i] /= 2*area[i]));
+
+loop_ver(he, r[i]: a);
+lap(r, lp);
+loop_ver(he,
+  H[i]: vec_abs(lp[i])/2);
+
+lap(H, lpH);
+
+loop_ver(he,
+  fm[i]: 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i])));
+
+print(fm[0]);

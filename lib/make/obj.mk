@@ -32,6 +32,7 @@ f/gompper_kroll.s.o\
 f/gompper_xin.s.o\
 f/harmonic.s.o\
 f/harmonic_ref.s.o\
+filter.s.o\
 f/juelicher_xin.s.o\
 f/kantor.s.o\
 f/meyer.s.o\
@@ -86,6 +87,7 @@ f/gompper_kroll.d.o\
 f/gompper_xin.d.o\
 f/harmonic.d.o\
 f/harmonic_ref.d.o\
+filter.d.o\
 f/juelicher_xin.d.o\
 f/kantor.d.o\
 f/meyer.d.o\
@@ -140,6 +142,7 @@ f/gompper_kroll.l.o\
 f/gompper_xin.l.o\
 f/harmonic.l.o\
 f/harmonic_ref.l.o\
+filter.l.o\
 f/juelicher_xin.l.o\
 f/kantor.l.o\
 f/meyer.l.o\

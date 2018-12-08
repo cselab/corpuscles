@@ -1,0 +1,72 @@
+"${AWK=awk}" '
+BEGIN {
+    ini()
+    read()
+    area()
+}
+
+function area(  t, i, j, k, a, b, c, s) {
+    for (t = 0; t < nt; t++) {
+	i = ii[t]; j = jj[t]; k = kk[t]
+	get3(i, j, k, a, b, c)
+	s += tri_area(a, b, c)
+    }
+}
+
+function read(   v, t, i, j, k) {
+    g(); g()
+    nv = $1; nt = $2
+    for (v = 0; v < nv; v++) {
+	g()
+	r[v,X] = $1; r[v,Y] = $2; r[v,Z] = $3
+    }
+
+    for (t = 0; t <  nt; t++) {
+	g()
+	i = $2; j = $3; k = $4
+	reg(t, i, j, k)
+	reg(t, j, k, i)
+	reg(t, k, i, j)
+    }
+}
+
+function ini() { X = 0; Y = 1; Z = 2 }
+function g() { return getline }
+function reg(t, i, j, k) {
+    ii[t] = i; jj[t] = j; kk[t] = k
+    nx[i,j] = ed[j] = k
+    if ((j, i) in nx) bulk[i] = bulk[j]
+}
+
+function get(i, a) {
+    a[X] = r[i, X]
+    a[Y] = r[i, Y]
+    a[Z] = r[i, Z]
+}
+
+function get3(i, j, k, a, b, c) {
+    get(i, a); get(j, b); get(k, c)
+}
+
+function tri_area(a, b, c,   u, v, n) {
+    vec_minus(a, b, u)
+    vec_minus(a, c, v)
+    vec_cross(u, v, n)
+    return vec_abs(n)/2
+}
+
+function vec_cross(a, b, c) {
+    c[X] = a[Y]*b[Z]-b[Y]*a[Z]
+    c[Y] = b[X]*a[Z]-a[X]*b[Z]
+    c[Z] = a[X]*b[Y]-b[X]*a[Y]
+}
+
+function vec_minus(a, b, c) {
+    c[X] = a[X] - b[X]
+    c[Y] = a[Y] - b[Y]
+    c[Z] = a[Z] - b[Z]
+}
+
+function vec_abs(a) { return sqrt(a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z]) }
+
+'

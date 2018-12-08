@@ -37,7 +37,6 @@ loop_tri(he,
   K[i] += tri_angle(c, a, b),
   K[j] += tri_angle(a, b, c),
   K[k] += tri_angle(b, c, a));
-
 loop_ver(he,
   block([numer: true],
     K[i] : 2*%pi - K[i]));

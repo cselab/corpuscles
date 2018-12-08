@@ -44,7 +44,7 @@ int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
     zero(nv, normx); zero(nv, normy); zero(nv, normz);
     for ( t = 0; t < nt; t++ ) {
         get_ijk(t, he, &i, &j, &k);
-        get3(x, y, z, i, j, k, a, b, c);        
+        get3(x, y, z, i, j, k, a, b, c);
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
         theta_c = tri_angle(b, c, a);
