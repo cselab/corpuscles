@@ -32,21 +32,35 @@ BEGIN {
 	tc[h] = tri_cot(b, c, a)
 	ang[h] = tri_angle(c, a, b)
 
+	tri_normal(a, b, c,   u)
+
 	sb = edg_sq(a, b)
 	sc = edg_sq(a, c)
 	area[i] += (tb[h]*sc + tc[h]*sb)/8
+	vec_axpy(i, ang[h], u,  n)
 	K[i] += ang[h]
     END_T
 
     BEGIN_V
-        K[i] = (2*pi - K[i])/area[i]
+	K[i] = (2*pi - K[i])/area[i]
+	vec_get(i, n, n0)
+	vec_norm(n0, n0)
+	vec_set(i, n0, n)
     END_V
 
     LPL(`r[$1, X]', `lp[$1, X]')
     LPL(`r[$1, Y]', `lp[$1, Y]')
     LPL(`r[$1, Z]', `lp[$1, Z]')
 
-    print lp[0, X], lp[0, X], lp[0, Z]
+    BEGIN_V
+       vec_get(i, lp,   lp0)
+       H[i] = vec_abs(lp0)/2
+    END_V
+
+    LPL(`H[$1]', `lpH[$1]')
+
+    #print lpH[0], lp[0, X], lp[0, X], lp[0, Z]
+    print n[0, X], n[0, Y], n[0, Z]
 }
 
 function read(   v, t, h, i, j, k) {
@@ -131,4 +145,29 @@ function vec_angle(a, b, n,   y, x) {
     return atan2(y, x)
 }
 
+function tri_normal(a, b, c, e,   n, ab, ac) {
+    vec_minus(b, a,   ab)
+    vec_minus(c, a,   ac)
+    vec_cross(ab, ac,   n)
+    vec_norm(n,   e)
+}
+
+function vec_norm(a, e,   r) {
+    r = vec_abs(a)
+    e[X] = a[X]/r; e[Y] = a[Y]/r; e[Z] = a[Z]/r
+}
+
+function vec_get(i, a, a0) {
+    a0[X] = a[i, X]; a0[Y] = a[i, Y]; a0[Z] = a[i, Z]
+}
+
+function vec_set(i, a0, a) {
+    a[i, X] = a0[X]; a[i, Y] = a0[Y]; a[i, Z] = a0[Z]
+}
+
+function vec_axpy(i, a, x, y) {
+    y[i, X] += a*x[X]
+    y[i, Y] += a*x[Y]
+    y[i, Z] += a*x[Z]
+}
 '

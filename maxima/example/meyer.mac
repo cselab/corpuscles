@@ -88,6 +88,4 @@ with_stdout(o,
   punto_write(he, r, area, H, f, fm, K, lpH));
 
 block([i: 0],
-  print(K[i]),
-  print(ang[i]),
-  print(fm[i]*lp[i]*area[i]/vec_abs(lp[i])));
+  print(n[i]));
