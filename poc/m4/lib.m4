@@ -11,6 +11,11 @@ ifelse($0i,-1,,`substr($1, incr($0i), eval($0n-$0i))')')
 
 define(`App',
 `ifelse($2,,,
-`$1(Head($2))
-App($1, Tail($2))')')
+`$1(Head(`$2'))
+App(`$1', Tail($2))')')
+
+define(`AppLambda',
+`define(`$0f', `$1')`'dnl
+App(`$0f', $2)')
+
 divert`'dnl
