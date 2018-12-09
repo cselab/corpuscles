@@ -1,2 +1,3 @@
 include(lib.m4)dnl
-syscmd(echo N >&2)dnl
+dnl Cons(abc,[de;fghi])
+App(F, aaa;b;c)
