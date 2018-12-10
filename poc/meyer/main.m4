@@ -25,7 +25,7 @@ divert`'dnl
 "${AWK=awk}" '
 include(math.m4)
 BEGIN {
-    ini()
+    math_ini()
     read()
 
     BEGIN_T
@@ -88,11 +88,6 @@ function read(   v, t, h, i, j, k) {
 	jj[h] = i; kk[h] = j; ii[h++] = k
 	kk[h] = i; ii[h] = j; jj[h++] = k
     }
-}
-
-function ini() {
-    pi = 3.141592653589793115997964
-    X = 0; Y = 1; Z = 2
 }
 
 function get3(i, j, k, a, b, c) {

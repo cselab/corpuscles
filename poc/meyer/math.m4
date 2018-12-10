@@ -1,3 +1,7 @@
+function math_ini() {
+    pi = 3.141592653589793115997964
+    X = 0; Y = 1; Z = 2
+}
 
 function tri_cot(a, b, c) {
     y = 2 * tri_area(a, b, c)
