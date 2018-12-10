@@ -1,3 +1,4 @@
+divert(-1)
 define(`BEGIN_T', `
 for (h = 0; h in ii; h++) {
     i = ii[h]; j = jj[h]; k = kk[h]
@@ -9,7 +10,6 @@ for (i = 0; i < nv; i++) {
     get(i, a)')
 define(`END_V', }
 )
-
 define(`LPL',`
 pushdef(`f', `$1')
 pushdef(`g', `$2')
@@ -21,6 +21,7 @@ BEGIN_V
 END_V
 popdef(`f')
 popdef(`g')')
+divert`'dnl
 "${AWK=awk}" '
 BEGIN {
     ini()
