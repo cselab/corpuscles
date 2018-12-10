@@ -6,7 +6,7 @@ Vr=0.4
 : ${end=9999999999999}
 : ${freq=2000}
 
-off=data/2.off
+off=data/1.off
 #off=$(he.path)/oblate/laplace/Nt1280/oblate_volume_Vr0.4.off
 make
 
