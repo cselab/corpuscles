@@ -17,4 +17,4 @@ ang: angle
 n[i]: vertex normal
 K, H: Gaussian and mean curvatures
 lpH: Laplace operator of curvatures
-fm: absolute value of force
+fm: absolute force density

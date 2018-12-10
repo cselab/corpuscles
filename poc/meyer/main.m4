@@ -66,10 +66,10 @@ BEGIN {
         fm[i] = 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i]))
     END_V
 
-    print "r fm H K lpl"
+    print "r fm H K lpl area"
     BEGIN_V
         rr = vec_cylindrical_r(a)
-        print rr, fm[i], H[i], K[i], lpH[i]
+        print rr, fm[i], H[i], K[i], lpH[i], area[i]
     END_V
 }
 
