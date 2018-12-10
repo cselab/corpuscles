@@ -1,9 +1,13 @@
-main: main.m4
-	m4 -Im4 $< > $@
-	chmod +x main
+M = meyer juelicher
 
-run: main; ./main < data/hex.off
+all: $M
+
+%: %.m4
+	m4 -Im4 $< > $@
+	chmod +x $@
+
+run: juelicher; ./juelicher < data/hex.off
 
 .PHONY: clean run
 
-clean:; rm -f main
+clean:; rm -f $M
