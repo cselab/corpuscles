@@ -6,4 +6,4 @@ run: main; ./main < data/hex.off
 
 .PHONY: clean run
 
-clean:; rm main
+clean:; rm -f main
