@@ -23,7 +23,8 @@ popdef(`f')
 popdef(`g')')
 divert`'dnl
 "${AWK=awk}" '
-include(math.m4)
+include(`math.m4')
+include(`off.m4')
 BEGIN {
     math_ini()
     read()
@@ -72,22 +73,6 @@ BEGIN {
         rr = vec_cylindrical_r(a)
         print rr, fm[i], H[i], K[i], lpH[i], area[i]
     END_V
-}
-
-function read(   v, t, h, i, j, k) {
-    getline; getline
-    nv = $1; nt = $2
-    for (v = 0; v < nv; v++) {
-	getline
-	r[v,X] = $1; r[v,Y] = $2; r[v,Z] = $3
-    }
-    for (h = t = 0; t <  nt; t++) {
-	getline
-	i = $2; j = $3; k = $4
-	ii[h] = i; jj[h] = j; kk[h++] = k
-	jj[h] = i; kk[h] = j; ii[h++] = k
-	kk[h] = i; ii[h] = j; jj[h++] = k
-    }
 }
 
 function get3(i, j, k, a, b, c) {
