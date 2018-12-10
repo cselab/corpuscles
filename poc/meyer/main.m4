@@ -1,15 +1,4 @@
 divert(-1)
-define(`BEGIN_T', `
-for (h = 0; h in ii; h++) {
-    i = ii[h]; j = jj[h]; k = kk[h]
-    get3(i, j, k, a, b, c)')
-define(`END_T', }
-)
-define(`BEGIN_V', `
-for (i = 0; i < nv; i++) {
-    get(i, a)')
-define(`END_V', }
-)
 define(`LPL',`
 pushdef(`f', `$1')
 pushdef(`g', `$2')
@@ -23,6 +12,7 @@ popdef(`f')
 popdef(`g')')
 divert`'dnl
 "${AWK=awk}" '
+include(`loop.m4')
 include(`math.m4')
 include(`off.m4')
 BEGIN {
@@ -73,16 +63,6 @@ BEGIN {
         rr = vec_cylindrical_r(a)
         print rr, fm[i], H[i], K[i], lpH[i], area[i]
     END_V
-}
-
-function get3(i, j, k, a, b, c) {
-    get(i, a); get(j, b); get(k, c)
-}
-
-function get(i, a) {
-    a[X] = r[i, X]
-    a[Y] = r[i, Y]
-    a[Z] = r[i, Z]
 }
 
 function msg(s) { print s | "cat >&2" }

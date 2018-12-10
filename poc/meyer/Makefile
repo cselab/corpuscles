@@ -1,4 +1,4 @@
-main: main.m4 math.m4 off.m4
+main: main.m4 math.m4 off.m4 loop.m4
 	m4 $< > $@
 	chmod +x main
 
