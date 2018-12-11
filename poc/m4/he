@@ -8,3 +8,16 @@ h_map(`preved', `a,b,c')
 h_join(`, ', `a,b,c')
 h_define(`preved', `$1[i]')dnl
 h_map_sep(`preved', `, ', `a, b, c')
+
+h_define(`index', `$1[i]')dnl
+h_define(`splice_i', `h_map_sep(`index', `, ', `$*')')dnl
+h_define(`fm', %.16e)
+
+h_define(`PRINT', `dnl
+print "h_join(` ', $@)"
+for (i = 0; i < nv; i++) {
+    fmt = "h_map_sep(`fm', ` ', `$*')"
+    print fmt, splice_i($@)
+}
+')dnl
+PRINT(a, b, c, x, y, z)dnl
