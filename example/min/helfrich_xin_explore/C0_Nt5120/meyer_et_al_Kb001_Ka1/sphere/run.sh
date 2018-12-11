@@ -19,10 +19,10 @@ then
     cd $Vr
     ../../../../main meyer_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
 else
-    for i in `seq 1 6`;
+    for i in `seq 0 5`;
     do
-	Vr=$(echo $i | awk '{print 0.6+$1*0.05}')
+	Vr=$(echo $i | awk '{print 0.45-$1*0.05}')
 	#echo $Vr
-	bash run.sh $Vr
+	bash run.sh $Vr&
     done
 fi
