@@ -17,7 +17,7 @@ then
 	mkdir $Vr
     fi
     cd $Vr
-    ../../../../main gomper_xin $Vr 0.1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
+    ../../../../main gompper_xin $Vr 0.1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
 else
     for i in `seq 0 5`;
     do
