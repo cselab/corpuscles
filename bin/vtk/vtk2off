@@ -56,7 +56,7 @@ function tri_avg(t, a,   i, j, k) {
     return (a[i] + a[j] + a[k])/3
 }
 
-function colormap(v, mi, ma) {
+function colormap(v, mi, ma) { # matlab color map
    if (v < mi) v = mi
    if (v > ma) v = ma
 

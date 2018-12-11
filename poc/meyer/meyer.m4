@@ -56,12 +56,8 @@ BEGIN {
     BEGIN_V
         lpH[i] = -lpH[i]
         fm[i] = 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i]))
+	eng[i] = 2*H[i]^2
     END_V
-
-    BEGIN_V
-        eng[i] = 2*H[i]^2
-    END_V
-
 
     print "r eng fm H K lpl area"
     BEGIN_V
