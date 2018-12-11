@@ -1,15 +1,16 @@
 divert(-1)
-define(`LPL',`
-pushdef(`f', `$1')
-pushdef(`g', `$2')
+define(`LPL',`dnl
+pushdef(`f', `$1')dnl
+pushdef(`g', `$2')dnl
 BEGIN_T
     g(i) -= tb[h]*(f(i) - f(k)) + tc[h]*(f(i) - f(j))
 END_T
+
 BEGIN_V
     g(i) /= 2*area[i]
 END_V
-popdef(`f')
-popdef(`g')')
+popdef(`f')dnl
+popdef(`g')')dnl
 divert`'dnl
 "${AWK=awk}" '
 include(`loop.m4')
