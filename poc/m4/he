@@ -23,3 +23,7 @@ for (i = 0; i < nv; i++) {
 }
 ')dnl
 PRINT(a, b, c, x, y, z)dnl
+
+h_define(`foreach',
+         `$1(h_car(h_car(h_shift($@))))')
+foreach(F, `a, b, c, d')
