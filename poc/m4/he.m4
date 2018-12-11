@@ -59,8 +59,11 @@ h_define(`h_join',
 `h_ifelse(`$#', `1', `',
        `$#', `2', ``$2'',
        `h_ifelse(`$2', `', `', ``$2'_')$0(`$1', h_shift2($@))')')
+
 h_define(`_h_join',
 `h_ifelse(`$#$2', `2', `',
        `h_ifelse(`$2', `', `', ``$1$2'')$0(`$1', h_shift2($@))')')
+
+h_define(`h_echo', `$@')
 
 divert`'dnl
