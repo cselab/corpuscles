@@ -65,5 +65,6 @@ h_define(`_h_join',
        `h_ifelse(`$2', `', `', ``$1$2'')$0(`$1', h_shift2($@))')')
 
 h_define(`h_echo', `$@')
+h_define(`h_ignore')
 
 divert`'dnl

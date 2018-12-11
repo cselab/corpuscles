@@ -1,5 +1,7 @@
 include(`he.m4')dnl
 
+h_foreach(Var, `a,b,c,x,y,z', `e')
+
 h_foreach(Var, `a,b,c', `Var[i]'
 )dnl
 
