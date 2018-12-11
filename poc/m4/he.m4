@@ -41,7 +41,7 @@ h_define(`h_foreach',
 
 h_define(`_h_foreach',
 `h_ifelse(`$#', `3', `',
-       `$1`$4'$2`'$0(`$1', `$2', h_shift3($@))')')
+          `$1`$4'$2`'$0(`$1', `$2', h_shift3($@))')')
 
 h_define(`_h_apply',
 `h_ifelse(`$2', `', `', `$1($2)`'')')
@@ -49,7 +49,6 @@ h_define(`_h_apply',
 h_define(`h_map',
 `_h_foreach(`_h_apply(`$1',', `)', `', $2)')
 
-h_define(`h_unquote', `$*')
 
 h_define(`h_map_sep',
 `h_pushdef(`Sep', `h_define(`Sep', h_defn(`h_unquote'))')'dnl
@@ -57,14 +56,23 @@ h_define(`h_map_sep',
 
 h_define(`h_join',
 `h_ifelse(`$#', `1', `',
-       `$#', `2', ``$2'',
-       `h_ifelse(`$2', `', `', ``$2'_')$0(`$1', h_shift2($@))')')
+          `$#', `2', ``$2'',
+          `h_ifelse(`$2', `', `', ``$2'_')$0(`$1', h_shift2($@))')')
 
 h_define(`_h_join',
 `h_ifelse(`$#$2', `2', `',
-       `h_ifelse(`$2', `', `', ``$1$2'')$0(`$1', h_shift2($@))')')
+          `h_ifelse(`$2', `', `', ``$1$2'')$0(`$1', h_shift2($@))')')
 
 h_define(`h_echo', `$@')
 h_define(`h_ignore')
+h_define(`h_unquote', `$*')
+h_define(`h_dquote', ``$@'')
+
+h_define(`h_car', ``$1'')
+h_define(`h_cdr',
+`h_ifelse(`$#', 0, `h_warning(`$0: cannot be called without arguments')',
+          `$#', 1, `',
+          `h_dquote(h_shift($@))')')
+
 
 divert`'dnl
