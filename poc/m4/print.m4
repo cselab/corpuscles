@@ -2,32 +2,45 @@ divert(-1)
 changequote()
 changequote([, ])
 
-define([m4_shift3], [shift(shift(shift($@)))])
+define([shift3], [shift(shift(shift($@)))])
+define([shift2], [shift(shift($@))])
 
-define([m4_foreach],
+define([foreach],
 [ifelse([$2], [], [],
        [pushdef([$1])_$0([define([$1],], [)$3], [],
   $2)popdef([$1])])])
 
-define([_m4_foreach],
+define([_foreach],
 [ifelse([$#], [3], [],
-       [$1[$4]$2[]$0([$1], [$2], m4_shift3($@))])])
+       [$1[$4]$2[]$0([$1], [$2], shift3($@))])])
 
-define([_m4_apply],
+define([_apply],
 [ifelse([$2], [], [], [$1($2)[]])])
 
-define([m4_map],
-[_m4_foreach([_m4_apply([$1],], [)], [], $2)])
+define([map],
+[_foreach([_apply([$1],], [)], [], $2)])
 
-define([m4_unquote], [$*])
+define([unquote], [$*])
 
-define([m4_map_sep],
-[pushdef([m4_Sep], [define([m4_Sep], defn([m4_unquote]))])]dnl
-[_m4_foreach([_m4_apply([m4_Sep([$2])[]$1],], [)], [], $3)popdef([m4_Sep])])
+define([map_sep],
+[pushdef([Sep], [define([Sep], defn([unquote]))])]dnl
+[_foreach([_apply([Sep([$2])[]$1],], [)], [], $3)popdef([Sep])])
+
+define([join],
+[ifelse([$#], [1], [],
+       [$#], [2], [[$2]],
+       [ifelse([$2], [], [], [[$2]_])$0([$1], shift2($@))])])
+define([_join],
+[ifelse([$#$2], [2], [],
+       [ifelse([$2], [], [], [[$1$2]])$0([$1], shift2($@))])])
 
 divert[]dnl
 
-m4_foreach(Var, [a,b,c], [Var[[i]]]
+foreach(Var, [a,b,c], [Var[[i]]]
 )dnl
 
-m4_map_sep([preved], [, ], [a,b,c,f(x,y)])
+map_sep([preved], [, ], [a,b,c])dnl
+
+map([preved], [a,b,c])dnl
+
+join([, ], [a,b,c])

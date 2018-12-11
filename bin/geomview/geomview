@@ -117,7 +117,7 @@ fi
 
 if test "$process" = -
 then gview "$@"
-else t=/tmp/he.geomview.$$
+else t=/tmp/he.geomview.off.$$
      mkdir -p $t
      trap 'rm -rf $t' 1 2 3 4 15
      i=0
