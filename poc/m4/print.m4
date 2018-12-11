@@ -44,3 +44,6 @@ map_sep([preved], [, ], [a,b,c])dnl
 map([preved], [a,b,c])dnl
 
 join([, ], [a,b,c])
+
+define([preved], [$1[[i]]])
+map_sep([preved], [, ], [a, b, c])

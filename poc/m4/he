@@ -1,0 +1,6 @@
+include(`he.m4')dnl
+preved
+
+h_location
+h_warning(preved)
+h_warning(medved)

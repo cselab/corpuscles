@@ -1,1 +1,1 @@
-show:; @m4 $(M4OPTIONS) print.m4
+show:; @m4 $(M4OPTIONS) he
