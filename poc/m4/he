@@ -1,6 +1,10 @@
 include(`he.m4')dnl
-preved
 
-h_location
-h_warning(preved)
-h_warning(medved)
+h_foreach(Var, `a,b,c', `Var[i]'
+)dnl
+
+h_map_sep(preved, `, ', `a,b,c')
+h_map(`preved', `a,b,c')
+h_join(`, ', `a,b,c')
+h_define(`preved', `$1[i]')dnl
+h_map_sep(`preved', `, ', `a, b, c')
