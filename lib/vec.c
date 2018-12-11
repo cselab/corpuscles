@@ -112,7 +112,6 @@ real vec_angle(const real a[3], const real b[3]) {
     y = vec_abs(n);
     x = vec_dot(a, b);
     ang = atan2(y, x);
-    if (ang < 0) ang = -ang;
     return ang;
 }
 

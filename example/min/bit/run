@@ -17,5 +17,5 @@ end=200000
 freq=50
 
 make
-he.run ./main juelicher_xin \
-   $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off
+he.run ../meyer/main \
+   $Vr $Ka $Kga $Kv $Ke $Kb $end $freq < $off

@@ -1,1 +1,1 @@
-show:; @m4 main.m4
+show:; @m4 $(M4OPTIONS) print.m4

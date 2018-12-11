@@ -1,29 +1,21 @@
 divert(-1)
-define(`BEGIN_T', `
-for (h = 0; h in ii; h++) {
-    i = ii[h]; j = jj[h]; k = kk[h]
-    get3(i, j, k, a, b, c)')
-define(`END_T', }
-)
-define(`BEGIN_V', `
-for (i = 0; i < nv; i++) {
-    get(i, a)')
-define(`END_V', }
-)
-define(`LPL',`
-pushdef(`f', `$1')
-pushdef(`g', `$2')
+define(`LPL',`dnl
+pushdef(`f', `$1')dnl
+pushdef(`g', `$2')dnl
 BEGIN_T
     g(i) -= tb[h]*(f(i) - f(k)) + tc[h]*(f(i) - f(j))
 END_T
+
 BEGIN_V
     g(i) /= 2*area[i]
 END_V
-popdef(`f')
-popdef(`g')')
+popdef(`f')dnl
+popdef(`g')')dnl
 divert`'dnl
 "${AWK=awk}" '
-include(math.m4)
+include(`loop.m4')
+include(`math.m4')
+include(`off.m4')
 BEGIN {
     math_ini()
     read()
@@ -65,39 +57,14 @@ BEGIN {
     BEGIN_V
         lpH[i] = -lpH[i]
         fm[i] = 2*(lpH[i] + 2*H[i]*(H[i]^2 - K[i]))
+	eng[i] = 2*H[i]^2
     END_V
 
-    print "r fm H K lpl area"
+    print "r eng fm H K lpl area"
     BEGIN_V
         rr = vec_cylindrical_r(a)
-        print rr, fm[i], H[i], K[i], lpH[i], area[i]
+        print rr, eng[i], fm[i], H[i], K[i], lpH[i], area[i]
     END_V
-}
-
-function read(   v, t, h, i, j, k) {
-    getline; getline
-    nv = $1; nt = $2
-    for (v = 0; v < nv; v++) {
-	getline
-	r[v,X] = $1; r[v,Y] = $2; r[v,Z] = $3
-    }
-    for (h = t = 0; t <  nt; t++) {
-	getline
-	i = $2; j = $3; k = $4
-	ii[h] = i; jj[h] = j; kk[h++] = k
-	jj[h] = i; kk[h] = j; ii[h++] = k
-	kk[h] = i; ii[h] = j; jj[h++] = k
-    }
-}
-
-function get3(i, j, k, a, b, c) {
-    get(i, a); get(j, b); get(k, c)
-}
-
-function get(i, a) {
-    a[X] = r[i, X]
-    a[Y] = r[i, Y]
-    a[Z] = r[i, Z]
 }
 
 function msg(s) { print s | "cat >&2" }
