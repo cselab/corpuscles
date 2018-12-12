@@ -1,1 +1,0 @@
-a[i] b[i] c[i] x[i] y[i] z[i] 
