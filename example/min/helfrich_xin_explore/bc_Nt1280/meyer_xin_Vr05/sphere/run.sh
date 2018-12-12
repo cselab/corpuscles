@@ -34,7 +34,7 @@ then
 	mkdir $Da
     fi
     cd $Da
-    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
+    ../../../../main meyer_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
 else
     for i in `seq 0 12`;
     do

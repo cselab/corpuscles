@@ -1,6 +1,6 @@
 set -eu
 
-Vr=0.5
+Vr=0.6
 Ka=0.5
 Kga=1
 Kv=1
@@ -34,9 +34,9 @@ then
 	mkdir $Da
     fi
     cd $Da
-    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
+    ../../../../main gompper_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
 else
-    for i in `seq 0 12`;
+    for i in `seq 0 8`;
     do
 	Da=$(echo $i | awk '{print (1+$1*0.05)}')
 	#echo $Da
