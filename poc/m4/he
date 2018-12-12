@@ -29,3 +29,6 @@ h_define(`foreach',
 foreach(F, `a, b, c, d')
 
 h_warn(`preved')
+
+jfdlkf
+h_aux(x, `a, b, c`, x^2)
