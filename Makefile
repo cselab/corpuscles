@@ -20,6 +20,7 @@ example/ten\
 example/valid\
 example/vec\
 example/volume\
+m4/lib\
 maxima/lib
 
 install: dir
