@@ -23,6 +23,7 @@ h_rename_h(`shift')
 h_rename_h(`ifelse')
 h_rename_h(`pushdef')
 h_rename_h(`popdef')
+h_copy(`m4exit', `h_exit')
 
 h_define(`h_location',
 `__file__:__line__')
@@ -31,8 +32,11 @@ h_define(`h_errprintn',
 `h_errprint(`$1
 ')')
 
-h_define(`h_warning',
-`h_errprint(h_location`: warning: $1')')
+h_define(`h_warn',
+`h_errprintn(h_location`: warning: $1')')
+
+h_define(`h_fatal',
+`h_errprintn(h_location`: error: $1')h_exit(1)')
 
 h_define(`h_shift3', `h_shift(h_shift(h_shift($@)))')
 
@@ -74,9 +78,8 @@ h_define(`h_dquote', ``$@'')
 
 h_define(`h_car', ``$1'')
 h_define(`h_cdr',
-`h_ifelse(`$#', 0, `h_warning(`$0: cannot be called without arguments')',
+`h_ifelse(`$#', 0, `h_warn(`$0: cannot be called without arguments')',
           `$#', 1, `',
           `h_dquote(h_shift($@))')')
-
 
 divert`'dnl
