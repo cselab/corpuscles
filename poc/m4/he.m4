@@ -51,12 +51,14 @@ h_define(`_h_foreach',
 `h_ifelse(`$#', `3', `',
           `$1`$4'$2`'$0(`$1', `$2', h_shift3($@))')')
 
+h_define(`h_apply',
+`h_ifelse(`$2', `', `$1', `$1($2)')`'')
+
 h_define(`_h_apply',
 `h_ifelse(`$2', `', `', `$1($2)`'')')
 
 h_define(`h_map',
 `_h_foreach(`_h_apply(`$1',', `)', `', $2)')
-
 
 h_define(`h_map_sep',
 `h_pushdef(`Sep', `h_define(`Sep', h_defn(`h_unquote'))')'dnl
