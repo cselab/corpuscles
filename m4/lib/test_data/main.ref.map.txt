@@ -1,0 +1,2 @@
+f[a]f[b]f[c]f[x]f[y]f[z]
+F

@@ -1,0 +1,6 @@
+# TEST: apply
+he.m4 > main.out.txt <<'!'
+include(`he.m4')dnl
+h_define(`F', `$1[h_shift($@)]')dnl
+h_apply(`F', `f,x,y,z')
+!

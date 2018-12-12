@@ -2,18 +2,17 @@ S = ../..
 include  $S/conf.mk
 
 B = $(PREFIX)/bin
+I = $(PREFIX)/include
 
 P = he
 
-M = path
-
-path = $(HOME)/.he
+M = m4
 
 include $S/make/tool.mk
 
 $M: $M.in
-	sed 's,%path%,$(path),g' $< > $@
-	chmod a+x $@
+	sed 's,%include%,$I,g' $M.in > $M
+	chmod a+x $M
 
 test:
 clean:; rm -f conf

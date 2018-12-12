@@ -1,7 +1,6 @@
 . he.util
 
 prog=he.path
-: ${h=1e-4}
 
 usg () {
     msg "$prog returns he path"

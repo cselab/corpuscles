@@ -1,0 +1,25 @@
+. he.util
+
+prog=he.m4
+
+: ${M4=m4}
+
+usg () {
+    msg "$prog [OPTION]... [FILE]..."
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+include="%include%"
+
+if ! test -d "$include"
+then msg "no '$include' dierecoty"
+fi
+
+for i
+do shift
+   set -- "$@" \'"$i"\'
+done
+
+e "$M4" -I"$include" "$@"
