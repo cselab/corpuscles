@@ -5,20 +5,24 @@ changequote(`, ')
 define(`h_define',   defn(`define'))
 define(`h_defn',     defn(`defn'))
 define(`h_undefine', defn(`undefine'))
-define(`h_errprint', defn(`errprint'))
-define(`h_shift', defn(`shift'))
-define(`h_ifelse', defn(`ifelse'))
-define(`h_pushdef', defn(`pushdef'))
-define(`h_popdef', defn(`popdef'))
-
 h_undefine(`define')
 h_undefine(`defn')
 h_undefine(`undefine')
-h_undefine(`errprint')
-h_undefine(`shift')
-h_undefine(`ifelse')
-h_undefine(`pushdef')
-h_undefine(`popdef')
+
+h_define(`h_copy',
+`h_define(`$2', h_defn(`$1'))')
+
+h_define(`h_rename',
+`h_copy(`$1', `$2')h_undefine(`$1')')
+
+h_define(`h_rename_h',
+`h_rename(`$1', `h_$1')')
+
+h_rename_h(`errprint')
+h_rename_h(`shift')
+h_rename_h(`ifelse')
+h_rename_h(`pushdef')
+h_rename_h(`popdef')
 
 h_define(`h_location',
 `__file__:__line__')
