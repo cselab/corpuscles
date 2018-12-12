@@ -89,14 +89,14 @@ h_define(`h_cdr',
           `h_dquote(h_shift($@))')')
 
 h_define(`h_aux',
-`h_pushdef(`Sep', `h_define(`Sep', h_defn(`h_unquote'))')dnl
-_h_aux($@)dnl
+`h_pushdef(`Sep', `h_define(`Sep', `$2')')dnl
+_h_aux(`$1', `$3', `$4')dnl
 h_popdef(`Sep')')
 
 h_define(`_h_aux',
-`h_ifelse(`$3', `', `',
-`h_pushdef(`$1', `h_car($3)')dnl
-Sep(`$2')$4`'dnl
-h_popdef(`$1')_h_aux(`$1', `$2', h_cdr($3), `$4')')')
+`h_ifelse(`$2', `', `',
+`h_pushdef(`$1', `h_car($2)')dnl
+Sep`'$3`'dnl
+h_popdef(`$1')_h_aux(`$1', h_cdr($2), `$3')')')
 
 divert`'dnl
