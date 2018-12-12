@@ -5,15 +5,15 @@ B = $(PREFIX)/bin
 
 P = he
 
-M = path
+M = m4
 
 path = $(HOME)/.he
 
 include $S/make/tool.mk
 
 $M: $M.in
-	sed 's,%path%,$(path),g' $< > $@
-	chmod a+x $@
+	sed 's,%path%,$(path),g' $M.in > $M
+	chmod a+x $M
 
 test:
 clean:; rm -f conf
