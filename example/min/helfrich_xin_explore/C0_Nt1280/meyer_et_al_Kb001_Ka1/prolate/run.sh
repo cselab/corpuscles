@@ -23,6 +23,6 @@ else
     do
 	Vr=$(echo $i | awk '{print 0.95-$1*0.05}')
 	#echo $Vr
-	bash run1.sh $Vr
+	bash run.sh $Vr
     done
 fi
