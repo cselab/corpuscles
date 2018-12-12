@@ -19,7 +19,8 @@ example/punto\
 example/ten\
 example/valid\
 example/vec\
-example/volume
+example/volume\
+maxima/lib
 
 install: dir
 test: dir
