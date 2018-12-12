@@ -4,7 +4,7 @@ Kb=0.01
 C0=0
 Kad=0
 DA0D=0
-end=200000
+end=50000
 freq=500
 
 off=$(he.path)/sph/laplace/Nt1280.off
