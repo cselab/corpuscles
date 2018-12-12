@@ -1,0 +1,31 @@
+include(`he.m4')dnl
+
+h_foreach(Var, `a,b,c,x,y,z', `e')
+
+h_foreach(Var, `a,b,c', `Var[i]'
+)dnl
+
+h_map_sep(preved, `, ', `a,b,c')
+h_map(`preved', `a,b,c')
+h_join(`, ', `a,b,c')
+h_define(`preved', `$1[i]')dnl
+h_map_sep(`preved', `, ', `a, b, c')
+
+h_define(`index', `$1[i]')dnl
+h_define(`splice_i', `h_map_sep(`index', `, ', `$*')')dnl
+h_define(`fm', %.16e)
+
+h_define(`PRINT', `dnl
+print "h_join(` ', $@)"
+for (i = 0; i < nv; i++) {
+    fmt = "h_map_sep(`fm', ` ', `$*')"
+    print fmt, splice_i($@)
+}
+')dnl
+PRINT(a, b, c, x, y, z)dnl
+
+h_define(`foreach',
+         `$1(h_car(h_car(h_shift($@))))')
+foreach(F, `a, b, c, d')
+
+h_warn(`preved')
