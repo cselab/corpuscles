@@ -1,19 +1,25 @@
 . he.util
 
-prog=he.path
-: ${h=1e-4}
+prog=he.m4
+
+: ${M4=m4}
 
 usg () {
-    msg "$prog returns he path"
+    msg "$prog [OPTION]... [FILE]..."
     exit
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-path="%path%"
+include="%include%"
 
-if ! test -d "$path"
-then msg "no '$path' dierecoty"
+if ! test -d "$include"
+then msg "no '$include' dierecoty"
 fi
 
-echo "$path"
+for i
+do shift
+   set -- "$@" \'"$i"\'
+done
+
+e "$M4" -I"$include" "$@"
