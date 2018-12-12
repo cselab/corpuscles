@@ -7,7 +7,7 @@ DA0D=0
 end=200000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt1280.off
+off=$(he.path)/sph/laplace/Nt5120.off
 
 #(cd ../../.. && make clean && make)
 
@@ -19,12 +19,11 @@ then
 	mkdir $Vr
     fi
     cd $Vr
-    ../../../../main gompper_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
+    ../../../../main juelicher_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
 else
     for i in `seq 0 5`;
     do
 	Vr=$(echo $i | awk '{print 0.45-$1*0.05}')
-	#echo $Vr
 	bash run.sh $Vr
     done
 fi

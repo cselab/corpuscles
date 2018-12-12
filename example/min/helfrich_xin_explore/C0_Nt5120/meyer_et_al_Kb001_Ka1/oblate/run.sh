@@ -7,9 +7,7 @@ DA0D=0
 end=200000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt1280.off
-
-#(cd ../../.. && make clean && make)
+off=$(he.path)/oblate/laplace/Nt5120/oblate_area_Vr
 
 if test $# -ne 0
 then
@@ -19,11 +17,11 @@ then
 	mkdir $Vr
     fi
     cd $Vr
-    ../../../../main gompper_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off > Vr$Vr.msg
+    ../../../../main meyer_xin $Vr 1 2 1 0 $Kb $C0 $Kad $DA0D $end $freq < $off$Vr.off > Vr$Vr.msg
 else
-    for i in `seq 0 5`;
+    for i in `seq 0 12`;
     do
-	Vr=$(echo $i | awk '{print 0.45-$1*0.05}')
+	Vr=$(echo $i | awk '{print 0.67-$1*0.01}')
 	#echo $Vr
 	bash run.sh $Vr
     done
