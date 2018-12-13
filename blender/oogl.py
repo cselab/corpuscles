@@ -56,3 +56,16 @@ def transform0(path):
     M.transpose()
     return M
 
+def fov(path):
+    M = []
+    f = open(path)
+    lines = f.read().splitlines()
+    n = len(lines)
+    i = 0
+    while i < n:
+        a = parse(lines[i])
+        i += 1
+        if len(a)>1 and a[0] == "fov":
+            return float(a[1])
+    msg("cannot find fov in '%s'" % path)
+    raise Oogl
