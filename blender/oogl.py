@@ -39,7 +39,8 @@ def transform0(path):
     while i < n:
         a = parse(lines[i])
         i += 1
-        if a and a[0] == "transform":
+        if len(a) > 0 and a[0] == "transform" or \
+           len(a) > 1 and a[1] == "transform":
             for j in (0, 1, 2, 3):
                 a = [float(e) for e in parse(lines[i])]
                 i += 1
@@ -52,3 +53,4 @@ def transform0(path):
     M = mathutils.Matrix(M)
     M.transpose()
     return M
+
