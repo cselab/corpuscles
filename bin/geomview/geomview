@@ -50,10 +50,16 @@ num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
 nonzero () { if test "$1" = 0; then err 'cannot be zero'; fi; }
 
 gview () {
-      "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
-	    "$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov \
-	    \""$output"\" \""$appearance"\" \""$command"\" \""$icommand"\" \
-	    "$@"
+    local status
+    "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
+		"$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov \
+		\""$output"\" \""$appearance"\" \""$command"\" \""$icommand"\" \
+		"$@"
+      status=$?
+      if test $status -ne 0
+      then err "geomview0 failed"
+      fi
+      return $status
 }
 
 off0() {
@@ -132,5 +138,7 @@ else t=/tmp/he.geomview.off.$$
 	set -- "$@" $o
      done
      gview "$@"
+     status=$?
      rm -rf $t
+     exit $status
 fi
