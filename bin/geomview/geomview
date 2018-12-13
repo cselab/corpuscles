@@ -10,8 +10,9 @@ he geomview wrapper
 -t x y z      translation
 -r x y z      rotation in degree
 -f zoom       field of view (default is 40)
--o PPM        save PPM file and exit
--O            save all PPM files and exit
+-o PPM        write PPM file and exit
+-O            write all PPM files and exit
+-OO           write all oogl files and exit
 -p command    process every off file by running `command' < IN.off > OUT.off
 -c command    run command on every file and write output to stderr, %f is replaced by a file name
 -i command    run command on every image, %i replaced by input; %o is replaced by output
@@ -92,6 +93,7 @@ do case "$1" in
 	   if test $# -eq 0; then err '-o needs a file'; fi
 	   output="$1"; shift
 	   ;;
+       -OO) shift; output=-O ;;
        -O) shift; output=-O ;;
        -p) shift
 	   if test $# -eq 0; then err '-p needs a command'; fi
