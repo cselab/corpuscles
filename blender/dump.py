@@ -23,7 +23,7 @@ def dictp(x):
         return False
 
 M = set()
-    
+
 def dump(a):
     i = id(a)
     if i in M: return
