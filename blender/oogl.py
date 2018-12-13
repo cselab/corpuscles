@@ -13,8 +13,8 @@ def msg(fmt, *args, **kwargs):
 
 def parse(l):
     l = re.sub('#.*', "", l)
-    l = l.strip(' ')
-    a = re.split('[ \t]+', l)
+    l = l.strip()
+    a = re.split('[ \\t]+', l)
     return a
 
 def transform(path):
@@ -22,9 +22,6 @@ def transform(path):
         return transform0(path)
     except FileNotFoundError:
         msg("canot open '%s'" % path)
-        raise Oogl
-    except ValueError:
-        msg("fail to parse transform in '%s'" % path)
         raise Oogl
     except IndexError:
         msg("fail to parse transform in '%s'" % path)
@@ -42,8 +39,13 @@ def transform0(path):
         if len(a) > 0 and a[0] == "transform" or \
            len(a) > 1 and a[1] == "transform":
             for j in (0, 1, 2, 3):
-                a = [float(e) for e in parse(lines[i])]
-                i += 1
+                l = parse(lines[i]); i += 1
+                try:
+                    a = [float(e) for e in l]
+                except ValueError:
+                    msg("'%s'" % lines[i])
+                    msg("not three floats '%s'" % l)
+                    raise Oogl
                 M.append(tuple(a))
             break
     f.close()
