@@ -78,7 +78,7 @@ bpy.ops.wm.open_mainfile(filepath = i)
 
 mesh = load("data/0.off")
 
-cam = bpy.data.objects['Camera']
+cam = bpy.data.objects['camera']
 cam.data.angle = fov*math.pi/180
 print(cam.matrix_world)
 M = mathutils.Matrix((
@@ -90,9 +90,9 @@ M.transpose()
 cam.matrix_world = M
 print(cam.matrix_world)
 
-cell = bpy.data.objects[0]
+cell = bpy.data.objects['cell']
 cell.data = mesh
-cell.active_material = bpy.data.materials[0]
+cell.active_material = bpy.data.materials['Cell']
 M = mathutils.Matrix((
     (             1,             0,             0,             0),
     (             0,    0.70710677,   -0.70710677,             0),
@@ -102,8 +102,8 @@ M.transpose()
 cell.matrix_world =  M
 
 bpy.data.scenes['Scene'].render.filepath = 'o.png'
+bpy.ops.wm.save_as_mainfile(filepath = o)
 #bpy.ops.render.render(write_still = True)
 
-bpy.ops.wm.save_as_mainfile(filepath = o)
 
 # blender --background --python off.py
