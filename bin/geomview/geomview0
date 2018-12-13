@@ -31,7 +31,8 @@ function ini(   i) {
     ARGC = 1
     Save = 0 # snapshot every draw()?
 
-    SaveType = eq(options, "-OO") ? "oogl" : "ppm"
+    SaveType = eq(output, "-OO") ? "oogl" : "ppm"
+    Interactive = eq(output, "-")
 
     Icommand = !eq(icommand, "-")
     Command = !eq(command, "-")
@@ -162,6 +163,9 @@ function draw(   off, file) {
         if (eq(SaveType, "ppm")) {
 	    file = sprintf("%05d.ppm", ioff)
 	    msg0(file); snap(file)
+	} else if (eq(SaveType, "oogl")) {
+	    file = sprintf("%05d", ioff)
+	    msg0(file); oogl(file)
 	}
     }
 
@@ -256,6 +260,14 @@ function snap0(file,   reply, status) {
 	err("snap0 failed")
 }
 
+function oogl(file,   reply, status) {
+    g(sprintf("write geometry `%s.geometry`", file))
+    g("echo done\\n") # synchronize
+    status = getline reply
+    if (!eq(reply, "done"))
+	err("oogl failed")
+}
+
 BEGIN {
     ini()
     key()
@@ -271,12 +283,7 @@ BEGIN {
 		break
 	    }
 	}
-    } else if (eq(output, "-OO")) {
-	Save = 1
-	for (ioff = 1; ioff <= noff; ioff++)
-	    draw()
-	gexit(0)
-    } else if (eq(output, "-O")) {
+    } else if (eq(output, "-OO") || eq(output, "-O")) {
 	Save = 1
 	for (ioff = 1; ioff <= noff; ioff++)
 	    draw()

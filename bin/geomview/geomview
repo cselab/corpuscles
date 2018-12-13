@@ -99,7 +99,7 @@ do case "$1" in
 	   if test $# -eq 0; then err '-o needs a file'; fi
 	   output="$1"; shift
 	   ;;
-       -OO) shift; output=-O ;;
+       -OO) shift; output=-OO ;;
        -O) shift; output=-O ;;
        -p) shift
 	   if test $# -eq 0; then err '-p needs a command'; fi
