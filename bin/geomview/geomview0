@@ -31,6 +31,8 @@ function ini(   i) {
     ARGC = 1
     Save = 0 # snapshot every draw()?
 
+    SaveType = eq(options, "-OO") ? "oogl" : "ppm"
+
     Icommand = !eq(icommand, "-")
     Command = !eq(command, "-")
     Report  = Command
@@ -157,9 +159,12 @@ function draw(   off, file) {
     off = offs[ioff]
     g(sprintf("read geometry   { define off        < `%s` }", off))
     if (Save) {
-	file = sprintf("%05d.ppm", ioff)
-	msg0(file); snap(file)
+        if (eq(SaveType, "ppm")) {
+	    file = sprintf("%05d.ppm", ioff)
+	    msg0(file); snap(file)
+	}
     }
+
     if (Report && Command)
 	sys(command)
     else if (Report)
@@ -266,6 +271,11 @@ BEGIN {
 		break
 	    }
 	}
+    } else if (eq(output, "-OO")) {
+	Save = 1
+	for (ioff = 1; ioff <= noff; ioff++)
+	    draw()
+	gexit(0)
     } else if (eq(output, "-O")) {
 	Save = 1
 	for (ioff = 1; ioff <= noff; ioff++)

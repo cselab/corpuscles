@@ -4,6 +4,12 @@ f="$1"; shift
 i="$1"; shift
 o="$1"; shift
 
+if ! composite --version 2>/dev/null 1>/dev/null
+then echo "i/rvolume: no composite command" >&2
+     exit 2
+fi
+
+
 l=`off.rvolume "$f"`
 l=`printf '%.2f' $l`
 composite -pointsize $size label:$l "$i" "$o"
