@@ -160,7 +160,7 @@ function draw(   off, file) {
     off = offs[ioff]
     g(sprintf("read geometry   { define off        < `%s` }", off))
     if (Save) {
-        if (eq(SaveType, "ppm")) {
+    	if (eq(SaveType, "ppm")) {
 	    file = sprintf("%05d.ppm", ioff)
 	    msg0(file); snap(file)
 	} else if (eq(SaveType, "oogl")) {
@@ -261,7 +261,9 @@ function snap0(file,   reply, status) {
 }
 
 function oogl(file,   reply, status) {
-    g(sprintf("write geometry `%s.geometry`", file))
+    g(sprintf("write geometry `%s.geometry` self universe", file))
+    g(sprintf("write camera `%s.camera` Camera universe", file))
+    g(sprintf("write transform `%s.transform` self universe", file))
     g("echo done\\n") # synchronize
     status = getline reply
     if (!eq(reply, "done"))
