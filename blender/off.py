@@ -1,5 +1,8 @@
 import os
+import math
+
 import bpy
+import mathutils
 
 def load(filepath):
     filepath = os.fsencode(filepath)
@@ -68,16 +71,39 @@ def load(filepath):
 
     return mesh
 
+fov = 27/0.68885112
 i = "preved.blend"
 o = "o.blend"
 bpy.ops.wm.open_mainfile(filepath = i)
 
-mesh = load("0.off")
+mesh = load("data/0.off")
 
-bpy.data.objects[0].data = mesh
-bpy.data.objects[0].active_material = bpy.data.materials[0]
+cam = bpy.data.objects['camera']
+cam.data.angle = fov*math.pi/180
+print(cam.matrix_world)
+M = mathutils.Matrix((
+    (1, 0, 0, 0),
+    (0, 1, 0, 0),
+    (0, 0, 1, 0),
+    (0, 0, 3, 1)))
+M.transpose()
+cam.matrix_world = M
+print(cam.matrix_world)
+
+cell = bpy.data.objects['cell']
+cell.data = mesh
+cell.active_material = bpy.data.materials['Cell']
+M = mathutils.Matrix((
+    (             1,             0,             0,             0),
+    (             0,    0.70710677,   -0.70710677,             0),
+    (             0,    0.70710677,    0.70710677,             0),
+    (             0,             0,             0,             1)))
+M.transpose()
+cell.matrix_world =  M
 
 bpy.data.scenes['Scene'].render.filepath = 'o.png'
-bpy.ops.render.render(write_still = True)
-
 bpy.ops.wm.save_as_mainfile(filepath = o)
+#bpy.ops.render.render(write_still = True)
+
+
+# blender --background --python off.py
