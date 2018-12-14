@@ -30,7 +30,7 @@ def transform(path):
         raise Oogl
 
 def transform0(path):
-    M = []
+    ans = []
     with open(path) as f:
         f = open(path)
         lines = f.read().splitlines()
@@ -41,6 +41,7 @@ def transform0(path):
         i += 1
         if len(a) > 0 and a[0] == "transform" or \
            len(a) > 1 and a[1] == "transform":
+            M = []
             for j in (0, 1, 2, 3):
                 l = parse(lines[i]); i += 1
                 try:
@@ -49,14 +50,16 @@ def transform0(path):
                     msg("'%s'" % lines[i])
                     msg("not three floats '%s'" % l)
                     raise Oogl
-                M.append(tuple(a))
-            break
-    if not M:
-        msg("no transform in '%s'" % path)
-        raise Oogl
-    M = mathutils.Matrix(M)
-    M.transpose()
-    return M
+                M.append(a)
+            M = mathutils.Matrix(M)
+            M.transpose()
+            ans.append(M)
+
+    if len(ans) == 1:
+        ans = ans[0]
+    else:
+        ans = ans[0] * ans[1]
+    return ans
 
 def fov(path):
     with open(path) as f:

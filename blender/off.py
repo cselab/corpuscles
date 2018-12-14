@@ -8,34 +8,30 @@ import mathutils
 sys.path.append(".")
 import oogl
 
-Iblender = "preved.blend"
-Camera = "data/00001.camera"
-Geometry = "data/00001.geometry"
+Iblender = "red.blend"
+Camera = "data/stomatocyte/00001.camera"
+Geometry = "data/stomatocyte/00001.geometry"
 Oblender = "o.blend"
 Opng = "o.png"
 
 fov = oogl.fov(Camera)
 print(fov)
-fov *= 2*math.pi/180
+fov *= math.pi/180
 bpy.ops.wm.open_mainfile(filepath = Iblender)
 
 mesh = oogl.off(Geometry)
-print(mesh)
-
 cam = bpy.data.objects['camera']
 cam.data.angle = fov
-cam.matrix_world = oogl.transform(Camera)
+M = oogl.transform(Camera)
+cam.matrix_world = M
 
 cell = bpy.data.objects['cell']
 cell.data = mesh
 cell.active_material = bpy.data.materials['Cell']
 M = oogl.transform(Geometry)
-cell.matrix_world =  M
-print(M)
+cell.matrix_world = M
 
 bpy.ops.wm.save_as_mainfile(filepath = Oblender)
 
 bpy.data.scenes['Scene'].render.filepath = Opng
-bpy.ops.render.render(write_still = True)
-
-# blender --background --python off.py
+# bpy.ops.render.render(write_still = True)
