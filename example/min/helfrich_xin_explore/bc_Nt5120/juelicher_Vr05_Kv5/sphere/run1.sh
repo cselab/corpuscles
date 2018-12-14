@@ -40,7 +40,7 @@ else
     do
 	Da=$(echo $i | awk '{print (1+$1*0.05)}')
 	#echo $Da
-	bash run1.sh $Da 
+	bash run1.sh $Da &
     done
 
 fi
