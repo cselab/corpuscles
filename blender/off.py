@@ -97,11 +97,12 @@ cam.matrix_world = oogl.transform(Camera)
 cell = bpy.data.objects['cell']
 cell.data = mesh
 cell.active_material = bpy.data.materials['Cell']
-cell.matrix_world =  oogl.transform(Geometry)
+M = oogl.transform(Geometry)
+cell.matrix_world =  M
 
 bpy.ops.wm.save_as_mainfile(filepath = Oblender)
 
 bpy.data.scenes['Scene'].render.filepath = Opng
-bpy.ops.render.render(write_still = True)
+#bpy.ops.render.render(write_still = True)
 
 # blender --background --python off.py
