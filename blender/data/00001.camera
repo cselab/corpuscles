@@ -7,7 +7,7 @@ camera {
 
   }
   perspective 1  stereo 0
-  fov 40
+  fov 19.3914
   frameaspect 1.33333
   focus 3
   near 0.1
