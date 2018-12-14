@@ -75,6 +75,7 @@ def load(filepath):
 
     return mesh
 
+i = "preved.blend"
 Camera = "data/00001.camera"
 Geometry = "data/00001.geometry"
 Oblender = "o.blend"
@@ -82,10 +83,10 @@ Opng = "o.png"
 magic = 0.68885112
 
 fov = oogl.fov(Camera)
+print(fov)
 fov /= magic
 fov *= math.pi/180
 
-i = "preved.blend"
 bpy.ops.wm.open_mainfile(filepath = i)
 
 mesh = load("data/0.off")
@@ -99,6 +100,7 @@ cell.data = mesh
 cell.active_material = bpy.data.materials['Cell']
 M = oogl.transform(Geometry)
 cell.matrix_world =  M
+print(M)
 
 bpy.ops.wm.save_as_mainfile(filepath = Oblender)
 
