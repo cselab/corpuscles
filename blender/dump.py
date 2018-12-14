@@ -36,7 +36,7 @@ def dump(a, lvl = 0):
         M.add(a)
     except:
         pass
-    if isinstance(a, str):
+    if isinstance(a, str) or isinstance(a, int) or isinstance(a, str):
         pass
     elif iterable(a):
         print("iterable", len(a))
@@ -47,15 +47,15 @@ def dump(a, lvl = 0):
             if key.startswith('_'): continue
             try:
                 val = getattr(a, key)
-                print("[%d] %s %s==" %
-                      (lvl, str(key), str(val)))
-                if lvl < 2:
+                print("%02d : %-20s : %-40s : %-30s" %
+                      (lvl, str(key), str(val), str(type(val))))
+                if lvl < maxlevel:
                     dump(val, lvl + 1)
             except:
                 pass
-    else:
-        print("==%s %s==" % (str(a), str(type(a))))
-
-dump(bpy)
+            
+maxlevel = 3
+t = bpy.data.materials
+dump(bpy.data)
 
 # blender --background --python dump.py
