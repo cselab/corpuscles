@@ -54,8 +54,8 @@ def dump(a, lvl = 0):
             except:
                 pass
             
-maxlevel = 3
-t = bpy.data.materials
-dump(bpy.data)
+maxlevel = 0
+t = bpy.data.objects[2]
+dump(t)
 
 # blender --background --python dump.py
