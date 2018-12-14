@@ -13,13 +13,10 @@ Camera = "data/00001.camera"
 Geometry = "data/00001.geometry"
 Oblender = "o.blend"
 Opng = "o.png"
-magic = 0.68885112
 
 fov = oogl.fov(Camera)
 print(fov)
-fov /= magic
-fov *= math.pi/180
-
+fov *= 2*math.pi/180
 bpy.ops.wm.open_mainfile(filepath = Iblender)
 
 mesh = oogl.off(Geometry)
@@ -39,6 +36,6 @@ print(M)
 bpy.ops.wm.save_as_mainfile(filepath = Oblender)
 
 bpy.data.scenes['Scene'].render.filepath = Opng
-#bpy.ops.render.render(write_still = True)
+bpy.ops.render.render(write_still = True)
 
 # blender --background --python off.py
