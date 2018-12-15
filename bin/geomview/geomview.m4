@@ -1,5 +1,6 @@
 include(`he.m4')dnl
 include(`args.m4')dnl
+include(`util.m4')dnl
 changequote(`<<<',`>>>')dnl
 . he.util
 
@@ -59,8 +60,7 @@ gview () {
     translate="$tx $ty $tz"
     rotate="$rx $ry $rz"
     "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run "$prog0" \
-       h_foreach_sep(`A', ` \
-       ', Args, `\""$A"\"') \
+       foreach(Args, `\""$A"\"') \
        "$@"
       status=$?
       if test $status -ne 0
