@@ -251,9 +251,11 @@ function snap(file,   c, out) {
     }
 }
 
-function snap0(file,   reply, status) {
-    g(sprintf("snapshot Camera `%s`", file))
-    g(sprintf("snapshot Camera `%s`", file)) # TODO
+function snap0(file,   format, cmd, reply, status) {
+    from = "ppm"
+    cmd = sprintf("snapshot Camera `%s` %s", file, format)
+    g(cmd)
+    g(cmd) # TODO
     g("echo done\\n") # synchronize
     status = getline reply
     if (!eq(reply, "done"))
