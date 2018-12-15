@@ -32,6 +32,6 @@ h_warn(`preved')
 h_undefine(`g')
 ===
 h_define(`Var', 42)dnl
-h_aux(`Var', ` + ', `a, b, c, g(y, z)', `Var^2')
+h_foreach_sep(`Var', ` + ', `a, b, c, g(y, z)', `Var^2')
 ===
 `Var' = Var
