@@ -52,20 +52,23 @@ num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
 num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
 nonzero () { if test "$1" = 0; then err 'cannot be zero'; fi; }
 
+changequote()dnl
+changequote(`, ')dnl
 gview () {
     local status translate rotate
     translate="$tx $ty $tz"
     rotate="$rx $ry $rz"
     "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run "$prog0" \
-		\"$translate\"  \"$rotate\" \""$fov"\" \
-		\""$output"\" \""$appearance"\" \""$command"\" \""$icommand"\" \
-		"$@"
+       h_foreach_sep(`A', ` \
+       ', Args, `\""$A"\"') \
+       "$@"
       status=$?
       if test $status -ne 0
       then err "geomview0 failed"
       fi
       return $status
 }
+changequote(`<<<',`>>>')dnl
 
 off0() {
     test -f "$1" &&

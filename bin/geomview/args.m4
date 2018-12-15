@@ -1,4 +1,4 @@
 divert(-1)
 h_define(`Args',
-``translate, rotate, fov, output, appearance, command, icommand'')
+``appearance, command, fov, icommand, output, rotate, translate'')
 divert`'dnl
