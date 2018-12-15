@@ -9,6 +9,10 @@ M = geomview geomview0
 include $S/conf.mk
 include $S/make/tool.mk
 
+geomview0: geomview0.m4 args.m4; he.m4 $< > $@
+geomview:  geomview.m4 args.m4; he.m4 $< > $@
+
 test: install; atest test/*
+clean:; rm -f geomview geomview0
 
 .PHONY: clean install test

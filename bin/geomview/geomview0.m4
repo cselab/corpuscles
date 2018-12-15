@@ -1,4 +1,5 @@
 include(`he.m4')dnl
+include(`args.m4')dnl
 . he.util
 
 prog=he.geomview0
@@ -11,23 +12,17 @@ usg () {
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
-h_define(`Args', dnl
-`translate, rotate, fov, output, appearance, command, icommand')
-
-translate="$1"; shift
-rotate="$1"; shift
-fov="$1"; shift
-output="$1"; shift
-appearance="$1"; shift
-command="$1"; shift
-icommand="$1"; shift
+h_foreach_sep(`A', `
+', Args, `A="`$1'"; shift')dnl
 
 Tmp=/tmp/he.geomview.$$.ppm
 trap 'rm -f $Tmp; echo 2' 1 2 3 15
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
-       -v translate="$translate" -v rotate="$rotate" -v fov="$fov" \
-       -v output="$output" -v appearance="$appearance" -v command="$command" -v icommand="$icommand" '
+h_foreach_sep(`A', ` \
+', Args, `-v A="$A"') \
+changequote(`<<',`>>')dnl
+'
 function ini(   i) {
     noff = ARGC - 1; ioff = 1
     for (i = 1; i in ARGV; i++)
@@ -333,7 +328,6 @@ function sys0(c,   s) {
 	g("exit")
     }
 }
-
 ' "$@"
 
 status=$?

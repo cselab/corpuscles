@@ -1,3 +1,6 @@
+include(`he.m4')dnl
+include(`args.m4')dnl
+changequote(`<<<',`>>>')dnl
 . he.util
 
 prog=he.geomview
