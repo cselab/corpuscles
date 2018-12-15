@@ -53,9 +53,11 @@ num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
 nonzero () { if test "$1" = 0; then err 'cannot be zero'; fi; }
 
 gview () {
-    local status
-    "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run \
-		"$prog0" \"$tx $ty $tz\"  \"$rx $ry $rz\" $fov \
+    local status translate rotate
+    translate="$tx $ty $tz"
+    rotate="$rx $ry $rz"
+    "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run "$prog0" \
+		\"$translate\"  \"$rotate\" \""$fov"\" \
 		\""$output"\" \""$appearance"\" \""$command"\" \""$icommand"\" \
 		"$@"
       status=$?
