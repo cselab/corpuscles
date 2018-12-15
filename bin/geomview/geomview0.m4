@@ -1,4 +1,5 @@
 include(`he.m4')dnl
+include(`util.m4')dnl
 include(`args.m4')dnl
 . he.util
 
@@ -11,7 +12,6 @@ usg () {
 }
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
-
 h_foreach_sep(`A', `
 ', Args, `A="`$1'"; shift')dnl
 
@@ -19,8 +19,7 @@ Tmp=/tmp/he.geomview.$$.ppm
 trap 'rm -f $Tmp; echo 2' 1 2 3 15
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
-h_foreach_sep(`A', ` \
-', Args, `-v A="$A"') \
+foreach(Args, `-v A="$A"') \
 changequote(`<<',`>>')dnl
 '
 function ini(   i) {
