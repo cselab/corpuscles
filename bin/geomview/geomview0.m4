@@ -146,6 +146,7 @@ function key() {
 
 function geom() {
     g("geometry obj appearance { : appearance } { : off }")
+    # g("normalization obj none")
     g("bbox-draw obj no")
     if (eq(appearance, "-"))
 	g("read appearance {define appearance { +edge } material {ks 0}}")
