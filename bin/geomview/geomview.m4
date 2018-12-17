@@ -19,6 +19,7 @@ he geomview wrapper
 -O            write all PPM files and exit
 -OO           write all oogl files and exit
 -p command    process every off file by running 'command' < IN.off > OUT.off
+-n none|each|all|keep normalization status (see geomview manual)
 -c command    run command on every file and write output to stderr, %f is replaced by a file name
 -i command    run command on every image, %i replaced by input; %o is replaced by output
 
@@ -80,7 +81,7 @@ filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'; then err "$GEOMVIEW is not found"; fi
 
-tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=- process=- command=- icommand=-
+tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=- process=- command=- icommand=- normalization=-
 while test $# -ne 0
 do case "$1" in
        -t) shift
@@ -95,6 +96,10 @@ do case "$1" in
 	   num "$1"; ry="$1"; shift
 	   num "$1"; rz="$1"; shift
 	   ;;
+       -n) shift
+       	   if test $# -eq 0; then err '-n needs an argument'; fi
+           normalization="$1"; shift
+           ;;
        -f) shift
 	   if test $# -eq 0; then err '-f needs a number'; fi
 	   num "$1"; nonzero "$1"; fov="$1"; shift
