@@ -1,7 +1,7 @@
 include(`he.m4')dnl
 include(`args.m4')dnl
 include(`util.m4')dnl
-changequote(`<<<',`>>>')dnl
+changequote(,)dnl
 . he.util
 
 prog=he.geomview
@@ -68,7 +68,7 @@ gview () {
       fi
       return $status
 }
-changequote(`<<<',`>>>')dnl
+changequote(,)dnl
 
 off0() {
     test -f "$1" &&

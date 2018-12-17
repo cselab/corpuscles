@@ -20,7 +20,7 @@ trap 'rm -f $Tmp; echo 2' 1 2 3 15
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
 foreach(Args, `-v A="$A"') \
-changequote(`<<',`>>')dnl
+changequote()dnl
 '
 function ini(   i) {
     noff = ARGC - 1; ioff = 1
@@ -158,7 +158,7 @@ function draw(   off, file) {
     off = offs[ioff]
     g(sprintf("read geometry   { define off        < `%s` }", off))
     if (Save) {
-    	if (eq(SaveType, "ppm")) {
+	if (eq(SaveType, "ppm")) {
 	    file = sprintf("%05d.ppm", ioff)
 	    msg0(file); snap(file)
 	} else if (eq(SaveType, "oogl")) {
@@ -273,9 +273,9 @@ function oogl(file,   reply, status) {
 BEGIN {
     ini()
     key()
+    geom()
     transform()
     set_fov()
-    geom()
     draw()
     if (eq(output, "-")) {
 	for (;;) {
