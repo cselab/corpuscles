@@ -14,8 +14,8 @@ he geomview wrapper
 -t x y z      translation
 -r x y z      rotation in degree
 -f zoom       field of view (default is 40)
--a APPEARANCE load appearance information from a file
--o FILE       write FILE file and exit
+-a APPEARANCE load appearance from a file
+-o FILE       write FILE and exit
 -O            write all PPM files and exit
 -OO           write all oogl files and exit
 -p command    process every off file by running 'command' < IN.off > OUT.off
