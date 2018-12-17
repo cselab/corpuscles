@@ -8,9 +8,9 @@ import mathutils
 sys.path.append(".")
 import oogl
 
-Iblender = "red.blend"
-Camera = "data/stomatocyte/00001.camera"
-Geometry = "data/stomatocyte/00001.geometry"
+Iblender = "blue.blend"
+Camera = "data/elliptocyte/00001.camera"
+Geometry = "data/elliptocyte/00001.geometry"
 Oblender = "o.blend"
 Opng = "o.png"
 
@@ -34,4 +34,4 @@ cell.matrix_world = M
 bpy.ops.wm.save_as_mainfile(filepath = Oblender)
 
 bpy.data.scenes['Scene'].render.filepath = Opng
-# bpy.ops.render.render(write_still = True)
+bpy.ops.render.render(write_still = True)
