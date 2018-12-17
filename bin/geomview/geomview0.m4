@@ -252,7 +252,7 @@ function snap(file,   c, out) {
 }
 
 function snap0(file,   format, cmd, reply, status) {
-    from = "ppm"
+    format = "ppm"
     cmd = sprintf("snapshot Camera `%s` %s", file, format)
     g(cmd)
     g(cmd) # TODO
