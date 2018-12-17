@@ -53,6 +53,12 @@ EOF
 num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
 num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
 nonzero () { if test "$1" = 0; then err 'cannot be zero'; fi; }
+normalizationp () {
+    case "$1" in
+	none|each|all|keep) ;;
+	*) err "wrong -n argument '$1'" ;;
+    esac
+}
 
 changequote()dnl
 changequote(`, ')dnl
@@ -98,7 +104,7 @@ do case "$1" in
 	   ;;
        -n) shift
        	   if test $# -eq 0; then err '-n needs an argument'; fi
-           normalization="$1"; shift
+           normalizationp "$1"; normalization="$1"; shift
            ;;
        -f) shift
 	   if test $# -eq 0; then err '-f needs a number'; fi
