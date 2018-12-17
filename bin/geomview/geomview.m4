@@ -66,6 +66,7 @@ gview () {
     local status translate rotate
     translate="$tx $ty $tz"
     rotate="$rx $ry $rz"
+    trap '' SIGHUP
     "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run "$prog0" \
        foreach(Args, `\""$A"\"') \
        "$@"
