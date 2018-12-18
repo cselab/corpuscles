@@ -10,6 +10,15 @@ enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};
 enum {SIZE = MAX_STRING_SIZE};
 #define FMT_IN   HE_REAL_IN
 
+int ten_matrix_ini(const real a[3*3], Ten *T) {
+    real *t;
+    int i;
+    t = T->t;
+    for (i = 0; i < 3*3; i++)
+        t[i] = a[i];
+    return HE_OK;
+}
+
 int ten_col_ini(const real a[3], const real b[3], const real c[3],
                 Ten *T) {
     real *t;

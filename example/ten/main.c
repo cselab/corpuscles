@@ -12,27 +12,38 @@
 #define FMT_IN   HE_REAL_IN
 static const char **argv;
 
-void vec(/**/ real a[3]) { vec_argv(&argv, a); }
-void ten(/**/ Ten *T) { ten_argv(&argv, T); }
-int scl(/**/ real *p) {
+static int vec(/**/ real a[3]) { return vec_argv(&argv, a); }
+static int ten(/**/ Ten *T) { return ten_argv(&argv, T); }
+static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
     return HE_OK;
 }
+static int mat(/**/ real a[3*3]) {
+    int i;
+    for (i = 0; i < 3*3; i++)
+        if (scl(&a[i]) != HE_OK)
+            ER("mat failed for i = %d", i);
+    return HE_OK;
+}
 
-int eq(const char *a, const char *b) { return util_eq(a, b); }
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
-    real s, a[3], b[3], c[3];
+    real s, a[3], b[3], c[3], m[3*3];
     Ten T, R, P;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
     op = *argv++;
-    if (eq(op, "row_ini")) {
+    if (eq(op, "matrix_ini")) {
+        mat(m);
+        ten_matrix_ini(m, &T);
+        ten_printf(&T, "%g");
+    } else if (eq(op, "row_ini")) {
         vec(a); vec(b); vec(c);
         ten_row_ini(a, b, c, &T);
         ten_printf(&T, "%g");
