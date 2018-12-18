@@ -44,6 +44,9 @@ static const char **argv;
 static char bending[4049];
 static const char *me = "min/helfrich_xin_fga";
 
+static real *fx, *fy, *fz;
+
+
 static void usg() {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
@@ -179,8 +182,7 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static void main0(real *vx, real *vy, real *vz,
-                  real *fx, real *fy, real *fz) {
+static void main0(real *vx, real *vy, real *vz) {
   int i, j;
   real dt, dt_max, h, mu;
   real A, V, Vr;
@@ -257,7 +259,6 @@ static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 int main(int __UNUSED argc, const char *v[]) {
   real a0;
-  real *fx, *fy, *fz;
   real *vx, *vy, *vz;
   real A, V, Vr;
   BendingParam bending_param;
@@ -295,7 +296,7 @@ int main(int __UNUSED argc, const char *v[]) {
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
 
-  main0(vx, vy, vz, fx, fy, fz);
+  main0(vx, vy, vz);
 
   FREE(fx); FREE(fy); FREE(fz);
   FREE(vx); FREE(vy); FREE(vz);
