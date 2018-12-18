@@ -10,6 +10,8 @@ extern real *TH; /* acos(z/r) */
 
 int ini(const char *path);
 int fin();
+int x_he(/**/ He**);
+
 int  nxt(int h);
 int  flp(int h);
 

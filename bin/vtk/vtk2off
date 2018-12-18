@@ -85,10 +85,10 @@ function map_color(   i, mi, ma, e) {
 	if (e < mi) mi = e
     }
 
+    if (Log)
+	msg(mi " " ma)
     if (emptyp(l)) l = mi
     if (emptyp(h)) h = ma
-    if (Log)
-	msg(l " " h)
 
     for (i = 0; i < nt; i++) {
 	e = tri[i]

@@ -142,6 +142,12 @@ int  fin()      {
     he_fin(he);
     return HE_OK;
 }
+
+int x_he(He** phe) {
+    *phe = he;
+    return HE_OK;
+}
+
 int equiangulate(int *cnt) {
     return he_equiangulate(he, XX, YY, ZZ, cnt);
 }
