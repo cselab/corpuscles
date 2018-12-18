@@ -43,7 +43,7 @@ else
 
     bash run_cont.sh 1.4 1.4 &
     bash run_cont.sh 1.35 1.35 & 
-    bash run_cont.sh 1.35 1.25 & 
+    bash run_cont.sh 1.3 1.25 & 
     bash run_cont.sh 1.2 1.22 & 
     bash run_cont.sh 1.16 1.14 & 
     bash run_cont.sh 1.12 1.14 & 
