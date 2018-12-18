@@ -3,7 +3,7 @@ include(`he.m4')dnl
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Javascript 3D Model Viewer</title>
+    <title>he model viewer</title>
     <style>
       #viewer {
 	  width: 60%;
