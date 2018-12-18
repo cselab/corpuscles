@@ -44,4 +44,5 @@ else
     bash run_cont.sh 1.35 1.3 & 
     bash run_cont.sh 1.4 1.45 &
     bash run_cont.sh 1.5 1.45 &
+    bash run_cont.sh 1.45 1.3 &
 fi
