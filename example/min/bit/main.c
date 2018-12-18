@@ -245,7 +245,7 @@ static void main0(real *vx, real *vy, real *vz) {
         he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
 
-        j = 0;
+    j = 0;
     A  = area();
     errA = (A-A0)/A0;
     if (errA<0) {
