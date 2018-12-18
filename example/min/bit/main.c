@@ -237,8 +237,8 @@ static void main0(real *vx, real *vy, real *vz,
     }
     
     if ( i % freq == 0 ) {
-      sprintf(file, "%06d.off", i);
-      off_write(XX, YY, ZZ, file);
+        sprintf(file, "%06d.off", i);
+        off_write(XX, YY, ZZ, file);
     }
   }
 }
