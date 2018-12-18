@@ -11,4 +11,5 @@ fullScreenButton.addEventListener('click', function () {
 var LoadButton = document.getElementById('load')
 LoadButton.addEventListener('click', function () {
     Player.loadObject(scene, './assets/sample.obj')
+    Player.resetCamera(scene)
 })
