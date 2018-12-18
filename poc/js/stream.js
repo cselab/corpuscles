@@ -1,6 +1,3 @@
-console.log('stdout: Hello, world');
-console.error('stderr: Hello, world');
-
 var readline = require('readline');
 var rl = readline.createInterface({
   input: process.stdin,
