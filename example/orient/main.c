@@ -14,7 +14,6 @@ static He *he;
 static Orient *orient;
 
 static void main0() {
-    real *queue[] = {x, y, z, NULL};
     orient_apply(orient, x, y, z);
     off_he_xyz_fwrite(he, x, y, z, stdout);
 }
