@@ -88,5 +88,5 @@ int orient_apply(T *q, /**/ real *x, real *y, real *z) {
 }
 
 int orient_transform(T *q, /**/ Ten *t) {
-    return HE_OK;
+    return ten_matrix_ini(q->v, t);
 }
