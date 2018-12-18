@@ -18,6 +18,16 @@
 
 const char *me = "he.align";
 
+const static int perms[][3] = {
+    {0, 0, 0},
+    {0, 0, 1},
+    {0, 1, 0},
+    {0, 1, 1},
+    {1, 0, 0},
+    {1, 0, 1},
+    {1, 1, 0},
+    {1, 1, 1}};
+
 static void usg(void) {
     fprintf(stderr, "%s A.off B.off > C.off\n", me);
     fprintf(stderr, "align B.off with A.off\n");
@@ -48,6 +58,37 @@ static int invert(const Ten *t, int n, real *x, real *y, real *z) {
     return HE_OK;
 }
 
+static real sq(real x) { return x*x; };
+static real dist(void) {
+    int i, j;
+    real d, s, m;
+    s = m = 0;
+    for (i = 0; i < a.n; i++) {
+        m = 1e32;
+        for (j = 0; j < b.n; j++) {
+            d = sq(a.x[i] - b.x[j]) +
+                sq(a.y[i] - b.y[j]) +
+                sq(a.z[i] - b.z[j]);
+            if (d < m) m = d;
+        }
+        s += m;
+    }
+    return s;
+}
+
+static int flip0(int n, real *x) {
+    int i;
+    for (i = 0; i < n; i++)
+        x[i] = -x[i];
+}
+
+static int flip(const int perm[3]) {
+    enum {X, Y, Z};
+    if (perm[X]) flip0(b.n, b.x);
+    if (perm[Y]) flip0(b.n, b.y);
+    if (perm[Z]) flip0(b.n, b.z);
+}
+
 static int str(/**/ char *p) {
     if (*argv == NULL)
         ER("not enough arguments");
@@ -66,6 +107,9 @@ static int eq(const char **a, const char *b) {
 };
 
 int main(__UNUSED int argc, const char **v) {
+    int i, j, n;
+    real d, m;
+
     argv = v; argv++;
     if (argv && eq(argv, "-h"))
         usg();
@@ -86,6 +130,19 @@ int main(__UNUSED int argc, const char **v) {
     orient_transform(a.orient, &a.t);
     orient_transform(b.orient, &b.t);
 
+    m = 1e32;
+    n = sizeof(perms)/sizeof(perms[0]);
+    for (j = i = 0; i < n; i++) {
+        flip(perms[i]);
+        d = dist();
+        if (d < m) {
+            m = d;
+            j = i;
+        }
+        flip(perms[i]);
+        MSG("%d", i);
+    }
+    flip(perms[j]);
     invert(&a.t, b.n, b.x, b.y, b.z);
     off_he_xyz_fwrite(b.he, b.x, b.y, b.z, stdout);
 
