@@ -140,7 +140,6 @@ int main(__UNUSED int argc, const char **v) {
             j = i;
         }
         flip(perms[i]);
-        MSG("%d", i);
     }
     flip(perms[j]);
     invert(&a.t, b.n, b.x, b.y, b.z);
