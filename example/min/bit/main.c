@@ -304,7 +304,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
   main0(vx, vy, vz);
 
-  FREE(fx); FREE(fy); FREE(fz);
+  FREE(fx); FREE(fy); FREE(fz); FREE(fm);
   FREE(vx); FREE(vy); FREE(vz);
 
   f_bending_fin();
