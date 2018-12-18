@@ -253,6 +253,7 @@ function snap(file,   c, out) {
 	gsub("%f", off, c)
 	gsub("%i", input, c)
 	gsub("%o", out, c)
+	gsub("%b", basename(file), c)
 	sys0(c)
     }
 }
@@ -333,6 +334,10 @@ function sys0(c,   s) {
 	msg(sprintf("command: \"%s\" failed", c))
 	g("exit")
     }
+}
+function basename(s) {
+    gsub(/\.[^\.]*/, "", s)
+    return s
 }
 ' "$@"
 

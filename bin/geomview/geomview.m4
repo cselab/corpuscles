@@ -22,7 +22,7 @@ he geomview wrapper
 -p command    process every off file by running 'command' < IN.off > OUT.off
 -n none|each|all|keep normalization status (see geomview manual)
 -c command    run command on every file and write output to stderr, %f is replaced by a file name
--i command    run command on every image, %i replaced by input; %o is replaced by output
+-i command    run command on every image, %i replaced by input; %o -- by output; %b --- by basename
 
 Keys:
     q: quit
@@ -35,6 +35,7 @@ Keys:
 
 Environment variables:
 WX, WY: resolution of the snapshot (default: 800x600)
+BACKGROUND: default ('1 1 1')
 
 Examples:
 $prog -t 0.25 0.25 0     data/rbc.off
@@ -50,6 +51,7 @@ EOF
 : ${GEOMVIEW=geomview}
 : ${WX=800}
 : ${WY=600}
+: ${BACKGROUND="1 1 1"}
 
 num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
 num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
@@ -70,18 +72,19 @@ formatp () {
 changequote()dnl
 changequote(`, ')dnl
 gview () {
-    local status translate rotate
+    local status translate rotate background
     translate="$tx $ty $tz"
     rotate="$rx $ry $rz"
     trap '' SIGHUP
-    "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b 1 1 1 -run "$prog0" \
+    "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b $BACKGROUND \
+     -run "$prog0" \
        foreach(Args, `\""$A"\"') \
        "$@"
-      status=$?
-      if test $status -ne 0
-      then err "geomview0 failed"
-      fi
-      return $status
+    status=$?
+    if test $status -ne 0
+    then err "geomview0 failed"
+    fi
+    return $status
 }
 changequote(,)dnl
 
