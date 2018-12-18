@@ -48,6 +48,26 @@ static int invert(const Ten *t, int n, real *x, real *y, real *z) {
     return HE_OK;
 }
 
+static real sq(real x) { return x*x; };
+static real dist(void) {
+    int i, j;
+    real d;
+    d = 0;
+    for (i = 0; i < a.n; i++)
+        for (j = 0; j < b.n; j++) {
+            d += sq(a.x[i] - b.x[j]);
+            d += sq(a.y[i] - b.y[j]);
+            d += sq(a.z[i] - b.z[j]);
+        }
+    return d;
+}
+
+static int flip(int n, real *x) {
+    int i;
+    for (i = 0; i < n; i++)
+        x[i] = -x[i];
+}
+
 static int str(/**/ char *p) {
     if (*argv == NULL)
         ER("not enough arguments");
@@ -86,7 +106,8 @@ int main(__UNUSED int argc, const char **v) {
     orient_transform(a.orient, &a.t);
     orient_transform(b.orient, &b.t);
 
-    invert(&a.t, b.n, b.x, b.y, b.z);
+    //invert(&a.t, b.n, b.x, b.y, b.z);
+    //off_he_xyz_fwrite(a.he, a.x, a.y, a.z, stdout);
     off_he_xyz_fwrite(b.he, b.x, b.y, b.z, stdout);
 
     orient_fin(a.orient);
