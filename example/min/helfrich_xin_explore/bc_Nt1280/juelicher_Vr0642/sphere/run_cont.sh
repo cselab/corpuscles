@@ -37,11 +37,10 @@ then
     
     off=../$Dap/$endp.off
 
-    ../../../../main gompper_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
+    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
     
 else
 
-    bash run_cont.sh 1.16 1.14 
     bash run_cont.sh 1.3 1.3 
     
 fi
