@@ -1,13 +1,13 @@
 set -eu
 
 Kb=0.01
-Vr=0.4
+Vr=0.95
 
 : ${end=9999999999999}
 : ${freq=2000}
 
-off=data/0.off
-#off=$(he.path)/oblate/laplace/Nt1280/oblate_volume_Vr0.4.off
+#off=data/2.off
+off=$(he.path)/sph/laplace/1.off
 make
 
 LAP= he.run ./main $Vr 0.25 1 1 0 \

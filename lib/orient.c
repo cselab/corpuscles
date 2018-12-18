@@ -7,6 +7,7 @@
 #include "he/he.h"
 #include "he/vec.h"
 #include "he/sum.h"
+#include "he/ten.h"
 
 #include "he/orient.h"
 
@@ -15,7 +16,11 @@
 /* TODO: from alg */
 int alg_eig_vectors(const real data[6], /**/ real e0[9]);
 
-struct T { int n; };
+struct T {
+    int n;
+    real v[3*3];
+};
+
 static real sum(int n, real *a) { return he_sum_array(n, a); }
 int orient_ini(He *he, T **pq) {
     T *q;
@@ -70,12 +75,18 @@ static int to_cm(int n, /**/ real *xx, real *yy, real *zz) {
 
 int orient_apply(T *q, /**/ real *x, real *y, real *z) {
     int n, i;
-    real m[6], v[3*3];
+    real m[6], *v;
+
     n = q->n;
+    v = q->v;
     to_cm(n, /**/ x, y, z);
     moment(n, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
     for (i = 0; i < n; i++)
         mult(v, /**/ &x[i], &y[i], &z[i]);
     return HE_OK;
+}
+
+int orient_transform(T *q, /**/ Ten *t) {
+    return ten_matrix_ini(q->v, t);
 }
