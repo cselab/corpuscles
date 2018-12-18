@@ -45,7 +45,7 @@ static char bending[4049];
 static const char *me = "min/helfrich_xin_fga";
 
 static real *fx, *fy, *fz, *fm;
-
+static real *gx, *gy, *gz, *gm;
 
 static void usg() {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
@@ -55,6 +55,13 @@ static void usg() {
 }
 
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
+
+static int copy(int n, real *a, real *b) {
+    int i;
+    for (i = 0; i < n; i++)
+        b[i] = a[i];
+    return HE_OK;
+}
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 static int num(/**/ int *p) {
@@ -117,11 +124,17 @@ real Energy(const real *x, const real *y, const real *z) {
 
 void Force(const real *x, const real *y, const real *z) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
+    zero(NV, gx); zero(NV, gy); zero(NV, gz);
+
+    f_bending_force(x, y, z, /**/ fx, fy, fz);
+    copy(NV, fx, gx);
+    copy(NV, fy, gy);
+    copy(NV, fz, gz);
+
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_normal_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
-    f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 void ForceArea(const real *x, const real *y, const real *z) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
@@ -185,10 +198,10 @@ static void main0(real *vx, real *vy, real *vz) {
   real errA;
   int nsub;
   char off[4048], vtk[4048];
-  real f[3];
+  real f[3], g[3];
   He *he;
 
-  dt_max = 0.01;
+  dt_max = 1.0;
   mu     = 100.0;
   h      = 0.01*e0;
 
@@ -222,11 +235,13 @@ static void main0(real *vx, real *vy, real *vz) {
         for (j = 0; j < NV; j++) {
             vec_get(j, fx, fy, fz, f);
             fm[j] = vec_abs(f);
+            vec_get(j, fx, fy, fz, g);
+            gm[j] = vec_abs(g);
         }
-        
+
         off_write(XX, YY, ZZ, off);
-        const real *scalars[] = {fx, fy, fz, fm, NULL};
-        const char *names[]   = {"fx", "fy", "fz", "fm", NULL};
+        const real *scalars[] = {fx, fy, fz, fm, gm, NULL};
+        const char *names[]   = {"fx", "fy", "fz", "fm", "gm", NULL};
         he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
 
@@ -293,11 +308,13 @@ int main(int __UNUSED argc, const char *v[]) {
   f_bending_ini(bending, bending_param);
 
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz); MALLOC(NV, &fm);
+  MALLOC(NV, &gx); MALLOC(NV, &gy); MALLOC(NV, &gz); MALLOC(NV, &gm);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
 
   main0(vx, vy, vz);
 
   FREE(fx); FREE(fy); FREE(fz); FREE(fm);
+  FREE(gx); FREE(gy); FREE(gz); FREE(gm);
   FREE(vx); FREE(vy); FREE(vz);
 
   f_bending_fin();
