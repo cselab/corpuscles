@@ -14,16 +14,18 @@ include(`he.m4')dnl
 
   <body>
     <div class="content">
-      <div id="viewer" style="">
+      <div id="viewer">
       </div>
 
       <div class="center">
 	<span id="name">Cell</span>
-	<span id="loading"></span>
       </div>
 
       <div class="center">
-	<button class="button" id="fullscreen-button">
+	<button class="button" id="load">
+	  Load
+	</button>
+	<button class="button" id="fullscreen">
 	  Full Screen
 	</button>
       </div>
