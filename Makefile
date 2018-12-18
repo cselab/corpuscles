@@ -2,10 +2,10 @@ D = \
 tool\
 pkgconfig\
 lib\
+bin/m4\
 bin/align\
 bin/ffmpeg\
 bin/geomview\
-bin/m4\
 bin/maxima\
 bin/orient\
 bin/path\
