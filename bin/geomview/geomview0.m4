@@ -29,12 +29,15 @@ function ini(   i) {
     ARGC = 1
     Save = 0 # snapshot every draw()?
 
-    SaveType = eq(output, "-OO") ? "oogl" : "ppm"
+    SaveType = eq(output, "-OO") ? "oogl" : "image"
     Interactive = eq(output, "-")
 
     Icommand = !eq(icommand, "-")
     Command = !eq(command, "-")
     Report  = Command
+
+    Format = format
+    Suffix = eq(format, "ps") ? "ps" : "ppm"
 
     X = 1; Y = 2; Z = 3; W = 4
     KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
@@ -102,7 +105,7 @@ function write_command(T, fov,   tx, ty, tz, rx, ry, rz) {
 		 rad2ang(rx), rad2ang(ry), rad2ang(rz), fov))
 }
 
-function parse_key(k,   s,  T, fov) {
+function parse_key(k,   s,  T, fov, file) {
     if (k == KEY_Q) {
 	read_transform(T)
 	fov = read_fov()
@@ -111,7 +114,9 @@ function parse_key(k,   s,  T, fov) {
     }
     else if (k == KEY_P) g("ui-panel geomview on")
     else if (k == KEY_S) {
-	msg0("snap.ppm") snap("snap.ppm")
+        file = sprintf("snap.%s", Suffix)
+	msg0(file)
+	snap(file)
     } else if (k == KEY_SPACE) {
 	read_transform(T)
 	fov = read_fov()
@@ -146,7 +151,8 @@ function key() {
 
 function geom() {
     g("geometry obj appearance { : appearance } { : off }")
-    # g("normalization obj none")
+    if (!eq(normalization, "-"))
+        g(sprintf("normalization obj %s", normalization))
     g("bbox-draw obj no")
     if (eq(appearance, "-"))
 	g("read appearance {define appearance { +edge } material {ks 0}}")
@@ -159,13 +165,14 @@ function draw(   off, file) {
     off = offs[ioff]
     g(sprintf("read geometry   { define off        < `%s` }", off))
     if (Save) {
-	if (eq(SaveType, "ppm")) {
-	    file = sprintf("%05d.ppm", ioff)
+	if (eq(SaveType, "image")) {
+	    file = sprintf("%05d.%s", ioff, Suffix)
 	    msg0(file); snap(file)
 	} else if (eq(SaveType, "oogl")) {
 	    file = sprintf("%05d", ioff)
 	    msg0(file); oogl(file)
-	}
+	} else
+	    err(sprintf("unknown SaveType \"%s\"", SaveType))
     }
 
     if (Report && Command)
@@ -250,9 +257,8 @@ function snap(file,   c, out) {
     }
 }
 
-function snap0(file,   format, cmd, reply, status) {
-    from = "ppm"
-    cmd = sprintf("snapshot Camera `%s` %s", file, format)
+function snap0(file,   cmd, reply, status) {
+    cmd = sprintf("snapshot Camera `%s` %s", file, Format)
     g(cmd)
     g(cmd) # TODO
     g("echo done\\n") # synchronize

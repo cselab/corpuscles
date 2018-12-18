@@ -1,0 +1,3 @@
+# TEST: n
+he.geomview -O -n none data/sph.off 2>err.txt
+cp err.txt err.out.txt
