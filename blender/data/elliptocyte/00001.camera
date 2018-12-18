@@ -7,10 +7,10 @@ camera {
 
   }
   perspective 1  stereo 0
-  fov 57
-  frameaspect 1.33333
+  fov 37.1888
+  frameaspect 1.82597
   focus 3
   near 0.1
   far 100
-  bgcolor 1 1 1 0
+  bgcolor 1 1 1 -3.42892e-16
 }
