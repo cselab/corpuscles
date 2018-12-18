@@ -3,11 +3,11 @@ include(`he.m4')dnl
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Javascript 3D Model Viewer</title>
+    <title>he model viewer</title>
     <style>
       #viewer {
 	  width: 60%;
-	  height: 400px;
+	  height: 20em;
       }
     </style>
   </head>
@@ -16,19 +16,12 @@ include(`he.m4')dnl
     <div class="content">
       <div id="viewer">
       </div>
-
-      <div class="center">
-	<span id="name">Cell</span>
-      </div>
-
-      <div class="center">
-	<button class="button" id="load">
-	  Load
-	</button>
-	<button class="button" id="fullscreen">
-	  Full Screen
-	</button>
-      </div>
+      <button class="button" id="load">
+	Show
+      </button>
+      <button class="button" id="fullscreen">
+	Full Screen
+      </button>
     </div>
 
     <script src="./dist/js-3d-model-viewer.js"></script>
