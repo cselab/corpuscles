@@ -245,9 +245,9 @@ static void main0(real *vx, real *vy, real *vz) {
         sprintf(off, "%08d.off", i);
         sprintf(vtk, "%08d.vtk", i);
 
-        for (i = 0; i < NV; i++) {
-            vec_get(i, fx, fy, fz, f);
-            fm[i] = vec_abs(f);
+        for (j = 0; j < NV; j++) {
+            vec_get(j, fx, fy, fz, f);
+            fm[j] = vec_abs(f);
         }
         
         off_write(XX, YY, ZZ, off);
