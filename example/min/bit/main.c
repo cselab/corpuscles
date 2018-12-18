@@ -205,28 +205,6 @@ static void main0(real *vx, real *vy, real *vz) {
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
-
-
-    j = 0;
-    A  = area();
-    errA = (A-A0)/A0;
-    if (errA<0) {
-      errA=-errA;
-    }
-
-    while ( j < nsub && errA > tolerA ) {
-      ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
-      visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-      j++;
-      A  = area();
-      errA = (A-A0)/A0;
-      if (errA<0) {
-        errA=-errA;
-      }
-    }
-
     if ( i % 100 == 0 ) {
       et = Energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
@@ -255,6 +233,26 @@ static void main0(real *vx, real *vy, real *vz) {
         const char *names[]   = {"fx", "fy", "fz", "fm", NULL};
         he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
+
+        j = 0;
+    A  = area();
+    errA = (A-A0)/A0;
+    if (errA<0) {
+      errA=-errA;
+    }
+    while ( j < nsub && errA > tolerA ) {
+      ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
+      visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+      j++;
+      A  = area();
+      errA = (A-A0)/A0;
+      if (errA<0) {
+        errA=-errA;
+      }
+    }
+
   }
 }
 
