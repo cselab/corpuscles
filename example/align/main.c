@@ -13,6 +13,7 @@
 struct Obj {
     int nv;
     real *x, *y, *z;
+    Ten t;
     He *he;
 };
 typedef struct Obj Obj;
@@ -22,7 +23,9 @@ static Orient *orient;
 
 static void main0() {
     orient_apply(orient, a.x, a.y, a.z);
-    off_he_xyz_fwrite(a.he, a.x, a.y, a.z, stdout);
+    orient_transform(orient, &a.t);
+    ten_printf(&a.t, "%g");
+    //off_he_xyz_fwrite(a.he, a.x, a.y, a.z, stdout);
 }
 
 int main() {
