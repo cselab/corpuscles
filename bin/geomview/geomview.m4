@@ -34,7 +34,7 @@ Keys:
     [SPC]: dump orientation and field of view
 
 Environment variables:
-WX, WY: resolution of the snapshot
+WX, WY: resolution of the snapshot (default: 800x600)
 
 Examples:
 $prog -t 0.25 0.25 0     data/rbc.off
@@ -58,6 +58,12 @@ normalizationp () {
     case "$1" in
 	none|each|all|keep) ;;
 	*) err "wrong -n argument '$1'" ;;
+    esac
+}
+formatp () {
+    case "$1" in
+	ppmscreen|ppm|ps|ppmosmesa|ppmosglx) ;;
+	*) err "wrong -format argument '$1'" ;;
     esac
 }
 
@@ -89,7 +95,7 @@ filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'; then err "$GEOMVIEW is not found"; fi
 
-tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=- process=- command=- icommand=- normalization=-
+tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=- process=- command=- icommand=- normalization=- format=ppm
 while test $# -ne 0
 do case "$1" in
        -t) shift
@@ -107,6 +113,10 @@ do case "$1" in
        -n) shift
        	   if test $# -eq 0; then err '-n needs an argument'; fi
            normalizationp "$1"; normalization="$1"; shift
+           ;;
+       -format) shift
+       	   if test $# -eq 0; then err '-p needs an argument'; fi
+           formatp "$1"; format="$1"; shift
            ;;
        -f) shift
 	   if test $# -eq 0; then err '-f needs a number'; fi
