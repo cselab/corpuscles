@@ -31,7 +31,7 @@ include(`he.m4')dnl
 
     <script src="./dist/js-3d-model-viewer.js"></script>
     <script>
-      include(`index.js')
+include(`index.js')dnl
     </script>
   </body>
 </html>
