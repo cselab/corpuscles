@@ -41,7 +41,14 @@ then
     
 else
 
-    bash run_cont.sh 1.16 1.14 
-    bash run_cont.sh 1.3 1.3 
+    
+    bash run_cont.sh 1.12 1.1 &
+    bash run_cont.sh 1.14 1.1 &
+    #bash run_cont.sh 1.16 1.14
+    bash run_cont.sh 1.18 1.18 &   
+    bash run_cont.sh 1.2 1.2 &   
+    bash run_cont.sh 1.22 1.22 &   
+    bash run_cont.sh 1.25 1.25 &   
+    #bash run_cont.sh 1.3 1.3 
     
 fi
