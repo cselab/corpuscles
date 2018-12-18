@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <tgmath.h>
 
@@ -12,7 +13,16 @@
 #include <he/orient.h>
 #include <he/ten.h>
 #include <he/vec.h>
+#include <he/util.h>
 #include <he/y.h>
+
+const char *me = "he.align";
+
+static void usg(void) {
+    fprintf(stderr, "%s A.off B.off > C.off\n", me);
+    fprintf(stderr, "align B.off with A.off\n");
+    exit(2);
+}
 
 static const char **argv;
 
@@ -51,8 +61,14 @@ static int arg() {
     str(b.file);
 }
 
+static int eq(const char **a, const char *b) {
+    return (*a != NULL) && util_eq(*a, b);
+};
+
 int main(__UNUSED int argc, const char **v) {
     argv = v; argv++;
+    if (argv && eq(argv, "-h"))
+        usg();
     arg();
 
     y_ini(a.file, &a.he, &a.x, &a.y, &a.z);
