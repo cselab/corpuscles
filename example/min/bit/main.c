@@ -44,7 +44,7 @@ static const char **argv;
 static char bending[4049];
 static const char *me = "min/helfrich_xin_fga";
 
-static real *fx, *fy, *fz;
+static real *fx, *fy, *fz, *fm;
 
 
 static void usg() {
@@ -189,6 +189,8 @@ static void main0(real *vx, real *vy, real *vz) {
   real errA;
   int nsub;
   char off[4048], vtk[4048];
+  real f[3];
+  He *he;
 
   dt_max = 0.01;
   mu     = 100.0;
@@ -239,14 +241,18 @@ static void main0(real *vx, real *vy, real *vz) {
     }
 
     if ( i % freq == 0 ) {
-        He *he;
         x_he(&he);
         sprintf(off, "%08d.off", i);
         sprintf(vtk, "%08d.vtk", i);
+
+        for (i = 0; i < NV; i++) {
+            vec_get(i, fx, fy, fz, f);
+            fm[i] = vec_abs(f);
+        }
         
         off_write(XX, YY, ZZ, off);
-        const real *scalars[] = {fx, fy, fz, NULL};
-        const char *names[]   = {"fx", "fy", "fz", NULL};
+        const real *scalars[] = {fx, fy, fz, fm, NULL};
+        const char *names[]   = {"fx", "fy", "fz", "fm", NULL};
         he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
   }
@@ -293,7 +299,7 @@ int main(int __UNUSED argc, const char *v[]) {
   bending_param.DA0D = DA0D;
   f_bending_ini(bending, bending_param);
 
-  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz); MALLOC(NV, &fm);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
 
   main0(vx, vy, vz);
