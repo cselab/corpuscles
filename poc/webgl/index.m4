@@ -16,9 +16,8 @@ include(`he.m4')dnl
     <div class="content">
       <div id="viewer">
       </div>
-
       <button class="button" id="load">
-	Load
+	Show
       </button>
       <button class="button" id="fullscreen">
 	Full Screen
