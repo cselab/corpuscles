@@ -239,7 +239,7 @@ static void main0(real *vx, real *vy, real *vz,
     if ( i % freq == 0 ) {
         He *he;
         x_he(&he);
-        sprintf(off, "%06d.off", i);
+        sprintf(off, "%08d.off", i);
         sprintf(vtk, "%08d.vtk", i);
         
         off_write(XX, YY, ZZ, off);
