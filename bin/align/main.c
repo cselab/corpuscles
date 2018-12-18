@@ -19,14 +19,10 @@
 const char *me = "he.align";
 
 const static int perms[][3] = {
-    {0, 0, 0},
-    {0, 0, 1},
-    {0, 1, 0},
-    {0, 1, 1},
-    {1, 0, 0},
-    {1, 0, 1},
-    {1, 1, 0},
-    {1, 1, 1}};
+    {0, 0, 0}, {0, 0, 1},
+    {0, 1, 0}, {0, 1, 1},
+    {1, 0, 0}, {1, 0, 1},
+    {1, 1, 0}, {1, 1, 1}};
 
 static void usg(void) {
     fprintf(stderr, "%s A.off B.off > C.off\n", me);
