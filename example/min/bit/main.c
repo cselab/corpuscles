@@ -7,20 +7,20 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/punto.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/memory.h>
-#include <he/tri.h>
-#include <he/dedg.h>
-#include <he/ddih.h>
-#include <he/dtri.h>
 #include <he/bending.h>
+#include <he/ddih.h>
+#include <he/dedg.h>
+#include <he/dtri.h>
+#include <he/err.h>
+#include <he/he.h>
+#include <he/macro.h>
+#include <he/memory.h>
+#include <he/punto.h>
+#include <he/tri.h>
+#include <he/util.h>
+#include <he/vec.h>
+#include <he/vtk.h>
 #include <he/x.h>
-#include <alg/x.h>
-#include <alg/min.h>
 
 static const real pi = 3.141592653589793115997964;
 
@@ -100,7 +100,7 @@ real Energy(const real *x, const real *y, const real *z) {
     v = f_volume_normal_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
-    
+
 
     et  = a + ga + v + e + b;
     ea  = a;
@@ -108,7 +108,7 @@ real Energy(const real *x, const real *y, const real *z) {
     ev  = v;
     ee  = e;
     eb  = b;
-    
+
     return a + ga + v + e + b;
 }
 
@@ -186,12 +186,12 @@ static void main0(real *vx, real *vy, real *vz,
   real A, V, Vr;
   real errA;
   int nsub;
-  char file[4048];
+  char off[4048], vtk[4048];
 
   dt_max = 0.01;
   mu     = 100.0;
   h      = 0.01*e0;
-  
+
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
@@ -200,16 +200,16 @@ static void main0(real *vx, real *vy, real *vz,
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-    
-    
-    
+
+
+
     j = 0;
     A  = area();
     errA = (A-A0)/A0;
     if (errA<0) {
       errA=-errA;
     }
-    
+
     while ( j < nsub && errA > tolerA ) {
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
@@ -219,7 +219,7 @@ static void main0(real *vx, real *vy, real *vz,
       A  = area();
       errA = (A-A0)/A0;
       if (errA<0) {
-	errA=-errA;
+        errA=-errA;
       }
     }
 
@@ -228,17 +228,24 @@ static void main0(real *vx, real *vy, real *vz,
       ek = Kin(vx, vy, vz);
       et = et + ek;
       A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
+      MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-      printf("eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
+      printf("eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee);
       printf("dt: %f\n", dt);
       printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
     }
-    
+
     if ( i % freq == 0 ) {
-        sprintf(file, "%06d.off", i);
-        off_write(XX, YY, ZZ, file);
+        He *he;
+        x_he(&he);
+        sprintf(off, "%06d.off", i);
+        sprintf(vtk, "%08d.vtk", i);
+        
+        off_write(XX, YY, ZZ, off);
+        const real *scalars[] = {fx, fy, fz, NULL};
+        const char *names[]   = {"fx", "fy", "fz", NULL};
+        he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
   }
 }
@@ -254,11 +261,11 @@ int main(int __UNUSED argc, const char *v[]) {
   real *vx, *vy, *vz;
   real A, V, Vr;
   BendingParam bending_param;
-  
+
   argv = v; argv++;
   arg();
   srand(time(NULL));
-  
+
   ini("/dev/stdin");
   A0 = area();
   a0 = A0/NT;
@@ -268,37 +275,37 @@ int main(int __UNUSED argc, const char *v[]) {
   A = A0;
   V = volume();
   Vr= reduced_volume(A, V);
-  
+
   MSG("Targeted Area, Volume: %g %g", A0, V0);
   MSG("V/V0: %g", V/V0);
   MSG("A/A0: %g", A/A0);
   MSG("Vr  : %g", Vr);
-  
+
   f_area_ini(a0,  Ka);
   f_garea_ini(A0, Kga);
   f_volume_normal_ini(V0, Kv);
   f_edg_sq_ini(Ke);
-  
+
   bending_param.Kb = Kb;
   bending_param.C0 = C0;
   bending_param.Kad = Kad;
   bending_param.DA0D = DA0D;
   f_bending_ini(bending, bending_param);
-  
+
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
-  
+
   main0(vx, vy, vz, fx, fy, fz);
-  
+
   FREE(fx); FREE(fy); FREE(fz);
   FREE(vx); FREE(vy); FREE(vz);
-  
+
   f_bending_fin();
   f_edg_sq_fin();
   f_volume_normal_fin();
   f_area_fin();
   f_garea_fin();
   fin();
-  
+
   return 0;
 }
