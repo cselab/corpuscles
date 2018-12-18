@@ -115,8 +115,7 @@ real Energy(const real *x, const real *y, const real *z) {
     return a + ga + v + e + b;
 }
 
-void Force(const real *x, const real *y, const real *z, /**/
-           real *fx, real *fy, real *fz) {
+void Force(const real *x, const real *y, const real *z) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
@@ -124,10 +123,8 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
-void ForceArea(const real *x, const real *y, const real *z, /**/
-           real *fx, real *fy, real *fz) {
+void ForceArea(const real *x, const real *y, const real *z) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    //f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -143,8 +140,7 @@ static void euler(real dt,
 }
 
 static void visc_pair(real mu,
-                      const real *vx, const real *vy, const real *vz, /*io*/
-                      real *fx, real *fy, real *fz) {
+                      const real *vx, const real *vy, const real *vz) {
     int e, i, j;
     real a[3], b[3], u[3], u0;
     for (e = 0; e < NE; e++) {
@@ -170,7 +166,7 @@ static real Kin(real *vx, real *vy, real *vz) {
     return s;
 }
 
-static real max_vec(real *fx, real *fy, real *fz) {
+static real max_vec() {
     int i;
     real c, m;
     m = 0;
@@ -196,12 +192,12 @@ static void main0(real *vx, real *vy, real *vz) {
   mu     = 100.0;
   h      = 0.01*e0;
 
-  nsub = 100;
+  nsub = 1;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
-    Force(XX, YY, ZZ, /**/ fx, fy, fz);
-    dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-    visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+      Force(XX, YY, ZZ);
+    dt = fmin(dt_max,  sqrt(h/max_vec()));
+    visc_pair(mu, vx, vy, vz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
@@ -241,16 +237,15 @@ static void main0(real *vx, real *vy, real *vz) {
       errA=-errA;
     }
     while ( j < nsub && errA > tolerA ) {
-      ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
-      visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-      j++;
-      A  = area();
-      errA = (A-A0)/A0;
-      if (errA<0) {
-        errA=-errA;
-      }
+        ForceArea(XX, YY, ZZ);
+        visc_pair(mu, vx, vy, vz);
+        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+        j++;
+        A  = area();
+        errA = (A-A0)/A0;
+        if (errA < 0)
+            errA=-errA;
     }
 
   }
