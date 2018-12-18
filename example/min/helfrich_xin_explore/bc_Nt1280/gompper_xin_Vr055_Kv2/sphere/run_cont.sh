@@ -42,5 +42,6 @@ then
 else
 
     bash run_cont.sh 1.4 1.35 
+    bash run_cont.sh 1.25 1.15 
     
 fi
