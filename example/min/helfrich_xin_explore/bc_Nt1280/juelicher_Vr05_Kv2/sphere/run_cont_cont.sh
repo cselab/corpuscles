@@ -15,6 +15,7 @@ D=0.000898798148042
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
+endp=200000
 end=300000
 freq=500
 
@@ -33,7 +34,7 @@ then
 	mkdir ${Da}_cont_cont
     fi
     cd ${Da}_cont_cont
-    off=../${Da}_cont/$end.off
+    off=../${Da}_cont/$endp.off
     ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
 else
 
