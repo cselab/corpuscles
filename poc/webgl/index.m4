@@ -17,18 +17,12 @@ include(`he.m4')dnl
       <div id="viewer">
       </div>
 
-      <div class="center">
-	<span id="name">Cell</span>
-      </div>
-
-      <div class="center">
-	<button class="button" id="load">
-	  Load
-	</button>
-	<button class="button" id="fullscreen">
-	  Full Screen
-	</button>
-      </div>
+      <button class="button" id="load">
+	Load
+      </button>
+      <button class="button" id="fullscreen">
+	Full Screen
+      </button>
     </div>
 
     <script src="./dist/js-3d-model-viewer.js"></script>
