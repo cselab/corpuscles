@@ -7,7 +7,7 @@ include(`he.m4')dnl
     <style>
       #viewer {
 	  width: 60%;
-	  height: 400px;
+	  height: 20em;
       }
     </style>
   </head>
