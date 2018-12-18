@@ -2,6 +2,7 @@ D = \
 tool\
 pkgconfig\
 lib\
+bin/align\
 bin/ffmpeg\
 bin/geomview\
 bin/m4\
