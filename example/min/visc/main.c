@@ -7,14 +7,14 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/memory.h>
 #include <he/bending.h>
-#include <he/strain.h>
+#include <he/err.h>
 #include <he/f/strain.h>
+#include <he/macro.h>
+#include <he/memory.h>
+#include <he/strain.h>
+#include <he/util.h>
+#include <he/vec.h>
 #include <he/x.h>
 
 static const real pi = 3.141592653589793115997964;
@@ -183,8 +183,8 @@ static void main0(real *vx, real *vy, real *vz,
     real *queue[] = {XX, YY, ZZ, NULL};
     char file[4048];
 
-    dt_max = 0.001;
-    mu = 1;
+    dt_max = 0.005;
+    mu = 1000;
     h = 0.01*e0;
     end = 1000000;
     nsub = 1;
