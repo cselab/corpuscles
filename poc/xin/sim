@@ -1,0 +1,9 @@
+find example/min/helfrich_xin_explore -name '*.off' |
+    awk -F / '
+    !/\/obsolete\// {
+	p = "example/min/helfrich_xin_explore/"
+	gsub(/\//, "\\/", p)
+	gsub(p, "")
+	print $1
+    }
+'
