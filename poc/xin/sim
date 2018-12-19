@@ -5,15 +5,17 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	r_digits = "[0-9]+"
     }
     !/obsolete/ && !/orient/ && !/sergey/ {
+	model = c0 = nt = scheme = kb = vr = da = initial_kv = initial_vr = tag = "NaN"
+
 	p = "example/min/helfrich_xin_explore/"
 	gsub(/\//, "\\/", p)
 	gsub(p, "")
 	p_model($1)
 	p_scheme($2)
 	p_initial($3)
-	# model c0 nt scheme kb vr initial_kv initial_vr tag
 	p_da_vr($4)
-	print model "\t" c0 "\t" scheme "\t" vr "\t" da "\t" tag "\t" $0
+
+	print model "\t" c0 "\t" nt "\t" scheme "\t" vr "\t" da "\t" tag "\t" $0
     }
 
     function p_model(s,   p) {
@@ -36,7 +38,6 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 		s = REST
 	    } else {
 		model = p
-		c0 = "NaN"
 	    }
 	} else
 	    err(sprintf("fail to model \"%s\"", $0))
@@ -69,9 +70,7 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	    s = REST
 	    if (eq(t, "kb")) {
 		kb = dot(TOK)
-		vr = "[NaN]"
 	    } else {
-		kb = "NaN"
 		vr = dot(TOK)
 	    }
 	} else
@@ -82,8 +81,6 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
     }
 
     function p_initial(s,   p) {
-	initial_kv = initial_vr = "NaN"
-
 	if (ma(s, p = "sphere") ||
 	    ma(s, p = "oblate") ||
 	    ma(s, p = "prolate") ||
@@ -113,7 +110,6 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
     }
 
     function p_da_vr(s) {
-	da = tag = "NaN"
 	if (!ma(s, r_float))
 	    err(sprintf("fail to parse \"%s\"", $0))
 	s = REST
