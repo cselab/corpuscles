@@ -1,0 +1,4 @@
+model=ade
+res=1280
+
+find example/min/helfrich_xin_explore -type d
