@@ -1,4 +1,9 @@
-model=ade
-res=1280
-
-find example/min/helfrich_xin_explore -type d
+find example/min/helfrich_xin_explore -name '*.off' |
+    awk -F / '
+    !/\/obsolete\// {
+	p = "example/min/helfrich_xin_explore/"
+	gsub(/\//, "\\/", p)
+	gsub(p, "")
+	print $1
+    }
+'
