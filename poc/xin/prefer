@@ -1,0 +1,31 @@
+awk '
+{
+    t = $1
+    p = $NF
+
+    gsub(/^[^\t ]*[\t ]*/, "")
+    gsub(/[\t ]*[^\t ]*$/, "")
+    r = $0
+
+    if (!(r in tags)) {
+	tags[r] = t
+	path[r] = p
+    } else {
+	t0 = tags[r]
+	if (t0 == "NaN" && t != "NaN") {
+	    msg(sprintf("overwrite %s by %s", path[r], p))
+	    tags[r] = t
+	    path[r] = p
+	}
+    }
+}
+
+END {
+    for (r in tags)
+	print tags[r] "\t" r "\t" path[r]
+}
+
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { printf msg(s); exit(2) }
+
+'
