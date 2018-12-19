@@ -1,7 +1,6 @@
 reset
 Es=8*pi#bending energy of a sphere
 
-set size 0.7, 0.7
 set term pdfcairo enhanced color fontscale 0.7
 set output "final_eb_vr_C24_compare_init.pdf"
 
@@ -45,7 +44,6 @@ plot \
 '../meyer_et_al_Kb001/prolate/eng_vol/final.dat' u 2:($3/Es/$1) w p lc 3 pt 8 ps psize t 'model D: prolate'
 
 set key at 0.56, 0.07
-set size 0.7, 0.7
 
 plot \
 '../juelicher_Kb001/sphere/eng_vol/final.dat' u 2:($3/Es/$1) w p lc 1 pt 5 ps psize t 'model B: sphere', \

@@ -1,7 +1,6 @@
 reset
 Es=8*pi#bending energy of a sphere
 
-set size 0.7, 0.7
 set term pdfcairo enhanced color fontscale 0.7
 set output "final_eb_vr_juelicher_compare_init.pdf"
 
@@ -58,7 +57,6 @@ plot \
 
 
 set key at 0.54, 1.3
-set size 0.7, 0.7
 
 plot \
 '../stomato_Vr0.4_Kv5/eng_vol/final.dat' u 2:($3/Es/$1) w p lc 6 pt 11 ps psize t 'init. config.: stomato 1',\

@@ -1,7 +1,6 @@
 reset
 Es=8*pi#bending energy of a sphere
 
-set size 0.7, 0.7
 set term pdfcairo enhanced color fontscale 0.7
 set output "final_ade_eb_Da.pdf"
 
@@ -45,7 +44,6 @@ plot \
 
 #set key at 1.45, 1.9
 set key right bottom
-set size 0.7, 0.7
 
 psize=1
 plot \
