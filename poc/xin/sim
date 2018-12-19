@@ -4,6 +4,40 @@ find example/min/helfrich_xin_explore -name '*.off' |
 	p = "example/min/helfrich_xin_explore/"
 	gsub(/\//, "\\/", p)
 	gsub(p, "")
-	print $1
+	p_model($1)
+	p_scheme($2)
+	# print $2 "\t" model "\t" c0 "\t" nt
     }
+
+    function p_model(s,   a) {
+	c0 = "NaN"
+	split(s, a, "_")
+	sub(/^Nt/, "", a[2])
+	nt = a[2]
+
+	if (eq(a[1], "ade"))
+	    model = "ade"
+	else if (eq(a[1], "bc"))
+	    model = "bc"
+	else if (a[1] ~ /^CN/) {
+	    model = "sc"
+	    sub(/^CN/, "", a[1])
+	    c0 = -a[1]
+	} else if (a[1] ~ /^C/) {
+	    model = "sc"
+	    sub(/^C/, "", a[1])
+	    c0 = a[1]
+	} else
+	    err(sprintf("fail to parse \"%s\"", $0))
+    }
+
+    function p_scheme(s,   p, i) {
+	if (i = index(s, p = "meyer_xin")) {
+	    print substr(s, length(p) + 1)
+	}
+    }
+
+    function eq(a, b) { return "" a == "" b }
+    function msg(s) { printf "%s\n", s | "cat >&2" }
+    function err(s) { printf msg(s); exit(2) }
 '

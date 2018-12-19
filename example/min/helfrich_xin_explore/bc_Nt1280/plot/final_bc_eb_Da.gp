@@ -1,8 +1,6 @@
 reset
 Es=8*pi#bending energy of a sphere
 
-#set term postscript enhanced color
-#set output "final_bc_eb_Da.eps"
 set term pdfcairo enhanced color fontscale 0.7
 set output "final_bc_eb_Da.pdf"
 #set size 0.7, 0.7
