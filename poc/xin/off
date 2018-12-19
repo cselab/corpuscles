@@ -1,0 +1,6 @@
+for d in `find example/min/helfrich_xin_explore -type d`
+do if ls "$d"/*.off 2>/dev/null 1>/dev/null
+   then for f in `ls -1 "$d"/*.off`; do :; done
+	echo $f
+   fi
+done
