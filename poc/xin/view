@@ -1,6 +1,6 @@
-: ${V=gv}
+: ${V=llpp}
 
-for i in `find example/min/helfrich_xin_explore -name '*.eps'`
+for i in `find example/min/helfrich_xin_explore -name '*.pdf'`
 do echo "$i"
-   $V -scale=3 "$i"
+   $V "$i"
 done
