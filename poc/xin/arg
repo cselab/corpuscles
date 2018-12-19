@@ -1,0 +1,29 @@
+awk -v b=\` -v e=\' '
+BEGIN {
+    v = ARGV[1]
+    ARGV[1] = ""
+    printf "h_define(%s, %s\n", q(v), b
+}
+{
+    s = ""
+    for (i = 1; i <= NF; i++) {
+	s = join(s, ", ", $i)
+    }
+    s = q(s)
+    L = join(L, ",\n", s)
+}
+
+END {
+    print L
+    printf "%s)\n", e
+}
+
+function join(s, sep, e) {
+    return emptyp(s) ? e : s sep e
+}
+
+function emptyp(s) {  return length(s) == 0 }
+
+function q(x) { return b x e }
+
+' "$@"

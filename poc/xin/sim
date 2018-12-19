@@ -11,6 +11,7 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	    vr = da = kv = ka = alpha = \
 	    initial_kv = initial_vr = tag = "NaN"
 
+	file = $0
 	p = "example/min/helfrich_xin_explore/"
 	gsub(/\//, "\\/", p)
 	gsub(p, "")
@@ -18,8 +19,7 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	p_scheme($2)
 	p_initial($3)
 	p_da_vr($4)
-
-	print tag, model, c0, nt, scheme, vr, da, initial, kb, initial_vr, initial_kv, ka, kv, $0
+	print tag, model, c0, nt, scheme, vr, da, initial, kb, initial_vr, initial_kv, ka, kv, file
     }
 
     function p_model(s,   p) {
@@ -132,7 +132,7 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 		if (!ma(s, r_float))
 		    err(sprintf("fail to parse \"%s\"", $0))
 		s = REST
-		initial_kv = TOK		
+		initial_kv = TOK
 	    }
 	} else
 	    initial = p
