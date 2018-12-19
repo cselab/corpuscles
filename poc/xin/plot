@@ -1,4 +1,4 @@
-find . -name '*.gp' | while read l
+find example/min/helfrich_xin_explore -name '*.gp' | while read l
 do if awk '{sub(/#.*/, "")} /set.*output.*eps/{ F = 1 } END {exit(!F)}' $l
    then d=`dirname "$l"`
         b=`basename "$l"`
