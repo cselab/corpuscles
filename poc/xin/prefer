@@ -19,8 +19,11 @@ awk '
 	} else if (t0 != "NaN" && t == "NaN") {
 	    # pass
 	}
-	else
-	    msg(sprintf("strange tags %s and %s", path[r], p))
+	else {
+	    msg(path[r])
+	    msg(p)
+	    msg("==")
+	}
     }
 }
 

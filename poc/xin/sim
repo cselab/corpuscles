@@ -1,11 +1,15 @@
 find example/min/helfrich_xin_explore -name '[0-9]*.off' |
-    awk -F / '
+    awk '
     BEGIN {
+	FS = "/"
+	OFS = "\t"
 	r_float = "[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?"
 	r_digits = "[0-9]+"
     }
     !/obsolete/ && !/orient/ && !/sergey/ {
-	model = c0 = nt = scheme = kb = vr = da = initial_kv = initial_vr = tag = "NaN"
+	model = c0 = nt = scheme = kb = \
+	    vr = da = kv = ka = alpha = \
+	    initial_kv = initial_vr = tag = "NaN"
 
 	p = "example/min/helfrich_xin_explore/"
 	gsub(/\//, "\\/", p)
@@ -15,7 +19,7 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	p_initial($3)
 	p_da_vr($4)
 
-	print tag "\t" model "\t" c0 "\t" nt "\t" scheme "\t" vr "\t" da "\t" initial "\t" kb "\t" initial_vr "\t" $0
+	print tag, model, c0, nt, scheme, vr, da, initial, kb, initial_vr, initial_kv, ka, kv, $0
     }
 
     function p_model(s,   p) {
@@ -62,8 +66,8 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	} else
 	    err(sprintf("fail to parse scheme \"%s\"", $0))
 
-	if (ma(s, p = "_Kb", t = "kb") ||
-	    ma(s, p = "_Vr", t = "vr")) {
+	if (ma(s, "_Kb", t = "kb") ||
+	    ma(s, "_Vr", t = "vr")) {
 	    s = REST
 	    if (!ma(s, r_float))
 		err(sprintf("fail to parse Kb or Vr \"%s\"", $0))
@@ -76,8 +80,31 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	} else
 	    err(sprintf("fail to parse scheme \"%s\"", $0))
 
-	# if (!empty(s))
-	#    msg("[" s "]")
+	if (ma(s, "_Ka")) {
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse scheme \"%s\"", $0))
+	    s = REST
+	    ka = TOK
+	}
+
+	if (ma(s, "_Kv")) {
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse scheme \"%s\"", $0))
+	    s = REST
+	    kv = TOK
+	}
+
+	if (ma(s, "_alpha")) {
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse scheme \"%s\"", $0))
+	    s = REST
+	    alpha = TOK
+	}
+	if (!empty(s))
+	    err("[" s "] " $0)
     }
 
     function p_initial(s,   p) {
@@ -92,18 +119,20 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 
 	if (eq(p, "stomato")) {
 	    initial = "stomato"
-	    if (!ma(s, p = "_Vr"))
-		err(sprintf("fail to parse \"%s\"", $0))
+	    if (!ma(s, "_Vr"))
+		err(sprintf("fail to parse Vr \"%s\"", $0))
 	    s = REST
 	    if (!ma(s, r_float))
 		err(sprintf("fail to parse \"%s\"", $0))
+	    s = REST
 	    initial_vr = TOK
 
-	    if (ma(s, p = "_Kv")) {
+	    if (ma(s, "_Kv")) {
 		s = REST
 		if (!ma(s, r_float))
 		    err(sprintf("fail to parse \"%s\"", $0))
-		initial_kv = TOK
+		s = REST
+		initial_kv = TOK		
 	    }
 	} else
 	    initial = p
