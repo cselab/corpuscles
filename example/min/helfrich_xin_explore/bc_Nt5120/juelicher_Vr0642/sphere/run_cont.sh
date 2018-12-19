@@ -1,6 +1,6 @@
 set -eu
 
-Vr=0.69
+Vr=0.642
 Ka=0.5
 Kga=1
 Kv=1
@@ -41,7 +41,6 @@ then
     
 else
 
-    bash run_cont.sh 1.24 1.22 
-    bash run_cont.sh 1.3 1.22 
+    bash run_cont.sh 1.35 1.3
     
 fi
