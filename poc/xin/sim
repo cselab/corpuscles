@@ -15,7 +15,7 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	p_initial($3)
 	p_da_vr($4)
 
-	print tag "\t" model "\t" c0 "\t" nt "\t" scheme "\t" vr "\t" da "\t" $0
+	print tag "\t" model "\t" c0 "\t" nt "\t" scheme "\t" vr "\t" da "\t" initial "\t" kb "\t" initial_vr "\t" $0
     }
 
     function p_model(s,   p) {

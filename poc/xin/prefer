@@ -13,10 +13,14 @@ awk '
     } else {
 	t0 = tags[r]
 	if (t0 == "NaN" && t != "NaN") {
-	    msg(sprintf("overwrite %s by %s", path[r], p))
+	    # msg(sprintf("overwrite %s by %s", path[r], p))
 	    tags[r] = t
 	    path[r] = p
+	} else if (t0 != "NaN" && t == "NaN") {
+	    # pass
 	}
+	else
+	    msg(sprintf("strange tags %s and %s", path[r], p))
     }
 }
 
