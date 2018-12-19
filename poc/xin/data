@@ -6,6 +6,8 @@ do if awk '{sub(/#.*/, "")} /set.*output.*eps/{ F = 1 } END {exit(!F)}' $l
 	   if ($i ~ /\.dat$/) {
 	       sub(/^<.*[ \t]/, "", $i)
 	       printf "%s/%s\n", d, $i
+	       printf "%s/../sphere/%s\n", d, $i
+	       printf "%s/../../sphere/%s\n", d, $i
 	   }
        }
    } ' $l
