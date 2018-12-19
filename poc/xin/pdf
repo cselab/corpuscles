@@ -1,10 +1,12 @@
 find example/min/helfrich_xin_explore -name '*.gp' | while read l
-do if awk '{sub(/#.*/, "")} /set.*output.*eps/{ F = 1 } END {exit(!F)}' $l
+do if awk '{sub(/#.*/, "")} /set.*output.*pdf/{ F = 1 } END {exit(!F)}' $l
    then
        awk '
-{
-    print
-} 
+/^set size/ {
+    next
+}
+
+1
 ' "$l" > /tmp/t.$$
        mv /tmp/t.$$ $l
    fi

@@ -1,9 +1,8 @@
 reset
 Es=8*pi#bending energy of a sphere
 
-set size 0.7, 0.7
-set term postscript eps enhanced color
-set output "meyer_ade_eb_da1.eps"
+set term pdfcairo enhanced color fontscale 0.7
+set output "meyer_ade_eb_da1.pdf"
 
 
 #set title "Model B: bending energy vs reduced volume, N_v=1280"
