@@ -1,0 +1,14 @@
+find . -name '*.gp' | while read l
+do if awk '{sub(/#.*/, "")} /set.*output.*eps/{ F = 1 } END {exit(!F)}' $l
+   then d=`dirname "$l"`
+   awk -v d="$d" -F \' '{
+       for (i = 2; i < NF; i+=2) {
+	   if ($i ~ /\.dat$/) {
+	       sub(/^<.*[ \t]/, "", $i)
+	       printf "%s/%s\n", d, $i
+	   }
+       }
+   } ' $l
+   fi
+done
+
