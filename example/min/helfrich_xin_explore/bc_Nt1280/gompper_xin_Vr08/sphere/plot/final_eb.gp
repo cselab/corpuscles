@@ -29,7 +29,7 @@ set key right top
 psize=1
 
 plot \
-'<sort -k 4 ../sphere/eng_vol/final.dat' u 4:($3/Es/$1) w lp lc 3 pt 8 ps psize t 'sphere'
+'<sort -k 4 ../eng_vol/final.dat' u 4:($3/Es/$1) w lp lc 3 pt 8 ps psize t 'sphere'
 
 
 

@@ -1,0 +1,13 @@
+find . -name '*.gp' | while read l
+do if awk '{sub(/#.*/, "")} /set.*output.*eps/{ F = 1 } END {exit(!F)}' $l
+   then d=`dirname "$l"`
+        b=`basename "$l"`
+	(
+	    cd "$d"
+	    gnuplot 2>/dev/null "$b"
+	    if test $? -ne 0
+	    then echo $l
+	    fi
+	)
+   fi
+done
