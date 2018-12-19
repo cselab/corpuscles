@@ -13,11 +13,11 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	p_initial($3)
 	# model c0 nt scheme kb vr initial_kv initial_vr tag
 	p_da_vr($4)
-	print model "\t" scheme "\t" vr "\t" da "\t" tag "\t" $0
+	print model "\t" c0 "\t" scheme "\t" vr "\t" da "\t" tag "\t" $0
     }
 
     function p_model(s,   p) {
-	if (ma(s, p = "ade") ||
+	if (ma(s, "ade", p = "ad") ||
 	    ma(s, p = "bc") ||
 	    ma(s, p = "CN") ||
 	    ma(s, p = "C")) {
@@ -51,11 +51,11 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
     }
 
     function p_scheme(s,   p, t, i) {
-	if (ma(s, p = "meyer_xin") ||
-	    ma(s, p = "meyer_et_al") ||
-	    ma(s, p = "gompper_xin") ||
-	    ma(s, p = "juelicher") ||
-	    ma(s, p = "kantor_nelson")) {
+	if (ma(s, "meyer_xin",   p = "D") ||
+	    ma(s, "meyer_et_al", p = "D") ||
+	    ma(s, "gompper_xin", p = "C") ||
+	    ma(s, "juelicher", p = "B") ||
+	    ma(s, "kantor_nelson", p = "A")) {
 	    scheme = p
 	    s = REST
 	} else
@@ -66,15 +66,19 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
 	    s = REST
 	    if (!ma(s, r_float))
 		err(sprintf("fail to parse Kb or Vr \"%s\"", $0))
+	    s = REST
 	    if (eq(t, "kb")) {
 		kb = dot(TOK)
-		vr = "NaN"
+		vr = "[NaN]"
 	    } else {
 		kb = "NaN"
 		vr = dot(TOK)
 	    }
 	} else
 	    err(sprintf("fail to parse scheme \"%s\"", $0))
+
+	# if (!empty(s))
+	#    msg("[" s "]")
     }
 
     function p_initial(s,   p) {
@@ -109,7 +113,7 @@ find example/min/helfrich_xin_explore -name '[0-9]*.off' |
     }
 
     function p_da_vr(s) {
-	vr = da = tag = "NaN"
+	da = tag = "NaN"
 	if (!ma(s, r_float))
 	    err(sprintf("fail to parse \"%s\"", $0))
 	s = REST
