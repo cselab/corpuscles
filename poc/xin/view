@@ -1,4 +1,6 @@
+: ${V=gv}
+
 for i in `find example/min/helfrich_xin_explore -name '*.eps'`
 do echo "$i"
-   gv -scale=3 "$i"
+   $V -scale=3 "$i"
 done
