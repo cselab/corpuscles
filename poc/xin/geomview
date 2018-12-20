@@ -1,0 +1,35 @@
+. he.util
+
+tmp=/tmp/poc.xin.geomview.$$
+trap 'rm -r $tmp; exit 2' 1 2 3 4 14
+mkdir $tmp
+
+Cmd="WX=200 WY=100 he.geomview -p he.orient -i \"convert %o %b.png\" -o %o %i"
+
+"$AWK" -v tmp=$tmp -v Cmd="$Cmd" ' {
+    v = $1
+    a = $2
+
+    i = $3
+    o = sprintf("%s/%05d.png", tmp, I++)
+
+
+    cmd = Cmd
+    gsub("%i", q(i), cmd)
+    gsub("%o", q(o), cmd)
+    sys(cmd)
+    print v, a, o
+}
+
+function q(x) { return "\"" x "\"" }
+function sys(x,   r) {
+    r = system(x)
+    if (r != 0)
+	err(sprintf(":faild: %s", x))
+}
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function err(s) { printf msg(s); exit(2) }
+
+'
+
+# rm -r $tmp
