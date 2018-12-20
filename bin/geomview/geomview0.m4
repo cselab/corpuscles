@@ -250,10 +250,10 @@ function snap(file,   c, out) {
     else {
 	snap0(input)
 	c = icommand
-	gsub("%f", off, c)
-	gsub("%i", input, c)
-	gsub("%o", out, c)
-	gsub("%b", basename(file), c)
+	gsub(/%f/, off, c)
+	gsub(/%i/, input, c)
+	gsub(/%o/, out, c)
+	gsub(/%b/, basename(file), c)
 	sys0(c)
     }
 }
@@ -336,7 +336,7 @@ function sys0(c,   s) {
     }
 }
 function basename(s) {
-    gsub(/\.[^\.]*/, "", s)
+    sub(/\.[^\.]*$/, "", s)
     return s
 }
 ' "$@"
