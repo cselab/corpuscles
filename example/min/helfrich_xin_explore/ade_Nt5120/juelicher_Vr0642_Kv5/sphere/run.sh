@@ -16,7 +16,7 @@ Da0=0
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
-end=200000
+end=300000
 freq=500
 
 off=$(he.path)/sph/laplace/Nt5120.off
