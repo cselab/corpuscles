@@ -250,10 +250,10 @@ function snap(file,   c, out) {
     else {
 	snap0(input)
 	c = icommand
-	gsub("%f", off, c)
-	gsub("%i", input, c)
-	gsub("%o", out, c)
-	gsub("%b", basename(file), c)
+	gsub(/%f/, off, c)
+	gsub(/%i/, input, c)
+	gsub(/%o/, out, c)
+	gsub(/%b/, basename(file), c)
 	sys0(c)
     }
 }
@@ -332,11 +332,11 @@ function sys0(c,   s) {
 	msg("system: " c)
     if (s != 0) {
 	msg(sprintf("command: \"%s\" failed", c))
-	g("exit")
+	gexit(2)
     }
 }
 function basename(s) {
-    gsub(/\.[^\.]*/, "", s)
+    sub(/\.[^\.]*$/, "", s)
     return s
 }
 ' "$@"

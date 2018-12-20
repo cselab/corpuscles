@@ -1,0 +1,24 @@
+include(`he.m4')dnl
+include(`arg.m4')dnl
+h_define(`map', `h_map_sep(`$1', `, \
+', `$2')')dnl
+h_define(`F', `"$3" binary filetype=png center=($1,$2) dx=dx dy=dy with rgbalpha notitle')dnl
+
+set term pngcairo
+set output "q.png"
+
+set size sq
+
+xl=0.90
+xh=1.70
+yl=0.40
+yh=0.75
+
+lx = xh - xl
+ly = yh - yl
+
+dx = 0.0008
+dy = dx*ly/lx
+
+plot [xl:xh][yl:yh] \
+map(`F', `Arg')
