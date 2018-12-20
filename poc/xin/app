@@ -1,0 +1,6 @@
+appearance {
+    shading smooth
+    material {
+      ks 0
+    }
+}

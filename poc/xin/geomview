@@ -5,7 +5,9 @@ trap 'rm -r $tmp; exit 2' 1 2 3 4 14
 mkdir $tmp
 
 ref=poc/xin/ref.off
-Cmd="WX=250 WY=250 he.geomview -r 0 0 90 -a ~/d -f 100 -n none -p \"he.align $ref\" -i \"convert -transparent 'rgb(255,255,255)' %i %b.png\" -o %%o %%i"
+app=poc/xin/app
+
+Cmd="WX=250 WY=250 he.geomview -r 0 0 90 -a $app -f 100 -n none -p \"he.align $ref\" -i \"convert -transparent 'rgb(255,255,255)' %i %b.png\" -o %%o %%i"
 
 "$AWK" -v tmp=$tmp -v Cmd="$Cmd" '{
     if ($0 ~ /#/) next
