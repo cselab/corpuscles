@@ -4,20 +4,21 @@ tmp=/tmp/poc.xin.geomview.$$
 trap 'rm -r $tmp; exit 2' 1 2 3 4 14
 mkdir $tmp
 
-Cmd="WX=200 WY=100 he.geomview -p he.orient -i \"convert %i %b.png\" -o %%o %%i"
+Cmd="WX=50 WY=50 he.geomview -r 0 0 90 -a ~/d -f 60 -n none -p he.orient -i \"convert -transparent 'rgb(255,255,255)' %i %b.png\" -o %%o %%i"
 
 "$AWK" -v tmp=$tmp -v Cmd="$Cmd" ' {
     v = $1
     a = $2
 
     i = $3
-    o = sprintf("%s/%05d.ppm", tmp, I++)
+    o = sprintf("%s/%05d.ppm", tmp, I)
+    p = sprintf("%s/%05d.png", tmp, I++)
 
     cmd = Cmd
     gsub("%%i", q(i), cmd)
     gsub("%%o", q(o), cmd)
     sys(cmd)
-    print v, a, o
+    print v, a, p
 }
 
 function q(x) { return "\"" x "\"" }
@@ -29,7 +30,10 @@ function sys(x,   r) {
 function msg(s) { printf "%s\n", s | "cat >&2" }
 function err(s) { printf msg(s); exit(2) }
 
-'
+' "$@" | poc/xin/arg Arg > arg.m4
+
+he.m4 poc/xin/gnuplot > main.gp
+gnuplot main.gp
 
 # rm -r $tmp
 # sed 4q poc/xin/list.dat | sh -x poc/xin/geomview

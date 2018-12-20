@@ -2,6 +2,7 @@ awk -v b=\` -v e=\' '
 BEGIN {
     v = ARGV[1]
     ARGV[1] = ""
+    printf "%s\n", "divert(-1)"
     printf "h_define(%s, %s\n", q(v), b
 }
 {
@@ -14,8 +15,9 @@ BEGIN {
 }
 
 END {
-    print L
+    printf "%s", L
     printf "%s)\n", e
+    printf "%s%s%sdnl\n", "divert", b, e
 }
 
 function join(s, sep, e) {
