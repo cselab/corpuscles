@@ -4,9 +4,11 @@ tmp=/tmp/poc.xin.geomview.$$
 trap 'rm -r $tmp; exit 2' 1 2 3 4 14
 mkdir $tmp
 
-Cmd="WX=50 WY=50 he.geomview -r 0 0 90 -a ~/d -f 60 -n none -p he.orient -i \"convert -transparent 'rgb(255,255,255)' %i %b.png\" -o %%o %%i"
+ref=poc/xin/ref.off
+Cmd="WX=250 WY=250 he.geomview -r 0 0 90 -a ~/d -f 100 -n none -p \"he.align $ref\" -i \"convert -transparent 'rgb(255,255,255)' %i %b.png\" -o %%o %%i"
 
-"$AWK" -v tmp=$tmp -v Cmd="$Cmd" ' {
+"$AWK" -v tmp=$tmp -v Cmd="$Cmd" '{
+    if ($0 ~ /#/) next
     v = $1
     a = $2
 

@@ -1,4 +1,4 @@
-find example/min/helfrich_xin_explore -name '[0-9]*.off' |
+find example/min/helfrich_xin_explore -name 'final.off' |
     awk '
     BEGIN {
 	FS = "/"
