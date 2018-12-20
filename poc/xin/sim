@@ -1,43 +1,178 @@
-find example/min/helfrich_xin_explore -name '*.off' |
-    awk -F / '
-    !/\/obsolete\// {
+find example/min/helfrich_xin_explore -name '[0-9]*.off' |
+    awk '
+    BEGIN {
+	FS = "/"
+	OFS = "\t"
+	r_float = "[+-]?([0-9]+[.]?[0-9]*|[.][0-9]+)([eE][+-]?[0-9]+)?"
+	r_digits = "[0-9]+"
+    }
+    !/obsolete/ && !/orient/ && !/sergey/ {
+	model = c0 = nt = scheme = kb = \
+	    vr = da = kv = ka = alpha = \
+	    initial_kv = initial_vr = tag = "NaN"
+
+	file = $0
 	p = "example/min/helfrich_xin_explore/"
 	gsub(/\//, "\\/", p)
 	gsub(p, "")
 	p_model($1)
 	p_scheme($2)
-	# print $2 "\t" model "\t" c0 "\t" nt
+	p_initial($3)
+	p_da_vr($4)
+	print tag, model, c0, nt, scheme, vr, da, initial, kb, initial_vr, initial_kv, ka, kv, file
     }
 
-    function p_model(s,   a) {
-	c0 = "NaN"
-	split(s, a, "_")
-	sub(/^Nt/, "", a[2])
-	nt = a[2]
-
-	if (eq(a[1], "ade"))
-	    model = "ade"
-	else if (eq(a[1], "bc"))
-	    model = "bc"
-	else if (a[1] ~ /^CN/) {
-	    model = "sc"
-	    sub(/^CN/, "", a[1])
-	    c0 = -a[1]
-	} else if (a[1] ~ /^C/) {
-	    model = "sc"
-	    sub(/^C/, "", a[1])
-	    c0 = a[1]
+    function p_model(s,   p) {
+	if (ma(s, "ade", p = "ad") ||
+	    ma(s, p = "bc") ||
+	    ma(s, p = "CN") ||
+	    ma(s, p = "C")) {
+	    s = REST
+	    if (eq(p, "CN")) {
+		if (!ma(s, r_float))
+		    err(sprintf("fail to parse CN \"%s\"", $0))
+		model = "sc"
+		c0 = -TOK
+		s = REST
+	    } else if (eq(p, "C")) {
+		if (!ma(s, r_float))
+		    err(sprintf("fail to parse C \"%s\"", s))
+		model = "sc"
+		c0 = TOK
+		s = REST
+	    } else {
+		model = p
+	    }
 	} else
-	    err(sprintf("fail to parse \"%s\"", $0))
+	    err(sprintf("fail to model \"%s\"", $0))
+
+	if (!ma(s, p = "_Nt"))
+	    err(sprintf("fail to eat \"%s\" from \"%s\"", p, s))
+	s = REST
+
+	if (!ma(s, r_digits "$"))
+	    err(sprintf("not digits \"%s\"", s))
+	nt = TOK
     }
 
-    function p_scheme(s,   p, i) {
-	if (i = index(s, p = "meyer_xin")) {
-	    print substr(s, length(p) + 1)
+    function p_scheme(s,   p, t, i) {
+	if (ma(s, "meyer_xin",   p = "D") ||
+	    ma(s, "meyer_et_al", p = "D") ||
+	    ma(s, "gompper_xin", p = "C") ||
+	    ma(s, "juelicher", p = "B") ||
+	    ma(s, "kantor_nelson", p = "A")) {
+	    scheme = p
+	    s = REST
+	} else
+	    err(sprintf("fail to parse scheme \"%s\"", $0))
+
+	if (ma(s, "_Kb", t = "kb") ||
+	    ma(s, "_Vr", t = "vr")) {
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse Kb or Vr \"%s\"", $0))
+	    s = REST
+	    if (eq(t, "kb")) {
+		kb = dot(TOK)
+	    } else {
+		vr = dot(TOK)
+	    }
+	} else
+	    err(sprintf("fail to parse scheme \"%s\"", $0))
+
+	if (ma(s, "_Ka")) {
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse scheme \"%s\"", $0))
+	    s = REST
+	    ka = TOK
 	}
+
+	if (ma(s, "_Kv")) {
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse scheme \"%s\"", $0))
+	    s = REST
+	    kv = TOK
+	}
+
+	if (ma(s, "_alpha")) {
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse scheme \"%s\"", $0))
+	    s = REST
+	    alpha = TOK
+	}
+	if (!empty(s))
+	    err("[" s "] " $0)
+    }
+
+    function p_initial(s,   p) {
+	if (ma(s, p = "sphere") ||
+	    ma(s, p = "oblate") ||
+	    ma(s, p = "prolate") ||
+	    ma(s, p = "stomato")) {
+	    initial = p
+	    s = REST
+	} else
+	    err(sprintf("fail to parse initial \"%s\"", $0))
+
+	if (eq(p, "stomato")) {
+	    initial = "stomato"
+	    if (!ma(s, "_Vr"))
+		err(sprintf("fail to parse Vr \"%s\"", $0))
+	    s = REST
+	    if (!ma(s, r_float))
+		err(sprintf("fail to parse \"%s\"", $0))
+	    s = REST
+	    initial_vr = TOK
+
+	    if (ma(s, "_Kv")) {
+		s = REST
+		if (!ma(s, r_float))
+		    err(sprintf("fail to parse \"%s\"", $0))
+		s = REST
+		initial_kv = TOK
+	    }
+	} else
+	    initial = p
+    }
+
+    function p_da_vr(s) {
+	if (!ma(s, r_float))
+	    err(sprintf("fail to parse \"%s\"", $0))
+	s = REST
+	if (eq(model, "sc"))
+	    vr = TOK
+	else
+	    da = TOK
+
+	if (!empty(s)) {
+	    if (!ma(s, "_"))
+		err(sprintf("fail to parse \"%s\"", $0))
+	    s = REST
+	    tag = s
+	}
+
     }
 
     function eq(a, b) { return "" a == "" b }
     function msg(s) { printf "%s\n", s | "cat >&2" }
     function err(s) { printf msg(s); exit(2) }
+
+    function ma(s, r, ignore,   status) {
+	status = match(s, "^" r)
+	TOK  = substr(s, RSTART, RLENGTH)
+	REST = substr(s, RSTART + RLENGTH)
+	return status
+    }
+
+    function dot(s) {
+	if (s !~ r_digits "$")
+	    err(sprintf("not digits \"%s\"", s))
+	sub(/^0/, "0.", s)
+	return s
+    }
+
+    function empty(s) { return length(s) == 0 }
 '
