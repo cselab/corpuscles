@@ -3,10 +3,10 @@ set -eu
 Vr=0.5
 Ka=0.5
 Kga=1
-Kv=5
+Kv=2
 Ke=0
 
-Kb=0.001
+Kb=0.01
 C0=0
 Kad=1
 #echo $Kad
@@ -15,10 +15,10 @@ D=0.000898798148042
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
-endp=300000
-end=500000
+end=200000
 freq=500
 
+off=$(he.path)/sph/laplace/Nt1280.off
 
 if test $# -ne 0
 then
@@ -29,18 +29,17 @@ then
     DA0D=$(echo $DA0 | awk '{print $1*2}')
     #echo $Da, $DA0, $DA0D
     
-    if [ ! -d ${Da}_cont3 ]; then
-	#echo ${Da}_cont3
-	mkdir ${Da}_cont3
+    if [ ! -d ${Da}_Kb001 ]; then
+	mkdir ${Da}_Kb001
     fi
-    cd ${Da}_cont3
-    off=../${Da}_cont_cont/$endp.off
+    cd ${Da}_Kb001
     ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
 else
-
-    bash run_cont3.sh 1.6 1.6 &
-
-	
-
+    for i in `seq 0 12`;
+    do
+	Da=$(echo $i | awk '{print (1+$1*0.05)}')
+	#echo $Da
+	bash run_Kb001.sh $Da 
+    done
 
 fi
