@@ -1,0 +1,11 @@
+include(`he.m4')dnl
+include(`arg.m4')dnl
+h_define(`map', `h_map_sep(`$1', `, \
+', `$2')')dnl
+h_define(`F', `"img/kantor.png" binary filetype=png center=($1,$2) dx=0.0002 dy=0.0002 with rgbalpha notitle')dnl
+
+set term pngcairo
+set output "q.png"
+
+plot \
+map(`F', `Arg')

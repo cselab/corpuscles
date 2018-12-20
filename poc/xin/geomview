@@ -33,3 +33,4 @@ function err(s) { printf msg(s); exit(2) }
 '
 
 # rm -r $tmp
+# sed 4q poc/xin/list.dat | sh -x poc/xin/geomview

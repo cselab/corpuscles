@@ -332,7 +332,7 @@ function sys0(c,   s) {
 	msg("system: " c)
     if (s != 0) {
 	msg(sprintf("command: \"%s\" failed", c))
-	g("exit")
+	gexit(2)
     }
 }
 function basename(s) {
