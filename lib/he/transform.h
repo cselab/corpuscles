@@ -1,4 +1,5 @@
-/* shift centroid to the origin */
+typedef struct He He;
+
 int transform_centroid(int, const real*, const real*, const real*,
                        /**/ real[3]);
 
