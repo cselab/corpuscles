@@ -73,7 +73,7 @@ int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/
         sum3_scalar_add(s, area, b);
         sum3_scalar_add(s, area, c);
     }
-
+    sum3_get(s, com);
     sum3_fin(s);
     return HE_OK;
 }
