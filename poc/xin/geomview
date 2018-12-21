@@ -1,8 +1,7 @@
 . he.util
 
-tmp=/tmp/poc.xin.geomview.$$
-trap 'rm -r $tmp; exit 2' 1 2 3 4 14
-mkdir $tmp
+tmp=.tmp
+mkdir -p $tmp
 
 ref=poc/xin/ref.off
 app=poc/xin/app
