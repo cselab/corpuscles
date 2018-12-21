@@ -7,7 +7,14 @@ h_define(`F', `"$3" binary filetype=png center=($1,$2) dx=dx dy=dy with rgbalpha
 set term pngcairo size 800, 600
 set output "q.png"
 
-set size sq
+#set size sq
+
+set xlabel '{/Symbol D}a'
+set ylabel 'v'
+
+set lmargin -5
+set rmargin -5
+set bmargin 4
 
 xl=0.95
 xh=1.64
