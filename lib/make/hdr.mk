@@ -56,6 +56,7 @@ he/strain/3d.h\
 he/strain.h\
 he/sum.h\
 he/ten.h\
+he/transform.h\
 he/tri.h\
 he/util.h\
 he/vec.h\

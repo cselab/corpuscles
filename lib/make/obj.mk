@@ -54,6 +54,7 @@ strain/3d.s.o\
 strain.s.o\
 sum.s.o\
 ten.s.o\
+transform.s.o\
 tri.s.o\
 vec.s.o\
 volume.s.o\
@@ -109,6 +110,7 @@ strain/3d.d.o\
 strain.d.o\
 sum.d.o\
 ten.d.o\
+transform.d.o\
 tri.d.o\
 vec.d.o\
 volume.d.o\
@@ -164,6 +166,7 @@ strain/3d.l.o\
 strain.l.o\
 sum.l.o\
 ten.l.o\
+transform.l.o\
 tri.l.o\
 vec.l.o\
 volume.l.o\
