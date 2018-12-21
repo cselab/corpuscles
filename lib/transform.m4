@@ -1,4 +1,6 @@
+include(`he.m4')dnl
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "real.h"
 
@@ -80,24 +82,25 @@ int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
-int transform_rotx(real rad, int n, /*io*/ real *x, real *y, real *z)
+h_define(`ROT', `
+int $1(real rad, int n, /*io*/ real *x, real *y, real *z)
 {
+    enum $2;
+    real c, s, p, q, r[3];
+    int i;
+    c = cos(rad); s = sin(rad);
+    for (i = 0; i < n; i++) {
+        vec_get(i, x, y, z, r);
+        p = r[P]; q = r[Q];
+        r[P] = c*p - s*q;
+        r[Q] = s*p + c*q;
+        vec_set(r, i, x, y, z);
+    }
     return HE_OK;
-}
-
-int transform_roty(real rad, int n, /*io*/ real *x, real *y, real *z)
-{
-    return HE_OK;
-}
-
-int transform_rotz(real rad, int n, /*io*/ real *x, real *y, real *z)
-{
-    return HE_OK;
-}
-
-int transform_rot(const real rad[3], int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
+}')
+ROT(transform_rotx, `{P = Y, Q = Z}')dnl
+ROT(transform_roty, `{P = Z, Q = X}')dnl
+ROT(transform_rotz, `{P = X, Q = Y}')dnl
 
 int transform_tranx(real s, int n, /*io*/ real *x, real *y, real *z) {
     return HE_OK;
