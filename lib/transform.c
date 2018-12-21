@@ -1,8 +1,9 @@
 #include "real.h"
 
 #include "he/err.h"
+#include "he/he.h"
 
-int transform_centroid(int n, const real *x, const real *y, const real *z, /**/ real com[3])
+int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/ real com[3])
 {
     return HE_OK;
 }
