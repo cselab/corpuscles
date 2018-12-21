@@ -11,12 +11,13 @@
 #include <he/util.h>
 #include <he/y.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_OUT   HE_REAL_OUT
+
 static const char **argv;
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
-    real *x, *y, *z;
+    real *x, *y, *z, com[3];
     He *he;
 
     const char *op;
@@ -28,6 +29,8 @@ int main(__UNUSED int argc, const char **v) {
     y_ini("/dev/stdin", &he, &x, &y, &z);
     
     if (eq(op, "centroid")) {
+        transform_centroid(he, x, y, z, /**/ com);
+        vec_printf(com, FMT_OUT);
     } else
         ER("unknown operation '%s'", op);
     y_fin(he, x, y, z);    

@@ -16,11 +16,11 @@ struct Sum3 {
 };
 typedef struct Sum3 Sum3;
 
-static int sum3_ini(Sum3 s) {
-    he_sum_ini(&s.x);
-    he_sum_ini(&s.y);
-    he_sum_ini(&s.z);
-    he_sum_ini(&s.a);
+static int sum3_ini(Sum3 *s) {
+    he_sum_ini(&s->x);
+    he_sum_ini(&s->y);
+    he_sum_ini(&s->z);
+    he_sum_ini(&s->a);
     return HE_OK;
 }
 
@@ -32,7 +32,7 @@ static int sum3_fin(Sum3 s) {
     return HE_OK;
 }
 
-static int sum3_scalar_add(Sum3 s, real a, real r[3]) {
+static int sum3_scalar_add(Sum3 s, real a, const real r[3]) {
     enum {X, Y, Z};
     he_sum_add(s.x, a*r[X]);
     he_sum_add(s.y, a*r[Y]);
@@ -62,7 +62,7 @@ int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/
     Sum3 s;
 
     nt = he_nt(he);
-    sum3_ini(s);
+    sum3_ini(&s);
 
     for (t = 0; t < nt; t++) {
         he_tri_ijk(he, t, &i, &j, &k);
