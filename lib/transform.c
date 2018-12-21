@@ -10,6 +10,7 @@
 
 #include "he/transform.h"
 
+enum {X, Y, Z};
 struct Sum3 {
     HeSum *x, *y, *z;
     HeSum *a;
@@ -33,7 +34,6 @@ static int sum3_fin(Sum3 s) {
 }
 
 static int sum3_scalar_add(Sum3 s, real a, const real r[3]) {
-    enum {X, Y, Z};
     he_sum_add(s.x, a*r[X]);
     he_sum_add(s.y, a*r[Y]);
     he_sum_add(s.z, a*r[Z]);
