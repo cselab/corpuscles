@@ -8,6 +8,8 @@
 #include "he/sum.h"
 #include "he/vec.h"
 
+#include "he/transform.h"
+
 struct Sum3 {
     HeSum *x, *y, *z;
     HeSum *a;
