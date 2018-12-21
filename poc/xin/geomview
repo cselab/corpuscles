@@ -31,6 +31,8 @@ Cmd="WX=1000 WY=1000 he.geomview -r 0 0 90 -a $app -f 90 -n none -p \"he.align $
 
 "$AWK" -v tmp=$tmp -v Ignore=$Ignore -v Update=$Update -v Cmd="$Cmd" '{
     if (!Ignore && $0 ~ /#/) next
+    sub(/[ \t]*#[ \t]*/, "")
+
     v = $1
     a = $2
 
