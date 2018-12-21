@@ -1,5 +1,26 @@
 . he.util
 
+gusg () {
+    cat <<EOF
+$prog [-i] [-u]
+-i    ignore comments
+-u    update images
+EOF
+    exit
+}
+
+prog=poc/xin/geomview
+Ignore=0 Update=0
+while test $# -ne 0
+do case "$1" in
+       -i) shift; Ignore=1 ;;
+       -u) shift; Update=1 ;;
+       -h) usg ;;
+       -*) err "unknown option '$1'" ;;
+       *) break ;;
+   esac
+done
+
 tmp=.tmp
 mkdir -p $tmp
 
@@ -8,8 +29,8 @@ app=poc/xin/app
 
 Cmd="WX=1000 WY=1000 he.geomview -r 0 0 90 -a $app -f 90 -n none -p \"he.align $ref\" -i \"convert -transparent 'rgb(255,255,255)' %i %b.png\" -o %%o %%i"
 
-"$AWK" -v tmp=$tmp -v Cmd="$Cmd" '{
-    if ($0 ~ /#/) next
+"$AWK" -v tmp=$tmp -v Ignore=$Ignore -v Update=$Update -v Cmd="$Cmd" '{
+    if (!Ignore && $0 ~ /#/) next
     v = $1
     a = $2
 
@@ -17,10 +38,12 @@ Cmd="WX=1000 WY=1000 he.geomview -r 0 0 90 -a $app -f 90 -n none -p \"he.align $
     o = sprintf("%s/%05d.ppm", tmp, I)
     p = sprintf("%s/%05d.png", tmp, I++)
 
-    cmd = Cmd
-    gsub("%%i", q(i), cmd)
-    gsub("%%o", q(o), cmd)
-    sys(cmd)
+    if (Update) {
+	cmd = Cmd
+	gsub("%%i", q(i), cmd)
+	gsub("%%o", q(o), cmd)
+	sys(cmd)
+    }
     print v, a, p
 }
 
