@@ -1,4 +1,5 @@
-int transform_com(int, /*io*/ real*, real*, real*);
+/* shift centroid to the origin */
+int transform_center(int, /*io*/ real*, real*, real*);
 
 int transform_rotx(real, int /*io*/ real*, real*, real*);
 int transform_roty(real, int /*io*/ real*, real*, real*);
