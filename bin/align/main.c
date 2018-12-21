@@ -56,6 +56,26 @@ static int invert(const Ten *t, int n, real *x, real *y, real *z) {
     return HE_OK;
 }
 
+static int push(void) {
+    int i;
+    for (i = 0; i < b.n; i++) {
+        xb[i] = b.x[i];
+        yb[i] = b.y[i];
+        zb[i] = b.z[i];
+    }
+    return HE_OK;
+}
+
+static int pop(void) {
+    int i;
+    for (i = 0; i < b.n; i++) {
+        b.x[i] = xb[i];
+        b.y[i] = yb[i];
+        b.z[i] = zb[i];
+    }
+    return HE_OK;
+}
+
 static real sq(real x) { return x*x; };
 static real dist(void) {
     int i, j;
@@ -133,6 +153,8 @@ int main(__UNUSED int argc, const char **v) {
 
     m = 1e32;
     n = sizeof(perms)/sizeof(perms[0]);
+
+    push();
     for (j = i = 0; i < n; i++) {
         flip(perms[i]);
         d = dist();
@@ -140,7 +162,7 @@ int main(__UNUSED int argc, const char **v) {
             m = d;
             j = i;
         }
-        flip(perms[i]);
+        pop();
     }
     flip(perms[j]);
     invert(&a.t, b.n, b.x, b.y, b.z);
@@ -152,6 +174,6 @@ int main(__UNUSED int argc, const char **v) {
     y_fin(a.he, a.x, a.y, a.z);
     y_fin(b.he, b.x, b.y, b.z);
     FREE(xb); FREE(yb); FREE(zb);
-    
+
     return 0;
 }
