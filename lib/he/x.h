@@ -1,3 +1,4 @@
+typedef struct He He;
 typedef struct BendingParam BendingParam;
 
 extern int NV, NE, NT, NH;
