@@ -11,6 +11,7 @@
 #include <he/memory.h>
 #include <he/off.h>
 #include <he/orient.h>
+#include <he/memory.h>
 #include <he/ten.h>
 #include <he/vec.h>
 #include <he/util.h>
@@ -31,7 +32,6 @@ static void usg(void) {
 }
 
 static const char **argv;
-
 struct Obj {
     int n;
     real *x, *y, *z;
@@ -40,8 +40,10 @@ struct Obj {
     char file[4048];
     Orient *orient;
 };
+
 typedef struct Obj Obj;
 static Obj a, b;
+static real *xb, *yb, *zb; /* backup */
 
 static int invert(const Ten *t, int n, real *x, real *y, real *z) {
     int i;
@@ -116,6 +118,9 @@ int main(__UNUSED int argc, const char **v) {
 
     y_ini(b.file, &b.he, &b.x, &b.y, &b.z);
     b.n = he_nv(b.he);
+    MALLOC(b.n, &xb);
+    MALLOC(b.n, &yb);
+    MALLOC(b.n, &zb);
 
     orient_ini(a.he, &a.orient);
     orient_ini(b.he, &b.orient);
@@ -146,5 +151,7 @@ int main(__UNUSED int argc, const char **v) {
 
     y_fin(a.he, a.x, a.y, a.z);
     y_fin(b.he, b.x, b.y, b.z);
+    FREE(xb); FREE(yb); FREE(zb);
+    
     return 0;
 }

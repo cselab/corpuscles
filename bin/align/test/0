@@ -1,2 +1,2 @@
 # nTEST: 0
-he.align data/a.off data/b.off | uscale 1e6  > main.out.txt
+he.run he.align data/a.off data/b.off | uscale 1e6  > main.out.txt
