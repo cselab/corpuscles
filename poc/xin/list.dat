@@ -11,7 +11,7 @@
 1.5	0.5	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr05_Kv5/sphere/1.5_cont/final.off
 1.55	0.5	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr05_Kv5/sphere/1.55_cont/final.off
 1.6	0.5	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr05_Kv5/sphere/1.6/final.off
-1.65	0.5	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr05_Kv5/sphere/1.65_refine_Kb0005/final.off
+1.65	0.5	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr05_Kv5/sphere/1.65_nojigle/final.off
 1.05	0.55	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr055_Kv2/sphere/1.05/final.off
 1	0.55	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr055_Kv2/sphere/1/final.off
 1.1	0.55	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr055_Kv2/sphere/1.1/final.off
@@ -23,6 +23,7 @@
 1.4	0.55	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr055_Kv2/sphere/1.4_cont_Kv_cont/final.off
 1.45	0.55	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr055_Kv2/sphere/1.45_cont_Kv/final.off
 1.5	0.55	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr055_Kv2/sphere/1.5_cont_Kv_cont/final.off
+1.55	0.55	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr055_Kv2/sphere/1.55_nojigle/final.off
 1.05	0.6	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr059/sphere/1.05/final.off
 1	0.6	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr059/sphere/1/final.off
 1.1	0.6	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr059/sphere/1.1/final.off
@@ -36,6 +37,7 @@
 1.3	0.6	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr059/sphere/1.3_cont/final.off
 1.35	0.6	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr059/sphere/1.35_cont/final.off
 1.4	0.6	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr059/sphere/1.4_cont/final.off
+1.45	0.6	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr059/sphere/1.45_nojigle/final.off
 1.05	0.65	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr0642/sphere/1.05/final.off
 1	0.65	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr0642/sphere/1/final.off
 1.1	0.65	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr0642/sphere/1.1/final.off
@@ -47,6 +49,7 @@
 1.22	0.65	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr0642/sphere/1.22/final.off
 1.25	0.65	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr0642/sphere/1.25/final.off
 1.3	0.65	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr0642/sphere/1.3/final.off
+1.35	0.65	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr0642/sphere/1.35_nojigle/final.off
 #1.02	0.7	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr069/sphere/1.02/final.off
 1.04	0.7	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr069/sphere/1.04/final.off
 #1.06	0.7	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr069/sphere/1.06/final.off
@@ -60,3 +63,4 @@
 1.2	0.7	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr069/sphere/1.2/final.off
 #1.22	0.7	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr069/sphere/1.22/final.off
 1.24	0.7	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr069/sphere/1.24_cont/final.off
+1.2	0.7	example/min/helfrich_xin_explore/bc_Nt5120/juelicher_Vr069/sphere/1.3_nojigle/final.off
