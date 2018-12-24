@@ -83,7 +83,7 @@ int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/
 }
 
 h_define(`ROT', `
-int $1(real rad, int n, /*io*/ real *x, real *y, real *z)
+int transform_rot$1(real rad, int n, /*io*/ real *x, real *y, real *z)
 {
     enum $2;
     real c, s, p, q, r[3];
@@ -98,38 +98,44 @@ int $1(real rad, int n, /*io*/ real *x, real *y, real *z)
     }
     return HE_OK;
 }')
-ROT(transform_rotx, `{P = Y, Q = Z}')dnl
-ROT(transform_roty, `{P = Z, Q = X}')dnl
-ROT(transform_rotz, `{P = X, Q = Y}')dnl
+ROT(`x', `{P = Y, Q = Z}')dnl
+ROT(`y', `{P = Z, Q = X}')dnl
+ROT(`z', `{P = X, Q = Y}')dnl
 
-int transform_tranx(real s, int n, /*io*/ real *x, real *y, real *z) {
+h_define(`TRAN', `
+int transform_tran$1(real s, int n, /*io*/ real *x, real *y, real *z) {
+    int i;
+    for (i = 0; i < n; i++)
+        $1[i] += s;
     return HE_OK;
-}
-
-int transform_trany(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
-
-int transform_tranz(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
+}')
+TRAN(`x')dnl
+TRAN(`y')dnl
+TRAN(`z')dnl
 
 int transform_tran(const real s[3], int n, /*io*/ real *x, real *y, real *z) {
+    enum {X, Y, Z};
+    transform_tranx(s[X], n, x, y, z);
+    transform_trany(s[Y], n, x, y, z);
+    transform_tranz(s[Z], n, x, y, z);
     return HE_OK;
 }
 
-int transform_scalx(real s, int n, /*io*/ real *x, real *y, real *z) {
+h_define(`SCAL', `
+int transform_scal$1(real s, int n, /*io*/ real *x, real *y, real *z) {
+    int i;
+    for (i = 0; i < n; i++)
+        $1[i] += s;
     return HE_OK;
-}
-
-int transform_scaly(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
-
-int transform_scalz(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
+}')
+SCAL(`x')dnl
+SCAL(`y')dnl
+SCAL(`z')dnl
 
 int transform_scal(const real s[3], int n, /*io*/ real *x, real *y, real *z) {
+    enum {X, Y, Z};
+    transform_scalx(s[X], n, x, y, z);
+    transform_scaly(s[Y], n, x, y, z);
+    transform_scalz(s[Z], n, x, y, z);
     return HE_OK;
 }
