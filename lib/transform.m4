@@ -125,7 +125,7 @@ h_define(`SCAL', `
 int transform_scal$1(real s, int n, /*io*/ real *x, real *y, real *z) {
     int i;
     for (i = 0; i < n; i++)
-        $1[i] += s;
+        $1[i] *= s;
     return HE_OK;
 }')
 SCAL(`x')dnl
