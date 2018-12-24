@@ -5,7 +5,10 @@ prog=he.m4
 : ${M4=m4}
 
 usg () {
-    msg "$prog [OPTION]... [FILE]..."
+cat >&2 <<EOF
+$prog [OPTION]... [FILE]...
+he m4 wrapper
+EOF
     exit
 }
 
