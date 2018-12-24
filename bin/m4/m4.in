@@ -1,7 +1,6 @@
 . he.util
 
 prog=he.m4
-
 : ${M4=m4}
 
 usg () {
