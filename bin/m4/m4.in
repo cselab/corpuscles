@@ -20,9 +20,36 @@ if ! test -d "$include"
 then msg "no '$include' dierecoty"
 fi
 
+inc () { expr $1 + 1; }
+
+i=0 n=$# Output=
+until test $i -ge $n
+do case "$1" in
+       -o) shift; i=`inc $i`
+	   if test $i -eq $n; then err '-o needs an argument'; fi
+	   Output="$1"
+	   shift; i=`inc $i`
+	   ;;
+       *) set -- "$@" "$1"
+	  shift; i=`inc $i`
+	  ;;
+   esac
+done
+
 for i
 do shift
    set -- "$@" \'"$i"\'
 done
 
-e "$M4" -I"$include" "$@"
+if test x$Output = x
+then
+    e "$M4" -I"$include" "$@"
+    if test $? -ne 0; then err failed; fi
+else
+    t=/tmp/he.m4.$$
+    trap 'rm -f $t; exit 1' 1 2 3 4 15
+    e "$M4" -I"$include" "$@" > $t
+    if test $? -ne 0; then err failed; fi
+    mv 2>/dev/null $t "$Output"
+    if test $? -ne 0; then err "fail to create '$Output'"; fi
+fi
