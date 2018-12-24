@@ -28,11 +28,9 @@ do case "$1" in
        -o) shift; i=`inc $i`
 	   if test $i -eq $n; then err '-o needs an argument'; fi
 	   Output="$1"
-	   shift; i=`inc $i`
-	   ;;
+	   shift; i=`inc $i` ;;
        *) set -- "$@" "$1"
-	  shift; i=`inc $i`
-	  ;;
+	  shift; i=`inc $i` ;;
    esac
 done
 
