@@ -19,6 +19,7 @@ include(`he.m4')dnl
 #define FMT_IN HE_REAL_IN
 
 static const char **argv;
+static void vec(/**/ real a[3]) { vec_argv(&argv, a); }
 static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
     if (sscanf(*argv, FMT_IN, p) != 1)
@@ -29,7 +30,7 @@ static int scl(/**/ real *p) {
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 
 int main(__UNUSED int argc, const char **v) {
-    real *x, *y, *z, com[3], rad;
+    real *x, *y, *z, r[3], com[3], rad;
     int n;
     He *he;
 
@@ -61,6 +62,15 @@ int main(__UNUSED int argc, const char **v) {
     OP(`scalx')dnl
     OP(`scaly')dnl
     OP(`scalz')dnl
+
+    h_define(`OP3', `
+    } else if (eq(op, "$1")) {
+        vec(r);
+	transform_$1(r, n, /*io*/ x, y, z);
+	off_he_xyz_fwrite(he, x, y, z, stdout);
+    ')dnl
+    OP3(tran)dnl
+    OP3(scal)dnl
 
     } else
 	ER("unknown operation '%s'", op);
