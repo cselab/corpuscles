@@ -6,7 +6,7 @@ prog=he.m4
 
 usg () {
 cat >&2 <<EOF
-$prog [OPTION]... [FILE]...
+$prog [-o output] [M4 OPTION]... [FILE]...
 he m4 wrapper
 EOF
     exit
