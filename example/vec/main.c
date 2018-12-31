@@ -11,8 +11,8 @@
 #define FMT_IN   HE_REAL_IN
 static const char **argv;
 
-void vec(/**/ real a[3]) { vec_argv(&argv, a); }
-int scl(/**/ real *p) {
+static void vec(/**/ real a[3]) { vec_argv(&argv, a); }
+static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
@@ -20,7 +20,7 @@ int scl(/**/ real *p) {
     return HE_OK;
 }
 
-int eq(const char *a, const char *b) { return util_eq(a, b); }
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
     real a[3], b[3], c[3], m[3], s;

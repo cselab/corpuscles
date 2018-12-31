@@ -1,4 +1,6 @@
+include(`he.m4')dnl
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "real.h"
 
@@ -8,17 +10,20 @@
 #include "he/sum.h"
 #include "he/vec.h"
 
+#include "he/transform.h"
+
+enum {X, Y, Z};
 struct Sum3 {
     HeSum *x, *y, *z;
     HeSum *a;
 };
 typedef struct Sum3 Sum3;
 
-static int sum3_ini(Sum3 s) {
-    he_sum_ini(&s.x);
-    he_sum_ini(&s.y);
-    he_sum_ini(&s.z);
-    he_sum_ini(&s.a);
+static int sum3_ini(Sum3 *s) {
+    he_sum_ini(&s->x);
+    he_sum_ini(&s->y);
+    he_sum_ini(&s->z);
+    he_sum_ini(&s->a);
     return HE_OK;
 }
 
@@ -30,8 +35,7 @@ static int sum3_fin(Sum3 s) {
     return HE_OK;
 }
 
-static int sum3_scalar_add(Sum3 s, real a, real r[3]) {
-    enum {X, Y, Z};
+static int sum3_scalar_add(Sum3 s, real a, const real r[3]) {
     he_sum_add(s.x, a*r[X]);
     he_sum_add(s.y, a*r[Y]);
     he_sum_add(s.z, a*r[Z]);
@@ -60,7 +64,7 @@ int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/
     Sum3 s;
 
     nt = he_nt(he);
-    sum3_ini(s);
+    sum3_ini(&s);
 
     for (t = 0; t < nt; t++) {
         he_tri_ijk(he, t, &i, &j, &k);
@@ -78,53 +82,60 @@ int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
-int transform_rotx(real rad, int n, /*io*/ real *x, real *y, real *z)
+h_define(`ROT', `
+int transform_rot$1(real rad, int n, /*io*/ real *x, real *y, real *z)
 {
+    enum $2;
+    real c, s, p, q, r[3];
+    int i;
+    c = cos(rad); s = sin(rad);
+    for (i = 0; i < n; i++) {
+        vec_get(i, x, y, z, r);
+        p = r[P]; q = r[Q];
+        r[P] = c*p - s*q;
+        r[Q] = s*p + c*q;
+        vec_set(r, i, x, y, z);
+    }
     return HE_OK;
-}
+}')
+ROT(`x', `{P = Y, Q = Z}')dnl
+ROT(`y', `{P = Z, Q = X}')dnl
+ROT(`z', `{P = X, Q = Y}')dnl
 
-int transform_roty(real rad, int n, /*io*/ real *x, real *y, real *z)
-{
+h_define(`TRAN', `
+int transform_tran$1(real s, int n, /*io*/ real *x, real *y, real *z) {
+    int i;
+    for (i = 0; i < n; i++)
+        $1[i] += s;
     return HE_OK;
-}
-
-int transform_rotz(real rad, int n, /*io*/ real *x, real *y, real *z)
-{
-    return HE_OK;
-}
-
-int transform_rot(const real rad[3], int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
-
-int transform_tranx(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
-
-int transform_trany(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
-
-int transform_tranz(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
+}')
+TRAN(`x')dnl
+TRAN(`y')dnl
+TRAN(`z')dnl
 
 int transform_tran(const real s[3], int n, /*io*/ real *x, real *y, real *z) {
+    enum {X, Y, Z};
+    transform_tranx(s[X], n, x, y, z);
+    transform_trany(s[Y], n, x, y, z);
+    transform_tranz(s[Z], n, x, y, z);
     return HE_OK;
 }
 
-int transform_scalx(real s, int n, /*io*/ real *x, real *y, real *z) {
+h_define(`SCAL', `
+int transform_scal$1(real s, int n, /*io*/ real *x, real *y, real *z) {
+    int i;
+    for (i = 0; i < n; i++)
+        $1[i] *= s;
     return HE_OK;
-}
-
-int transform_scaly(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
-
-int transform_scalz(real s, int n, /*io*/ real *x, real *y, real *z) {
-    return HE_OK;
-}
+}')
+SCAL(`x')dnl
+SCAL(`y')dnl
+SCAL(`z')dnl
 
 int transform_scal(const real s[3], int n, /*io*/ real *x, real *y, real *z) {
+    enum {X, Y, Z};
+    transform_scalx(s[X], n, x, y, z);
+    transform_scaly(s[Y], n, x, y, z);
+    transform_scalz(s[Z], n, x, y, z);
     return HE_OK;
 }
