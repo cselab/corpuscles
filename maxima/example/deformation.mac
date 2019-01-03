@@ -1,2 +1,21 @@
 load("he/vec.mac") $
 load("he/tri.mac") $
+
+vec_any(a);
+vec_any(b);
+vec_any(c);
+
+vec_any(x);
+vec_any(y);
+vec_any(z);
+
+[ux, uy, vx, vy]: tri_3to2(a, b, c);
+[px, py, qx, qy]: tri_3to2(x, y, z);
+
+M: matrix(['a, 'b], [0, 'c]);
+
+M . [ux, uy] = [px, py];
+M . [vx, vy] = [qx, qy];
+
+vec_angle(b - a, c - a);
+vec_angle(y - x, z - x);
