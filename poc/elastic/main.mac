@@ -61,6 +61,7 @@ Dxy: (sxy + syx + sxx*sxy + syx*syy)/2;
 Dyx: (syx + sxy + sxy*sxx + syy*syx)/2;
 Dyy: (syy + syy + sxy*sxy + syy*syy)/2;
 D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
+D: 2*D + ident(2);
 
 I1: mattrace(D);
 I2: determinant(D);

@@ -1,13 +1,13 @@
 load("he/vec.mac") $
 load("he/tri.mac") $
 
-vec_any(a);
-vec_any(b);
-vec_any(c);
+a: [0, 0, 0];
+b: [1, 0, 0];
+c: [0, 1, 0];
 
-vec_any(x);
-vec_any(y);
-vec_any(z);
+x: [0, 0, 0];
+y: [2, 0, 0];
+z: [0, 1, 0];
 
 [ux, uy, vx, vy]: tri_3to2(a, b, c);
 [px, py, qx, qy]: tri_3to2(x, y, z);
@@ -25,13 +25,13 @@ def2(M, [vx, vy]) = qy];
 s: linsolve(e, ['a, 'b, 'c]);
 M0: subst(s, M);
 
-M0 . [ux, uy];
-M0 . [vx, vy];
-
-M0;
 S: transpose(M0) . M0;
+C: 1/2*(S - ident(2));
 
 I1: mat_trace(S), numer;
 I2: determinant(S), numer;
+
+C1: mat_trace(C), numer;
+C2: determinant(C), numer;
 
 vec_arg(a, b, c, x, y, z);
