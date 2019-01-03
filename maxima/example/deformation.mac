@@ -1,11 +1,11 @@
 load("he/vec.mac") $
 load("he/tri.mac") $
 
-a: [0, 0, 0];
+vec_any(a);
 b: [1, 0, 0];
 c: [0, 1, 0];
 
-x: [0, 0, 0];
+vec_any(x);
 y: [2, 0, 0];
 z: [0, 1, 0];
 

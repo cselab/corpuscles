@@ -38,6 +38,11 @@ int main(__UNUSED int argc, const char **argv0) {
         vec(a); vec(b); vec(c);
         strain_energy_3d(NULL, F_I1, a0, b0, c0,   a, b, c,   &eng, &deng);
         printf("%.16g\n", eng);
+    } else if (eq(op, "I2")) {
+        vec(a0); vec(b0); vec(c0);
+        vec(a); vec(b); vec(c);
+        strain_energy_3d(NULL, F_I2, a0, b0, c0,   a, b, c,   &eng, &deng);
+        printf("%.16g\n", eng);
     } else
         ER("unknown operation '%s'", op);
     return 0;
