@@ -29,3 +29,7 @@ M0 . [ux, uy];
 M0 . [vx, vy];
 
 M0;
+S: transpose(M0) . M0;
+
+I0: mat_trace(S), numer;
+I1: determinant(S), numer;
