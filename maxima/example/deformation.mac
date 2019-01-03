@@ -14,8 +14,18 @@ vec_any(z);
 
 M: matrix(['a, 'b], [0, 'c]);
 
-M . [ux, uy] = [px, py];
-M . [vx, vy] = [qx, qy];
+def1(M, a):= (M . a)[1, 1];
+def2(M, a):= (M . a)[2, 1];
 
-vec_angle(b - a, c - a);
-vec_angle(y - x, z - x);
+e: [
+def1(M, [ux, uy]) = px,
+def1(M, [vx, vy]) = qx,
+def2(M, [vx, vy]) = qy];
+
+s: linsolve(e, ['a, 'b, 'c]);
+M0: subst(s, M);
+
+M0 . [ux, uy];
+M0 . [vx, vy];
+
+M0;
