@@ -31,5 +31,7 @@ M0 . [vx, vy];
 M0;
 S: transpose(M0) . M0;
 
-I0: mat_trace(S), numer;
-I1: determinant(S), numer;
+I1: mat_trace(S), numer;
+I2: determinant(S), numer;
+
+vec_arg(a, b, c, x, y, z);
