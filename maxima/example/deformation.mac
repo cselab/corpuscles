@@ -1,0 +1,2 @@
+load("he/vec.mac") $
+load("he/tri.mac") $
