@@ -1,8 +1,8 @@
 int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real, real),
-              real bx, real by, real cx, real cy, real vx, real vy,
-              real ux, real uy, real wx, real wy, real *dvx, real *dvy,
-              real *dux, real *duy, real *dwx, real *dwy, real *pI1,
-              real *pI2, real *pA)
+              real bx, real by, real cx, real cy, real ux, real uy,
+              real wx, real wy, real *dvx, real *dvy, real *dux,
+              real *duy, real *dwx, real *dwy, real *pI1, real *pI2,
+              real *pA)
 {
     real Q, abx, aby, cax, cay, cbx, cby, px, py, qx, qy, I1, I2;
     real Fa, Fb, d;
@@ -15,10 +15,10 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
     cay = cy;
     cbx = cx-bx;
     cby = cy-by;
-    px = -(aby*wx-cby*vx+cay*(ux-abx)+aby*cax)/Q;
-    py = (abx*wx-cbx*vx+cax*ux)/Q;
-    qx = -(aby*wy-cby*vy+cay*uy)/Q;
-    qy = (abx*wy-cbx*vy+cax*uy-(aby*cax-abx*cay))/Q;
+    px = -(aby*wx+cay*ux-(abx*cay-aby*cax))/Q;
+    py = (abx*wx+cax*ux)/Q;
+    qx = -(aby*wy+cay*uy)/Q;
+    qy = (abx*wy+cax*uy-(aby*cax-abx*cay))/Q;
     I1 = sq(qy)+sq(qx)+sq(py)+sq(px);
     I2 = pow(px*qy-py*qx,2);
     Fa = F1(param,I1,I2);

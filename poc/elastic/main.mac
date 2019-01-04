@@ -21,7 +21,7 @@ cgr(v)::=buildq([v: v],
     printf(true, "SET(~a, ~a);~%", 'v, cgrind0(v)));
 
 frm0 (e):= format(e, %poly(Fb, Fa), %factor, gcfac) $
-frm1 (e):= format(e, %poly(vx, vy, ux, uy, wx, wy), %factor, gcfac) $
+frm1 (e):= format(e, %poly(ux, uy, wx, wy), %factor, gcfac) $
 
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
 
@@ -99,6 +99,9 @@ back(e):=(
   e: subst('aby, aby, e),
   e: subst(-'aby, -aby, e),
 
+  e: subst(0, 'vx, e),
+  e: subst(0, 'vy, e),
+
   e);
 
 dvx: gcfac(back(co(dE, vx)));
@@ -152,7 +155,7 @@ with_stdout("param",
   pvoid(param),
   pfun(F1), pfun(F2),
   real(bx), real(by), real(cx), real(cy),
-  real(vx), real(vy), real(ux), real(uy), real(wx), real(wy),
+  real(ux), real(uy), real(wx), real(wy),
   preal(dvx), preal(dvy),
   preal(dux), preal(duy),
   preal(dwx), preal(dwy),
