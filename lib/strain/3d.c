@@ -63,19 +63,19 @@ int strain_force_3d(void *param,
                     const real a[3], const real b[3], const real c[3], /**/
                     real da_tot[3], real db_tot[3], real dc_tot[3]) {
     real da[3], db[3], dc[3];
-    real bx, by, cx, cy, ux, uy, wx, wy;
+    real bx, cx, cy, ux, wx, wy, _by, _uy;
     real dvx, dvy, dux, duy, dwx, dwy;
     real area, I1, I2;
     real ex[3], ey[3];
 
-    tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
-    tri_3to2(a, b, c, /**/ &ux, &uy, &wx, &wy);
-    ux -= bx; uy -= by; /* displace */
+    tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
+    tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
+    ux -= bx; /* displace */
     wx -= cx; wy -= cy;
 
     strain_2d(param, F1, F2,
-              bx, by, cx, cy,
-              ux, uy, wx, wy,
+              bx, cx, cy,
+              ux, wx, wy,
               &dvx, &dvy, &dux, &duy, &dwx, &dwy,
               &I1, &I2, &area);
     tri_2to3(a, b, c, /**/ ex, ey);
@@ -106,8 +106,8 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
     wx -= cx; wy -= cy;
 
     strain_2d(param, Dummy, Dummy,
-              bx, by, cx, cy,
-              ux, uy, wx, wy,
+              bx, cx, cy,
+              ux, wx, wy,
               NULL, NULL, NULL, NULL, NULL, NULL,
               &I1, &I2, &A);
 

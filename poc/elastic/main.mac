@@ -25,8 +25,8 @@ frm1 (e):= format(e, %poly(ux, uy, wx, wy), %factor, gcfac) $
 
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
 
-declare([bx, by, cx, cy], constant) $
-ax: ay: 0;
+declare([bx, cx, cy], constant) $
+ax: ay: by: 0;
 
 dx(x, y):= p0 + px*x + py*y$
 dy(x, y):= q0 + qx*x + qy*y$
@@ -68,6 +68,7 @@ dE: expand(dE) $
 back(e):=(
   e: subst(0, 'vx, e),
   e: subst(0, 'vy, e),
+  e: subst(0, 'uy, e),
   e);
 
 dvx: gcfac(back(co(dE, vx)));
@@ -118,8 +119,8 @@ pvoid(e)::=printf(true, "~a *~a~%", 'void, e);
 with_stdout("param",
   pvoid(param),
   pfun(F1), pfun(F2),
-  real(bx), real(by), real(cx), real(cy),
-  real(ux), real(uy), real(wx), real(wy),
+  real(bx), real(cx), real(cy),
+  real(ux), real(wx), real(wy),
   preal(dvx), preal(dvy),
   preal(dux), preal(duy),
   preal(dwx), preal(dwy),
