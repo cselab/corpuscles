@@ -35,11 +35,11 @@ e: [
   dx(ax, ay) = vx,
   dy(ax, ay) = vy,
 
-  dx(bx, by) = bx + ux,
-  dy(bx, by) = by + uy,
+  dx(bx, by) = ux,
+  dy(bx, by) = uy,
 
-  dx(cx, cy) = cx + wx,
-  dy(cx, cy) = cy + wy
+  dx(cx, cy) = wx,
+  dy(cx, cy) = wy
 ] $
 
 de: diff(e);
@@ -51,7 +51,7 @@ Q: by*cx-bx*cy;
 ds: subst('Q, Q, ds);
 s:  subst('Q, Q, s);
 
-M: matrix([px, py], [qx, qy])$
+M: matrix([px, py], [0, qy])$
 D: M . transpose(M);
 
 I1: mattrace(D);
@@ -83,13 +83,13 @@ dwy: gcfac(back(co(dE, wy)));
 px: gcfac(back(frm1(assoc('px, s))));
 py: gcfac(back(frm1(assoc('py, s))));
 
-qx: gcfac(back(frm1(assoc('qx, s))));
 qy: gcfac(back(frm1(assoc('qy, s))));
 
 matchdeclare(x, all) $
 defrule(r_sq, x^2, sq(x)) $
 rsq(e):=apply1(e, r_sq) $
-I1: rsq(factor(I1));
+I1: rsq(I1);
+I2: rsq(I2);
 
 Fa: F1(param, 'I1, 'I2) $
 Fb: F2(param, 'I1, 'I2) $
@@ -101,7 +101,7 @@ pA : 'Q/2;
 with_stdout("body",
   cg(Q),
   printf(true, "NOT_ZERO(Q);~%"),
-  cg(px), cg(py), cg(qx), cg(qy),
+  cg(px), cg(py), cg(qy),
   cg(I1), cg(I2),
   cg(Fa), cg(Fb),
   newline(),

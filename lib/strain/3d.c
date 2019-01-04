@@ -22,7 +22,7 @@ static int mean(real ax, real ay, real bx, real by, real cx, real cy, /**/ real 
 static int minus(real ax, real ay, real bx, real by, /**/ real *cx, real *cy) {
     *cx = ax - bx;
     *cy = ay - by;
-    return HE_OK;
+v    return HE_OK;
 }
 static real cross(real ax, real ay, real bx, real by) {
     return ax*by - ay*bx;
@@ -70,8 +70,6 @@ int strain_force_3d(void *param,
 
     tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
     tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
-    ux -= bx; /* displace */
-    wx -= cx; wy -= cy;
 
     strain_2d(param, F1, F2,
               bx, cx, cy,
@@ -102,8 +100,6 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
 
     tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
     tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
-    ux -= bx; /* displace */
-    wx -= cx; wy -= cy;
 
     strain_2d(param, Dummy, Dummy,
               bx, cx, cy,
