@@ -97,12 +97,12 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
                      const real a0[3], const real b0[3], const real c0[3],
                      const real a[3], const real b[3], const real c[3],
                      real *p_eng, real *p_deng) {
-    real bx, by, cx, cy, ux, uy, wx, wy;
+    real bx, _by, cx, cy, ux, _uy, wx, wy;
     real I1, I2, A, eng, deng;
 
-    tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
-    tri_3to2(a, b, c, /**/ &ux, &uy, &wx, &wy);
-    ux -= bx; uy -= by; /* displace */
+    tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
+    tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
+    ux -= bx; /* displace */
     wx -= cx; wy -= cy;
 
     strain_2d(param, Dummy, Dummy,
