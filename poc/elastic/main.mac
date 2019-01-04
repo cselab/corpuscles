@@ -32,8 +32,8 @@ dx(x, y):= p0 + px*x + py*y$
 dy(x, y):= q0 + qx*x + qy*y$
 
 e: [
-  dx(ax, ay) = ax + vx,
-  dy(ax, ay) = ay + vy,
+  dx(ax, ay) = vx,
+  dy(ax, ay) = vy,
 
   dx(bx, by) = bx + ux,
   dy(bx, by) = by + uy,
@@ -46,16 +46,12 @@ de: diff(e);
 v: [p0, px, py,   q0, qx, qy];
 ds: linsolve(de, diff(v));
 s : linsolve( e,       v);
-Q: ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
+Q: by*cx-bx*cy;
 
 ds: subst('Q, Q, ds);
 s:  subst('Q, Q, s);
 
-sxx: diff(dx(x, y), x);
-sxy: diff(dx(x, y), y);
-syx: diff(dy(x, y), x);
-syy: diff(dy(x, y), y);
-M: matrix([sxx, sxy], [syx, syy])$
+M: matrix([px, py], [qx, qy])$
 D: M . transpose(M);
 
 I1: mattrace(D);
@@ -69,39 +65,9 @@ dE: subst(ds, factor(diff(E))) $
 dE: ratsubst('F,   F(I1, I2), dE) $
 dE: expand(dE) $
 
-d: (px+1)*qy-py*qx+px+1;
-
-abx: ax - bx;
-aby: ay - by;
-
-cax: cx - ax;
-cay: cy - ay;
-
-cbx: cx - bx;
-cby: cy - by;
-
 back(e):=(
-  e: subst('d,   d,   e),
-
-  e: subst( 'cby,  cby, e),
-  e: subst(-'cby, -cby, e),
-
-  e: subst( 'cay,  cay, e),
-  e: subst(-'cay, -cay, e),
-
-  e: subst('cbx, cbx, e),
-
-  e: subst('cax, cax, e),
-  e: subst(-'cax, -cax, e),
-
-  e: subst(-'abx, -abx, e),
-
-  e: subst('aby, aby, e),
-  e: subst(-'aby, -aby, e),
-
   e: subst(0, 'vx, e),
   e: subst(0, 'vy, e),
-
   e);
 
 dvx: gcfac(back(co(dE, vx)));
@@ -134,11 +100,9 @@ pA : 'Q/2;
 with_stdout("body",
   cg(Q),
   printf(true, "NOT_ZERO(Q);~%"),
-  cg(abx), cg(aby), cg(cax), cg(cay), cg(cbx), cg(cby),
   cg(px), cg(py), cg(qx), cg(qy),
   cg(I1), cg(I2),
   cg(Fa), cg(Fb),
-  cg(d),
   newline(),
   cgr(dvx), cgr(dvy), cgr(dux), cgr(duy), cgr(dwx), cgr(dwy),
   cgr(pI1), cgr(pI2), cgr(pA)) $
