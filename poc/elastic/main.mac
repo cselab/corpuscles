@@ -26,17 +26,16 @@ frm1 (e):= format(e, %poly(ux, uy, wx, wy), %factor, gcfac) $
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
 
 declare([bx, cx, cy], constant) $
-ax: ay: by: 0;
 
 dx(x, y):= p0 + px*x + py*y$
 dy(x, y):= q0 + qx*x + qy*y$
 
 e: [
-  dx(ax, ay) = vx,
-  dy(ax, ay) = vy,
+  dx(0, 0) = vx,
+  dy(0, 0) = vy,
 
-  dx(bx, by) = ux,
-  dy(bx, by) = uy,
+  dx(bx, 0) = ux,
+  dy(bx, 0) = uy,
 
   dx(cx, cy) = wx,
   dy(cx, cy) = wy
@@ -46,10 +45,7 @@ de: diff(e);
 v: [p0, px, py,   q0, qx, qy];
 ds: linsolve(de, diff(v));
 s : linsolve( e,       v);
-Q: by*cx-bx*cy;
-
-ds: subst('Q, Q, ds);
-s:  subst('Q, Q, s);
+Q: -bx*cy;
 
 M: matrix([px, py], [0, qy])$
 D: M . transpose(M);
@@ -82,7 +78,6 @@ dwy: gcfac(back(co(dE, wy)));
 
 px: gcfac(back(frm1(assoc('px, s))));
 py: gcfac(back(frm1(assoc('py, s))));
-
 qy: gcfac(back(frm1(assoc('qy, s))));
 
 matchdeclare(x, all) $
