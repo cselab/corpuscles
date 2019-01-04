@@ -22,7 +22,7 @@ static int mean(real ax, real ay, real bx, real by, real cx, real cy, /**/ real 
 static int minus(real ax, real ay, real bx, real by, /**/ real *cx, real *cy) {
     *cx = ax - bx;
     *cy = ay - by;
-v    return HE_OK;
+    return HE_OK;
 }
 static real cross(real ax, real ay, real bx, real by) {
     return ax*by - ay*bx;
