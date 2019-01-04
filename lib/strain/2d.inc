@@ -1,36 +1,36 @@
 int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real, real),
-              real ax, real ay, real bx, real by, real cx, real cy,
-              real vx, real vy, real ux, real uy, real wx, real wy,
-              real *dvx, real *dvy, real *dux, real *duy, real *dwx,
-              real *dwy, real *pI1, real *pI2, real *pA)
+              real bx, real by, real cx, real cy, real vx, real vy,
+              real ux, real uy, real wx, real wy, real *dvx, real *dvy,
+              real *dux, real *duy, real *dwx, real *dwy, real *pI1,
+              real *pI2, real *pA)
 {
     real Q, abx, aby, cax, cay, cbx, cby, px, py, qx, qy, I1, I2;
     real Fa, Fb, d;
 
-    Q = ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
+    Q = by*cx-bx*cy;
     NOT_ZERO(Q);
-    abx = ax-bx;
-    aby = ay-by;
-    cax = cx-ax;
-    cay = cy-ay;
+    abx = -bx;
+    aby = -by;
+    cax = cx;
+    cay = cy;
     cbx = cx-bx;
     cby = cy-by;
-    px = -(aby*wx-cby*vx+cay*ux)/Q;
+    px = -(aby*wx-cby*vx+cay*(ux-abx)+aby*cax)/Q;
     py = (abx*wx-cbx*vx+cax*ux)/Q;
     qx = -(aby*wy-cby*vy+cay*uy)/Q;
-    qy = (abx*wy-cbx*vy+cax*uy)/Q;
-    I1 = sq(qy)+2*qy+sq(qx)+sq(py)+sq(px)+2*px+2;
-    I2 = pow(px*qy+qy-py*qx+px+1,2);
+    qy = (abx*wy-cbx*vy+cax*uy-(aby*cax-abx*cay))/Q;
+    I1 = sq(qy)+sq(qx)+sq(py)+sq(px);
+    I2 = pow(px*qy-py*qx,2);
     Fa = F1(param,I1,I2);
     Fb = F2(param,I1,I2);
     d = (px+1)*qy-py*qx+px+1;
     
-    SET(dvx, (2*(Fb*d*(cby*qy+cbx*qx+cy-by)-Fa*(cbx*py-(cby*px+cy)+by)))/Q);
-    SET(dvy, -(2*(Fa*(cbx*qy-cby*qx+cx-bx)+Fb*d*(cby*py+cbx*px+cx-bx)))/Q);
-    SET(dux, (2*(Fa*(cax*py-(cay*px+cy)+ay)-Fb*d*(cay*qy+cax*qx+cy-ay)))/Q);
-    SET(duy, (2*(Fa*(cax*qy-cay*qx+cx-ax)+Fb*d*(cay*py+cax*px+cx-ax)))/Q);
-    SET(dwx, (2*(Fa*(abx*py-aby*px+by-ay)-Fb*d*(aby*qy+abx*qx-by+ay)))/Q);
-    SET(dwy, (2*(Fa*(abx*qy-(aby*qx+bx)+ax)+Fb*d*(aby*py+abx*px-bx+ax)))/Q);
+    SET(dvx, (2*(Fb*(cby*qy+cbx*qx)*(px*qy-py*qx)-Fa*(cbx*py-cby*px)))/Q);
+    SET(dvy, -(2*(Fb*(cby*py+cbx*px)*(px*qy-py*qx)+Fa*(cbx*qy-cby*qx)))/Q);
+    SET(dux, (2*(Fa*(cax*py-cay*px)-Fb*(cay*qy+cax*qx)*(px*qy-py*qx)))/Q);
+    SET(duy, (2*(Fb*(cay*py+cax*px)*(px*qy-py*qx)+Fa*(cax*qy-cay*qx)))/Q);
+    SET(dwx, -(2*(Fb*(aby*qy+abx*qx)*(px*qy-py*qx)+Fa*(aby*px-abx*py)))/Q);
+    SET(dwy, (2*(Fb*(aby*py+abx*px)*(px*qy-py*qx)-Fa*(aby*qx-abx*qy)))/Q);
     SET(pI1, I1);
     SET(pI2, I2);
     SET(pA, Q/2.0E+0);

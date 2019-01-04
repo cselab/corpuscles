@@ -95,7 +95,7 @@ int strain_force_3d(void *param,
                     const real a[3], const real b[3], const real c[3], /**/
                     real da_tot[3], real db_tot[3], real dc_tot[3]) {
     real da[3], db[3], dc[3];
-    real ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
+    real bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
     real dvx, dvy, dux, duy, dwx, dwy;
     real area, I1, I2;
     real ex[3], ey[3];
@@ -105,18 +105,18 @@ int strain_force_3d(void *param,
     ux -= bx; uy -= by; /* displace */
     wx -= cx; wy -= cy;
 
-    ax = ay = vx = vy = 0;
+    vx = vy = 0;
     strain_2d(param, F1, F2,
-              ax, ay, bx, by, cx, cy,
+              bx, by, cx, cy,
               vx, vy, ux, uy, wx, wy,
               &dvx, &dvy, &dux, &duy, &dwx, &dwy,
               &I1, &I2, &area);
-    if (!assert_force_2d(ax + vx, ay + vy,
+    if (!assert_force_2d(vx, vy,
                          bx + ux, by + uy,
                          cx + wx, cy + wy,
                          dvx, dvy, dux, duy, dwx, dwy)) {
-        MSG("in : %.16g %.16g  %.16g %.16g  %.16g %.16g %.16g %.16g  %.16g %.16g  %.16g %.16g",
-            ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy);
+        MSG("in : %.16g %.16g  %.16g %.16g %.16g %.16g  %.16g %.16g  %.16g %.16g",
+            bx, by, cx, cy, vx, vy, ux, uy, wx, wy);
         MSG("out: %.16g %.16g  %.16g %.16g  %.16g %.16g",
             dvx, dvy, dux, duy, dwx, dwy);
         ERR(HE_NUM, "bad 2d forces in triangle");
@@ -151,7 +151,7 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
 
     ax = ay = vx = vy = 0;
     strain_2d(param, Dummy, Dummy,
-              ax, ay, bx, by, cx, cy,
+              bx, by, cx, cy,
               vx, vy, ux, uy, wx, wy,
               NULL, NULL, NULL, NULL, NULL, NULL,
               &I1, &I2, &A);

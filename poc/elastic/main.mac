@@ -25,22 +25,21 @@ frm1 (e):= format(e, %poly(vx, vy, ux, uy, wx, wy), %factor, gcfac) $
 
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
 
-(X: 1, Y : 2, Z : 3) $
+declare([bx, by, cx, cy], constant) $
+ax: ay: 0;
 
-declare([ax, ay, bx, by, cx, cy], constant) $
-
-dx(x, y):= p0 + px*x + py*y $
-dy(x, y):= q0 + qx*x + qy*y $
+dx(x, y):= p0 + px*x + py*y$
+dy(x, y):= q0 + qx*x + qy*y$
 
 e: [
-  dx(ax, ay) = vx,
-  dy(ax, ay) = vy,
+  dx(ax, ay) = ax + vx,
+  dy(ax, ay) = ay + vy,
 
-  dx(bx, by) = ux,
-  dy(bx, by) = uy,
+  dx(bx, by) = bx + ux,
+  dy(bx, by) = by + uy,
 
-  dx(cx, cy) = wx,
-  dy(cx, cy) = wy
+  dx(cx, cy) = cx + wx,
+  dy(cx, cy) = cy + wy
 ] $
 
 de: diff(e);
@@ -56,12 +55,8 @@ sxx: diff(dx(x, y), x);
 sxy: diff(dx(x, y), y);
 syx: diff(dy(x, y), x);
 syy: diff(dy(x, y), y);
-Dxx: (sxx + sxx + sxx*sxx + syx*syx)/2;
-Dxy: (sxy + syx + sxx*sxy + syx*syy)/2;
-Dyx: (syx + sxy + sxy*sxx + syy*syx)/2;
-Dyy: (syy + syy + sxy*sxy + syy*syy)/2;
-D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
-D: 2*D + ident(2);
+M: matrix([sxx, sxy], [syx, syy])$
+D: M . transpose(M);
 
 I1: mattrace(D);
 I2: determinant(D);
@@ -156,7 +151,7 @@ pvoid(e)::=printf(true, "~a *~a~%", 'void, e);
 with_stdout("param",
   pvoid(param),
   pfun(F1), pfun(F2),
-  real(ax), real(ay), real(bx), real(by), real(cx), real(cy),
+  real(bx), real(by), real(cx), real(cy),
   real(vx), real(vy), real(ux), real(uy), real(wx), real(wy),
   preal(dvx), preal(dvy),
   preal(dux), preal(duy),
