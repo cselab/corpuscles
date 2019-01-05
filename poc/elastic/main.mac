@@ -21,23 +21,21 @@ cgr(v)::=buildq([v: v],
     printf(true, "SET(~a, ~a);~%", 'v, cgrind0(v)));
 
 frm0 (e):= format(e, %poly(Fb, Fa), %factor, gcfac) $
-frm1 (e):= format(e, %poly(vx, vy, ux, uy, wx, wy), %factor, gcfac) $
+frm1 (e):= format(e, %poly(ux, uy, wx, wy), %factor, gcfac) $
 
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
 
-(X: 1, Y : 2, Z : 3) $
+declare([bx, cx, cy], constant) $
 
-declare([ax, ay, bx, by, cx, cy], constant) $
-
-dx(x, y):= p0 + px*x + py*y $
-dy(x, y):= q0 + qx*x + qy*y $
+dx(x, y):= p0 + px*x + py*y$
+dy(x, y):= q0 + qx*x + qy*y$
 
 e: [
-  dx(ax, ay) = vx,
-  dy(ax, ay) = vy,
+  dx(0, 0) = vx,
+  dy(0, 0) = vy,
 
-  dx(bx, by) = ux,
-  dy(bx, by) = uy,
+  dx(bx, 0) = ux,
+  dy(bx, 0) = uy,
 
   dx(cx, cy) = wx,
   dy(cx, cy) = wy
@@ -47,20 +45,10 @@ de: diff(e);
 v: [p0, px, py,   q0, qx, qy];
 ds: linsolve(de, diff(v));
 s : linsolve( e,       v);
-Q: ax*(cy-by)-bx*cy+by*cx+ay*(bx-cx);
+Q: -bx*cy;
 
-ds: subst('Q, Q, ds);
-s:  subst('Q, Q, s);
-
-sxx: diff(dx(x, y), x);
-sxy: diff(dx(x, y), y);
-syx: diff(dy(x, y), x);
-syy: diff(dy(x, y), y);
-Dxx: (sxx + sxx + sxx*sxx + syx*syx)/2;
-Dxy: (sxy + syx + sxx*sxy + syx*syy)/2;
-Dyx: (syx + sxy + sxy*sxx + syy*syx)/2;
-Dyy: (syy + syy + sxy*sxy + syy*syy)/2;
-D: matrix([Dxx, Dxy], [Dyx, Dyy]) $
+M: matrix([px, py], [0, qy])$
+D: M . transpose(M);
 
 I1: mattrace(D);
 I2: determinant(D);
@@ -73,36 +61,10 @@ dE: subst(ds, factor(diff(E))) $
 dE: ratsubst('F,   F(I1, I2), dE) $
 dE: expand(dE) $
 
-d: (px+1)*qy-py*qx+px+1;
-
-abx: ax - bx;
-aby: ay - by;
-
-cax: cx - ax;
-cay: cy - ay;
-
-cbx: cx - bx;
-cby: cy - by;
-
 back(e):=(
-  e: subst('d,   d,   e),
-
-  e: subst( 'cby,  cby, e),
-  e: subst(-'cby, -cby, e),
-
-  e: subst( 'cay,  cay, e),
-  e: subst(-'cay, -cay, e),
-
-  e: subst('cbx, cbx, e),
-
-  e: subst('cax, cax, e),
-  e: subst(-'cax, -cax, e),
-
-  e: subst(-'abx, -abx, e),
-
-  e: subst('aby, aby, e),
-  e: subst(-'aby, -aby, e),
-
+  e: subst(0, 'vx, e),
+  e: subst(0, 'vy, e),
+  e: subst(0, 'uy, e),
   e);
 
 dvx: gcfac(back(co(dE, vx)));
@@ -116,14 +78,13 @@ dwy: gcfac(back(co(dE, wy)));
 
 px: gcfac(back(frm1(assoc('px, s))));
 py: gcfac(back(frm1(assoc('py, s))));
-
-qx: gcfac(back(frm1(assoc('qx, s))));
 qy: gcfac(back(frm1(assoc('qy, s))));
 
 matchdeclare(x, all) $
 defrule(r_sq, x^2, sq(x)) $
 rsq(e):=apply1(e, r_sq) $
-I1: rsq(factor(I1));
+I1: rsq(I1);
+I2: rsq(I2);
 
 Fa: F1(param, 'I1, 'I2) $
 Fb: F2(param, 'I1, 'I2) $
@@ -135,11 +96,9 @@ pA : 'Q/2;
 with_stdout("body",
   cg(Q),
   printf(true, "NOT_ZERO(Q);~%"),
-  cg(abx), cg(aby), cg(cax), cg(cay), cg(cbx), cg(cby),
-  cg(px), cg(py), cg(qx), cg(qy),
+  cg(px), cg(py), cg(qy),
   cg(I1), cg(I2),
   cg(Fa), cg(Fb),
-  cg(d),
   newline(),
   cgr(dvx), cgr(dvy), cgr(dux), cgr(duy), cgr(dwx), cgr(dwy),
   cgr(pI1), cgr(pI2), cgr(pA)) $
@@ -155,8 +114,8 @@ pvoid(e)::=printf(true, "~a *~a~%", 'void, e);
 with_stdout("param",
   pvoid(param),
   pfun(F1), pfun(F2),
-  real(ax), real(ay), real(bx), real(by), real(cx), real(cy),
-  real(vx), real(vy), real(ux), real(uy), real(wx), real(wy),
+  real(bx), real(cx), real(cy),
+  real(ux), real(wx), real(wy),
   preal(dvx), preal(dvy),
   preal(dux), preal(duy),
   preal(dwx), preal(dwy),

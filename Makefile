@@ -1,8 +1,9 @@
 D = \
 tool\
 pkgconfig\
-lib\
 bin/m4\
+m4/lib\
+lib\
 bin/align\
 bin/ffmpeg\
 bin/geomview\
@@ -21,12 +22,14 @@ example/ten\
 example/valid\
 example/vec\
 example/volume\
-m4/lib\
 maxima/lib
 
 install: dir
 test: dir
 clean: dir
+
+lib: bin/m4 m4/lib
+
 include make/dir.mk
 
-.PHONY: test install clean
+.PHONY: tool bin/m4 m4/lib lib test install clean

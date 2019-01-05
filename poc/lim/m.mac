@@ -1,0 +1,9 @@
+M: matrix([a, b], [0, c]);
+
+S: transpose(M) . M;
+
+I0: ratsimp(mat_trace(S));
+I1: ratsimp(determinant(S));
+
+al: ratsimp(determinant(M) - 1);
+be: 1/(2*determinant(M)) * (mat_trace(S) - 2 * determinant(M) );

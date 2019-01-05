@@ -27,38 +27,6 @@ static int minus(real ax, real ay, real bx, real by, /**/ real *cx, real *cy) {
 static real cross(real ax, real ay, real bx, real by) {
     return ax*by - ay*bx;
 }
-static int assert_force_2d(real ax, real ay,
-                           real bx, real by,
-                           real cx, real cy,
-                           real dax, real day,
-                           real dbx, real dby,
-                           real dcx, real dcy) {
-    /* check total force and  torque */
-    real mx, my, fx, fy, max, may, mbx, mby, mcx, mcy, ta, tb, tc, t;
-    mean(ax, ay, bx, by, cx, cy, /**/ &mx, &my);
-    mean(dax, day, dbx, dby, dcx, dcy, /**/ &fx, &fy);
-
-    minus(ax, ay, mx, my, /**/ &max, &may);
-    minus(bx, by, mx, my, /**/ &mbx, &mby);
-    minus(cx, cy, mx, my, /**/ &mcx, &mcy);
-
-    ta = cross(max, may, dax, day);
-    tb = cross(mbx, mby, dbx, dby);
-    tc = cross(mcx, mcy, dcx, dcy);
-    t = ta + tb + tc;
-    if (!small(fx) || !small(fy) || !small(t)) {
-        MSG("bad 2d triangle in strain");
-        MSG("a, b, c, f, t:");
-        fprintf(stderr, "a: %.16g %.16g\n", ax, ay);
-        fprintf(stderr, "b: %.16g %.16g\n", bx, by);
-        fprintf(stderr, "c: %.16g %.16g\n", cx, cy);
-        fprintf(stderr, "f: %.16g %.16g\n", fx, fy);
-        fprintf(stderr, "t: %.16g\n", t);
-        return 0;
-    }
-
-    return 1;
-}
 
 static int assert_force_3d(const real a[3], const real b[3], const real c[3],
                            const real da[3], const real db[3], const real dc[3]) {
@@ -95,33 +63,19 @@ int strain_force_3d(void *param,
                     const real a[3], const real b[3], const real c[3], /**/
                     real da_tot[3], real db_tot[3], real dc_tot[3]) {
     real da[3], db[3], dc[3];
-    real ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
+    real bx, cx, cy, ux, wx, wy, _by, _uy;
     real dvx, dvy, dux, duy, dwx, dwy;
     real area, I1, I2;
     real ex[3], ey[3];
 
-    tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
-    tri_3to2(a, b, c, /**/ &ux, &uy, &wx, &wy);
-    ux -= bx; uy -= by; /* displace */
-    wx -= cx; wy -= cy;
+    tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
+    tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
 
-    ax = ay = vx = vy = 0;
     strain_2d(param, F1, F2,
-              ax, ay, bx, by, cx, cy,
-              vx, vy, ux, uy, wx, wy,
+              bx, cx, cy,
+              ux, wx, wy,
               &dvx, &dvy, &dux, &duy, &dwx, &dwy,
               &I1, &I2, &area);
-    if (!assert_force_2d(ax + vx, ay + vy,
-                         bx + ux, by + uy,
-                         cx + wx, cy + wy,
-                         dvx, dvy, dux, duy, dwx, dwy)) {
-        MSG("in : %.16g %.16g  %.16g %.16g  %.16g %.16g %.16g %.16g  %.16g %.16g  %.16g %.16g",
-            ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy);
-        MSG("out: %.16g %.16g  %.16g %.16g  %.16g %.16g",
-            dvx, dvy, dux, duy, dwx, dwy);
-        ERR(HE_NUM, "bad 2d forces in triangle");
-    }
-
     tri_2to3(a, b, c, /**/ ex, ey);
     vec_linear_combination(dvx, ex,  dvy, ey, /**/ da);
     vec_linear_combination(dux, ex,  duy, ey, /**/ db);
@@ -141,18 +95,15 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
                      const real a0[3], const real b0[3], const real c0[3],
                      const real a[3], const real b[3], const real c[3],
                      real *p_eng, real *p_deng) {
-    real ax, ay, bx, by, cx, cy, vx, vy, ux, uy, wx, wy;
+    real bx, _by, cx, cy, ux, _uy, wx, wy;
     real I1, I2, A, eng, deng;
 
-    tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
-    tri_3to2(a, b, c, /**/ &ux, &uy, &wx, &wy);
-    ux -= bx; uy -= by; /* displace */
-    wx -= cx; wy -= cy;
+    tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
+    tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
 
-    ax = ay = vx = vy = 0;
     strain_2d(param, Dummy, Dummy,
-              ax, ay, bx, by, cx, cy,
-              vx, vy, ux, uy, wx, wy,
+              bx, cx, cy,
+              ux, wx, wy,
               NULL, NULL, NULL, NULL, NULL, NULL,
               &I1, &I2, &A);
 
