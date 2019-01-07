@@ -204,7 +204,7 @@ static void main0(real *vx, real *vy, real *vz,
 
   fm = fopen(filemsg, "w");
   //fprintf(fm, "%s", "#et, eb, ea, ega, ev, ek, ee");
-  nsub = 100;
+  nsub = 0;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
@@ -218,13 +218,10 @@ static void main0(real *vx, real *vy, real *vz,
     if (errA<0) {
       errA=-errA;
     }
-    V  = volume();
-    errV = (V-V0)/A0;
-    if (errV<0) {
-      errV=-errV;
-    }
+
     
-    while ( j < nsub && ( errA > tolerA || errV > tolerV) ) {
+    while ( j < nsub && errA > tolerA ) {
+      
       ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
@@ -234,12 +231,7 @@ static void main0(real *vx, real *vy, real *vz,
       if (errA<0) {
 	errA=-errA;
       }
-      V  = volume();
-      errV = (V-V0)/A0;
-      if (errV<0) {
-	errV=-errV;
-      }
-
+      
     }
 
     if ( i % 100 == 0 ) {
