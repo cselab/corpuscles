@@ -26,11 +26,11 @@ case "$a" in
     *) err "unknown argument '$a'" ;;
 esac
 
-if test $# -eq 0; then err 'expectint precision: s/d'; fi
+if test $# -eq 0; then err 'expecting precision s, d, l'; fi
 p="$1"; shift
 case "$p" in
     s|d|l) ;;
-    *) err "unknown PRECISION '$a'" ;;
+    *) err "unknown precision '$p'; possible values are s, d, l" ;;
 esac
 
 e PKG_CONFIG_PATH="$PREFIX/share/pkgconfig:$PKG_CONFIG_PATH"
