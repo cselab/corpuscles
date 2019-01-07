@@ -1,22 +1,26 @@
 set -eu
 
+. he.util
+
+fa=1
 Vr=0.642
-Ka=0.5
-Kga=1
-Kv=5
+Ka=$(ae 0.5*$fa)
+Kga=$(ae 1*$fa)
+Kv=$(ae 5*$fa)
 Ke=0
 
-Kb=0.001
+Kb=$(ae 0.001*$fa)
 C0=0
 Kad=$(echo $Kb | awk '{print $1*0.63662}')
 DA0D=0
 D=0.000898798148042
-Da0=0
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
-end=1000
-freq=50
+end=1000000
+freq=200
+
+Da0p=0.11
 
 (cd ../ && make )
 if test $# -ne 0
@@ -33,10 +37,10 @@ then
     mkdir $Da1
     fi
     cd $Da1
-    off=$(he.path)/prolate/laplace/Nt1280/prolate_area_Vr$Vr.off
+    off=../data/Nt1280_01.off
 
     ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
 else
-    bash run.sh 0.1
+    bash run.sh $Da0p
     
 fi
