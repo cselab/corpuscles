@@ -14,6 +14,8 @@
 #include <he/ddih.h>
 
 #define FMT_IN   HE_REAL_IN
+#define FMT_OUT  HE_REAL_OUT
+
 static const char **argv;
 
 int vec(/**/ real a[3]) { vec_argv(&argv, a); return HE_OK; }
@@ -37,12 +39,14 @@ int main(__UNUSED int argc, const char **argv0) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
         strain_energy_3d(NULL, F_I1, a0, b0, c0,   a, b, c,   &eng, &deng);
-        printf("%.16g\n", deng);
+        printf(FMT_OUT, deng);
+        puts("");
     } else if (eq(op, "I2")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
         strain_energy_3d(NULL, F_I2, a0, b0, c0,   a, b, c,   &eng, &deng);
-        printf("%.16g\n", deng);
+        printf(FMT_OUT, deng);
+        puts("");
     } else
         ER("unknown operation '%s'", op);
     return 0;
