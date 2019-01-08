@@ -5,6 +5,8 @@ set -eu
 make
 
 fa=0.01
+pi=3.141592653589793115997964
+
 Vr=0.642
 Ka=$(ae 0.5*$fa)
 Kga=$(ae 1*$fa)
@@ -13,10 +15,10 @@ Ke=0
 
 Kb=$(ae 0.001*$fa)
 C0=0
-Kad=$(echo $Kb | awk '{print $1*0.63662}')
+Kad=$(ae 2*$Kb/$pi)
 DA0D=0
 D=0.000898798148042
-pi=3.141592653589793115997964
+
 A=$(echo  $pi | awk '{print $1*4.0}')
 off=data/Nt1280_01.off
 end=1000000
