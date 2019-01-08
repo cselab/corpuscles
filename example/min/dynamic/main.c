@@ -214,7 +214,7 @@ static int main0(real *vx, real *vy, real *vz,
   mu     = 100.0;
   h      = 0.01;
 
-  if ((fm = fopen(filemsg, "w")) != NULL)
+  if ((fm = fopen(filemsg, "w")) == NULL)
       ER("fail to open '%s'", filemsg);
   fclose(fm);
 
