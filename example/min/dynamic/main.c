@@ -137,27 +137,6 @@ static void euler(real dt,
     }
 }
 
-
-static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
-    int nv;
-    real r, r0, sx, sy, sz;
-    int i;
-    nv = NV;
-    sx = sy = sz = 0;
-    for (i = 0; i < nv; i++) {
-        r = rand()/(real)RAND_MAX - 0.5;
-        r0 = r * mag;
-        vx[i] += r0; vy[i] += r0; vz[i] += r0;
-    }
-    for (i = 0; i < nv; i++) {
-        sx += vx[i]; sy += vy[i]; sz += vz[i];
-    }
-    sx /= nv; sy /= nv; sz /= nv;
-    for (i = 0; i < nv; i++) {
-        vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
-    }
-}
-
 static void visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
@@ -201,10 +180,9 @@ static real max_vec(real *fx, real *fy, real *fz) {
 static int main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
-  real dt, dt_max, h, mu, rnd;
+  real dt, dt_max, h, mu;
   real A, V, Vr;
-  real errA, errV;
-  real *queue[] = {XX, YY, ZZ, NULL};
+  real errA;
   int nsub;
   char file[4048];
   char filemsg[4048]="stat.msg";
@@ -269,6 +247,8 @@ static int main0(real *vx, real *vy, real *vz,
       off_write(XX, YY, ZZ, file);
     }
   }//loop
+
+  return HE_OK;
 }
 
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
