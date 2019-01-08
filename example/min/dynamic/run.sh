@@ -24,7 +24,7 @@ Kb=$(ae 0.001*$f)
 C0=0
 Kad=$(ae 2*$Kb/$pi)
 end=100000000
-freq=$(ae "int(200/$f)")
+freq=$(ae "int(2000/$f)")
 
 Da=$(ae $Da/100)
 DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")
