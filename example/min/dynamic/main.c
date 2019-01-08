@@ -219,7 +219,6 @@ static int main0(real *vx, real *vy, real *vz,
             et = et + ek;
             A = area(); V = volume(); Vr=reduced_volume(A,V);
             MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
-            MSG("dt: %g", dt);
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
         
             fm = fopen(filemsg, "a");
