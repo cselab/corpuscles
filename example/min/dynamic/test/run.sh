@@ -22,25 +22,14 @@ freq=200
 
 Da0p=0.3
 
-(cd ../ && make )
-if test $# -ne 0
-then
-    Da1="$1"
+    Da1=$Da0p
     Da0=$(echo $Da1 | awk '{print $1/100}')
     echo '***' Da1=$Da1 '***' Da0 = $Da0 '***'
 
     DA0=$(echo $Kb, $C0, $Kad, $Da0, $D, $pi, $A | awk '{print ($4 - $1*$5*$2/$6/$3)*$7}')
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
-    #echo $Da0, $Da1, $Kb, $C0, $Kad, $DA0D
 	  
-    if [ ! -d $Da1 ]; then
-    mkdir $Da1
-    fi
-    cd $Da1
-    off=../data/Nt1280_01.off
+    off=data/Nt1280_01.off
     #off=$(he.path)/prolate/laplace/Nt1280/prolate_area_Vr0.642.off
     
-    ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
-else
-    bash run.sh $Da0p
-fi
+    ../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
