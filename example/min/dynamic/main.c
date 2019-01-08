@@ -125,7 +125,6 @@ void ForceSub(const real *x, const real *y, const real *z, /**/
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
-    
 }
 
 static void euler(real dt,
@@ -157,6 +156,22 @@ static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
     sx /= nv; sy /= nv; sz /= nv;
     for (i = 0; i < nv; i++) {
         vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
+    }
+}
+
+static void visc_pair(real mu,
+                      const real *vx, const real *vy, const real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+    int e, i, j;
+    real a[3], b[3], u[3], u0;
+    for (e = 0; e < NE; e++) {
+        i = D1[e]; j = D2[e];
+        vec_get(i, vx, vy, vz, a);
+        vec_get(j, vx, vy, vz, b);
+        vec_minus(a, b, u);
+        u0 = vec_abs(u);
+        vec_scalar_append(u, -mu*u0, i, fx, fy, fz);
+        vec_scalar_append(u,  mu*u0, j, fx, fy, fz);
     }
 }
 
@@ -207,6 +222,7 @@ static void main0(real *vx, real *vy, real *vz,
   for (i = 0; i <= end; i++) {
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
+    visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         
@@ -221,6 +237,7 @@ static void main0(real *vx, real *vy, real *vz,
     while ( j < nsub && errA > tolerA ) {
       
       ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
+      visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
       euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
       euler( dt, fx, fy, fz, /**/ vx, vy, vz);
       j++;
