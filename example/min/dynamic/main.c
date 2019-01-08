@@ -163,18 +163,6 @@ static real Kin(real *vx, real *vy, real *vz) {
     return s;
 }
 
-static real max_vec(real *fx, real *fy, real *fz) {
-    int i;
-    real c, m;
-    m = 0;
-    for (i = 0; i < NV; i++) {
-        c = sqrt(fx[i]*fx[i] + fy[i]*fy[i] + fz[i]*fz[i]);
-        if (c > m)
-            m = c;
-    }
-    return m;
-}
-
 static int equiangulate0(void) {
     int j, cnt;
     j = 0;
@@ -235,9 +223,7 @@ static int main0(real *vx, real *vy, real *vz,
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
         
             fm = fopen(filemsg, "a");
-            fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee);
-            fprintf(fm, "dt: %f\n", dt);
-            fprintf(fm, "A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+            fprintf(fm, "%g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, ea, ega, ev, ek, ee);
             fclose(fm);
         }
 
