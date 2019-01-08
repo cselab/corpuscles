@@ -189,7 +189,7 @@ static int equiangulate0(void) {
 static int main0(real *vx, real *vy, real *vz,
                  real *fx, real *fy, real *fz) {
     int i, j;
-    real dt, dt_max, h;
+    real dt;
     real A, V, Vr;
     real errA;
     int nsub;
@@ -197,8 +197,7 @@ static int main0(real *vx, real *vy, real *vz,
     char filemsg[4048]="stat.msg";
     FILE *fm;
 
-    dt_max = 0.01;
-    h      = 0.01;
+    dt = 0.01;
 
     if ((fm = fopen(filemsg, "w")) == NULL)
         ER("fail to open '%s'", filemsg);
@@ -208,7 +207,6 @@ static int main0(real *vx, real *vy, real *vz,
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
-        dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
