@@ -2,6 +2,8 @@ set -eu
 
 . he.util
 
+make
+
 fa=0.01
 Vr=0.642
 Ka=$(ae 0.5*$fa)
@@ -32,4 +34,4 @@ Da0p=0.3
     off=data/Nt1280_01.off
     #off=$(he.path)/prolate/laplace/Nt1280/prolate_area_Vr0.642.off
     
-    ../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
+    ./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
