@@ -177,9 +177,20 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
+static int equiangulate0(void) {
+    int j, cnt;
+    j = 0;
+    do {
+        equiangulate(&cnt);
+        MSG("cnt : %d", cnt);
+        j++;
+    } while (cnt > 0 && j < 10);
+    return HE_OK;
+}
+
 static int main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
-  int cnt, i, j;
+  int i, j;
   real dt, dt_max, h, mu;
   real A, V, Vr;
   real errA;
@@ -216,38 +227,30 @@ static int main0(real *vx, real *vy, real *vz,
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
 
+    if (i > 0 && i % 100 == 0)
+        equiangulate0();
+
     if ( i % 100 == 0 ) {
-
-      if ( i > 0 ) {
-        j = 0;
-        do {
-          equiangulate(&cnt);
-          MSG("cnt : %d", cnt);
-          j++;
-        } while (cnt > 0 && j < 10);
-      }
-
-      et = Energy(XX, YY, ZZ);
-      ek = Kin(vx, vy, vz);
-      et = et + ek;
-      A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
-      MSG("dt: %g", dt);
-      MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-
-      fm = fopen(filemsg, "a");
-      fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee);
-      fprintf(fm, "dt: %f\n", dt);
-      fprintf(fm, "A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
-      fclose(fm);
+        et = Energy(XX, YY, ZZ);
+        ek = Kin(vx, vy, vz);
+        et = et + ek;
+        A = area(); V = volume(); Vr=reduced_volume(A,V);
+        MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
+        MSG("dt: %g", dt);
+        MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
+        
+        fm = fopen(filemsg, "a");
+        fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee);
+        fprintf(fm, "dt: %f\n", dt);
+        fprintf(fm, "A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+        fclose(fm);
     }
 
     if ( i % freq == 0 ) {
-      sprintf(file, "%08d.off", i);
-      off_write(XX, YY, ZZ, file);
+        sprintf(file, "%08d.off", i);
+        off_write(XX, YY, ZZ, file);
     }
-  }//loop
-
+  }
   return HE_OK;
 }
 
