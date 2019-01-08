@@ -124,7 +124,6 @@ void ForceSub(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
-    f_volume_force(x, y, z, /**/ fx, fy, fz);
 }
 
 static void euler(real dt,
@@ -217,7 +216,7 @@ static void main0(real *vx, real *vy, real *vz,
 
   fm = fopen(filemsg, "w");
   //fprintf(fm, "%s", "#et, eb, ea, ega, ev, ek, ee");
-  nsub = 0;
+  nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
     Force(XX, YY, ZZ, /**/ fx, fy, fz);
@@ -225,30 +224,18 @@ static void main0(real *vx, real *vy, real *vz,
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+
+    for (j = 0; ; j++) {
+        if (j >= nsub) break;
+        A  = area();
+        errA = fabs(A - A0)/A0;
+        if (errA <= tolerA) break;
+        ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
+        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+        euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+        euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+    }
         
-    j = 0;
-    A  = area();
-    errA = (A-A0)/A0;
-    if (errA<0) {
-      errA=-errA;
-    }
-
-    
-    while ( j < nsub && errA > tolerA ) {
-      
-      ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
-      visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-      j++;
-      A  = area();
-      errA = (A-A0)/A0;
-      if (errA<0) {
-	errA=-errA;
-      }
-      
-    }
-
     if ( i % 100 == 0 ) {
 
       if ( i > 0 ) {
