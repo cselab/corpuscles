@@ -121,7 +121,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
 void ForceSub(const real *x, const real *y, const real *z, /**/
-           real *fx, real *fy, real *fz) {
+              real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
 }
@@ -189,69 +189,69 @@ static int equiangulate0(void) {
 }
 
 static int main0(real *vx, real *vy, real *vz,
-                  real *fx, real *fy, real *fz) {
-  int i, j;
-  real dt, dt_max, h, mu;
-  real A, V, Vr;
-  real errA;
-  int nsub;
-  char file[4048];
-  char filemsg[4048]="stat.msg";
-  FILE *fm;
+                 real *fx, real *fy, real *fz) {
+    int i, j;
+    real dt, dt_max, h, mu;
+    real A, V, Vr;
+    real errA;
+    int nsub;
+    char file[4048];
+    char filemsg[4048]="stat.msg";
+    FILE *fm;
 
-  dt_max = 0.01;
-  mu     = 10000.0;
-  h      = 0.01;
+    dt_max = 0.01;
+    mu     = 10000.0;
+    h      = 0.01;
 
-  if ((fm = fopen(filemsg, "w")) == NULL)
-      ER("fail to open '%s'", filemsg);
-  fclose(fm);
+    if ((fm = fopen(filemsg, "w")) == NULL)
+        ER("fail to open '%s'", filemsg);
+    fclose(fm);
 
-  nsub = 100;
-  zero(NV, vx); zero(NV, vy); zero(NV, vz);
-  for (i = 0; i <= end; i++) {
-    Force(XX, YY, ZZ, /**/ fx, fy, fz);
-    dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-    visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-
-    for (j = 0; ; j++) {
-        if (j >= nsub) break;
-        A  = area();
-        errA = fabs(A - A0)/A0;
-        if (errA <= tolerA) break;
-        ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
+    nsub = 100;
+    zero(NV, vx); zero(NV, vy); zero(NV, vz);
+    for (i = 0; i <= end; i++) {
+        Force(XX, YY, ZZ, /**/ fx, fy, fz);
+        dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-    }
 
-    if (i > 0 && i % 100 == 0)
-        equiangulate0();
+        for (j = 0; ; j++) {
+            if (j >= nsub) break;
+            A  = area();
+            errA = fabs(A - A0)/A0;
+            if (errA <= tolerA) break;
+            ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
+            visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+            euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
+            euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+        }
 
-    if ( i % 100 == 0 ) {
-        et = Energy(XX, YY, ZZ);
-        ek = Kin(vx, vy, vz);
-        et = et + ek;
-        A = area(); V = volume(); Vr=reduced_volume(A,V);
-        MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
-        MSG("dt: %g", dt);
-        MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
+        if (i > 0 && i % 100 == 0)
+            equiangulate0();
+
+        if ( i % 100 == 0 ) {
+            et = Energy(XX, YY, ZZ);
+            ek = Kin(vx, vy, vz);
+            et = et + ek;
+            A = area(); V = volume(); Vr=reduced_volume(A,V);
+            MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
+            MSG("dt: %g", dt);
+            MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
         
-        fm = fopen(filemsg, "a");
-        fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee);
-        fprintf(fm, "dt: %f\n", dt);
-        fprintf(fm, "A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
-        fclose(fm);
-    }
+            fm = fopen(filemsg, "a");
+            fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee);
+            fprintf(fm, "dt: %f\n", dt);
+            fprintf(fm, "A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+            fclose(fm);
+        }
 
-    if ( i % freq == 0 ) {
-        sprintf(file, "%08d.off", i);
-        off_write(XX, YY, ZZ, file);
+        if ( i % freq == 0 ) {
+            sprintf(file, "%08d.off", i);
+            off_write(XX, YY, ZZ, file);
+        }
     }
-  }
-  return HE_OK;
+    return HE_OK;
 }
 
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
@@ -260,56 +260,56 @@ static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 
 int main(int __UNUSED argc, const char *v[]) {
-  real a0;
-  real *fx, *fy, *fz;
-  real *vx, *vy, *vz;
-  real A, V, Vr;
-  BendingParam bending_param;
+    real a0;
+    real *fx, *fy, *fz;
+    real *vx, *vy, *vz;
+    real A, V, Vr;
+    BendingParam bending_param;
 
-  argv = v; argv++;
-  arg();
-  srand(time(NULL));
+    argv = v; argv++;
+    arg();
+    srand(time(NULL));
 
-  ini("/dev/stdin");
-  A0 = area();
-  a0 = A0/NT;
-  V0 = target_volume(A0, rVolume);
-  e0 = eq_tri_edg(a0);
+    ini("/dev/stdin");
+    A0 = area();
+    a0 = A0/NT;
+    V0 = target_volume(A0, rVolume);
+    e0 = eq_tri_edg(a0);
 
-  A = A0;
-  V = volume();
-  Vr= reduced_volume(A, V);
+    A = A0;
+    V = volume();
+    Vr= reduced_volume(A, V);
 
-  MSG("Targeted Area, Volume: %g %g", A0, V0);
-  MSG("V/V0: %g", V/V0);
-  MSG("A/A0: %g", A/A0);
-  MSG("Vr  : %g", Vr);
+    MSG("Targeted Area, Volume: %g %g", A0, V0);
+    MSG("V/V0: %g", V/V0);
+    MSG("A/A0: %g", A/A0);
+    MSG("Vr  : %g", Vr);
 
-  f_area_ini(a0,  Ka);
-  f_garea_ini(A0, Kga);
-  f_volume_ini(V0, Kv);
-  f_edg_sq_ini(Ke);
+    f_area_ini(a0,  Ka);
+    f_garea_ini(A0, Kga);
+    f_volume_ini(V0, Kv);
+    f_edg_sq_ini(Ke);
 
-  bending_param.Kb = Kb;
-  bending_param.C0 = C0;
-  bending_param.Kad = Kad;
-  bending_param.DA0D = DA0D;
-  f_bending_ini(bending, bending_param);
+    bending_param.Kb = Kb;
+    bending_param.C0 = C0;
+    bending_param.Kad = Kad;
+    bending_param.DA0D = DA0D;
+    f_bending_ini(bending, bending_param);
 
-  MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
-  MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
+    MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
+    MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
 
-  main0(vx, vy, vz, fx, fy, fz);
+    main0(vx, vy, vz, fx, fy, fz);
 
-  FREE(fx); FREE(fy); FREE(fz);
-  FREE(vx); FREE(vy); FREE(vz);
+    FREE(fx); FREE(fy); FREE(fz);
+    FREE(vx); FREE(vy); FREE(vz);
 
-  f_bending_fin();
-  f_edg_sq_fin();
-  f_volume_fin();
-  f_area_fin();
-  f_garea_fin();
-  fin();
+    f_bending_fin();
+    f_edg_sq_fin();
+    f_volume_fin();
+    f_area_fin();
+    f_garea_fin();
+    fin();
 
-  return 0;
+    return 0;
 }
