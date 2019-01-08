@@ -24,9 +24,10 @@ off=data/Nt1280_01.off
 end=1000000
 freq=200
 Da1=0.3
-Da0=$(echo $Da1 | awk '{print $1/100}')
-DA0=$(echo $Kb, $C0, $Kad, $Da0, $D, $pi, $A | awk '{print ($4 - $1*$5*$2/$6/$3)*$7}')
-DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
+Da0=$(ae $Da1/100)
+DA0=$(ae "($Da0 - $Kb*$D*$C0/$pi/$Kad)*$A")
+
+DA0D=$(ae $DA0/$D)
     
 echo ./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off # > msg
 exit
