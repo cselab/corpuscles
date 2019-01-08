@@ -20,21 +20,13 @@
 #include <he/bending.h>
 #include <he/x.h>
 
-static const real pi = 3.141592653589793115997964;
-
-static const real tolerA = 1.0e-2;
-static const real tolerV = 1.0e-2;
-
-static real Kb, C0, Kad, DA0D;
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++) a[i] = 0;
-}
-
-
 #define FMT_IN   HE_REAL_IN
 
-static real rVolume, Ka, Kga, Kv, Ke;
+static const real pi = 3.141592653589793115997964;
+static const real tolerA = 1.0e-2;
+static const real tolerV = 1.0e-2;
+static real Kb, C0, Kad, DA0D;
+static real rVolume, Ka, Kga, Kv, Ke, mu;
 static int end;
 static int freq;
 static real A0, V0, e0;
@@ -44,10 +36,15 @@ static char bending[4049];
 static const char *me = "min/helfrich_xin_fga";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D mu < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");
     exit(0);
+}
+
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
 }
 
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
@@ -88,6 +85,7 @@ static void arg() {
     scl(&C0);
     scl(&Kad);
     scl(&DA0D);
+    scl(&mu);
     num(&end);
     num(&freq);
 }
@@ -191,7 +189,7 @@ static int equiangulate0(void) {
 static int main0(real *vx, real *vy, real *vz,
                  real *fx, real *fy, real *fz) {
     int i, j;
-    real dt, dt_max, h, mu;
+    real dt, dt_max, h;
     real A, V, Vr;
     real errA;
     int nsub;
@@ -200,7 +198,6 @@ static int main0(real *vx, real *vy, real *vz,
     FILE *fm;
 
     dt_max = 0.01;
-    mu     = 10000.0;
     h      = 0.01;
 
     if ((fm = fopen(filemsg, "w")) == NULL)
