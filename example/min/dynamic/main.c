@@ -189,7 +189,7 @@ static int main0(real *vx, real *vy, real *vz,
   FILE *fm;
 
   dt_max = 0.01;
-  mu     = 100.0;
+  mu     = 10000.0;
   h      = 0.01;
 
   if ((fm = fopen(filemsg, "w")) == NULL)
