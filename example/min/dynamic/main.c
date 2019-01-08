@@ -19,8 +19,6 @@
 #include <he/dtri.h>
 #include <he/bending.h>
 #include <he/x.h>
-#include <alg/x.h>
-#include <alg/min.h>
 
 static const real pi = 3.141592653589793115997964;
 
