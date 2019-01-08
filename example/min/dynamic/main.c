@@ -214,7 +214,6 @@ static void main0(real *vx, real *vy, real *vz,
   mu     = 100.0;
   h      = 0.01*e0;
 
-  fm = fopen(filemsg, "w");
   //fprintf(fm, "%s", "#et, eb, ea, ega, ev, ek, ee");
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
@@ -254,9 +253,12 @@ static void main0(real *vx, real *vy, real *vz,
       MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
+
+      fm = fopen(filemsg, "a");
       fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
       fprintf(fm, "dt: %f\n", dt);
       fprintf(fm, "A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+      fclose(fm);
     }
     
     if ( i % freq == 0 ) {
@@ -264,9 +266,6 @@ static void main0(real *vx, real *vy, real *vz,
       off_write(XX, YY, ZZ, file);
     }
   }//loop
-
-  fclose(fm);
-  
 }
 
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }

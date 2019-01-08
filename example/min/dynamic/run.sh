@@ -4,8 +4,8 @@ set -eu
 
 make
 
-#off=data/Nt1280_01.off
-off=data/Nt5120_01.off
+off=data/Nt1280_01.off
+#off=data/Nt5120_01.off
 
 Da=0.3
 
@@ -29,4 +29,4 @@ freq=$(ae "int(200/$f)")
 Da=$(ae $Da/100)
 DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")
     
-./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off  > msg
+./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off
