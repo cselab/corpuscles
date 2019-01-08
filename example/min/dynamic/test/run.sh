@@ -37,11 +37,10 @@ then
     mkdir $Da1
     fi
     cd $Da1
-    #off=../data/Nt1280_01.off
-    off=$(he.path)/prolate/laplace/Nt1280/prolate_area_Vr0.642.off
+    off=../data/Nt1280_01.off
+    #off=$(he.path)/prolate/laplace/Nt1280/prolate_area_Vr0.642.off
     
     ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
 else
     bash run.sh $Da0p
-    
 fi
