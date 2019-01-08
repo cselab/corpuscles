@@ -99,7 +99,7 @@ real Energy(const real *x, const real *y, const real *z) {
     v = f_volume_energy(x, y, z);
     e = f_edg_sq_energy(x, y, z);
     b = f_bending_energy(x, y, z);
-    
+
 
     et  = a + ga + v + e + b;
     ea  = a;
@@ -107,7 +107,7 @@ real Energy(const real *x, const real *y, const real *z) {
     ev  = v;
     ee  = e;
     eb  = b;
-    
+
     return a + ga + v + e + b;
 }
 
@@ -198,7 +198,7 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static void main0(real *vx, real *vy, real *vz,
+static int main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
   real dt, dt_max, h, mu, rnd;
@@ -207,14 +207,17 @@ static void main0(real *vx, real *vy, real *vz,
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   char file[4048];
-  char filemsg[128]="stat.msg";
+  char filemsg[4048]="stat.msg";
   FILE *fm;
-  
+
   dt_max = 0.01;
   mu     = 100.0;
-  h      = 0.01*e0;
+  h      = 0.01;
 
-  //fprintf(fm, "%s", "#et, eb, ea, ega, ev, ek, ee");
+  if ((fm = fopen(filemsg, "w")) != NULL)
+      ER("fail to open '%s'", filemsg);
+  fclose(fm);
+
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
@@ -234,33 +237,33 @@ static void main0(real *vx, real *vy, real *vz,
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     }
-        
+
     if ( i % 100 == 0 ) {
 
       if ( i > 0 ) {
-	j = 0;
-	do {
-	  equiangulate(&cnt);
-	  MSG("cnt : %d", cnt);
-	  j++;
-	} while (cnt > 0 && j < 10);
+        j = 0;
+        do {
+          equiangulate(&cnt);
+          MSG("cnt : %d", cnt);
+          j++;
+        } while (cnt > 0 && j < 10);
       }
-      
+
       et = Energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
       et = et + ek;
       A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
+      MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
       MSG("dt: %g", dt);
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
 
       fm = fopen(filemsg, "a");
-      fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
+      fprintf(fm, "eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee);
       fprintf(fm, "dt: %f\n", dt);
       fprintf(fm, "A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
       fclose(fm);
     }
-    
+
     if ( i % freq == 0 ) {
       sprintf(file, "%06d.off", i);
       off_write(XX, YY, ZZ, file);
@@ -279,11 +282,11 @@ int main(int __UNUSED argc, const char *v[]) {
   real *vx, *vy, *vz;
   real A, V, Vr;
   BendingParam bending_param;
-  
+
   argv = v; argv++;
   arg();
   srand(time(NULL));
-  
+
   ini("/dev/stdin");
   A0 = area();
   a0 = A0/NT;
@@ -293,37 +296,37 @@ int main(int __UNUSED argc, const char *v[]) {
   A = A0;
   V = volume();
   Vr= reduced_volume(A, V);
-  
+
   MSG("Targeted Area, Volume: %g %g", A0, V0);
   MSG("V/V0: %g", V/V0);
   MSG("A/A0: %g", A/A0);
   MSG("Vr  : %g", Vr);
-  
+
   f_area_ini(a0,  Ka);
   f_garea_ini(A0, Kga);
   f_volume_ini(V0, Kv);
   f_edg_sq_ini(Ke);
-  
+
   bending_param.Kb = Kb;
   bending_param.C0 = C0;
   bending_param.Kad = Kad;
   bending_param.DA0D = DA0D;
   f_bending_ini(bending, bending_param);
-  
+
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
-  
+
   main0(vx, vy, vz, fx, fy, fz);
-  
+
   FREE(fx); FREE(fy); FREE(fz);
   FREE(vx); FREE(vy); FREE(vz);
-  
+
   f_bending_fin();
   f_edg_sq_fin();
   f_volume_fin();
   f_area_fin();
   f_garea_fin();
   fin();
-  
+
   return 0;
 }
