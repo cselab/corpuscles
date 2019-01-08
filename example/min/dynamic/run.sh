@@ -4,27 +4,27 @@ set -eu
 
 make
 
-off=data/Nt1280_01.off
-# off=data/Nt5120_01.off
+#off=data/Nt1280_01.off
+off=data/Nt5120_01.off
 
 Da=0.3
 
-fa=1
+f=0.1
 pi=3.141592653589793115997964
 D=0.000898798148042
 A=$(ae 4*$pi)
 
 Vr=0.642
-Ka=$(ae 0.5*$fa)
-Kga=$(ae 1*$fa)
-Kv=$(ae 5*$fa)
+Ka=$(ae 0.5*$f)
+Kga=$(ae 1*$f)
+Kv=$(ae 5*$f)
 Ke=0
 
-Kb=$(ae 0.001*$fa)
+Kb=$(ae 0.001*$f)
 C0=0
 Kad=$(ae 2*$Kb/$pi)
-end=1000000
-freq=200
+end=100000000
+freq=$(ae int(200/$f))
 
 Da=$(ae $Da/100)
 DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")
