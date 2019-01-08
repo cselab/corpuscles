@@ -5,6 +5,8 @@ set -eu
 make
 
 off=data/Nt1280_01.off
+# off=data/Nt5120_01.off
+
 Da=0.3
 
 fa=1
