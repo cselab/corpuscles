@@ -1,4 +1,4 @@
-#define T HeFGompper_Kroll
+#define T HeFGompperKroll
 
 typedef struct He He;
 typedef struct T T;

@@ -11,7 +11,7 @@
 
 #include "he/f/gompper_kroll.h"
 
-#define T HeFGompper_Kroll
+#define T HeFGompperKroll
 
 #define  nxt(h)     he_nxt(he, (h))
 #define  flp(h)     he_flp(he, (h))

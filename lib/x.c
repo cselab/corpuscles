@@ -47,7 +47,7 @@ static HeFEdgSq *f_edg_sq;
 static HeFHarmonicRef *f_harmonic_ref;
 static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
-static HeFGompper_Kroll *f_gompper_kroll;
+static HeFGompperKroll *f_gompper_kroll;
 static Bending *f_bending;
 static Restore *f_restore;
 static HeOff *off;
