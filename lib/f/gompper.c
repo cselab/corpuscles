@@ -23,20 +23,17 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
+    int nv, ne, nt;
     real Kb, C0, Kad, DA0D;
-
     int *T0, *T1, *T2;
     real *l2, *t;
-
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *curva_mean, *curva_gauss;
     real *energy, *area;
-
     real eng_bend, eng_ad;
-
-    int nv, ne, nt;
 };
+
 static void get_edg(int i, int j, const real *x, const real *y, const real *z, /**/ real r[3]) {
     real a[3], b[3];
     vec_get(i, x, y, z, a);

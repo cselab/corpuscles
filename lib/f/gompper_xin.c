@@ -24,13 +24,12 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
+    int nv;
     real Kb, H0, Kad, DA0D;
     real *energy, *fx, *fy, *fz;
     real *gx, *gy, *gz;
     Dh *dh;
     real eng_bend, eng_ad;
-
-    int nv;
     real *H;
 };
 

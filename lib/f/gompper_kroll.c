@@ -25,18 +25,15 @@ static const real pi = 3.141592653589793115997964;
 static const real epsilon = 1.0e-12;
 
 struct T {
+    int nv, ne, nt, nh;
     real Kb, C0, Kad, DA0D;
-
     int *T0, *T1, *T2;
-
     real *len2, *cot;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *curva_mean, *curva_gauss;
     real *energy_local, *area;
     real eng_bend, eng_ad;
-
-    int nv, ne, nt, nh;
 };
 static void get_edg(const real *x, const real *y, const real *z,
                     int i, int j,
