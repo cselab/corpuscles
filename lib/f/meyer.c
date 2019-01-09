@@ -96,8 +96,8 @@ static int norm_lap(T *q, He *he,
 }
 
 static int area_voronoi(He *he,
-                         const real *x, const real *y, const real *z, /**/
-                         real *area) {
+                        const real *x, const real *y, const real *z, /**/
+                        real *area) {
     enum {X, Y, Z};
     int t, nt, nv;
     int i, j, k;
@@ -139,8 +139,8 @@ static int area_voronoi(He *he,
 }
 
 static int area_mix(He *he,
-                     const real *x, const real *y, const real *z, /**/
-                     real *area) {
+                    const real *x, const real *y, const real *z, /**/
+                    real *area) {
     enum {X, Y, Z};
     int t, nt, nv;
     int i, j, k;
@@ -420,7 +420,7 @@ static int compute_K(T *q, He *he,
     return HE_OK;
 }
 real he_f_meyer_energy(T *q, He *he,
-                           const real *x, const real *y, const real *z) {
+                       const real *x, const real *y, const real *z) {
     enum {X, Y, Z};
     int v;
     int *T0, *T1, *T2;
@@ -466,8 +466,8 @@ real he_f_meyer_energy(T *q, He *he,
     return 2*Kb*mH2;
 }
 int he_f_meyer_force(T *q, He *he,
-                         const real *x, const real *y, const real *z, /**/
-                         real *fx, real *fy, real *fz) {
+                     const real *x, const real *y, const real *z, /**/
+                     real *fx, real *fy, real *fz) {
 #   define G(f) f = q->f
     enum {X, Y, Z};
     int v;
