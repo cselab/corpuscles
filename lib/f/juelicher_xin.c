@@ -37,6 +37,8 @@ struct T {
     Param param;
     real *theta, *len, *len_theta, *area, *H;
     real *energy, *fx, *fy, *fz, *fxad, *fyad, *fzad;
+
+    real eng_bend, eng_ad;
 };
 
 static void zero(int n, real *a) {
@@ -314,8 +316,11 @@ real he_f_juelicher_xin_energy(T *q, He *he,
     len_theta_tot = sum(nv, len_theta);
     scurv = (len_theta_tot/2 - DA0D)/area_tot;
 
-    eng_ad = pi*Kad*area_tot*scurv*scurv/2; 
-    //printf("eng_bend, eng_ad, area_tot:%f, %f, %f\n", eng_bend, eng_ad, area_tot);
+    eng_ad = pi*Kad*area_tot*scurv*scurv/2;
+
+    q->eng_bend = eng_bend;
+    q->eng_ad = eng_ad;
+
     return eng_bend + eng_ad;
 }
 
@@ -532,4 +537,12 @@ int he_f_juelicher_xin_energy_ver(T *q, /**/ real **pa) {
 int he_f_juelicher_xin_area_ver(T *q, /**/ real **pa) {
   *pa = q->area;
   return HE_OK;
+}
+
+real he_f_juelicher_xin_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_juelicher_xin_energy_bend(T *q) {
+    return q->eng_bend;
 }
