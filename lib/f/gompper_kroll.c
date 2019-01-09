@@ -521,3 +521,11 @@ int he_f_gompper_kroll_force(T *q, He *he,
 
     return HE_OK;
 }
+
+real he_f_gompper_kroll_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_gompper_kroll_energy_bend(T *q) {
+    return q->eng_bend;
+}

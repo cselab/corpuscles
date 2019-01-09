@@ -526,3 +526,11 @@ int he_f_meyer_force(T *q, He *he,
     return HE_OK;
 #   undef G
 }
+
+real he_f_meyer_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_meyer_energy_bend(T *q) {
+    return q->eng_bend;
+}

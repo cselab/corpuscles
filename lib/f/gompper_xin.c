@@ -251,3 +251,11 @@ int he_f_gompper_xin_curva_mean_ver(T *q, /**/ real **pa) {
 int he_f_gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
     return dh_norm(q->dh, x, y, z);
 }
+
+real he_f_gompper_xin_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_gompper_xin_bend(T *q) {
+    return q->eng_bend;
+}

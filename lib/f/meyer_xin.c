@@ -582,3 +582,11 @@ int he_f_meyer_xin_force(T *q, He *he,
     }
     return HE_OK;
 }
+
+real he_f_meyer_xin_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_meyer_xin_energy_bend(T *q) {
+    return q->eng_bend;
+}

@@ -276,3 +276,11 @@ int he_f_kantor_area_ver(T *q, /**/ real**pa)
 int he_f_kantor_curva_mean_ver(__UNUSED T *q, /**/ __UNUSED  real **pa) {
     return HE_INDEX;
 }
+
+real he_f_kantor_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_kantor_energy_bend(T *q) {
+    return q->eng_bend;
+}
