@@ -98,7 +98,6 @@ int bending_norm_ver(T *q, /**/ real **e, real **f, real **g) { return q->vtable
 int bending_laplace_ver(T *q, /**/ real **e, real **f, real **g) { return q->vtable->laplace_ver(q, e, f, g); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
-
 /* begin kantor */
 typedef struct Kantor Kantor;
 struct Kantor {T bending; HeFKantor *local; };

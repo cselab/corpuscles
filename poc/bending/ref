@@ -1,4 +1,3 @@
-/* begin gompper_xin */
 typedef struct GompperXin GompperXin;
 struct GompperXin {T bending; HeFGompperXin *local; };
 static int gompper_xin_fin(T *q) {
@@ -33,7 +32,6 @@ static int gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
     GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
     return he_f_gompper_xin_norm_ver(b->local, /**/ x, y, z);
 }
-
 static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver, gompper_xin_area_ver, gompper_xin_curva_mean_ver, gompper_xin_norm_ver };
 int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
@@ -48,4 +46,3 @@ int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_gompper_xin_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
-/* end gompper_xin */
