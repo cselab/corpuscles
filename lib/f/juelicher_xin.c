@@ -184,7 +184,7 @@ static int get_ij(int h, He *he, /**/ int *pi, int *pj) {
 
 static int get4(const real *x, const real *y, const real *z,
                 int i, int j, int k, int l,
-               /**/ real a[3], real b[3], real c[3], real d[3]) {
+                /**/ real a[3], real b[3], real c[3], real d[3]) {
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
@@ -211,7 +211,7 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
     return HE_OK;
 }
 static int compute_len(He *he, Size size, const real *xx, const real *yy, const real *zz,
-                             /**/ real *len) {
+                       /**/ real *len) {
     int ne, e, h;
     real b[3], c[3], u[3];
     ne = size.ne;
@@ -227,7 +227,7 @@ static int compute_len(He *he, Size size, const real *xx, const real *yy, const 
 }
 
 static int compute_theta(He *he, Size size, const real *xx, const real *yy, const real *zz,
-                             /**/ real *theta) {
+                         /**/ real *theta) {
     int ne, e, h;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3];
@@ -387,20 +387,20 @@ static int f_area(Param param, He *he, Size size, const real *H,
     nt = size.nt;
     H0 = param.H0;
     for (t = 0; t < nt; t++) {
-      get_ijk(t, he, &i, &j, &k);
-      get3(xx, yy, zz, i, j, k, a, b, c);
-      dtri_area(a, b, c, da, db, dc);
-      coef = -2*(H[i]*H[i] + H[j]*H[j] + H[k]*H[k] - 3*H0*H0)/3;
-      vec_scalar_append(da, coef, i, fx, fy, fz);
-      vec_scalar_append(db, coef, j, fx, fy, fz);
-      vec_scalar_append(dc, coef, k, fx, fy, fz);
+        get_ijk(t, he, &i, &j, &k);
+        get3(xx, yy, zz, i, j, k, a, b, c);
+        dtri_area(a, b, c, da, db, dc);
+        coef = -2*(H[i]*H[i] + H[j]*H[j] + H[k]*H[k] - 3*H0*H0)/3;
+        vec_scalar_append(da, coef, i, fx, fy, fz);
+        vec_scalar_append(db, coef, j, fx, fy, fz);
+        vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
     return HE_OK;
 }
 
 static int fad_len(He *he, Size size, real coef, const real *theta,
-                 const real *xx, const real *yy, const real *zz, /**/
-                 real *fx, real *fy, real *fz) {
+                   const real *xx, const real *yy, const real *zz, /**/
+                   real *fx, real *fy, real *fz) {
     int h, e, i, j;
     int ne;
     real b[3], c[3], db[3], dc[3];
@@ -420,7 +420,7 @@ static int fad_len(He *he, Size size, real coef, const real *theta,
 static int fad_theta(He *he, Size size, real coef,
                      const real *len,
                      const real *xx, const real *yy, const real *zz,
-                   /**/ real *fx, real *fy, real *fz) {
+                     /**/ real *fx, real *fy, real *fz) {
     int h, e, ne;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3];
@@ -460,8 +460,8 @@ static int fad_area(He *he, Size size, real coef,
 
 
 int he_f_juelicher_xin_force(T *q, He *he,
-                      const real *x, const real *y, const real *z, /**/
-                      real *fx_tot, real *fy_tot, real *fz_tot) {
+                             const real *x, const real *y, const real *z, /**/
+                             real *fx_tot, real *fy_tot, real *fz_tot) {
     Size size;
     Param param;
     int nv, ne;
@@ -535,8 +535,8 @@ int he_f_juelicher_xin_energy_ver(T *q, /**/ real **pa) {
 }
 
 int he_f_juelicher_xin_area_ver(T *q, /**/ real **pa) {
-  *pa = q->area;
-  return HE_OK;
+    *pa = q->area;
+    return HE_OK;
 }
 
 real he_f_juelicher_xin_energy_ad(T *q) {
