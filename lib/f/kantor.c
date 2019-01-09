@@ -22,15 +22,15 @@
 #    define  hdg_tri(t) he_hdg_tri(he, t)
 #    define  bnd(h)     he_bnd(he, h)
 
-
 typedef struct Size Size;
 struct Size { int nv, ne, nt; };
 
 struct T {
-  Size size;
-  real *energy, *theta;
-  real *area;
-  real Kb, theta0;
+    Size size;
+    real *energy, *theta;
+    real *area;
+    real Kb, theta0;
+    real eng_bend, eng_ad;    
 };
 static void zero(int n, real *a) {
     int i;
@@ -38,68 +38,68 @@ static void zero(int n, real *a) {
 }
 
 static real compute_energy(He *he, real Kb, real theta0, const real *theta, /**/ real *energy) {
-  int ne, nv, m, h, f;
-  int i, j;
-  real e, e0;
+    int ne, nv, m, h, f;
+    int i, j;
+    real e, e0;
   
-  ne = he_ne(he);
-  nv = he_nv(he);
+    ne = he_ne(he);
+    nv = he_nv(he);
   
-  for (m = 0; m < nv; m++)
-    energy[m] = 0;
+    for (m = 0; m < nv; m++)
+        energy[m] = 0;
   
-  e = 0;
-  for (m = 0; m < ne; m++) {
-    h = he_hdg_edg(he, m);
-    f = he_flp(he, h);
+    e = 0;
+    for (m = 0; m < ne; m++) {
+        h = he_hdg_edg(he, m);
+        f = he_flp(he, h);
     
-    i = he_ver(he, h);
-    j = he_ver(he, f);
+        i = he_ver(he, h);
+        j = he_ver(he, f);
     
-    if (he_bnd(he, h)) continue;
-    e0 = 2.0*Kb*(1 - cos(theta[m]-theta0));
+        if (he_bnd(he, h)) continue;
+        e0 = 2.0*Kb*(1 - cos(theta[m]-theta0));
     
-    energy[i] += e0/2;
-    energy[j] += e0/2;
+        energy[i] += e0/2;
+        energy[j] += e0/2;
     
-    e += e0;
-  }
-  return e;
+        e += e0;
+    }
+    return e;
 }
 int he_f_kantor_ini(real Kb, real theta0, He *he, T **pq) {
   
-  T *q;
-  int nv, ne, nt;
-  Size size;
+    T *q;
+    int nv, ne, nt;
+    Size size;
   
-  MALLOC(1, &q);
+    MALLOC(1, &q);
   
-  nv = he_nv(he);
-  ne = he_ne(he);
-  nt = he_nt(he);
+    nv = he_nv(he);
+    ne = he_ne(he);
+    nt = he_nt(he);
   
-  size.nv = nv;
-  size.ne = ne;
-  size.nt = nt;
-  q->size = size;
+    size.nv = nv;
+    size.ne = ne;
+    size.nt = nt;
+    q->size = size;
   
-  MALLOC(nv, &q->area);
-  MALLOC(ne, &q->theta);
-  MALLOC(nv, &q->energy);
+    MALLOC(nv, &q->area);
+    MALLOC(ne, &q->theta);
+    MALLOC(nv, &q->energy);
   
-  q->Kb = Kb;
-  q->theta0 = theta0;
+    q->Kb = Kb;
+    q->theta0 = theta0;
   
-  *pq = q;
-  return HE_OK;
+    *pq = q;
+    return HE_OK;
 }
 
 int he_f_kantor_fin(T *q) {
-  FREE(q->area);
-  FREE(q->theta);
-  FREE(q->energy);
-  FREE(q);
-  return HE_OK;
+    FREE(q->area);
+    FREE(q->theta);
+    FREE(q->energy);
+    FREE(q);
+    return HE_OK;
 }
 
 int he_f_kantor_theta(T *q, /**/ real  **pa) {
@@ -146,14 +146,14 @@ static int get3(const real *x, const real *y, const real *z,
 }
 static int get(int e, He *he, const real *x, const real *y, const real *z,
                /**/ real a[3], real b[3], real c[3], real d[3]) {
-  int status, i, j, k, l;
-  status = get_ijkl(e, he, /**/ &i, &j, &k, &l);
-  if (status == BND) return BND;
-  vec_get(i, x, y, z, /**/ a);
-  vec_get(j, x, y, z, /**/ b);
-  vec_get(k, x, y, z, /**/ c);
-  vec_get(l, x, y, z, /**/ d);
-  return BULK;
+    int status, i, j, k, l;
+    status = get_ijkl(e, he, /**/ &i, &j, &k, &l);
+    if (status == BND) return BND;
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    vec_get(l, x, y, z, /**/ d);
+    return BULK;
 }
 static int compute_area(He *he, Size size, const real *xx, const real *yy, const real *zz, /**/ real *area) {
     int t, i, j, k;
@@ -181,19 +181,19 @@ static void compute_theta(He *he, const real *x, const real *y, const real *z, /
     int status, n, m;
     n = he_ne(he);
     for (m = 0; m < n; m++) {
-      status = get(m, he, x, y, z, /**/ a, b, c, d);
-      if (status == BND) continue;
-      theta[m] = dih_angle_sup(a, b, c, d);
+        status = get(m, he, x, y, z, /**/ a, b, c, d);
+        if (status == BND) continue;
+        theta[m] = dih_angle_sup(a, b, c, d);
     }
 }
 static void compute_force(He *he, real Kb, real theta0,
 			  const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
-  int status, n, t, i, j, k, l;
-  real a[3], b[3], c[3], d[3], da[3], db[3], dc[3], dd[3];
-  real theta, coef;
-  n = he_ne(he);
-  for (t = 0; t < n; t++) {
+    int status, n, t, i, j, k, l;
+    real a[3], b[3], c[3], d[3], da[3], db[3], dc[3], dd[3];
+    real theta, coef;
+    n = he_ne(he);
+    for (t = 0; t < n; t++) {
         status = get_ijkl(t, he, /**/ &i, &j, &k, &l);
         if (status == BND) continue;
         vec_get(i, x, y, z, /**/ a);
@@ -207,7 +207,7 @@ static void compute_force(He *he, real Kb, real theta0,
         vec_scalar_append(db, coef, j, /**/ fx, fy, fz);
         vec_scalar_append(dc, coef, k, /**/ fx, fy, fz);
         vec_scalar_append(dd, coef, l, /**/ fx, fy, fz);
-  }
+    }
 }
 
 int he_f_kantor_force(T *q, He *he,
@@ -227,7 +227,7 @@ int he_f_kantor_force(T *q, He *he,
     theta0 = q->theta0;
     
     if (he_ne(he) != ne)
-      ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), ne);
+        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), ne);
     compute_theta(he, x, y, z, /**/ theta);
     compute_force(he, Kb, theta0, x, y, z, /**/ fx, fy, fz);
     
@@ -237,7 +237,7 @@ int he_f_kantor_force(T *q, He *he,
 }
 
 real he_f_kantor_energy(T *q, He *he,
-                      const real *x, const real *y, const real *z) {
+                        const real *x, const real *y, const real *z) {
     int ne;
     real *theta, *energy;
     real *area;
@@ -253,7 +253,7 @@ real he_f_kantor_energy(T *q, He *he,
     theta0 = q->theta0;
     
     if (he_ne(he) != ne)
-      ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), ne);
+        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), ne);
     compute_theta(he, x, y, z, /**/ theta);
     
     compute_area(he, size, x, y, z, /**/ area);
@@ -261,12 +261,26 @@ real he_f_kantor_energy(T *q, He *he,
     return compute_energy(he, Kb, theta0, theta, /**/ energy);
 }
 
-
-int he_f_kantor_energy_ver(T *q, /**/ real**pa) {
+int he_f_kantor_energy_ver(T *q, /**/ real**pa)
+{
     *pa = q->energy;
     return HE_OK;
 }
-int he_f_kantor_area_ver(T *q, /**/ real**pa) {
+
+int he_f_kantor_area_ver(T *q, /**/ real**pa)
+{
     *pa = q->area;
     return HE_OK;
+}
+
+int he_f_kantor_curva_mean_ver(__UNUSED T *q, /**/ __UNUSED  real **pa) {
+    return HE_INDEX;
+}
+
+real he_f_kantor_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_kantor_energy_bend(T *q) {
+    return q->eng_bend;
 }

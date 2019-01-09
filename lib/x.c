@@ -47,7 +47,7 @@ static HeFEdgSq *f_edg_sq;
 static HeFHarmonicRef *f_harmonic_ref;
 static HeFKantor *f_kantor;
 static HeFGompper *f_gompper;
-static HeFGompper_Kroll *f_gompper_kroll;
+static HeFGompperKroll *f_gompper_kroll;
 static Bending *f_bending;
 static Restore *f_restore;
 static HeOff *off;
@@ -386,6 +386,12 @@ int f_bending_force(const real *x, const real *y, const real *z, /**/ real *fx, 
 }
 int f_bending_energy_ver(real **p) {
     return bending_energy_ver(f_bending, p);
+}
+real f_bending_energy_bend(void) {
+    return bending_energy_bend(f_bending);
+}
+real f_bending_energy_ad(void) {
+    return bending_energy_ad(f_bending);
 }
 
 int x_restore_ini(real volume) {

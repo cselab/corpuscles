@@ -61,7 +61,7 @@ int filter_apply(T *q, He *he,
                  const real *x, const real *y, const real *z,
                  /*io*/ real *A) {
     int nv, nh, h, i, j, k;
-    real u, v, w;
+    real u;
     real *B, *sum;
     real a[3], b[3], c[3];
     nv = he_nv(he);

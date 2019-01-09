@@ -30,7 +30,7 @@ static real rVolume, Ka, Kga, Kv, Ke, mu;
 static int end;
 static int freq;
 static real A0, V0, e0;
-static real et, eb, ek, ea, ega, ev, ee;
+static real et, eb, eb_bend, eb_ad, ek, ea, ega, ev, ee;
 static const char **argv;
 static char bending[4049];
 static const char *me = "min/helfrich_xin_fga";
@@ -105,6 +105,9 @@ real Energy(const real *x, const real *y, const real *z) {
     ev  = v;
     ee  = e;
     eb  = b;
+
+    eb_bend = f_bending_energy_bend();
+    eb_ad = f_bending_energy_ad();
 
     return a + ga + v + e + b;
 }
@@ -219,11 +222,11 @@ static int main0(real *vx, real *vy, real *vz,
             ek = Kin(vx, vy, vz);
             et = et + ek;
             A = area(); V = volume(); Vr=reduced_volume(A,V);
-            MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee);
+            MSG("eng: %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
         
             fm = fopen(filemsg, "a");
-            fprintf(fm, "%g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, ea, ega, ev, ek, ee);
+            fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             fclose(fm);
         }
 

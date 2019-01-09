@@ -99,4 +99,18 @@ h_define(`_h_foreach_sep',
 Sep`'$3`'dnl
 h_popdef(`$1')$0(`$1', h_cdr($2), `$3')')')
 
+h_define(`upcase', `translit(`$*', `a-z', `A-Z')')
+h_define(`downcase', `translit(`$*', `A-Z', `a-z')')
+h_define(`_arg1', `$1')
+h_define(`_to_alt', `changequote(`<<[', `]>>')')
+h_define(`_from_alt', `changequote(<<[`]>>, <<[']>>)')
+h_define(`_upcase_alt', `translit(<<[$*]>>, <<[a-z]>>, <<[A-Z]>>)')
+h_define(`_downcase_alt', `translit(<<[$*]>>, <<[A-Z]>>, <<[a-z]>>)')
+h_define(`_capitalize_alt',
+  `regexp(<<[$1]>>, <<[^\(\w\)\(\w*\)]>>,
+    <<[_upcase_alt(<<[<<[\1]>>]>>)_downcase_alt(<<[<<[\2]>>]>>)]>>)')
+h_define(`capitalize',
+  `_arg1(_to_alt()patsubst(<<[<<[$*]>>]>>, <<[\w+]>>,
+    _from_alt()`]>>_$0_alt(<<[\&]>>)<<['_to_alt())_from_alt())')
+
 divert`'dnl
