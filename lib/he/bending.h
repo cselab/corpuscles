@@ -3,11 +3,11 @@
 
 typedef struct He He;
 typedef struct T T;
+typedef struct P P;
 
-struct BendingParam { real Kb, C0, Kad, DA0D; };
-typedef struct BendingParam BendingParam;
+struct P { real Kb, C0, Kad, DA0D; };
 
-int bending_ini(const char *name, BendingParam, He*, /**/ T**);
+int bending_ini(const char *name, P, He*, /**/ T**);
 int bending_fin(T*);
 
 int bending_force(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
