@@ -127,7 +127,7 @@ static int kantor_area_ver(T *q, /**/ real **e) {
 static int kantor_curva_mean_ver(__UNUSED T *q, /**/ __UNUSED real **e) {
     return HE_OK;
 }
-static Vtable kantor_vtable = { kantor_fin, kantor_force, kantor_energy, kantor_energy_ver, kantor_area_ver, kantor_curva_mean_ver};
+static Vtable kantor_vtable = {kantor_fin, kantor_force, kantor_energy, kantor_energy_ver, kantor_area_ver, kantor_curva_mean_ver};
 int bending_kantor_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0;
     Kantor *q;
@@ -179,8 +179,7 @@ static int gompper_laplace_ver(T *q, /**/ real **x, real **y, real **z) {
     Gompper *b = CONTAINER_OF(q, Gompper, bending);
     return he_f_gompper_laplace_ver(b->local, /**/ x, y, z);
 }
-static Vtable gompper_vtable = { gompper_fin, gompper_force, gompper_energy, gompper_energy_ver, gompper_area_ver,
-				 gompper_curva_mean_ver, gompper_norm_ver, gompper_laplace_ver};
+static Vtable gompper_vtable = {gompper_fin, gompper_force, gompper_energy, gompper_energy_ver, gompper_area_ver, gompper_curva_mean_ver, gompper_norm_ver, gompper_laplace_ver};
 int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Gompper *q;
@@ -226,8 +225,7 @@ static int gompper_kroll_curva_mean_ver(T *q, /**/ real **e) {
     Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
     return he_f_gompper_kroll_curva_mean_ver(b->local, /**/ e);
 }
-
-static Vtable gompper_kroll_vtable = { gompper_kroll_fin, gompper_kroll_force, gompper_kroll_energy, gompper_kroll_energy_ver, gompper_kroll_area_ver, gompper_kroll_curva_mean_ver};
+static Vtable gompper_kroll_vtable = {gompper_kroll_fin, gompper_kroll_force, gompper_kroll_energy, gompper_kroll_energy_ver, gompper_kroll_area_ver, gompper_kroll_curva_mean_ver};
 int bending_gompper_kroll_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     Gompper_Kroll *q;
@@ -273,7 +271,7 @@ static int juelicher_xin_curva_mean_ver(T *q, /**/ real **e) {
     JuelicherXin *b = CONTAINER_OF(q, JuelicherXin, bending);
     return he_f_juelicher_xin_curva_mean_ver(b->local, /**/ e);
 }
-static Vtable juelicher_xin_vtable = { juelicher_xin_fin, juelicher_xin_force, juelicher_xin_energy, juelicher_xin_energy_ver, juelicher_xin_area_ver, juelicher_xin_curva_mean_ver};
+static Vtable juelicher_xin_vtable = {juelicher_xin_fin, juelicher_xin_force, juelicher_xin_energy, juelicher_xin_energy_ver, juelicher_xin_area_ver, juelicher_xin_curva_mean_ver};
 int bending_juelicher_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     JuelicherXin *q;
@@ -323,8 +321,7 @@ static int gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
     GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
     return he_f_gompper_xin_norm_ver(b->local, /**/ x, y, z);
 }
-
-static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver, gompper_xin_area_ver, gompper_xin_curva_mean_ver, gompper_xin_norm_ver };
+static Vtable gompper_xin_vtable = {gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver, gompper_xin_area_ver, gompper_xin_curva_mean_ver, gompper_xin_norm_ver };
 int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     GompperXin *q;
@@ -378,8 +375,7 @@ static int meyer_xin_laplace_ver(T *q, /**/ real **x, real **y, real **z) {
     MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
     return he_f_meyer_xin_laplace_ver(b->local, /**/ x, y, z);
 }
-static Vtable meyer_xin_vtable = { meyer_xin_fin, meyer_xin_force, meyer_xin_energy, meyer_xin_energy_ver,
-				   meyer_xin_area_ver, meyer_xin_curva_mean_ver, meyer_xin_norm_ver, meyer_xin_laplace_ver};
+static Vtable meyer_xin_vtable = {meyer_xin_fin, meyer_xin_force, meyer_xin_energy, meyer_xin_energy_ver, meyer_xin_area_ver, meyer_xin_curva_mean_ver, meyer_xin_norm_ver, meyer_xin_laplace_ver};
 int bending_meyer_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb, C0, Kad, DA0D;
     MeyerXin *q;
