@@ -29,7 +29,6 @@ static const real pi = 3.141592653589793115997964;
 
 struct T {
     real Kb;
-
     real *cot;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
@@ -37,6 +36,8 @@ struct T {
     real *energy_local, *area;
     real *lbH;
     real *f, *fa, *fb, *fc;
+    real eng_bend, eng_ad;
+    
     int (*compute_area)(He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
     int (*compute_H)(T*, He*, /**/ real*);

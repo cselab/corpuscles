@@ -28,6 +28,7 @@ struct T {
     real *energy, *fx, *fy, *fz;
     real *gx, *gy, *gz;
     Dh *dh;
+    real eng_bend, eng_ad;
 
     int nv;
     real *H;

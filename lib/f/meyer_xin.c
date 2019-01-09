@@ -29,19 +29,19 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
+    int nv, ne, nt, nh;
     real Kb, C0, Kad, DA0D;
-
     real *cot;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
     real *H, *K;
     real *energy_local, *area;
     real *lbH;
-
     real energy_total;
     real energy_total_local;
     real energy_total_nonlocal;
-    int nv, ne, nt, nh;
+    real eng_bend, eng_ad;
+    
     real (*compute_area)(He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
     int (*compute_H)(T*, He*, /**/ real*);

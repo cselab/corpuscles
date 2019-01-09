@@ -34,8 +34,7 @@ struct T {
     real *normx, *normy, *normz;
     real *curva_mean, *curva_gauss;
     real *energy_local, *area;
-
-
+    real eng_bend, eng_ad;
 
     int nv, ne, nt, nh;
 };
