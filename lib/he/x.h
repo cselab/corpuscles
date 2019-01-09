@@ -133,6 +133,8 @@ int f_bending_fin(void);
 real f_bending_energy(const real *x, const real *y, const real *z);
 int f_bending_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 int f_bending_energy_ver(/**/ real**);
+real f_bending_energy_bend(void);
+real f_bending_energy_ad(void);
 
 int equiangulate(int *cnt);
 
