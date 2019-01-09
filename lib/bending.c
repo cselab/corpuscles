@@ -98,7 +98,6 @@ int bending_norm_ver(T *q, /**/ real **x, real **y, real **z) { return q->vtable
 int bending_laplace_ver(T *q, /**/ real **x, real **y, real **z) { return q->vtable->laplace_ver(q, x, y, z); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
-/* begin kantor */
 typedef struct Kantor Kantor;
 struct Kantor {T bending; HeFKantor *local; };
 static int kantor_fin(T *q) {
@@ -138,10 +137,7 @@ int bending_kantor_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_kantor_ini(Kb, C0, he, &q->local);
 }
-/* end kantor */
 
-
-/* begin gompper */
 typedef struct Gompper Gompper;
 struct Gompper {T bending; HeFGompper *local; };
 static int gompper_fin(T *q) {
@@ -193,9 +189,7 @@ int bending_gompper_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_gompper_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
-/* end gompper */
 
-/* begin gompper_kroll */
 typedef struct Gompper_Kroll Gompper_Kroll;
 struct Gompper_Kroll {T bending; HeFGompper_Kroll *local; };
 static int gompper_kroll_fin(T *q) {
@@ -239,9 +233,7 @@ int bending_gompper_kroll_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_gompper_kroll_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
-/* end gompper_kroll */
 
-/* begin juelicher_xin */
 typedef struct JuelicherXin JuelicherXin;
 struct JuelicherXin {T bending; HeFJuelicherXin *local; };
 static int juelicher_xin_fin(T *q) {
@@ -285,9 +277,7 @@ int bending_juelicher_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_juelicher_xin_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
-/* end juelicher_xin */
 
-/* begin gompper_xin */
 typedef struct GompperXin GompperXin;
 struct GompperXin {T bending; HeFGompperXin *local; };
 static int gompper_xin_fin(T *q) {
@@ -335,9 +325,7 @@ int bending_gompper_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_gompper_xin_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
-/* end gompper_xin */
 
-/* begin meyer_xin */
 typedef struct MeyerXin MeyerXin;
 struct MeyerXin {T bending; HeFMeyerXin *local; };
 static int meyer_xin_fin(T *q) {
@@ -389,10 +377,7 @@ int bending_meyer_xin_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_meyer_xin_ini(Kb, C0, Kad, DA0D, he, &q->local);
 }
-/* end meyer_xin */
 
-
-/* begin meyer */
 typedef struct Meyer Meyer;
 struct Meyer {T bending; HeFMeyer *local; };
 static int meyer_fin(T *q) {
@@ -441,4 +426,3 @@ int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
     *pq = &q->bending;
     return he_f_meyer_ini(Kb, he, &q->local);
 }
-/* end meyer */
