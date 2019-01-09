@@ -108,8 +108,7 @@ static int kantor_fin(T *q) {
     FREE(q);
     return status;
 }
-static int kantor_force(T *q, He *he, const real *x, const real *y, const real *z,
-                        /**/ real *fx, real *fy, real *fz) {
+static int kantor_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     Kantor *b = CONTAINER_OF(q, Kantor, bending);
     return he_f_kantor_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -152,8 +151,7 @@ static int gompper_fin(T *q) {
     FREE(q);
     return status;
 }
-static int gompper_force(T *q, He *he, const real *x, const real *y, const real *z,
-                         /**/ real *fx, real *fy, real *fz) {
+static int gompper_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     Gompper *b = CONTAINER_OF(q, Gompper, bending);
     return he_f_gompper_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -208,8 +206,7 @@ static int gompper_kroll_fin(T *q) {
     FREE(q);
     return status;
 }
-static int gompper_kroll_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz) {
+static int gompper_kroll_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     Gompper_Kroll *b = CONTAINER_OF(q, Gompper_Kroll, bending);
     return he_f_gompper_kroll_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -256,8 +253,7 @@ static int juelicher_xin_fin(T *q) {
     FREE(q);
     return status;
 }
-static int juelicher_xin_force(T *q, He *he, const real *x, const real *y, const real *z,
-                               /**/ real *fx, real *fy, real *fz) {
+static int juelicher_xin_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     JuelicherXin *b = CONTAINER_OF(q, JuelicherXin, bending);
     return he_f_juelicher_xin_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -303,8 +299,7 @@ static int gompper_xin_fin(T *q) {
     FREE(q);
     return status;
 }
-static int gompper_xin_force(T *q, He *he, const real *x, const real *y, const real *z,
-                             /**/ real *fx, real *fy, real *fz) {
+static int gompper_xin_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
     return he_f_gompper_xin_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -355,8 +350,7 @@ static int meyer_xin_fin(T *q) {
     FREE(q);
     return status;
 }
-static int meyer_xin_force(T *q, He *he, const real *x, const real *y, const real *z,
-                           /**/ real *fx, real *fy, real *fz) {
+static int meyer_xin_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     MeyerXin *b = CONTAINER_OF(q, MeyerXin, bending);
     return he_f_meyer_xin_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -412,8 +406,7 @@ static int meyer_fin(T *q) {
     FREE(q);
     return status;
 }
-static int meyer_force(T *q, He *he, const real *x, const real *y, const real *z,
-                       /**/ real *fx, real *fy, real *fz) {
+static int meyer_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
     Meyer *b = CONTAINER_OF(q, Meyer, bending);
     return he_f_meyer_force(b->local, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -441,8 +434,7 @@ static int meyer_laplace_ver(T *q, /**/ real **x, real **y, real **z) {
     Meyer *b = CONTAINER_OF(q, Meyer, bending);
     return he_f_meyer_laplace_ver(b->local, /**/ x, y, z);
 }
-static Vtable meyer_vtable = { meyer_fin, meyer_force, meyer_energy, meyer_energy_ver,
-                               meyer_area_ver, meyer_curva_mean_ver, meyer_norm_ver, meyer_laplace_ver};
+static Vtable meyer_vtable = {meyer_fin, meyer_force, meyer_energy, meyer_energy_ver, meyer_area_ver, meyer_curva_mean_ver, meyer_norm_ver, meyer_laplace_ver};
 int bending_meyer_ini(BendingParam param, He *he, /**/ T **pq) {
     real Kb;
     Meyer *q;
