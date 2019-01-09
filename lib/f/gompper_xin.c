@@ -143,8 +143,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     real *energy;
     Dh *dh;
     real Kb, H0, Kad, DA0D;
-
-    real *area, *h, local, global, Area, Ha, diff;
+    real *area, *h, eng_bend, eng_ad, Area, Ha, diff;
 
     G(Kb); G(H0); G(Kad); G(DA0D);
     G(energy); G(dh);
@@ -157,14 +156,17 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     compute_energy(H0, nv, area, h, energy);
     scale(2*Kb, nv, energy);
-    local = he_sum_array(nv, energy);
+    eng_bend = he_sum_array(nv, energy);
 
     Area = he_sum_array(nv, area);
     Ha = he_sum_array(nv, h);
     diff = Ha - DA0D/2;
-    global = (2*pi*Kad)*e_global(Area, diff);
+    eng_ad = (2*pi*Kad)*e_global(Area, diff);
 
-    return local + global;
+    q->eng_bend = eng_bend;
+    q->eng_ad = eng_ad;
+
+    return eng_bend + eng_ad;
 
 #   undef A
 #   undef S

@@ -280,8 +280,7 @@ real he_f_gompper_kroll_energy(T *q, He *he,
 
     real H0;
     real mH0, mH1, mH2;
-    real energy1, energy2, energy3, energy4, energy5, energy6;
-    real energy_tot;
+    real eng_bend, eng_ad;
 
     Kb   = q->Kb;
     C0   = q->C0;
@@ -326,15 +325,13 @@ real he_f_gompper_kroll_energy(T *q, He *he,
         energy_local[v] = 2*Kb*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
     }
 
-    energy1 = 2*Kb*mH2;
-    energy2 = 2*pi*Kad*mH1*mH1/mH0;
-    energy3 =-4*Kb*H0*mH1;
-    energy4 =-2*pi*Kad*DA0D*mH1/mH0;
-    energy5 = 2*Kb*H0*H0*mH0;
-    energy6 = pi*Kad*DA0D*DA0D/2/mH0;
+    eng_bend = 2*Kb*mH2 - 4*Kb*H0*mH1 + 2*Kb*H0*H0*mH0;
+    eng_ad = 2*pi*Kad*mH1*mH1/mH0 -2*pi*Kad*DA0D*mH1/mH0 + pi*Kad*DA0D*DA0D/2/mH0;
 
-    energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
-    return energy_tot;
+    q->eng_bend = eng_bend;
+    q->eng_ad = eng_ad;
+
+    return eng_bend + eng_ad;
 }
 int he_f_gompper_kroll_force(T *q, He *he,
                              const real *x, const real *y, const real *z, /**/
@@ -374,26 +371,12 @@ int he_f_gompper_kroll_force(T *q, He *he,
 
     Kb   = q->Kb;
     C0   = q->C0;
-
     H0 = C0/2.0;
-
-    //printf("Kb, C0, Kad, DA0D: %f, %f, %f, %f\n", Kb, C0, Kad, DA0D);
-
-    if (he_nv(he) != nv)
-        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
-    if (he_ne(he) != ne)
-        ERR(HE_INDEX, "he_nh(he)=%d != ne = %d", he_ne(he), ne);
-    if (he_nt(he) != nt)
-        ERR(HE_INDEX, "he_nt(he)=%d != nt = %d", he_nt(he), nt);
-    if (he_nh(he) != nh)
-        ERR(HE_INDEX, "he_nh(he)=%d != nh = %d", he_nh(he), nh);
 
     for (l = 0; l < nt; l++) {
         get_ijk(l, he, /**/ &i, &j, &k);
         T0[l] = i; T1[l] = j; T2[l] = k;
     }
-
-
     compute_len2(he, x, y, z, /**/ len2);
     compute_cot(he, x, y, z, /**/ cot);
     compute_area_voronoi(he, len2, cot, /**/ area);
