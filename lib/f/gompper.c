@@ -308,7 +308,7 @@ real he_f_gompper_energy(T *q, He *he,
     real *normx, *normy, *normz;
     real *curva_mean;
     real *energy, *area;
-    real energy_tot;
+    real energy_tot, eng_bend, eng_ad;
 
     T0 = q->T0; T1 = q->T1; T2 = q->T2;
     l2 = q->l2; t = q->t;
@@ -337,10 +337,13 @@ real he_f_gompper_energy(T *q, He *he,
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
 
-    energy_tot  = compute_energy_local(q, curva_mean, area, /**/ energy);
-    energy_tot += compute_energy_nonlocal(q, curva_mean, area);
+    eng_bend = compute_energy_local(q, curva_mean, area, /**/ energy);
+    eng_ad = compute_energy_nonlocal(q, curva_mean, area);
 
-    return energy_tot;
+    q->eng_bend = eng_bend;
+    q->eng_ad = eng_ad;
+
+    return eng_bend + eng_ad;
 }
 static void compute_force_t(T *q, He *he,
                             const real *x, const real *y, const real *z,
