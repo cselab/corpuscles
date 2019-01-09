@@ -82,6 +82,8 @@ struct Vtable {
     int (*energy_ver)(T*, real**);
     int (*area_ver)(T*, real**);
     int (*curva_mean_ver)(T*, real**);
+    real (*energy_bend)(T*);
+    real (*energy_ad)(T*);
 };
 
 int bending_force(T *q, He *he, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz) {
@@ -93,6 +95,8 @@ real bending_energy(T *q, He *he, const real *x, const real *y, const real *z) {
 int bending_energy_ver(T *q, /**/ real **e) { return q->vtable->energy_ver(q, e); }
 int bending_area_ver(T *q, /**/ real **e) { return q->vtable->area_ver(q, e); }
 int bending_curva_mean_ver(T *q, /**/ real **e) { return q->vtable->curva_mean_ver(q, e); }
+real bending_energy_bend(T *q) { return q->vtable->energy_bend(q); }
+real bending_energy_ad(T *q) { return q->vtable->energy_ad(q); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
 h_define(`f2type', `translit(capitalize(translit($1, `_', ` ')), ` ', `')')dnl
@@ -126,7 +130,16 @@ static int $1_curva_mean_ver(T *q, /**/ real **e) {
     f2type($1) *b = CONTAINER_OF(q, f2type($1), bending);
     return he_f_$1_curva_mean_ver(b->local, /**/ e);
 }
-static Vtable $1_vtable = {$1_fin, $1_force, $1_energy, $1_energy_ver, $1_area_ver, $1_curva_mean_ver};
+static real $1_energy_bend(T *q) {
+    f2type($1) *b = CONTAINER_OF(q, f2type($1), bending);
+    return he_f_$1_energy_bend(b->local);
+}
+static real $1_energy_ad(T *q) {
+    f2type($1) *b = CONTAINER_OF(q, f2type($1), bending);
+    return he_f_$1_energy_ad(b->local);
+}
+static Vtable $1_vtable = 
+{$1_fin, $1_force, $1_energy, $1_energy_ver, $1_area_ver, $1_curva_mean_ver, $1_energy_bend, $1_energy_ad};
 ')dnl
 dnl
 h_define(`ini',dnl
