@@ -213,7 +213,7 @@ static int main0(real *vx, real *vy, real *vz,
         if (i > 0 && i % 100 == 0)
             equiangulate0();
 
-        if ( i % 100 == 0 ) {
+        if ( i % freq == 0 ) {
             et = Energy(XX, YY, ZZ);
             ek = Kin(vx, vy, vz);
             et = et + ek;
