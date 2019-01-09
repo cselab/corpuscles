@@ -319,10 +319,8 @@ real he_f_gompper_kroll_energy(T *q, He *he,
     compute_norm(q, he, x, y, z, normx, normy, normz);
     compute_curva_mean(he, lbx, lby, lbz, normx, normy, normz, /**/ curva_mean);
 
-    mH1 = 0;
-    mH2 = 0;
-
-    for ( v = 0; v < nv; v++ ) {
+    mH1 = mH2 = 0;
+    for (v = 0; v < nv; v++ ) {
         mH1 += curva_mean[v]*area[v];
         mH2 += curva_mean[v]*curva_mean[v]*area[v];
         energy_local[v] = 2*Kb*(curva_mean[v]-H0)*(curva_mean[v]-H0)*area[v];
@@ -336,10 +334,6 @@ real he_f_gompper_kroll_energy(T *q, He *he,
     energy6 = pi*Kad*DA0D*DA0D/2/mH0;
 
     energy_tot = energy1 + energy2 + energy3 + energy4 + energy5+ energy6;
-
-    //printf("mH0, mH1, mH2: %f, %f, %f\n", mH0, mH1, mH2);
-    //printf("enegy local, nonlocal: %f, %f \n", energy_tot_local, energy_tot_nonlocal);
-
     return energy_tot;
 }
 int he_f_gompper_kroll_force(T *q, He *he,
