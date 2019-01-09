@@ -22,7 +22,6 @@
 #    define  hdg_tri(t) he_hdg_tri(he, t)
 #    define  bnd(h)     he_bnd(he, h)
 
-
 typedef struct Size Size;
 struct Size { int nv, ne, nt; };
 
@@ -261,12 +260,18 @@ real he_f_kantor_energy(T *q, He *he,
     return compute_energy(he, Kb, theta0, theta, /**/ energy);
 }
 
-
-int he_f_kantor_energy_ver(T *q, /**/ real**pa) {
+int he_f_kantor_energy_ver(T *q, /**/ real**pa)
+{
     *pa = q->energy;
     return HE_OK;
 }
-int he_f_kantor_area_ver(T *q, /**/ real**pa) {
+
+int he_f_kantor_area_ver(T *q, /**/ real**pa)
+{
     *pa = q->area;
     return HE_OK;
+}
+
+int he_f_kantor_curva_mean_ver(__UNUSED T *q, /**/ __UNUSED  real **pa) {
+    return HE_INDEX;
 }
