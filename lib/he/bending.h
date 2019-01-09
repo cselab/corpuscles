@@ -1,4 +1,5 @@
 #define T Bending
+#define P BendingParam
 
 typedef struct He He;
 typedef struct T T;
@@ -21,15 +22,16 @@ real bending_energy_ad(T*);
 
 const char* bending_list();
 
-int bending_kantor_ini(BendingParam, He*, /**/ T**);
-int bending_gompper_ini(BendingParam, He*, /**/ T**);
-int bending_gompper_kroll_ini(BendingParam, He*, /**/ T**);
-int bending_juelicher_ini(BendingParam, He*, /**/ T**);
-int bending_juelicher_xin_ini(BendingParam, He*, /**/ T**);
-int bending_meyer_ini(BendingParam, He*, /**/ T**);
-int bending_canham_ini(BendingParam, He*, /**/ T**);
-int bending_gompper_xin_ini(BendingParam, He*, /**/ T**);
-int bending_meyer_xin_ini(BendingParam, He*, /**/ T**);
-int bending_meyer_ini(BendingParam, He*, /**/ T**);
+int bending_kantor_ini(P, He*, /**/ T**);
+int bending_gompper_ini(P, He*, /**/ T**);
+int bending_gompper_kroll_ini(P, He*, /**/ T**);
+int bending_juelicher_ini(P, He*, /**/ T**);
+int bending_juelicher_xin_ini(P, He*, /**/ T**);
+int bending_meyer_ini(P, He*, /**/ T**);
+int bending_canham_ini(P, He*, /**/ T**);
+int bending_gompper_xin_ini(P, He*, /**/ T**);
+int bending_meyer_xin_ini(P, He*, /**/ T**);
+int bending_meyer_ini(P, He*, /**/ T**);
 
 #undef T
+#undef P
