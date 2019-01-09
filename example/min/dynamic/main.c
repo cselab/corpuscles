@@ -168,7 +168,8 @@ static int equiangulate0(void) {
     j = 0;
     do {
         equiangulate(&cnt);
-        MSG("cnt : %d", cnt);
+        if (cnt > 0)
+            MSG("cnt : %d", cnt);
         j++;
     } while (cnt > 0 && j < 10);
     return HE_OK;
