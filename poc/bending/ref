@@ -1,0 +1,36 @@
+typedef struct GompperXin GompperXin;
+struct GompperXin {T bending; HeFGompperXin *local; };
+static int gompper_xin_fin(T *q) {
+    int status;
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    status = he_f_gompper_xin_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int gompper_xin_force(T *q, He *he, const real *x, const real *y, const real *z,
+                             /**/ real *fx, real *fy, real *fz) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real gompper_xin_energy(T *q, He *he, const real *x, const real *y, const real *z) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_energy(b->local, he, x, y, z);
+}
+static int gompper_xin_energy_ver(T *q, /**/ real **e) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_energy_ver(b->local, /**/ e);
+}
+static int gompper_xin_area_ver(T *q, /**/ real **e) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_area_ver(b->local, /**/ e);
+}
+static int gompper_xin_curva_mean_ver(T *q, /**/ real **e) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_curva_mean_ver(b->local, /**/ e);
+}
+static int gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
+    GompperXin *b = CONTAINER_OF(q, GompperXin, bending);
+    return he_f_gompper_xin_norm_ver(b->local, /**/ x, y, z);
+}
+
+static Vtable gompper_xin_vtable = { gompper_xin_fin, gompper_xin_force, gompper_xin_energy, gompper_xin_energy_ver, gompper_xin_area_ver, gompper_xin_curva_mean_ver, gompper_xin_norm_ver };
