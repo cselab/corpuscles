@@ -13,5 +13,7 @@ int he_f_gompper_xin_norm_ver(T*, /**/ real**, real**, real**);
 int he_f_gompper_xin_curva_mean_ver(T*, /**/ real**);
 int he_f_gompper_xin_energy_ver(T*, /**/ real**);
 int he_f_gompper_xin_norm_ver(T*, /**/ real**, real**, real**);
+real he_f_gompper_xin_energy_ad(T*);
+real he_f_gompper_xin_energy_bend(T*);
 
 #undef T
