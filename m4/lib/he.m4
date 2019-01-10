@@ -23,6 +23,7 @@ h_rename_h(`shift')
 h_rename_h(`ifelse')
 h_rename_h(`pushdef')
 h_rename_h(`popdef')
+h_rename_h(`eval')
 h_copy(`m4exit', `h_exit')
 
 h_define(`h_location',
