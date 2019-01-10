@@ -1,5 +1,7 @@
 include(`he.m4')dnl
-h_define(list, ``a, b, c'')dnl
-h_define(`narg', `$#')dnl
-h_define(`show', `($*)')dnl
-show(h_cdr(h_unquote(list)))dnl
+h_define(`map2', `h_ifval(`$2',
+`$1(`h_car($2)', `h_car($3)')$0(`$1', h_cdr($2), h_cdr($3))')')dnl
+h_define(`show', `$1 = $2;
+')dnl
+h_define(`c', 42)dnl
+map2(`show', `a, b, `c'', `10, 20, 30')dnl
