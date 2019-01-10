@@ -138,19 +138,28 @@ static void euler(real dt,
     }
 }
 
+static int diff(int i, int j, const real *x, const real *y, const real *z, /**/ real e[3]) {
+    real a[3], b[3];
+    vec_get(i, x, y, z, a);
+    vec_get(j, x, y, z, b);
+    vec_minus(a, b, e);
+    return HE_OK;
+}
+
 static void visc_pair(real mu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
     int e, i, j;
-    real a[3], b[3], u[3], u0;
+    real u[3], r[3], p[3];
     for (e = 0; e < NE; e++) {
         i = D1[e]; j = D2[e];
-        vec_get(i, vx, vy, vz, a);
-        vec_get(j, vx, vy, vz, b);
-        vec_minus(a, b, u);
-        u0 = vec_abs(u);
-        vec_scalar_append(u, -mu*u0, i, fx, fy, fz);
-        vec_scalar_append(u,  mu*u0, j, fx, fy, fz);
+
+        diff(i, j, XX, YY, ZZ, r);
+        diff(i, j, vx, vy, vz, u);
+        vec_project(u, r, p);
+        
+        vec_scalar_append(p, -mu, i, fx, fy, fz);
+        vec_scalar_append(p,  mu, j, fx, fy, fz);
     }
 }
 
@@ -224,7 +233,7 @@ static int main0(real *vx, real *vy, real *vz,
             A = area(); V = volume(); Vr=reduced_volume(A,V);
             MSG("eng: %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-        
+
             fm = fopen(filemsg, "a");
             fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             fclose(fm);

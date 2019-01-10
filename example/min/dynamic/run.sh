@@ -4,8 +4,8 @@ set -eu
 
 make
 
-#off=data/Nt1280_01.off
-off=data/Nt5120_01.off
+off=data/Nt1280_01.off
+#off=data/Nt5120_01.off
 
 Da=0.3
 
@@ -17,7 +17,7 @@ Vr=0.642
 Ka=$(ae 0.5*$f)
 Kga=$(ae 1*$f)
 Kv=$(ae 5*$f)
-mu=$(ae 1000*$f)
+mu=$(ae 1*$f)
 Ke=0
 
 Kb=$(ae 0.001*$f)
