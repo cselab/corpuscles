@@ -94,6 +94,9 @@ h_define(`h_foreach_sep',
 _$0(`$1', `$3', `$4')dnl
 h_popdef(`Sep')')
 
+h_define(`h_newline', `
+$1')
+
 h_define(`_h_foreach_sep',
 `h_ifelse(`$2', `', `',
 `h_pushdef(`$1', `h_car($2)')dnl

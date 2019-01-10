@@ -1,1 +1,2 @@
-i="-t -0.00411175 0.0247358 1.97906e-09 -r 142.456 43.7648 131.206 -f 27.9544"
+rsync -v falcon:`pwd`/'*.msg' . && (cd ../dynamic2 && rsync -v falcon:`pwd`/'*.msg' .)
+
