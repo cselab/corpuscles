@@ -118,6 +118,9 @@ h_define(`h_ifval',
 
 h_define(`h_count', `$#')
 
+h_define(`h_curry', `$1(h_shift($@,)_$0')
+h_define(`_h_curry',             ``$1')')
+
 h_define(`upcase', `translit(`$*', `a-z', `A-Z')')
 h_define(`downcase', `translit(`$*', `A-Z', `a-z')')
 h_define(`_arg1', `$1')
