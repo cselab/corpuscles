@@ -65,6 +65,12 @@ h_define(`_h_apply',
 h_define(`h_map',
 `_h_foreach(`_h_apply(`$1',', `)', `', $2)')
 
+h_define(`h_map_args',
+`h_ifelse(`$#', `0', `h_fatal(`$0: too few arguments: $#')',
+       `$#', `1', `',
+       `$#', `2', `$1(`$2')`'',
+       `_h_foreach(`$1(', `)', $@)')')
+
 h_define(`h_map_sep',
 `h_pushdef(`Sep', `h_define(`Sep', h_defn(`h_unquote'))')'dnl
 `_h_foreach(`_h_apply(`Sep(`$2')`'$1',', `)', `', $3)h_popdef(`Sep')')
