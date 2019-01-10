@@ -86,6 +86,9 @@ h_define(`_h_join',
 
 h_define(`h_echo', `$@')
 h_define(`h_ignore')
+h_define(`h_reverse',
+`h_ifelse(`$#', `0', `', `$#', `1', ``$1'',
+       `$0(h_shift($@)), `$1'')')
 h_define(`h_unquote', `$*')
 h_define(`h_dquote', ``$@'')
 h_define(`h_do',
