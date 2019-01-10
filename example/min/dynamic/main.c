@@ -195,7 +195,7 @@ static int main0(real *vx, real *vy, real *vz,
         ER("fail to open '%s'", filemsg);
     fclose(fm);
 
-    nsub = 100;
+    nsub = 0;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);

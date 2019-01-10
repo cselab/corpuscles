@@ -17,7 +17,7 @@ Vr=0.642
 Ka=$(ae 0.5*$f)
 Kga=$(ae 1*$f)
 Kv=$(ae 5*$f)
-mu=$(ae 100000*$f)
+mu=$(ae 1000*$f)
 Ke=0
 
 Kb=$(ae 0.001*$f)
