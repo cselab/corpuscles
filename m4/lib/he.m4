@@ -82,6 +82,10 @@ h_define(`h_echo', `$@')
 h_define(`h_ignore')
 h_define(`h_unquote', `$*')
 h_define(`h_dquote', ``$@'')
+h_define(`h_do',
+`h_ifelse(`$#', 0, `',
+         `$#', 1, `$1`'',
+          `$1`'$0(h_shift($@))')')
 
 h_define(`h_car', ``$1'')
 h_define(`h_cdr',
