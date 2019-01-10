@@ -116,6 +116,8 @@ h_popdef(`$1')$0(`$1', h_cdr($2), `$3')')')
 h_define(`h_ifval',
 `h_ifelse(`$1', `', `$3', `$2')')
 
+h_define(`h_count', `$#')
+
 h_define(`upcase', `translit(`$*', `a-z', `A-Z')')
 h_define(`downcase', `translit(`$*', `A-Z', `a-z')')
 h_define(`_arg1', `$1')
