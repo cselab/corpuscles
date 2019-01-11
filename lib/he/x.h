@@ -133,9 +133,15 @@ int f_bending_fin(void);
 real f_bending_energy(const real *x, const real *y, const real *z);
 int f_bending_force(const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
 int f_bending_energy_ver(/**/ real**);
+real f_bending_energy_bend(void);
+real f_bending_energy_ad(void);
 
 int equiangulate(int *cnt);
 
 int x_restore_ini(real volume);
 int x_restore_fin(void);
 int x_restore_volume(real *x, real *y, real *z);
+
+int x_filter_ini(void);
+int x_filter_fin(void);
+int x_filter_apply(const real *x, const real *y, const real *z, /*io*/ real *a);

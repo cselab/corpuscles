@@ -29,7 +29,6 @@ static const real pi = 3.141592653589793115997964;
 
 struct T {
     real Kb;
-
     real *cot;
     real *lbx, *lby, *lbz;
     real *normx, *normy, *normz;
@@ -37,6 +36,8 @@ struct T {
     real *energy_local, *area;
     real *lbH;
     real *f, *fa, *fb, *fc;
+    real eng_bend, eng_ad;
+    
     int (*compute_area)(He*, const real*, const real*, const real*, real *area);
     int (*compute_norm)(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
     int (*compute_H)(T*, He*, /**/ real*);
@@ -96,8 +97,8 @@ static int norm_lap(T *q, He *he,
 }
 
 static int area_voronoi(He *he,
-                         const real *x, const real *y, const real *z, /**/
-                         real *area) {
+                        const real *x, const real *y, const real *z, /**/
+                        real *area) {
     enum {X, Y, Z};
     int t, nt, nv;
     int i, j, k;
@@ -139,8 +140,8 @@ static int area_voronoi(He *he,
 }
 
 static int area_mix(He *he,
-                     const real *x, const real *y, const real *z, /**/
-                     real *area) {
+                    const real *x, const real *y, const real *z, /**/
+                    real *area) {
     enum {X, Y, Z};
     int t, nt, nv;
     int i, j, k;
@@ -420,7 +421,7 @@ static int compute_K(T *q, He *he,
     return HE_OK;
 }
 real he_f_meyer_energy(T *q, He *he,
-                           const real *x, const real *y, const real *z) {
+                       const real *x, const real *y, const real *z) {
     enum {X, Y, Z};
     int v;
     int *T0, *T1, *T2;
@@ -466,8 +467,8 @@ real he_f_meyer_energy(T *q, He *he,
     return 2*Kb*mH2;
 }
 int he_f_meyer_force(T *q, He *he,
-                         const real *x, const real *y, const real *z, /**/
-                         real *fx, real *fy, real *fz) {
+                     const real *x, const real *y, const real *z, /**/
+                     real *fx, real *fy, real *fz) {
 #   define G(f) f = q->f
     enum {X, Y, Z};
     int v;
@@ -524,4 +525,12 @@ int he_f_meyer_force(T *q, He *he,
 
     return HE_OK;
 #   undef G
+}
+
+real he_f_meyer_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_meyer_energy_bend(T *q) {
+    return q->eng_bend;
 }

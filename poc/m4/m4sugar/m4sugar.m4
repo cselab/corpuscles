@@ -834,7 +834,7 @@ m4_define([m4_count], [$#])
 #   m4_define([add_one], [m4_curry([add], [1])])
 #   add_one()([2]) => 3
 m4_define([m4_curry], [$1(m4_shift($@,)_$0])
-m4_define([_m4_curry],               [[$1])])
+m4_define([_m4_curry],               [[$1])])p
 
 
 # m4_do(STRING, ...)

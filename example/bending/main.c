@@ -72,6 +72,8 @@ static void main0() {
 
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
+    MSG("energy_bend: %g", bending_energy_bend(bending));
+    MSG("energy_ad: %g", bending_energy_ad(bending));
 
     for (i = 0; i < nv; i++) {
         vec_get(i, xx, yy, zz, /**/ r);

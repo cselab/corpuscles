@@ -24,12 +24,12 @@
 static const real pi = 3.141592653589793115997964;
 
 struct T {
+    int nv;
     real Kb, H0, Kad, DA0D;
     real *energy, *fx, *fy, *fz;
     real *gx, *gy, *gz;
     Dh *dh;
-
-    int nv;
+    real eng_bend, eng_ad;
     real *H;
 };
 
@@ -143,8 +143,7 @@ real he_f_gompper_xin_energy(T *q, He *he,
     real *energy;
     Dh *dh;
     real Kb, H0, Kad, DA0D;
-
-    real *area, *h, local, global, Area, Ha, diff;
+    real *area, *h, eng_bend, eng_ad, Area, Ha, diff;
 
     G(Kb); G(H0); G(Kad); G(DA0D);
     G(energy); G(dh);
@@ -157,14 +156,17 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     compute_energy(H0, nv, area, h, energy);
     scale(2*Kb, nv, energy);
-    local = he_sum_array(nv, energy);
+    eng_bend = he_sum_array(nv, energy);
 
     Area = he_sum_array(nv, area);
     Ha = he_sum_array(nv, h);
     diff = Ha - DA0D/2;
-    global = (2*pi*Kad)*e_global(Area, diff);
+    eng_ad = (2*pi*Kad)*e_global(Area, diff);
 
-    return local + global;
+    q->eng_bend = eng_bend;
+    q->eng_ad = eng_ad;
+
+    return eng_bend + eng_ad;
 
 #   undef A
 #   undef S
@@ -250,4 +252,12 @@ int he_f_gompper_xin_curva_mean_ver(T *q, /**/ real **pa) {
 
 int he_f_gompper_xin_norm_ver(T *q, /**/ real **x, real **y, real **z) {
     return dh_norm(q->dh, x, y, z);
+}
+
+real he_f_gompper_xin_energy_ad(T *q) {
+    return q->eng_ad;
+}
+
+real he_f_gompper_xin_energy_bend(T *q) {
+    return q->eng_bend;
 }
