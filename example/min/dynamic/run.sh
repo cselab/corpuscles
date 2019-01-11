@@ -4,12 +4,12 @@ set -eu
 
 make
 
-off=data/Nt1280_01.off
-#off=data/Nt5120_01.off
+#off=data/Nt1280_01.off
+off=data/Nt5120_01.off
 
 Da=0.3
 
-f=1
+f=100
 pi=3.141592653589793115997964
 D=0.000898798148042
 A=$(ae 4*$pi)
@@ -24,7 +24,7 @@ Kb=$(ae 0.001*$f)
 C0=0
 Kad=$(ae 2*$Kb/$pi)
 end=100000000
-freq=2000
+freq=200
 
 Da=$(ae $Da/100)
 DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")

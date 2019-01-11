@@ -157,7 +157,7 @@ static void visc_pair(real mu,
         diff(i, j, XX, YY, ZZ, r);
         diff(i, j, vx, vy, vz, u);
         vec_project(u, r, p);
-        
+
         vec_scalar_append(p, -mu, i, fx, fy, fz);
         vec_scalar_append(p,  mu, j, fx, fy, fz);
     }
@@ -187,6 +187,13 @@ static int equiangulate0(void) {
     return HE_OK;
 }
 
+static int filter(real *vx, real *vy, real *vz) {
+    x_filter_apply(XX, YY, ZZ, vx);
+    x_filter_apply(XX, YY, ZZ, vy);
+    x_filter_apply(XX, YY, ZZ, vz);
+    return HE_OK;
+}
+
 static int main0(real *vx, real *vy, real *vz,
                  real *fx, real *fy, real *fz) {
     int i, j;
@@ -208,7 +215,8 @@ static int main0(real *vx, real *vy, real *vz,
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
-        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+        filter(vx, vy, vz);
+        //visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
@@ -218,7 +226,7 @@ static int main0(real *vx, real *vy, real *vz,
             errA = fabs(A - A0)/A0;
             if (errA <= tolerA) break;
             ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
-            visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+            //visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
             euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
@@ -282,6 +290,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
     f_edg_sq_ini(Ke);
+    x_filter_ini();
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
@@ -302,6 +311,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
+    x_filter_fin();
     fin();
 
     return 0;
