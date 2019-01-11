@@ -98,7 +98,7 @@ filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if ! e "$GEOMVIEW" --version '2>/dev/null' '1>/dev/null'; then err "$GEOMVIEW is not found"; fi
 
-tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=- process=- command=- icommand=- normalization=- format=ppm
+tx=0 ty=0 tz=0 rx=0 ry=0 rz=0 fov=40 off= output=- appearance=- process=- command=- icommand=- normalization=- format=ppmscreen
 while test $# -ne 0
 do case "$1" in
        -t) shift
