@@ -26,6 +26,8 @@
 #include "he/restore.h"
 #include "he/vec.h"
 #include "he/volume.h"
+#include "he/filter.h"
+
 #include "he/x.h"
 
 int NV, NE, NT, NH;
@@ -50,6 +52,7 @@ static HeFGompper *f_gompper;
 static HeFGompperKroll *f_gompper_kroll;
 static Bending *f_bending;
 static Restore *f_restore;
+static Filter *f_filter;
 static HeOff *off;
 
 int  nxt(int h) { return he_nxt(he, h); }
@@ -397,8 +400,24 @@ real f_bending_energy_ad(void) {
 int x_restore_ini(real volume) {
     return restore_ini(volume, he, &f_restore);
 }
-int x_restore_fin() { return restore_fin(f_restore); }
+int x_restore_fin(void) { return restore_fin(f_restore); }
 int x_restore_volume(real *x, real *y, real *z) {
     return restore_volume(f_restore, he, x, y, z);
 }
+
+int x_filter_ini(void)
+{
+    return filter_ini(he, &f_filter);
+}
+
+int x_filter_fin(void)
+{
+    return filter_fin(f_filter);
+}
+
+int x_filter_apply(const real *x, const real *y, const real *z, /*io*/ real *a)
+{
+    return filter_apply(f_filter, he, x, y, z, a);
+}
+
 
