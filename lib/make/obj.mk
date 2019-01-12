@@ -8,7 +8,6 @@ util.o
 
 O_S = \
 area.s.o\
-bending.s.o\
 da.s.o\
 ddih.s.o\
 dedg.s.o\
@@ -41,6 +40,7 @@ force.s.o\
 f/strain.s.o\
 f/volume.s.o\
 f/volume_normal.s.o\
+gts.s.o\
 H.s.o\
 laplace.s.o\
 normal.s.o\
@@ -54,7 +54,6 @@ strain/3d.s.o\
 strain.s.o\
 sum.s.o\
 ten.s.o\
-transform.s.o\
 tri.s.o\
 vec.s.o\
 volume.s.o\
@@ -64,7 +63,6 @@ y.s.o
 
 O_D = \
 area.d.o\
-bending.d.o\
 da.d.o\
 ddih.d.o\
 dedg.d.o\
@@ -97,6 +95,7 @@ force.d.o\
 f/strain.d.o\
 f/volume.d.o\
 f/volume_normal.d.o\
+gts.d.o\
 H.d.o\
 laplace.d.o\
 normal.d.o\
@@ -110,7 +109,6 @@ strain/3d.d.o\
 strain.d.o\
 sum.d.o\
 ten.d.o\
-transform.d.o\
 tri.d.o\
 vec.d.o\
 volume.d.o\
@@ -120,7 +118,6 @@ y.d.o
 
 O_L = \
 area.l.o\
-bending.l.o\
 da.l.o\
 ddih.l.o\
 dedg.l.o\
@@ -153,6 +150,7 @@ force.l.o\
 f/strain.l.o\
 f/volume.l.o\
 f/volume_normal.l.o\
+gts.l.o\
 H.l.o\
 laplace.l.o\
 normal.l.o\
@@ -166,7 +164,6 @@ strain/3d.l.o\
 strain.l.o\
 sum.l.o\
 ten.l.o\
-transform.l.o\
 tri.l.o\
 vec.l.o\
 volume.l.o\
