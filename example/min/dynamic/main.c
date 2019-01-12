@@ -187,10 +187,17 @@ static int equiangulate0(void) {
     return HE_OK;
 }
 
-static int filter(real *vx, real *vy, real *vz) {
+static int filter0(real *vx, real *vy, real *vz) {
     x_filter_apply(XX, YY, ZZ, vx);
     x_filter_apply(XX, YY, ZZ, vy);
     x_filter_apply(XX, YY, ZZ, vz);
+    return HE_OK;
+}
+
+static int filter(real *vx, real *vy, real *vz) {
+    int i;
+    for (i = 0; i < 10; i++)
+        filter0(vx, vy, vz);
     return HE_OK;
 }
 
@@ -226,6 +233,7 @@ static int main0(real *vx, real *vy, real *vz,
             errA = fabs(A - A0)/A0;
             if (errA <= tolerA) break;
             ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
+            filter(vx, vy, vz);
             //visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
             euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
