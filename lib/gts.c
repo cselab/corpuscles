@@ -36,7 +36,7 @@ int gts_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f
         i = he_edg(he, h);
         j = he_edg(he, n);
         k = he_edg(he, m);
-        fprintf(f, "%d %d %d\n", k, j, i);
+        fprintf(f, "%d %d %d\n", k + 1, j + 1, i + 1);
     }
     return HE_OK;
 }
