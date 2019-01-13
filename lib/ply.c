@@ -17,7 +17,6 @@ enum {SIZE = MAX_STRING_SIZE};
 
 #define FMT HE_REAL_IN
 
-
 struct Work {
     float *ver;
     int *tri;
@@ -173,10 +172,22 @@ int ply_z(T *q, int m, real **p) {
 
 int ply_write(T *q, FILE *f, int *b) {
     float *ver;
-    int *tri;
+    int i, j, m, nv, nm, *tri;
+    real *x, *y, *z;
 
     ver = q->w.ver;
     tri = q->w.tri;
+    nv = q->nv; nm = q->nm;
 
+    x = q->x; y = q->y; z = q->z;
+    for (j = m = 0; m < nm; m++, x += nv, y += nv, z += nv) {
+        if (b != NULL && b[m]) continue;
+        for (i = 0; i < nv; i++) {
+            ver[j++] = x[i];
+            ver[j++] = y[i];
+            ver[j++] = z[i];
+            j++; j++; j++; /* skip uvw */
+        }
+    }
     return HE_OK;
 }
