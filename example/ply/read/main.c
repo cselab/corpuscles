@@ -12,9 +12,9 @@
 static const char **argv;
 static Ply *read;
 static int nv, nt, nm, m;
-const char *me = "ply/read";
-real *x, *y, *z;
-He *he;
+static const char *me = "ply/read";
+static real *x, *y, *z;
+static He *he;
 
 static void usg() {
     fprintf(stderr, "%s [CELL INDEX] < OFF\n", me);
