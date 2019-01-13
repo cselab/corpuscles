@@ -22,3 +22,10 @@ struct T {
     He *he;
     int nv, nt, nm;
 };
+
+int ply_fread(FILE *f, T **pq) {
+    T *q;
+    MALLOC(1, &q);
+    *pq = q;
+    return HE_OK;
+}
