@@ -97,7 +97,7 @@ int ply_fread(FILE *f, T **pq) {
     nb = get_nb();
     if (nv % nb != 0)
         ERR(HE_IO, "nv=%d %% nb=%d != 0", nv, nb);
-    
+
     nm = nv / nb;
     if (nt % nm != 0)
         ERR(HE_IO, "nt=%d %% nm=%d != 0", nv, nm);
@@ -146,16 +146,22 @@ int ply_tri(T *q, int **p) {
 }
 
 int ply_x(T *q, int m, real **p) {
+    if (m >= q->nm)
+        ERR(HE_INDEX, "m=%d >= q->nm=%d", m, q->nm);
     *p = q->x + m*q->nv ;
     return HE_OK;
 }
 
 int ply_y(T *q, int m, real **p) {
+    if (m >= q->nm)
+        ERR(HE_INDEX, "m=%d >= q->nm=%d", m, q->nm);
     *p = q->y + m*q->nv ;
     return HE_OK;
 }
 
 int ply_z(T *q, int m, real **p) {
+    if (m >= q->nm)
+        ERR(HE_INDEX, "m=%d >= q->nm=%d", m, q->nm);
     *p = q->z + m*q->nv ;
     return HE_OK;
 }
