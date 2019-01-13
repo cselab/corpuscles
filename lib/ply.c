@@ -23,9 +23,14 @@ struct T {
     int nv, nt, nm;
 };
 
+static int get_nb(void) {
+    // 1986
+    return 498;
+}
+
 int ply_fread(FILE *f, T **pq) {
     T *q;
-    int nv, nt, cnt, i, j, k;
+    int nb, nv, nt, nm, cnt, i, j, k;
     float *ver0;
     int *tri0;
     char line[SIZE];
@@ -76,21 +81,33 @@ int ply_fread(FILE *f, T **pq) {
     MALLOC(nv, &q->x);
     MALLOC(nv, &q->y);
     MALLOC(nv, &q->z);
-    MALLOC(3*nt, &q->tri);
-
     for (i = j = 0; i < nv; i++) {
         q->x[i] = ver0[j++];
         q->y[i] = ver0[j++];
         q->z[i] = ver0[j++];
     }
 
+    nb = get_nb();
+    if (nv % nb != 0)
+        ERR(HE_IO, "nv=%d % nb=%d != 0", nv, nb);
+    nm = nv / nb;
+    if (nt % nm != 0)
+        ERR(HE_IO, "nt=%d % nm=%d != 0", nv, nm);
+    nt /= nm;
+    nv /= nm;
+
+    MALLOC(3*nt, &q->tri);
     for (i = j = k = 0; i < nt; i++) {
         j++;
         q->tri[k++] = tri0[j++];
         q->tri[k++] = tri0[j++];
         q->tri[k++] = tri0[j++];
     }
-    
+
+    q->nv = nv;
+    q->nt = nt;
+    q->nm = nm;
+
     FREE(ver0);
     FREE(tri0);
     *pq = q;
