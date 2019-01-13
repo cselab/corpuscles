@@ -9,8 +9,9 @@
 #include <he/off.h>
 #include <he/util.h>
 
+static const char **argv;
 static Ply *read;
-static int nv, nt, nm;
+static int nv, nt, nm, m;
 const char *me = "ply/read";
 real *x, *y, *z;
 He *he;
@@ -18,6 +19,14 @@ He *he;
 static void usg() {
     fprintf(stderr, "%s < OFF\n", me);
     exit(2);
+}
+
+static int num(/**/ int *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, "%d", p) != 1)
+        ER("not an integer '%s'", *argv);
+    argv++;
+    return HE_OK;
 }
 
 static void ini() {
@@ -33,7 +42,6 @@ static int write() {
     MSG("n[vtm]: %d %d %d", nv, nt, nm);
     MSG("n[vth]: %d %d %d", he_nv(he), he_nt(he), he_nh(he));
 
-    m = 0;
     ply_x(read, m, &x);
     ply_y(read, m, &y);
     ply_z(read, m, &z);
@@ -44,6 +52,8 @@ static int write() {
 
 int main(__UNUSED int c, const char **v) {
     if (*++v != NULL && util_eq(*v, "-h")) usg();
+    argv = v;
+    num(&m);
     ini();
     write();
     fin();
