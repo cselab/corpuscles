@@ -1,6 +1,7 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
+#include <stdlib.h>
 
 #include "real.h"
 #include "he/memory.h"
@@ -24,8 +25,13 @@ struct T {
 };
 
 static int get_nb(void) {
-    // 1986
-    return 498;
+    int n;
+    char *s;
+    if ((s = getenv("nb")) == NULL)
+        ERR(HE_IO, "environment variable `nb' is not set");
+    if (sscanf(s, "%d", &n) != 1)
+        ERR(HE_IO, "`nb = %s' is not integer", s);
+    return n;
 }
 
 int ply_fread(FILE *f, T **pq) {
@@ -85,14 +91,16 @@ int ply_fread(FILE *f, T **pq) {
         q->x[i] = ver0[j++];
         q->y[i] = ver0[j++];
         q->z[i] = ver0[j++];
+        j++; j++; j++; /* skip uvw */
     }
 
     nb = get_nb();
     if (nv % nb != 0)
-        ERR(HE_IO, "nv=%d % nb=%d != 0", nv, nb);
+        ERR(HE_IO, "nv=%d %% nb=%d != 0", nv, nb);
+    
     nm = nv / nb;
     if (nt % nm != 0)
-        ERR(HE_IO, "nt=%d % nm=%d != 0", nv, nm);
+        ERR(HE_IO, "nt=%d %% nm=%d != 0", nv, nm);
     nt /= nm;
     nv /= nm;
 

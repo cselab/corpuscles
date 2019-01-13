@@ -8,6 +8,7 @@
 #include <he/util.h>
 
 static Ply *read;
+static int nv, nt, nm;
 const char *me = "ply/read";
 
 static void usg() {
@@ -21,6 +22,10 @@ static void ini() {
 static void fin() { ply_fin(read); }
 
 static int write() {
+    nv = ply_nv(read);
+    nt = ply_nt(read);
+    nm = ply_nm(read);
+    MSG("n[vtm]: %d %d %d", nv, nt, nm);
     return HE_OK;
 }
 
