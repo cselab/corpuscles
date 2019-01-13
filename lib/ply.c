@@ -17,11 +17,19 @@ enum {SIZE = MAX_STRING_SIZE};
 
 #define FMT HE_REAL_IN
 
+
+struct Work {
+    float *ver;
+    int *tri;
+};
+typedef struct Work Work;
+
 struct T {
     real *x, *y, *z;
     int  *tri; /* t0[0] t1[0] t2[0] ... */
     He *he;
     int nv, nt, nm;
+    Work w;
 };
 
 static int get_nb(void) {
@@ -37,8 +45,6 @@ static int get_nb(void) {
 int ply_fread(FILE *f, T **pq) {
     T *q;
     int nb, nv, nt, nm, cnt, i, j, k;
-    float *ver0;
-    int *tri0;
     char line[SIZE];
 
 #   define NXT() if (util_fgets(line, f) == NULL)  \
@@ -78,19 +84,19 @@ int ply_fread(FILE *f, T **pq) {
     MATCH("property list int int vertex_index");
     MATCH("end_header");
 
-    MALLOC(6*nv, &ver0);
-    MALLOC(4*nt, &tri0);
+    MALLOC(6*nv, &q->w.ver);
+    MALLOC(4*nt, &q->w.tri);
 
-    FREAD(ver0, 6*nv);
-    FREAD(tri0, 4*nt);
+    FREAD(q->w.ver, 6*nv);
+    FREAD(q->w.tri, 4*nt);
 
     MALLOC(nv, &q->x);
     MALLOC(nv, &q->y);
     MALLOC(nv, &q->z);
     for (i = j = 0; i < nv; i++) {
-        q->x[i] = ver0[j++];
-        q->y[i] = ver0[j++];
-        q->z[i] = ver0[j++];
+        q->x[i] = q->w.ver[j++];
+        q->y[i] = q->w.ver[j++];
+        q->z[i] = q->w.ver[j++];
         j++; j++; j++; /* skip uvw */
     }
 
@@ -107,9 +113,9 @@ int ply_fread(FILE *f, T **pq) {
     MALLOC(3*nt, &q->tri);
     for (i = j = k = 0; i < nt; i++) {
         j++;
-        q->tri[k++] = tri0[j++];
-        q->tri[k++] = tri0[j++];
-        q->tri[k++] = tri0[j++];
+        q->tri[k++] = q->w.tri[j++];
+        q->tri[k++] = q->w.tri[j++];
+        q->tri[k++] = q->w.tri[j++];
     }
     if (he_tri_ini(nv, nt, q->tri, &q->he) != HE_OK)
         ERR(HE_IO, "he_tri_ini failed");
@@ -118,8 +124,6 @@ int ply_fread(FILE *f, T **pq) {
     q->nt = nt;
     q->nm = nm;
 
-    FREE(ver0);
-    FREE(tri0);
     *pq = q;
     return HE_OK;
 }
