@@ -21,16 +21,6 @@ static int count(const real *a[]) {
     return i;
 }
 
-static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
-    *pi = i; *pj = j; *pk = k;
-    return HE_OK;
-}
-
 int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
                   const real *scalars[], const char *names[], /**/ FILE *f) {
     int np, nv, nt, r, i, n_sc, i_sc;
@@ -52,7 +42,7 @@ int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
 
     fprintf(f, "POLYGONS %d %d\n", nt, (np + 1)*nt);
     for (i = 0; i <  nt; i++) {
-        get_ijk(i, he, /**/ &a, &b, &c);
+        he_tri_ijk(he, i, /**/ &a, &b, &c);
         fprintf(f, "%d %d %d %d\n", np, a, b, c);
     }
 
