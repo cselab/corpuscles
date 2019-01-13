@@ -25,7 +25,7 @@ struct T {
 
 int ply_fread(FILE *f, T **pq) {
     T *q;
-    int nv, nt, cnt;
+    int nv, nt, cnt, i, j, k;
     float *ver0;
     int *tri0;
     char line[SIZE];
@@ -67,12 +67,30 @@ int ply_fread(FILE *f, T **pq) {
     MATCH("property list int int vertex_index");
     MATCH("end_header");
 
-    MALLOC(3*nv, &ver0);
+    MALLOC(6*nv, &ver0);
     MALLOC(4*nt, &tri0);
 
-    FREAD(ver0, 3*nv);
+    FREAD(ver0, 6*nv);
     FREAD(tri0, 4*nt);
 
+    MALLOC(nv, &q->x);
+    MALLOC(nv, &q->y);
+    MALLOC(nv, &q->z);
+    MALLOC(3*nt, &q->tri);
+
+    for (i = j = 0; i < nv; i++) {
+        q->x[i] = ver0[j++];
+        q->y[i] = ver0[j++];
+        q->z[i] = ver0[j++];
+    }
+
+    for (i = j = k = 0; i < nt; i++) {
+        j++;
+        q->tri[k++] = tri0[j++];
+        q->tri[k++] = tri0[j++];
+        q->tri[k++] = tri0[j++];
+    }
+    
     FREE(ver0);
     FREE(tri0);
     *pq = q;
@@ -80,6 +98,8 @@ int ply_fread(FILE *f, T **pq) {
 }
 
 int ply_fin(T *q) {
+    FREE(q->x); FREE(q->y); FREE(q->z);
+    FREE(q->tri);
     FREE(q);
     return HE_OK;
 }
