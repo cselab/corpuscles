@@ -170,3 +170,13 @@ int ply_z(T *q, int m, real **p) {
     *p = q->z + m*q->nv ;
     return HE_OK;
 }
+
+int ply_write(T *q, FILE *f, int *b) {
+    float *ver;
+    int *tri;
+
+    ver = q->w.ver;
+    tri = q->w.tri;
+
+    return HE_OK;
+}

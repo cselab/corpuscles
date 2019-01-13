@@ -17,4 +17,6 @@ int ply_x(T*, int m, real**);
 int ply_y(T*, int m, real**);
 int ply_z(T*, int m, real**);
 
+int ply_fwrite(T**, FILE*, int *ban);
+
 #undef T
