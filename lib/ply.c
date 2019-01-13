@@ -103,6 +103,8 @@ int ply_fread(FILE *f, T **pq) {
         q->tri[k++] = tri0[j++];
         q->tri[k++] = tri0[j++];
     }
+    if (he_tri_ini(nv, nt, q->tri, &q->he) != HE_OK)
+        ERR(HE_IO, "he_tri_ini failed");
 
     q->nv = nv;
     q->nt = nt;
@@ -118,5 +120,34 @@ int ply_fin(T *q) {
     FREE(q->x); FREE(q->y); FREE(q->z);
     FREE(q->tri);
     FREE(q);
+    return HE_OK;
+}
+
+int ply_nv(T *q) { return q->nv; }
+int ply_nt(T *q) { return q->nt; }
+int ply_nm(T *q) { return q->nm; }
+
+int ply_he(T *q, He **p) {
+    *p = q->he;
+    return HE_OK;
+}
+
+int ply_tri(T *q, int **p) {
+    *p = q->tri;
+    return HE_OK;
+}
+
+int ply_x(T *q, int m, real **p) {
+    *p = q->x + m*q->nv ;
+    return HE_OK;
+}
+
+int ply_y(T *q, int m, real **p) {
+    *p = q->y + m*q->nv ;
+    return HE_OK;
+}
+
+int ply_z(T *q, int m, real **p) {
+    *p = q->z + m*q->nv ;
     return HE_OK;
 }
