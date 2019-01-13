@@ -17,6 +17,10 @@ enum {SIZE = MAX_STRING_SIZE};
 
 #define FMT HE_REAL_IN
 
+#   define FWRITE(ptr, size) \
+        if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))          \
+            ERR(HE_IO, "fwrite failed: need = %d, got = %d", size, cnt)
+
 struct Work {
     float *ver;
     int *tri;
@@ -170,14 +174,17 @@ int ply_z(T *q, int m, real **p) {
     return HE_OK;
 }
 
-int ply_write(T *q, FILE *f, int *b) {
+int ply_fwrite(T *q, FILE *f, int *b) {
     float *ver;
-    int i, j, m, nv, nm, *tri;
+    int *wtri, *tri;
+    int i, j, k, l, m, nv, nm, nt, cnt;
+    int onm;
     real *x, *y, *z;
 
     ver = q->w.ver;
-    tri = q->w.tri;
-    nv = q->nv; nm = q->nm;
+    wtri = q->w.tri;
+    tri = q->tri;
+    nv = q->nv; nm = q->nm; nt = q->nt;
 
     x = q->x; y = q->y; z = q->z;
     for (j = m = 0; m < nm; m++, x += nv, y += nv, z += nv) {
@@ -189,5 +196,36 @@ int ply_write(T *q, FILE *f, int *b) {
             j++; j++; j++; /* skip uvw */
         }
     }
+
+    for (j = m = k = 0; m < nm; m++) {
+        if (b != NULL && b[m]) continue;
+        for (i = l = 0; i < nt; i++) {
+            wtri[j++] = 3;
+            wtri[j++] = tri[l++] + k;
+            wtri[j++] = tri[l++] + k;
+            wtri[j++] = tri[l++] + k;
+        }
+        k += nv;
+    }
+
+    for (onm = m = 0; m < nm; m++) {
+        if (b != NULL && b[m]) continue;
+        onm++;
+    }
+    fprintf(f, "ply\n"
+            "format binary_little_endian 1.0\n"
+            "element vertex %d\n"
+            "property float x\n"
+            "property float y\n"
+            "property float z\n"
+            "property float u\n"
+            "property float v\n"
+            "property float w\n"
+            "element face %d\n"
+            "property list int int vertex_index\n"
+            "end_header\n", nv*onm, nt*onm);
+    FWRITE(ver, 6*nv*onm);
+    FWRITE(wtri, 4*nt*onm);
+    
     return HE_OK;
 }
