@@ -49,8 +49,8 @@ int main( int argc, char** argv )
 
   lcc.display_characteristics(std::cout)<<", is_valid="<<CGAL::is_valid(lcc)<<std::endl;
 
-  std::ofstream out("out.off");
-
+  std::ofstream out("out.off", std::ios::out | std::ios::binary);
+  CGAL::set_mode(out, CGAL::IO::BINARY);
   CGAL::write_off(out, lcc);
   return EXIT_SUCCESS;
 }
