@@ -131,6 +131,7 @@ int ply_fread(FILE *f, T **pq) {
 int ply_fin(T *q) {
     FREE(q->x); FREE(q->y); FREE(q->z);
     FREE(q->tri);
+    FREE(q->w.ver); FREE(q->w.tri);
     FREE(q);
     return HE_OK;
 }
