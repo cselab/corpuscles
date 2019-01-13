@@ -4,14 +4,11 @@
 #include <real.h>
 #include <he/macro.h>
 #include <he/err.h>
-#include <he/off.h>
+#include <he/ply.h>
 #include <he/util.h>
 
-static HeOff *read;
-static real *ver;
-static int  nv, nt, *tri;
-
-const char *me = "off/read";
+static Ply *read;
+const char *me = "ply/read";
 
 static void usg() {
     fprintf(stderr, "%s < OFF\n", me);
@@ -19,23 +16,12 @@ static void usg() {
 }
 
 static void ini() {
-    off_ini("/dev/stdin", &read);
-    nv = off_nv(read);
-    nt = off_nt(read);
-    off_ver(read, &ver);
-    off_tri(read, &tri);
+    ply_fread(stdin, &read);
 }
-static void fin() { off_fin(read); }
+static void fin() { ply_fin(read); }
 
-static void write() {
-    int i;
-    real x, y, z, *r;
-    for (i = 0, r = ver; i < nv; i++) {
-        x = *r++; y = *r++; z = *r++;
-        printf("%g %g %g\n", x, y, z);
-    }
-    MSG("number of vertices: %d",  nv);
-    MSG("number of triangles: %d", nt);
+static int write() {
+    return HE_OK;
 }
 
 int main(__UNUSED int c, const char **v) {

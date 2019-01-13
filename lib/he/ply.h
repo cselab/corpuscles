@@ -1,4 +1,4 @@
-#define T HePly
+#define T Ply
 
 typedef struct He He;
 typedef struct T T;
