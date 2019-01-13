@@ -47,6 +47,7 @@ laplace.s.o\
 normal.s.o\
 off.s.o\
 orient.s.o\
+ply.s.o\
 punto.s.o\
 real.s.o\
 restore.s.o\
@@ -104,6 +105,7 @@ laplace.d.o\
 normal.d.o\
 off.d.o\
 orient.d.o\
+ply.d.o\
 punto.d.o\
 real.d.o\
 restore.d.o\
@@ -161,6 +163,7 @@ laplace.l.o\
 normal.l.o\
 off.l.o\
 orient.l.o\
+ply.l.o\
 punto.l.o\
 real.l.o\
 restore.l.o\
