@@ -3,6 +3,7 @@
 
 #include <real.h>
 #include <he/macro.h>
+#include <he/memory.h>
 #include <he/err.h>
 #include <he/ply.h>
 #include <he/util.h>
@@ -11,7 +12,7 @@ static Ply *read;
 static const char *me = "ply/vtk";
 
 static void usg() {
-    fprintf(stderr, "%s [CELL INDEX] < PLY > VTK\n", me);
+    fprintf(stderr, "%s < PLY > VTK\n", me);
     exit(2);
 }
 
@@ -21,7 +22,14 @@ static void ini() {
 static void fin() { ply_fin(read); }
 
 static int write() {
-    ply_vtk_txt(read, stdout, NULL, NULL);
+    int nm, i;
+    real *color;
+    nm = ply_nm(read);
+    MALLOC(nm, &color);
+    for (i = 0; i < nm; i++)
+        color[i] = i;
+    ply_vtk_txt(read, stdout, NULL, color);
+    FREE(color);
     return HE_OK;
 }
 
