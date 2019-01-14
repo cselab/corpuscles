@@ -47,7 +47,7 @@ static int get_nb(void) {
 
 int ply_fread(FILE *f, T **pq) {
     T *q;
-    int nb, nv, nt, nm, cnt, i, j, k;
+    int nb, nv, nt, nm, cnt, i, j, k, nvar;
     char line[SIZE];
 
 #   define NXT() if (util_fgets(line, f) == NULL)  \
@@ -76,10 +76,17 @@ int ply_fread(FILE *f, T **pq) {
     MATCH("property float x");
     MATCH("property float y");
     MATCH("property float z");
-    MATCH("property float u");
-    MATCH("property float v");
-    MATCH("property float w");
+
     NXT();
+    if (util_eq(line, "property float u")) {
+        nvar = 6;
+        MATCH("property float v");
+        MATCH("property float w");
+        NXT();
+    } else {
+        nvar = 3;
+    }
+    
     if (sscanf(line, "element face %d", &nt) != 1)
         ERR(HE_IO, "fail to parse: '%s'", line);
     if (nt < 0)
@@ -100,7 +107,9 @@ int ply_fread(FILE *f, T **pq) {
         q->x[i] = q->w.ver[j++];
         q->y[i] = q->w.ver[j++];
         q->z[i] = q->w.ver[j++];
-        j++; j++; j++; /* skip uvw */
+        if (nvar == 6) {
+            j++; j++; j++; /* skip uvw */
+        }
     }
 
     nb = get_nb();
@@ -123,6 +132,7 @@ int ply_fread(FILE *f, T **pq) {
     if (he_tri_ini(nv, nt, q->tri, &q->he) != HE_OK)
         ERR(HE_IO, "he_tri_ini failed");
 
+    q->nvar = nvar;    
     q->nv = nv;
     q->nt = nt;
     q->nm = nm;
