@@ -26,7 +26,7 @@ enum {X, Y, Z};
 
 struct Work {
     float *ver;
-    float *scalar;
+    float *scalar, *tscalar;
     int *tri;
 };
 typedef struct Work Work;
@@ -101,6 +101,7 @@ int ply_fread(FILE *f, T **pq) {
     MALLOC(6*nv, &q->w.ver);
     MALLOC(4*nt, &q->w.tri);
     MALLOC(nv, &q->w.scalar);
+    MALLOC(nt, &q->w.tscalar);
 
     FREAD(q->w.ver, nvar*nv);
     FREAD(q->w.tri, 4*nt);
@@ -149,7 +150,8 @@ int ply_fread(FILE *f, T **pq) {
 int ply_fin(T *q) {
     FREE(q->x); FREE(q->y); FREE(q->z);
     FREE(q->tri);
-    FREE(q->w.ver); FREE(q->w.tri); FREE(q->w.scalar);
+    FREE(q->w.ver); FREE(q->w.tri);
+    FREE(q->w.scalar); FREE(q->w.tscalar);
     FREE(q);
     return HE_OK;
 }
@@ -313,7 +315,7 @@ int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
 }
 
 int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
-    float *ver, *wscalar;
+    float *ver, *wscalar, *tscalar;
     int *wtri, *tri;
     int i, j, k, l, m, nv, nm, nt, cnt;
     int onm, n;
@@ -322,6 +324,7 @@ int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
     ver = q->w.ver;
     wtri = q->w.tri;
     wscalar = q->w.scalar;
+    tscalar = q->w.tscalar;
     tri = q->tri;
     nv = q->nv; nm = q->nm; nt = q->nt;
     x = q->x; y = q->y; z = q->z;
@@ -340,26 +343,25 @@ int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
     FWRITE(ver, n);
 
     n = nt*onm;
-    fprintf(f, "POLYGONS %d %d\n", n, 4*n);
+    fprintf(f, "\nPOLYGONS %d %d\n", n, 4*n);
     big_endian_int(4*n, wtri);
     FWRITE(wtri, 4*n);
 
     n = nv*onm;
-    fprintf(f, "POINT_DATA %d\n", n);
+    fprintf(f, "\nPOINT_DATA %d\n", n);
     fprintf(f, "SCALARS s float 1\n");
     fprintf(f, "LOOKUP_TABLE default\n");
     big_endian_flt(n, wscalar);
     FWRITE(wscalar, n);
 
-    return HE_OK;
-
-    /*
     n = nt*onm;
-    fprintf(f, "CELL_DATA %d\n", n);
-    fprintf(f, "SCALARS t int 1\n");
+    fprintf(f, "\nCELL_DATA %d\n", n);
+    fprintf(f, "SCALARS t float 1\n");
     fprintf(f, "LOOKUP_TABLE default\n");
     for (i = 0; i < n; i++)
-        fprintf(f, "%d\n", i % nt); 
+        tscalar[i] = i % nt;
+    big_endian_flt(n, tscalar);
+    FWRITE(tscalar, n);
 
-    return HE_OK; */
+    return HE_OK;
 }
