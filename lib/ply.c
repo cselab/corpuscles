@@ -86,7 +86,7 @@ int ply_fread(FILE *f, T **pq) {
     } else {
         nvar = 3;
     }
-    
+
     if (sscanf(line, "element face %d", &nt) != 1)
         ERR(HE_IO, "fail to parse: '%s'", line);
     if (nt < 0)
@@ -132,7 +132,7 @@ int ply_fread(FILE *f, T **pq) {
     if (he_tri_ini(nv, nt, q->tri, &q->he) != HE_OK)
         ERR(HE_IO, "he_tri_ini failed");
 
-    q->nvar = nvar;    
+    q->nvar = nvar;
     q->nv = nv;
     q->nt = nt;
     q->nm = nm;
@@ -225,7 +225,7 @@ int ply_fwrite(T *q, FILE *f, int *b) {
     x = q->x; y = q->y; z = q->z;
 
     FILL();
-    
+
     fprintf(f, "ply\n"
             "format binary_little_endian 1.0\n"
             "element vertex %d\n"
@@ -240,6 +240,39 @@ int ply_fwrite(T *q, FILE *f, int *b) {
             "end_header\n", nv*onm, nt*onm);
     FWRITE(ver, 6*nv*onm);
     FWRITE(wtri, 4*nt*onm);
-    
+
+    return HE_OK;
+}
+
+int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
+    float *ver;
+    int *wtri, *tri;
+    int i, j, k, l, m, nv, nm, nt, cnt;
+    int onm;
+    real *x, *y, *z;
+
+    ver = q->w.ver;
+    wtri = q->w.tri;
+    tri = q->tri;
+    nv = q->nv; nm = q->nm; nt = q->nt;
+    x = q->x; y = q->y; z = q->z;
+
+    FILL();
+
+    fprintf(f, "ply\n"
+            "format binary_little_endian 1.0\n"
+            "element vertex %d\n"
+            "property float x\n"
+            "property float y\n"
+            "property float z\n"
+            "property float u\n"
+            "property float v\n"
+            "property float w\n"
+            "element face %d\n"
+            "property list int int vertex_index\n"
+            "end_header\n", nv*onm, nt*onm);
+    FWRITE(ver, 6*nv*onm);
+    FWRITE(wtri, 4*nt*onm);
+
     return HE_OK;
 }
