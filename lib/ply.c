@@ -236,7 +236,7 @@ int ply_z(T *q, int m, real **p) {
 int ply_fwrite(T *q, FILE *f, int *b) {
     float *ver;
     int *wtri, *tri;
-    int i, j, k, l, m, nv, nm, nt, cnt;
+    int i, j, k, l, m, nv, nm, nt, cnt, n;
     int onm;
     real *x, *y, *z;
 
@@ -253,13 +253,16 @@ int ply_fwrite(T *q, FILE *f, int *b) {
             "property float x\n"
             "property float y\n"
             "property float z\n"
-            "property float u\n"
-            "property float v\n"
-            "property float w\n"
             "element face %d\n"
             "property list int int vertex_index\n"
             "end_header\n", nv*onm, nt*onm);
-    FWRITE(ver, 6*nv*onm);
+    n = nv*onm;
+    for (i = j = k = 0; i < n; i++, j += q->nvar) {
+        ver[k++] = ver[j + X];
+        ver[k++] = ver[j + Y];
+        ver[k++] = ver[j + Z];
+    }    
+    FWRITE(ver, 3*nv*onm);
     FWRITE(wtri, 4*nt*onm);
 
     return HE_OK;
