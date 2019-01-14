@@ -196,7 +196,9 @@ int ply_z(T *q, int m, real **p) {
             ver[j++] = x[i];                                  \
             ver[j++] = y[i];                                  \
             ver[j++] = z[i];                                  \
-            j++; j++; j++; /* skip uvw */                     \
+            if (q->nvar == 6) {                               \
+                j++; j++; j++; /* skip uvw */                 \
+            }                                                 \
         }                                                     \
     }                                                         \
     for (j = m = k = 0; m < nm; m++) {                        \
@@ -286,13 +288,19 @@ int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
     for (i = 0; i < n; i++, wtri += 4)
         fprintf(f, "%d %d %d %d\n",
                 wtri[0], wtri[1], wtri[2], wtri[3]);
-
     n = nv*onm;
     fprintf(f, "POINT_DATA %d\n", n);
-    fprintf(f, "SCALARS s double 1\n");    
+    fprintf(f, "SCALARS s double 1\n");
     fprintf(f, "LOOKUP_TABLE default\n");
     for (i = 0; i < n; i++)
         fprintf(f, FLT "\n", wscalar[i]);
+
+    n = nt*onm;
+    fprintf(f, "CELL_DATA %d\n", n);
+    fprintf(f, "SCALARS t int 1\n");
+    fprintf(f, "LOOKUP_TABLE default\n");
+    for (i = 0; i < n; i++)
+        fprintf(f, "%d\n", i % nt);
 
     return HE_OK;
 }
