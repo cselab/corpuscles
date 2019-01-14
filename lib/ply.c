@@ -97,7 +97,7 @@ int ply_fread(FILE *f, T **pq) {
     MALLOC(6*nv, &q->w.ver);
     MALLOC(4*nt, &q->w.tri);
 
-    FREAD(q->w.ver, 6*nv);
+    FREAD(q->w.ver, nvar*nv);
     FREAD(q->w.tri, 4*nt);
 
     MALLOC(nv, &q->x);
