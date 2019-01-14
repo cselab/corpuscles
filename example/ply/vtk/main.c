@@ -8,7 +8,7 @@
 #include <he/util.h>
 
 static Ply *read;
-static const char *me = "ply/read";
+static const char *me = "ply/vtk";
 
 static void usg() {
     fprintf(stderr, "%s [CELL INDEX] < PLY > VTK\n", me);
