@@ -18,5 +18,6 @@ int ply_y(T*, int m, real**);
 int ply_z(T*, int m, real**);
 
 int ply_fwrite(T*, FILE*, int *ban);
+int ply_vtk_txt(T*, FILE*, int *ban, int *scalar);
 
 #undef T
