@@ -174,6 +174,33 @@ int ply_z(T *q, int m, real **p) {
     return HE_OK;
 }
 
+#define FILL() \
+    do {                                                      \
+    for (j = m = 0; m < nm; m++, x += nv, y += nv, z += nv) { \
+        if (b != NULL && b[m]) continue;                      \
+        for (i = 0; i < nv; i++) {                            \
+            ver[j++] = x[i];                                  \
+            ver[j++] = y[i];                                  \
+            ver[j++] = z[i];                                  \
+            j++; j++; j++; /* skip uvw */                     \
+        }                                                     \
+    }                                                         \
+    for (j = m = k = 0; m < nm; m++) {                        \
+        if (b != NULL && b[m]) continue;                      \
+        for (i = l = 0; i < nt; i++) {                        \
+            wtri[j++] = 3;                                    \
+            wtri[j++] = tri[l++] + k;                         \
+            wtri[j++] = tri[l++] + k;                         \
+            wtri[j++] = tri[l++] + k;                         \
+        }                                                     \
+        k += nv;                                              \
+    }                                                         \
+    for (onm = m = 0; m < nm; m++) {                          \
+        if (b != NULL && b[m]) continue;                      \
+        onm++;                                                \
+    }                                                         \
+    } while (0)
+
 int ply_fwrite(T *q, FILE *f, int *b) {
     float *ver;
     int *wtri, *tri;
@@ -185,33 +212,10 @@ int ply_fwrite(T *q, FILE *f, int *b) {
     wtri = q->w.tri;
     tri = q->tri;
     nv = q->nv; nm = q->nm; nt = q->nt;
-
     x = q->x; y = q->y; z = q->z;
-    for (j = m = 0; m < nm; m++, x += nv, y += nv, z += nv) {
-        if (b != NULL && b[m]) continue;
-        for (i = 0; i < nv; i++) {
-            ver[j++] = x[i];
-            ver[j++] = y[i];
-            ver[j++] = z[i];
-            j++; j++; j++; /* skip uvw */
-        }
-    }
 
-    for (j = m = k = 0; m < nm; m++) {
-        if (b != NULL && b[m]) continue;
-        for (i = l = 0; i < nt; i++) {
-            wtri[j++] = 3;
-            wtri[j++] = tri[l++] + k;
-            wtri[j++] = tri[l++] + k;
-            wtri[j++] = tri[l++] + k;
-        }
-        k += nv;
-    }
-
-    for (onm = m = 0; m < nm; m++) {
-        if (b != NULL && b[m]) continue;
-        onm++;
-    }
+    FILL();
+    
     fprintf(f, "ply\n"
             "format binary_little_endian 1.0\n"
             "element vertex %d\n"
