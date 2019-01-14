@@ -31,7 +31,7 @@ struct T {
     real *x, *y, *z;
     int  *tri; /* t0[0] t1[0] t2[0] ... */
     He *he;
-    int nv, nt, nm;
+    int nv, nt, nm, nvar;
     Work w;
 };
 
