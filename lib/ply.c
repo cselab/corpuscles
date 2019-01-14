@@ -338,6 +338,11 @@ int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
             "BINARY\n"
             "DATASET POLYDATA\n"
             "POINTS %d float\n", nv*onm);
+    for (i = j = k = 0; i < n; i++, j += q->nvar) {
+        ver[k++] = ver[j + X];
+        ver[k++] = ver[j + Y];
+        ver[k++] = ver[j + Z];
+    }
     n = 3*nv*onm;
     big_endian_flt(n, ver);
     FWRITE(ver, n);
