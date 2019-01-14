@@ -17,7 +17,7 @@ static real *x, *y, *z;
 static He *he;
 
 static void usg() {
-    fprintf(stderr, "%s [CELL INDEX] < OFF\n", me);
+    fprintf(stderr, "%s [CELL INDEX] < PLY > OFF\n", me);
     exit(2);
 }
 
