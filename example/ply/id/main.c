@@ -8,6 +8,7 @@
 #include <he/ply.h>
 #include <he/util.h>
 
+static const char **argv;
 static Ply *read;
 static const char *me = "ply/id";
 static int nv, nt, nm, m;
@@ -15,6 +16,14 @@ static int nv, nt, nm, m;
 static void usg() {
     fprintf(stderr, "%s < PLY > VTK\n", me);
     exit(2);
+}
+
+static int num(/**/ int *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, "%d", p) != 1)
+        ER("not an integer '%s'", *argv);
+    argv++;
+    return HE_OK;
 }
 
 static void ini() {
@@ -25,17 +34,28 @@ static void fin() { ply_fin(read); }
 static int write() {
     int nm, i;
     real *color;
+    int *ban;
+    
     nm = ply_nm(read);
     MALLOC(nm, &color);
-    for (i = 0; i < nm; i++)
+    MALLOC(nm, &ban);
+    
+    for (i = 0; i < nm; i++) {
         color[i] = i;
-    ply_vtk_bin(read, stdout, NULL, color);
+        ban[i] = (i != m);
+    }
+    
+    ply_vtk_bin(read, stdout, ban, color);
     FREE(color);
+    FREE(ban);
+    
     return HE_OK;
 }
 
 int main(__UNUSED int c, const char **v) {
     if (*++v != NULL && util_eq(*v, "-h")) usg();
+    argv = v;
+    num(&m);    
     ini();
     write();
     fin();
