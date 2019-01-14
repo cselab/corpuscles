@@ -1,4 +1,5 @@
 O = \
+endian.o\
 err.o\
 hash.o\
 he.o\

@@ -217,6 +217,19 @@ int ply_z(T *q, int m, real **p) {
     }                                                         \
     } while (0)
 
+#define SCALAR()                                \
+    do {                                            \
+    for (j = m = 0; m < nm; m++) {                  \
+        if (b != NULL && b[m]) continue;            \
+        for (i = 0; i < nv; i++)                    \
+            if (scalar == NULL)                     \
+                wscalar[j++] = i;                   \
+            else                                    \
+                wscalar[j++] = scalar[m];           \
+    }                                               \
+    } while (0)
+
+
 int ply_fwrite(T *q, FILE *f, int *b) {
     float *ver;
     int *wtri, *tri;
@@ -264,14 +277,7 @@ int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
     x = q->x; y = q->y; z = q->z;
 
     FILL();
-    for (j = m = 0; m < nm; m++) {
-        if (b != NULL && b[m]) continue;
-        for (i = 0; i < nv; i++)
-            if (scalar == NULL)
-                wscalar[j++] = i;
-            else
-                wscalar[j++] = scalar[m];
-    }
+    SCALAR();
 
     n = nv*onm;
     fprintf(f, "# vtk DataFile Version 2.0\n"

@@ -11,6 +11,7 @@ he/dnormal.h\
 he/dtri.h\
 he/dvec.h\
 he/edg.h\
+he/endian.h\
 he/equiangulate.h\
 he/err.h\
 he/f/area.h\
