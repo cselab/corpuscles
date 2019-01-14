@@ -28,7 +28,7 @@ static int write() {
     MALLOC(nm, &color);
     for (i = 0; i < nm; i++)
         color[i] = i;
-    ply_vtk_txt(read, stdout, NULL, color);
+    ply_vtk_bin(read, stdout, NULL, color);
     FREE(color);
     return HE_OK;
 }

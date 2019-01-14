@@ -19,5 +19,6 @@ int ply_z(T*, int m, real**);
 
 int ply_fwrite(T*, FILE*, int *ban);
 int ply_vtk_txt(T*, FILE*, int *ban, real *scalar);
+int ply_vtk_bin(T*, FILE*, int *ban, real *scalar);
 
 #undef T

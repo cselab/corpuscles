@@ -6,6 +6,7 @@
 #include "real.h"
 #include "he/memory.h"
 #include "he/err.h"
+#include "he/endian.h"
 #include "he/util.h"
 #include "he/he.h"
 #include "inc/def.h"
@@ -309,4 +310,56 @@ int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
         fprintf(f, "%d\n", i % nt);
 
     return HE_OK;
+}
+
+int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
+    float *ver, *wscalar;
+    int *wtri, *tri;
+    int i, j, k, l, m, nv, nm, nt, cnt;
+    int onm, n;
+    real *x, *y, *z;
+
+    ver = q->w.ver;
+    wtri = q->w.tri;
+    wscalar = q->w.scalar;
+    tri = q->tri;
+    nv = q->nv; nm = q->nm; nt = q->nt;
+    x = q->x; y = q->y; z = q->z;
+
+    FILL();
+    SCALAR();
+
+    n = nv*onm;
+    fprintf(f, "# vtk DataFile Version 2.0\n"
+            "created with he\n"
+            "BINARY\n"
+            "DATASET POLYDATA\n"
+            "POINTS %d float\n", nv*onm);
+    n = 3*nv*onm;
+    big_endian_flt(n, ver);
+    FWRITE(ver, n);
+
+    n = nt*onm;
+    fprintf(f, "POLYGONS %d %d\n", n, 4*n);
+    big_endian_int(4*n, wtri);
+    FWRITE(wtri, 4*n);
+
+    n = nv*onm;
+    fprintf(f, "POINT_DATA %d\n", n);
+    fprintf(f, "SCALARS s float 1\n");
+    fprintf(f, "LOOKUP_TABLE default\n");
+    big_endian_flt(n, wscalar);
+    FWRITE(wscalar, n);
+
+    return HE_OK;
+
+    /*
+    n = nt*onm;
+    fprintf(f, "CELL_DATA %d\n", n);
+    fprintf(f, "SCALARS t int 1\n");
+    fprintf(f, "LOOKUP_TABLE default\n");
+    for (i = 0; i < n; i++)
+        fprintf(f, "%d\n", i % nt); 
+
+    return HE_OK; */
 }
