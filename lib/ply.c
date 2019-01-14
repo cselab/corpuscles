@@ -14,8 +14,10 @@
 
 #define T Ply
 enum {SIZE = MAX_STRING_SIZE};
+enum {X, Y, Z};
 
 #define FMT HE_REAL_IN
+#define FLT "%.16e"
 
 #   define FWRITE(ptr, size) \
         if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))          \
@@ -23,6 +25,7 @@ enum {SIZE = MAX_STRING_SIZE};
 
 struct Work {
     float *ver;
+    float *scalar;
     int *tri;
 };
 typedef struct Work Work;
@@ -96,6 +99,7 @@ int ply_fread(FILE *f, T **pq) {
 
     MALLOC(6*nv, &q->w.ver);
     MALLOC(4*nt, &q->w.tri);
+    MALLOC(nv, &q->w.scalar);
 
     FREAD(q->w.ver, nvar*nv);
     FREAD(q->w.tri, 4*nt);
@@ -144,7 +148,7 @@ int ply_fread(FILE *f, T **pq) {
 int ply_fin(T *q) {
     FREE(q->x); FREE(q->y); FREE(q->z);
     FREE(q->tri);
-    FREE(q->w.ver); FREE(q->w.tri);
+    FREE(q->w.ver); FREE(q->w.tri); FREE(q->w.scalar);
     FREE(q);
     return HE_OK;
 }
@@ -225,7 +229,6 @@ int ply_fwrite(T *q, FILE *f, int *b) {
     x = q->x; y = q->y; z = q->z;
 
     FILL();
-
     fprintf(f, "ply\n"
             "format binary_little_endian 1.0\n"
             "element vertex %d\n"
@@ -245,34 +248,51 @@ int ply_fwrite(T *q, FILE *f, int *b) {
 }
 
 int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
-    float *ver;
+    float *ver, *wscalar;
     int *wtri, *tri;
     int i, j, k, l, m, nv, nm, nt, cnt;
-    int onm;
+    int onm, n;
     real *x, *y, *z;
 
     ver = q->w.ver;
     wtri = q->w.tri;
+    wscalar = q->w.scalar;
     tri = q->tri;
     nv = q->nv; nm = q->nm; nt = q->nt;
     x = q->x; y = q->y; z = q->z;
 
     FILL();
+    for (j = m = 0; m < nm; m++) {
+        if (b != NULL && b[m]) continue;
+        for (i = 0; i < nv; i++)
+            if (scalar == NULL)
+                wscalar[j++] = i;
+            else
+                wscalar[j++] = scalar[m];
+    }
 
-    fprintf(f, "ply\n"
-            "format binary_little_endian 1.0\n"
-            "element vertex %d\n"
-            "property float x\n"
-            "property float y\n"
-            "property float z\n"
-            "property float u\n"
-            "property float v\n"
-            "property float w\n"
-            "element face %d\n"
-            "property list int int vertex_index\n"
-            "end_header\n", nv*onm, nt*onm);
-    FWRITE(ver, 6*nv*onm);
-    FWRITE(wtri, 4*nt*onm);
+    n = nv*onm;
+    fprintf(f, "# vtk DataFile Version 2.0\n"
+            "created with he\n"
+            "ASCII\n"
+            "DATASET POLYDATA\n"
+            "POINTS %d double\n", nv*onm);
+    for (i = 0; i < n; i++, ver += q->nvar)
+        fprintf(f, FLT " " FLT " " FLT "\n",
+                ver[X], ver[Y], ver[Z]);
+
+    n = nt*onm;
+    fprintf(f, "POLYGONS %d %d\n", n, 4*n);
+    for (i = 0; i < n; i++, wtri += 4)
+        fprintf(f, "%d %d %d %d\n",
+                wtri[0], wtri[1], wtri[2], wtri[3]);
+
+    n = nv*onm;
+    fprintf(f, "POINT_DATA %d\n", n);
+    fprintf(f, "SCALARS s double 1\n");    
+    fprintf(f, "LOOKUP_TABLE default\n");
+    for (i = 0; i < n; i++)
+        fprintf(f, FLT "\n", wscalar[i]);
 
     return HE_OK;
 }
