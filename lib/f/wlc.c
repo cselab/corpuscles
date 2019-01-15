@@ -62,7 +62,7 @@ static real compute_energy(real x0, int n, real *e, const real *e0) {
     real v;
     v = 0;
     for (i = 0; i < n; i++)
-        v += compute_energy0(x0, e0[i], e[i]);
+        v += compute_energy0(x0, e0[i], e[i]) - compute_energy0(x0, e0[i], e0[i]);
     return v;
 }
 int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, He *he, T **pq) {
@@ -164,7 +164,7 @@ real he_f_wlc_energy(T *q, He *he,
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
-    v = compute_energy(x0, n, dedg, e0);
+    v = compute_energy(x0, n, edg, e0);
 
     return K*v;
 }
