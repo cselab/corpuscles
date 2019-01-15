@@ -10,6 +10,7 @@
 #include <he/ply.h>
 #include <he/f/wlc.h>
 #include <he/he.h>
+#include <he/sum.h>
 #include <he/y.h>
 
 static HeFWlc *force;
@@ -27,16 +28,28 @@ static int str(/**/ char *p) {
     return HE_OK;
 }
 
+
+static real mean(int n, real *x) {
+    return he_sum_array(n, x)/n;
+}
+
 static void main0() {
     int i, nm;
     real *x, *y, *z;
+    real xc, yc, zc, en;
 
     nm = ply_nm(cell);
     for (i = 0; i < nm; i++) {
         ply_x(cell, i, &x);
         ply_y(cell, i, &y);
         ply_z(cell, i, &z);
-        printf("%g\n", he_f_wlc_energy(force, he, x, y, z));
+
+        xc = mean(nv, x);
+        yc = mean(nv, y);
+        zc = mean(nv, z);
+        en = he_f_wlc_energy(force, he, x, y, z);
+        
+        printf("%g %g %g %g\n", xc, yc, zc, en);
     }
 }
 
@@ -45,11 +58,11 @@ int main(int __UNUSED argc, const char *v[]) {
     real K, x0;
     FILE *f;
     real *x, *y, *z;
-    
+
     argv = v; argv++;
     str(off);
     str(ply);
-    
+
     y_ini(off, &he, &x, &y, &z);
     if ((f = fopen(ply, "r")) == NULL)
         ER("fail to open '%s'", ply);
@@ -64,7 +77,7 @@ int main(int __UNUSED argc, const char *v[]) {
 
     if (nt != ply_nt(cell))
         ER("off_nt=%d != ply_nt=%d", nt, ply_nt(cell));
-    
+
     K = 1;
     x0 = 0.4545;
     he_f_wlc_ini(x0, K, x, y, z, he, /**/ &force);
