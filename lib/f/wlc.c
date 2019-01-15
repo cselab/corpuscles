@@ -42,7 +42,7 @@ static real sum_sq_norm(int n, real *a, const real *e0) {
     for (i = 0; i < n; i++) v += a[i]*a[i]/e0[i];
     return v;
 }
-int he_f_wlc_ini(real K, const real *x, const real *y, const real *z, He *he, T **pq) {
+int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, He *he, T **pq) {
     T *q;
     int n, m;
     real a[3], b[3];
