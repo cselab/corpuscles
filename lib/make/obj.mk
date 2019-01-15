@@ -42,6 +42,7 @@ force.s.o\
 f/strain.s.o\
 f/volume.s.o\
 f/volume_normal.s.o\
+f/wlc.s.o\
 gts.s.o\
 H.s.o\
 laplace.s.o\
@@ -100,6 +101,7 @@ force.d.o\
 f/strain.d.o\
 f/volume.d.o\
 f/volume_normal.d.o\
+f/wlc.d.o\
 gts.d.o\
 H.d.o\
 laplace.d.o\
@@ -158,6 +160,7 @@ force.l.o\
 f/strain.l.o\
 f/volume.l.o\
 f/volume_normal.l.o\
+f/wlc.l.o\
 gts.l.o\
 H.l.o\
 laplace.l.o\

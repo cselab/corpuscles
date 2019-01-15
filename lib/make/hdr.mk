@@ -36,6 +36,7 @@ he/force.h\
 he/f/strain.h\
 he/f/volume.h\
 he/f/volume_normal.h\
+he/f/wlc.h\
 he/gts.h\
 he/hash.h\
 he/he.h\
