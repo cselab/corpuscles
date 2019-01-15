@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "real.h"
 #include "he/memory.h"
@@ -16,7 +17,7 @@ struct T {
     int n;
     real *edg, *dedg;
     real *e0;
-    real K;
+    real x0, K;
 };
 
 static void get_ij(int m, He *he, /**/ int *pi, int *pj) {
@@ -35,11 +36,33 @@ static void get(int m, He *he,
     vec_get(j, x, y, z, /**/ b);
 }
 
-static real sum_sq_norm(int n, real *a, const real *e0) {
+
+static real wlc(real x) {
+    return (3*pow(x,2)-2*pow(x,3))/(1-x);
+}
+
+static real dwlc(real x) {
+    return x*(((3-2*x)*x)/pow(1-x,2)+6);
+}
+
+static real compute_energy0(real x0, real l0, real r) {
+    int m;
+    real kp, Epow, Ewlc;
+    m = 2; /* TODO */
+    kp = (pow(l0,m)*dwlc(x0))/(4*(m-1));
+
+    Epow = kp / pow(r,m-1);
+    Ewlc = ((l0*wlc((r*x0)/l0))/x0)/4;
+    
+    return Epow + Ewlc;
+}
+
+static real compute_energy(real x0, int n, real *e, const real *e0) {
     int i;
     real v;
     v = 0;
-    for (i = 0; i < n; i++) v += a[i]*a[i]/e0[i];
+    for (i = 0; i < n; i++)
+        v += compute_energy0(x0, e0[i], e[i]);
     return v;
 }
 int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, He *he, T **pq) {
@@ -56,6 +79,7 @@ int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, H
     MALLOC(n, &q->e0);
 
     q->n = n;
+    q->x0 = x0;
     q->K = K;
     e0 = q->e0;
     for (m = 0; m < n; m++) {
@@ -126,20 +150,21 @@ int he_f_wlc_force(T *q, He *he,
 }
 
 real he_f_wlc_energy(T *q, He *he,
-                              const real *x, const real *y, const real *z) {
+                     const real *x, const real *y, const real *z) {
     int n;
-    real *edg, *dedg, *e0, v, K;
+    real *edg, *dedg, *e0, v, x0, K;
     n = q->n;
     edg = q->edg;
     dedg = q->dedg;
     e0 = q->e0;
+    x0 = q->x0;
     K  = q->K;
 
     if (he_ne(he) != n)
         ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
-    v = sum_sq_norm(n, dedg, e0);
+    v = compute_energy(x0, n, dedg, e0);
 
     return K*v;
 }
