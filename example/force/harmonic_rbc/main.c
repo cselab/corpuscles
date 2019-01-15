@@ -16,7 +16,6 @@ static int nv;
 
 static void main0() {
     fprintf(stderr, "eng: %g\n", he_f_harmonic_ref_energy(force, he, x, y, z));
-    he_f_harmonic_ref_energy(force, he, x, y, z);
 }
 
 int main() {
