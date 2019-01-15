@@ -36,9 +36,8 @@ static void main0() {
         ply_x(cell, i, &x);
         ply_y(cell, i, &y);
         ply_z(cell, i, &z);
-        fprintf(stderr, "eng: %g\n", he_f_harmonic_ref_energy(force, he, x, y, z));
+        printf("%g\n", he_f_harmonic_ref_energy(force, he, x, y, z));
     }
-    
 }
 
 int main(int __UNUSED argc, const char *v[]) {
