@@ -32,6 +32,7 @@ static void ini() {
 static void fin() { ply_fin(read); }
 
 static int write() {
+    real *x, *y, *z;
     int nm, i;
     real *color;
     int *ban;
@@ -44,6 +45,10 @@ static int write() {
         color[i] = i;
         ban[i] = (i != m);
     }
+
+    ply_x(read, m, &x);
+    ply_y(read, m, &y);
+    ply_z(read, m, &z);
     
     ply_vtk_bin(read, stdout, ban, color);
     FREE(color);
