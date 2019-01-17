@@ -222,8 +222,8 @@ static int main0(real *vx, real *vy, real *vz,
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
         Force(XX, YY, ZZ, /**/ fx, fy, fz);
-        filter(vx, vy, vz);
-        //visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+        //filter(vx, vy, vz);
+        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
@@ -233,8 +233,8 @@ static int main0(real *vx, real *vy, real *vz,
             errA = fabs(A - A0)/A0;
             if (errA <= tolerA) break;
             ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
-            filter(vx, vy, vz);
-            //visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+            //filter(vx, vy, vz);
+            visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
             euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
@@ -253,7 +253,7 @@ static int main0(real *vx, real *vy, real *vz,
             fm = fopen(filemsg, "a");
             static int First = 1;
             if (First) {
-                fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek ee", fm);
+                fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek ee\n", fm);
                 First = 0;
             }
             fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
