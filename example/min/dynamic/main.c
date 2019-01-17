@@ -209,7 +209,7 @@ static int main0(real *vx, real *vy, real *vz,
     real errA;
     int nsub;
     char file[4048];
-    char filemsg[4048]="stat.msg";
+    char filemsg[4048]="stat";
     FILE *fm;
 
     dt = 0.01;
@@ -251,6 +251,11 @@ static int main0(real *vx, real *vy, real *vz,
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
 
             fm = fopen(filemsg, "a");
+            static int First = 1;
+            if (First) {
+                fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek ee", fm);
+                First = 0;
+            }
             fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             fclose(fm);
         }
