@@ -34,13 +34,16 @@ format () {
 '
 }
 
-name_o () ( sed 's,\.c$,.o,g' )
-name_d () ( sed 's,\.c$,.d.o,g' )
-name_s () ( sed 's,\.c$,.s.o,g' )
-name_l () ( sed 's,\.c$,.l.o,g' )
+name () {
+    s=$1; shift
+    sed -e "s,\.c$,.$s,1" -e "s,\.m4$,.$s,1"
+}
 
-find he -name '*.h'  | norm |                  format H     > make/hdr.mk
-find .  -name '*.c'  | norm | nreal | name_o | format O     > make/obj.mk
-find .  -name '*.c'  | norm |  real | name_s | format O_S  >> make/obj.mk
-find .  -name '*.c'  | norm |  real | name_d | format O_D  >> make/obj.mk
-find .  -name '*.c'  | norm |  real | name_l | format O_L  >> make/obj.mk
+src () { find . -name '*.c' -or -name '*.m4'; }
+hdr () { find . -name '*.h'; }
+
+hdr | norm |                    format H     > make/hdr.mk
+src | norm | nreal | name o   | format O     > make/obj.mk
+src | norm |  real | name s.o | format O_S  >> make/obj.mk
+src | norm |  real | name d.o | format O_D  >> make/obj.mk
+src | norm |  real | name l.o | format O_L  >> make/obj.mk

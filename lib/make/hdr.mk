@@ -67,5 +67,6 @@ he/vec.h\
 he/volume.h\
 he/vtk.h\
 he/x.h\
-he/y.h
+he/y.h\
+inc/def.h
 
