@@ -91,18 +91,13 @@ int main(int __UNUSED argc, const char *v[]) {
   bending_curva_mean_ver(bending, &H);
   bending_area_ver(bending, &area);
 
-  H0=0;
-  H1=0;
-  H2=0;
-  for (i=0; i<nv; i++) {
-    //printf("H[%i]=%g\n", i, H[i]);
-    H0+=area[i];
-    H1+=H[i]*area[i];
-    H2+=H[i]*H[i]*area[i];
+  H0 = H1 = H2 = 0;
+  for (i = 0; i < nv; i++) {
+    H0 += area[i];
+    H1 += H[i]*area[i];
+    H2 += H[i]*H[i]*area[i];
   }
-  //printf("#H0 H1 H2\n");
-  printf("%f %f %f\n", H0, H1, H2);
-  
+  printf("%.16g %.16g %.16g\n", H0, H1, H2);
   
   FREE(xx); FREE(yy); FREE(zz);
   FREE(fx); FREE(fy); FREE(fz);
