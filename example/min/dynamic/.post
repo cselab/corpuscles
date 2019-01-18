@@ -5,9 +5,14 @@ scheme=juelicher_xin
 for s in `find */ -name stat`
 do d=`dirname "$s"`
    {
-   echo ' h0 h1 h2'
-   for o in $d/*.off
-   do he.cmoment $scheme < $o
-   done
+    echo ' h0 h1 h2'
+    for o in $d/*.off
+    do he.cmoment $scheme < $o
+    done
    } > $d/cmoment
+done
+
+for s in `find */ -name stat`
+do d=`dirname "$s"`
+   paste -d ' ' $d/stat $d/cmoment | awk 'NR == 1{nf = NF} nf == NF' > $d/all
 done
