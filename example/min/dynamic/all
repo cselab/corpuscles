@@ -1,9 +1,9 @@
 make
 for Nt in 1280 5120
 do
-for dt in 0.05 0.01 0.005
+for dt in 0.005 0.0025 0.001
 do
-for mu in 0 1 10 100
+for mu in 0 1 10 50
 do
 ./main.sh $Nt $dt $mu &
 done
