@@ -26,19 +26,20 @@ static const real pi = 3.141592653589793115997964;
 static const real tolerA = 1.0e-2;
 static const real tolerV = 1.0e-2;
 static real Kb, C0, Kad, DA0D;
-static real rVolume, Ka, Kga, Kv, Ke, mu;
+static real rVolume, Ka, Kga, Kv, Ke, mu, dt;
 static int end;
 static int freq;
 static real A0, V0, e0;
 static real et, eb, eb_bend, eb_ad, ek, ea, ega, ev, ee;
 static const char **argv;
-static char bending[4049];
+static char bending[4049], dir[4049];
 static const char *me = "min/helfrich_xin_fga";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D mu < OFF > msg\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D mu dt < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");
+    fprintf(stderr, "output: output directory\n");
     exit(0);
 }
 
@@ -86,11 +87,13 @@ static void arg() {
     scl(&Kad);
     scl(&DA0D);
     scl(&mu);
+    scl(&dt);
     num(&end);
     num(&freq);
+    str(dir);
 }
 
-real Energy(const real *x, const real *y, const real *z) {
+static real Energy(const real *x, const real *y, const real *z) {
     real a, ga, v, e, b;
     a = f_area_energy(x, y, z);
     ga = f_garea_energy(x, y, z);
@@ -121,7 +124,7 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
 }
-void ForceSub(const real *x, const real *y, const real *z, /**/
+static void ForceSub(const real *x, const real *y, const real *z, /**/
               real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
@@ -211,8 +214,6 @@ static int main0(real *vx, real *vy, real *vz,
     char file[4048];
     char filemsg[4048]="stat";
     FILE *fm;
-
-    dt = 0.01;
 
     if ((fm = fopen(filemsg, "w")) == NULL)
         ER("fail to open '%s'", filemsg);
