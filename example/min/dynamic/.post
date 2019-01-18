@@ -1,0 +1,13 @@
+set -eu
+
+scheme=juelicher_xin
+
+for s in `find */ -name stat`
+do d=`dirname "$s"`
+   {
+   echo ' h0 h1 h2'
+   for o in $d/*.off
+   do he.cmoment $scheme < $o
+   done
+   } > $d/cmoment
+done
