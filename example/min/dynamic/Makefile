@@ -10,10 +10,13 @@ $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
 test: $M; atest test/*
 install:
 
-.gp.pdf: 
+%.pdf: %.gp
 	gnuplot $< && \
         pdfcrop --margin 10 $@ /tmp/t.pdf && \
 	mv /tmp/t.pdf $@
+
+
+pdf: energy.pdf ad.pdf
 
 .PHONY: clean test install pdf
 clean:; rm -f $M.o $M
