@@ -91,9 +91,9 @@ int main(int __UNUSED argc, const char *v[]) {
   }
   printf("%.16g %.16g %.16g\n", H0, H1, H2);
   
-//  FREE(fx); FREE(fy); FREE(fz);
-//  FREE(H);
-//  FREE(area);
+  FREE(fx); FREE(fy); FREE(fz);
+  FREE(H);
+  FREE(area);
 
   y_fin(he, xx, yy, zz);
 }
