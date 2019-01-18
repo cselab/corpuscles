@@ -7,12 +7,12 @@
 #include <he/bending.h>
 #include <he/punto.h>
 #include <he/he.h>
-#include <he/off.h>
 #include <he/memory.h>
 #include <he/err.h>
 #include <he/util.h>
 #include <he/macro.h>
 #include <he/vec.h>
+#include <he/y.h>
 
 #define FMT_IN   HE_REAL_IN
 
@@ -67,23 +67,15 @@ int main(int __UNUSED argc, const char *v[]) {
   real e;
   real H0, H1, H2;
   const char path[] = "/dev/stdin";
-  static HeOff *off;
   argv = v; argv++;
   arg();
+
+  y_ini(path, &he, &xx, &yy, &zz);
   
-  off_ini(path, &off);
-  
-  nv = off_nv(off);
-  nt = off_nt(off);
-  off_tri(off, &tri);
-  he_tri_ini(nv, nt, tri, &he);
-  
-  MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
+  nv = he_nv(he);
   CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
   CALLOC(nv, &H); 
   CALLOC(nv, &area); 
-  
-  off_xyz(off, xx, yy, zz);
   
   bending_ini(name, param, he,  &bending);
   e = bending_energy(bending, he, xx, yy, zz);
@@ -99,11 +91,9 @@ int main(int __UNUSED argc, const char *v[]) {
   }
   printf("%.16g %.16g %.16g\n", H0, H1, H2);
   
-  FREE(xx); FREE(yy); FREE(zz);
-  FREE(fx); FREE(fy); FREE(fz);
-  FREE(H);
-  FREE(area);
-  
-  off_fin(off);
-  he_fin(he);
+//  FREE(fx); FREE(fy); FREE(fz);
+//  FREE(H);
+//  FREE(area);
+
+  y_fin(he, xx, yy, zz);
 }
