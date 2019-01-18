@@ -1,5 +1,7 @@
 set term push
 set term pdfcairo enhanced color fontscale 0.7
+set size sq
+
 o = "ad.pdf"
 set output o
 print o
@@ -30,15 +32,33 @@ set style line 2 lw 2 lc 4 dt 4
 
 p = 'i=i+1, @f u (($0-1)*dt*freq):(c("h1")/Da0) w l ls i t @pt'
 
+WX = 800.0
+WY = 600.0
 
-set xrange[0:4000]
-set yrange[0.5:1.5]
+xl = -270
+xh = 4000
+
+yl = 0.5
+yh = 1.5
+
+lx = xh - xl
+ly = yh - yl
+
+dx = 1
+dy = dx*ly/lx # * WX/WY
+
+set xrange [xl:xh]
+set yrange [yl:yh]
+
 set xtics 1000
 set ytics 0.2
+
+png = 'f binary filetype=png dx=dx dy=dy center=(x, y) with rgbalpha t ""'
+
 
 plot  i=0, \
       mu = 10, \
       Nt=1280,  dt=0.001, @p,\
-      Nt=5120,  dt=0.001, @p
-
-      
+      Nt=5120,  dt=0.001, @p, \
+      f="image/00000000.png", x = 0,    y = 0.8, @png, \
+      f="image/00000250.png", x = 2500, y = 1.1, @png
