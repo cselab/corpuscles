@@ -1,0 +1,1 @@
+rsync -avz -r falcon:he/example/min/dynamic/Nt* .
