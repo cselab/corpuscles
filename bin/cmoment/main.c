@@ -24,7 +24,7 @@ static int nv, nt;
 static He *he;
 static Bending *bending;
 static BendingParam param;
-static const char *me = "bending";
+static const char *me = "he.cmoment";
 
 static void usg() {
     const char *list;

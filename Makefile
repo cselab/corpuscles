@@ -5,6 +5,7 @@ bin/m4\
 m4/lib\
 lib\
 bin/align\
+bin/cmoment\
 bin/ffmpeg\
 bin/geomview\
 bin/maxima\
