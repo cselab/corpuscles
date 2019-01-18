@@ -1,6 +1,6 @@
 set term push
 set term pdfcairo enhanced color fontscale 0.7
-o = "gnuplot.pdf"
+o = "energy.pdf"
 set output o
 print o
 
