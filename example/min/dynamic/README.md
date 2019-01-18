@@ -1,2 +1,3 @@
-rsync -v falcon:`pwd`/'*.msg' . && (cd ../dynamic2 && rsync -v falcon:`pwd`/'*.msg' .)
+# Data
 
+    ./Nt_1280/dt_0.0025/mu_7/stat
