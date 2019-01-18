@@ -1,0 +1,21 @@
+. he.util
+
+size=100
+dt=0.005
+mu=1
+
+f="$1"; shift
+i="$1"; shift
+o="$1"; shift
+
+if ! composite --version 2>/dev/null 1>/dev/null
+then echo "i/time: no composite command" >&2
+     exit 2
+fi
+
+id=`basename "$f" .off`
+ti=`ae $id*$dt/$mu`
+echo >&2 $ti
+
+l=`printf '%f' $ti`
+composite -pointsize $size label:"$l" "$i" "$o"
