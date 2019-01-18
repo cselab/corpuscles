@@ -4,8 +4,6 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-#include <errno.h>
 
 #include <real.h>
 
@@ -34,7 +32,7 @@ static int freq;
 static real A0, V0, e0;
 static real et, eb, eb_bend, eb_ad, ek, ea, ega, ev, ee;
 static const char **argv;
-static char bending[4049], dir[4049];
+static char bending[4049], dir[4049], fpath[4049];
 static const char *me = "min/helfrich_xin_fga";
 
 static void usg() {
@@ -46,14 +44,21 @@ static void usg() {
 }
 
 static int mkdir0(const char *path) {
-    int mode;
-    int rc, ok;
-    mode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH;
-    rc = mkdir(path, mode);
-    ok = (rc == 0 || errno == EEXIST);
-    if (!ok)
+    int rc;
+    char cmd[4048];
+    sprintf(cmd, "mkdir -p \"%s\"", path);
+    rc = system(cmd);
+    if (rc != 0)
         ER("fail to create directory '%s'\n", path);
     return HE_OK;
+}
+
+static char *fullpath(const char *path) {
+    strncpy(fpath, dir, 4048);
+    strncat(fpath, "/", 4048);
+    strncat(fpath, path, 4048);
+    MSG("fpath: %s", fpath);
+    return fpath;
 }
 
 static void zero(int n, real *a) {
@@ -228,7 +233,8 @@ static int main0(real *vx, real *vy, real *vz,
     char filemsg[4048]="stat";
     FILE *fm;
 
-    if ((fm = fopen(filemsg, "w")) == NULL)
+    mkdir0(dir);
+    if ((fm = fopen(fullpath(filemsg), "w")) == NULL)
         ER("fail to open '%s'", filemsg);
     fclose(fm);
 
@@ -264,7 +270,7 @@ static int main0(real *vx, real *vy, real *vz,
             MSG("eng: %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
 
-            fm = fopen(filemsg, "a");
+            fm = fopen(fullpath(filemsg), "a");
             static int First = 1;
             if (First) {
                 fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek ee\n", fm);
@@ -273,7 +279,7 @@ static int main0(real *vx, real *vy, real *vz,
             fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             fclose(fm);
             sprintf(file, "%08d.off", i);
-            off_write(XX, YY, ZZ, file);
+            off_write(XX, YY, ZZ, fullpath(file));
         }
     }
     return HE_OK;

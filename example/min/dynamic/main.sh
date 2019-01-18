@@ -4,9 +4,9 @@ set -eu
 
 make
 
-#off=data/Nt1280_01.off
-off=data/03200000.off
-#off=data/Nt5120_01.off
+# Nt=5120
+Nt=1280
+off=data/Nt${Nt}_01.off
 
 Da=0.3
 
@@ -19,6 +19,7 @@ Ka=$(ae 0.5*$f)
 Kga=$(ae 1*$f)
 Kv=$(ae 5*$f)
 mu=$(ae 10*$f)
+dt=0.01
 Ke=0
 
 Kb=$(ae 0.001*$f)
@@ -29,5 +30,7 @@ freq=800
 
 Da=$(ae $Da/100)
 DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")
-    
-./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $end $freq < $off
+
+dir="Nt_${Nt}/dt_${dt}/mu_${mu}"
+
+./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir < $off
