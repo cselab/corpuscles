@@ -16,7 +16,7 @@ qt = 'sprintf("non-local: N_t = %d {/Symbol D}t = %g", Nt, dt)'
 set key spacing 1.5
 set key width 1
 set key samplen 6
-set key right center
+set key left bottom
 
 set xlabel 'time'
 set ylabel 'E/(8{/Symbol p k}_b)'
@@ -35,14 +35,14 @@ p = 'i=i+1, @f u (($0-1)*dt*freq):(c("eb_bend")/eb0) w l ls i t @pt'
 q = 'i=i+1, @f u (($0-1)*dt*freq):(c("eb_ad")/eb0) w l ls i t @qt'
 
 
-set xrange[0:18000]
+set xrange[0:4000]
 set yrange[0:2.5]
-set xtics 3000
+set xtics 1000
 set ytics 0.5
 
 plot  i=0, \
       mu = 10, \
-      Nt=1280,  dt=0.005, @p, @q,\
+      Nt=1280,  dt=0.001, @p, @q,\
       Nt=5120,  dt=0.001, @p, @q
 
       
