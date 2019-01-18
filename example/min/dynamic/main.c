@@ -57,7 +57,6 @@ static char *fullpath(const char *path) {
     strncpy(fpath, dir, 4048);
     strncat(fpath, "/", 4048);
     strncat(fpath, path, 4048);
-    MSG("fpath: %s", fpath);
     return fpath;
 }
 
@@ -225,7 +224,6 @@ static int filter(real *vx, real *vy, real *vz) {
 static int main0(real *vx, real *vy, real *vz,
                  real *fx, real *fy, real *fz) {
     int i, j;
-    real dt;
     real A, V, Vr;
     real errA;
     int nsub;
@@ -237,6 +235,7 @@ static int main0(real *vx, real *vy, real *vz,
     if ((fm = fopen(fullpath(filemsg), "w")) == NULL)
         ER("fail to open '%s'", filemsg);
     fclose(fm);
+
 
     nsub = 0;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
