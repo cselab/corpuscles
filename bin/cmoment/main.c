@@ -30,6 +30,10 @@ static void usg() {
     const char *list;
     list = bending_list();
     fprintf(stderr, "%s %s < OFF \n", me, list);
+    fprintf(stderr, "print bending moments:\n");
+    fprintf(stderr, "sum(a) sum(H*a) sum(H^a)\n");
+    fprintf(stderr, "where `a' is a vertice area, `H' is a mean curvature\n");
+    exit(2);
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
