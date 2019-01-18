@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #include <real.h>
 
@@ -41,6 +43,17 @@ static void usg() {
     fprintf(stderr, "freq: frequency of output off files\n");
     fprintf(stderr, "output: output directory\n");
     exit(0);
+}
+
+static int mkdir0(const char *path) {
+    int mode;
+    int rc, ok;
+    mode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH;
+    rc = mkdir(path, mode);
+    ok = (rc == 0 || errno == EEXIST);
+    if (!ok)
+        ER("fail to create directory '%s'\n", path);
+    return HE_OK;
 }
 
 static void zero(int n, real *a) {
@@ -259,9 +272,6 @@ static int main0(real *vx, real *vy, real *vz,
             }
             fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
             fclose(fm);
-        }
-
-        if ( i % freq == 0 ) {
             sprintf(file, "%08d.off", i);
             off_write(XX, YY, ZZ, file);
         }
