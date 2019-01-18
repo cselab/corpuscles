@@ -1,5 +1,5 @@
-rsync -avz -r \
+rsync -az -r \
       falcon:he/example/min/dynamic/Nt* .
 
-rsync -avz -r \
+rsync -az -r \
       panda:he/example/min/dynamic/Nt* .
