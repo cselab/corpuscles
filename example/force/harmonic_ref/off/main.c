@@ -7,14 +7,13 @@
 #include <he/err.h>
 #include <he/memory.h>
 #include <he/macro.h>
-#include <he/f/wlc.h>
+#include <he/f/harmonic_ref.h>
 #include <he/he.h>
-#include <he/sum.h>
 #include <he/util.h>
 #include <he/y.h>
 
-static const char *me = "force/wlc/off";
-static HeFWlc *force;
+static const char *me = "force/harmonic_ref/off";
+static HeFHarmonicRef *force;
 static He *he0, *he1;
 
 static int nv;
@@ -23,7 +22,7 @@ static char off0[4048], off1[4048];
 static real *x, *y, *z;
 
 static void usg() {
-    fprintf(stderr, "%s x0 K ref.off main.off\n", me);
+    fprintf(stderr, "%s K ref.off main.off\n", me);
     exit(0);
 }
 
@@ -42,26 +41,21 @@ static int scl(/**/ real *p) {
     return HE_OK;
 }
 
-static real mean(int n, real *x) {
-    return he_sum_array(n, x)/n;
-}
-
 static void main0() {
     real en;
-    en = he_f_wlc_energy(force, he0, x, y, z);
+    en = he_f_harmonic_ref_energy(force, he0, x, y, z);
     printf(HE_REAL_OUT "\n", en);
 }
 
 int main(int __UNUSED argc, const char *v[]) {
     int nt;
     FILE *f;
-    real *x0, *y0, *z0, K, x00;
+    real *x0, *y0, *z0, K;
 
     if (*++v != NULL && util_eq(*v, "-h"))
         usg();
     argv = v;
 
-    scl(&x00);
     scl(&K);
     str(off0);
     str(off1);
@@ -78,11 +72,11 @@ int main(int __UNUSED argc, const char *v[]) {
     if (nt != he_nt(he1))
         ER("nt=%d != he_nt(off0)=%d", nt, he_nt(he1));
 
-    he_f_wlc_ini(x00, K, x0, y0, z0, he0, /**/ &force);
+    he_f_harmonic_ref_ini(K, x0, y0, z0, he0, /**/ &force);
 
     main0();
 
-    he_f_wlc_fin(force);
+    he_f_harmonic_ref_fin(force);
     y_fin(he0, x0, y0, z0);
     y_fin(he1, x, y, z);
 
