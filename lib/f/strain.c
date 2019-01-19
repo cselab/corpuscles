@@ -124,7 +124,7 @@ int he_f_strain_force(T *q, const real *x, const real *y, const real *z, /**/
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         get3(x0, y0, z0, i, j, k, /**/ a0, b0, c0);
-        get3(x, y, z, i, j, /**/ k, a, b, c);
+        get3(x, y, z, i, j, k, /**/ a, b, c);
         strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
         if (!assert_force(a, b, c, da, db, dc))
             ERR(HE_NUM,
