@@ -4,11 +4,13 @@
 #include <string.h>
 
 #include <real.h>
+
 #include <he/err.h>
-#include <he/memory.h>
-#include <he/macro.h>
 #include <he/f/harmonic_ref.h>
 #include <he/he.h>
+#include <he/macro.h>
+#include <he/memory.h>
+#include <he/punto.h>
 #include <he/util.h>
 #include <he/y.h>
 
@@ -42,9 +44,23 @@ static int scl(/**/ real *p) {
 }
 
 static void main0() {
+    real *fx, *fy, *fz;
     real en;
+
+    CALLOC(nv, &fx);
+    CALLOC(nv, &fy);
+    CALLOC(nv, &fz);
+
     en = he_f_harmonic_ref_energy(force, he0, x, y, z);
+    he_f_harmonic_ref_force(force, he0, x, y, z, /**/ fx, fy, fz);
     printf(HE_REAL_OUT "\n", en);
+
+    char *key = "x y z fm fx fy fz";
+    real *queue[] = {x, y, z, fx, fy, fz, NULL};
+    puts(key);
+    punto_fwrite(nv, queue, stdout);
+
+    FREE(fx); FREE(fy); FREE(fz);
 }
 
 int main(int __UNUSED argc, const char *v[]) {
