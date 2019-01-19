@@ -38,10 +38,14 @@ static void get(int m, He *he,
 
 
 static real wlc(real x) {
+    if (1 - x == 0)
+        ERR(HE_NUM, "1 - x == 0");
     return (3*pow(x,2)-2*pow(x,3))/(1-x);
 }
 
 static real dwlc(real x) {
+    if (1 - x == 0)
+        ERR(HE_NUM, "1 - x == 0");
     return x*(((3-2*x)*x)/pow(1-x,2)+6);
 }
 
@@ -53,7 +57,7 @@ static real compute_energy0(real x0, real l0, real r) {
 
     Epow = kp / pow(r,m-1);
     Ewlc = ((l0*wlc((r*x0)/l0))/x0)/4;
-    
+
     return Epow + Ewlc;
 }
 
