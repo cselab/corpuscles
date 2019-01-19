@@ -4,9 +4,8 @@ set -eu
 
 make
 
-# Nt=5120
 Nt=$1; shift
-off=data/${Nt}.off
+off=$(he.path)/oblate/laplace/Nt${Nt}/oblate_area_Vr0.3.off
 
 Da=2.15
 
@@ -27,7 +26,7 @@ Kb=0.001
 C0=0
 Kad=1
 end=100000000
-freq=10000
+freq=100
 
 DA0D=$(ae 8*$pi*$Da)
 dir="Nt_${Nt}/dt_${dt}/mu_${mu}"
