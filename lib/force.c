@@ -60,7 +60,7 @@ static const char *Name[] = {
     "area_sq",
 };
 
-static int Narg[] = {
+static const int Narg[] = {
     2,
     2,
     2,

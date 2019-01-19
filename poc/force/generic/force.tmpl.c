@@ -35,7 +35,7 @@ static const char *Name[] = {
 //%name
 };
 
-static int Narg[] = {
+static const int Narg[] = {
 //%narg
 };
 
