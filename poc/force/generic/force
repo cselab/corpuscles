@@ -12,7 +12,7 @@ $prog CONF FILE.tmpl > FILE.c
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 "$AWK" -v prog=$prog '
-function read_conf(conf,   L, l, i, j, n) {
+function read_conf(conf,   L, l, i, j, n, narg) {
     while (getline l < conf > 0) {
 	sub(/#.*/, "")
 	if (!emptyp(l))
@@ -30,7 +30,11 @@ function read_conf(conf,   L, l, i, j, n) {
 	Energy[j] = L[++i]
 	Ini[j] = L[++i]
 	Splice[j] = L[++i]
+	narg = get_narg(Splice[j])
+	if (narg > max_narg)
+	    max_narg = narg
     }
+    msg(sprintf("max_narg: %d", max_narg))
 }
 
 BEGIN {
