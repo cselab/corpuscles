@@ -43,6 +43,11 @@ static const TypeIni Ini[] = {
 //%ini
 };
 
+enum {NONE, REAL, STRING};
+static const int Type[][%max_narg%] = {
+//%type
+};
+
 int force_ini(const char *name, void **param, He *he, T **pq)
 {
     int status;

@@ -86,6 +86,20 @@ static const TypeIni Ini[] = {
     force_area_sq_ini,
 };
 
+enum {NONE, REAL, STRING};
+static const int Type[][4] = {
+    {REAL, REAL},
+    {REAL, REAL},
+    {REAL, REAL},
+    {REAL, REAL, REAL, REAL},
+    {REAL},
+    {REAL, REAL},
+    {REAL, REAL},
+    {REAL, REAL},
+    {REAL, REAL},
+    {REAL},
+};
+
 int force_ini(const char *name, void **param, He *he, T **pq)
 {
     int status;
