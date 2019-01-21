@@ -70,7 +70,7 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
     return HE_OK;
 }
 
-int he_f_strain_argv(const char ***p, He *he, T **pq) {
+int he_f_strain_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 

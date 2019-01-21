@@ -94,7 +94,7 @@ int he_f_kantor_ini(real Kb, real theta0, He *he, T **pq) {
     return HE_OK;
 }
 
-int he_f_kantor_argv(const char ***p, He *he, T **pq) {
+int he_f_kantor_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 

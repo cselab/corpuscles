@@ -4,7 +4,7 @@ typedef struct He He;
 typedef struct T T;
 
 int he_f_meyer_ini(real Kb, He*, T**);
-int he_f_meyer_argv(const char***, He*, T**);
+int he_f_meyer_argv(char***, He*, T**);
 int he_f_meyer_fin(T*);
 int he_f_meyer_force(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
 real he_f_meyer_energy(T*, He*, const real*, const real*, const real*);

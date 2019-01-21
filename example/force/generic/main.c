@@ -11,6 +11,7 @@
 #include <he/memory.h>
 #include <he/err.h>
 #include <he/util.h>
+#include <he/argv.h>
 #include <he/macro.h>
 #include <he/vec.h>
 #include <he/fd.h>
@@ -19,6 +20,8 @@
 #define FMT_IN   HE_REAL_IN
 
 static const char **argv;
+
+static char name[1024];
 
 static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr, *area;
 static real *gx, *gy, *gz;
@@ -63,10 +66,12 @@ static void main0() {
     force_fin(force);
 }
 
-int main(int __UNUSED argc, const char *argv[]) {
+int main(int __UNUSED argc, char *argv[]) {
     argv++;
     y_ini("/dev/stdin", &he, &x, &y, &z);
-    force_argv(&argv, he,  &force);
+
+    argv_str(&argv, name);
+    force_argv(name, &argv, he,  &force);
     nv = he_nv(he);
     nt = he_nt(he);
 

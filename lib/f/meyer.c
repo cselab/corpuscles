@@ -289,7 +289,7 @@ int he_f_meyer_ini(real Kb,
 #   undef S
 }
 
-int he_f_meyer_argv(const char ***p, He *he, T **pq) {
+int he_f_meyer_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 

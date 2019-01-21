@@ -41,7 +41,7 @@ int he_f_volume_ini(real v0, real K, He *he, T **pq) {
     return HE_OK;
 }
 
-int he_f_volume_argv(const char ***p, He *he, T **pq) {
+int he_f_volume_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 

@@ -35,7 +35,7 @@ int he_f_area_ini(real a0, real K, He *he, T **pq) {
     return HE_OK;
 }
 
-int he_f_area_argv(const char ***p, He *he, T **pq) {
+int he_f_area_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 

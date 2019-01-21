@@ -59,7 +59,7 @@ int he_f_volume_normal_ini(real v0, real K, He *he, T **pq) {
 #   undef M
 }
 
-int he_f_volume_normal_argv(const char ***p, He *he, T **pq) {
+int he_f_volume_normal_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 

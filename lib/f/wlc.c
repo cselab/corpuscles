@@ -95,7 +95,7 @@ int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, H
     return HE_OK;
 }
 
-int he_f_wlc_argv(const char ***p, He *he, T **pq) {
+int he_f_wlc_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 

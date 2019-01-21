@@ -121,7 +121,7 @@ int he_f_juelicher_xin_ini(real K, real C0, real Kad, real DA0D,
     return HE_OK;
 }
 
-int he_f_juelicher_xin_argv(const char ***p, He *he, T **pq) {
+int he_f_juelicher_xin_argv(char ***p, He *he, T **pq) {
     return HE_OK;
 }
 
