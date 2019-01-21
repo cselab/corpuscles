@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "he/argv.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
@@ -83,8 +84,15 @@ int he_f_area_voronoi_ini(real a0, real K, He *he, T **pq) {
 #   undef M
 }
 
+
 int he_f_area_voronoi_argv(char ***p, He *he, T **pq) {
-    return HE_OK;
+    int status;
+    real x, y;
+    if ((status = argv_real(p, &x)) != HE_OK)
+        return status;
+    if ((status = argv_real(p, &y)) != HE_OK)
+        return status;
+    return he_f_area_voronoi_ini(x, y, he, pq);
 }
 
 int he_f_area_voronoi_fin(T *q) {
