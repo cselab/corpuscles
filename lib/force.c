@@ -28,15 +28,25 @@
 #define T Force
 
 static int force_area_ini(void *param[], He*, /**/ T**);
+static int force_area_argv(char***, He*, T**);
 static int force_garea_ini(void *param[], He*, /**/ T**);
+static int force_garea_argv(char***, He*, T**);
 static int force_volume_ini(void *param[], He*, /**/ T**);
+static int force_volume_argv(char***, He*, T**);
 static int force_juelicher_xin_ini(void *param[], He*, /**/ T**);
+static int force_juelicher_xin_argv(char***, He*, T**);
 static int force_edg_sq_ini(void *param[], He*, /**/ T**);
+static int force_edg_sq_argv(char***, He*, T**);
 static int force_harmonic_ini(void *param[], He*, /**/ T**);
+static int force_harmonic_argv(char***, He*, T**);
 static int force_area_voronoi_ini(void *param[], He*, /**/ T**);
+static int force_area_voronoi_argv(char***, He*, T**);
 static int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
+static int force_garea_voronoi_argv(char***, He*, T**);
 static int force_volume_normal_ini(void *param[], He*, /**/ T**);
+static int force_volume_normal_argv(char***, He*, T**);
 static int force_area_sq_ini(void *param[], He*, /**/ T**);
+static int force_area_sq_argv(char***, He*, T**);
 
 struct T {
     struct Vtable *vtable;
@@ -46,7 +56,7 @@ struct T {
 #define SIZE (4048)
 static char List[SIZE];
 typedef int (*TypeIni)(void**, He*, T**);
-typedef int (*TypeArgv)(const char***, He*, T**);
+typedef int (*TypeArgv)(char***, He*, T**);
 
 static const char *Name[] = {
     "area",
@@ -75,16 +85,16 @@ static const TypeIni Ini[] = {
 };
 
 static const TypeArgv Argv[] = {
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
-    he_f_area_sq_argv,
+    force_area_argv,
+    force_garea_argv,
+    force_volume_argv,
+    force_juelicher_xin_argv,
+    force_edg_sq_argv,
+    force_harmonic_argv,
+    force_area_voronoi_argv,
+    force_garea_voronoi_argv,
+    force_volume_normal_argv,
+    force_area_sq_argv,
 };
 
 int force_ini(const char *name, void **param, He *he, T **pq)
@@ -206,6 +216,14 @@ int force_area_ini(void *param[], He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_area_ini(g1, g2,  he, &q->local);
 }
+int force_area_argv(char ***p, He *he, /**/ T **pq)
+{
+    Area *q;
+    MALLOC(1, &q);
+    q->force.vtable = &area_vtable;
+    *pq = &q->force;
+    return he_f_area_argv(p, he, &q->local);
+}
 typedef struct Garea Garea;
 struct Garea {
     T force;
@@ -245,6 +263,14 @@ int force_garea_ini(void *param[], He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_garea_ini(g1, g2,  he, &q->local);
 }
+int force_garea_argv(char ***p, He *he, /**/ T **pq)
+{
+    Garea *q;
+    MALLOC(1, &q);
+    q->force.vtable = &garea_vtable;
+    *pq = &q->force;
+    return he_f_garea_argv(p, he, &q->local);
+}
 typedef struct Volume Volume;
 struct Volume {
     T force;
@@ -283,6 +309,14 @@ int force_volume_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &volume_vtable;
     *pq = &q->force;
     return he_f_volume_ini(g1, g2,  he, &q->local);
+}
+int force_volume_argv(char ***p, He *he, /**/ T **pq)
+{
+    Volume *q;
+    MALLOC(1, &q);
+    q->force.vtable = &volume_vtable;
+    *pq = &q->force;
+    return he_f_volume_argv(p, he, &q->local);
 }
 typedef struct Juelicher_xin Juelicher_xin;
 struct Juelicher_xin {
@@ -325,6 +359,14 @@ int force_juelicher_xin_ini(void *param[], He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_juelicher_xin_ini(g1, g2, g3, g4,  he, &q->local);
 }
+int force_juelicher_xin_argv(char ***p, He *he, /**/ T **pq)
+{
+    Juelicher_xin *q;
+    MALLOC(1, &q);
+    q->force.vtable = &juelicher_xin_vtable;
+    *pq = &q->force;
+    return he_f_juelicher_xin_argv(p, he, &q->local);
+}
 typedef struct Edg_sq Edg_sq;
 struct Edg_sq {
     T force;
@@ -362,6 +404,14 @@ int force_edg_sq_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &edg_sq_vtable;
     *pq = &q->force;
     return he_f_edg_sq_ini(g1,  he, &q->local);
+}
+int force_edg_sq_argv(char ***p, He *he, /**/ T **pq)
+{
+    Edg_sq *q;
+    MALLOC(1, &q);
+    q->force.vtable = &edg_sq_vtable;
+    *pq = &q->force;
+    return he_f_edg_sq_argv(p, he, &q->local);
 }
 typedef struct Harmonic Harmonic;
 struct Harmonic {
@@ -402,6 +452,14 @@ int force_harmonic_ini(void *param[], He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_harmonic_ini(g1, g2,  he, &q->local);
 }
+int force_harmonic_argv(char ***p, He *he, /**/ T **pq)
+{
+    Harmonic *q;
+    MALLOC(1, &q);
+    q->force.vtable = &harmonic_vtable;
+    *pq = &q->force;
+    return he_f_harmonic_argv(p, he, &q->local);
+}
 typedef struct Area_voronoi Area_voronoi;
 struct Area_voronoi {
     T force;
@@ -440,6 +498,14 @@ int force_area_voronoi_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &area_voronoi_vtable;
     *pq = &q->force;
     return he_f_area_voronoi_ini(g1, g2,  he, &q->local);
+}
+int force_area_voronoi_argv(char ***p, He *he, /**/ T **pq)
+{
+    Area_voronoi *q;
+    MALLOC(1, &q);
+    q->force.vtable = &area_voronoi_vtable;
+    *pq = &q->force;
+    return he_f_area_voronoi_argv(p, he, &q->local);
 }
 typedef struct Garea_voronoi Garea_voronoi;
 struct Garea_voronoi {
@@ -480,6 +546,14 @@ int force_garea_voronoi_ini(void *param[], He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_garea_voronoi_ini(g1, g2,  he, &q->local);
 }
+int force_garea_voronoi_argv(char ***p, He *he, /**/ T **pq)
+{
+    Garea_voronoi *q;
+    MALLOC(1, &q);
+    q->force.vtable = &garea_voronoi_vtable;
+    *pq = &q->force;
+    return he_f_garea_voronoi_argv(p, he, &q->local);
+}
 typedef struct Volume_normal Volume_normal;
 struct Volume_normal {
     T force;
@@ -519,6 +593,14 @@ int force_volume_normal_ini(void *param[], He *he, /**/ T **pq)
     *pq = &q->force;
     return he_f_volume_normal_ini(g1, g2,  he, &q->local);
 }
+int force_volume_normal_argv(char ***p, He *he, /**/ T **pq)
+{
+    Volume_normal *q;
+    MALLOC(1, &q);
+    q->force.vtable = &volume_normal_vtable;
+    *pq = &q->force;
+    return he_f_volume_normal_argv(p, he, &q->local);
+}
 typedef struct Area_sq Area_sq;
 struct Area_sq {
     T force;
@@ -556,4 +638,12 @@ int force_area_sq_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &area_sq_vtable;
     *pq = &q->force;
     return he_f_area_sq_ini(g1,  he, &q->local);
+}
+int force_area_sq_argv(char ***p, He *he, /**/ T **pq)
+{
+    Area_sq *q;
+    MALLOC(1, &q);
+    q->force.vtable = &area_sq_vtable;
+    *pq = &q->force;
+    return he_f_area_sq_argv(p, he, &q->local);
 }

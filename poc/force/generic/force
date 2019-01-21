@@ -158,7 +158,7 @@ function p_ini(   i) {
 
 function p_argv(   i) {
     for (i = 1; i in Name; i++)
-	tprint(argv",")
+        tprint("force_" Name[i] "_argv" ",")
 }
 
 function p_decl(   i) {

@@ -20,6 +20,7 @@
 
 //%begin
 static int force_%name%_ini(void *param[], He*, /**/ T**);
+static int force_%name%_argv(char***, He*, T**);
 //%end
 
 struct T {
@@ -162,5 +163,13 @@ int force_%name%_ini(void *param[], He *he, /**/ T **pq)
     q->force.vtable = &%name%_vtable;
     *pq = &q->force;
     return %ini%(%splice% he, &q->local);
+}
+int force_%name%_argv(char ***p, He *he, /**/ T **pq)
+{
+    %Name% *q;
+    MALLOC(1, &q);
+    q->force.vtable = &%name%_vtable;
+    *pq = &q->force;
+    return %argv%(p, he, &q->local);
 }
 //%end
