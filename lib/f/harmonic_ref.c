@@ -1,12 +1,14 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "he/argv.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
 #include "he/vec.h"
 #include "he/edg.h"
 #include "he/dedg.h"
+#include "inc/def.h"
 
 #include "he/f/harmonic_ref.h"
 
@@ -68,7 +70,23 @@ int he_f_harmonic_ref_ini(real K, const real *x, const real *y, const real *z, H
 }
 
 int he_f_harmonic_ref_argv(char ***p, He *he, T **pq) {
-    return HE_OK;
+    int status;
+    real K;
+    real *x, *y, *z;
+    char s[MAX_STRING_SIZE];
+    FILE *f;
+
+    if ((status = argv_real(p, &K)) != HE_OK)
+        return status;
+
+    if ((status = argv_str(p, s)) != HE_OK)
+        return status;
+
+    f = fopen(s, "r");
+        
+    status = he_f_harmonic_ref_ini(K, x, y, z, he, pq);
+
+    return status;
 }
 
 int he_f_harmonic_ref_fin(T *q) {
