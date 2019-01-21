@@ -57,9 +57,6 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 	} else if (pat(i, "name")) {
 	    p_name()
 	    i++
-	} else if (pat(i, "narg")) {
-	    p_narg()
-	    i++
 	} else if (pat(i, "type")) {
 	    p_type()
 	    i++
@@ -152,11 +149,6 @@ function p_type(   i, a) {
 	gsub(/,/, ", ", a)
 	tprint("{" a "},")
     }
-}
-
-function p_narg(   i) {
-    for (i = 1; i in Name; i++)
-	tprint(get_narg(Splice[i]) ",")
 }
 
 function p_ini(   i) {

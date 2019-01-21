@@ -30,7 +30,7 @@ struct T {
 #define SIZE (4048)
 static char List[SIZE];
 typedef int (*TypeIni)(void**, He*, T**);
-typedef int (*TypeArgv)(const char***, He*, T**);
+typedef int (*TypeArgv)(char***, He*, T**);
 
 static const char *Name[] = {
 //%name
