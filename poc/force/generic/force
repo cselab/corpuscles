@@ -28,6 +28,7 @@ function read_conf(conf,   L, l, i, j, n, narg) {
 	Fin[j]  = L[++i]
 	Force[j] = L[++i]
 	Energy[j] = L[++i]
+	Argv[j] = Argv[++i]
 	Ini[j] = L[++i]
 	Splice[j] = L[++i]
 	narg = get_narg(Splice[j])
