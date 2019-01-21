@@ -1,0 +1,2 @@
+# TEST: 0
+./main abc 42 -4e2 > main.out.txt
