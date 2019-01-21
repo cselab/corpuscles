@@ -4,11 +4,11 @@ err.o\
 hash.o\
 he.o\
 memory.o\
-read.o\
-util.o
+read.o
 
 O_S = \
 area.s.o\
+bending.s.o\
 bending.s.o\
 da.s.o\
 ddih.s.o\
@@ -59,7 +59,9 @@ strain.s.o\
 sum.s.o\
 ten.s.o\
 transform.s.o\
+transform.s.o\
 tri.s.o\
+util.s.o\
 vec.s.o\
 volume.s.o\
 vtk.s.o\
@@ -68,6 +70,7 @@ y.s.o
 
 O_D = \
 area.d.o\
+bending.d.o\
 bending.d.o\
 da.d.o\
 ddih.d.o\
@@ -118,7 +121,9 @@ strain.d.o\
 sum.d.o\
 ten.d.o\
 transform.d.o\
+transform.d.o\
 tri.d.o\
+util.d.o\
 vec.d.o\
 volume.d.o\
 vtk.d.o\
@@ -127,6 +132,7 @@ y.d.o
 
 O_L = \
 area.l.o\
+bending.l.o\
 bending.l.o\
 da.l.o\
 ddih.l.o\
@@ -177,7 +183,9 @@ strain.l.o\
 sum.l.o\
 ten.l.o\
 transform.l.o\
+transform.l.o\
 tri.l.o\
+util.l.o\
 vec.l.o\
 volume.l.o\
 vtk.l.o\

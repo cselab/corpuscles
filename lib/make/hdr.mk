@@ -1,5 +1,6 @@
 H = \
 he/area.h\
+he/argv.h\
 he/bending.h\
 he/container.h\
 he/da.h\
