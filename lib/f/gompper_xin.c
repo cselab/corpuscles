@@ -114,6 +114,10 @@ int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) 
 #   undef M
 }
 
+int he_f_gompper_xin_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_gompper_xin_fin(T *q) {
 #   define F(x) FREE(q->x)
     dh_fin(q->dh);

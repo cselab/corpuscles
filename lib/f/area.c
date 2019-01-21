@@ -35,6 +35,10 @@ int he_f_area_ini(real a0, real K, He *he, T **pq) {
     return HE_OK;
 }
 
+int he_f_area_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_area_fin(T *q) {
     FREE(q->area); FREE(q->darea); FREE(q);
     return HE_OK;

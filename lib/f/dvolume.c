@@ -32,6 +32,10 @@ int he_f_dvolume_ini(He *he, T **pq) {
     return HE_OK;
 }
 
+int he_f_dvolume_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_dvolume_fin(T *q) {
     FREE(q->volume); FREE(q);
     return HE_OK;

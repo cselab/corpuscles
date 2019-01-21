@@ -110,6 +110,11 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
     *pq = q;
     return HE_OK;
 }
+
+int he_f_gompper_kroll_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_gompper_kroll_fin(T *q) {
     FREE(q->T0); FREE(q->T1); FREE(q->T2);
     FREE(q->len2); FREE(q->cot);

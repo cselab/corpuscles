@@ -59,6 +59,10 @@ int he_f_volume_normal_ini(real v0, real K, He *he, T **pq) {
 #   undef M
 }
 
+int he_f_volume_normal_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_volume_normal_fin(T *q) {
 #   define F(x) FREE(q->x)
     dh_fin(q->dh);

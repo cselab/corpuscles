@@ -94,6 +94,10 @@ int he_f_kantor_ini(real Kb, real theta0, He *he, T **pq) {
     return HE_OK;
 }
 
+int he_f_kantor_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_kantor_fin(T *q) {
     FREE(q->area);
     FREE(q->theta);

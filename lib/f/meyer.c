@@ -288,6 +288,11 @@ int he_f_meyer_ini(real Kb,
 #   undef M
 #   undef S
 }
+
+int he_f_meyer_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_meyer_fin(T *q) {
 #   define F(x) FREE(q->x)
     F(cot);

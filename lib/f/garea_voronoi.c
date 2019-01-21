@@ -73,6 +73,10 @@ int he_f_garea_voronoi_ini(real A0, real K, He *he, T **pq) {
 #   undef M
 }
 
+int he_f_garea_voronoi_argv(const char ***p, He *he, T **pq) {
+    return HE_OK;
+}
+
 int he_f_garea_voronoi_fin(T *q) {
 #   define F(x) FREE(q->x)
     da_fin(q->da);
