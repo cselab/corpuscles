@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "he/argv.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
@@ -41,7 +42,11 @@ int he_f_edg_sq_ini(real K, He *he, T **pq) {
 }
 
 int he_f_edg_sq_argv(char ***p, He *he, T **pq) {
-    return HE_OK;
+    int status;
+    real x;
+    if ((status = argv_real(p, &x)) != HE_OK)
+        return status;
+    return he_f_edg_sq_ini(x, he, pq);
 }
 
 int he_f_edg_sq_fin(T *q) {
