@@ -8,7 +8,8 @@
 enum {X, Y, Z};
 enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};
 enum {SIZE = MAX_STRING_SIZE};
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN    HE_REAL_IN
+#define FMT_OUT   HE_REAL_OUT
 
 int ten_matrix_ini(const real a[3*3], Ten *T) {
     real *t;
@@ -259,7 +260,7 @@ int ten_printf(const Ten *T, const char *fmt0) {
 int ten_line(const Ten *T) {
     const real *t;
     t = T->t;
-    printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g",
+    printf(FMT_OUT " " FMT_OUT " " FMT_OUT " " FMT_OUT " " FMT_OUT " " FMT_OUT " " FMT_OUT " " FMT_OUT " " FMT_OUT,
            t[XX], t[XY], t[XZ], t[YX], t[YY], t[YZ], t[ZX], t[ZY], t[ZZ]);
     return HE_OK;
 }
