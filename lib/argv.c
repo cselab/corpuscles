@@ -9,8 +9,6 @@
 #include "inc/def.h"
 #include "he/argv.h"
 
-#define  SIZE (MAX_STRING_SIZE)
-
 int argv_real(char ***pargv, real *p) {
     char **argv;
     argv = *pargv;
@@ -32,7 +30,7 @@ int argv_str(char ***pargv, char *p) {
 
     if (*argv == NULL)
         ERR(HE_IO, "not enough arguments");
-    strncpy(p, *argv, SIZE - 1);
+    strcpy(p, *argv);
 
     argv++;
     *pargv = argv;
