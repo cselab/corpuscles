@@ -5,8 +5,6 @@ he_f_area_fin
 he_f_area_force
 he_f_area_energy
 he_f_area_argv
-he_f_area_ini
-real,real
 
 #include "he/f/garea.h"
 garea
@@ -15,8 +13,6 @@ he_f_garea_fin
 he_f_garea_force
 he_f_garea_energy
 he_f_garea_argv
-he_f_garea_ini
-real,real
 
 #include "he/f/volume.h"
 volume
@@ -25,8 +21,6 @@ he_f_volume_fin
 he_f_volume_force
 he_f_volume_energy
 he_f_volume_argv
-he_f_volume_ini
-real,real
 
 #include "he/f/juelicher_xin.h"
 juelicher_xin
@@ -35,8 +29,6 @@ he_f_juelicher_xin_fin
 he_f_juelicher_xin_force
 he_f_juelicher_xin_energy
 he_f_juelicher_xin_argv
-he_f_juelicher_xin_ini
-real,real,real,real
 
 #include "he/f/edg_sq.h"
 edg_sq
@@ -45,8 +37,6 @@ he_f_edg_sq_fin
 he_f_edg_sq_force
 he_f_edg_sq_energy
 he_f_edg_sq_argv
-he_f_edg_sq_ini
-real
 
 #include "he/f/harmonic.h"
 harmonic
@@ -55,8 +45,6 @@ he_f_harmonic_fin
 he_f_harmonic_force
 he_f_harmonic_energy
 he_f_harmonic_argv
-he_f_harmonic_ini
-real,real
 
 #include "he/f/area_voronoi.h"
 area_voronoi
@@ -65,8 +53,6 @@ he_f_area_voronoi_fin
 he_f_area_voronoi_force
 he_f_area_voronoi_energy
 he_f_area_voronoi_argv
-he_f_area_voronoi_ini
-real,real
 
 #include "he/f/garea_voronoi.h"
 garea_voronoi
@@ -75,8 +61,6 @@ he_f_garea_voronoi_fin
 he_f_garea_voronoi_force
 he_f_garea_voronoi_energy
 he_f_garea_voronoi_argv
-he_f_garea_voronoi_ini
-real,real
 
 #include "he/f/volume_normal.h"
 volume_normal
@@ -85,8 +69,6 @@ he_f_volume_normal_fin
 he_f_volume_normal_force
 he_f_volume_normal_energy
 he_f_volume_normal_argv
-he_f_volume_normal_ini
-real,real
 
 #include "he/f/area_sq.h"
 area_sq
@@ -95,5 +77,3 @@ he_f_area_sq_fin
 he_f_area_sq_force
 he_f_area_sq_energy
 he_f_area_sq_argv
-he_f_area_sq_ini
-real

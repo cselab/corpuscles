@@ -12,7 +12,7 @@ $prog CONF FILE.tmpl > FILE.c
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 "$AWK" -v prog=$prog '
-function read_conf(conf,   L, l, i, j, n, narg) {
+function read_conf(conf,   L, l, i, j, n) {
     while (getline l < conf > 0) {
 	sub(/#.*/, "")
 	if (!emptyp(l))
@@ -29,11 +29,6 @@ function read_conf(conf,   L, l, i, j, n, narg) {
 	Force[j] = L[++i]
 	Energy[j] = L[++i]
 	Argv[j] = L[++i]
-	Ini[j] = L[++i]
-	Splice[j] = L[++i]
-	narg = get_narg(Splice[j])
-	if (narg > max_narg)
-	    max_narg = narg
     }
 }
 
@@ -91,26 +86,6 @@ function set(j) {
     force = Force[j]
     energy = Energy[j]
     argv = Argv[j]
-    narg = get_narg(Splice[j])
-    splice = param(Splice[j])
-    get_type(Splice[j], arg_type)
-}
-
-function get_type(s, type,    n, i) {
-    delete type
-    n = get_narg(s)
-    split(s, type, ",")
-}
-
-function get_narg(s) {
-    return gsub(/,/, "", s) + 1
-}
-
-function param(s,   n, i, ans) {
-    n = get_narg(s)
-    for (i = 1; i <= n; i++)
-	ans = ans var(i) ", "
-    return ans
 }
 
 function pprint(l) {
@@ -123,10 +98,6 @@ function pprint(l) {
     gsub(/%force%/, force, l)
     gsub(/%energy%/, energy, l)
     gsub(/%argv%/, argv, l)
-
-    gsub(/%max_narg%/, max_narg, l)
-
-    gsub(/%splice%/, splice, l)
 
     print l
 }
