@@ -3,7 +3,6 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "real.h"
 #include "he/err.h"
 #include "he/util.h"
 
@@ -46,32 +45,4 @@ char *util_comment_fgets(char *s, FILE *stream) {
            return NULL;
     while (commentp(s) == YES);
     return s;
-}
-
-int util_real(char ***pargv, real *p) {
-    char **argv;
-    argv = *pargv;
-
-    if (*argv == NULL)
-        ERR(HE_IO, "not enough arguments");
-
-    if (sscanf(*argv, HE_REAL_IN, p) != 1)
-        ERR(HE_IO, "not a number '%s'",*argv);
-
-    argv++;
-    *pargv = argv;
-    return HE_OK;
-}
-
-int util_str(char ***pargv, char *p) {
-    char **argv;
-    argv = *pargv;
-
-    if (*argv == NULL)
-        ERR(HE_IO, "not enough arguments");
-    strncpy(p, *argv, SIZE - 1);
-
-    argv++;
-    *pargv = argv;
-    return HE_OK;
 }
