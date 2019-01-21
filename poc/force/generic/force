@@ -28,7 +28,7 @@ function read_conf(conf,   L, l, i, j, n, narg) {
 	Fin[j]  = L[++i]
 	Force[j] = L[++i]
 	Energy[j] = L[++i]
-	Argv[j] = Argv[++i]
+	Argv[j] = L[++i]
 	Ini[j] = L[++i]
 	Splice[j] = L[++i]
 	narg = get_narg(Splice[j])
@@ -66,6 +66,9 @@ function loop(lo, hi,   i, j, lo0, hi0) {
 	} else if (pat(i, "ini")) {
 	    p_ini()
 	    i++
+	} else if (pat(i, "argv")) {
+	    p_argv()
+	    i++
 	} else if (pat(i, "begin")) {
 	    i++
 	    lo0 = i
@@ -96,6 +99,7 @@ function set(j) {
     fin  = Fin[j]
     force = Force[j]
     energy = Energy[j]
+    argv = Argv[j]
     narg = get_narg(Splice[j])
     splice = param(Splice[j])
     get_type(Splice[j], arg_type)
@@ -127,6 +131,7 @@ function pprint(l) {
     gsub(/%fin%/, fin, l)
     gsub(/%force%/, force, l)
     gsub(/%energy%/, energy, l)
+    gsub(/%argv%/, argv, l)
 
     gsub(/%max_narg%/, max_narg, l)
 
@@ -157,6 +162,11 @@ function p_narg(   i) {
 function p_ini(   i) {
     for (i = 1; i in Name; i++)
 	tprint("force_" Name[i] "_ini" ",")
+}
+
+function p_argv(   i) {
+    for (i = 1; i in Name; i++)
+	tprint(argv",")
 }
 
 function p_decl(   i) {

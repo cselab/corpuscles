@@ -30,22 +30,18 @@ struct T {
 #define SIZE (4048)
 static char List[SIZE];
 typedef int (*TypeIni)(void**, He*, T**);
+typedef int (*TypeArgv)(const char***, He*, T**);
 
 static const char *Name[] = {
 //%name
-};
-
-static const int Narg[] = {
-//%narg
 };
 
 static const TypeIni Ini[] = {
 //%ini
 };
 
-enum {NONE, REAL, STRING};
-static const int Type[][%max_narg%] = {
-//%type
+static const TypeArgv Argv[] = {
+//%argv
 };
 
 int force_ini(const char *name, void **param, He *he, T **pq)
@@ -68,59 +64,24 @@ int force_ini(const char *name, void **param, He *he, T **pq)
     ERR(HE_INDEX, "");
 }
 
-int force_narg(const char *name)
+int force_argv(const char *name, char ***parg, He *he, T **pq)
 {
+    int status;
+    T *q;
     const int n = sizeof(Name)/sizeof(Name[0]);
     int i;
     for (i = 0; i < n; i++)
-        if (util_eq(name, Name[i]))
-            return Narg[i];
+        if (util_eq(name, Name[i])) {
+            status = Argv[i](parg, he, &q);
+            q->name = Name[i];
+            *pq = q;
+            return status;
+        }
     MSG("unknown force: '%s'", name);
     MSG("possible values:");
     for (i = 0; i < n; i++)
         MSG("%s", Name[i]);
     ERR(HE_INDEX, "");
-}
-
-static int scl(const char **pargv[], real *p) {
-    const char **argv;
-    argv = *pargv;
-    if (*argv == NULL)
-        ERR(HE_IO, "not enough args");
-    if (sscanf(*argv, HE_REAL_IN, p) != 1)
-        ER("not a number '%s'", *argv);
-    argv++;
-
-    *pargv = argv;
-    return HE_OK;
-}
-
-static int str(const char **pargv[], char *p) {
-    const char **argv;
-    argv = *pargv;
-
-    if (*argv == NULL)
-        ERR(HE_IO, "not enough args");
-
-    strncpy(p, *argv, SIZE - 1);
-    argv++;
-    *pargv = argv;
-    return HE_OK;
-}
-
-int force_argv(const char **pargv[], He *he, /**/ T **pq) {
-    real   param[999];
-    void *vparam[999];
-    char name[SIZE];
-    int narg, i;
-
-    str(pargv, name);
-    narg = force_narg(name);
-    for (i = 0; i < narg; i++) {
-        scl(pargv, &param[i]);
-        vparam[i] = &param[i];
-    }
-    return force_ini(name, vparam, he,  pq);
 }
 
 const char *force_list()
