@@ -8,7 +8,3 @@ char *util_fgets(char *s, FILE *stream);
 
 /* fgets without '\n' and skipping '#comments' */
 char *util_comment_fgets(char *s, FILE *stream);
-
-/* read from `argv' and shift */
-int util_real(char***, real*);
-int util_str(char***, char*);
