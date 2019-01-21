@@ -5,8 +5,8 @@ typedef struct T T;
 
 int he_f_gompper_ini(real Kb, real C0, real Kad, real DA0D, He*, T**);
 int he_f_gompper_fin(T*);
-int he_f_gompper_force(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
-real he_f_gompper_energy(T*, He*, const real *x, const real *y, const real *z);
+int he_f_gompper_force(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
+real he_f_gompper_energy(T*, He*, const real*, const real*, const real*);
 int he_f_gompper_area_ver(T*, /**/ real**);
 int he_f_gompper_laplace_ver(T*, /**/ /**/ real**, real**, real**);
 int he_f_gompper_norm_ver(T*, /**/ real**, real**, real**);
