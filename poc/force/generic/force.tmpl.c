@@ -19,7 +19,6 @@
 #define T Force
 
 //%begin
-static int force_%name%_ini(void *param[], He*, /**/ T**);
 static int force_%name%_argv(char***, He*, T**);
 //%end
 
@@ -30,40 +29,15 @@ struct T {
 
 #define SIZE (4048)
 static char List[SIZE];
-typedef int (*TypeIni)(void**, He*, T**);
 typedef int (*TypeArgv)(char***, He*, T**);
 
 static const char *Name[] = {
 //%name
 };
 
-static const TypeIni Ini[] = {
-//%ini
-};
-
 static const TypeArgv Argv[] = {
 //%argv
 };
-
-int force_ini(const char *name, void **param, He *he, T **pq)
-{
-    int status;
-    T *q;
-    const int n = sizeof(Name)/sizeof(Name[0]);
-    int i;
-    for (i = 0; i < n; i++)
-        if (util_eq(name, Name[i])) {
-            status = Ini[i](param, he, &q);
-            q->name = Name[i];
-            *pq = q;
-            return status;
-        }
-    MSG("unknown force: '%s'", name);
-    MSG("possible values:");
-    for (i = 0; i < n; i++)
-        MSG("%s", Name[i]);
-    ERR(HE_INDEX, "");
-}
 
 int force_argv(const char *name, char ***parg, He *he, T **pq)
 {
@@ -155,15 +129,6 @@ static Vtable %name%_vtable = {
     %name%_force,
     %name%_energy,
 };
-int force_%name%_ini(void *param[], He *he, /**/ T **pq)
-{
-    %Name% *q;
-//%decl
-    MALLOC(1, &q);
-    q->force.vtable = &%name%_vtable;
-    *pq = &q->force;
-    return %ini%(%splice% he, &q->local);
-}
 int force_%name%_argv(char ***p, He *he, /**/ T **pq)
 {
     %Name% *q;

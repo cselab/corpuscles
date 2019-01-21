@@ -27,25 +27,15 @@
 
 #define T Force
 
-static int force_area_ini(void *param[], He*, /**/ T**);
 static int force_area_argv(char***, He*, T**);
-static int force_garea_ini(void *param[], He*, /**/ T**);
 static int force_garea_argv(char***, He*, T**);
-static int force_volume_ini(void *param[], He*, /**/ T**);
 static int force_volume_argv(char***, He*, T**);
-static int force_juelicher_xin_ini(void *param[], He*, /**/ T**);
 static int force_juelicher_xin_argv(char***, He*, T**);
-static int force_edg_sq_ini(void *param[], He*, /**/ T**);
 static int force_edg_sq_argv(char***, He*, T**);
-static int force_harmonic_ini(void *param[], He*, /**/ T**);
 static int force_harmonic_argv(char***, He*, T**);
-static int force_area_voronoi_ini(void *param[], He*, /**/ T**);
 static int force_area_voronoi_argv(char***, He*, T**);
-static int force_garea_voronoi_ini(void *param[], He*, /**/ T**);
 static int force_garea_voronoi_argv(char***, He*, T**);
-static int force_volume_normal_ini(void *param[], He*, /**/ T**);
 static int force_volume_normal_argv(char***, He*, T**);
-static int force_area_sq_ini(void *param[], He*, /**/ T**);
 static int force_area_sq_argv(char***, He*, T**);
 
 struct T {
@@ -55,7 +45,6 @@ struct T {
 
 #define SIZE (4048)
 static char List[SIZE];
-typedef int (*TypeIni)(void**, He*, T**);
 typedef int (*TypeArgv)(char***, He*, T**);
 
 static const char *Name[] = {
@@ -71,19 +60,6 @@ static const char *Name[] = {
     "area_sq",
 };
 
-static const TypeIni Ini[] = {
-    force_area_ini,
-    force_garea_ini,
-    force_volume_ini,
-    force_juelicher_xin_ini,
-    force_edg_sq_ini,
-    force_harmonic_ini,
-    force_area_voronoi_ini,
-    force_garea_voronoi_ini,
-    force_volume_normal_ini,
-    force_area_sq_ini,
-};
-
 static const TypeArgv Argv[] = {
     force_area_argv,
     force_garea_argv,
@@ -96,26 +72,6 @@ static const TypeArgv Argv[] = {
     force_volume_normal_argv,
     force_area_sq_argv,
 };
-
-int force_ini(const char *name, void **param, He *he, T **pq)
-{
-    int status;
-    T *q;
-    const int n = sizeof(Name)/sizeof(Name[0]);
-    int i;
-    for (i = 0; i < n; i++)
-        if (util_eq(name, Name[i])) {
-            status = Ini[i](param, he, &q);
-            q->name = Name[i];
-            *pq = q;
-            return status;
-        }
-    MSG("unknown force: '%s'", name);
-    MSG("possible values:");
-    for (i = 0; i < n; i++)
-        MSG("%s", Name[i]);
-    ERR(HE_INDEX, "");
-}
 
 int force_argv(const char *name, char ***parg, He *he, T **pq)
 {
@@ -206,16 +162,6 @@ static Vtable area_vtable = {
     area_force,
     area_energy,
 };
-int force_area_ini(void *param[], He *he, /**/ T **pq)
-{
-    Area *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &area_vtable;
-    *pq = &q->force;
-    return he_f_area_ini(g1, g2,  he, &q->local);
-}
 int force_area_argv(char ***p, He *he, /**/ T **pq)
 {
     Area *q;
@@ -253,16 +199,6 @@ static Vtable garea_vtable = {
     garea_force,
     garea_energy,
 };
-int force_garea_ini(void *param[], He *he, /**/ T **pq)
-{
-    Garea *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &garea_vtable;
-    *pq = &q->force;
-    return he_f_garea_ini(g1, g2,  he, &q->local);
-}
 int force_garea_argv(char ***p, He *he, /**/ T **pq)
 {
     Garea *q;
@@ -300,16 +236,6 @@ static Vtable volume_vtable = {
     volume_force,
     volume_energy,
 };
-int force_volume_ini(void *param[], He *he, /**/ T **pq)
-{
-    Volume *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &volume_vtable;
-    *pq = &q->force;
-    return he_f_volume_ini(g1, g2,  he, &q->local);
-}
 int force_volume_argv(char ***p, He *he, /**/ T **pq)
 {
     Volume *q;
@@ -347,18 +273,6 @@ static Vtable juelicher_xin_vtable = {
     juelicher_xin_force,
     juelicher_xin_energy,
 };
-int force_juelicher_xin_ini(void *param[], He *he, /**/ T **pq)
-{
-    Juelicher_xin *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    real g3 = *(real*)*param++;
-    real g4 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &juelicher_xin_vtable;
-    *pq = &q->force;
-    return he_f_juelicher_xin_ini(g1, g2, g3, g4,  he, &q->local);
-}
 int force_juelicher_xin_argv(char ***p, He *he, /**/ T **pq)
 {
     Juelicher_xin *q;
@@ -396,15 +310,6 @@ static Vtable edg_sq_vtable = {
     edg_sq_force,
     edg_sq_energy,
 };
-int force_edg_sq_ini(void *param[], He *he, /**/ T **pq)
-{
-    Edg_sq *q;
-    real g1 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &edg_sq_vtable;
-    *pq = &q->force;
-    return he_f_edg_sq_ini(g1,  he, &q->local);
-}
 int force_edg_sq_argv(char ***p, He *he, /**/ T **pq)
 {
     Edg_sq *q;
@@ -442,16 +347,6 @@ static Vtable harmonic_vtable = {
     harmonic_force,
     harmonic_energy,
 };
-int force_harmonic_ini(void *param[], He *he, /**/ T **pq)
-{
-    Harmonic *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &harmonic_vtable;
-    *pq = &q->force;
-    return he_f_harmonic_ini(g1, g2,  he, &q->local);
-}
 int force_harmonic_argv(char ***p, He *he, /**/ T **pq)
 {
     Harmonic *q;
@@ -489,16 +384,6 @@ static Vtable area_voronoi_vtable = {
     area_voronoi_force,
     area_voronoi_energy,
 };
-int force_area_voronoi_ini(void *param[], He *he, /**/ T **pq)
-{
-    Area_voronoi *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &area_voronoi_vtable;
-    *pq = &q->force;
-    return he_f_area_voronoi_ini(g1, g2,  he, &q->local);
-}
 int force_area_voronoi_argv(char ***p, He *he, /**/ T **pq)
 {
     Area_voronoi *q;
@@ -536,16 +421,6 @@ static Vtable garea_voronoi_vtable = {
     garea_voronoi_force,
     garea_voronoi_energy,
 };
-int force_garea_voronoi_ini(void *param[], He *he, /**/ T **pq)
-{
-    Garea_voronoi *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &garea_voronoi_vtable;
-    *pq = &q->force;
-    return he_f_garea_voronoi_ini(g1, g2,  he, &q->local);
-}
 int force_garea_voronoi_argv(char ***p, He *he, /**/ T **pq)
 {
     Garea_voronoi *q;
@@ -583,16 +458,6 @@ static Vtable volume_normal_vtable = {
     volume_normal_force,
     volume_normal_energy,
 };
-int force_volume_normal_ini(void *param[], He *he, /**/ T **pq)
-{
-    Volume_normal *q;
-    real g1 = *(real*)*param++;
-    real g2 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &volume_normal_vtable;
-    *pq = &q->force;
-    return he_f_volume_normal_ini(g1, g2,  he, &q->local);
-}
 int force_volume_normal_argv(char ***p, He *he, /**/ T **pq)
 {
     Volume_normal *q;
@@ -630,15 +495,6 @@ static Vtable area_sq_vtable = {
     area_sq_force,
     area_sq_energy,
 };
-int force_area_sq_ini(void *param[], He *he, /**/ T **pq)
-{
-    Area_sq *q;
-    real g1 = *(real*)*param++;
-    MALLOC(1, &q);
-    q->force.vtable = &area_sq_vtable;
-    *pq = &q->force;
-    return he_f_area_sq_ini(g1,  he, &q->local);
-}
 int force_area_sq_argv(char ***p, He *he, /**/ T **pq)
 {
     Area_sq *q;
