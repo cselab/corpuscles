@@ -8,6 +8,8 @@
 #include "he/vec.h"
 #include "he/edg.h"
 #include "he/dedg.h"
+#include "he/y.h"
+
 #include "inc/def.h"
 
 #include "he/f/harmonic_ref.h"
@@ -74,7 +76,7 @@ int he_f_harmonic_ref_argv(char ***p, He *he, T **pq) {
     real K;
     real *x, *y, *z;
     char s[MAX_STRING_SIZE];
-    FILE *f;
+    He *he0;
 
     if ((status = argv_real(p, &K)) != HE_OK)
         return status;
@@ -82,10 +84,18 @@ int he_f_harmonic_ref_argv(char ***p, He *he, T **pq) {
     if ((status = argv_str(p, s)) != HE_OK)
         return status;
 
-    f = fopen(s, "r");
+    if ((y_ini(s, &he0, &x, &y, &z) != HE_OK))
+        return status;
+
+    if (he_nv(he) != he_nv(he0))
+        ERR(HE_IO, "he_nv(he)=%d != he_nv(he0)=%d", he_nv(he), he_nv(he0));
+
+    if (he_nt(he) != he_nt(he0))
+        ERR(HE_IO, "he_nt(he)=%d != he_nt(he0)=%d", he_nt(he), he_nt(he0));
         
     status = he_f_harmonic_ref_ini(K, x, y, z, he, pq);
 
+    y_fin(he, x, y, z);
     return status;
 }
 

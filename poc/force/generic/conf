@@ -46,6 +46,14 @@ he_f_harmonic_force
 he_f_harmonic_energy
 he_f_harmonic_argv
 
+#include "he/f/harmonic_ref.h"
+harmonic_ref
+HeFHarmonicRef
+he_f_harmonic_ref_fin
+he_f_harmonic_ref_force
+he_f_harmonic_ref_energy
+he_f_harmonic_ref_argv
+
 #include "he/f/area_voronoi.h"
 area_voronoi
 HeFAreaVoronoi

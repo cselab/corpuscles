@@ -17,6 +17,7 @@
 #include "he/f/juelicher_xin.h"
 #include "he/f/edg_sq.h"
 #include "he/f/harmonic.h"
+#include "he/f/harmonic_ref.h"
 #include "he/f/area_voronoi.h"
 #include "he/f/garea_voronoi.h"
 #include "he/f/volume_normal.h"
@@ -34,6 +35,7 @@ static int force_volume_argv(char***, He*, T**);
 static int force_juelicher_xin_argv(char***, He*, T**);
 static int force_edg_sq_argv(char***, He*, T**);
 static int force_harmonic_argv(char***, He*, T**);
+static int force_harmonic_ref_argv(char***, He*, T**);
 static int force_area_voronoi_argv(char***, He*, T**);
 static int force_garea_voronoi_argv(char***, He*, T**);
 static int force_volume_normal_argv(char***, He*, T**);
@@ -56,6 +58,7 @@ static const char *Name[] = {
     "juelicher_xin",
     "edg_sq",
     "harmonic",
+    "harmonic_ref",
     "area_voronoi",
     "garea_voronoi",
     "volume_normal",
@@ -70,6 +73,7 @@ static const TypeArgv Argv[] = {
     force_juelicher_xin_argv,
     force_edg_sq_argv,
     force_harmonic_argv,
+    force_harmonic_ref_argv,
     force_area_voronoi_argv,
     force_garea_voronoi_argv,
     force_volume_normal_argv,
@@ -358,6 +362,43 @@ int force_harmonic_argv(char ***p, He *he, /**/ T **pq)
     q->force.vtable = &harmonic_vtable;
     *pq = &q->force;
     return he_f_harmonic_argv(p, he, &q->local);
+}
+typedef struct Harmonic_ref Harmonic_ref;
+struct Harmonic_ref {
+    T force;
+    HeFHarmonicRef *local;
+};
+static int harmonic_ref_fin(T *q)
+{
+    int status;
+    Harmonic_ref *b = CONTAINER_OF(q, Harmonic_ref, force);
+    status = he_f_harmonic_ref_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int harmonic_ref_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Harmonic_ref *b = CONTAINER_OF(q, Harmonic_ref, force);
+    return he_f_harmonic_ref_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real harmonic_ref_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Harmonic_ref *b = CONTAINER_OF(q, Harmonic_ref, force);
+    return he_f_harmonic_ref_energy(b->local, he, x, y, z);
+}
+static Vtable harmonic_ref_vtable = {
+    harmonic_ref_fin,
+    harmonic_ref_force,
+    harmonic_ref_energy,
+};
+int force_harmonic_ref_argv(char ***p, He *he, /**/ T **pq)
+{
+    Harmonic_ref *q;
+    MALLOC(1, &q);
+    q->force.vtable = &harmonic_ref_vtable;
+    *pq = &q->force;
+    return he_f_harmonic_ref_argv(p, he, &q->local);
 }
 typedef struct Area_voronoi Area_voronoi;
 struct Area_voronoi {
