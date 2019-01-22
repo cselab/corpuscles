@@ -95,7 +95,7 @@ int he_f_harmonic_ref_argv(char ***p, He *he, T **pq) {
         
     status = he_f_harmonic_ref_ini(K, x, y, z, he, pq);
 
-    y_fin(he, x, y, z);
+    y_fin(he0, x, y, z);
     return status;
 }
 

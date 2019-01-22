@@ -36,6 +36,7 @@ static void usg() {
     const char *list;
     list = force_list();
     fprintf(stderr, "%s %s [args..] < OFF > PUNTO\n", me, list);
+    exit(2);
 }
 
 static void main0() {
@@ -68,6 +69,8 @@ static void main0() {
 
 int main(int __UNUSED argc, char *argv[]) {
     argv++;
+    if (util_eq(*argv, "-h"))
+        usg();
     y_ini("/dev/stdin", &he, &x, &y, &z);
 
     argv_str(&argv, name);
