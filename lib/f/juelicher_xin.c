@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "he/argv.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
@@ -122,7 +123,17 @@ int he_f_juelicher_xin_ini(real K, real C0, real Kad, real DA0D,
 }
 
 int he_f_juelicher_xin_argv(char ***p, He *he, T **pq) {
-    return HE_OK;
+    int status;
+    real Kb, C0, Kad, DA0D;
+    if ((status = argv_real(p, &Kb)) != HE_OK)
+        return status;
+    if ((status = argv_real(p, &C0)) != HE_OK)
+        return status;
+    if ((status = argv_real(p, &Kad)) != HE_OK)
+        return status;
+    if ((status = argv_real(p, &DA0D)) != HE_OK)
+        return status;
+    return he_f_juelicher_xin_ini(Kb, C0, Kad, DA0D, he, pq);
 }
 
 int he_f_juelicher_xin_fin(T *q) {
