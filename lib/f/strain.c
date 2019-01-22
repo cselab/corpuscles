@@ -10,6 +10,7 @@
 #include "he/vec.h"
 #include "he/tri.h"
 #include "he/y.h"
+#include "he/util.h"
 #include "he/strain.h"
 
 #include "inc/def.h"
@@ -55,18 +56,18 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
     int nv, i, status;
     He *he;
     real *x, *y, *z;
-    
+
     MALLOC(1, &q);
-    
+
     status = y_ini(off, &he, &x, &y, &z);
     if (status != HE_OK)
         ERR(HE_IO, "y_ini failed");
-    
+
     nv = he_nv(he);
     MALLOC(nv, &q->eng);
     strain_ini(name, param, &q->strain);
 
-    q->he = he;    
+    q->he = he;
     q->x = x;
     q->y = y;
     q->z = z;
@@ -76,8 +77,14 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 }
 
 int he_f_strain_argv(char ***p, He *he, T **pq) {
+#   define PAR(f) \
+    do {                                                \
+    if ((status = argv_real(p, &param.f)) != HE_OK)     \
+        return status;                                  \
+    } while (0)
+    
     int status;
-    StrainParam param;    
+    StrainParam param;
     char off[MAX_STRING_SIZE], name[MAX_STRING_SIZE];
 
     if ((status = argv_str(p, off)) != HE_OK)
@@ -86,14 +93,22 @@ int he_f_strain_argv(char ***p, He *he, T **pq) {
     if ((status = argv_str(p, name)) != HE_OK)
         return status;
 
-    if ((status = argv_real(p, &param.Ka)) != HE_OK)
-        return status;
+    if (util_eq(name, "skalak")) {
+        PAR(Ks);
+        PAR(Ka);
+    } else if (util_eq(name, "lim")) {
+        PAR(Ka);
+        PAR(mu);
+        PAR(a3);
+        PAR(a4);
+        PAR(b1);
+        PAR(b2);
+    } else
+        ERR(HE_IO, "unknown strain model '%s'", name);
 
-    if ((status = argv_real(p, &param.Ks)) != HE_OK)
-        return status;
-    
     status = he_f_strain_ini(off, name, param, pq);
     return status;
+#   undef PAR    
 }
 
 int he_f_strain_fin(T *q) {
@@ -145,7 +160,7 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
 
     he = q->he;
     x0 = q->x; y0 = q->y; z0 = q->z;
-    
+
     nt = he_nt(he);
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);

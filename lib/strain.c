@@ -89,6 +89,28 @@ static real F2_linear(void *p0, __UNUSED real I1, real I2) {
     return 2*Ka*I2;
 }
 
+static real F_lim(void *p0, real I1, real I2)  {
+    P *p;
+    real Ks, Ka;
+    p = (P*)p0;
+    Ks = p->Ks; Ka = p->Ka;
+    return Ks*sq(I1) + Ka*sq(I2);
+}
+static real F1_lim(void *p0, real I1, __UNUSED real I2) {
+    P *p;
+    real Ks;
+    p = (P*)p0;
+    Ks = p->Ks;
+    return  2*Ks*I1;
+}
+static real F2_lim(void *p0, __UNUSED real I1, real I2) {
+    P *p;
+    real Ka;
+    p = (P*)p0;
+    Ka = p->Ka;
+    return 2*Ka*I2;
+}
+
 
 int strain_ini(const char *name, P param, /**/ T **pq) {
     T *q;
@@ -106,6 +128,10 @@ int strain_ini(const char *name, P param, /**/ T **pq) {
         q->F = F_linear;
         q->F1 = F1_linear;
         q->F2 = F2_linear;
+    } else if (util_eq(name, "lim")) {
+        q->F = F_lim;
+        q->F1 = F1_lim;
+        q->F2 = F2_lim;
     } else
         ERR(HE_INDEX, "unknown strain model: '%s'", name);
 
