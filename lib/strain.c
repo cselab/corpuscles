@@ -89,12 +89,20 @@ static real F2_linear(void *p0, __UNUSED real I1, real I2) {
     return 2*Ka*I2;
 }
 
-static real F_lim(void *p0, real I1, real I2)  {
+static real F_lim(void *p0, real al, real be)  {
+#   define G(s) s = p->s
     P *p;
-    real Ks, Ka;
+    real Ka, mu, a3, a4, b1, b2, A, B;
     p = (P*)p0;
-    Ks = p->Ks; Ka = p->Ka;
-    return Ks*sq(I1) + Ka*sq(I2);
+
+    G(Ka); G(mu); G(a3); G(a4); G(b1); G(b2);
+
+    A = Ka/2*(al*al + a3*al*al*al + a4*al*al*al*al);
+    B = mu*(be + b1*al*be + b2*be*be);
+
+    return A + B;
+
+#   undef G
 }
 static real F1_lim(void *p0, real I1, __UNUSED real I2) {
     P *p;
