@@ -77,3 +77,11 @@ he_f_area_sq_fin
 he_f_area_sq_force
 he_f_area_sq_energy
 he_f_area_sq_argv
+
+#include "he/f/gompper.h"
+gompper
+HeFGompper
+he_f_gompper_fin
+he_f_gompper_force
+he_f_gompper_energy
+he_f_gompper_argv

@@ -21,6 +21,7 @@
 #include "he/f/garea_voronoi.h"
 #include "he/f/volume_normal.h"
 #include "he/f/area_sq.h"
+#include "he/f/gompper.h"
 #define SIZE (4048)
 
 #include "he/force.h"
@@ -37,6 +38,7 @@ static int force_area_voronoi_argv(char***, He*, T**);
 static int force_garea_voronoi_argv(char***, He*, T**);
 static int force_volume_normal_argv(char***, He*, T**);
 static int force_area_sq_argv(char***, He*, T**);
+static int force_gompper_argv(char***, He*, T**);
 
 struct T {
     struct Vtable *vtable;
@@ -58,6 +60,7 @@ static const char *Name[] = {
     "garea_voronoi",
     "volume_normal",
     "area_sq",
+    "gompper",
 };
 
 static const TypeArgv Argv[] = {
@@ -71,6 +74,7 @@ static const TypeArgv Argv[] = {
     force_garea_voronoi_argv,
     force_volume_normal_argv,
     force_area_sq_argv,
+    force_gompper_argv,
 };
 
 int force_argv(const char *name, char ***parg, He *he, T **pq)
@@ -502,4 +506,41 @@ int force_area_sq_argv(char ***p, He *he, /**/ T **pq)
     q->force.vtable = &area_sq_vtable;
     *pq = &q->force;
     return he_f_area_sq_argv(p, he, &q->local);
+}
+typedef struct Gompper Gompper;
+struct Gompper {
+    T force;
+    HeFGompper *local;
+};
+static int gompper_fin(T *q)
+{
+    int status;
+    Gompper *b = CONTAINER_OF(q, Gompper, force);
+    status = he_f_gompper_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int gompper_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Gompper *b = CONTAINER_OF(q, Gompper, force);
+    return he_f_gompper_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real gompper_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Gompper *b = CONTAINER_OF(q, Gompper, force);
+    return he_f_gompper_energy(b->local, he, x, y, z);
+}
+static Vtable gompper_vtable = {
+    gompper_fin,
+    gompper_force,
+    gompper_energy,
+};
+int force_gompper_argv(char ***p, He *he, /**/ T **pq)
+{
+    Gompper *q;
+    MALLOC(1, &q);
+    q->force.vtable = &gompper_vtable;
+    *pq = &q->force;
+    return he_f_gompper_argv(p, he, &q->local);
 }
