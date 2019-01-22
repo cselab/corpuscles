@@ -50,8 +50,9 @@ Q: -bx*cy;
 M: matrix([px, py], [0, qy])$
 D: M . transpose(M);
 
-I1: mattrace(D);
-I2: determinant(D);
+I1: mattrace(M) - 1;
+I2: 1/(2*determinant(M))*(mattrace(D) - 2*determinant(M));
+
 I2: factor(I2);
 
 E: F(I1, I2);

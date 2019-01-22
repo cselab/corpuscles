@@ -10,17 +10,29 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
     px = ux/bx;
     py = (wx-(cx*ux)/bx)/cy;
     qy = wy/cy;
-    I1 = sq(qy)+sq(py)+sq(px);
-    I2 = sq(px)*sq(qy);
+    I1 = qy+px-1;
+    I2 = ((sq(qy)-2*px*qy+sq(py)+sq(px))/(px*qy))/2.0E+0;
     Fa = F1(param,I1,I2);
     Fb = F2(param,I1,I2);
     
-    SET(dvx, (2*((Fa*(cx*py-(bx*py+cy*px)))/cy-Fb*px*pow(qy,2)))/bx);
-    SET(dvy, (2*(cx-bx)*(Fb*pow(px,2)+Fa)*qy)/(bx*cy));
-    SET(dux, (2*(Fb*px*pow(qy,2)-(Fa*(cx*py-cy*px))/cy))/bx);
-    SET(duy, -(2*cx*(Fb*pow(px,2)+Fa)*qy)/(bx*cy));
-    SET(dwx, (2*Fa*py)/cy);
-    SET(dwy, (2*(Fb*pow(px,2)+Fa)*qy)/cy);
+    SET(dvx, 
+    (((Fb*(cy*(pow(qy,2)+pow(py,2))+px*(2*cx*py-(2*bx*py+cy*px))))
+     /(cy*pow(px,2)*qy))
+     /2.0E+0
+     -Fa)
+     /bx);
+    SET(dvy, 
+    ((cx-bx)*(((Fb*(pow(qy,2)-(pow(py,2)+pow(px,2))))/(px*pow(qy,2)))/2.0E+0+Fa))
+     /(bx*cy));
+    SET(dux, 
+    (Fa-((Fb*(cy*(pow(qy,2)+pow(py,2))+px*(2*cx*py-cy*px)))/(cy*pow(px,2)*qy))
+        /2.0E+0)
+     /bx);
+    SET(duy, 
+    (cx*((-((Fb*(pow(qy,2)-(pow(py,2)+pow(px,2))))/(px*pow(qy,2)))/2.0E+0)-Fa))
+     /(bx*cy));
+    SET(dwx, (Fb*py)/(cy*px*qy));
+    SET(dwy, (((Fb*(pow(qy,2)-(pow(py,2)+pow(px,2))))/(px*pow(qy,2)))/2.0E+0+Fa)/cy);
     SET(pI1, I1);
     SET(pI2, I2);
     SET(pA, Q/2.0E+0);
