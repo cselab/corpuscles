@@ -1,6 +1,8 @@
 #include <stdio.h>
 
 #include "real.h"
+
+#include "he/macro.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/he.h"
@@ -112,7 +114,7 @@ static int assert_force(const real a[3], const real b[3], const real c[3],
         return 1;
 }
 
-int he_f_strain_force(T *q, const real *x, const real *y, const real *z, /**/
+int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, const real *z, /**/
                             real *fx, real *fy, real *fz) {
     He *he;
     const real *x0, *y0, *z0;
@@ -140,7 +142,7 @@ int he_f_strain_force(T *q, const real *x, const real *y, const real *z, /**/
     return HE_OK;
 }
 
-real he_f_strain_energy(T *q, const real *x, const real *y, const real *z) {
+real he_f_strain_energy(T *q, __UNUSED He* he0, const real *x, const real *y, const real *z) {
     He *he;
     const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
