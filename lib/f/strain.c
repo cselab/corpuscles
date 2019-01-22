@@ -2,6 +2,7 @@
 
 #include "real.h"
 
+#include "he/argv.h"
 #include "he/macro.h"
 #include "he/memory.h"
 #include "he/err.h"
@@ -10,6 +11,8 @@
 #include "he/tri.h"
 #include "he/y.h"
 #include "he/strain.h"
+
+#include "inc/def.h"
 
 #include "he/f/strain.h"
 
@@ -73,7 +76,24 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 }
 
 int he_f_strain_argv(char ***p, He *he, T **pq) {
-    return HE_OK;
+    int status;
+    StrainParam param;    
+    char off[MAX_STRING_SIZE], name[MAX_STRING_SIZE];
+
+    if ((status = argv_str(p, off)) != HE_OK)
+        return status;
+
+    if ((status = argv_str(p, name)) != HE_OK)
+        return status;
+
+    if ((status = argv_real(p, &param.Ka)) != HE_OK)
+        return status;
+
+    if ((status = argv_real(p, &param.Ks)) != HE_OK)
+        return status;
+    
+    status = he_f_strain_ini(off, name, param, pq);
+    return status;
 }
 
 int he_f_strain_fin(T *q) {

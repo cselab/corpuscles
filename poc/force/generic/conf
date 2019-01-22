@@ -93,3 +93,11 @@ he_f_gompper_fin
 he_f_gompper_force
 he_f_gompper_energy
 he_f_gompper_argv
+
+#include "he/f/strain.h"
+strain
+HeFStrain
+he_f_strain_fin
+he_f_strain_force
+he_f_strain_energy
+he_f_strain_argv

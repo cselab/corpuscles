@@ -23,6 +23,7 @@
 #include "he/f/volume_normal.h"
 #include "he/f/area_sq.h"
 #include "he/f/gompper.h"
+#include "he/f/strain.h"
 #define SIZE (4048)
 
 #include "he/force.h"
@@ -41,6 +42,7 @@ static int force_garea_voronoi_argv(char***, He*, T**);
 static int force_volume_normal_argv(char***, He*, T**);
 static int force_area_sq_argv(char***, He*, T**);
 static int force_gompper_argv(char***, He*, T**);
+static int force_strain_argv(char***, He*, T**);
 
 struct T {
     struct Vtable *vtable;
@@ -64,6 +66,7 @@ static const char *Name[] = {
     "volume_normal",
     "area_sq",
     "gompper",
+    "strain",
 };
 
 static const TypeArgv Argv[] = {
@@ -79,6 +82,7 @@ static const TypeArgv Argv[] = {
     force_volume_normal_argv,
     force_area_sq_argv,
     force_gompper_argv,
+    force_strain_argv,
 };
 
 int force_argv(const char *name, char ***parg, He *he, T **pq)
@@ -584,4 +588,41 @@ int force_gompper_argv(char ***p, He *he, /**/ T **pq)
     q->force.vtable = &gompper_vtable;
     *pq = &q->force;
     return he_f_gompper_argv(p, he, &q->local);
+}
+typedef struct Strain Strain;
+struct Strain {
+    T force;
+    HeFStrain *local;
+};
+static int strain_fin(T *q)
+{
+    int status;
+    Strain *b = CONTAINER_OF(q, Strain, force);
+    status = he_f_strain_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int strain_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Strain *b = CONTAINER_OF(q, Strain, force);
+    return he_f_strain_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real strain_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Strain *b = CONTAINER_OF(q, Strain, force);
+    return he_f_strain_energy(b->local, he, x, y, z);
+}
+static Vtable strain_vtable = {
+    strain_fin,
+    strain_force,
+    strain_energy,
+};
+int force_strain_argv(char ***p, He *he, /**/ T **pq)
+{
+    Strain *q;
+    MALLOC(1, &q);
+    q->force.vtable = &strain_vtable;
+    *pq = &q->force;
+    return he_f_strain_argv(p, he, &q->local);
 }
