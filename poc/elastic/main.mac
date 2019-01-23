@@ -27,27 +27,24 @@ co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
 
 declare([bx, cx, cy], constant) $
 
-dx(x, y):= p0 + px*x + py*y$
-dy(x, y):= q0 + qx*x + qy*y$
+dx(x, y):= px*x + py*y$
+dy(x, y):= qx*x + qy*y$
 
 e: [
-  dx(0, 0) = vx,
-  dy(0, 0) = vy,
+  dx(bx - vx, 0) = ux - vx,
+  dy(bx - vx, 0) = uy - vy,
 
-  dx(bx, 0) = ux - vx,
-  dy(bx, 0) = uy - vy,
-
-  dx(cx, cy) = wx - vx,
-  dy(cx, cy) = wy - vy
+  dx(cx - vx, cy - vy) = wx - vx,
+  dy(cx - vx, cy - vy) = wy - vy
 ] $
 
 de: diff(e);
-v: [p0, px, py,   q0, qx, qy];
+v: [px, py,   qx, qy];
 ds: linsolve(de, diff(v));
 s : linsolve( e,       v);
 Q: -bx*cy;
 
-M: matrix([px, py], [0, qy])$
+M: matrix([px, py], [qx, qy])$
 D: M . transpose(M);
 
 I1: mattrace(M) - 1; /* Lim */
@@ -78,6 +75,8 @@ dwy: gcfac(back(co(dE, wy)));
 
 px: gcfac(back(frm1(assoc('px, s))));
 py: gcfac(back(frm1(assoc('py, s))));
+
+qx: gcfac(back(frm1(assoc('qx, s))));
 qy: gcfac(back(frm1(assoc('qy, s))));
 
 matchdeclare(x, all) $
@@ -96,7 +95,7 @@ pA : 'Q/2;
 with_stdout("body",
   cg(Q),
   printf(true, "NOT_ZERO(Q);~%"),
-  cg(px), cg(py), cg(qy),
+  cg(px), cg(py), cg(qx), cg(qy),
   cg(I1), cg(I2),
   cg(Fa), cg(Fb),
   newline(),
