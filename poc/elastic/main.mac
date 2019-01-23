@@ -31,11 +31,11 @@ dx(x, y):= px*x + py*y$
 dy(x, y):= qx*x + qy*y$
 
 e: [
-  dx(bx, 0) = ux,
-  dy(bx, 0) = 0,
+  dx(bx, 0) = ux - vx,
+  dy(bx, 0) = uy - vy,
 
-  dx(cx, cy) = wx,
-  dy(cx, cy) = wy
+  dx(cx, cy) = wx - vx,
+  dy(cx, cy) = wy - vy
 ] $
 
 de: diff(e);

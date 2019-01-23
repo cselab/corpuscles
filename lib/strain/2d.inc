@@ -16,8 +16,22 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
     Fa = F1(param,I1,I2);
     Fb = F2(param,I1,I2);
     
-    SET(dvx, 0);
-    SET(dvy, 0);
+    SET(dvx, 
+    (((Fb*(qy*(qy*(cy*qy+(cx-bx)*qx)+cy*(pow(qx,2)+pow(py,2))
+                                    +px*(2*cx*py-(2*bx*py+cy*px)))
+          +qx*((cx-bx)*pow(qx,2)+(bx-cx)*pow(py,2)+px*(2*cy*py+(cx-bx)*px))))
+     /pow(px*qy-py*qx,2))
+     /2.0E+0
+     -Fa*(cy*qy+(cx-bx)*qx))
+     /(bx*cy));
+    SET(dvy, 
+    (Fa*(cy*py+(cx-bx)*px)-((Fb*((cy*py+(bx-cx)*px)*pow(qy,2)
+                                +qx*(2*((cx-bx)*py+cy*px)*qy
+                                    +((cx-bx)*px-cy*py)*qx)+cy*pow(py,3)
+                                +px*((cx-bx)*pow(py,2)+px*(cy*py+(cx-bx)*px))))
+                           /pow(px*qy-py*qx,2))
+                           /2.0E+0)
+     /(bx*cy));
     SET(dux, 
     (Fa*(cy*qy+cx*qx)-((Fb*(qy*(qy*(cy*qy+cx*qx)+cy*(pow(qx,2)+pow(py,2))
                                                 +px*(2*cx*py-cy*px))
@@ -25,7 +39,14 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
                       /pow(px*qy-py*qx,2))
                       /2.0E+0)
      /(bx*cy));
-    SET(duy, 0);
+    SET(duy, 
+    (((Fb*((cy*py-cx*px)*pow(qy,2)+qx*(2*(cx*py+cy*px)*qy+(cx*px-cy*py)*qx)
+                                  +cy*pow(py,3)
+                                  +px*(cx*pow(py,2)+px*(cy*py+cx*px))))
+     /pow(px*qy-py*qx,2))
+     /2.0E+0
+     -Fa*(cy*py+cx*px))
+     /(bx*cy));
     SET(dwx, 
     (((Fb*(qy*(qx*qy+2*px*py)+qx*(pow(qx,2)-pow(py,2)+pow(px,2))))
      /pow(px*qy-py*qx,2))

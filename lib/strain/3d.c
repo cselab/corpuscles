@@ -9,6 +9,8 @@
 #include "he/macro.h"
 #include "he/strain/2d.h"
 
+#define FMT HE_REAL_OUT
+
 static const real EPS = 1e-8;
 
 static int small_v(const real a[3]) { return vec_abs(a) < EPS; }
@@ -50,6 +52,11 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
         vec_fprintf(a, stderr, "%.16g");
         vec_fprintf(b, stderr, "%.16g");
         vec_fprintf(c, stderr, "%.16g");
+
+        vec_fprintf(da, stderr, "%.16g");
+        vec_fprintf(db, stderr, "%.16g");
+        vec_fprintf(dc, stderr, "%.16g");
+
         vec_fprintf(f, stderr, "%.16g");
         vec_fprintf(t, stderr, "%.16g");
         return 0;
@@ -76,12 +83,22 @@ int strain_force_3d(void *param,
               ux, wx, wy,
               &dvx, &dvy, &dux, &duy, &dwx, &dwy,
               &I1, &I2, &area);
+    if (!small(dvx + dux + dwx))
+        ERR(HE_NUM,
+            "2d force fails: " FMT " " FMT " " FMT,
+            dvx, dux, dwx);
+
+    if (!small(dvy + duy + dwy))
+        ERR(HE_NUM,
+            "2d force fails: " FMT " " FMT " " FMT,
+            dvy, duy, dwy);        
+    
     tri_2to3(a, b, c, /**/ ex, ey);
     vec_linear_combination(dvx, ex,  dvy, ey, /**/ da);
     vec_linear_combination(dux, ex,  duy, ey, /**/ db);
     vec_linear_combination(dwx, ex,  dwy, ey, /**/ dc);
-    if (!assert_force_3d(a, b, c, da, db, dc))
-        ERR(HE_NUM, "bad 3d forces in triangle");
+//    if (!assert_force_3d(a, b, c, da, db, dc))
+//        ERR(HE_NUM, "bad 3d forces in triangle");
     area = fabs(area);
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
