@@ -1,4 +1,4 @@
 # elastic energy
 
-bx, cx, cy
-ux, wx, wx
+    bx cx cy
+    ux wx wy

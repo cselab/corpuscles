@@ -31,11 +31,11 @@ dx(x, y):= px*x + py*y$
 dy(x, y):= qx*x + qy*y$
 
 e: [
-  dx(bx - vx, 0) = ux - vx,
-  dy(bx - vx, 0) = uy - vy,
+  dx(bx, 0) = ux,
+  dy(bx, 0) = 0,
 
-  dx(cx - vx, cy - vy) = wx - vx,
-  dy(cx - vx, cy - vy) = wy - vy
+  dx(cx, cy) = wx,
+  dy(cx, cy) = wy
 ] $
 
 de: diff(e);
@@ -47,7 +47,7 @@ Q: -bx*cy;
 M: matrix([px, py], [qx, qy])$
 D: M . transpose(M);
 
-I1: mattrace(M) - 1; /* Lim */
+I1: determinant(M) - 1; /* Lim */
 I2: 1/(2*determinant(M))*(mattrace(D) - 2*determinant(M));
 I2: factor(I2);
 

@@ -96,6 +96,8 @@ static real F_lim(void *p0, real al, real be)  {
     real Ka, mu, a3, a4, b1, b2;
     p = (P*)p0;
     G(Ka); G(mu); G(a3); G(a4); G(b1); G(b2);
+
+    MSG("%g %g", al, be);
     A = Ka/2*(al*al + a3*al*al*al + a4*al*al*al*al);
     B = mu*(be + b1*al*be + b2*be*be);
     return A + B;
