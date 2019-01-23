@@ -110,7 +110,7 @@ static real F1_lim(void *p0, real al, real be) {
     p = (P*)p0;
     G(Ka); G(mu); G(a3); G(a4); G(b1); G(b2);
     dA = Ka/2*(2*al + 3*a3*al*al + 4*a4*al*al*al);
-    dB = mu*b1*mu;
+    dB = mu*b1*be;
     return  dA + dB;
 #   undef G    
 }
