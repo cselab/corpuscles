@@ -98,7 +98,6 @@ static real F_lim(void *p0, real al, real be)  {
     G(Ka); G(mu); G(a3); G(a4); G(b1); G(b2);
     A = Ka/2*(al*al + a3*al*al*al + a4*al*al*al*al);
     B = mu*(be + b1*al*be + b2*be*be);
-    MSG("I: %g %g", al, be);
     return A + B;
 #   undef G
 }
