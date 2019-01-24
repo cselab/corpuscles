@@ -242,6 +242,17 @@ static int equiangulate0(void) {
     return HE_OK;
 }
 
+static real max_vec(real *fx, real *fy, real *fz) {
+    int i;
+    real c, m;
+    m = 0;
+    for (i = 0; i < NV; i++) {
+        c = sqrt(fx[i]*fx[i] + fy[i]*fy[i] + fz[i]*fz[i]);
+        if (c > m)
+            m = c;
+    }
+    return m;
+}
 
 static int main0(real *vx, real *vy, real *vz,
                  real *fx, real *fy, real *fz) {
@@ -258,12 +269,13 @@ static int main0(real *vx, real *vy, real *vz,
         ER("fail to open '%s'", filemsg);
     fclose(fm);
 
-    nsub = 100;
+    nsub = 0;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
         Force0(XX, YY, ZZ, /**/ fx, fy, fz);
-        //jigle(dt*rnd, vx, vy, vz);
-        visc_old(mu, vx, vy, vz, /**/ fx, fy, fz);
+        //rnd = 0.01*max_vec(vx, vy, vz);
+        //jigle(rnd, vx, vy, vz);
+        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
@@ -278,7 +290,7 @@ static int main0(real *vx, real *vy, real *vz,
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
         }
 
-        if (i > 0 && i % 100 == 0)
+        if (i > 0)
             equiangulate0();
 
         if ( i % freq == 0 ) {
@@ -286,7 +298,7 @@ static int main0(real *vx, real *vy, real *vz,
             ek = Kin(vx, vy, vz);
             et = et + ek;
             A = area(); V = volume(); Vr=reduced_volume(A,V);
-            MSG("eng: %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, es);
+            MSG("agvbs: %g %g %g %g %g", ea, ega, ev, eb, es);
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
 
             fm = fopen(fullpath(filemsg), "a");

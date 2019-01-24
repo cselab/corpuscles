@@ -244,7 +244,6 @@ int main(int __UNUSED argc, const char *v[]) {
     real a0;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
-    real cutoff;
     BendingParam bending_param;
     
     argv = v; argv++;
@@ -265,8 +264,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
 
-    cutoff = 1.0;
-    f_edg_sq_ini(Ke, cutoff);
+    f_edg_sq_ini(Ke);
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
