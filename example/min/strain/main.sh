@@ -6,7 +6,7 @@ make
 
 # Nt=5120
 off=$(he.path)/sph/laplace/0.off
-ref=$(he.path)/rbc/laplace/0.off
+ref=$(he.path)/sph/laplace/0.off
 
 pi=3.141592653589793115997964
 Vr=0.642
@@ -17,15 +17,15 @@ Kv=1
 Kas=0
 mus=0
 
-dt=0.005
+dt=0.0005
 mu=0
 
-Kb=0.1
+Kb=0.01
 
 C0=0
 Kad=0
 end=100000000
-freq=100
+freq=1000
 
 DA0D=0
 

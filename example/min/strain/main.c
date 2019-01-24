@@ -241,13 +241,11 @@ static int main0(real *vx, real *vy, real *vz,
         ER("fail to open '%s'", filemsg);
     fclose(fm);
 
-
-    nsub = 0;
-    
+    nsub = 100;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
         Force0(XX, YY, ZZ, /**/ fx, fy, fz);
-        jigle(dt*rnd, vx, vy, vz);
+        //jigle(dt*rnd, vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
