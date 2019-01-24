@@ -18,6 +18,7 @@
 #include <he/ddih.h>
 #include <he/dtri.h>
 #include <he/bending.h>
+#include <he/force.h>
 #include <he/x.h>
 
 #define FMT_IN   HE_REAL_IN
@@ -132,7 +133,7 @@ static real Energy(const real *x, const real *y, const real *z) {
     return a + ga + v + e + b;
 }
 
-void Force(const real *x, const real *y, const real *z, /**/
+void Force0(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
@@ -240,7 +241,7 @@ static int main0(real *vx, real *vy, real *vz,
     nsub = 0;
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
-        Force(XX, YY, ZZ, /**/ fx, fy, fz);
+        Force0(XX, YY, ZZ, /**/ fx, fy, fz);
         //filter(vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
