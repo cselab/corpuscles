@@ -4,7 +4,7 @@ set -eu
 
 make
 
-off=$(he.path)/prolate/laplace/Nt1280/prolate_volume_Vr0.64.off
+off=$(he.path)/sph/laplace/0.off
 ref=$(he.path)/sph/laplace/0.off
 
 pi=3.141592653589793115997964
@@ -16,10 +16,10 @@ Kv=1
 Kas=0
 mus=0
 
-dt=0.001
-mu=100
+dt=0.01
+mu=10
 
-Kb=0.01
+Kb=0.001
 
 C0=0
 Kad=0
