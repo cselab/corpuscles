@@ -181,6 +181,26 @@ static void visc_pair(real mu,
     }
 }
 
+static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
+    int nv;
+    real r, r0, sx, sy, sz;
+    int i;
+    nv = NV;
+    sx = sy = sz = 0;
+    for (i = 0; i < nv; i++) {
+        r = rand()/(real)RAND_MAX - 0.5;
+        r0 = r * mag;
+        vx[i] += r0; vy[i] += r0; vz[i] += r0;
+    }
+    for (i = 0; i < nv; i++) {
+        sx += vx[i]; sy += vy[i]; sz += vz[i];
+    }
+    sx /= nv; sy /= nv; sz /= nv;
+    for (i = 0; i < nv; i++) {
+        vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
+    }
+}
+
 static real Kin(real *vx, real *vy, real *vz) {
     int i;
     real s;
@@ -205,25 +225,12 @@ static int equiangulate0(void) {
     return HE_OK;
 }
 
-static int filter0(real *vx, real *vy, real *vz) {
-    x_filter_apply(XX, YY, ZZ, vx);
-    x_filter_apply(XX, YY, ZZ, vy);
-    x_filter_apply(XX, YY, ZZ, vz);
-    return HE_OK;
-}
-
-static int filter(real *vx, real *vy, real *vz) {
-    int i;
-    for (i = 0; i < 10; i++)
-        filter0(vx, vy, vz);
-    return HE_OK;
-}
 
 static int main0(real *vx, real *vy, real *vz,
                  real *fx, real *fy, real *fz) {
     int i, j;
     real A, V, Vr;
-    real errA;
+    real errA, rnd;
     int nsub;
     char file[4048];
     char filemsg[4048]="stat";
@@ -236,10 +243,11 @@ static int main0(real *vx, real *vy, real *vz,
 
 
     nsub = 0;
+    
     zero(NV, vx); zero(NV, vy); zero(NV, vz);
     for (i = 0; i <= end; i++) {
         Force0(XX, YY, ZZ, /**/ fx, fy, fz);
-        //filter(vx, vy, vz);
+        jigle(dt*rnd, vx, vy, vz);
         visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
@@ -250,7 +258,6 @@ static int main0(real *vx, real *vy, real *vz,
             errA = fabs(A - A0)/A0;
             if (errA <= tolerA) break;
             ForceSub(XX, YY, ZZ, /**/ fx, fy, fz);
-            //filter(vx, vy, vz);
             visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
             euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
             euler( dt, fx, fy, fz, /**/ vx, vy, vz);
@@ -320,7 +327,6 @@ int main(int __UNUSED argc, char *v[]) {
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
-    x_filter_ini();
 
     bending_param.Kb = Kb;
     bending_param.C0 = C0;
@@ -340,7 +346,6 @@ int main(int __UNUSED argc, char *v[]) {
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
-    x_filter_fin();
     force_fin(force);
     fin();
 

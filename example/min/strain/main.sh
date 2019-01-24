@@ -6,24 +6,22 @@ make
 
 # Nt=5120
 off=$(he.path)/sph/laplace/0.off
-ref=$(he.path)/sph/laplace/0.off
-
-Da=0.3
+ref=$(he.path)/rbc/laplace/0.off
 
 pi=3.141592653589793115997964
-D=0.000898798148042
 Vr=0.642
-Ka=0.5
+Ka=1
 Kga=1
-Kv=5
+Kv=1
 
 Kas=0
-mus=100
+mus=0
 
-dt=0.01
-mu=10
+dt=0.005
+mu=0
 
-Kb=0.001
+Kb=0.1
+
 C0=0
 Kad=0
 end=100000000
