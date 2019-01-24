@@ -5,7 +5,7 @@
 #include <real.h>
 
 #include <he/force.h>
-#include <he/punto.h>
+#include <he/vtk.h>
 #include <he/area.h>
 #include <he/he.h>
 #include <he/memory.h>
@@ -60,10 +60,9 @@ static void main0() {
         fm[i] = vec_abs(f);
     }
 
-    char *key = "r x y z fm fx fy fz area gx gy gz";
-    real *queue[] = {rr, x, y, z, fm, fx, fy, fz, area, gx, gy, gz, NULL};
-    puts(key);
-    punto_fwrite(nv, queue, stdout);
+    const char *na[] = {"fm", "fx", "fy", "fz", "area", "gx", "gy", "gz", NULL};
+    const real *sc[] = {fm, fx, fy, fz, area, gx, gy, gz, NULL};
+    vtk_fwrite(he, x, y, z, sc, na, stdout);
     force_fin(force);
 }
 
