@@ -5,26 +5,25 @@ set -eu
 make
 
 # Nt=5120
-Nt="$1"; shift
-off=data/Nt${Nt}_01.off
+off=$(he.path)/sph/laplace/0.off
+ref=$(he.path)/sph/laplace/0.off
 
 Da=0.3
 
-f=1
 pi=3.141592653589793115997964
 D=0.000898798148042
 A=$(ae 4*$pi)
 Vr=0.642
-Ka=$(ae 0.5*$f)
-Kga=$(ae 1*$f)
-Kv=$(ae 5*$f)
+Ka=0.5
+Kga=1
+Kv=5
 
-dt="$1"; shift
-mu=$(ae "$1"*$f); shift
+dt=0.01
+mu=10
 
 Ke=0
 
-Kb=$(ae 0.001*$f)
+Kb=0.001
 C0=0
 Kad=$(ae 2*$Kb/$pi)
 end=100000000
@@ -33,6 +32,6 @@ freq=10000
 Da=$(ae $Da/100)
 DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")
 
-dir="Nt_${Nt}/dt_${dt}/mu_${mu}"
+dir=o
 
 ./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir < $off
