@@ -17,11 +17,16 @@
 #include <he/dedg.h>
 #include <he/ddih.h>
 #include <he/dtri.h>
+#include <he/he.h>
 #include <he/bending.h>
 #include <he/force.h>
 #include <he/x.h>
 
 #define FMT_IN   HE_REAL_IN
+
+static Force *force;
+static He *he;
+static char fname[1024];
 
 static const real pi = 3.141592653589793115997964;
 static const real tolerA = 1.0e-2;
@@ -31,8 +36,8 @@ static real rVolume, Ka, Kga, Kv, Ke, mu, dt;
 static int end;
 static int freq;
 static real A0, V0, e0;
-static real et, eb, eb_bend, eb_ad, ek, ea, ega, ev, ee;
-static const char **argv;
+static real et, eb, eb_bend, eb_ad, ek, ea, ega, ev, ee, es;
+static char **argv;
 static char bending[4049], dir[4049], fpath[4049];
 static const char *me = "min/helfrich_xin_fga";
 
@@ -112,25 +117,19 @@ static void arg() {
 }
 
 static real Energy(const real *x, const real *y, const real *z) {
-    real a, ga, v, e, b;
-    a = f_area_energy(x, y, z);
-    ga = f_garea_energy(x, y, z);
-    v = f_volume_energy(x, y, z);
-    e = f_edg_sq_energy(x, y, z);
-    b = f_bending_energy(x, y, z);
+    ea = f_area_energy(x, y, z);
+    ega = f_garea_energy(x, y, z);
+    ev = f_volume_energy(x, y, z);
+    ee = f_edg_sq_energy(x, y, z);
+    eb = f_bending_energy(x, y, z);
+    es = force_energy(force, he, x, y, z);
 
-
-    et  = a + ga + v + e + b;
-    ea  = a;
-    ega = ga;
-    ev  = v;
-    ee  = e;
-    eb  = b;
+    et  = ea + ega + ev + ee + eb + es;
 
     eb_bend = f_bending_energy_bend();
     eb_ad = f_bending_energy_ad();
 
-    return a + ga + v + e + b;
+    return et;
 }
 
 void Force0(const real *x, const real *y, const real *z, /**/
@@ -141,6 +140,7 @@ void Force0(const real *x, const real *y, const real *z, /**/
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
+    force_force(force, he, x, y, z, /**/ fx, fy, fz);
 }
 static void ForceSub(const real *x, const real *y, const real *z, /**/
               real *fx, real *fy, real *fz) {
@@ -267,16 +267,17 @@ static int main0(real *vx, real *vy, real *vz,
             ek = Kin(vx, vy, vz);
             et = et + ek;
             A = area(); V = volume(); Vr=reduced_volume(A,V);
-            MSG("eng: %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
+            MSG("eng: %g %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee, es);
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
 
             fm = fopen(fullpath(filemsg), "a");
             static int First = 1;
             if (First) {
-                fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek ee\n", fm);
+                fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek ee es\n", fm);
                 First = 0;
             }
-            fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n", A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee);
+            fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g %g\n",
+                    A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee, es);
             fclose(fm);
             sprintf(file, "%08d.off", i);
             off_write(XX, YY, ZZ, fullpath(file));
@@ -290,7 +291,7 @@ static real target_volume(real area, real v) { return v*sph_volume(area); }
 static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 
-int main(int __UNUSED argc, const char *v[]) {
+int main(int __UNUSED argc, char *v[]) {
     real a0;
     real *fx, *fy, *fz;
     real *vx, *vy, *vz;
@@ -302,6 +303,9 @@ int main(int __UNUSED argc, const char *v[]) {
     srand(time(NULL));
 
     ini("/dev/stdin");
+    str(fname);
+    force_argv(fname, &argv, he,  &force);
+    
     A0 = area();
     a0 = A0/NT;
     V0 = target_volume(A0, rVolume);
@@ -342,6 +346,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_fin();
     f_garea_fin();
     x_filter_fin();
+    force_fin(force);
     fin();
 
     return 0;

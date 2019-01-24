@@ -34,4 +34,4 @@ DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")
 
 dir=o
 
-./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir < $off
+./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir  strain $ref lim 1 2 3 4 5 6 < $off
