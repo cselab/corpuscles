@@ -181,6 +181,23 @@ static void visc_pair(real mu,
     }
 }
 
+static void visc_old(real mu,
+                      const real *vx, const real *vy, const real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+    int e, i, j;
+    real a[3], b[3], u[3], u0;
+    for (e = 0; e < NE; e++) {
+        i = D1[e]; j = D2[e];
+        vec_get(i, vx, vy, vz, a);
+        vec_get(j, vx, vy, vz, b);
+        vec_minus(a, b, u);
+        u0 = vec_abs(u);
+        vec_scalar_append(u, -mu*u0, i, fx, fy, fz);
+        vec_scalar_append(u,  mu*u0, j, fx, fy, fz);
+    }
+}
+
+
 static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
     int nv;
     real r, r0, sx, sy, sz;
@@ -246,7 +263,7 @@ static int main0(real *vx, real *vy, real *vz,
     for (i = 0; i <= end; i++) {
         Force0(XX, YY, ZZ, /**/ fx, fy, fz);
         //jigle(dt*rnd, vx, vy, vz);
-        visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
+        visc_old(mu, vx, vy, vz, /**/ fx, fy, fz);
         euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
         euler( dt, fx, fy, fz, /**/ vx, vy, vz);
 
