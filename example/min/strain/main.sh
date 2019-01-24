@@ -18,6 +18,9 @@ Ka=0.5
 Kga=1
 Kv=5
 
+Kas=0
+mus=100
+
 dt=0.01
 mu=10
 
@@ -25,13 +28,13 @@ Ke=0
 
 Kb=0.001
 C0=0
-Kad=$(ae 2*$Kb/$pi)
+Kad=0
 end=100000000
-freq=10000
+freq=100
 
-Da=$(ae $Da/100)
-DA0D=$(ae "($Da - $Kb*$D*$C0/$pi/$Kad)*$A/$D")
+DA0D=0
 
 dir=o
 
-./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir  strain $ref lim 1 2 3 4 5 6 < $off
+./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir  \
+       strain $ref lim $Kas $mus 0 0 0 0 < $off
