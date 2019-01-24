@@ -12,7 +12,6 @@ Da=0.3
 
 pi=3.141592653589793115997964
 D=0.000898798148042
-A=$(ae 4*$pi)
 Vr=0.642
 Ka=0.5
 Kga=1
@@ -24,8 +23,6 @@ mus=100
 dt=0.01
 mu=10
 
-Ke=0
-
 Kb=0.001
 C0=0
 Kad=0
@@ -36,5 +33,5 @@ DA0D=0
 
 dir=o
 
-./main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir  \
+./main juelicher_xin $Vr $Ka $Kga $Kv $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir  \
        strain $ref lim $Kas $mus 0 0 0 0 < $off

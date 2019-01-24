@@ -32,17 +32,17 @@ static const real pi = 3.141592653589793115997964;
 static const real tolerA = 1.0e-2;
 static const real tolerV = 1.0e-2;
 static real Kb, C0, Kad, DA0D;
-static real rVolume, Ka, Kga, Kv, Ke, mu, dt;
+static real rVolume, Ka, Kga, Kv, mu, dt;
 static int end;
 static int freq;
 static real A0, V0, e0;
-static real et, eb, eb_bend, eb_ad, ek, ea, ega, ev, ee, es;
+static real et, eb, eb_bend, eb_ad, ek, ea, ega, ev, es;
 static char **argv;
 static char bending[4049], dir[4049], fpath[4049];
 static const char *me = "min/helfrich_xin_fga";
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D mu dt < OFF > msg\n", me);
+    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Kb C0 Kad DA0D mu dt < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");
     fprintf(stderr, "output: output directory\n");
@@ -104,7 +104,6 @@ static void arg() {
     scl(&Ka);
     scl(&Kga);
     scl(&Kv);
-    scl(&Ke);
     scl(&Kb);
     scl(&C0);
     scl(&Kad);
@@ -120,11 +119,10 @@ static real Energy(const real *x, const real *y, const real *z) {
     ea = f_area_energy(x, y, z);
     ega = f_garea_energy(x, y, z);
     ev = f_volume_energy(x, y, z);
-    ee = f_edg_sq_energy(x, y, z);
     eb = f_bending_energy(x, y, z);
     es = force_energy(force, he, x, y, z);
 
-    et  = ea + ega + ev + ee + eb + es;
+    et  = ea + ega + ev + eb + es;
 
     eb_bend = f_bending_energy_bend();
     eb_ad = f_bending_energy_ad();
@@ -138,7 +136,6 @@ void Force0(const real *x, const real *y, const real *z, /**/
     f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
     f_volume_force(x, y, z, /**/ fx, fy, fz);
-    f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
     force_force(force, he, x, y, z, /**/ fx, fy, fz);
 }
@@ -267,17 +264,17 @@ static int main0(real *vx, real *vy, real *vz,
             ek = Kin(vx, vy, vz);
             et = et + ek;
             A = area(); V = volume(); Vr=reduced_volume(A,V);
-            MSG("eng: %g %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee, es);
+            MSG("eng: %g %g %g %g %g %g %g %g %g", et, eb, eb_bend, eb_ad, ea, ega, ev, ek, es);
             MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
 
             fm = fopen(fullpath(filemsg), "a");
             static int First = 1;
             if (First) {
-                fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek ee es\n", fm);
+                fputs("A/A0 V/V0 Vr eb eb_bend eb_ad ea ega ev ek es\n", fm);
                 First = 0;
             }
-            fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g %g\n",
-                    A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, ee, es);
+            fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g\n",
+                    A/A0, V/V0, Vr, eb, eb_bend, eb_ad, ea, ega, ev, ek, es);
             fclose(fm);
             sprintf(file, "%08d.off", i);
             off_write(XX, YY, ZZ, fullpath(file));
@@ -323,7 +320,6 @@ int main(int __UNUSED argc, char *v[]) {
     f_area_ini(a0,  Ka);
     f_garea_ini(A0, Kga);
     f_volume_ini(V0, Kv);
-    f_edg_sq_ini(Ke);
     x_filter_ini();
 
     bending_param.Kb = Kb;
@@ -341,7 +337,6 @@ int main(int __UNUSED argc, char *v[]) {
     FREE(vx); FREE(vy); FREE(vz);
 
     f_bending_fin();
-    f_edg_sq_fin();
     f_volume_fin();
     f_area_fin();
     f_garea_fin();
