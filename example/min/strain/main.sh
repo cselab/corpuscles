@@ -16,15 +16,15 @@ Kv=1
 Kas=0
 mus=0
 
-dt=0.01
-mu=10
+dt=0.0025
+mu=100
 
-Kb=0.001
+Kb=0.01
 
 C0=0
 Kad=0
 end=100000000
-freq=100
+freq=1000
 
 DA0D=0
 
