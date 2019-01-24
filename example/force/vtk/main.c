@@ -35,7 +35,7 @@ static const char *me = "force/generic";
 static void usg() {
     const char *list;
     list = force_list();
-    fprintf(stderr, "%s %s [args..] < OFF > PUNTO\n", me, list);
+    fprintf(stderr, "%s %s [args..] < OFF > VTK\n", me, list);
     exit(2);
 }
 

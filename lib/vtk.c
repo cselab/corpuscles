@@ -21,7 +21,7 @@ static int count(const real *a[]) {
     return i;
 }
 
-int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
+int vtk_fwrite(He *he, const real *x, const real *y, const real *z,
                   const real *scalars[], const char *names[], /**/ FILE *f) {
     int np, nv, nt, r, i, n_sc, i_sc;
     int a, b, c;
@@ -61,12 +61,12 @@ int he_vtk_fwrite(He *he, const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
-int he_vtk_write(He *he, const real *x, const real *y, const real *z,
+int vtk_write(He *he, const real *x, const real *y, const real *z,
                  const real *scalars[], const char *names[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
-    if (he_vtk_fwrite(he, x, y, z, scalars, names, f) != HE_OK)
+    if (vtk_fwrite(he, x, y, z, scalars, names, f) != HE_OK)
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);

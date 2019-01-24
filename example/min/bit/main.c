@@ -242,7 +242,7 @@ static void main0(real *vx, real *vy, real *vz) {
         off_write(XX, YY, ZZ, off);
         const real *scalars[] = {fx, fy, fz, fm, gm, NULL};
         const char *names[]   = {"fx", "fy", "fz", "fm", "gm", NULL};
-        he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
+        vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
 
     j = 0;

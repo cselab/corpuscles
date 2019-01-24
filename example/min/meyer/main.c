@@ -276,7 +276,7 @@ static void main0() {
 
         const real *scalars[] = {fx, fy, fz, f, fa, fb, fc, NULL};
         const char *names[]   = {"fx", "fy", "fz", "f", "fa", "fb", "fc", NULL};
-        he_vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
+        vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
     }
   }
 }

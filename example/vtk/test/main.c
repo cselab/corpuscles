@@ -50,7 +50,7 @@ int main() {
     MSG("eng[0]: %g", eng[0]);
     const real *scalars[] =  {fx, fy, fz, eng, NULL};
     const char *names[] =  {"fx", "fy", "fz", "eng", NULL};
-    he_vtk_write(he, x, y, z, scalars, names, path);
+    vtk_write(he, x, y, z, scalars, names, path);
 
     fin();
 }

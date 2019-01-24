@@ -110,7 +110,7 @@ static void main0() {
     if (every == 1) {
         const real *scalars[] = {Fx, Fy, Fz, Fm, NULL};
         const char *names[]   = {"fx", "fy", "fz", "fm", NULL};
-        he_vtk_write(he, xx, yy, zz, scalars, names, "q.vtk");
+        vtk_write(he, xx, yy, zz, scalars, names, "q.vtk");
     }
 
     bending_fin(bending);
