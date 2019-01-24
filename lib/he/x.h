@@ -145,3 +145,5 @@ int x_restore_volume(real *x, real *y, real *z);
 int x_filter_ini(void);
 int x_filter_fin(void);
 int x_filter_apply(const real *x, const real *y, const real *z, /*io*/ real *a);
+
+int x_get_he(He**);

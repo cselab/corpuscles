@@ -420,4 +420,7 @@ int x_filter_apply(const real *x, const real *y, const real *z, /*io*/ real *a)
     return filter_apply(f_filter, he, x, y, z, a);
 }
 
-
+int x_get_he(He **phe) {
+    *phe = he;
+    return HE_OK;
+}
