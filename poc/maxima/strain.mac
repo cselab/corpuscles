@@ -1,8 +1,22 @@
-eq_rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q], 'a*q + 'b*q^3 + 'c*q^5)]$
-eq_sph: ['v = 0, 'F = lambda([q], q)] $
+load("pdiff") $
+
+rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q], 'a*q + 'b*q^3 + 'c*q^5)]$
+sph: ['v = 0, 'F = lambda([q],   q)] $
+elp: ['v = 0, 'F = lambda([q], 2*q)] $
 
 assume(sin(u) > 0) $
 
-y: sin('u)*cos('v);
 x: sin('u)*sin('v);
+y: sin('u)*cos('v);
 z: F(cos('u));
+
+r: [x, y, z];
+
+aa: diff(r, u);
+bb: diff(r, v);
+
+[a0, b0]: [aa, bb], sph;
+[a1, b1]: [aa, bb], rbc;
+
+a0 . b0;
+a1 . b1;
