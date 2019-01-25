@@ -1,4 +1,7 @@
 load("pdiff") $
+load ("nchrpl") $
+
+vabs(a):= sqrt(a.a);
 
 rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q], 'a*q + 'b*q^3 + 'c*q^5)]$
 sph: ['v = 0, 'F = lambda([q],   q)] $
@@ -16,7 +19,16 @@ aa: diff(r, u);
 bb: diff(r, v);
 
 [a0, b0]: [aa, bb], sph;
-[a1, b1]: [aa, bb], rbc;
+[a1, b1]: [aa, bb], elp;
 
 a0 . b0;
 a1 . b1;
+
+M: matrix(
+  [vabs(a1)/vabs(a0), 0],
+  [0, vabs(b1)/vabs(b0)]) $
+
+S: transpose(M) . M $
+
+al: determinant(M) - 1 $
+be: 1/(2*determinant(M)) * (mattrace(S) - 2*determinant(M));
