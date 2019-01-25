@@ -7,7 +7,6 @@ rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q],
 sph: ['v = 0, 'F = lambda([q],   q)] $
 elp: ['v = 0, 'F = lambda([q], 2*q)] $
 
-
 var: ['Ka = 0, 'mu = 1, 'a3 = 0, 'a4 = 0, 'b1 = 0, 'b2 = 0] $
 
 x: sin('u)*sin('v);
@@ -26,8 +25,9 @@ M: matrix(
   [vabs(p1)/vabs(p0), 0],
   [0, vabs(q1)/vabs(q0)]) $
 
-S: transpose(M) . M $
+area: vabs(p0) * vabs(q0);
 
+S: transpose(M) . M $
 al: determinant(M) - 1 $
 be: 1/(2*determinant(M)) * (mattrace(S) - 2*determinant(M));
 
@@ -38,9 +38,9 @@ lo:  eps;
 hi: %pi/2;
 np: 100;
 
-with_stdout("out",
-  printf(true, "~a~%", "x y z eng"),
+with_stdout("~/out",
+  printf(true, "~a~%", "x y z eng area"),
   for i: 0 thru np do (
     u: lo + i*(hi - lo)/(np - 1),
-    L: ev([x, y, z, eng], infeval, numer, elp, var),
+    L: ev([x, y, z, eng, area], infeval, numer, elp, var),
     printf(true, "~{~,16g ~}~%", L))) $
