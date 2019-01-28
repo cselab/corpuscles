@@ -22,7 +22,12 @@ end=300000
 freq=500
 
 Kas=0
-mus=0
+mus=1
+
+a3=0
+a4=0
+b1=0
+b2=0
 
 off=$(he.path)/sph/laplace/0.off
 ref=$(he.path)/sph/laplace/0.off
@@ -42,7 +47,7 @@ then
     mkdir $Da1
     fi
     cd $Da1
-    he.run ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq strain $ref lim $Kas $mus 0 0 0 0 < $off > Da$Da1.msg
+    he.run ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq strain $ref lim $Kas $mus $a3 $a4 $b1 $b2 < $off > Da$Da1.msg
 else
     #for i in `seq 0 10`;
     #do
