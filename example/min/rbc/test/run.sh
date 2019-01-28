@@ -1,5 +1,7 @@
 set -eu
 
+(cd .. && make)
+
 Vr=0.642
 Ka=0.5
 Kga=1
@@ -47,7 +49,7 @@ else
 	#Da1=$(echo $i | awk '{print (0.1+$1*0.02)}')
 	#echo $Da1
     Da1=0.1
-    bash -x run.sh $Da1
+    bash run.sh $Da1
     #done
 
 fi
