@@ -1,46 +1,48 @@
 set -eu
 
-Vr=0.55
+Vr=0.642
 Ka=0.5
 Kga=1
-Kv=2
+Kv=5
 Ke=0
 
 Kb=0.001
 C0=0
-Kad=1
+Kad=$(echo $Kb | awk '{print $1*0.63662}')
 #echo $Kad
 DA0D=0
 D=0.000898798148042
+Da0=0
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
-end=200000
+end=300000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt5120.off
+off=$(he.path)/sph/laplace/Nt1280.off
 
 if test $# -ne 0
 then
-    Da="$1"
-    echo '***' Da=$Da '***'
-    
-    DA0=$(echo $pi, $Da | awk '{print 4*$2*$1}')
-    DA0D=$(echo $DA0 | awk '{print $1*2}')
-    #echo $Da, $DA0, $DA0D
-    
-    if [ ! -d $Da ]; then
-	#echo $Da
-	mkdir $Da
+    Da1="$1"
+    Da0=$(echo $Da1 | awk '{print $1/100}')
+    echo '***' Da1=$Da1 '***' Da0 = $Da0 '***'
+
+    DA0=$(echo $Kb, $C0, $Kad, $Da0, $D, $pi, $A | awk '{print ($4 - $1*$5*$2/$6/$3)*$7}')
+    DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
+    #echo $Da0, $Da1, $Kb, $C0, $Kad, $DA0D
+	  
+    if [ ! -d $Da1 ]; then
+    mkdir $Da1
     fi
-    cd $Da
-    ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da.msg
+    cd $Da1
+    ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
 else
-    for i in `seq 0 5`;
-    do
-	Da=$(echo $i | awk '{print (1+$1*0.05)}')
-	#echo $Da
-	bash run.sh $Da &
-    done
+    #for i in `seq 0 10`;
+    #do
+	#Da1=$(echo $i | awk '{print (0.1+$1*0.02)}')
+	#echo $Da1
+    Da1=0.1
+    bash run.sh $Da1
+    #done
 
 fi
