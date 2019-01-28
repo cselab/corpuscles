@@ -33,7 +33,7 @@ S: transpose(M) . M $
 al: determinant(M) - 1 $
 be: 1/(2*determinant(M)) * (mattrace(S) - 2*determinant(M));
 
-eng: 'Ka/2*(al^2 + 'a3*al^3 + 'a4*al^4) + 'mu*(be + 'b1*al*be + 'b2*be^2);
+eng: 'Ka/2*(al^2 + 'a3*al^3 + 'a4*al^4) + 'mu*(be + 'b1*al*be + 'b2*be^2) $
 
 eps: 1e-9;
 lo:  eps;
