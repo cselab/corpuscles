@@ -24,6 +24,21 @@ int argv_real(char ***pargv, real *p) {
     return HE_OK;
 }
 
+int argv_int(char ***pargv, int *p) {
+    char **argv;
+    argv = *pargv;
+
+    if (*argv == NULL)
+        ERR(HE_IO, "not enough arguments");
+
+    if (sscanf(*argv, "%d", p) != 1)
+        ERR(HE_IO, "not an integer '%s'",*argv);
+
+    argv++;
+    *pargv = argv;
+    return HE_OK;
+}
+
 int argv_str(char ***pargv, char *p) {
     char **argv;
     argv = *pargv;
