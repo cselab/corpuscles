@@ -19,7 +19,12 @@ A=$(echo  $pi | awk '{print $1*4.0}')
 end=300000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt1280.off
+Kas=0
+mus=0
+
+off=$(he.path)/sph/laplace/0.off
+ref=$(he.path)/sph/laplace/0.off
+
 
 if test $# -ne 0
 then
@@ -35,14 +40,14 @@ then
     mkdir $Da1
     fi
     cd $Da1
-    ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq < $off > Da$Da1.msg
+    ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq strain $ref lim $Kas $mus 0 0 0 0 < $off > Da$Da1.msg
 else
     #for i in `seq 0 10`;
     #do
 	#Da1=$(echo $i | awk '{print (0.1+$1*0.02)}')
 	#echo $Da1
     Da1=0.1
-    bash run.sh $Da1
+    bash -x run.sh $Da1
     #done
 
 fi

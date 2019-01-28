@@ -19,18 +19,18 @@
 #include <he/dtri.h>
 #include <he/bending.h>
 #include <he/x.h>
-#include <alg/x.h>
-#include <alg/min.h>
+
+#include <he/force.h>
+
+static Force *force;
+static He *he;
+static char fname[1024];
 
 static const real pi = 3.141592653589793115997964;
 
 static const real tolerA = 1.0e-3;
 
 static real Kb, C0, Kad, DA0D;
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++) a[i] = 0;
-}
 
 
 #define FMT_IN   HE_REAL_IN
@@ -39,10 +39,15 @@ static real rVolume, Ka, Kga, Kv, Ke;
 static int end;
 static int freq;
 static real A0, V0, e0;
-static real et, eb, ek, ea, ega, ev, ee;
-static const char **argv;
-static char bending[4049];
-static const char *me = "min/helfrich_xin_fga";
+static real et, eb, ek, ea, ega, ev, ee, ebl, ebn, es;
+static char **argv;
+static char bending[1024];
+static const char *me = "min/rbc";
+
+static void zero(int n, real *a) {
+    int i;
+    for (i = 0; i < n; i++) a[i] = 0;
+}
 
 static void usg() {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
@@ -94,25 +99,25 @@ static void arg() {
 }
 
 real Energy(const real *x, const real *y, const real *z) {
-    real a, ga, v, e, b;
-    a = f_area_energy(x, y, z);
-    ga = f_garea_energy(x, y, z);
-    v = f_volume_energy(x, y, z);
-    e = f_edg_sq_energy(x, y, z);
-    b = f_bending_energy(x, y, z);
-    
+  
+  ea = f_area_energy(x, y, z);
+  ega = f_garea_energy(x, y, z);
+  ev = f_volume_energy(x, y, z);
+  ee = f_edg_sq_energy(x, y, z);
+  eb = f_bending_energy(x, y, z);
+  
+  es = force_energy(force, he, x, y, z);
 
-    et  = a + ga + v + e + b;
-    ea  = a;
-    ega = ga;
-    ev  = v;
-    ee  = e;
-    eb  = b;
+  ebl  = f_bending_energy_bend();
+  ebn = f_bending_energy_ad();
+  
+  et  = ea + ega + ev + ee + eb + es;
+  
     
-    return a + ga + v + e + b;
+  return et;
 }
 
-void Force(const real *x, const real *y, const real *z, /**/
+void Force0(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
     f_area_force(x, y, z, /**/ fx, fy, fz);
@@ -120,11 +125,12 @@ void Force(const real *x, const real *y, const real *z, /**/
     f_volume_force(x, y, z, /**/ fx, fy, fz);
     f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
     f_bending_force(x, y, z, /**/ fx, fy, fz);
+    force_force(force, he, x, y, z, /**/ fx, fy, fz);
+
 }
 void ForceArea(const real *x, const real *y, const real *z, /**/
            real *fx, real *fy, real *fz) {
     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    //f_area_force(x, y, z, /**/ fx, fy, fz);
     f_garea_force(x, y, z, /**/ fx, fy, fz);
 }
 
@@ -227,7 +233,7 @@ static void main0(real *vx, real *vy, real *vz,
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
-    Force(XX, YY, ZZ, /**/ fx, fy, fz);
+    Force0(XX, YY, ZZ, /**/ fx, fy, fz);
     dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
     rnd = 0.01*max_vec(vx, vy, vz);
     jigle(rnd, vx, vy, vz);        
@@ -292,7 +298,7 @@ static real target_volume(real area, real v) { return v*sph_volume(area); }
 static real eq_tri_edg(real area) { return 2*sqrt(area)/pow(3, 0.25); }
 
 
-int main(int __UNUSED argc, const char *v[]) {
+int main(int __UNUSED argc, char *v[]) {
   real a0;
   real *fx, *fy, *fz;
   real *vx, *vy, *vz;
@@ -302,8 +308,19 @@ int main(int __UNUSED argc, const char *v[]) {
   argv = v; argv++;
   arg();
   srand(time(NULL));
-  
+
   ini("/dev/stdin");
+
+  //MSG("rVolume :%g", rVolume);
+  //MSG("bending : %s", bending);
+
+  x_he(&he);
+  str(fname);
+  MSG("fname: %s", fname);
+  force_argv(fname, &argv, he,  &force);
+
+  MSG("rVolume :%g", rVolume);
+
   A0 = area();
   a0 = A0/NT;
   V0 = target_volume(A0, rVolume);
@@ -327,6 +344,7 @@ int main(int __UNUSED argc, const char *v[]) {
   bending_param.C0 = C0;
   bending_param.Kad = Kad;
   bending_param.DA0D = DA0D;
+  MSG("bending : %s", bending);
   f_bending_ini(bending, bending_param);
   
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
