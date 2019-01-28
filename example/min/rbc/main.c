@@ -7,6 +7,7 @@
 
 #include <real.h>
 
+#include <he/argv.h>
 #include <he/err.h>
 #include <he/punto.h>
 #include <he/vec.h>
@@ -70,17 +71,10 @@ static int num(/**/ int *p) {
     return HE_OK;
 }
 static int scl(/**/ real *p) {
-    if (*argv == NULL) ER("not enough args");
-    if (sscanf(*argv, FMT_IN, p) != 1)
-        ER("not a number '%s'", *argv);
-    argv++;
-    return HE_OK;
+    return argv_real(&argv, p);
 }
 static int str(/**/ char *p) {
-    if (*argv == NULL) ER("not enough args");
-    strncpy(p, *argv, 4048);
-    argv++;
-    return HE_OK;
+    return argv_str(&argv, p);
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
