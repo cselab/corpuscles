@@ -23,10 +23,11 @@ static const char **argv;
 
 static char name[1024];
 
-static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr, *area;
+static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr, *area, *area0;
+static real *x0, *y0, *z0;
 static real *gx, *gy, *gz;
 static int nv, nt;
-static He *he;
+static He *he, *he0;
 static Force *force;
 static real delta = 1e-6;
 
@@ -47,6 +48,7 @@ static void main0() {
     fd(force, he, delta, x, y, z, /**/ gx, gy, gz);
     e = force_energy(force, he, x, y, z);
     he_area_ver(he, x, y, z, /**/ area);
+    he_area_ver(he0, x0, y0, z0, /**/ area0);
 
     MSG("name: %s", force_name(force));
     MSG("energy: %g", e);
@@ -60,8 +62,8 @@ static void main0() {
         fm[i] = vec_abs(f);
     }
 
-    const char *na[] = {"fm", "fx", "fy", "fz", "area", "gx", "gy", "gz", NULL};
-    const real *sc[] = {fm, fx, fy, fz, area, gx, gy, gz, NULL};
+    const char *na[] = {"fm", "fx", "fy", "fz", "area", "area0", "gx", "gy", "gz", NULL};
+    const real *sc[] = {fm, fx, fy, fz, area, area0, gx, gy, gz, NULL};
     vtk_fwrite(he, x, y, z, sc, na, stdout);
     force_fin(force);
 }
@@ -71,21 +73,23 @@ int main(int __UNUSED argc, char *argv[]) {
     if (util_eq(*argv, "-h"))
         usg();
     y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_ini("/dev/stdin", &he0, &x0, &y0, &z0);
 
     argv_str(&argv, name);
     force_argv(name, &argv, he,  &force);
     nv = he_nv(he);
     nt = he_nt(he);
 
-    MALLOC(nv, &rr); MALLOC(nv, &fm); MALLOC(nv, &area);
+    MALLOC(nv, &rr); MALLOC(nv, &fm); MALLOC(nv, &area); MALLOC(nv, &area0);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
     MALLOC(nv, &gx); MALLOC(nv, &gy); MALLOC(nv, &gz);
 
     main0();
 
-    FREE(rr); FREE(fm);
+    FREE(rr); FREE(fm); FREE(area); FREE(area0);
     FREE(fx); FREE(fy); FREE(fz);
     FREE(gx); FREE(gy); FREE(gz);
 
     y_fin(he, x, y, z);
+    y_fin(he0, x0, y0, z0);    
 }
