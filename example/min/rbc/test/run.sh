@@ -2,7 +2,7 @@ set -eu
 
 (cd .. && make)
 
-Vr=0.642
+Vr=0.641998677173
 Ka=0.5
 Kga=1
 Kv=5
@@ -10,7 +10,7 @@ Ke=0
 
 Kb=0.001
 C0=0
-Kad=$(echo $Kb | awk '{print $1*0.63662}')
+Kad=$(echo $Kb | awk '{print $1*0.636619772368}')
 #echo $Kad
 DA0D=0
 D=0.000898798148042
@@ -18,11 +18,11 @@ Da0=0
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
-end=300000
-freq=500
+end=200000
+freq=200
 
 Kas=0
-mus=1
+mus=0.139260575205
 
 a3=0
 a4=0
@@ -49,12 +49,7 @@ then
     cd $Da1
     he.run ../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $end $freq strain $ref lim $Kas $mus $a3 $a4 $b1 $b2 '<' $off '>' Da$Da1.msg
 else
-    #for i in `seq 0 10`;
-    #do
-	#Da1=$(echo $i | awk '{print (0.1+$1*0.02)}')
-	#echo $Da1
-    Da1=0.1
+    Da1=1.144
     bash run.sh $Da1
-    #done
 
 fi
