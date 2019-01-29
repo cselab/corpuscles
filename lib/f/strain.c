@@ -82,7 +82,7 @@ int he_f_strain_argv(char ***p, He *he, T **pq) {
     if ((status = argv_real(p, &param.f)) != HE_OK)     \
         return status;                                  \
     } while (0)
-    
+
     int status;
     StrainParam param;
     char off[MAX_STRING_SIZE], name[MAX_STRING_SIZE];
@@ -108,7 +108,7 @@ int he_f_strain_argv(char ***p, He *he, T **pq) {
 
     status = he_f_strain_ini(off, name, param, pq);
     return status;
-#   undef PAR    
+#   undef PAR
 }
 
 int he_f_strain_fin(T *q) {
@@ -155,13 +155,20 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
     const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3], da[3], db[3], dc[3];
-    int nt, t;
+    int nv, nt, t;
     int i, j, k;
 
     he = q->he;
     x0 = q->x; y0 = q->y; z0 = q->z;
 
+    nv = he_nv(he);
     nt = he_nt(he);
+
+    if (nv != he_nv(he0))
+        ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
+    if (nt != he_nt(he0))
+        ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
+
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         get3(x0, y0, z0, i, j, k, /**/ a0, b0, c0);
@@ -177,7 +184,7 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
     return HE_OK;
 }
 
-real he_f_strain_energy(T *q, __UNUSED He* he0, const real *x, const real *y, const real *z) {
+real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real *z) {
     He *he;
     const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
@@ -190,6 +197,11 @@ real he_f_strain_energy(T *q, __UNUSED He* he0, const real *x, const real *y, co
     x0 = q->x; y0 = q->y; z0 = q->z;
     nt = he_nt(he);
     nv = he_nv(he);
+
+    if (nv != he_nv(he0))
+        ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
+    if (nt != he_nt(he0))
+        ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
     e = 0;
     eng = q->eng;

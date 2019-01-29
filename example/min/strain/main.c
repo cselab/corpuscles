@@ -335,6 +335,7 @@ int main(int __UNUSED argc, char *v[]) {
     srand(time(NULL));
 
     ini("/dev/stdin");
+    x_he(&he);
     str(fname);
     force_argv(fname, &argv, he,  &force);
     
