@@ -177,7 +177,7 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
     return HE_OK;
 }
 
-real he_f_strain_energy(T *q, __UNUSED He* he0, const real *x, const real *y, const real *z) {
+real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real *z) {
     He *he;
     const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
@@ -190,6 +190,11 @@ real he_f_strain_energy(T *q, __UNUSED He* he0, const real *x, const real *y, co
     x0 = q->x; y0 = q->y; z0 = q->z;
     nt = he_nt(he);
     nv = he_nv(he);
+
+    if (nv != he_nv(he0))
+        ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
+    if (nt != he_nt(he0))
+        ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
     e = 0;
     eng = q->eng;
