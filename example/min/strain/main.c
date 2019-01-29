@@ -93,7 +93,8 @@ static int scl(/**/ real *p) {
 }
 static int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
-    strncpy(p, *argv, 4048);
+    //strncpy(p, *argv, 4048);
+    strcpy(p, *argv);
     argv++;
     return HE_OK;
 }
