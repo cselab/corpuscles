@@ -5,12 +5,13 @@ prog=he.run
 : ${VALGRIND=valgrind}
 : ${TIME=time}
 : ${GDB_EXEC=gdb}
+: ${HE_ARG=}
 
 : ${host=falcon}
-: ${HE_ARG=}
 
 usg () {
     msg "$prog 'prog' [args ...]"
+    msg 'environment variable HE_ARG is  used as an argument to bsub'
     exit
 }
 
