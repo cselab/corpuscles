@@ -34,5 +34,8 @@ elif test ! -z "${GDB+x}"
 then
     gdb0 "$@"
 else
-    e "$@"
+    if test $host = euler
+    then e bsub "$@"
+    else e "$@"
+    fi
 fi
