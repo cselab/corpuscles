@@ -5,6 +5,7 @@ prog=he.run
 : ${VALGRIND=valgrind}
 : ${TIME=time}
 : ${GDB_EXEC=gdb}
+: ${host=falcon}
 
 usg () {
     msg "$prog 'prog' [args ...]"
@@ -14,6 +15,10 @@ usg () {
 gdb0() {
     e "$GDB_EXEC" "$GDB" "$@"
 }
+
+case `hostname` in
+    eu-*) host=euler ;;
+esac
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0
