@@ -7,7 +7,7 @@ prog=he.run
 : ${GDB_EXEC=gdb}
 
 : ${host=falcon}
-: ${HE_ARGS=}
+: ${HE_ARG=}
 
 usg () {
     msg "$prog 'prog' [args ...]"
@@ -37,7 +37,7 @@ then
     gdb0 "$@"
 else
     if test $host = euler
-    then e bsub $HE_ARGS "$@"
+    then e bsub $HE_ARG "$@"
     else e "$@"
     fi
 fi
