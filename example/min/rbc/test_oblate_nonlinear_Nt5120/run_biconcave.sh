@@ -65,18 +65,18 @@ then
 else
 
     Da1=-0.858
-    bash run.sh $Da1 
+    bash run_biconcave.sh $Da1 
     Da1=-0.358 
-    bash run.sh $Da1 
+    bash run_biconcave.sh $Da1 
     Da1=0.072
-    bash run.sh $Da1 
-    Da1=0.143
-    bash run.sh $Da1 
+    bash run_biconcave.sh $Da1 
+    #Da1=0.143
+    #bash run_biconcave.sh $Da1 
     Da1=1.717
-    bash run.sh $Da1 
+    bash run_biconcave.sh $Da1 
     Da1=1.788
-    bash run.sh $Da1 
+    bash run_biconcave.sh $Da1 
     Da1=2.003
-    bash run.sh $Da1 
+    bash run_biconcave.sh $Da1 
 
 fi
