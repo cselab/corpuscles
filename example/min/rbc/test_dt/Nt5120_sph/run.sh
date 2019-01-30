@@ -19,8 +19,8 @@ A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
 mu=100
 dt=0.001
-end=200000
-freq=200
+end=100000
+freq=500
 
 mus=0.139260575205
 Kas=$(echo $mus | awk '{print $1*2}')
