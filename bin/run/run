@@ -41,7 +41,7 @@ then
 else
     if test $host = euler
     then
-	for i; do shift; set "$@" "`quote "$i"`"; done
+	for i; do shift; set -- "$@" "`quote "$i"`"; done
 	e bsub $HE_ARG "$@"
     else
 	e "$@"
