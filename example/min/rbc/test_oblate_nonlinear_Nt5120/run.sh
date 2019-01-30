@@ -32,6 +32,7 @@ b2=0.75
 off=$(he.path)/sph/laplace/Nt5120.off
 ref=$(he.path)/oblate/laplace/Nt5120/oblate_area_Vr0.95.off
 
+export HE_ARG="-W 05:00"
 
 if test $# -ne 0
 then
@@ -63,18 +64,18 @@ then
 else
 
     Da1=-0.858
-    bash run.sh $Da1
-    Da1=-0.358
-    bash run.sh $Da1
+    bash run.sh $Da1 
+    Da1=-0.358 
+    bash run.sh $Da1 
     Da1=0.072
-    bash run.sh $Da1
+    bash run.sh $Da1 
     Da1=0.143
-    bash run.sh $Da1
+    bash run.sh $Da1 
     Da1=1.717
-    bash run.sh $Da1
+    bash run.sh $Da1 
     Da1=1.788
-    bash run.sh $Da1
+    bash run.sh $Da1 
     Da1=2.003
-    bash run.sh $Da1
+    bash run.sh $Da1 
 
 fi
