@@ -185,8 +185,7 @@ function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
 function g(s) { g0("(" s ")") }
 function g0(s) {
     if (!eq(LOG, "0")) msg("gcl: " quote(s))
-    printf "%s\n", quote(s) | "cat"
-    close("cat")
+    printf "%s\n", quote(s)
 }
 
 function m_ident(A,   i, j) {
