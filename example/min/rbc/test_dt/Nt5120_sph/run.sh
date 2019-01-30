@@ -45,10 +45,10 @@ then
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
     #echo $Da0, $Da1, $Kb, $C0, $Kad, $DA0D
 	  
-    if [ ! -d $Da1 ]; then
-    mkdir $Da1
+    if [ ! -d mu${mu}_dt${dt}_${Da1} ]; then
+	mkdir mu${mu}_dt${dt}_${Da1}
     fi
-    cd $Da1
+    cd mu${mu}_dt${dt}_${Da1}
     he.run ../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq strain $ref lim $Kas $mus $a3 $a4 $b1 $b2 '<' $off '>' Da$Da1.msg
 else
     #Da1=1.144
