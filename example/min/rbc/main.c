@@ -36,7 +36,7 @@ static real Kb, C0, Kad, DA0D;
 
 #define FMT_IN   HE_REAL_IN
 
-static real rVolume, Ka, Kga, Kv, Ke;
+static real rVolume, Ka, Kga, Kv, Ke, mu, dt;
 static int end;
 static int freq;
 static real A0, V0, e0;
@@ -88,6 +88,8 @@ static void arg() {
     scl(&C0);
     scl(&Kad);
     scl(&DA0D);
+    scl(&mu);
+    scl(&dt);
     num(&end);
     num(&freq);
 }
@@ -213,24 +215,24 @@ static real max_vec(real *fx, real *fy, real *fz) {
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
-  real dt, dt_max, h, mu, rnd;
+  real dt_max, h, rnd;
   real A, V, Vr;
   real errA;
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   char file[4048];
 
-  dt_max = 0.01;
-  mu     = 100.0;
-  h      = 0.01*e0;
+  //dt_max = 0.01;
+  //mu     = 100.0;
+  //h      = 0.01*e0;
   
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
   for (i = 0; i <= end; i++) {
     Force0(XX, YY, ZZ, /**/ fx, fy, fz);
-    dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-    rnd = 0.01*max_vec(vx, vy, vz);
-    jigle(rnd, vx, vy, vz);        
+    //dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
+    //rnd = 0.01*max_vec(vx, vy, vz);
+    //jigle(rnd, vx, vy, vz);        
     visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
@@ -258,15 +260,15 @@ static void main0(real *vx, real *vy, real *vz,
     }
 
     if ( i % 100 == 0 ) {
-
-      if ( i > 0 ) {
+      
+      /*if ( i > 0 ) {
 	j = 0;
 	do {
-	  equiangulate(&cnt);
-	  MSG("cnt : %d", cnt);
+	equiangulate(&cnt);
+	MSG("cnt : %d", cnt);
 	  j++;
-	} while (cnt > 0 && j < 10);
-      }
+	  } while (cnt > 0 && j < 10);
+	  }*/
       
       et = Energy(XX, YY, ZZ);
       ek = Kin(vx, vy, vz);
