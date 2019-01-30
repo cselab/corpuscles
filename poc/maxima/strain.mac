@@ -1,5 +1,5 @@
 load("pdiff") $
-load ("nchrpl") $
+load("nchrpl") $
 
 vabs(a):= sqrt(a.a);
 
