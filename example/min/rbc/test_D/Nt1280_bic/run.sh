@@ -17,7 +17,7 @@ pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 #echo $A
 mu=100.0
-dt=0.001
+dt=0.01
 end=200000
 freq=500
 
@@ -29,8 +29,8 @@ a4=8
 b1=0.7
 b2=0.75
 
-off=$(he.path)/oblate/laplace/Nt5120/oblate_area_Vr0.95.off
-ref=$(he.path)/oblate/laplace/Nt5120/oblate_area_Vr0.95.off
+off=$(he.path)/oblate/laplace/Nt1280/oblate_area_Vr0.95.off
+ref=$(he.path)/oblate/laplace/Nt1280/oblate_area_Vr0.95.off
 
 export HE_ARG="-W 05:00"
 
