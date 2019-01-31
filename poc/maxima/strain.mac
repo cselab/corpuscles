@@ -38,10 +38,10 @@ lo:  eps;
 hi: %pi/2;
 np: 100;
 
-with_stdout("~/out",
+with_stdout("out",
   block([u, L],
   printf(true, "~a~%", "x y z eng"),
   for i: 0 thru np do (
     u: lo + i*(hi - lo)/(np - 1),
-    L: ev([x, y, z, eng], infeval, numer, elp, var),
+    L: ev([x, y, z, eng], infeval, numer, sph, var),
     printf(true, "~{~,16g ~}~%", L)))) $
