@@ -4,9 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>
-
 #include <real.h>
-
 #include <he/argv.h>
 #include <he/err.h>
 #include <he/punto.h>
@@ -20,30 +18,28 @@
 #include <he/dtri.h>
 #include <he/bending.h>
 #include <he/x.h>
-
 #include <he/force.h>
+
+#define FMT_IN   HE_REAL_IN
+
+static const char *me = "min/rbc";
+static const real pi = 3.141592653589793115997964;
+static const real tolerA = 1.0e-3;
 
 static Force *force;
 static He *he;
 static char fname[1024];
 
-static const real pi = 3.141592653589793115997964;
-
-static const real tolerA = 1.0e-3;
-
+static real rVolume, Ka, Kga, Kv, Ke;
 static real Kb, C0, Kad, DA0D;
-
-
-#define FMT_IN   HE_REAL_IN
-
-static real rVolume, Ka, Kga, Kv, Ke, mu, dt;
-static int end;
-static int freq;
+static real nu, dt, kBT;
+static int  end;
+static int  freq;
 static real A0, V0, e0;
-static real et, eb, ek, ea, ega, ev, ee, ebl, ebn, es;
+static real eb, ea, ega, ev, ee, ebl, ebn, es;
 static char **argv;
-static char bending[1024];
-static const char *me = "min/rbc";
+static char bscheme[1024];
+static char dir[4049], fpath[4049];
 
 static void zero(int n, real *a) {
     int i;
@@ -51,153 +47,215 @@ static void zero(int n, real *a) {
 }
 
 static void usg() {
-    fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
+    fprintf(stderr, "%s juelicher_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D nu dt kBT", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");
+    fprintf(stderr, "< init.off > msg\n");
     exit(0);
+}
+
+static int mkdir0(const char *path) {
+    int rc;
+    char cmd[4048];
+    sprintf(cmd, "mkdir -p \"%s\"", path);
+    rc = system(cmd);
+    if (rc != 0)
+        ER("fail to create directory '%s'\n", path);
+    return HE_OK;
+}
+
+static char *fullpath(const char *path) {
+  strncpy(fpath, dir, 4048);
+  strncat(fpath, "/", 4048);
+  strncat(fpath, path, 4048);
+  return fpath;
 }
 
 static real reduced_volume(real area, real volume) { return (6*sqrt(pi)*volume)/pow(area, 3.0/2); }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 static int num(/**/ int *p) {
-    if (*argv == NULL) {
-        usg();
-        ER("not enough args");
-    }
-    if (sscanf(*argv, "%d", p) != 1)
-        ER("not a number '%s'", *argv);
-    argv++;
-    return HE_OK;
+  if (*argv == NULL) {
+    usg();
+    ER("not enough args");
+  }
+  if (sscanf(*argv, "%d", p) != 1)
+    ER("not a number '%s'", *argv);
+  argv++;
+  return HE_OK;
 }
 static int scl(/**/ real *p) {
-    return argv_real(&argv, p);
+  return argv_real(&argv, p);
 }
 static int str(/**/ char *p) {
-    return argv_str(&argv, p);
+  return argv_str(&argv, p);
 }
 static void arg() {
-    if (*argv != NULL && eq(*argv, "-h")) usg();
-    str(bending);
-    scl(&rVolume);
-    scl(&Ka);
-    scl(&Kga);
-    scl(&Kv);
-    scl(&Ke);
-    scl(&Kb);
-    scl(&C0);
-    scl(&Kad);
-    scl(&DA0D);
-    scl(&mu);
-    scl(&dt);
-    num(&end);
-    num(&freq);
+  
+  if (*argv != NULL && eq(*argv, "-h")) usg();
+  str(bscheme);
+  scl(&rVolume);
+  scl(&Ka);
+  scl(&Kga);
+  scl(&Kv);
+  scl(&Ke);
+  scl(&Kb);
+  scl(&C0);
+  scl(&Kad);
+  scl(&DA0D);
+  scl(&nu);
+  scl(&dt);
+  scl(&kBT);
+  num(&end);
+  num(&freq);
+  str(dir);
+
 }
 
-real Energy(const real *x, const real *y, const real *z) {
+real Energy0(const real *x, const real *y, const real *z) {
   
-  ea = f_area_energy(x, y, z);
+  real et;
+  
+  ea  = f_area_energy(x, y, z);
   ega = f_garea_energy(x, y, z);
-  ev = f_volume_energy(x, y, z);
-  ee = f_edg_sq_energy(x, y, z);
-  eb = f_bending_energy(x, y, z);
+  ev  = f_volume_energy(x, y, z);
+  ee  = f_edg_sq_energy(x, y, z);
+  eb  = f_bending_energy(x, y, z);
   
-  es = force_energy(force, he, x, y, z);
-
-  ebl  = f_bending_energy_bend();
+  ebl = f_bending_energy_bend();
   ebn = f_bending_energy_ad();
   
+  es  = force_energy(force, he, x, y, z);
+
   et  = ea + ega + ev + ee + eb + es;
   
-    
   return et;
 }
 
 void Force0(const real *x, const real *y, const real *z, /**/
-           real *fx, real *fy, real *fz) {
-    zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_area_force(x, y, z, /**/ fx, fy, fz);
-    f_garea_force(x, y, z, /**/ fx, fy, fz);
-    f_volume_force(x, y, z, /**/ fx, fy, fz);
-    f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
-    f_bending_force(x, y, z, /**/ fx, fy, fz);
-    force_force(force, he, x, y, z, /**/ fx, fy, fz);
-
+	    real *fx, real *fy, real *fz) {
+  
+  zero(NV, fx); zero(NV, fy); zero(NV, fz);
+  f_area_force(x, y, z, /**/ fx, fy, fz);
+  f_garea_force(x, y, z, /**/ fx, fy, fz);
+  f_volume_force(x, y, z, /**/ fx, fy, fz);
+  f_edg_sq_force(x, y, z, /**/ fx, fy, fz);
+  f_bending_force(x, y, z, /**/ fx, fy, fz);
+  //force_force(force, he, x, y, z, /**/ fx, fy, fz);
+  
 }
+
 void ForceArea(const real *x, const real *y, const real *z, /**/
-           real *fx, real *fy, real *fz) {
-    zero(NV, fx); zero(NV, fy); zero(NV, fz);
-    f_garea_force(x, y, z, /**/ fx, fy, fz);
+	       real *fx, real *fy, real *fz) {
+  
+  zero(NV, fx); zero(NV, fy); zero(NV, fz);
+  f_garea_force(x, y, z, /**/ fx, fy, fz);
+  
 }
 
 static void euler(real dt,
                   const real *fx, const real *fy, const real *fz,
                   real *vx, real *vy, real *vz) {
-    int i;
-    for (i = 0; i < NV; i++) {
-        vx[i] += dt*fx[i];
-        vy[i] += dt*fy[i];
-        vz[i] += dt*fz[i];
-    }
+
+  int i;
+  for (i = 0; i < NV; i++) {
+    vx[i] += dt*fx[i];
+    vy[i] += dt*fy[i];
+    vz[i] += dt*fz[i];
+  }
+  
 }
 
 static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
-    int nv;
-    real r, r0, sx, sy, sz;
-    int i;
-    nv = NV;
-    sx = sy = sz = 0;
-    for (i = 0; i < nv; i++) {
-        r = rand()/(real)RAND_MAX - 0.5;
-        r0 = r * mag;
-        vx[i] += r0; vy[i] += r0; vz[i] += r0;
-    }
-    for (i = 0; i < nv; i++) {
-        sx += vx[i]; sy += vy[i]; sz += vz[i];
-    }
-    sx /= nv; sy /= nv; sz /= nv;
-    for (i = 0; i < nv; i++) {
-        vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
-    }
+
+  int nv;
+  real r, r0, sx, sy, sz;
+  int i;
+  
+  nv = NV;
+  sx = sy = sz = 0;
+  for (i = 0; i < nv; i++) {
+    r = rand()/(real)RAND_MAX - 0.5;
+    r0 = r * mag;
+    vx[i] += r0; vy[i] += r0; vz[i] += r0;
+  }
+  for (i = 0; i < nv; i++) {
+    sx += vx[i]; sy += vy[i]; sz += vz[i];
+  }
+  sx /= nv; sy /= nv; sz /= nv;
+  for (i = 0; i < nv; i++) {
+    vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
+  }
+  
 }
 
-static void visc_lang(real mu,
+static void visc_lang(real nu,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
-    int i;
-    for (i = 0; i < NV; i++) {
-        fx[i] -= mu*vx[i];
-        fy[i] -= mu*vy[i];
-        fz[i] -= mu*vz[i];
-    }
+
+  int i;
+  for (i = 0; i < NV; i++) {
+    fx[i] -= nu*vx[i];
+    fy[i] -= nu*vy[i];
+    fz[i] -= nu*vz[i];
+  }
+  
 }
 
-static void visc_pair(real mu,
+static int diff(int i, int j, const real *x, const real *y, const real *z, /**/ real e[3]) {
+    real a[3], b[3];
+    vec_get(i, x, y, z, a);
+    vec_get(j, x, y, z, b);
+    vec_minus(a, b, e);
+    return HE_OK;
+}
+
+static void visc_pair(real nu, real kBT,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
-    int e, i, j;
-    real a[3], b[3], u[3], u0;
-    for (e = 0; e < NE; e++) {
-        i = D1[e]; j = D2[e];
-        vec_get(i, vx, vy, vz, a);
-        vec_get(j, vx, vy, vz, b);
-        vec_minus(a, b, u);
-        u0 = vec_abs(u);
-        vec_scalar_append(u, -mu*u0, i, fx, fy, fz);
-        vec_scalar_append(u,  mu*u0, j, fx, fy, fz);
-    }
+
+  int e, i, j;
+  real u[3], r[3], rn[3], p[3];
+  real ra, sigma;
+
+  sigma = sqrt(2.0*nu*kBT);
+
+  for (e = 0; e < NE; e++) {
+    i = D1[e]; j = D2[e];
+    
+    diff(i, j, XX, YY, ZZ, r);
+    diff(i, j, vx, vy, vz, u);
+    vec_norm(r, rn);
+    vec_project(u, r, p);
+    //note that the viscous force is in the negative direction
+    //to be consistent with other forces
+    vec_scalar_append(p, nu, i, fx, fy, fz);
+    vec_scalar_append(p, -nu, j, fx, fy, fz);
+
+    //note that the random force is in the negative direction
+    //to be consistent with other forces
+    //in practice, this direction does not matter
+    ra  = rand()/(real)RAND_MAX - 0.5;
+    ra *=sigma;
+    vec_scalar_append(rn, -ra, i, fx, fy, fz);
+    vec_scalar_append(rn, ra, j, fx, fy, fz);
+    
+  }
+  
+  
 }
 
-static real Kin(real *vx, real *vy, real *vz) {
-    int i;
-    real s;
-    s = 0;
-    for (i = 0; i < NV; i++) {
-        s += vx[i]*vx[i];
-        s += vy[i]*vy[i];
-        s += vz[i]*vz[i];
-    }
-    return s;
+static real Kinetic0(real *vx, real *vy, real *vz) {
+
+  int i;
+  real s;
+  s = 0;
+  for (i = 0; i < NV; i++) {
+    s += vx[i]*vx[i];
+    s += vy[i]*vy[i];
+    s += vz[i]*vz[i];
+  }
+  return s;
 }
 
 static real max_vec(real *fx, real *fy, real *fz) {
@@ -205,9 +263,9 @@ static real max_vec(real *fx, real *fy, real *fz) {
     real c, m;
     m = 0;
     for (i = 0; i < NV; i++) {
-        c = sqrt(fx[i]*fx[i] + fy[i]*fy[i] + fz[i]*fz[i]);
-        if (c > m)
-            m = c;
+      c = sqrt(fx[i]*fx[i] + fy[i]*fy[i] + fz[i]*fz[i]);
+      if (c > m)
+	m = c;
     }
     return m;
 }
@@ -215,30 +273,42 @@ static real max_vec(real *fx, real *fy, real *fz) {
 static void main0(real *vx, real *vy, real *vz,
                   real *fx, real *fy, real *fz) {
   int cnt, i, j;
-  real dt_max, h, rnd;
+  real rnd;
   real A, V, Vr;
   real errA;
+  real et, ep, ek;
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   char file[4048];
+  char filemsg[4048]="stat";
+  FILE *fm;
 
-  //dt_max = 0.01;
-  //mu     = 100.0;
-  //h      = 0.01*e0;
+
+  mkdir0(dir);
+  if ((fm = fopen(fullpath(filemsg), "w")) == NULL)
+    ER("fail to open '%s'", filemsg);
+  fclose(fm);
+  
+  int freq_screen;
+
+  freq_screen=100;
   
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
+
+  Force0(XX, YY, ZZ, /**/ fx, fy, fz);
+  visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
+
   for (i = 0; i <= end; i++) {
+    
+    euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
+    euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
+    
     Force0(XX, YY, ZZ, /**/ fx, fy, fz);
-    //dt = fmin(dt_max,  sqrt(h/max_vec(fx, fy, fz)));
-    //rnd = 0.01*max_vec(vx, vy, vz);
-    //jigle(rnd, vx, vy, vz);        
-    visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-    euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-    euler( dt, fx, fy, fz, /**/ vx, vy, vz);
-    
-    
-    
+    visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
+
+    euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
+
     j = 0;
     A  = area();
     errA = (A-A0)/A0;
@@ -247,44 +317,60 @@ static void main0(real *vx, real *vy, real *vz,
     }
     
     while ( j < nsub && errA > tolerA ) {
+      
+      euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
+      euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
+
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
-      visc_pair(mu, vx, vy, vz, /**/ fx, fy, fz);
-      euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
-      euler( dt, fx, fy, fz, /**/ vx, vy, vz);
+      visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
+
+      euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
+      
       j++;
       A  = area();
       errA = (A-A0)/A0;
       if (errA<0) {
 	errA=-errA;
       }
-    }
-
-    if ( i % 100 == 0 ) {
       
-      /*if ( i > 0 ) {
+    }
+    
+    if ( i % freq_screen == 0 ) {
+      
+      if ( i > 0 ) {
 	j = 0;
 	do {
-	equiangulate(&cnt);
-	MSG("cnt : %d", cnt);
+	  equiangulate(&cnt);
+	  MSG("cnt : %d", cnt);
 	  j++;
-	  } while (cnt > 0 && j < 10);
-	  }*/
+	} while (cnt > 0 && j < 10);
+      }
       
-      et = Energy(XX, YY, ZZ);
-      ek = Kin(vx, vy, vz);
-      et = et + ek;
+      ep = Energy0(XX, YY, ZZ);
+      ek = Kinetic0(vx, vy, vz);
+      et = ep + ek;
+      
       A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
+      MSG("eng: %g %g %g %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee, ebl, ebn, es); 
       MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-      printf("eng: %g %g %g %g %g %g %g\n", et, eb, ea, ega, ev, ek, ee); 
-      printf("dt: %f\n", dt);
-      printf("A/A0, V/V0, Vr: %g %g %g\n", A/A0, V/V0, Vr);
+
+      fm = fopen(fullpath(filemsg), "a");
+      static int First = 1;
+      if (First) {
+	fputs("A/A0 V/V0 Vr et eb ea ega ev ek ee ebl ebn es\n", fm);
+	First = 0;
+      }
+      fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g %g %g \n", A/A0, V/V0, Vr, et, eb, ea, ega, ev, ek, ee, ebl, ebn, es);
+      fclose(fm);
+
     }
     
     if ( i % freq == 0 ) {
-      sprintf(file, "%06d.off", i);
+      
+      sprintf(file, "%07d.off", i);
       off_write(XX, YY, ZZ, file);
+      
     }
   }
 }
@@ -307,15 +393,10 @@ int main(int __UNUSED argc, char *v[]) {
 
   ini("/dev/stdin");
 
-  //MSG("rVolume :%g", rVolume);
-  //MSG("bending : %s", bending);
-
   x_he(&he);
   str(fname);
-  MSG("fname: %s", fname);
   force_argv(fname, &argv, he,  &force);
 
-  MSG("rVolume :%g", rVolume);
 
   A0 = area();
   a0 = A0/NT;
@@ -326,6 +407,10 @@ int main(int __UNUSED argc, char *v[]) {
   V = volume();
   Vr= reduced_volume(A, V);
   
+  MSG("v              : %g", rVolume);
+  MSG("bending scheme : %s", bscheme);
+  MSG("strain scheme  : %s", fname);
+ 
   MSG("Targeted Area, Volume: %g %g", A0, V0);
   MSG("V/V0: %g", V/V0);
   MSG("A/A0: %g", A/A0);
@@ -340,8 +425,7 @@ int main(int __UNUSED argc, char *v[]) {
   bending_param.C0 = C0;
   bending_param.Kad = Kad;
   bending_param.DA0D = DA0D;
-  MSG("bending : %s", bending);
-  f_bending_ini(bending, bending_param);
+  f_bending_ini(bscheme, bending_param);
   
   MALLOC(NV, &fx); MALLOC(NV, &fy); MALLOC(NV, &fz);
   MALLOC(NV, &vx); MALLOC(NV, &vy); MALLOC(NV, &vz);
