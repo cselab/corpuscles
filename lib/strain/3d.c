@@ -49,16 +49,16 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
     if (!small_v(f) || !small_v(t))  {
         MSG("bad 3d triangle in strain");
         MSG("a, b, c, f, t:");
-        vec_fprintf(a, stderr, "%.16g");
-        vec_fprintf(b, stderr, "%.16g");
-        vec_fprintf(c, stderr, "%.16g");
+        vec_fprintf(a, stderr, FMT);
+        vec_fprintf(b, stderr, FMT);
+        vec_fprintf(c, stderr, FMT);
 
-        vec_fprintf(da, stderr, "%.16g");
-        vec_fprintf(db, stderr, "%.16g");
-        vec_fprintf(dc, stderr, "%.16g");
+        vec_fprintf(da, stderr, FMT);
+        vec_fprintf(db, stderr, FMT);
+        vec_fprintf(dc, stderr, FMT);
 
-        vec_fprintf(f, stderr, "%.16g");
-        vec_fprintf(t, stderr, "%.16g");
+        vec_fprintf(f, stderr, FMT);
+        vec_fprintf(t, stderr, FMT);
         return 0;
     } else
         return 1;
