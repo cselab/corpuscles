@@ -12,6 +12,7 @@
 #include "he/y.h"
 #include "he/util.h"
 #include "he/strain.h"
+#include "he/strain/3d.h"
 
 #include "inc/def.h"
 
@@ -24,7 +25,7 @@ static const real EPS = 1e-8;
 
 struct T {
     He *he;
-    real *x, *y, *z, *eng;
+    real *x, *y, *z, *eng, *I1, *I2;
     Strain *strain;
 };
 
@@ -54,7 +55,7 @@ static int get3(const real *x, const real *y, const real *z,
 
 int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq) {
     T *q;
-    int nv, i, status;
+    int nv, status;
     He *he;
     real *x, *y, *z;
 
@@ -66,6 +67,9 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 
     nv = he_nv(he);
     MALLOC(nv, &q->eng);
+    MALLOC(nv, &q->I1);
+    MALLOC(nv, &q->I2);
+
     strain_ini(name, param, &q->strain);
 
     q->he = he;
@@ -116,6 +120,8 @@ int he_f_strain_fin(T *q) {
     y_fin(q->he, q->x, q->y, q->z);
     strain_fin(q->strain);
     FREE(q->eng);
+    FREE(q->I1);
+    FREE(q->I2);
     FREE(q);
     return HE_OK;
 }
@@ -124,7 +130,7 @@ static int small(const real a[3]) { return vec_abs(a) < EPS; }
 static int assert_force(const real a[3], const real b[3], const real c[3],
                         const real da[3], const real db[3], const real dc[3]) {
     /* check force and  torque */
-    real center[3], m[3], f[3], t[3], ma[3], mb[3], mc[3];
+    real m[3], f[3], t[3], ma[3], mb[3], mc[3];
     real ta[3], tb[3], tc[3];
     tri_center(a, b, c, /**/ m);
     vec_minus(a, m, /**/ ma);
@@ -187,7 +193,6 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
 
 real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real *z) {
     He *he;
-    const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
     int nt, nv, t;
@@ -195,7 +200,6 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     real e0, e, *eng;
 
     he = q->he;
-    x0 = q->x; y0 = q->y; z0 = q->z;
     nt = he_nt(he);
     nv = he_nv(he);
 
@@ -220,6 +224,42 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     return e;
 }
 
+int he_f_strain_invariants(T *q, He* he0, const real *x, const real *y, const real *z, /**/ real **pI1, real **pI2) {
+    He *he;
+    real a0[3], b0[3], c0[3];
+    real a[3], b[3], c[3];
+    int nt, nv, t;
+    int i, j, k;
+    real *I1, *I2, I10, I20;
+
+    he = q->he;
+    nt = he_nt(he);
+    nv = he_nv(he);
+
+    if (nv != he_nv(he0))
+        ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
+    if (nt != he_nt(he0))
+        ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
+
+    I1 = q->I1;
+    I2 = q->I2;
+    zero(nv, I1);
+    zero(nv, I2);
+
+    for (t = 0; t < nt; t++) {
+        get_ijk(t, he, /**/ &i, &j, &k);
+        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
+        get3(x, y, z, i, j, /**/ k, a, b, c);
+        strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
+        I1[i] += I10/3; I1[j] += I10/3; I1[k] += I10/3;
+        I2[i] += I10/3; I2[j] += I20/3; I2[k] += I20/3;
+    }
+
+    *pI1 = I1;
+    *pI2 = I2;
+
+    return HE_OK;
+}
 
 int he_f_strain_energy_ver(T *q, /**/ real **pa) {
     *pa = q->eng;
