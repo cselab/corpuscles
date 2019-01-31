@@ -18,6 +18,7 @@
 #include "he/f/strain.h"
 
 #define T HeFStrain
+#define OUT HE_REAL_OUT
 
 static const real EPS = 1e-8;
 
@@ -139,11 +140,11 @@ static int assert_force(const real a[3], const real b[3], const real c[3],
     if (!small(f) || !small(t))  {
         MSG("bad triangle in strain");
         MSG("a, b, c, f, t:");
-        vec_fprintf(a, stderr, "%.16g");
-        vec_fprintf(b, stderr, "%.16g");
-        vec_fprintf(c, stderr, "%.16g");
-        vec_fprintf(f, stderr, "%.16g");
-        vec_fprintf(t, stderr, "%.16g");
+        vec_fprintf(a, stderr, OUT);
+        vec_fprintf(b, stderr, OUT);
+        vec_fprintf(c, stderr, OUT);
+        vec_fprintf(f, stderr, OUT);
+        vec_fprintf(t, stderr, OUT);
         return 0;
     } else
         return 1;
