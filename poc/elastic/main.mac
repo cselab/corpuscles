@@ -24,6 +24,10 @@ frm0 (e):= format(e, %poly(Fb, Fa), %factor, gcfac) $
 frm1 (e):= format(e, %poly(ux, uy, wx, wy), %factor, gcfac) $
 
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
+matchdeclare(x, all) $
+defrule(r_sq0, x^2, sq(x)) $
+defrule(r_sq1, 1/x^2, 1/sq(x)) $
+rsq(e):=apply1(e, r_sq0, r_sq1) $
 
 declare([bx, cx, cy], constant) $
 
@@ -64,11 +68,6 @@ back(e):=(
   e: subst(0, 'uy, e),
   e: subst(0, 'qx, e),
   e);
-
-matchdeclare(x, all) $
-defrule(r_sq0, x^2, sq(x)) $
-defrule(r_sq1, 1/x^2, 1/sq(x)) $
-rsq(e):=apply1(e, r_sq0, r_sq1) $
 
 dvx: rsq(gcfac(back(co(dE, vx))));
 dvy: rsq(gcfac(back(co(dE, vy))));
