@@ -1,2 +1,2 @@
-# TEST: 0
-he.run ./main  $(he.path)/sph/icosahedron/0.off lim  1 2 3 4 5 6 < $(he.path)/rbc/icosahedron/0.off > main.out.txt
+# nTEST: 0
+he.run ./main  $(he.path)/sph/icosahedron/0.off lim  1 2 3 4 5 6 < $(he.path)/rbc/icosahedron/0.off | uscale 1e6 > main.out.txt
