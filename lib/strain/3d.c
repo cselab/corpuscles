@@ -132,3 +132,18 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
 
     return HE_OK;
 }
+
+int strain_invariants(const real a0[3], const real b0[3], const real c0[3],
+                      const real a[3], const real b[3], const real c[3],
+                      real *I1, real *I2) {
+    real bx, _by, cx, cy, ux, _uy, wx, wy;
+
+    tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
+    tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
+
+    return strain_2d(NULL, Dummy, Dummy,
+                     bx, cx, cy,
+                     ux, wx, wy,
+                     NULL, NULL, NULL, NULL, NULL, NULL,
+                     I1, I2, NULL);
+}
