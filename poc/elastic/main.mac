@@ -24,6 +24,10 @@ frm0 (e):= format(e, %poly(Fb, Fa), %factor, gcfac) $
 frm1 (e):= format(e, %poly(ux, uy, wx, wy), %factor, gcfac) $
 
 co(dE, d):=frm0(factor(coeff(dE, diff(d))))         $
+matchdeclare(x, all) $
+defrule(r_sq0, x^2, sq(x)) $
+defrule(r_sq1, 1/x^2, 1/sq(x)) $
+rsq(e):=apply1(e, r_sq0, r_sq1) $
 
 declare([bx, cx, cy], constant) $
 
@@ -62,28 +66,24 @@ back(e):=(
   e: subst(0, 'vx, e),
   e: subst(0, 'vy, e),
   e: subst(0, 'uy, e),
+  e: subst(0, 'qx, e),
   e);
 
-dvx: gcfac(back(co(dE, vx)));
-dvy: gcfac(back(co(dE, vy)));
+dvx: rsq(gcfac(back(co(dE, vx))));
+dvy: rsq(gcfac(back(co(dE, vy))));
 
-dux: gcfac(back(co(dE, ux)));
-duy: gcfac(back(co(dE, uy)));
+dux: rsq(gcfac(back(co(dE, ux))));
+duy: rsq(gcfac(back(co(dE, uy))));
 
-dwx: gcfac(back(co(dE, wx)));
-dwy: gcfac(back(co(dE, wy)));
+dwx: rsq(gcfac(back(co(dE, wx))));
+dwy: rsq(gcfac(back(co(dE, wy))));
 
 px: gcfac(back(frm1(assoc('px, s))));
 py: gcfac(back(frm1(assoc('py, s))));
-
-qx: gcfac(back(frm1(assoc('qx, s))));
 qy: gcfac(back(frm1(assoc('qy, s))));
 
-matchdeclare(x, all) $
-defrule(r_sq, x^2, sq(x)) $
-rsq(e):=apply1(e, r_sq) $
-I1: rsq(I1);
-I2: rsq(I2);
+I1: rsq(gcfac(back(I1)));
+I2: rsq(gcfac(back(I2)));
 
 Fa: F1(param, 'I1, 'I2) $
 Fb: F2(param, 'I1, 'I2) $
@@ -95,7 +95,7 @@ pA : 'Q/2;
 with_stdout("body",
   cg(Q),
   printf(true, "NOT_ZERO(Q);~%"),
-  cg(px), cg(py), cg(qx), cg(qy),
+  cg(px), cg(py), cg(qy),
   cg(I1), cg(I2),
   cg(Fa), cg(Fb),
   newline(),

@@ -49,16 +49,16 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
     if (!small_v(f) || !small_v(t))  {
         MSG("bad 3d triangle in strain");
         MSG("a, b, c, f, t:");
-        vec_fprintf(a, stderr, "%.16g");
-        vec_fprintf(b, stderr, "%.16g");
-        vec_fprintf(c, stderr, "%.16g");
+        vec_fprintf(a, stderr, FMT);
+        vec_fprintf(b, stderr, FMT);
+        vec_fprintf(c, stderr, FMT);
 
-        vec_fprintf(da, stderr, "%.16g");
-        vec_fprintf(db, stderr, "%.16g");
-        vec_fprintf(dc, stderr, "%.16g");
+        vec_fprintf(da, stderr, FMT);
+        vec_fprintf(db, stderr, FMT);
+        vec_fprintf(dc, stderr, FMT);
 
-        vec_fprintf(f, stderr, "%.16g");
-        vec_fprintf(t, stderr, "%.16g");
+        vec_fprintf(f, stderr, FMT);
+        vec_fprintf(t, stderr, FMT);
         return 0;
     } else
         return 1;
@@ -97,8 +97,8 @@ int strain_force_3d(void *param,
     vec_linear_combination(dvx, ex,  dvy, ey, /**/ da);
     vec_linear_combination(dux, ex,  duy, ey, /**/ db);
     vec_linear_combination(dwx, ex,  dwy, ey, /**/ dc);
-//    if (!assert_force_3d(a, b, c, da, db, dc))
-//        ERR(HE_NUM, "bad 3d forces in triangle");
+    if (!assert_force_3d(a, b, c, da, db, dc))
+        ERR(HE_NUM, "bad 3d forces in triangle");
     area = fabs(area);
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
@@ -131,4 +131,19 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
     *p_deng = deng;
 
     return HE_OK;
+}
+
+int strain_invariants(const real a0[3], const real b0[3], const real c0[3],
+                      const real a[3], const real b[3], const real c[3],
+                      real *I1, real *I2) {
+    real bx, _by, cx, cy, ux, _uy, wx, wy;
+
+    tri_3to2(a0, b0, c0, /**/ &bx, &_by, &cx, &cy);
+    tri_3to2(a, b, c, /**/ &ux, &_uy, &wx, &wy);
+
+    return strain_2d(NULL, Dummy, Dummy,
+                     bx, cx, cy,
+                     ux, wx, wy,
+                     NULL, NULL, NULL, NULL, NULL, NULL,
+                     I1, I2, NULL);
 }

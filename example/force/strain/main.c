@@ -21,25 +21,24 @@ static real *x0, *y0, *z0;
 static int nv, nt;
 static HeFStrain *strain;
 static He *he, *he0;
-static real h = 1e-6;
-
 
 static real energy() { return he_f_strain_energy(strain, he, x, y, z); }
 
 int main0() {
-    int i;
-    real *eng, e, eh, tmp;
+    real *eng, e, *al, *be;
     he_f_strain_argv(&argv, he, &strain);
 
     he_f_strain_force(strain, he, x, y, z, /**/ fx, fy, fz);
     e = he_f_strain_energy(strain, he, x, y, z);
     he_f_strain_energy_ver(strain, &eng);
 
+    he_f_strain_invariants(strain, he, x, y, z, &al, &be);
+
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
 
-    real *queue[] = {x, y, z, fx, fy, fz, eng, area, area0, NULL};
-    puts("x y z fx fy fz eng area area0");
+    real *queue[] = {x, y, z, fx, fy, fz, eng, area, area0, al, be, NULL};
+    puts("x y z fx fy fz eng area area0 al be");
     punto_fwrite(nv, queue, stdout);
     he_f_strain_fin(strain);
 
