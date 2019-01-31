@@ -82,8 +82,8 @@ px: gcfac(back(frm1(assoc('px, s))));
 py: gcfac(back(frm1(assoc('py, s))));
 qy: gcfac(back(frm1(assoc('qy, s))));
 
-I1: gcfac(back(rsq(I1)));
-I2: gcfac(back(rsq(I2)));
+I1: rsq(gcfac(back(I1)));
+I2: rsq(gcfac(back(I2)));
 
 Fa: F1(param, 'I1, 'I2) $
 Fb: F2(param, 'I1, 'I2) $

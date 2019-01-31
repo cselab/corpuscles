@@ -11,7 +11,7 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
     py = (wx-(cx*ux)/bx)/cy;
     qy = wy/cy;
     I1 = px*qy-1;
-    I2 = ((sq(qy)-2*px*qy+sq(py)+sq(px)+sq(0))/(px*qy))/2.0E+0;
+    I2 = ((qy*(qy-2*px)+sq(py)+sq(px))/(px*qy))/2.0E+0;
     Fa = F1(param,I1,I2);
     Fb = F2(param,I1,I2);
     
