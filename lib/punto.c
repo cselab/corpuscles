@@ -10,9 +10,9 @@
 
 #define SIZE (MAX_STRING_SIZE)
 
-int punto_fwrite(int n, real *queue[], /**/ FILE *f) {
+int punto_fwrite(int n, const real *queue[], /**/ FILE *f) {
     int i, r;
-    real **q;
+    const real **q;
     for (i = 0; i < n; i++) {
         q = queue;
         for (;;) {
@@ -27,7 +27,7 @@ int punto_fwrite(int n, real *queue[], /**/ FILE *f) {
     }
     return HE_OK;
 }
-int punto_write(int n, real *queue[], /**/ const char *path) {
+int punto_write(int n, const real *queue[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
@@ -37,9 +37,9 @@ int punto_write(int n, real *queue[], /**/ const char *path) {
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
-int punto_fappend(int n, real *queue[], /**/ FILE *f) {
+int punto_fappend(int n, const real *queue[], /**/ FILE *f) {
     int i, r;
-    real **q;
+    const real **q;
     for (i = 0; i < n; i++) {
         q = queue;
         for (;;) {
@@ -56,7 +56,7 @@ int punto_fappend(int n, real *queue[], /**/ FILE *f) {
     return HE_OK;
 }
 
-int punto_append(int n, real *queue[], /**/ const char *path) {
+int punto_append(int n, const real *queue[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "a")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);

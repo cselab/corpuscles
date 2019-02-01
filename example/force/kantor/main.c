@@ -30,7 +30,7 @@ static void main0() {
     real *fm;;
     RZERO(NV, &fm);
     vabs(NV, FX, FY, FZ, /**/ fm);
-    real *queue[] = {TH, RR, ZZ, fm, FX, FY, FZ,  NULL};
+    const real *queue[] = {TH, RR, ZZ, fm, FX, FY, FZ,  NULL};
     printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 FX; 6 FY; 7 FZ \n");
 
     punto_fwrite(NV, queue, stdout);

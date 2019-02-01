@@ -76,7 +76,7 @@ static void main0() {
     MSG("FX[0]: %g", FX[0]);
     MSG("fxad[0]: %g", fxad[0]);
 
-    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, area, eng, curv, NULL};
+    const real *queue[] = {XX, YY, ZZ, FX, FY, FZ, area, eng, curv, NULL};
     punto_fwrite(NV, queue, stdout);
 }
 

@@ -67,7 +67,7 @@ static void main0() {
     mesh_tnormal(/**/ tx, ty, tz);
     mesh_vnormal(ang,   tx, ty, tz, /**/ vx, vy, vz);
 
-    real *queue[] = {XX, YY, ZZ, vx, vy, vz, NULL};
+    const real *queue[] = {XX, YY, ZZ, vx, vy, vz, NULL};
     puts("x y z nx ny nz");
     punto_fwrite(NV, queue, stdout);
 

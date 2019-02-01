@@ -61,7 +61,7 @@ static void main0() {
     }
 
     char *key = "r x y z fm fx fy fz area gx gy gz";
-    real *queue[] = {rr, x, y, z, fm, fx, fy, fz, area, gx, gy, gz, NULL};
+    const real *queue[] = {rr, x, y, z, fm, fx, fy, fz, area, gx, gy, gz, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
     force_fin(force);

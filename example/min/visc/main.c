@@ -180,7 +180,7 @@ static void main0(real *vx, real *vy, real *vz,
     int cnt, end, i, j, nsub, idump;
     real dt, dt_max, h, mu, T;
     real A, V;
-    real *queue[] = {XX, YY, ZZ, NULL};
+    const real *queue[] = {XX, YY, ZZ, NULL};
     char file[4048];
 
     dt_max = 0.005;

@@ -50,7 +50,7 @@ static void write(real *fx, real *fy, real *fz,
   vabs(NV, fxade, fyade, fzade, /**/ fmade);
 
   printf("#1 azimuth angle; 2 axis dist; 3 zz; 4 |F|; 5 Fx; 6 Fy; 7 Fz; 8 |Fade|; 9 fxade, 10 fyade, 11 fzade, 12 area; \n");
-  real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, fmade, fxade, fyade, fzade, A, NULL};
+  const real *queue[] = {TH, RR, ZZ, fm, fx, fy, fz, fmade, fxade, fyade, fzade, A, NULL};
 
   punto_fwrite(NV, queue, stdout);
 

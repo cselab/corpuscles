@@ -14,7 +14,7 @@ static He *he;
 static Restore *restore;
 
 static void main0() {
-    real *queue[] = {x, y, z, NULL};
+    const real *queue[] = {x, y, z, NULL};
     restore_volume(restore, he, x, y, z);
     off_he_xyz_fwrite(he, x, y, z, stdout);
 }

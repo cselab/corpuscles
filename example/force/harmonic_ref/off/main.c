@@ -56,7 +56,7 @@ static void main0() {
     printf(HE_REAL_OUT "\n", en);
 
     char *key = "x y z fm fx fy fz";
-    real *queue[] = {x, y, z, fx, fy, fz, NULL};
+    const real *queue[] = {x, y, z, fx, fy, fz, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
 

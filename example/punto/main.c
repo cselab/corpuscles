@@ -7,10 +7,10 @@
 
 #define N (3)
 
-static double XX[N];
-static double YY[N];
-static double ZZ[N];
-static double *queue[] = {XX, YY, ZZ, NULL};
+static real XX[N];
+static real YY[N];
+static real ZZ[N];
+static const real *queue[] = {XX, YY, ZZ, NULL};
 
 int main(__UNUSED int argc, const char *argv[]) {
     const char *i, *o;

@@ -47,7 +47,7 @@ int main() {
     MSG("area: %g", he_sum_array(n, area));
 
     puts("x y z r fx fy fz ff area H");
-    real *queue[] = {x, y, z, rr, fx, fy, fz, ff, area, H, NULL};
+    const real *queue[] = {x, y, z, rr, fx, fy, fz, ff, area, H, NULL};
     punto_fwrite(n, queue, stdout);
 
     dh_fin(dh);

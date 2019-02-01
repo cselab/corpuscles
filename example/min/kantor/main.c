@@ -116,7 +116,7 @@ void Force(const real *x, const real *y, const real *z, /**/
 
 static void main0() {
     int i;
-    real *queue[] = {XX, YY, ZZ, NULL};
+    const real *queue[] = {XX, YY, ZZ, NULL};
 //    punto_fwrite(NV, queue, stdout);
 //    printf("\n");
     i = 0;

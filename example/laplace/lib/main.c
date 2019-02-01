@@ -22,7 +22,7 @@ int main() {
     laplace_ini(he, &laplace);
     laplace_apply(laplace, he, x, y, z, &lx, &ly, &lz, &area);
 
-    real *queue[] = {x, y, z, lx, ly, lz, area, NULL};
+    const real *queue[] = {x, y, z, lx, ly, lz, area, NULL};
     puts("x y z lx ly lz area");
     punto_fwrite(n, queue, stdout);
 

@@ -25,7 +25,7 @@ int main() {
 
     MSG("area: " HE_REAL_OUT, A);
 
-    real *queue[] = {area, NULL};
+    const real *queue[] = {area, NULL};
     puts("area");
     punto_fwrite(n, queue, stdout);
 

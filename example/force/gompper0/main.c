@@ -105,7 +105,7 @@ static void main0() {
     //printf("#1 z; 2 axis dist; 3 eng; 4 Fx; 5 Fy; 6 Fz; 7 Fm; 8 area; 9 curva_mean \n");
     //real *queue[] = {ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, NULL};
     printf("x y z rxy eng Fx Fy Fz Fm area cm\n");
-    real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, NULL};
+    const real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, NULL};
     punto_fwrite(NV, queue, stdout);
 
     FREE(Fm);

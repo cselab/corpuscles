@@ -12,6 +12,7 @@
 #include <he/he.h>
 #include <he/err.h>
 #include <he/strain.h>
+#include <he/vtk.h>
 #include <he/f/strain.h>
 
 static const real pi = 3.141592653589793115997964;
@@ -37,9 +38,14 @@ int main0() {
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
 
-    real *queue[] = {x, y, z, fx, fy, fz, eng, area, area0, al, be, NULL};
+    const real *sc[] = {x, y, z, fx, fy, fz, eng, area, area0, al, be, NULL};
+    const char *na[] = {"x", "y", "z", "fx", "fy", "fz", "eng", "area", "area0", "al", "be", NULL};
+
     puts("x y z fx fy fz eng area area0 al be");
-    punto_fwrite(nv, queue, stdout);
+
+    vtk_write(he, x, y, z, sc, na, "o.vtk");
+    punto_fwrite(nv, sc, stdout);
+
     he_f_strain_fin(strain);
 
     return HE_OK;

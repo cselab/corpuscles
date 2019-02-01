@@ -38,7 +38,7 @@ void Force(const real *xx, const real *yy, const real *zz, /**/
 }
 
 static void main0() {
-    real *queue[] = {XX, YY, ZZ, NULL};
+    const real *queue[] = {XX, YY, ZZ, NULL};
     do {
         min_iterate();
         fprintf(stderr, "%.16e\n", min_energy());

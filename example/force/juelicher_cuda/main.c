@@ -42,7 +42,7 @@ static real sum(int n, real *a) {
 static void write(real *fx, real *fy, real *fz,
                   real *fxad, real *fyad, real *fzad,
                   real *area) {
-    real *queue[] = {XX, YY, ZZ, fx, fy, fz, fxad, fyad, fzad, area, NULL};
+    const real *queue[] = {XX, YY, ZZ, fx, fy, fz, fxad, fyad, fzad, area, NULL};
     punto_fwrite(NV, queue, stdout);
 }
 

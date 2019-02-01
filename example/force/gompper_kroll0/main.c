@@ -111,7 +111,7 @@ static void main0() {
     vabs(NV, nx, ny, nz, /**/ nm);
 
     printf("x y z rxy eng Fx Fy Fz Fm area cm cg lbx lby lbz lbm nx ny nz nm\n");
-    real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, curva_gauss, lbx, lby, lbz, lbm, nx, ny, nz, nm, NULL};
+    const real *queue[] = {XX, YY, ZZ, RR, eng, FX, FY, FZ, Fm, area, curva_mean, curva_gauss, lbx, lby, lbz, lbm, nx, ny, nz, nm, NULL};
     punto_fwrite(NV, queue, stdout);
 
     FREE(Fm);

@@ -15,7 +15,7 @@ static He *he;
 static HeFDvolume *dvolume;
 
 static void main0() {
-    real *queue[] = {z, y, z, fx, fy, fz, NULL};
+    const real *queue[] = {z, y, z, fx, fy, fz, NULL};
     fprintf(stderr, "eng: %g\n",
             he_f_dvolume_energy(dvolume, he, x, y, z));
     he_f_dvolume_force(dvolume, he, x, y, z,   fx, fy, fz);

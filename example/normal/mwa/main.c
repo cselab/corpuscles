@@ -21,7 +21,7 @@ int main() {
     MALLOC(n, &nx); MALLOC(n, &ny); MALLOC(n, &nz);
     normal_mwa(he, x, y, z, /**/ nx, ny, nz);
 
-    real *queue[] = {x, y, z, nx, ny, nz, NULL};
+    const real *queue[] = {x, y, z, nx, ny, nz, NULL};
     puts("x y z nx ny nz");
     punto_fwrite(n, queue, stdout);
 

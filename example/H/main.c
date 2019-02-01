@@ -71,7 +71,7 @@ int main() {
         ff[i] = vec_abs(f);
     }
 
-    real *queue[] = {x, y, z, rr, hh, area, fx, fy, fz, ff, NULL};
+    const real *queue[] = {x, y, z, rr, hh, area, fx, fy, fz, ff, NULL};
     puts("x y z r H area fx fy fz ff");
     punto_fwrite(n, queue, stdout);
     s = he_sum_array(n, hh);

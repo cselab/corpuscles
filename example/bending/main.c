@@ -83,7 +83,7 @@ static void main0() {
     }
 
     char *key = "r x y z fm fx fy fz eng";
-    real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
+    const real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);

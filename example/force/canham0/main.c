@@ -63,7 +63,7 @@ int main() {
         r[i] = sqrt(x[i]*x[i] + y[i]*y[i]);
 
     char *key = "r x y z H G";
-    real *queue[] = {r, x, y, z, mean, gaus, NULL};
+    const real *queue[] = {r, x, y, z, mean, gaus, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
 

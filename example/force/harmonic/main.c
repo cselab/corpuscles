@@ -10,7 +10,7 @@
 static real *FX, *FY, *FZ;
 
 static void main0() {
-    real *queue[] = {XX, YY, ZZ, FX, FY, FZ, NULL};
+    const real *queue[] = {XX, YY, ZZ, FX, FY, FZ, NULL};
     fprintf(stderr, "eng: %g\n", f_harmonic_energy(XX, YY, ZZ));
     f_harmonic_force(XX, YY, ZZ,   FX, FY, FZ);
     punto_fwrite(NV, queue, stdout);
