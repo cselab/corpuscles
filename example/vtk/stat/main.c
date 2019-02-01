@@ -15,7 +15,6 @@
 
 #define FMT  HE_REAL_OUT
 
-static const real pi = 3.141592653589793115997964;
 static real *x, *y, *z, *area;
 static int nv;
 static He *he;
