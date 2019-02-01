@@ -10,6 +10,7 @@ util.o
 O_S = \
 area.s.o\
 argv.s.o\
+array.s.o\
 bending.s.o\
 da.s.o\
 ddih.s.o\
@@ -70,6 +71,7 @@ y.s.o
 O_D = \
 area.d.o\
 argv.d.o\
+array.d.o\
 bending.d.o\
 da.d.o\
 ddih.d.o\
@@ -130,6 +132,7 @@ y.d.o
 O_L = \
 area.l.o\
 argv.l.o\
+array.l.o\
 bending.l.o\
 da.l.o\
 ddih.l.o\
