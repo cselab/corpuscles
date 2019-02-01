@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+import struct
+
+X, Y, Z = 0, 1, 2
+
+o = open("/dev/stdout", 'wb')
+
+def s(h):
+    o.write(h.encode("ascii"))
+
+def p(f, *h):
+    o.write(struct.pack(f, *h))
+
+x = [-1, 1, 1, -1]
+y = [-1, 1, -1, 1]
+z = [-1, -1, 1, 1]
+t = [[2, 1, 3], [0, 1, 2], [2, 3, 0], [1, 0, 3]]
+
+nv = len(x)
+nt = len(t)
+ne = 0
+
+s("OFF BINARY\n")
+p('>3i', nv, nt, ne)
+
+for i in range(nv):
+    p('>3f', x[i], y[i], z[i])
+
+for r in t:
+    p('>4i', len(r), r[0], r[1], r[2])
+    p('>i', 0)
