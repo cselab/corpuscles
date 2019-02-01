@@ -5,6 +5,7 @@
 
 #include <real.h>
 #include <he/area.h>
+#include <he/array.h>
 #include <he/memory.h>
 #include <he/macro.h>
 #include <he/y.h>
@@ -12,9 +13,11 @@
 #include <he/err.h>
 #include <he/vtk.h>
 
+#define FMT  HE_REAL_OUT
+
 static const real pi = 3.141592653589793115997964;
 static real *x, *y, *z, *area;
-static int nv, nt;
+static int nv;
 static He *he;
 char **argv;
 
@@ -23,6 +26,9 @@ int main0() {
 
     const real *sc[] = {area, NULL};
     const char *na[] = {"area", NULL};
+
+    MSG("min: " FMT, array_min(nv, area));
+    MSG("max: " FMT, array_max(nv, area));
 
     vtk_fwrite(he, x, y, z, sc, na, stdout);
 
@@ -35,7 +41,6 @@ int main(int __UNUSED argc, char *v[]) {
     y_ini("/dev/stdin", /**/ &he, &x, &y, &z);
 
     nv = he_nv(he);
-
     MALLOC(nv, &area);
 
     main0();
