@@ -30,13 +30,14 @@ static Force *force;
 static He *he;
 static char fname[1024];
 
-static real rVolume, Ka, Kga, Kv, Ke;
-static real Kb, C0, Kad, DA0D;
+static real R, rho, rVolume, Ka, Kga, Kv, Ke;
+static real Kb, C0, Kad, DA0D, D;
 static real nu, dt, kBT;
 static int  end;
 static int  freq;
 static real A0, V0, e0;
 static real eb, ea, ega, ev, ee, ebl, ebn, es;
+static real mass;
 static char **argv;
 static char bscheme[1024];
 static char dir[4049], fpath[4049];
@@ -94,6 +95,8 @@ static void arg() {
   
   if (*argv != NULL && eq(*argv, "-h")) usg();
   str(bscheme);
+  scl(&R);
+  scl(&rho);
   scl(&rVolume);
   scl(&Ka);
   scl(&Kga);
@@ -103,6 +106,7 @@ static void arg() {
   scl(&C0);
   scl(&Kad);
   scl(&DA0D);
+  scl(&D);
   scl(&nu);
   scl(&dt);
   scl(&kBT);
@@ -245,7 +249,7 @@ static void visc_pair(real nu, real kBT,
   
 }
 
-static real Kinetic0(real *vx, real *vy, real *vz) {
+static real Kinetic0(real *vx, real *vy, real *vz, real m) {
 
   int i;
   real s;
@@ -255,7 +259,7 @@ static real Kinetic0(real *vx, real *vy, real *vz) {
     s += vy[i]*vy[i];
     s += vz[i]*vz[i];
   }
-  return s;
+  return m*s/2.0;
 }
 
 static real max_vec(real *fx, real *fy, real *fz) {
@@ -270,8 +274,8 @@ static real max_vec(real *fx, real *fy, real *fz) {
     return m;
 }
 
-static void main0(real *vx, real *vy, real *vz,
-                  real *fx, real *fy, real *fz) {
+static int main0(real *vx, real *vy, real *vz,
+		 real *fx, real *fy, real *fz) {
   int cnt, i, j;
   real rnd;
   real A, V, Vr;
@@ -280,58 +284,30 @@ static void main0(real *vx, real *vy, real *vz,
   real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   char file[4048];
-  char filemsg[4048]="stat";
+  char filemsg[4048]="stat.dat";
   FILE *fm;
-
-
+  
   mkdir0(dir);
-  if ((fm = fopen(fullpath(filemsg), "w")) == NULL)
+  if ((fm = fopen(fullpath(filemsg), "w")) == NULL) 
     ER("fail to open '%s'", filemsg);
   fclose(fm);
   
   int freq_screen;
-
+  
   freq_screen=100;
   
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
-
+  
   Force0(XX, YY, ZZ, /**/ fx, fy, fz);
   visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
-
+  
   for (i = 0; i <= end; i++) {
     
-    euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
-    euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
-    
-    Force0(XX, YY, ZZ, /**/ fx, fy, fz);
-    visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
-
-    euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
-
-    j = 0;
-    A  = area();
-    errA = (A-A0)/A0;
-    if (errA<0) {
-      errA=-errA;
-    }
-    
-    while ( j < nsub && errA > tolerA ) {
+    if ( i % freq == 0 ) {
       
-      euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
-      euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
-
-      ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
-      visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
-
-      euler(-dt/2.0, fx, fy, fz, /**/ vx, vy, vz);
-      
-      j++;
-      A  = area();
-      errA = (A-A0)/A0;
-      if (errA<0) {
-	errA=-errA;
-      }
+      sprintf(file, "%07d.off", i);
+      off_write(XX, YY, ZZ, file);
       
     }
     
@@ -347,33 +323,66 @@ static void main0(real *vx, real *vy, real *vz,
       }
       
       ep = Energy0(XX, YY, ZZ);
-      ek = Kinetic0(vx, vy, vz);
+      ek = Kinetic0(vx, vy, vz, mass);
       et = ep + ek;
       
-      A = area(); V = volume(); Vr=reduced_volume(A,V);
-      MSG("dt: %g", dt);
-      MSG("eng: %g %g %g %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee, ebl, ebn, es); 
-      MSG("A/A0, V/V0, Vr: %g %g %g", A/A0, V/V0, Vr);
-
+      A = area();
+      V = volume();
+      Vr=reduced_volume(A,V);
+      MSG("s, t, dt: %d %g %g", i, i*dt, dt);
+      MSG("A/A0, V/V0, v: %g %g %g", A/A0, V/V0, Vr);
+      MSG("et,  eb,  ea,  ega,  ev,  ek,  ee,  ebl,  ebn, es");
+      MSG("%g %g %g %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee, ebl, ebn, es); 
+      
       fm = fopen(fullpath(filemsg), "a");
       static int First = 1;
       if (First) {
-	fputs("A/A0 V/V0 Vr et eb ea ega ev ek ee ebl ebn es\n", fm);
+	fputs("s t A/A0 V/V0 v et eb ea ega ev ek ee ebl ebn es\n", fm);
 	First = 0;
       }
-      fprintf(fm, "%g %g %g %g %g %g %g %g %g %g %g %g %g \n", A/A0, V/V0, Vr, et, eb, ea, ega, ev, ek, ee, ebl, ebn, es);
+      fprintf(fm, "%d %g %g %g %g %g %g %g %g %g %g %g %g %g %g \n",i, i*dt, A/A0, V/V0, Vr, et, eb, ea, ega, ev, ek, ee, ebl, ebn, es);
       fclose(fm);
 
     }
+
+    euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
+    euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
     
-    if ( i % freq == 0 ) {
-      
-      sprintf(file, "%07d.off", i);
-      off_write(XX, YY, ZZ, file);
-      
+    Force0(XX, YY, ZZ, /**/ fx, fy, fz);
+    visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
+    
+    euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
+    
+    j = 0;
+    A  = area();
+    errA = (A-A0)/A0;
+    if (errA<0) {
+      errA=-errA;
     }
+    
+    while ( j < nsub && errA > tolerA ) {
+      
+      euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
+      euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
+      
+      ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
+      visc_pair(nu, kBT, vx, vy, vz, /**/ fx, fy, fz);
+      
+      euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
+      
+      j++;
+      A  = area();
+      errA = (A-A0)/A0;
+      if (errA<0) {
+	errA=-errA;
+      }
+      
+    }    
+    
   }
+  
 }
+
 
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }
 static real target_volume(real area, real v) { return v*sph_volume(area); }
@@ -406,7 +415,9 @@ int main(int __UNUSED argc, char *v[]) {
   A = A0;
   V = volume();
   Vr= reduced_volume(A, V);
-  
+
+  mass=4.0*pi*R*R*D*rho/NV;
+
   MSG("v              : %g", rVolume);
   MSG("bending scheme : %s", bscheme);
   MSG("strain scheme  : %s", fname);
@@ -415,6 +426,23 @@ int main(int __UNUSED argc, char *v[]) {
   MSG("V/V0: %g", V/V0);
   MSG("A/A0: %g", A/A0);
   MSG("Vr  : %g", Vr);
+  MSG("R   : %g", R);
+  MSG("rho : %g", rho);
+  MSG("mass: %g", mass);
+  MSG("Ka  : %g", Ka);
+  MSG("Kga : %g", Kga);
+  MSG("Kv  : %g", Kv);
+  MSG("Ke  : %g", Ke);
+  MSG("Kb  : %g", Kb);
+  MSG("C0  : %g", C0);
+  MSG("Kad : %g", Kad);
+  MSG("DA0D: %g", DA0D);
+  MSG("D   : %g", D);
+  MSG("nu  : %g", nu);
+  MSG("kBT : %g", kBT);
+
+
+
   
   f_area_ini(a0,  Ka);
   f_garea_ini(A0, Kga);
