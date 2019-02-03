@@ -230,7 +230,7 @@ int off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ c
 int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
-    double db[3];
+    float db[3];
     
     if (fputs("OFF BINARY\n", f) == EOF)
         ERR(HE_IO, "fail to write");
@@ -241,8 +241,8 @@ int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/
     FWRITE(ib, n);
     for (m = 0; m < nv; m++) {
         n = 0; db[n++] = x[m]; db[n++] = y[m]; db[n++] = z[m];
-        big_endian_dbl(n, db);
-        FWRITE(ib, n);
+        big_endian_flt(n, db);
+        FWRITE(db, n);
     }
     
     for (m = 0; m < nt; m++) {
@@ -254,6 +254,7 @@ int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/
         ib[n++] = k;
         ib[n++] = nc;
         big_endian_int(n, ib);
+        FWRITE(ib, n);
     }
     return HE_OK;
 }
