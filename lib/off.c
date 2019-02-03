@@ -221,3 +221,18 @@ int off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ c
         ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
+
+int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
+    int nv, nt, ne, npv, m, i, j, k;
+    if (fputs("OFF BINARY\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+    nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
+    fprintf(f, "%d %d %d\n", nv, nt, ne);
+    for (m = 0; m < nv; m++)
+        fprintf(f, OUT " " OUT " " OUT "\n", x[m], y[m], z[m]);
+    for (m = 0; m < nt; m++) {
+        he_tri_ijk(he, m, &i, &j, &k);
+        fprintf(f, "%d %d %d %d\n", npv, i, j, k);
+    }
+    return HE_OK;
+}
