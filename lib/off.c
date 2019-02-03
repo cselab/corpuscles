@@ -197,7 +197,7 @@ int off_he_write(T *q, He *he, /**/ const char *path) {
 }
 
 int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
-    int nv, nt, ne, npv, m, h, n, nn, i, j, k;
+    int nv, nt, ne, npv, m, i, j, k;
     if (fputs("OFF\n", f) == EOF)
         ERR(HE_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
@@ -205,10 +205,7 @@ int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ 
     for (m = 0; m < nv; m++)
         fprintf(f, OUT " " OUT " " OUT "\n", x[m], y[m], z[m]);
     for (m = 0; m < nt; m++) {
-        h = he_hdg_tri(he, m);
-        n = he_nxt(he, h);
-        nn = he_nxt(he, n);
-        i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
+        he_tri_ijk(he, m, &i, &j, &k);
         fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
     return HE_OK;
