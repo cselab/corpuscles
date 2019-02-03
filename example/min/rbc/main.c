@@ -213,17 +213,13 @@ static void visc_langevin(real xi, real kBT, real dt,
                       real *fx, real *fy, real *fz) {
 
   int i;
-  real ra, sigma;
+  real ra, sigma, coef;
   real dx, dy, dz;
   real sx, sy, sz;
 
+  coef = sqrt(12.0);
   sigma = sqrt(2.0*xi*kBT/dt);
 
-  /*MSG("xi : %g", xi);
-  MSG("kBT: %g", kBT);
-  MSG("dt : %g", dt);
-  MSG("sigma: %g", sigma);*/
-  
   sx=sy=sz=0;
   
   for (i = 0; i < NV; i++) {
@@ -241,7 +237,8 @@ static void visc_langevin(real xi, real kBT, real dt,
     
     if (kBT > 0) {
       
-      ra = rand()/(real)RAND_MAX - 0.5;
+      //the vaiance of uniform distribution is 1.
+      ra = coef*(rand()/(real)RAND_MAX - 0.5);
       dx=dy=dz=ra*sigma;
 
       fx[i] -= dx;
@@ -281,15 +278,11 @@ static void visc_pair(real xi, real kBT, real dt,
 
   int e, i, j;
   real u[3], r[3], rn[3], p[3];
-  real ra, sigma;
+  real ra, sigma, coef;
 
+  coef = sqrt(12.0);
   sigma = sqrt(2.0*xi*kBT/dt);
   
-  /*MSG("xi   : %g", xi);
-  MSG("kBT  : %g", kBT);
-  MSG("dt   : %g", dt);
-  MSG("sigma: %g", sigma);*/
-
   for (e = 0; e < NE; e++) {
     i = D1[e]; j = D2[e];
     
@@ -305,8 +298,9 @@ static void visc_pair(real xi, real kBT, real dt,
     //note that the random force is in the negative direction
     //to be consistent with other forces
     //in practice, this direction does not matter
+    //the vaiance of uniform distribution is 1.
     if (kBT > 0 ){
-      ra  = rand()/(real)RAND_MAX - 0.5;
+      ra  = coef*(rand()/(real)RAND_MAX - 0.5);
       ra *=sigma;
       vec_scalar_append(rn, -ra, i, fx, fy, fz);
       vec_scalar_append(rn, ra, j, fx, fy, fz);
@@ -371,8 +365,7 @@ static int main0(real *vx, real *vy, real *vz,
   nsub = 0;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
 
-  zero(NV, fx); zero(NV, fy); zero(NV, fz);
-  //Force0(XX, YY, ZZ, /**/ fx, fy, fz);
+  Force0(XX, YY, ZZ, /**/ fx, fy, fz);
 
 #ifdef THERMOSTAT_LANGEVIN
   visc_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
@@ -427,8 +420,7 @@ static int main0(real *vx, real *vy, real *vz,
     euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
     euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
     
-    zero(NV, fx); zero(NV, fy); zero(NV, fz);
-     //Force0(XX, YY, ZZ, /**/ fx, fy, fz);
+    Force0(XX, YY, ZZ, /**/ fx, fy, fz);
     
 #ifdef THERMOSTAT_LANGEVIN
     visc_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
@@ -451,8 +443,7 @@ static int main0(real *vx, real *vy, real *vz,
       euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
       euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
       
-     zero(NV, fx); zero(NV, fy); zero(NV, fz);
-     //ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
+      ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       
 #ifdef THERMOSTAT_LANGEVIN
       visc_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
