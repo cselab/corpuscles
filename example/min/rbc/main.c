@@ -175,8 +175,6 @@ static void euler(real dt,
 
   int i;
 
-  //MSG("dt: %g", dt);
-  
   for (i = 0; i < NV; i++) {
     vx[i] += dt*fx[i];
     vy[i] += dt*fy[i];
@@ -362,7 +360,7 @@ static int main0(real *vx, real *vy, real *vz,
   
   freq_screen=100;
   
-  nsub = 0;
+  nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
 
   Force0(XX, YY, ZZ, /**/ fx, fy, fz);
