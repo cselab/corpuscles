@@ -27,8 +27,8 @@
 
 #define FMT_IN   HE_REAL_IN
 
-#define THERMOSTAT_LANGEVIN
-//#define THERMOSTAT_PAIR
+//#define THERMOSTAT_LANGEVIN
+#define THERMOSTAT_PAIR
 
 static const char *me = "min/rbc";
 static const real pi = 3.141592653589793115997964;
@@ -183,29 +183,6 @@ static void euler(real dt,
   
 }
 
-static void jigle(real mag, /**/ real *vx, real *vy, real *vz) {
-
-  int nv;
-  real r, r0, sx, sy, sz;
-  int i;
-  
-  nv = NV;
-  sx = sy = sz = 0;
-  for (i = 0; i < nv; i++) {
-    r = rand()/(real)RAND_MAX - 0.5;
-    r0 = r * mag;
-    vx[i] += r0; vy[i] += r0; vz[i] += r0;
-  }
-  for (i = 0; i < nv; i++) {
-    sx += vx[i]; sy += vy[i]; sz += vz[i];
-  }
-  sx /= nv; sy /= nv; sz /= nv;
-  for (i = 0; i < nv; i++) {
-    vx[i] -= sx; vy[i] -= sy; vz[i] -= sz;
-  }
-  
-}
-
 static void visc_langevin(real xi, real kBT, real dt,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
@@ -321,18 +298,6 @@ static real Kinetic0(real *vx, real *vy, real *vz, real m) {
   return m*s/2.0;
 }
 
-static real max_vec(real *fx, real *fy, real *fz) {
-    int i;
-    real c, m;
-    m = 0;
-    for (i = 0; i < NV; i++) {
-      c = sqrt(fx[i]*fx[i] + fy[i]*fy[i] + fz[i]*fz[i]);
-      if (c > m)
-	m = c;
-    }
-    return m;
-}
-
 static int main0(real *vx, real *vy, real *vz,
 		 real *fx, real *fy, real *fz) {
   int cnt, i, j;
@@ -412,7 +377,7 @@ static int main0(real *vx, real *vy, real *vz,
       }
       fprintf(fm, "%d %g %g %g %g %g %g %g %g %g %g %g %g %g %g \n", i, i*dt, A/A0, V/V0, Vr, et, eb, ea, ega, ev, ek, ee, ebl, ebn, es);
       fclose(fm);
-
+      
     }//i%freq_screen
     
     euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
