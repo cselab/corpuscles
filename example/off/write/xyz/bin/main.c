@@ -12,7 +12,7 @@ static He *he;
 
 int main() {
     y_ini("/dev/stdin", &he, &x, &y, &z);
-    off_he_xyz_fwrite(he, x, y, z, stdout);
+    boff_he_xyz_fwrite(he, x, y, z, stdout);
     y_fin(he, x, y, z);
     return 0;
 }

@@ -1,4 +1,4 @@
-include ../../../../conf.mk
+include ../../../../../conf.mk
 M = main
 PREC = d
 HE_CFLAGS = `he.conf --cflags $(PREC)`

@@ -3,6 +3,7 @@
 #include <ctype.h>
 
 #include "real.h"
+#include "he/endian.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/util.h"
@@ -13,6 +14,10 @@
 
 #define T HeOff
 enum {SIZE = MAX_STRING_SIZE};
+
+#   define FWRITE(ptr, size) \
+        if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))          \
+            ERR(HE_IO, "fwrite failed: need = %d, got = %d", size, cnt)
 
 #define FMT HE_REAL_IN
 #define OUT HE_REAL_OUT
@@ -223,16 +228,32 @@ int off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ c
 }
 
 int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
-    int nv, nt, ne, npv, m, i, j, k;
+    int nv, nt, ne, npv, nc, m, i, j, k;
+    int ib[5], n, cnt;
+    double db[3];
+    
     if (fputs("OFF BINARY\n", f) == EOF)
         ERR(HE_IO, "fail to write");
-    nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
-    fprintf(f, "%d %d %d\n", nv, nt, ne);
-    for (m = 0; m < nv; m++)
-        fprintf(f, OUT " " OUT " " OUT "\n", x[m], y[m], z[m]);
+    nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 0;
+
+    n = 0; ib[n++] = nv; ib[n++] = nt; ib[n++] = ne;
+    big_endian_int(n, ib);
+    FWRITE(ib, n);
+    for (m = 0; m < nv; m++) {
+        n = 0; db[n++] = x[m]; db[n++] = y[m]; db[n++] = z[m];
+        big_endian_dbl(n, db);
+        FWRITE(ib, n);
+    }
+    
     for (m = 0; m < nt; m++) {
         he_tri_ijk(he, m, &i, &j, &k);
-        fprintf(f, "%d %d %d %d\n", npv, i, j, k);
+        n = 0;
+        ib[n++] = npv;
+        ib[n++] = i;
+        ib[n++] = j;
+        ib[n++] = k;
+        ib[n++] = nc;
+        big_endian_int(n, ib);
     }
     return HE_OK;
 }
