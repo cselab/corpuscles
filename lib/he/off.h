@@ -4,7 +4,9 @@ typedef struct He He;
 
 typedef struct T T;
 
-int off_ini(const char *path, T**);
+int off_ini(const char*, T**);
+int off_fini(FILE*, T**);
+
 int off_fin(T*);
 
 int off_nt(T*);

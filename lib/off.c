@@ -28,6 +28,56 @@ struct T {
     int nv, nt;
 };
 
+int off_fini(FILE *f, T **pq) {
+    T *q;
+    char line[SIZE];
+    int i, nv, nt;
+    int *t0, *t1, *t2, cnt, np;
+    real *ver, *x, *y, *z;
+    int *tri;
+
+    MALLOC(1, &q);
+    if (f == NULL)
+        ERR(HE_IO, "fail to read");
+
+#   define NXT() if (util_comment_fgets(line, f) == NULL)  \
+        ERR(HE_IO, "unexpected EOF")
+    NXT();
+    if (!util_eq(line, "OFF"))
+        ERR(HE_IO, "not an off file");
+    NXT();
+    cnt = sscanf(line, "%d %d %*d", &nv, &nt);
+    if (cnt != 2)
+        ERR(HE_IO, "fail to parse: '%s'", line);
+    if (3*nt < nv)
+        ERR(HE_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
+
+    MALLOC(3*nv, &q->ver); ver = q->ver;
+    MALLOC(3*nt, &q->tri); tri = q->tri;
+    for (i = 0; i < nv; i++) {
+        NXT();
+        x = ver++; y = ver++; z = ver++;
+        cnt  = sscanf(line, FMT " " FMT " " FMT, x, y, z);
+        if (cnt != 3)
+            ERR(HE_IO, "wrong vertex line '%s'", line);
+    }
+
+    for (i = 0; i < nt; i++) {
+        NXT();
+        t0 = tri++; t1 = tri++; t2 = tri++;
+        cnt  = sscanf(line, "%d %d %d %d", &np, t0, t1, t2);
+        if (cnt != 4)
+            ERR(HE_IO, "wrong triangle line '%s'", line);
+        if (np != 3)
+            ERR(HE_IO, "not a triangle '%s'", line);
+    }
+    fclose(f);
+    q->nv = nv; q->nt = nt;
+    *pq = q;
+    return HE_OK;
+#   undef NXT
+}
+
 int off_ini(const char *path, T **pq) {
     T *q;
     FILE *f;
@@ -39,7 +89,8 @@ int off_ini(const char *path, T **pq) {
 
     MALLOC(1, &q);
     f = fopen(path, "r");
-    if (f == NULL) ERR(HE_IO, "fail to open '%s'", path);
+    if (f == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);
 
 #   define NXT() if (util_comment_fgets(line, f) == NULL)  \
         ERR(HE_IO, "unexpected EOF in '%s'", path)
@@ -76,6 +127,7 @@ int off_ini(const char *path, T **pq) {
     q->nv = nv; q->nt = nt;
     *pq = q;
     return HE_OK;
+#   undef NXT
 }
 
 int off_fin(T *q) {
@@ -231,7 +283,7 @@ int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
     float db[3];
-    
+
     if (fputs("OFF BINARY\n", f) == EOF)
         ERR(HE_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 0;
@@ -244,7 +296,7 @@ int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/
         big_endian_flt(n, db);
         FWRITE(db, n);
     }
-    
+
     for (m = 0; m < nt; m++) {
         he_tri_ijk(he, m, &i, &j, &k);
         n = 0;
