@@ -22,26 +22,10 @@ static StrainParam param;
 static real a[3], b[3], c[3];
 static real a0[3], b0[3], c0[3];
 
-real fd0(real *p) {
-    real ep, em, v;
-    v = *p;
-    *p += h; ep = strain_energy(strain, a0, b0, c0,   a, b, c); *p = v;
-    *p -= h; em = strain_energy(strain, a0, b0, c0,   a, b, c); *p = v;
-    return (ep - em)/(2*h);
-}
-
-int fd(real da[3], real db[3], real dc[3]) {
+int print3(const real a[3], const real b[3], const real c[3]) {
     enum {X, Y, Z};
-    da[X] = fd0(&a[X]); da[Y] = fd0(&a[Y]); da[Z] = fd0(&a[Z]);
-    db[X] = fd0(&b[X]); db[Y] = fd0(&b[Y]); db[Z] = fd0(&b[Z]);
-    dc[X] = fd0(&c[X]); dc[Y] = fd0(&c[Y]); dc[Z] = fd0(&c[Z]);
-    return HE_OK;
-}
-
-int print4(const real a[3], const real b[3], const real c[3], const  real d[3]) {
-    enum {X, Y, Z};
-    printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",
-           a[X], a[Y], a[Z], b[X], b[Y], b[Z], c[X], c[Y], c[Z], d[X], d[Y], d[Z]);
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",
+           a[X], a[Y], a[Z], b[X], b[Y], b[Z], c[X], c[Y], c[Z]);
     return HE_OK;
 }
 
@@ -51,7 +35,6 @@ int main(__UNUSED int argc, const char **argv0) {
     const char *op;
     real eng;
     real da[3], db[3], dc[3];
-    real ha[3], hb[3], hc[3];    
 
     argv = argv0;
     argv++;
@@ -70,11 +53,10 @@ int main(__UNUSED int argc, const char **argv0) {
         eng = strain_energy(strain, a0, b0, c0,   a, b, c);
         MSG("eng: %g", eng);
         strain_force(strain, a0, b0, c0,   a, b, c,   da, db, dc);
-        fd(ha, hb, hc);
-        printf("x0 y0 z0 x y z fx fy fz hx hy hz\n");
-        print4(a0, a, da, ha);
-        print4(b0, b, db, hb);
-        print4(c0, c, dc, hc);
+        puts("x0 y0 z0 x y z fx fy fz");
+        print3(a0, a, da);
+        print3(b0, b, db);
+        print3(c0, c, dc);
     } else if (eq(op, "energy")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
