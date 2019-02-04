@@ -29,8 +29,8 @@ a4=8
 b1=0.7
 b2=0.75
 
-off=../ref/ref.off
-ref=../ref/ref.off
+off=../ref/v095.off
+ref=../ref/v095.off
 
 export HE_ARG="-W 24:00"
 
