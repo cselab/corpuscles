@@ -65,7 +65,8 @@ int main(__UNUSED int argc, const char **argv0) {
         printf("%g\n", eng);
     } else if (eq(op, "off")) {
         vec(a0); vec(b0); vec(c0);
-        tri_off(a0, b0, c0, stdout);
+        vec(a); vec(b); vec(c);
+        tri_vect(a0, b0, c0, a, b, c, stdout);
     } else
         ER("unknown operation '%s'", op);
     strain_fin(strain);
