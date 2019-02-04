@@ -7,6 +7,7 @@
 #include "he/macro.h"
 
 #include "he/tri.h"
+#define FMT   HE_REAL_OUT
 
 static void swap(real *a, real *b) {
     double t;
@@ -90,6 +91,66 @@ int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], 
     return HE_OK;
 }
 
+int tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3]) {
+    return vec_mean3(a, b, c, /**/ center);
+}
+
+int tri_off(const real a[3], const real b[3], const real c[3], FILE *f) {
+    int status;
+    status = fputs("OFF\n"
+                   "3 1 0\n", f);
+    if (status == EOF)
+        ERR(HE_IO, "fail to write");
+    vec_fprintf(a, f, FMT);
+    vec_fprintf(b, f, FMT);
+    vec_fprintf(c, f, FMT);
+    fputs("3 0 1 2\n", f);
+    return HE_OK;
+}
+
+int tri_vect(const real a[3], const real b[3], const real c[3],
+             const real u[3], const real v[3], const real w[3],
+             FILE *f) {
+    int status;
+    real x[3], y[3], z[3];
+    vec_plus(a, u, x);
+    vec_plus(b, v, y);
+    vec_plus(c, w, z);
+
+    status = fputs("VECT\n"
+                   "3 6 0\n"
+                   "2 2 2\n"
+                   "0 0 0\n", f);
+    if (status == EOF)
+        ERR(HE_IO, "fail to write");
+    vec_fprintf(a, f, FMT);
+    vec_fprintf(x, f, FMT);
+
+    vec_fprintf(b, f, FMT);
+    vec_fprintf(y, f, FMT);
+
+    vec_fprintf(c, f, FMT);
+    vec_fprintf(z, f, FMT);
+
+    return HE_OK;
+}
+
+int tri_list(const real a[3], const real b[3], const real c[3],
+             const real u[3], const real v[3], const real w[3],
+             FILE *f) {
+    if (fputs("LIST\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+    fputs("{\n", f);
+    if (tri_off(a, b, c, f) != HE_OK)
+        ERR(HE_IO, "tri_vect failed");
+    fputs("}\n", f);
+    fputs("{\n", f);
+    if (tri_vect(a, b, c, u, v, w, f) != HE_OK)
+        ERR(HE_IO, "tri_vect failed");
+    fputs("}\n", f);
+    return HE_OK;
+}
+
 int tri_3to2(const real a[3], const real b[3], const real c[3],
              /**/ real *ux, real *uy, real *wx, real *wy) {
     real u[3], v[3], n[3], ey[3], nx[3], ny[3];
@@ -120,8 +181,4 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
     vec_norm(ey, ny);
 
     return HE_OK;
-}
-
-int tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3]) {
-    return vec_mean3(a, b, c, /**/ center);
 }
