@@ -28,7 +28,7 @@ struct T {
     int nv, nt;
 };
 
-int off_fini(FILE *f, T **pq) {
+int off_inif(FILE *f, T **pq) {
     T *q;
     char line[SIZE];
     int i, nv, nt;
@@ -71,7 +71,6 @@ int off_fini(FILE *f, T **pq) {
         if (np != 3)
             ERR(HE_IO, "not a triangle '%s'", line);
     }
-    fclose(f);
     q->nv = nv; q->nt = nt;
     *pq = q;
     return HE_OK;
@@ -79,55 +78,14 @@ int off_fini(FILE *f, T **pq) {
 }
 
 int off_ini(const char *path, T **pq) {
-    T *q;
     FILE *f;
-    char line[SIZE];
-    int i, nv, nt;
-    int *t0, *t1, *t2, cnt, np;
-    real *ver, *x, *y, *z;
-    int *tri;
-
-    MALLOC(1, &q);
-    f = fopen(path, "r");
-    if (f == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-
-#   define NXT() if (util_comment_fgets(line, f) == NULL)  \
-        ERR(HE_IO, "unexpected EOF in '%s'", path)
-    NXT();
-    if (!util_eq(line, "OFF"))
-        ERR(HE_IO, "'%s' is not an off file", path);
-    NXT();
-    cnt = sscanf(line, "%d %d %*d", &nv, &nt);
-    if (cnt != 2)
-        ERR(HE_IO, "fail to parse: '%s' in '%s'", line, path);
-    if (3*nt < nv)
-        ERR(HE_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
-
-    MALLOC(3*nv, &q->ver); ver = q->ver;
-    MALLOC(3*nt, &q->tri); tri = q->tri;
-    for (i = 0; i < nv; i++) {
-        NXT();
-        x = ver++; y = ver++; z = ver++;
-        cnt  = sscanf(line, FMT " " FMT " " FMT, x, y, z);
-        if (cnt != 3)
-            ERR(HE_IO, "wrong ver line '%s' in '%s'", line, path);
-    }
-
-    for (i = 0; i < nt; i++) {
-        NXT();
-        t0 = tri++; t1 = tri++; t2 = tri++;
-        cnt  = sscanf(line, "%d %d %d %d", &np, t0, t1, t2);
-        if (cnt != 4)
-            ERR(HE_IO, "wrong tri line '%s' in '%s'", line, path);
-        if (np != 3)
-            ERR(HE_IO, "not a triangle '%s' in '%s'", line, path);
-    }
-    fclose(f);
-    q->nv = nv; q->nt = nt;
-    *pq = q;
+    if ((f = fopen(path, "r")) == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);    
+    if (off_inif(f, pq) != HE_OK)
+        ERR(HE_IO, "off_fini failed for '%s", path);
+    if (fclose(f) != 0)
+        ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
-#   undef NXT
 }
 
 int off_fin(T *q) {
