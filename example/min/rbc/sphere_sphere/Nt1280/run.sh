@@ -3,26 +3,25 @@ set -eu
 R=1.0
 rho=1.0
 v=0.641998677173
+#Ka=500
 Ka=0
 Kga=1000
 Kv=5000
 Ke=0
 
-Kb=1.0
+Kb=1
 C0=0
 Kad=$(echo $Kb | awk '{print $1*0.636619772368}')
-#echo $Kad
 DA0D=0
 D=0.000898798148042
 Da0=0
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
-#echo $A
-nu=1.0
-dt=0.000001
-kBT=0.002
-end=100000
-freq=500
+xi=0.1
+dt=0.00001
+kBT=0.001
+end=500000
+freq=1000
 
 mus=139.260575205
 Kas=$(echo $mus | awk '{print $1*2}')
@@ -55,15 +54,16 @@ then
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
     #echo $Da0, $Da1, $Kb, $C0, $Kad, $DA0D
 	  
-    if [ ! -d nu${nu}_dt${dt}_${Da1} ]; then
-	mkdir nu${nu}_dt${dt}_${Da1}
+    if [ ! -d xi${xi}_kBT${kBT}_dt${dt}_Da${Da1} ]; then
+	mkdir xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
     fi
-    cd nu${nu}_dt${dt}_${Da1}
+    cd xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
     
     
-    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $nu $dt $kBT $end $freq . strain $ref lim $Kas $mus $a3 $a4 $b1 $b2 '<' $off '>' Da$Da1.msg
+    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $Kas $mus $a3 $a4 $b1 $b2 '<' $off '>' Da$Da1.msg
 else
     
+    #Da1=0.1
     Da1=1.144
     bash run.sh $Da1
 
