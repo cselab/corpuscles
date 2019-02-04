@@ -38,10 +38,10 @@ int fd(real da[3], real db[3], real dc[3]) {
     return HE_OK;
 }
 
-int print3(const real a[3], const real b[3], const real c[3]) {
+int print4(const real a[3], const real b[3], const real c[3], const  real d[3]) {
     enum {X, Y, Z};
-    printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",
-           a[X], a[Y], a[Z], b[X], b[Y], b[Z], c[X], c[Y], c[Z]);
+    printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",
+           a[X], a[Y], a[Z], b[X], b[Y], b[Z], c[X], c[Y], c[Z], d[X], d[Y], d[Z]);
     return HE_OK;
 }
 
@@ -57,7 +57,7 @@ int main(__UNUSED int argc, const char **argv0) {
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
-    param.Ka = 5;
+    param.Ka = 0;
     param.mu = 5;
     param.a3 = param.a3 = 0;
     param.b1 = param.b2 = 0;
@@ -71,10 +71,10 @@ int main(__UNUSED int argc, const char **argv0) {
         MSG("eng: %g", eng);
         strain_force(strain, a0, b0, c0,   a, b, c,   da, db, dc);
         fd(ha, hb, hc);
-        printf("x y z fx fy fz hx hy hz\n");
-        print3(a, da, ha);
-        print3(b, db, hb);
-        print3(c, dc, hc);
+        printf("x0 y0 z0 x y z fx fy fz hx hy hz\n");
+        print4(a0, a, da, ha);
+        print4(b0, b, db, hb);
+        print4(c0, c, dc, hc);
     } else if (eq(op, "energy")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);

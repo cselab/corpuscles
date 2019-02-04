@@ -3,6 +3,7 @@
 #include <ctype.h>
 
 #include "real.h"
+#include "he/endian.h"
 #include "he/memory.h"
 #include "he/err.h"
 #include "he/util.h"
@@ -14,6 +15,10 @@
 #define T HeOff
 enum {SIZE = MAX_STRING_SIZE};
 
+#define FWRITE(ptr, size) \
+    if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))         \
+        ERR(HE_IO, "fwrite failed: need = %d, got = %d", size, cnt)
+
 #define FMT HE_REAL_IN
 #define OUT HE_REAL_OUT
 
@@ -23,9 +28,8 @@ struct T {
     int nv, nt;
 };
 
-int off_ini(const char *path, T **pq) {
+int off_inif(FILE *f, T **pq) {
     T *q;
-    FILE *f;
     char line[SIZE];
     int i, nv, nt;
     int *t0, *t1, *t2, cnt, np;
@@ -33,18 +37,18 @@ int off_ini(const char *path, T **pq) {
     int *tri;
 
     MALLOC(1, &q);
-    f = fopen(path, "r");
-    if (f == NULL) ERR(HE_IO, "fail to open '%s'", path);
+    if (f == NULL)
+        ERR(HE_IO, "fail to read");
 
 #   define NXT() if (util_comment_fgets(line, f) == NULL)  \
-        ERR(HE_IO, "unexpected EOF in '%s'", path)
+        ERR(HE_IO, "unexpected EOF")
     NXT();
     if (!util_eq(line, "OFF"))
-        ERR(HE_IO, "'%s' is not an off file", path);
+        ERR(HE_IO, "not an off file");
     NXT();
     cnt = sscanf(line, "%d %d %*d", &nv, &nt);
     if (cnt != 2)
-        ERR(HE_IO, "fail to parse: '%s' in '%s'", line, path);
+        ERR(HE_IO, "fail to parse: '%s'", line);
     if (3*nt < nv)
         ERR(HE_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
 
@@ -55,7 +59,7 @@ int off_ini(const char *path, T **pq) {
         x = ver++; y = ver++; z = ver++;
         cnt  = sscanf(line, FMT " " FMT " " FMT, x, y, z);
         if (cnt != 3)
-            ERR(HE_IO, "wrong ver line '%s' in '%s'", line, path);
+            ERR(HE_IO, "wrong vertex line '%s'", line);
     }
 
     for (i = 0; i < nt; i++) {
@@ -63,13 +67,24 @@ int off_ini(const char *path, T **pq) {
         t0 = tri++; t1 = tri++; t2 = tri++;
         cnt  = sscanf(line, "%d %d %d %d", &np, t0, t1, t2);
         if (cnt != 4)
-            ERR(HE_IO, "wrong tri line '%s' in '%s'", line, path);
+            ERR(HE_IO, "wrong triangle line '%s'", line);
         if (np != 3)
-            ERR(HE_IO, "not a triangle '%s' in '%s'", line, path);
+            ERR(HE_IO, "not a triangle '%s'", line);
     }
-    fclose(f);
     q->nv = nv; q->nt = nt;
     *pq = q;
+    return HE_OK;
+#   undef NXT
+}
+
+int off_ini(const char *path, T **pq) {
+    FILE *f;
+    if ((f = fopen(path, "r")) == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);    
+    if (off_inif(f, pq) != HE_OK)
+        ERR(HE_IO, "off_fini failed for '%s", path);
+    if (fclose(f) != 0)
+        ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
 
@@ -197,7 +212,7 @@ int off_he_write(T *q, He *he, /**/ const char *path) {
 }
 
 int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
-    int nv, nt, ne, npv, m, h, n, nn, i, j, k;
+    int nv, nt, ne, npv, m, i, j, k;
     if (fputs("OFF\n", f) == EOF)
         ERR(HE_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
@@ -205,10 +220,7 @@ int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ 
     for (m = 0; m < nv; m++)
         fprintf(f, OUT " " OUT " " OUT "\n", x[m], y[m], z[m]);
     for (m = 0; m < nt; m++) {
-        h = he_hdg_tri(he, m);
-        n = he_nxt(he, h);
-        nn = he_nxt(he, n);
-        i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
+        he_tri_ijk(he, m, &i, &j, &k);
         fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
     return HE_OK;
@@ -222,5 +234,37 @@ int off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ c
         ERR(HE_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
         ERR(HE_IO, "fail to close '%s'", path);
+    return HE_OK;
+}
+
+int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
+    int nv, nt, ne, npv, nc, m, i, j, k;
+    int ib[5], n, cnt;
+    float db[3];
+
+    if (fputs("OFF BINARY\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+    nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 0;
+
+    n = 0; ib[n++] = nv; ib[n++] = nt; ib[n++] = ne;
+    big_endian_int(n, ib);
+    FWRITE(ib, n);
+    for (m = 0; m < nv; m++) {
+        n = 0; db[n++] = x[m]; db[n++] = y[m]; db[n++] = z[m];
+        big_endian_flt(n, db);
+        FWRITE(db, n);
+    }
+
+    for (m = 0; m < nt; m++) {
+        he_tri_ijk(he, m, &i, &j, &k);
+        n = 0;
+        ib[n++] = npv;
+        ib[n++] = i;
+        ib[n++] = j;
+        ib[n++] = k;
+        ib[n++] = nc;
+        big_endian_int(n, ib);
+        FWRITE(ib, n);
+    }
     return HE_OK;
 }

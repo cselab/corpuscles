@@ -18,11 +18,10 @@ static void ini() {
 static void fin() { off_fin(off); }
 
 static void main0() {
-    off_tri_write(off, tri, "/dev/stdout");
+    off_tri_fwrite(off, tri, stdout);
 }
 
 int main() {
-    enum {X, Y, Z};
     ini();
     main0();
     fin();
