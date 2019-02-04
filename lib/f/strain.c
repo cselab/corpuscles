@@ -26,6 +26,7 @@ static const real EPS = 1e-8;
 struct T {
     He *he;
     real *x, *y, *z, *eng, *I1, *I2;
+    real *I1t, *I2t; /* invariant on triangles */
     Strain *strain;
 };
 
@@ -55,7 +56,7 @@ static int get3(const real *x, const real *y, const real *z,
 
 int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq) {
     T *q;
-    int nv, status;
+    int nv, nt, status;
     He *he;
     real *x, *y, *z;
 
@@ -66,10 +67,15 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
         ERR(HE_IO, "y_ini failed");
 
     nv = he_nv(he);
+    nt = he_nt(he);
+    
     MALLOC(nv, &q->eng);
     MALLOC(nv, &q->I1);
     MALLOC(nv, &q->I2);
 
+    MALLOC(nt, &q->I1t);
+    MALLOC(nt, &q->I2t);
+    
     strain_ini(name, param, &q->strain);
 
     q->he = he;
@@ -119,9 +125,8 @@ int he_f_strain_argv(char ***p, He *he, T **pq) {
 int he_f_strain_fin(T *q) {
     y_fin(q->he, q->x, q->y, q->z);
     strain_fin(q->strain);
-    FREE(q->eng);
-    FREE(q->I1);
-    FREE(q->I2);
+    FREE(q->eng); FREE(q->I1); FREE(q->I2);
+    FREE(q->I1t); FREE(q->I2t);
     FREE(q);
     return HE_OK;
 }
