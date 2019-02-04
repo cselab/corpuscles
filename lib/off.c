@@ -15,9 +15,9 @@
 #define T HeOff
 enum {SIZE = MAX_STRING_SIZE};
 
-#   define FWRITE(ptr, size) \
-        if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))          \
-            ERR(HE_IO, "fwrite failed: need = %d, got = %d", size, cnt)
+#define FWRITE(ptr, size) \
+    if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))         \
+        ERR(HE_IO, "fwrite failed: need = %d, got = %d", size, cnt)
 
 #define FMT HE_REAL_IN
 #define OUT HE_REAL_OUT
