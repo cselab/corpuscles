@@ -42,7 +42,7 @@ int main(__UNUSED int argc, const char **argv0) {
     if (*argv == NULL) ER("mssing OP");
 
     param.Ka = 0;
-    param.mu = 5;
+    param.mu = 2;
     param.a3 = param.a3 = 0;
     param.b1 = param.b2 = 0;
     strain_ini("lim", param, /**/ &strain);
@@ -66,7 +66,8 @@ int main(__UNUSED int argc, const char **argv0) {
     } else if (eq(op, "off")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
-        tri_vect(a0, b0, c0, a, b, c, stdout);
+        strain_force(strain, a0, b0, c0,   a, b, c,   da, db, dc);
+        tri_list(a, b, c, da, db, dc, stdout);
     } else
         ER("unknown operation '%s'", op);
     strain_fin(strain);

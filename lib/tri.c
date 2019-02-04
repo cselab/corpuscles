@@ -135,6 +135,21 @@ int tri_vect(const real a[3], const real b[3], const real c[3],
     return HE_OK;
 }
 
+int tri_list(const real a[3], const real b[3], const real c[3],
+             const real u[3], const real v[3], const real w[3],
+             FILE *f) {
+    if (fputs("LIST\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+    fputs("{\n", f);
+    if (tri_off(a, b, c, f) != HE_OK)
+        ERR(HE_IO, "tri_vect failed");
+    fputs("}\n", f);
+    fputs("{\n", f);
+    if (tri_vect(a, b, c, u, v, w, f) != HE_OK)
+        ERR(HE_IO, "tri_vect failed");
+    fputs("}\n", f);
+    return HE_OK;
+}
 
 int tri_3to2(const real a[3], const real b[3], const real c[3],
              /**/ real *ux, real *uy, real *wx, real *wy) {

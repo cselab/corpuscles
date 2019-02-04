@@ -6,8 +6,13 @@ int  tri_edg(const real[3], const real[3], const real[3], /**/ real[3], real[3],
 real tri_volume(const real[3], const real[3], const real[3]);
 int  tri_normal(const real[3], const real[3], const real[3], /**/ real[3]);
 int tri_center(const real[3], const real[3], const real[3], /**/ real[3]);
+
+/* geomveiw objects */
 int tri_off(const real[3], const real[3], const real[3], FILE*);
 int tri_vect(const real[3], const real[3], const real[3],
+             const real[3], const real[3], const real[3],
+             FILE*);
+int tri_list(const real[3], const real[3], const real[3],
              const real[3], const real[3], const real[3],
              FILE*);
 
