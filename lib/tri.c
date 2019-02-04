@@ -90,6 +90,14 @@ int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], 
     return HE_OK;
 }
 
+int tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3]) {
+    return vec_mean3(a, b, c, /**/ center);
+}
+
+int tri_off(const real a[3], const real b[3], const real c[3], FILE *f) {
+    return HE_OK;
+}
+
 int tri_3to2(const real a[3], const real b[3], const real c[3],
              /**/ real *ux, real *uy, real *wx, real *wy) {
     real u[3], v[3], n[3], ey[3], nx[3], ny[3];
@@ -120,8 +128,4 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
     vec_norm(ey, ny);
 
     return HE_OK;
-}
-
-int tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3]) {
-    return vec_mean3(a, b, c, /**/ center);
 }
