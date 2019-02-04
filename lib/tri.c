@@ -7,6 +7,7 @@
 #include "he/macro.h"
 
 #include "he/tri.h"
+#define FMT   HE_REAL_OUT
 
 static void swap(real *a, real *b) {
     double t;
@@ -95,6 +96,15 @@ int tri_center(const real a[3], const real b[3], const real c[3], /**/ real cent
 }
 
 int tri_off(const real a[3], const real b[3], const real c[3], FILE *f) {
+    int status;
+    status = fputs("OFF\n"
+                   "3 1 0\n", f);
+    if (status == EOF)
+        ERR(HE_IO, "fail to write");
+    vec_fprintf(a, f, FMT);
+    vec_fprintf(b, f, FMT);
+    vec_fprintf(c, f, FMT);
+    fputs("3 0 1 2\n", f);
     return HE_OK;
 }
 

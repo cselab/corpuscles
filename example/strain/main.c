@@ -5,6 +5,7 @@
 #include <real.h>
 #include <he/err.h>
 #include <he/vec.h>
+#include <he/tri.h>
 #include <he/macro.h>
 #include <he/util.h>
 #include <he/strain.h>
@@ -62,6 +63,9 @@ int main(__UNUSED int argc, const char **argv0) {
         vec(a); vec(b); vec(c);
         eng = strain_energy(strain, a0, b0, c0,   a, b, c);
         printf("%g\n", eng);
+    } else if (eq(op, "off")) {
+        vec(a0); vec(b0); vec(c0);
+        tri_off(a0, b0, c0, stdout);
     } else
         ER("unknown operation '%s'", op);
     strain_fin(strain);
