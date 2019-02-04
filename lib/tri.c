@@ -108,6 +108,22 @@ int tri_off(const real a[3], const real b[3], const real c[3], FILE *f) {
     return HE_OK;
 }
 
+int tri_vect(const real a[3], const real b[3], const real c[3],
+             const real u[3], const real v[3], const real w[3],
+             FILE *f) {
+    int status;
+    status = fputs("OFF\n"
+                   "3 1 0\n", f);
+    if (status == EOF)
+        ERR(HE_IO, "fail to write");
+    vec_fprintf(a, f, FMT);
+    vec_fprintf(b, f, FMT);
+    vec_fprintf(c, f, FMT);
+    fputs("3 0 1 2\n", f);
+    return HE_OK;
+}
+
+
 int tri_3to2(const real a[3], const real b[3], const real c[3],
              /**/ real *ux, real *uy, real *wx, real *wy) {
     real u[3], v[3], n[3], ey[3], nx[3], ny[3];
