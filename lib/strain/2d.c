@@ -10,19 +10,18 @@
 
 static real sq(real x) { return x*x; }
 static real select(real ref, real cur) {
-    enum {UNSET, REF, CUR};
+    enum {UNSET, YES, NO};
     static int f = UNSET;
     if (f == UNSET) {
-        if (!getenv("AREA")) {
-            f = REF;
-            MSG("area: reference");
-        } else {
-            f = CUR;
+        if (getenv("AREA")) {
             MSG("area: current");
+            f = YES;
+        } else {
+            MSG("area: reference");
+            f = NO;
         }
     }
-    if (f == REF) return ref;
-    else return cur;
+    return f == YES ? cur : ref;
 }
 
 #include "he/strain/2d.h"
