@@ -356,8 +356,6 @@ int boff_lh_ver_fwrite(He *he, const real *x, const real *y, const real *z, real
     FWRITE(ib, n);
     for (m = 0; m < nv; m++) {
         colormap(a[m], lo, hi, &red, &green, &blue);
-        MSG("%g %g %g", a[m], lo, hi);
-        
         n = 0; db[n++] = x[m]; db[n++] = y[m]; db[n++] = z[m];
         db[n++] = red; db[n++] = green; db[n++] = blue; db[n++] = alpha;
         big_endian_flt(n, db);
@@ -378,10 +376,8 @@ int boff_lh_ver_fwrite(He *he, const real *x, const real *y, const real *z, real
 int boff_ver_fwrite(He *he, const real *x, const real *y, const real *z, const real *a, /**/ FILE *f) {
     int n;
     real l, h;
-
     n = he_nv(he);
     l = array_min(n, a);
     h = array_max(n, a);
-
     return boff_lh_ver_fwrite(he, x, y, z, l, h, a, f);
 }
