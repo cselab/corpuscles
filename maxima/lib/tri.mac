@@ -33,3 +33,12 @@ tri_3to2(a, b, c):=block([ab, ac, ux, wx, wy],
   wx: vec_project_scalar(ac, ab),
   wy: vec_reject_scalar(ac, ab),
   [ux, wx, wy]);
+
+tri_2to3(a, b, c):=block([u, v, nx, n, ey, ny],
+  u: b - a,
+  v: c - a,
+  nx: norm(u),
+  n: vec_cross(u, v),
+  ey: vec_cross(n, u),
+  ny: vec_norm(ey),
+  [nx, ny]);
