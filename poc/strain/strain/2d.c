@@ -21,10 +21,8 @@ static real select(real ref, real cur) {
             MSG("area: current");
         }
     }
-    if (f == REF)
-        return ref;
-    else
-        return cur;
+    if (f == REF) return ref;
+    else return cur;
 }
 
 #include "he/strain/2d.h"
