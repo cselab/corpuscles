@@ -203,7 +203,7 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     real a[3], b[3], c[3];
     int nt, nv, t;
     int i, j, k;
-    real e0, e, *eng;
+    real e0, e, *eng, *engt;
 
     he = q->he;
     nt = he_nt(he);
@@ -216,15 +216,16 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
 
     e = 0;
     eng = q->eng;
+    engt = q->engt;
+
     zero(nv, eng);
     for (t = 0; t < nt; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
         get3(x, y, z, i, j, /**/ k, a, b, c);
         e0 = strain_energy(q->strain, a0, b0, c0, a, b, c);
-        eng[i] += e0/3;
-        eng[j] += e0/3;
-        eng[k] += e0/3;
+        engt[t] = e0;
+        eng[i] += e0/3; eng[j] += e0/3; eng[k] += e0/3;
         e += e0;
     }
     return e;
@@ -294,5 +295,10 @@ int he_f_strain_invariants_tri(T *q, const real *x, const real *y, const real *z
 
 int he_f_strain_energy_ver(T *q, /**/ real **pa) {
     *pa = q->eng;
+    return HE_OK;
+}
+
+int he_f_strain_energy_tri(T *q, /**/ real **pa) {
+    *pa = q->engt;
     return HE_OK;
 }
