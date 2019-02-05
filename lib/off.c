@@ -259,10 +259,7 @@ int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/
         he_tri_ijk(he, m, &i, &j, &k);
         n = 0;
         ib[n++] = npv;
-        ib[n++] = i;
-        ib[n++] = j;
-        ib[n++] = k;
-        ib[n++] = nc;
+        ib[n++] = i; ib[n++] = j; ib[n++] = k; ib[n++] = nc;
         big_endian_int(n, ib);
         FWRITE(ib, n);
     }
