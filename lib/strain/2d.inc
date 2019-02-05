@@ -36,7 +36,7 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
     SET(dwy, (((Fb*(sq(qy)-sq(py)-sq(px)))/(px*sq(qy)))/2.e+0+Fa*px)/cy);
     SET(pI1, I1);
     SET(pI2, I2);
-    SET(pA, -(bx*cy)/2.e+0);
+    SET(pA, select(-(bx*cy)/2.e+0,-(ux*wy)/2.e+0));
 
     return HE_OK;
 }
