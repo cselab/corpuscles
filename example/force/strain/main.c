@@ -29,10 +29,10 @@ int main0() {
     he_f_strain_force(strain, he, x, y, z, /**/ fx, fy, fz);
     e = he_f_strain_energy(strain, he, x, y, z);
     he_f_strain_energy_ver(strain, &eng);
+    he_f_strain_energy_tri(strain, &eng_tri);
 
     he_f_strain_invariants(strain, x, y, z, &al, &be);
     he_f_strain_invariants_tri(strain, x, y, z, &al_tri, &be_tri);
-    he_f_strain_energy_tri(strain, x, y, z, &eng_tri);
 
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
@@ -44,7 +44,7 @@ int main0() {
     const real *sc_tri[] = {eng_tri, al_tri, be_tri, NULL};
     const char *na_tri[] = {"eng", "al", "be", NULL};
     vtk_tri_write(he, x, y, z, sc_tri, na_tri, "tri.vtk");
-    
+
     he_f_strain_fin(strain);
     return HE_OK;
 }
