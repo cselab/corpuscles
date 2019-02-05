@@ -41,7 +41,7 @@ static char **argv;
 static char bending[4049], dir[4049], fpath[4049];
 static const char *me = "min/helfrich_xin_fga";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Kb C0 Kad DA0D mu dt < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");

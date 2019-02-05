@@ -13,7 +13,7 @@ static Ply *read;
 static const char *me = "ply/id";
 static int nv, nt, nm, m;
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s < PLY > VTK\n", me);
     exit(2);
 }

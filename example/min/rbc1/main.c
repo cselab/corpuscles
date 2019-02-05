@@ -55,7 +55,7 @@ static void zero(int n, real *a) {
     for (i = 0; i < n; i++) a[i] = 0;
 }
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s juelicher_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D xi dt kBT", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");

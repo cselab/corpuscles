@@ -22,7 +22,7 @@ static const char **argv;
 static char off0[4048], off1[4048];
 static real *x, *y, *z;
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s x0 K ref.off main.off\n", me);
     exit(0);
 }

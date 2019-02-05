@@ -13,7 +13,7 @@ static int  nv, nt, *tri;
 
 const char *me = "off/read";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s < OFF\n", me);
     exit(2);
 }

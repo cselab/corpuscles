@@ -31,7 +31,7 @@ static real delta = 1e-6;
 
 static const char *me = "force/generic";
 
-static void usg() {
+static void usg(void) {
     const char *list;
     list = force_list();
     fprintf(stderr, "%s %s [args..] < OFF > VTK\n", me, list);

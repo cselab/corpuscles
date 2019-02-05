@@ -22,7 +22,7 @@ static const real Pi = 3.141592653589793115997964;
 static const char **argv;
 static const char *me = "force/gompper";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s Kb C0, Kad DA0D < OFF\n", me);
     exit(0);
 }
