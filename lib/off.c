@@ -266,12 +266,36 @@ int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *
     return HE_OK;
 }
 
+static int colormap(real v, real l, real h, /**/ float *pR, float *pG, float *pB) {
+    float R, G, B;
+    if (v < l) v = l;
+    if (v > h) v = h;
+
+    if (l != h)
+        v = 4*(v - l)/(h - l);
+    else
+        v = 0;
+
+    R = 0; G = B = 1;
+    if (v < 1)
+        G = v;
+    else if (v < 2)
+        B = 2 - v;
+    else if (v < 3) {
+        R = v - 2; B = 0;
+    } else {
+        R = 1; G = 4 - v; B = 0;
+    }
+
+    *pR = R; *pG = G; *pB = B;
+    return HE_OK;
+}
+
 int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real lo, real hi, const real *a, /**/ FILE *f) {
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
     float db[4];
     float red, blue, green, alpha;
-    red = 0; green = 1; blue = 0; alpha = 1;
 
     if (fputs("OFF BINARY\n", f) == EOF)
         ERR(HE_IO, "fail to write");
@@ -294,6 +318,7 @@ int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real
         big_endian_int(n, ib);
         FWRITE(ib, n);
 
+        colormap(a[m], lo, hi, &red, &green, &blue);
         n = 0;
         db[n++] = red; db[n++] = green; db[n++] = blue; db[n++] = alpha;
         big_endian_flt(n, db);
