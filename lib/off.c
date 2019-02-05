@@ -80,7 +80,7 @@ int off_inif(FILE *f, T **pq) {
 int off_ini(const char *path, T **pq) {
     FILE *f;
     if ((f = fopen(path, "r")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);    
+        ERR(HE_IO, "fail to open '%s'", path);
     if (off_inif(f, pq) != HE_OK)
         ERR(HE_IO, "off_fini failed for '%s", path);
     if (fclose(f) != 0)
@@ -269,11 +269,13 @@ int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *
 int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real lo, real hi, const real *a, /**/ FILE *f) {
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
-    float db[3];
+    float db[4];
+    float red, blue, green, alpha;
+    red = 0; green = 1; blue = 0; alpha = 1;
 
     if (fputs("OFF BINARY\n", f) == EOF)
         ERR(HE_IO, "fail to write");
-    nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 0;
+    nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 4;
 
     n = 0; ib[n++] = nv; ib[n++] = nt; ib[n++] = ne;
     big_endian_int(n, ib);
@@ -291,6 +293,11 @@ int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real
         ib[n++] = i; ib[n++] = j; ib[n++] = k; ib[n++] = nc;
         big_endian_int(n, ib);
         FWRITE(ib, n);
+
+        n = 0;
+        db[n++] = red; db[n++] = green; db[n++] = blue; db[n++] = alpha;
+        big_endian_flt(n, db);
+        FWRITE(db, n);
     }
     return HE_OK;
 }
