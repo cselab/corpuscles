@@ -237,7 +237,7 @@ int off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ c
     return HE_OK;
 }
 
-int boff_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
+int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
     float db[3];
