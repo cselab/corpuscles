@@ -37,12 +37,15 @@ int main0() {
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
 
+    he_area_tri(he, x, y, z, /**/ area_tri);
+    he_area_tri(he0, x0, y0, z0, /**/ area0_tri);
+
     const real *sc[] = {fx, fy, fz, eng, area, area0, al, be, NULL};
     const char *na[] = {"fx", "fy", "fz", "eng", "area", "area0", "al", "be", NULL};
     vtk_write(he, x, y, z, sc, na, "ver.vtk");
 
-    const real *sc_tri[] = {eng_tri, al_tri, be_tri, NULL};
-    const char *na_tri[] = {"eng", "al", "be", NULL};
+    const real *sc_tri[] = {eng_tri, al_tri, be_tri, area_tri, area0_tri, NULL};
+    const char *na_tri[] = {"eng", "al", "be", "area", "area0", NULL};
     vtk_tri_write(he, x, y, z, sc_tri, na_tri, "tri.vtk");
 
     he_f_strain_fin(strain);
