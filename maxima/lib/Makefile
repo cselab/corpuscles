@@ -22,5 +22,6 @@ P = he
 
 install: $M; he.install $M $(MAXIMA_HOME)/$P
 clean:
+test:
 
-.PHONY: install clean
+.PHONY: install clean test
