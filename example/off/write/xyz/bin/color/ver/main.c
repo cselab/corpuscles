@@ -14,9 +14,10 @@ static real lo, hi;
 static He *he;
 
 int main() {
-    lo = -5; hi = 5;
+    lo = -2; hi = 2;
     y_ini("/dev/stdin", &he, &x, &y, &z);
-    boff_lh_ver_fwrite(he, x, y, z, lo, hi, x, stdout);
+    //boff_lh_ver_fwrite(he, x, y, z, lo, hi, x, stdout);
+    boff_ver_fwrite(he, x, y, z, y, stdout);
     y_fin(he, x, y, z);
     return 0;
 }
