@@ -229,7 +229,7 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     return e;
 }
 
-int he_f_strain_invariants(T *q, He* he0, const real *x, const real *y, const real *z, /**/ real **pI1, real **pI2) {
+int he_f_strain_invariants(T *q, const real *x, const real *y, const real *z, /**/ real **pI1, real **pI2) {
     He *he;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
@@ -240,11 +240,6 @@ int he_f_strain_invariants(T *q, He* he0, const real *x, const real *y, const re
     he = q->he;
     nt = he_nt(he);
     nv = he_nv(he);
-
-    if (nv != he_nv(he0))
-        ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
-    if (nt != he_nt(he0))
-        ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
     I1 = q->I1;
     I2 = q->I2;
@@ -266,7 +261,7 @@ int he_f_strain_invariants(T *q, He* he0, const real *x, const real *y, const re
     return HE_OK;
 }
 
-int he_f_strain_invariants_tri(T *q, He* he0, const real *x, const real *y, const real *z, /**/ real **pI1, real **pI2) {
+int he_f_strain_invariants_tri(T *q, const real *x, const real *y, const real *z, /**/ real **pI1, real **pI2) {
     He *he;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
@@ -277,11 +272,6 @@ int he_f_strain_invariants_tri(T *q, He* he0, const real *x, const real *y, cons
     he = q->he;
     nt = he_nt(he);
     nv = he_nv(he);
-
-    if (nv != he_nv(he0))
-        ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
-    if (nt != he_nt(he0))
-        ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
     I1t = q->I1t;
     I2t = q->I2t;

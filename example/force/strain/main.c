@@ -33,7 +33,7 @@ int main0() {
     e = he_f_strain_energy(strain, he, x, y, z);
     he_f_strain_energy_ver(strain, &eng);
 
-    he_f_strain_invariants(strain, he, x, y, z, &al, &be);
+    he_f_strain_invariants(strain, x, y, z, &al, &be);
 
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
