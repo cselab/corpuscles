@@ -31,4 +31,6 @@ int boff_fwrite(He*, const real*, const real*, const real*, /**/ FILE*);
 int boff_lh_tri_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, /**/ FILE*);
 int boff_tri_fwrite(He*, const real*, const real*, const real*, const real *a, /**/ FILE*);
 
+int boff_lh_ver_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, /**/ FILE*);
+
 #undef T
