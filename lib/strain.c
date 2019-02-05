@@ -164,13 +164,14 @@ int strain_force(T *q,
                  const real a[3], const real b[3], const real c[3], /**/
                  real da[3], real db[3], real dc[3]) {
     P *param;
-    TypeFun F1, F2;
+    TypeFun F, F1, F2;
 
     param = &q->param;
+    F = q->F;
     F1 = q->F1;
     F2 = q->F2;
 
-    strain_force_3d((void*)param, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+    strain_force_3d((void*)param, F, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
     return HE_OK;
 }
 

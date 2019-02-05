@@ -65,7 +65,7 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
 }
 
 int strain_force_3d(void *param,
-                    real (*F1)(void*, real, real), real (*F2)(void*, real, real),
+                    real (*F)(void*, real, real), real (*F1)(void*, real, real), real (*F2)(void*, real, real),
                     const real a0[3], const real b0[3], const real c0[3],
                     const real a[3], const real b[3], const real c[3], /**/
                     real da_tot[3], real db_tot[3], real dc_tot[3]) {
@@ -73,7 +73,7 @@ int strain_force_3d(void *param,
     real bx, cx, cy, ux, wx, wy;
     real dvx, dvy, dux, duy, dwx, dwy;
     real area, I1, I2;
-    real ex[3], ey[3];
+    real ex[3], ey[3], deng;
 
     tri_3to2(a0, b0, c0, /**/ &bx, &cx, &cy);
     tri_3to2(a, b, c, /**/ &ux, &wx, &wy);
@@ -103,6 +103,8 @@ int strain_force_3d(void *param,
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
     vec_scalar(dc, area, /**/ dc_tot);
+
+    deng = F(param, I1, I2);
 
     return HE_OK;
 }
