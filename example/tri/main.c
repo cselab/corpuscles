@@ -25,7 +25,7 @@ static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
     const char *op;
     real a[3], b[3], c[3], n[3], ex[3], ey[3];
-    real ux, uy, vx, vy;
+    real ux, vx, vy;
     argv = v;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -53,9 +53,8 @@ int main(__UNUSED int argc, const char **v) {
         vec_printf(n, "%g");
     } else if (eq(op, "3to2")) {
         vec(a); vec(b); vec(c);
-        tri_3to2(a, b, c, /**/ &ux, &uy, &vx, &vy);
-        printf("%.16g %.16g\n", ux, uy);
-        printf("%.16g %.16g\n", vx, vy);
+        tri_3to2(a, b, c, /**/ &ux, &vx, &vy);
+        printf("%.16g %.16g %.16g\n", ux, vx, vy);
     } else if (eq(op, "2to3")) {
         vec(a); vec(b); vec(c);
         tri_2to3(a, b, c, /**/ ex, ey);

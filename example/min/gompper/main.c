@@ -19,7 +19,7 @@ static real A0, V0;
 static const char **argv;
 static const char *me = "min/gompper";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s Ka Kv Kb Ke < OFF\n", me);
     exit(0);
 }

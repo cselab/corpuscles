@@ -5,7 +5,6 @@
 #include <real.h>
 #include <he/area.h>
 #include <he/memory.h>
-#include <he/punto.h>
 #include <he/macro.h>
 #include <he/y.h>
 #include <he/he.h>
@@ -14,9 +13,8 @@
 #include <he/vtk.h>
 #include <he/f/strain.h>
 
-static const real pi = 3.141592653589793115997964;
 static char **argv;
-static real *x, *y, *z, *fm, *fx, *fy, *fz, *area, *area0;
+static real *x, *y, *z, *fm, *fx, *fy, *fz, *area, *area0, *area_tri, *area0_tri;
 static real *x0, *y0, *z0;
 static int nv, nt;
 static HeFStrain *strain;
@@ -25,28 +23,32 @@ static He *he, *he0;
 static real energy() { return he_f_strain_energy(strain, he, x, y, z); }
 
 int main0() {
-    real *eng, e, *al, *be;
+    real *eng, e, *al, *be, *al_tri, *be_tri, *eng_tri;
     he_f_strain_argv(&argv, he, &strain);
 
     he_f_strain_force(strain, he, x, y, z, /**/ fx, fy, fz);
     e = he_f_strain_energy(strain, he, x, y, z);
     he_f_strain_energy_ver(strain, &eng);
+    he_f_strain_energy_tri(strain, &eng_tri);
 
-    he_f_strain_invariants(strain, he, x, y, z, &al, &be);
+    he_f_strain_invariants(strain, x, y, z, &al, &be);
+    he_f_strain_invariants_tri(strain, x, y, z, &al_tri, &be_tri);
 
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
 
-    const real *sc[] = {x, y, z, fx, fy, fz, eng, area, area0, al, be, NULL};
-    const char *na[] = {"x", "y", "z", "fx", "fy", "fz", "eng", "area", "area0", "al", "be", NULL};
+    he_area_tri(he, x, y, z, /**/ area_tri);
+    he_area_tri(he0, x0, y0, z0, /**/ area0_tri);
 
-    puts("x y z fx fy fz eng area area0 al be");
+    const real *sc[] = {fx, fy, fz, eng, area, area0, al, be, NULL};
+    const char *na[] = {"fx", "fy", "fz", "eng", "area", "area0", "al", "be", NULL};
+    vtk_write(he, x, y, z, sc, na, "ver.vtk");
 
-    vtk_write(he, x, y, z, sc, na, "o.vtk");
-    punto_fwrite(nv, sc, stdout);
+    const real *sc_tri[] = {eng_tri, al_tri, be_tri, area_tri, area0_tri, NULL};
+    const char *na_tri[] = {"eng", "al", "be", "area", "area0", NULL};
+    vtk_tri_write(he, x, y, z, sc_tri, na_tri, "tri.vtk");
 
     he_f_strain_fin(strain);
-
     return HE_OK;
 }
 
@@ -57,14 +59,17 @@ int main(int __UNUSED argc, char *v[]) {
     y_ini(*argv, /**/ &he0, &x0, &y0, &z0);
 
     nv = he_nv(he);
+    nt = he_nt(he);
 
     CALLOC(nv, &fm); CALLOC(nv, &fx);  CALLOC(nv, &fy); CALLOC(nv, &fz);
     MALLOC(nv, &area); MALLOC(nv, &area0);
+    MALLOC(nt, &area_tri); MALLOC(nt, &area0_tri);
 
     main0();
 
     FREE(fm); FREE(fx); FREE(fy); FREE(fz);
     FREE(area); FREE(area0);
+    FREE(area_tri); FREE(area0_tri);
 
     y_fin(he, x, y, z);
     y_fin(he0, x0, y0, z0);

@@ -64,7 +64,7 @@ static real *fx, *fy, *fz;
 
 static int NV, NE, NT;
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s rVolume Ka Kga Kv Ke Kb < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");

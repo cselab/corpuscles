@@ -65,7 +65,7 @@ static real f_bending_force(const real *x, const real *y, const real *z,
 }
 
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor/gompper rVolume Ka Kga Kv Kb Ke < OFF > PUNTO\n", me);
     exit(0);
 }

@@ -44,7 +44,7 @@ int main(__UNUSED int argc, const char **argv0) {
     if (eq(op, "2d")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
-        strain_force_3d(NULL, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+        strain_force_3d(NULL, F, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
         //vec_printf(da, "%.16g"); vec_printf(db, "%.16g"); vec_printf(dc, "%.16g");
         tri_3to2(a0, b0, c0, /**/ &bx, &by, &cx, &cy);
         tri_3to2(a, b, c,    /**/ &ux, &uy, &wx, &wy);
@@ -60,7 +60,7 @@ int main(__UNUSED int argc, const char **argv0) {
     } else if (eq(op, "3d")) {
         vec(a0); vec(b0); vec(c0);
         vec(a); vec(b); vec(c);
-        strain_force_3d(NULL, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
+        strain_force_3d(NULL, F, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
         puts("x y fx fy");
         printf("%.16g %.16g %.16g %.16g\n", a[X], a[Y], da[X], da[Y]);
         printf("%.16g %.16g %.16g %.16g\n", b[X], b[Y], db[X], db[Y]);

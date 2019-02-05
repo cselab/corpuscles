@@ -21,5 +21,7 @@ util.mac
 P = he
 
 install: $M; he.install $M $(MAXIMA_HOME)/$P
+clean:
+test:
 
-.PHONY: install
+.PHONY: install clean test

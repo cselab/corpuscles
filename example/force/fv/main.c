@@ -35,7 +35,7 @@ static Bending *bending;
 static BendingParam param;
 static const char *me = "fv";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer Kb C0 Kad DA0D step  every < OFF > forces\n", me);
 }
 

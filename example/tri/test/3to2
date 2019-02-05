@@ -1,0 +1,2 @@
+# TEST: 3to2
+he.run ./main 3to2 -5.0 -7.0 -4.0 7.0 -1.0 3.0 3.0 2.0 -7.0 > main.out.txt

@@ -46,7 +46,6 @@ de: diff(e);
 v: [px, py,   qx, qy];
 ds: linsolve(de, diff(v));
 s : linsolve( e,       v);
-Q: -bx*cy;
 
 M: matrix([px, py], [qx, qy])$
 D: M . transpose(M);
@@ -90,11 +89,13 @@ Fb: F2(param, 'I1, 'I2) $
 
 pI1: 'I1 $
 pI2: 'I2 $
-pA : 'Q/2;
+pA : select(-bx*cy/2, -ux*wy/2) $
 
 with_stdout("body",
-  cg(Q),
-  printf(true, "NOT_ZERO(Q);~%"),
+  printf(true, "NOT_ZERO(bx);~%"),
+  printf(true, "NOT_ZERO(cy);~%"),
+  printf(true, "NOT_ZERO(ux);~%"),
+  printf(true, "NOT_ZERO(wy);~%"),
   cg(px), cg(py), cg(qy),
   cg(I1), cg(I2),
   cg(Fa), cg(Fb),

@@ -47,7 +47,7 @@ static const char *me = "min/helfrich_xin_fga";
 static real *fx, *fy, *fz, *fm;
 static real *gx, *gy, *gz, *gm;
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > msg\n", me);
     fprintf(stderr, "end: number of iterations\n");
     fprintf(stderr, "freq: frequency of output off files\n");

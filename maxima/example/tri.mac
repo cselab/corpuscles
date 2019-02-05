@@ -18,4 +18,17 @@ tri_cot(a, b, c), numer;
 tri_angle(a, b, c), numer;
 
 tri_area(a, b, c), numer;
-vec_arg(a, b, c);
+
+tri_3to2(a, b, c), numer;
+
+kill(a, b, c);
+vec_ini(a);
+vec_ini(b);
+vec_ini(c);
+
+[x, u, v]: tri_3to2(a, b, c);
+
+A0: tri_area(a, b, c);
+A1: x * v / 2;
+
+radcan(A0/A1);

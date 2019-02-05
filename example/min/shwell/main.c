@@ -46,7 +46,7 @@ static const char **argv;
 static char bending[4049];
 static const char *me = "min/shwell";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor|gompper|juelicher_xin|meyer_xin\n", me);
     fprintf(stderr, "Ka Kga Kv Ke  : local area, global area, global volume, and edge constraints \n");
     fprintf(stderr, "Kb C0 Kad DA0D: local bending, sponta curva, non-local bending, sponta area-dffierence \n");

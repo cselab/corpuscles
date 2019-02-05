@@ -16,7 +16,7 @@ static const char *me = "ply/read";
 static real *x, *y, *z;
 static He *he;
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s [CELL INDEX] < OFF\n", me);
     exit(2);
 }

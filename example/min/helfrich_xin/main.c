@@ -40,7 +40,7 @@ static const char **argv;
 static char bending[4049];
 static const char *me = "min/helfrich_xin_fv";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin rVolume Ka Kga Kv Ke Kb C0 Kad DA0D end< OFF > PUNTO\n", me);
     fprintf(stderr, "end: number of iterations\n");
     exit(0);

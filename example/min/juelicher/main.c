@@ -33,7 +33,7 @@ static int scl(/**/ real *p) {
     argv++;
     return HE_OK;
 }
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s Ka Kga Kv Kb Ke < OFF\n", me);
     exit(0);
 }

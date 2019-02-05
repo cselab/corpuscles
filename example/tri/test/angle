@@ -1,2 +1,2 @@
 # TEST: angle
-./main angle 0 0 0   0 1 0  1 0 0 > main.out.txt
+he.run ./main angle 0 0 0   0 1 0  1 0 0 > main.out.txt

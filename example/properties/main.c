@@ -26,7 +26,7 @@ static Bending *bending;
 static BendingParam param;
 static const char *me = "bending";
 
-static void usg() {
+static void usg(void) {
     const char *list;
     list = bending_list();
     fprintf(stderr, "%s %s Kb C0 Kad DA0D < OFF > PUNTO\n", me, list);

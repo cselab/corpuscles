@@ -38,7 +38,7 @@ static const char *me = "min/visc";
 static StrainParam strain_param;
 static HeFStrain *strain;
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s %s \\\n"
             "  rVolume Ka Kga {off skalak/linear Ks Ka} {Kh Ke} {Kb C0 Kad DA0D} < OFF\n", me, bending_list());
     exit(0);

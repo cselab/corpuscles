@@ -39,7 +39,7 @@ static const char **argv;
 static char bending[4049];
 static const char *me = "min/visc";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/meyer rVolume Ka Kga Kv Ke Kb C0 Kad DA0D < OFF > PUNTO\n", me);
     exit(0);
 }

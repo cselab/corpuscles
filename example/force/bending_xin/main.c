@@ -27,7 +27,7 @@ static Bending *bending;
 static BendingParam param;
 static const char *me = "bending";
 
-static void usg() {
+static void usg(void) {
     fprintf(stderr, "%s kantor/gompper/gompper_kroll/juelicher/juelicher_xin/meyer/meyer_xin Kb C0 Kad DA0D < OFF > PUNTO\n", me);
 }
 

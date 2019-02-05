@@ -6,5 +6,6 @@ install: $M
 	he.install $M "$(PREFIX)/include"
 
 test:; atest test/*
+clean:
 
-.PHONY: install test
+.PHONY: install test clean
