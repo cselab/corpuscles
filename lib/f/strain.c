@@ -68,14 +68,14 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 
     nv = he_nv(he);
     nt = he_nt(he);
-    
+
     MALLOC(nv, &q->eng);
     MALLOC(nv, &q->I1);
     MALLOC(nv, &q->I2);
 
     MALLOC(nt, &q->I1t);
     MALLOC(nt, &q->I2t);
-    
+
     strain_ini(name, param, &q->strain);
 
     q->he = he;
