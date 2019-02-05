@@ -7,6 +7,8 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
 
     NOT_ZERO(bx);
     NOT_ZERO(cy);
+    NOT_ZERO(ux);
+    NOT_ZERO(wy);
     px = ux/bx;
     py = (wx-(cx*ux)/bx)/cy;
     qy = wy/cy;
