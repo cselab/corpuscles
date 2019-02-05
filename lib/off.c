@@ -3,6 +3,7 @@
 #include <ctype.h>
 
 #include "real.h"
+#include "he/array.h"
 #include "he/endian.h"
 #include "he/memory.h"
 #include "he/err.h"
@@ -325,4 +326,15 @@ int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real
         FWRITE(db, n);
     }
     return HE_OK;
+}
+
+int boff_tri_fwrite(He *he, const real *x, const real *y, const real *z, const real *a, /**/ FILE *f) {
+    int nt;
+    real l, h;
+
+    nt = he_nt(he);
+    l = array_min(nt, a);
+    h = array_max(nt, a);
+
+    return boff_lh_tri_fwrite(he, x, y, z, l, h, a, f);
 }
