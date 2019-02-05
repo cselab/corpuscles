@@ -113,8 +113,6 @@ int strain_force_3d(void *param,
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
     vec_scalar(dc, area, /**/ dc_tot);
-
-    /**/
     if (env_area()) {
         deng = F(param, I1, I2);
         dtri_area(a, b, c, da, db, dc);
@@ -122,7 +120,6 @@ int strain_force_3d(void *param,
         vec_axpy(deng, db, db_tot);
         vec_axpy(deng, dc, dc_tot);
     }
-
     return HE_OK;
 }
 
