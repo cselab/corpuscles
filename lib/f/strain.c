@@ -26,7 +26,7 @@ static const real EPS = 1e-8;
 struct T {
     He *he;
     real *x, *y, *z, *eng, *I1, *I2;
-    real *I1t, *I2t; /* invariant on triangles */
+    real *I1t, *I2t, *engt; /* on triangles */
     Strain *strain;
 };
 
@@ -75,6 +75,7 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 
     MALLOC(nt, &q->I1t);
     MALLOC(nt, &q->I2t);
+    MALLOC(nt, &q->engt);
 
     strain_ini(name, param, &q->strain);
 
@@ -126,7 +127,7 @@ int he_f_strain_fin(T *q) {
     y_fin(q->he, q->x, q->y, q->z);
     strain_fin(q->strain);
     FREE(q->eng); FREE(q->I1); FREE(q->I2);
-    FREE(q->I1t); FREE(q->I2t);
+    FREE(q->I1t); FREE(q->I2t); FREE(q->engt);
     FREE(q);
     return HE_OK;
 }
