@@ -62,7 +62,7 @@ int vtk_fwrite(He *he, const real *x, const real *y, const real *z,
 }
 
 int vtk_write(He *he, const real *x, const real *y, const real *z,
-                 const real *scalars[], const char *names[], /**/ const char *path) {
+              const real *scalars[], const char *names[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
         ERR(HE_IO, "fail to open '%s'", path);
