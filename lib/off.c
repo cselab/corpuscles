@@ -265,3 +265,32 @@ int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *
     }
     return HE_OK;
 }
+
+int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real lo, real hi, const real *a, /**/ FILE *f) {
+    int nv, nt, ne, npv, nc, m, i, j, k;
+    int ib[5], n, cnt;
+    float db[3];
+
+    if (fputs("OFF BINARY\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+    nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 0;
+
+    n = 0; ib[n++] = nv; ib[n++] = nt; ib[n++] = ne;
+    big_endian_int(n, ib);
+    FWRITE(ib, n);
+    for (m = 0; m < nv; m++) {
+        n = 0; db[n++] = x[m]; db[n++] = y[m]; db[n++] = z[m];
+        big_endian_flt(n, db);
+        FWRITE(db, n);
+    }
+
+    for (m = 0; m < nt; m++) {
+        he_tri_ijk(he, m, &i, &j, &k);
+        n = 0;
+        ib[n++] = npv;
+        ib[n++] = i; ib[n++] = j; ib[n++] = k; ib[n++] = nc;
+        big_endian_int(n, ib);
+        FWRITE(ib, n);
+    }
+    return HE_OK;
+}

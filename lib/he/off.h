@@ -27,6 +27,7 @@ int off_he_write(T*, He*, /**/ const char*);
 int off_he_xyz_fwrite(He*, const real*, const real*, const real*, /**/ FILE*);
 int off_he_xyz_write(He*, const real*, const real*, const real*, /**/ const char*);
 
-int boff_fwrite(He*, const real*, const real*, const real*, /**/ FILE *);
+int boff_fwrite(He*, const real*, const real*, const real*, /**/ FILE*);
+int boff_lh_tri_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, /**/ FILE*);
 
 #undef T
