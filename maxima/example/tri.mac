@@ -18,8 +18,9 @@ tri_cot(a, b, c), numer;
 tri_angle(a, b, c), numer;
 
 tri_area(a, b, c), numer;
-vec_arg(a, b, c);
-
 tri_3to2(a, b, c), numer;
 
+[ex, ey]: tri_2to3(a, b, c);
 vec_arg(a, b, c);
+
+[ex, ey], numer;
