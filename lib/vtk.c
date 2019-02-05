@@ -7,8 +7,7 @@
 #include "he/err.h"
 #include "he/he.h"
 
-#define FMT_IN   HE_REAL_IN
-#define FMT_OUT  HE_REAL_OUT
+#define FMT  HE_REAL_OUT
 
 #define SIZE (MAX_STRING_SIZE)
 
@@ -37,7 +36,7 @@ int vtk_fwrite(He *he, const real *x, const real *y, const real *z,
     fprintf(f, "DATASET POLYDATA\n");
     fprintf(f, "POINTS %d double\n", nv);
     for (i = 0; i < nv; i++)
-        fprintf(f, FMT_OUT " " FMT_OUT " " FMT_OUT "\n",
+        fprintf(f, FMT " " FMT " " FMT "\n",
                 x[i], y[i], z[i]);
 
     fprintf(f, "POLYGONS %d %d\n", nt, (np + 1)*nt);
@@ -55,7 +54,7 @@ int vtk_fwrite(He *he, const real *x, const real *y, const real *z,
             fprintf(f, "SCALARS %s double 1\n", names[i_sc]);
             fprintf(f, "LOOKUP_TABLE default\n");
             for (i = 0; i < nv; i++)
-                fprintf(f, FMT_OUT "\n", scalars[i_sc][i]);
+                fprintf(f, FMT "\n", scalars[i_sc][i]);
         }
     }
     return HE_OK;
