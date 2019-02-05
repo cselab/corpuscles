@@ -26,11 +26,10 @@ tri_cot(a, b, c):=block([x, y, u, v],
   x: vec_dot(u, v),
   x/y);
 
-tri_3to2(a, b, c):=block([ab, ac, ux, uy, wx, wy],
+tri_3to2(a, b, c):=block([ab, ac, ux, wx, wy],
   ab: b - a,
   ac: c - a,
   ux: vec_abs(ab),
-  uy: 0,
   wx: vec_project_scalar(ac, ab),
   wy: vec_reject_scalar(ac, ab),
-  [ux, uy, wx, wy]);
+  [ux, wx, wy]);
