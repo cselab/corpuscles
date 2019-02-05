@@ -1,12 +1,10 @@
 #include <stdio.h>
-#include <tgmath.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <real.h>
 #include <he/area.h>
 #include <he/memory.h>
-#include <he/punto.h>
 #include <he/macro.h>
 #include <he/y.h>
 #include <he/he.h>
@@ -15,7 +13,6 @@
 #include <he/vtk.h>
 #include <he/f/strain.h>
 
-static const real pi = 3.141592653589793115997964;
 static char **argv;
 static real *x, *y, *z, *fm, *fx, *fy, *fz, *area, *area0;
 static real *x0, *y0, *z0;
@@ -26,7 +23,7 @@ static He *he, *he0;
 static real energy() { return he_f_strain_energy(strain, he, x, y, z); }
 
 int main0() {
-    real *eng, e, *al, *be;
+    real *eng, e, *al, *be, *al_tri, *be_tri;
     he_f_strain_argv(&argv, he, &strain);
 
     he_f_strain_force(strain, he, x, y, z, /**/ fx, fy, fz);
@@ -34,20 +31,20 @@ int main0() {
     he_f_strain_energy_ver(strain, &eng);
 
     he_f_strain_invariants(strain, x, y, z, &al, &be);
+    he_f_strain_invariants_tri(strain, x, y, z, &al_tri, &be_tri);
 
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
 
-    const real *sc[] = {x, y, z, fx, fy, fz, eng, area, area0, al, be, NULL};
-    const char *na[] = {"x", "y", "z", "fx", "fy", "fz", "eng", "area", "area0", "al", "be", NULL};
+    const real *sc[] = {fx, fy, fz, eng, area, area0, al, be, NULL};
+    const char *na[] = {"fx", "fy", "fz", "eng", "area", "area0", "al", "be", NULL};
+    vtk_write(he, x, y, z, sc, na, "ver.vtk");
 
-    puts("x y z fx fy fz eng area area0 al be");
-
-    vtk_write(he, x, y, z, sc, na, "o.vtk");
-    punto_fwrite(nv, sc, stdout);
-
+    const real *sc_tri[] = {al_tri, be_tri, NULL};
+    const char *na_tri[] = {"al", "be", NULL};
+    vtk_tri_write(he, x, y, z, sc_tri, na_tri, "tri.vtk");
+    
     he_f_strain_fin(strain);
-
     return HE_OK;
 }
 
