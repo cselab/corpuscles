@@ -14,7 +14,7 @@
 #include <he/f/strain.h>
 
 static char **argv;
-static real *x, *y, *z, *fm, *fx, *fy, *fz, *area, *area0;
+static real *x, *y, *z, *fm, *fx, *fy, *fz, *area, *area0, *area_tri, *area0_tri;
 static real *x0, *y0, *z0;
 static int nv, nt;
 static HeFStrain *strain;
@@ -59,11 +59,13 @@ int main(int __UNUSED argc, char *v[]) {
 
     CALLOC(nv, &fm); CALLOC(nv, &fx);  CALLOC(nv, &fy); CALLOC(nv, &fz);
     MALLOC(nv, &area); MALLOC(nv, &area0);
+    MALLOC(nt, &area_tri); MALLOC(nt, &area0_tri);
 
     main0();
 
     FREE(fm); FREE(fx); FREE(fy); FREE(fz);
     FREE(area); FREE(area0);
+    FREE(area_tri); FREE(area0_tri);
 
     y_fin(he, x, y, z);
     y_fin(he0, x0, y0, z0);
