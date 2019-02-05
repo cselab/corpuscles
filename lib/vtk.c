@@ -99,13 +99,13 @@ int vtk_tri_fwrite(He *he, const real *x, const real *y, const real *z,
 
     n_sc = count(scalars);
     if (n_sc > 0) {
-        fprintf(f, "POINT_DATA %d\n", nv);
+        fprintf(f, "CELL_DATA %d\n", nv);
         for (i_sc = 0; i_sc < n_sc; i_sc++) {
             if (names[i_sc] == NULL)
                 ERR(HE_IO, "not enough names: n_sc=%d, i_sc=%d", n_sc, i_sc);
             fprintf(f, "SCALARS %s double 1\n", names[i_sc]);
             fprintf(f, "LOOKUP_TABLE default\n");
-            for (i = 0; i < nv; i++)
+            for (i = 0; i < nt; i++)
                 fprintf(f, FMT "\n", scalars[i_sc][i]);
         }
     }
