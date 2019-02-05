@@ -59,6 +59,7 @@ int main(int __UNUSED argc, char *v[]) {
     y_ini(*argv, /**/ &he0, &x0, &y0, &z0);
 
     nv = he_nv(he);
+    nt = he_nt(he);
 
     CALLOC(nv, &fm); CALLOC(nv, &fx);  CALLOC(nv, &fy); CALLOC(nv, &fz);
     MALLOC(nv, &area); MALLOC(nv, &area0);
