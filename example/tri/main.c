@@ -22,11 +22,15 @@ static int scl(/**/ real *p) {
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
-int main(__UNUSED int argc, const char **v) {
+int main(__UNUSED int argc, const char **v0) {
     const char *op;
     real a[3], b[3], c[3], n[3], ex[3], ey[3];
+    real u[3], v[3], w[3];
+    real al, be;
+    real ax, bx, by;
     real ux, vx, vy;
-    argv = v;
+
+    argv = v0;
     argv++;
     if (*argv == NULL) ER("mssing OP");
 
@@ -60,6 +64,16 @@ int main(__UNUSED int argc, const char **v) {
         tri_2to3(a, b, c, /**/ ex, ey);
         vec_printf(ex, "%.16g");
         vec_printf(ey, "%.16g");
+    } else if (eq(op, "2d_invariants")) {
+        scl(&ax); scl(&bx); scl(&by);
+        scl(&ux); scl(&vx); scl(&vy);
+        tri_2d_invariants(ax, bx, by, ux, vx, vy, /**/ &al, &be);
+        printf("%g %g\n", al, be);
+    } else if (eq(op, "3d_invariants")) {
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        tri_3d_invariants(a, b, c, u, v, w, /**/ &al, &be);
+        printf("%g %g\n", al, be);
     } else
         ER("unknown operation '%s'", op);
     return 0;
