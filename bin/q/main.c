@@ -54,10 +54,13 @@ int main(__UNUSED int c, char **v) {
         usg();
     argv_str(&argv, q);
 
+    y_ini("/dev/stdin", &he, &x, &y, &z);
+
     n = sizeof(Name)/sizeof(Name[0]);
     for (i = 0; i < n; i++) {
         if (util_eq(q, Name[i]))
-            return Func[i]();
+            Func[i]();
+        goto ok;
     }
 
     MSG("unknown query: '%s'", q);
@@ -65,4 +68,7 @@ int main(__UNUSED int c, char **v) {
     for (i = 0; i < n; i++)
         eputs(Name[i]);
     return 1;
+ok:
+    y_fin(he, x, y, z);
+    return 0;
 }
