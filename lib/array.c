@@ -15,3 +15,10 @@ real array_max(int n, const real a[]) {
         if (a[i] > x) x = a[i];
     return x;
 }
+
+real array_zero(int n, real a[]) {
+    int i;
+    for (i = 0; i < n; i++)
+        a[i] = 0;
+    return HE_OK;
+}
