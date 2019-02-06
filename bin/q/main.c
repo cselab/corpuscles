@@ -4,6 +4,7 @@
 #include <real.h>
 #include <he/argv.h>
 #include <he/area.h>
+#include <he/array.h>
 #include <he/err.h>
 #include <he/off.h>
 #include <he/he.h>
@@ -12,6 +13,8 @@
 #include <he/util.h>
 
 #include <he/y.h>
+
+#define FMT   HE_REAL_OUT
 
 static const char *me = "he.q";
 static void usg(void) {
@@ -22,16 +25,41 @@ static void usg(void) {
 
 static char **argv;
 static real *x, *y, *z;
+static int nv, nt;
 static He *he;
 static int Lim; /* are limits set? */
 static real lo, hi;
 
+static int ver(const real *a) {
+    if (Lim)
+        return boff_lh_ver_fwrite(he, x, y, z, lo, hi, a, stdout);
+    else {
+        MSG(FMT " " FMT, array_min(nv, a), array_max(nv, a));
+        return boff_ver_fwrite(he, x, y, z, a, stdout);
+    }
+}
+
+static int tri(const real *a) {
+    if (Lim)
+        return boff_lh_tri_fwrite(he, x, y, z, lo, hi, a, stdout);
+    else {
+        fprintf(stderr, FMT " " FMT "\n",
+                array_min(nt, a), array_max(nt, a));
+        return boff_tri_fwrite(he, x, y, z, a, stdout);
+    }
+}
+
 static int q_x(void) {
-    boff_ver_fwrite(he, x, y, z, z, stdout);
+    ver(x);
     return HE_OK;
 }
 
 static int q_area(void) {
+    real *a;
+    MALLOC(nt, &a);
+    he_area_tri(he, x, y, z, a);
+    tri(a);
+    FREE(a);
     return HE_OK;
 }
 
@@ -63,9 +91,11 @@ int main(__UNUSED int c, char **v) {
             ER("expecting -h, got '%s'", argv[0] ? argv[0] : "null");
         argv++; argv_real(&argv, &hi);
     }
-    
+
     argv_str(&argv, q);
     y_ini("/dev/stdin", &he, &x, &y, &z);
+    nv = he_nv(he);
+    nt = he_nt(he);
 
     n = sizeof(Name)/sizeof(Name[0]);
     for (i = 0; i < n; i++) {
