@@ -17,10 +17,11 @@ Da0=0
 pi=3.141592653589793115997964
 A=$(echo  $pi | awk '{print $1*4.0}')
 xi=1.0
-dt=0.000001
-kBT=0.0
+dt=0.00001
+kBT=0.0001
 end=500000
 freq=1000
+freq_stat=100
 
 mub=139.260575205
 mua=$(echo $mub | awk '{print $1*2}')
@@ -51,7 +52,7 @@ then
     cd xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
     
     
-    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off 
+    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq $freq_stat . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off 
 else
 
     Da1=-0.858
