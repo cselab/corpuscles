@@ -11,6 +11,7 @@ bin/geomview\
 bin/maxima\
 bin/orient\
 bin/path\
+bin/q\
 bin/run\
 bin/shake\
 bin/vtk\
