@@ -1,0 +1,22 @@
+load("nchrpl")$
+
+declare([bx, cx, cy], constant) $
+
+dx(x, y):= px*x + py*y$
+dy(x, y):=        qy*y$
+
+e: [
+  dx(bx, 0) = ux,
+  dx(cx, cy) = wx,
+  dy(cx, cy) = wy
+] $
+
+v: [px, py,   qy];
+s : linsolve( e,       v);
+
+M: matrix([px, py], [0, qy])$
+D: M . transpose(M);
+
+al: determinant(M) - 1;
+be: 1/(2*determinant(M))*(mattrace(D) - 2*determinant(M));
+be: factor(be);
