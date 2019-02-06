@@ -13,6 +13,7 @@
 
 #include <he/y.h>
 
+static char **argv;
 static HeOff *off;
 static int nt;
 static real *x, *y, *z;
@@ -28,10 +29,12 @@ static void usg(void) {
 
 int main(__UNUSED int c, char **v) {
     char q[1024];
-    v++;
-    if (!v[0] || util_eq(v[0], "-h"))
+    argv = v;
+    argv++;
+    if (!argv[0] || util_eq(argv[0], "-h"))
         usg();
-    argv_str(&v, q);
+    argv_str(&argv, q);
+
 
     lo = 0; hi = 0.005;
     y_ini("/dev/stdin", &he, &x, &y, &z);
