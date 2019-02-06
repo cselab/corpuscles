@@ -34,7 +34,8 @@ static int ver(const real *a) {
     if (Lim)
         return boff_lh_ver_fwrite(he, x, y, z, lo, hi, a, stdout);
     else {
-        MSG(FMT " " FMT, array_min(nv, a), array_max(nv, a));
+        fprintf(stderr, FMT " " FMT "\n",
+                array_min(nv, a), array_max(nv, a));
         return boff_ver_fwrite(he, x, y, z, a, stdout);
     }
 }
@@ -49,10 +50,9 @@ static int tri(const real *a) {
     }
 }
 
-static int q_x(void) {
-    ver(x);
-    return HE_OK;
-}
+static int q_x(void) { return ver(x); }
+static int q_y(void) { return ver(y); }
+static int q_z(void) { return ver(z); }
 
 static int q_area(void) {
     real *a;
@@ -63,8 +63,8 @@ static int q_area(void) {
     return HE_OK;
 }
 
-static const char *Name[] = {"x", "area"};
-static int (*Func[])(void) = {q_x, q_area};
+static const char *Name[] = {"x", "y", "z", "area"};
+static int (*Func[])(void) = {q_x, q_y, q_z, q_area};
 
 int eputs(const char *s) {
     fputs(s, stderr);
