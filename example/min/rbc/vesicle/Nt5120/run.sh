@@ -22,8 +22,8 @@ kBT=0.0
 end=200000
 freq=500
 
-mus=2.22816920329
-Kas=11.1408460164
+mua=11.1408460164
+mub=2.22816920329
 a3=0
 a4=0
 b1=0
@@ -44,7 +44,7 @@ then
     fi
     cd v${v}_xi${xi}_kBT${kBT}_dt${dt}
     
-    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $Kas $mus $a3 $a4 $b1 $b2 '<' $off '>' v$v.msg
+    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off '>' v$v.msg
 else
 
         v=0.642
