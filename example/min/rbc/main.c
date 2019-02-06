@@ -43,7 +43,7 @@ static real R, rho, rVolume, Ka, Kga, Kv, Ke;
 static real Kb, C0, Kad, DA0D, D;
 static real xi, dt_in, kBT;
 static int  end;
-static int  freq;
+static int  freq, freq_stat;
 static real A0, V0, e0;
 static real eb, ea, ega, ev, ee, ebl, ebn, es;
 static real mass;
@@ -125,6 +125,7 @@ static void arg() {
   scl(&kBT);
   num(&end);
   num(&freq);
+  num(&freq_stat);
   str(dir);
 
 }
@@ -358,9 +359,10 @@ static int main0(real *vx, real *vy, real *vz,
   char file[4048];
   char filemsg[4048]="stat.dat";
   FILE *fm;
-  real dt, h;
+  real dt, h, time;
 
-  dt = dt_in;
+  time = 0.0;
+  dt   = dt_in;
   
   mkdir0(dir);
 
@@ -371,10 +373,6 @@ static int main0(real *vx, real *vy, real *vz,
   }
   
   fclose(fm);
-  
-  int freq_screen;
-  
-  freq_screen=100;
   
   nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
@@ -413,7 +411,7 @@ static int main0(real *vx, real *vy, real *vz,
       
     }
     
-    if ( i % freq_screen == 0 ) {
+    if ( i % freq_stat == 0 ) {
       
       ep = Energy0(XX, YY, ZZ);
       ek = Kinetic0(vx, vy, vz, mass);
@@ -422,7 +420,7 @@ static int main0(real *vx, real *vy, real *vz,
       A = area();
       V = volume();
       Vr=reduced_volume(A,V);
-      MSG("dt, s, t: %g %d %g", dt, i, i*dt);
+      MSG("dt, s, t: %g %d %g", dt, i, time);
       MSG("A/A0, V/V0, v: %g %g %g", A/A0, V/V0, Vr);
       MSG("et,  eb,  ea,  ega,  ev,  ek,  ee,  ebl,  ebn, es");
       MSG("%g %g %g %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee, ebl, ebn, es); 
@@ -433,13 +431,15 @@ static int main0(real *vx, real *vy, real *vz,
 	fputs("dt s t A/A0 V/V0 v et eb ea ega ev ek ee ebl ebn es\n", fm);
 	First = 0;
       }
-      fprintf(fm, "%g %d %g %g %g %g %g %g %g %g %g %g %g %g %g %g \n", dt, i, i*dt, A/A0, V/V0, Vr, et, eb, ea, ega, ev, ek, ee, ebl, ebn, es);
+      fprintf(fm, "%g %d %g %g %g %g %g %g %g %g %g %g %g %g %g %g \n", dt, i, time, A/A0, V/V0, Vr, et, eb, ea, ega, ev, ek, ee, ebl, ebn, es);
       fclose(fm);
       
     }//i%freq_screen
     
     euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
     euler(dt, vx, vy, vz, /**/ XX, YY, ZZ);
+
+    time += dt;
     
     Force0(XX, YY, ZZ, /**/ fx, fy, fz);
     
