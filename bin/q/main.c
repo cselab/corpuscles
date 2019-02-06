@@ -21,13 +21,13 @@ static void usg(void) {
 }
 
 static char **argv;
-static HeOff *off;
-static int nt;
 static real *x, *y, *z;
 static He *he;
-static real lo, hi, *a;
+static int Lim; /* are limits set? */
+static real lo, hi;
 
 static int q_x(void) {
+    boff_ver_fwrite(he, x, y, z, z, stdout);
     return HE_OK;
 }
 
@@ -44,23 +44,35 @@ int eputs(const char *s) {
     return HE_OK;
 }
 
+static int nxt(const char *b) {
+    return (argv[0] != NULL) && util_eq(argv[0], b);
+};
+
 int main(__UNUSED int c, char **v) {
     char q[1024];
     int n, i;
 
     argv = v;
     argv++;
-    if (!argv[0] || util_eq(argv[0], "-h"))
-        usg();
-    argv_str(&argv, q);
+    if (nxt("-h")) usg();
 
+    if (nxt("-l")) {
+        Lim = 1;
+        argv++; argv_real(&argv, &lo);
+        if (!nxt("-h"))
+            ER("expecting -h, got '%s'", argv[0] ? argv[0] : "null");
+        argv++; argv_real(&argv, &hi);
+    }
+    
+    argv_str(&argv, q);
     y_ini("/dev/stdin", &he, &x, &y, &z);
 
     n = sizeof(Name)/sizeof(Name[0]);
     for (i = 0; i < n; i++) {
-        if (util_eq(q, Name[i]))
+        if (util_eq(q, Name[i])) {
             Func[i]();
-        goto ok;
+            goto ok;
+        }
     }
 
     MSG("unknown query: '%s'", q);
