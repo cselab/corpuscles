@@ -184,10 +184,48 @@ static void euler(real dt,
   
 }
 
-static void visc_langevin(real xi, real kBT, real dt,
-                      const real *vx, const real *vy, const real *vz, /*io*/
-                      real *fx, real *fy, real *fz) {
+static void visc_langevin(real xi, 
+			  const real *vx, const real *vy, const real *vz, /*io*/
+			  real *fx, real *fy, real *fz) {
+  
+  int i;
+  real dx, dy, dz;
+  real sx, sy, sz;
 
+  sx=sy=sz=0;
+  
+  for (i = 0; i < NV; i++) {
+    
+    dx = xi*vx[i];
+    dy = xi*vy[i];
+    dz = xi*vz[i];
+    
+    fx[i] += dx;
+    fy[i] += dy;
+    fz[i] += dz;
+    
+    sx +=dx;
+    sy +=dy;
+    sz +=dz;    
+    
+  }
+  
+  //conserve linear momentum, not angular momentum
+  sx /= NV; sy /= NV; sz /= NV;
+  
+  for (i = 0; i < NV; i++) {
+    fx[i] -= sx;
+    fy[i] -= sy;
+    fz[i] -= sz;
+  }
+  
+}
+
+
+static void rand_langevin(real xi, real kBT, real dt,
+			  const real *vx, const real *vy, const real *vz, /*io*/
+			  real *fx, real *fy, real *fz) {
+  
   int i;
   real ra, sigma, coef;
   real dx, dy, dz;
@@ -199,33 +237,18 @@ static void visc_langevin(real xi, real kBT, real dt,
   sx=sy=sz=0;
   
   for (i = 0; i < NV; i++) {
-    dx = xi*vx[i];
-    dy = xi*vy[i];
-    dz = xi*vz[i];
     
-    fx[i] += dx;
-    fy[i] += dy;
-    fz[i] += dz;
-
-    sx +=dx;
-    sy +=dy;
-    sz +=dz;
+    //the vaiance of uniform distribution is 1.
+    ra = coef*(rand()/(real)RAND_MAX - 0.5);
+    dx=dy=dz=ra*sigma;
     
-    if (kBT > 0) {
-      
-      //the vaiance of uniform distribution is 1.
-      ra = coef*(rand()/(real)RAND_MAX - 0.5);
-      dx=dy=dz=ra*sigma;
-
-      fx[i] -= dx;
-      fy[i] -= dy;
-      fz[i] -= dz;
-
-      sx -= dx;
-      sy -= dy;
-      sz -= dz;
+    fx[i] -= dx;
+    fy[i] -= dy;
+    fz[i] -= dz;
     
-    }
+    sx -= dx;
+    sy -= dy;
+    sz -= dz;
     
   }
 
@@ -248,7 +271,30 @@ static int diff(int i, int j, const real *x, const real *y, const real *z, /**/ 
     return HE_OK;
 }
 
-static void visc_pair(real xi, real kBT, real dt,
+static void visc_pair(real xi, 
+                      const real *vx, const real *vy, const real *vz, /*io*/
+                      real *fx, real *fy, real *fz) {
+
+  int e, i, j;
+  real u[3], r[3], rn[3], p[3];
+  
+  for (e = 0; e < NE; e++) {
+    i = D1[e]; j = D2[e];
+    
+    diff(i, j, XX, YY, ZZ, r);
+    diff(i, j, vx, vy, vz, u);
+    vec_norm(r, rn);
+    vec_project(u, r, p);
+    //note that the viscous force is in the negative direction
+    //to be consistent with other forces
+    vec_scalar_append(p, xi, i, fx, fy, fz);
+    vec_scalar_append(p, -xi, j, fx, fy, fz);
+    
+  }
+    
+}
+
+static void rand_pair(real xi, real kBT, real dt,
                       const real *vx, const real *vy, const real *vz, /*io*/
                       real *fx, real *fy, real *fz) {
 
@@ -265,22 +311,11 @@ static void visc_pair(real xi, real kBT, real dt,
     diff(i, j, XX, YY, ZZ, r);
     diff(i, j, vx, vy, vz, u);
     vec_norm(r, rn);
-    vec_project(u, r, p);
-    //note that the viscous force is in the negative direction
-    //to be consistent with other forces
-    vec_scalar_append(p, xi, i, fx, fy, fz);
-    vec_scalar_append(p, -xi, j, fx, fy, fz);
 
-    //note that the random force is in the negative direction
-    //to be consistent with other forces
-    //in practice, this direction does not matter
-    //the vaiance of uniform distribution is 1.
-    if (kBT > 0 ){
-      ra  = coef*(rand()/(real)RAND_MAX - 0.5);
-      ra *=sigma;
-      vec_scalar_append(rn, -ra, i, fx, fy, fz);
-      vec_scalar_append(rn, ra, j, fx, fy, fz);
-    }
+    ra  = coef*(rand()/(real)RAND_MAX - 0.5);
+    ra *=sigma;
+    vec_scalar_append(rn, -ra, i, fx, fy, fz);
+    vec_scalar_append(rn, ra, j, fx, fy, fz);
     
   }
     
@@ -346,17 +381,28 @@ static int main0(real *vx, real *vy, real *vz,
 
   Force0(XX, YY, ZZ, /**/ fx, fy, fz);
 
-#ifdef DT_ADPTIVE
-  h  = 0.25*0.25*e0;
-  dt = fmin(dt_in, sqrt(h*mass/max_vec(fx, fy, fz)));
-#endif
   
 #ifdef THERMOSTAT_LANGEVIN
-  visc_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+  visc_langevin(xi, vx, vy, vz, /**/ fx, fy, fz);
 #endif
 #ifdef THERMOSTAT_PAIR
-  visc_pair(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+  visc_pair(xi, vx, vy, vz, /**/ fx, fy, fz);
 #endif
+
+#ifdef DT_ADPTIVE
+  h  = 0.25*0.25*e0;
+  dt = fmin(dt_in, sqrt(h*mass/max_vec(fx, fy, fz)));  
+#endif
+
+  if ( kBT > 0 ) {
+#ifdef THERMOSTAT_LANGEVIN
+    rand_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+#endif
+#ifdef THERMOSTAT_PAIR
+    rand_pair(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+#endif
+  }
+
   
   for (i = 0; i <= end; i++) {
     
@@ -397,17 +443,27 @@ static int main0(real *vx, real *vy, real *vz,
     
     Force0(XX, YY, ZZ, /**/ fx, fy, fz);
     
+#ifdef THERMOSTAT_LANGEVIN
+    visc_langevin(xi, vx, vy, vz, /**/ fx, fy, fz);
+#endif
+#ifdef THERMOSTAT_PAIR
+    visc_pair(xi, vx, vy, vz, /**/ fx, fy, fz);
+#endif
+    
 #ifdef DT_ADPTIVE
     dt = fmin(dt_in, sqrt(h*mass/max_vec(fx, fy, fz)));
 #endif
 
-  
+    if ( kBT > 0 ) {
+      
 #ifdef THERMOSTAT_LANGEVIN
-    visc_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+      rand_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
 #endif
 #ifdef THERMOSTAT_PAIR
-    visc_pair(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+      rand_pair(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
 #endif
+
+    }
     
     euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
     
@@ -426,11 +482,26 @@ static int main0(real *vx, real *vy, real *vz,
       ForceArea(XX, YY, ZZ, /**/ fx, fy, fz);
       
 #ifdef THERMOSTAT_LANGEVIN
-      visc_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+      visc_langevin(xi, vx, vy, vz, /**/ fx, fy, fz);
 #endif
 #ifdef THERMOSTAT_PAIR
-      visc_pair(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+      visc_pair(xi, vx, vy, vz, /**/ fx, fy, fz);
 #endif
+      
+#ifdef DT_ADPTIVE
+      dt = fmin(dt_in, sqrt(h*mass/max_vec(fx, fy, fz)));
+#endif
+
+      if ( kBT > 0 ) {
+	
+#ifdef THERMOSTAT_LANGEVIN
+	rand_langevin(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+#endif
+#ifdef THERMOSTAT_PAIR
+	rand_pair(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+#endif
+
+      }
       
       euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
       
