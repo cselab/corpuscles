@@ -105,9 +105,9 @@ int he_f_strain_argv(char ***p, He *he, T **pq) {
     if ((status = argv_str(p, name)) != HE_OK)
         return status;
 
-    if (util_eq(name, "skalak")) {
-        PAR(Ks);
+    if (util_eq(name, "linear")) {
         PAR(Ka);
+        PAR(mu);
     } else if (util_eq(name, "lim")) {
         PAR(Ka);
         PAR(mu);

@@ -67,26 +67,37 @@ static real F2_evans(void *p0, __UNUSED real I1, __UNUSED real I2) {
     return -(2*Ks-Ka)/2;
 }
 
-static real F_linear(void *p0, real I1, real I2)  {
+static real F_linear(void *p0, real al, real be)  {
+#   define G(s) s = p->s
+    real A, B;
     P *p;
-    real Ks, Ka;
+    real Ka, mu;
     p = (P*)p0;
-    Ks = p->Ks; Ka = p->Ka;
-    return Ks*sq(I1) + Ka*sq(I2);
+    G(Ka); G(mu);
+
+    A = Ka*al*al/2;
+    B = mu*be;
+    return A + B;
+#   undef G
 }
-static real F1_linear(void *p0, real I1, __UNUSED real I2) {
-    P *p;
-    real Ks;
-    p = (P*)p0;
-    Ks = p->Ks;
-    return  2*Ks*I1;
-}
-static real F2_linear(void *p0, __UNUSED real I1, real I2) {
+static real F1_linear(void *p0, real al, real be) {
+#   define G(s) s = p->s
     P *p;
     real Ka;
     p = (P*)p0;
-    Ka = p->Ka;
-    return 2*Ka*I2;
+    G(Ka);
+    return Ka*al;
+#   undef G
+}
+
+static real F2_linear(void *p0, real al, real be) {
+#   define G(s) s = p->s
+    P *p;
+    real Ka, mu, a3, a4, b1, b2;
+    p = (P*)p0;
+    G(mu);
+    return mu;
+#   undef G
 }
 
 static real F_lim(void *p0, real al, real be)  {
@@ -112,7 +123,7 @@ static real F1_lim(void *p0, real al, real be) {
     dA = Ka/2*(2*al + 3*a3*al*al + 4*a4*al*al*al);
     dB = mu*b1*be;
     return  dA + dB;
-#   undef G    
+#   undef G
 }
 
 static real F2_lim(void *p0, real al, real be) {
@@ -124,7 +135,7 @@ static real F2_lim(void *p0, real al, real be) {
     G(Ka); G(mu); G(a3); G(a4); G(b1); G(b2);
     dB = mu*(1 + 2*b2*be + al*b1);
     return  dB;
-#   undef G    
+#   undef G
 }
 
 int strain_ini(const char *name, P param, /**/ T **pq) {
