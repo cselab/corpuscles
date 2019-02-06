@@ -13,6 +13,13 @@
 
 #include <he/y.h>
 
+static const char *me = "he.q";
+static void usg(void) {
+    fprintf(stderr, "%s query [ARGS..] < IN.off > OUT.off\n", me);
+    fputs("color off file\n", stderr);
+    exit(2);
+}
+
 static char **argv;
 static HeOff *off;
 static int nt;
@@ -20,12 +27,16 @@ static real *x, *y, *z;
 static He *he;
 static real lo, hi, *a;
 
-static const char *me = "he.q";
-static void usg(void) {
-    fprintf(stderr, "%s query [ARGS..] < IN.off > OUT.off\n", me);
-    fputs("color off file\n", stderr);
-    exit(2);
+static int q_x(void) {
+    return HE_OK;
 }
+
+static int q_area(void) {
+    return HE_OK;
+}
+
+static const char *Name[] = {"x", "area"};
+static int (*Func[])(void) = {q_x, q_area};
 
 int main(__UNUSED int c, char **v) {
     char q[1024];
