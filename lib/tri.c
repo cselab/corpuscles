@@ -181,3 +181,33 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
 
     return HE_OK;
 }
+
+int tri_2d_invariants(real bx, real cx, real cy,
+                      real ux, real wx, real wy, /**/
+                      real *al, real *be) {
+#   define sq(x) ((x)*(x))
+    real px, py, qy;
+    NOT_ZERO(bx);
+    NOT_ZERO(cy);
+
+    px = ux/bx;
+    py = -(cx*ux-bx*wx)/(bx*cy);
+    qy = wy/cy;
+
+    *al = px*qy-1;
+    *be = (sq(qy)-2*px*qy+sq(py)+sq(px))/(2*px*qy);
+
+    return HE_OK;
+#   undef sq
+}
+
+int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
+                      /**/ real *al, real *be) {
+    real i, jx, jy;
+    real x, yx, yy;
+
+    tri_3to2(a, b, c, /**/ &i, &jx, &jy);
+    tri_3to2(a, b, c, /**/ &x, &yx, &yy);
+
+    return tri_2d_invariants(i, jx, jy,   x, yx, yy, /**/ al, be);
+}
