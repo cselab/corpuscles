@@ -19,4 +19,3 @@ D: M . transpose(M);
 
 al: determinant(M) - 1;
 be: 1/(2*determinant(M))*(mattrace(D) - 2*determinant(M));
-be: factor(be);
