@@ -5,6 +5,7 @@
 #include <he/argv.h>
 #include <he/area.h>
 #include <he/array.h>
+#include <he/bending.h>
 #include <he/err.h>
 #include <he/off.h>
 #include <he/he.h>
@@ -24,11 +25,18 @@ static void usg(void) {
 }
 
 static char **argv;
-static real *x, *y, *z;
+static real *x, *y, *z, *area;
 static int nv, nt;
 static He *he;
 static int Lim; /* are limits set? */
 static real lo, hi;
+
+static int divide(int n, const real *a, const real *b, /**/ real *c) {
+    int i;
+    for (i = 0; i < n; i ++)
+        c[i] = a[i] / b[i];
+    return HE_OK;
+}
 
 static int ver(const real *a) {
     if (Lim)
@@ -63,8 +71,30 @@ static int q_area(void) {
     return HE_OK;
 }
 
-static const char *Name[] = {"x", "y", "z", "area"};
-static int (*Func[])(void) = {q_x, q_y, q_z, q_area};
+static int q_bending(void) {
+    Bending *b;
+    BendingParam p;
+    real *eng, *deng;
+
+    MALLOC(nv, &deng);
+    p.Kb = 1;
+    p.C0 = p.Kad = p.DA0D = 0;
+    
+    bending_ini("juelicher_xin", p, he, &b);
+    bending_energy(b, he, x, y, z);
+    bending_energy_ver(b, &eng);
+    he_area_ver(he, x, y, z, area);
+
+    divide(nv, eng, area, deng);
+    
+    ver(deng);
+    
+    bending_fin(b);
+    FREE(deng);
+}
+
+static const char *Name[] = {"x", "y", "z", "area", "bending"};
+static int (*Func[])(void) = {q_x, q_y, q_z, q_area, q_bending};
 
 int eputs(const char *s) {
     fputs(s, stderr);
@@ -96,6 +126,8 @@ int main(__UNUSED int c, char **v) {
     y_ini("/dev/stdin", &he, &x, &y, &z);
     nv = he_nv(he);
     nt = he_nt(he);
+    MALLOC(nv, &area);
+    he_area_ver(he, x, y, z, area);
 
     n = sizeof(Name)/sizeof(Name[0]);
     for (i = 0; i < n; i++) {
@@ -111,6 +143,7 @@ int main(__UNUSED int c, char **v) {
         eputs(Name[i]);
     return 1;
 ok:
+    FREE(area);
     y_fin(he, x, y, z);
     return 0;
 }
