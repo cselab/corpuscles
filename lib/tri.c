@@ -207,7 +207,7 @@ int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const r
     real x, yx, yy;
 
     tri_3to2(a, b, c, /**/ &i, &jx, &jy);
-    tri_3to2(a, b, c, /**/ &x, &yx, &yy);
+    tri_3to2(u, v, w, /**/ &x, &yx, &yy);
 
     return tri_2d_invariants(i, jx, jy,   x, yx, yy, /**/ al, be);
 }
