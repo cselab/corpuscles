@@ -43,6 +43,7 @@ he/gts.h\
 he/hash.h\
 he/he.h\
 he/H.h\
+he/invariants.h\
 he/laplace.h\
 he/macro.h\
 he/memory.h\

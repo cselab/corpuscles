@@ -47,6 +47,7 @@ f/volume_normal.s.o\
 f/wlc.s.o\
 gts.s.o\
 H.s.o\
+invariants.s.o\
 laplace.s.o\
 normal.s.o\
 off.s.o\
@@ -108,6 +109,7 @@ f/volume_normal.d.o\
 f/wlc.d.o\
 gts.d.o\
 H.d.o\
+invariants.d.o\
 laplace.d.o\
 normal.d.o\
 off.d.o\
@@ -169,6 +171,7 @@ f/volume_normal.l.o\
 f/wlc.l.o\
 gts.l.o\
 H.l.o\
+invariants.l.o\
 laplace.l.o\
 normal.l.o\
 off.l.o\
