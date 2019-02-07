@@ -71,7 +71,7 @@ int main(int __UNUSED argc, char *argv[]) {
     argv++;
     if (util_eq(*argv, "-h"))
         usg();
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
 
     argv_str(&argv, name);
     force_argv(name, &argv, he,  &force);
