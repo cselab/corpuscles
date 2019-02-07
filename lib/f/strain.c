@@ -23,7 +23,7 @@
 
 #define BEGIN                                                   \
 for (t = 0; t < nt; t++) {                                      \
-    get_ijk(t, he, /**/ &i, &j, &k);                            \
+    he_tri_ijk(he, t, /**/ &i, &j, &k);                         \
     get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);           \
     get3(x, y, z, i, j, /**/ k, a, b, c);
 #define END }
@@ -31,8 +31,6 @@ for (t = 0; t < nt; t++) {                                      \
 static const real EPS = 1e-8;
 
 struct T {
-    int nt, nv;
-    int *t0, *t1, *t2;
     He *he;
     real *x, *y, *z, *eng, *I1, *I2;
     real *I1t, *I2t, *engt; /* on triangles */
@@ -45,34 +43,12 @@ static void zero(int n, real *a) {
         a[i] = 0;
 }
 
-static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
-    *pi = i; *pj = j; *pk = k;
-    return HE_OK;
-}
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
-}
-
-static int tri_copy(He *he, int *a, int *b, int *c) {
-    int i, n;
-    int *x, *y, *z;
-    n = he_nt(he);
-    he_T(he, &x, &y, &z);
-    for (i = 0; i < n; i++) {
-        a[i] = x[i];
-        b[i] = y[i];
-        c[i] = z[i];
-    }
     return HE_OK;
 }
 
@@ -91,10 +67,6 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
     nv = he_nv(he);
     nt = he_nt(he);
 
-    MALLOC(nt, &q->t0);
-    MALLOC(nt, &q->t1);
-    MALLOC(nt, &q->t2);
-
     MALLOC(nv, &q->eng);
     MALLOC(nv, &q->I1);
     MALLOC(nv, &q->I2);
@@ -105,9 +77,6 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 
     strain_ini(name, param, &q->strain);
 
-    tri_copy(he, /**/ q->t0, q->t1, q->t2);
-    q->nv = nv;
-    q->nt = nt;
     q->he = he;
     q->x = x;
     q->y = y;
@@ -155,7 +124,6 @@ int he_f_strain_argv(char ***p, He *he, T **pq) {
 int he_f_strain_fin(T *q) {
     y_fin(q->he, q->x, q->y, q->z);
     strain_fin(q->strain);
-    FREE(q->t0); FREE(q->t1); FREE(q->t2);
     FREE(q->eng); FREE(q->I1); FREE(q->I2);
     FREE(q->I1t); FREE(q->I2t); FREE(q->engt);
     FREE(q);
@@ -194,22 +162,15 @@ static int assert_force(const real a[3], const real b[3], const real c[3],
 
 int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, const real *z, /**/
                             real *fx, real *fy, real *fz) {
-    He *he;
     const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3], da[3], db[3], dc[3];
     int nv, nt, t;
     int i, j, k;
-
-    int *t0, *t1, *t2;
-    t0 = q->t0; t1 = q->t1; t2 = q->t2;
-
-    he = q->he;
+    He *he;
+    he = q->he; nv = he_nv(he); nt = he_nt(he);
+    
     x0 = q->x; y0 = q->y; z0 = q->z;
-
-    nv = q->nv;
-    nt = q->nt;
-
     if (nv != he_nv(he0))
         ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
     if (nt != he_nt(he0))
@@ -234,11 +195,6 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     int i, j, k;
     real e0, e, *eng, *engt;
     int *t0, *t1, *t2;
-    t0 = q->t0; t1 = q->t1; t2 = q->t2;
-
-    he = q->he;
-    nv = q->nv;
-    nt = q->nt;
 
     if (nv != he_nv(he0))
         ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
@@ -260,18 +216,13 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
 }
 
 int he_f_strain_invariants(T *q, const real *x, const real *y, const real *z, /**/ real **pI1, real **pI2) {
-    He *he;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
     int nt, nv, t;
     int i, j, k;
     real *I1, *I2, I10, I20;
-    int *t0, *t1, *t2;
-    t0 = q->t0; t1 = q->t1; t2 = q->t2;
-
-    he = q->he;
-    nt = he_nt(he);
-    nv = he_nv(he);
+    He *he;
+    he = q->he; nv = he_nv(he); nt = he_nt(he);
 
     I1 = q->I1;
     I2 = q->I2;
@@ -291,18 +242,13 @@ int he_f_strain_invariants(T *q, const real *x, const real *y, const real *z, /*
 }
 
 int he_f_strain_invariants_tri(T *q, const real *x, const real *y, const real *z, /**/ real **pI1, real **pI2) {
-    He *he;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
-    int nt, nv, t;
+    int nt, t;
     int i, j, k;
     real *I1t, *I2t, I10, I20;
-    int *t0, *t1, *t2;
-
-    t0 = q->t0; t1 = q->t1; t2 = q->t2;
-    he = q->he;
-    nt = he_nt(he);
-    nv = he_nv(he);
+    He *he;
+    he = q->he; nt = he_nt(he);
 
     I1t = q->I1t;
     I2t = q->I2t;
