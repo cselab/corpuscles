@@ -1,4 +1,5 @@
 #include "real.h"
+#include "he/err.h"
 
 real array_min(int n, const real a[]) {
     int i;
@@ -16,7 +17,7 @@ real array_max(int n, const real a[]) {
     return x;
 }
 
-real array_zero(int n, real a[]) {
+int array_zero(int n, real a[]) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
