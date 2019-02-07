@@ -3,6 +3,7 @@
 #include "real.h"
 
 #include "he/argv.h"
+#include "he/array.h"
 #include "he/macro.h"
 #include "he/memory.h"
 #include "he/err.h"
@@ -36,12 +37,6 @@ struct T {
     real *I1t, *I2t, *engt; /* on triangles */
     Strain *strain;
 };
-
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++)
-        a[i] = 0;
-}
 
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
@@ -206,7 +201,7 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     eng = q->eng;
     engt = q->engt;
 
-    zero(nv, eng);
+    array_zero(nv, eng);
     BEGIN {
         e0 = strain_energy(q->strain, a0, b0, c0, a, b, c);
         engt[t] = e0;
@@ -227,8 +222,8 @@ int he_f_strain_invariants(T *q, const real *x, const real *y, const real *z, /*
 
     I1 = q->I1;
     I2 = q->I2;
-    zero(nv, I1);
-    zero(nv, I2);
+    array_zero(nv, I1);
+    array_zero(nv, I2);
 
     BEGIN {
         strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
