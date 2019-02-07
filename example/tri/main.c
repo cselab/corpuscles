@@ -69,6 +69,16 @@ int main(__UNUSED int argc, const char **v0) {
         scl(&ux); scl(&vx); scl(&vy);
         tri_2d_invariants(ax, bx, by, ux, vx, vy, /**/ &al, &be);
         printf("%g %g\n", al, be);
+    } else if (eq(op, "al")) {
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        tri_3d_invariants(a, b, c, u, v, w, /**/ &al, NULL);
+        printf("%g\n", al);
+    } else if (eq(op, "be")) {
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        tri_3d_invariants(a, b, c, u, v, w, /**/ NULL, &be);
+        printf("%g\n", be);
     } else if (eq(op, "3d_invariants")) {
         vec(a); vec(b); vec(c);
         vec(u); vec(v); vec(w);
