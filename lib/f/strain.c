@@ -24,6 +24,7 @@
 static const real EPS = 1e-8;
 
 struct T {
+    int nt, nv;
     He *he;
     real *x, *y, *z, *eng, *I1, *I2;
     real *I1t, *I2t, *engt; /* on triangles */
@@ -79,6 +80,8 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 
     strain_ini(name, param, &q->strain);
 
+    q->nv = nv;
+    q->nt = nt;
     q->he = he;
     q->x = x;
     q->y = y;
@@ -174,8 +177,8 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
     he = q->he;
     x0 = q->x; y0 = q->y; z0 = q->z;
 
-    nv = he_nv(he);
-    nt = he_nt(he);
+    nv = q->nv;
+    nt = q->nt;
 
     if (nv != he_nv(he0))
         ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
@@ -201,13 +204,13 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     He *he;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
-    int nt, nv, t;
+    int nv, nt, t;
     int i, j, k;
     real e0, e, *eng, *engt;
 
     he = q->he;
-    nt = he_nt(he);
-    nv = he_nv(he);
+    nv = q->nv;
+    nt = q->nt;
 
     if (nv != he_nv(he0))
         ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
