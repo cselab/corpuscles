@@ -177,6 +177,7 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
         ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
     BEGIN {
+        strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
         if (!assert_force(a, b, c, da, db, dc))
             ERR(HE_NUM,
                 "bad forces in triangle: %d [%d %d %d]", t, i, j, k);
@@ -188,13 +189,13 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
 }
 
 real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real *z) {
-    He *he;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
     int nv, nt, t;
     int i, j, k;
     real e0, e, *eng, *engt;
-    int *t0, *t1, *t2;
+    He *he;
+    he = q->he; nv = he_nv(he); nt = he_nt(he);
 
     if (nv != he_nv(he0))
         ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
