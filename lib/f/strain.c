@@ -82,7 +82,7 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
 }
 
 int he_f_strain_argv(char ***p, He *he, T **pq) {
-#   define PAR(f) \
+#   define PAR(f)                                       \
     do {                                                \
     if ((status = argv_real(p, &param.f)) != HE_OK)     \
         return status;                                  \
