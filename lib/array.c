@@ -19,6 +19,8 @@ real array_max(int n, const real a[]) {
 
 int array_zero(int n, real a[]) {
     int i;
+    if (n < 0)
+        ERR(HE_INDEX, "n=%d < 0", n);
     for (i = 0; i < n; i++)
         a[i] = 0;
     return HE_OK;
