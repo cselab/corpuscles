@@ -21,6 +21,13 @@
 #define T HeFStrain
 #define OUT HE_REAL_OUT
 
+#define BEGIN                                                   \
+for (t = 0; t < nt; t++) {                                      \
+    get_ijk(t, he, /**/ &i, &j, &k);                            \
+    get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);           \
+    get3(x, y, z, i, j, /**/ k, a, b, c);
+#define END }
+
 static const real EPS = 1e-8;
 
 struct T {
@@ -208,18 +215,14 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
     if (nt != he_nt(he0))
         ERR(HE_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        get3(x0, y0, z0, i, j, k, /**/ a0, b0, c0);
-        get3(x, y, z, i, j, k, /**/ a, b, c);
-        strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
+    BEGIN {
         if (!assert_force(a, b, c, da, db, dc))
             ERR(HE_NUM,
                 "bad forces in triangle: %d [%d %d %d]", t, i, j, k);
         vec_append(da, i, /**/ fx, fy, fz);
         vec_append(db, j, /**/ fx, fy, fz);
         vec_append(dc, k, /**/ fx, fy, fz);
-    }
+    } END;
     return HE_OK;
 }
 
@@ -247,15 +250,12 @@ real he_f_strain_energy(T *q, He* he0, const real *x, const real *y, const real 
     engt = q->engt;
 
     zero(nv, eng);
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
-        get3(x, y, z, i, j, /**/ k, a, b, c);
+    BEGIN {
         e0 = strain_energy(q->strain, a0, b0, c0, a, b, c);
         engt[t] = e0;
         eng[i] += e0/3; eng[j] += e0/3; eng[k] += e0/3;
         e += e0;
-    }
+    } END;
     return e;
 }
 
@@ -278,14 +278,11 @@ int he_f_strain_invariants(T *q, const real *x, const real *y, const real *z, /*
     zero(nv, I1);
     zero(nv, I2);
 
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
-        get3(x, y, z, i, j, /**/ k, a, b, c);
+    BEGIN {
         strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
         I1[i] += I10/3; I1[j] += I10/3; I1[k] += I10/3;
         I2[i] += I10/3; I2[j] += I20/3; I2[k] += I20/3;
-    }
+    } END;
 
     *pI1 = I1;
     *pI2 = I2;
@@ -301,7 +298,7 @@ int he_f_strain_invariants_tri(T *q, const real *x, const real *y, const real *z
     int i, j, k;
     real *I1t, *I2t, I10, I20;
     int *t0, *t1, *t2;
-    
+
     t0 = q->t0; t1 = q->t1; t2 = q->t2;
     he = q->he;
     nt = he_nt(he);
@@ -310,14 +307,11 @@ int he_f_strain_invariants_tri(T *q, const real *x, const real *y, const real *z
     I1t = q->I1t;
     I2t = q->I2t;
 
-    for (t = 0; t < nt; t++) {
-        get_ijk(t, he, /**/ &i, &j, &k);
-        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);
-        get3(x, y, z, i, j, /**/ k, a, b, c);
+    BEGIN {
         strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
         I1t[t] = I10;
         I2t[t] = I20;
-    }
+    } END;
 
     *pI1 = I1t;
     *pI2 = I2t;
