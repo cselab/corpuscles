@@ -53,7 +53,7 @@ int main() {
     real r[3], f[3], *fx, *fy, *fz, *ff;
     real *hh, *area;
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
 
     MALLOC(n, &rr);

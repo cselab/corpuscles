@@ -53,7 +53,7 @@ int main() {
     Ten *dn;
     real *trace, *determinant, *r;
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     MALLOC(n, &nx); MALLOC(n, &ny); MALLOC(n, &nz);
     MALLOC(n, &dn);

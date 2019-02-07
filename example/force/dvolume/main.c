@@ -25,7 +25,7 @@ static void main0() {
 }
 
 int main() {
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
 
     he_f_dvolume_ini(he, &dvolume);

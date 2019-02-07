@@ -37,7 +37,7 @@ int main0() {
 int main(int __UNUSED argc, char *v[]) {
     argv = v; argv++;
 
-    y_ini("/dev/stdin", /**/ &he, &x, &y, &z);
+    y_inif(stdin, /**/ &he, &x, &y, &z);
 
     nv = he_nv(he);
     MALLOC(nv, &area);

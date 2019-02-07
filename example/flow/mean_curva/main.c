@@ -42,7 +42,7 @@ int main(void) {
     int i;
     const char *name = "meyer_xin";
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
 
     dt = 1e-5;

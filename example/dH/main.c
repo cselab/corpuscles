@@ -27,7 +27,7 @@ int main() {
     param.dh = ddh;
     param.da = dda;
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     dh_ini(he, &dh);
     CALLOC(n, &fx); CALLOC(n, &fy); CALLOC(n, &fz); MALLOC(n, &ff);

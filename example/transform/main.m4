@@ -40,7 +40,7 @@ int main(__UNUSED int argc, const char **v) {
     if (*argv == NULL)
 	ER("mssing OP");
     op = *argv++;
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
 
     if (eq(op, "centroid")) {

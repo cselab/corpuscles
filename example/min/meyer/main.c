@@ -293,7 +293,7 @@ int main(int __UNUSED argc, const char *v[]) {
   arg();
   srand(time(NULL));
   
-  y_ini("/dev/stdin", &he, &XX, &YY, &ZZ);
+  y_inif(stdin, &he, &XX, &YY, &ZZ);
   NV = he_nv(he);
   NE = he_ne(he);
   NT = he_nt(he);
