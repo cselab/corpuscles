@@ -1,0 +1,4 @@
+# nTEST: lim
+r=`he.path`/sph/laplace/0.off
+i=`he.path`/rbc/laplace/0.off
+he.run ./main strain $r linear 1 2 3 4 5 6 < $i | uscale 1e6 > main.out.txt
