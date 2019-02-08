@@ -27,7 +27,7 @@ struct T {
     real *al, *be; /* on triangles */
 };
 
-int invariants_ini(FILE *f, /**/ T **pq) {
+int invariants_inif(FILE *f, /**/ T **pq) {
     T *q;
     int n;
     real *al, *be;
@@ -43,6 +43,17 @@ int invariants_ini(FILE *f, /**/ T **pq) {
 
     *pq = q;
 
+    return HE_OK;
+}
+
+int invariants_ini(const char *path, T **pq) {
+    FILE *f;
+    if ((f = fopen(path, "r")) == NULL)
+        ERR(HE_IO, "fail to open '%s'", path);
+    if (invariants_inif(f, pq) != HE_OK)
+        ERR(HE_IO, "off_fini failed for '%s", path);
+    if (fclose(f) != 0)
+        ERR(HE_IO, "fail to close '%s'", path);
     return HE_OK;
 }
 

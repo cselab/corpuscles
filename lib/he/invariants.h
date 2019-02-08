@@ -3,8 +3,8 @@
 typedef struct He He;
 typedef struct T T;
 
-int invariants_inif(const char *off, /**/ T**);
-int invariants_ini(FILE *off, /**/ T**);
+int invariants_ini(const char *off, /**/ T**);
+int invariants_inif(FILE *off, /**/ T**);
 
 int invariants_fin(T*);
 
