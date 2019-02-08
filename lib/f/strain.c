@@ -81,7 +81,7 @@ int he_f_strain_ini(const char *off, const char *name, StrainParam param, T **pq
     return HE_OK;
 }
 
-int he_f_strain_argv(char ***p, He *he, T **pq) {
+int he_f_strain_argv(char ***p, __UNUSED He *he, T **pq) {
 #   define PAR(f)                                       \
     do {                                                \
     if ((status = argv_real(p, &param.f)) != HE_OK)     \
@@ -157,7 +157,6 @@ static int assert_force(const real a[3], const real b[3], const real c[3],
 
 int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, const real *z, /**/
                             real *fx, real *fy, real *fz) {
-    const real *x0, *y0, *z0;
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3], da[3], db[3], dc[3];
     int nv, nt, t;
@@ -165,7 +164,6 @@ int he_f_strain_force(T *q, __UNUSED He* he0, const real *x, const real *y, cons
     He *he;
     he = q->he; nv = he_nv(he); nt = he_nt(he);
     
-    x0 = q->x; y0 = q->y; z0 = q->z;
     if (nv != he_nv(he0))
         ERR(HE_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
     if (nt != he_nt(he0))

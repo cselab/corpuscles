@@ -26,20 +26,6 @@ static int env_area(void) {
 static int small_v(const real a[3]) { return vec_abs(a) < EPS; }
 static int small(real a) { return fabs(a) < EPS; }
 
-static int mean(real ax, real ay, real bx, real by, real cx, real cy, /**/ real *mx, real *my) {
-    *mx = (ax + bx + cx)/3;
-    *my = (ay + by + cy)/3;
-    return HE_OK;
-}
-static int minus(real ax, real ay, real bx, real by, /**/ real *cx, real *cy) {
-    *cx = ax - bx;
-    *cy = ay - by;
-    return HE_OK;
-}
-static real cross(real ax, real ay, real bx, real by) {
-    return ax*by - ay*bx;
-}
-
 static int assert_force_3d(const real a[3], const real b[3], const real c[3],
                            const real da[3], const real db[3], const real dc[3]) {
     /* check total force and  torque */
@@ -128,7 +114,7 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
                      const real a0[3], const real b0[3], const real c0[3],
                      const real a[3], const real b[3], const real c[3],
                      real *p_eng, real *p_deng) {
-    real bx, _by, cx, cy, ux, wx, wy;
+    real bx, cx, cy, ux, wx, wy;
     real I1, I2, A, eng, deng;
 
     tri_3to2(a0, b0, c0, /**/ &bx, &cx, &cy);
@@ -152,7 +138,7 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
 int strain_invariants(const real a0[3], const real b0[3], const real c0[3],
                       const real a[3], const real b[3], const real c[3],
                       real *I1, real *I2) {
-    real bx, _by, cx, cy, ux, wx, wy;
+    real bx, cx, cy, ux, wx, wy;
 
     tri_3to2(a0, b0, c0, /**/ &bx, &cx, &cy);
     tri_3to2(a, b, c, /**/ &ux, &wx, &wy);

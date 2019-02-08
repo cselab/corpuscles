@@ -13,16 +13,18 @@
 #define T Invariants
 
 #define BEGIN                                                   \
-for (t = 0; t < nt; t++) {                                      \
-    he_tri_ijk(he, t, /**/ &i, &j, &k);                         \
-    get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);           \
-    get3(x, y, z, i, j, /**/ k, a, b, c);
+    he = q->he;                                                 \
+    nt = he_nt(he);                                             \
+    for (t = 0; t < nt; t++) {                                  \
+        he_tri_ijk(he, t, /**/ &i, &j, &k);                     \
+        get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);       \
+        get3(x, y, z, i, j, /**/ k, a, b, c);
 #define END }
 
 struct T {
     He *he;
     real *x, *y, *z;
-    real *al, *be;
+    real *al, *be; /* on triangles */
 };
 
 int invariants_ini(FILE *f, /**/ T **pq) {
@@ -32,14 +34,14 @@ int invariants_ini(FILE *f, /**/ T **pq) {
     He *he;
 
     MALLOC(1, &q);
-
     y_inif(f, &he, &q->x, &q->y, &q->z);
-    n = he_nv(he);
+    n = he_nt(he);
     MALLOC(n, &al);
     MALLOC(n, &be);
-
     q->he = he;
     q->al = al; q->be = be;
+
+    *pq = q;
 
     return HE_OK;
 }
@@ -61,12 +63,30 @@ static int get3(const real *x, const real *y, const real *z,
     return HE_OK;
 }
 
-int invariants_al(T *q, const real *x, const real *y, const real *z, real **a) {
-
-
+int invariants_al(T *q, const real *x, const real *y, const real *z, real **pq) {
+    int t, i, j, k, nt;
+    real a[3], b[3], c[3], a0[3], b0[3], c0[3];
+    real v;
+    He *he;
+    
+    BEGIN {
+        tri_3d_invariants(a0, b0, c0, a, b, c,  &v, NULL);
+        q->al[t] = v;
+    } END;
+    *pq = q->al;
     return HE_OK;
 }
 
-int invariants_be(T *q, const real *x, const real *y, const real *z, real **a) {
+int invariants_be(T *q, const real *x, const real *y, const real *z, real **pq) {
+    int t, i, j, k, nt;
+    real a[3], b[3], c[3], a0[3], b0[3], c0[3];
+    real v;
+    He *he;
+    
+    BEGIN {
+        tri_3d_invariants(a0, b0, c0, a, b, c,  NULL, &v);
+        q->be[t] = v;
+    } END;
+    *pq = q->be;
     return HE_OK;
 }
