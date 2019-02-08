@@ -18,7 +18,7 @@ int main() {
     real *x, *y, *z;
     Ten *f;
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     dnormal_ini(he, &dnormal);
     dnormal_apply(dnormal, he, x, y, z, /**/ &f);

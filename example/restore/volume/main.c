@@ -21,7 +21,7 @@ static void main0() {
 
 int main() {
     real V;
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
     V = 5.0;
     restore_ini(V, he, &restore);

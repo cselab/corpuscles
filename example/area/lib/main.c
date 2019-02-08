@@ -15,7 +15,7 @@ int main() {
     real A;
     real *area;
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
 
     n = he_nt(he);
     MALLOC(n, &area);

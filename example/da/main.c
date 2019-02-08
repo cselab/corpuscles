@@ -27,7 +27,7 @@ int main() {
     dAParam param;
     param.da = dda;
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     da_ini(he, &da);
 

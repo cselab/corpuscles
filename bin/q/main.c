@@ -6,6 +6,7 @@
 #include <he/area.h>
 #include <he/array.h>
 #include <he/bending.h>
+#include <he/invariants.h>
 #include <he/err.h>
 #include <he/off.h>
 #include <he/he.h>
@@ -79,22 +80,48 @@ static int q_bending(void) {
     MALLOC(nv, &deng);
     p.Kb = 1;
     p.C0 = p.Kad = p.DA0D = 0;
-    
+
     bending_ini("juelicher_xin", p, he, &b);
     bending_energy(b, he, x, y, z);
     bending_energy_ver(b, &eng);
     he_area_ver(he, x, y, z, area);
 
     divide(nv, eng, area, deng);
-    
+
     ver(deng);
-    
+
     bending_fin(b);
     FREE(deng);
+    return HE_OK;
 }
 
-static const char *Name[] = {"x", "y", "z", "area", "bending"};
-static int (*Func[])(void) = {q_x, q_y, q_z, q_area, q_bending};
+static int q_al(void) {
+    real *i;
+    Invariants *invariants;
+    char off[1024];
+
+    argv_str(&argv, off);
+    invariants_ini(off, &invariants);
+    invariants_al(invariants, x, y, z, &i);
+    ver(i);
+    invariants_fin(invariants);
+    return HE_OK;
+}
+
+static int q_be(void) {
+    real *i;
+    Invariants *invariants;
+    char off[1024];
+
+    argv_str(&argv, off);
+    invariants_be(invariants, x, y, z, &i);
+    ver(i);
+    invariants_fin(invariants);
+    return HE_OK;
+}
+
+static const char *Name[] = {"x", "y", "z", "area", "bending", "al", "be"};
+static int (*Func[])(void) = {q_x, q_y, q_z, q_area, q_bending, q_al, q_be};
 
 int eputs(const char *s) {
     fputs(s, stderr);

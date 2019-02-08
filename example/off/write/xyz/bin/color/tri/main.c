@@ -17,7 +17,7 @@ static real lo, hi, *a;
 
 int main() {
     lo = 0; hi = 0.005;
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
 
     nt = he_nt(he);
     CALLOC(nt, &a);

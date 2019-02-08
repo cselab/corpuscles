@@ -17,7 +17,7 @@ int main() {
     real *lx, *ly, *lz, *area;
     real sx, sy, sz, A;
 
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     laplace_ini(he, &laplace);
     laplace_apply(laplace, he, x, y, z, &lx, &ly, &lz, &area);
