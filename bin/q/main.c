@@ -91,10 +91,18 @@ static int q_bending(void) {
     
     bending_fin(b);
     FREE(deng);
+    return HE_OK;
 }
 
-static const char *Name[] = {"x", "y", "z", "area", "bending"};
-static int (*Func[])(void) = {q_x, q_y, q_z, q_area, q_bending};
+static int q_al(void) {
+    ret
+}
+
+static int q_be(void) {
+}
+
+static const char *Name[] = {"x", "y", "z", "area", "bending", "al", "be"};
+static int (*Func[])(void) = {q_x, q_y, q_z, q_area, q_bending, q_al, q_be};
 
 int eputs(const char *s) {
     fputs(s, stderr);
