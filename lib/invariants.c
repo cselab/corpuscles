@@ -42,3 +42,11 @@ int invariants_fin(T *q) {
     FREE(q);
     return HE_OK;
 }
+
+int invariants_al(T *q, const real *x, const real *y, const real *z, real **a) {
+    return HE_OK;
+}
+
+int invariants_be(T *q, const real *x, const real *y, const real *z, real **a) {
+    return HE_OK;
+}
