@@ -79,26 +79,27 @@ static int q_bending(void) {
     MALLOC(nv, &deng);
     p.Kb = 1;
     p.C0 = p.Kad = p.DA0D = 0;
-    
+
     bending_ini("juelicher_xin", p, he, &b);
     bending_energy(b, he, x, y, z);
     bending_energy_ver(b, &eng);
     he_area_ver(he, x, y, z, area);
 
     divide(nv, eng, area, deng);
-    
+
     ver(deng);
-    
+
     bending_fin(b);
     FREE(deng);
     return HE_OK;
 }
 
 static int q_al(void) {
-    ret
+    return HE_OK;
 }
 
 static int q_be(void) {
+    return HE_OK;
 }
 
 static const char *Name[] = {"x", "y", "z", "area", "bending", "al", "be"};
