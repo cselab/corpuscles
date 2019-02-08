@@ -6,9 +6,18 @@
 #include "he/invariants.h"
 #include "he/err.h"
 #include "he/memory.h"
+#include "he/vec.h"
+#include "he/tri.h"
 #include "he/y.h"
 
 #define T Invariants
+
+#define BEGIN                                                   \
+for (t = 0; t < nt; t++) {                                      \
+    he_tri_ijk(he, t, /**/ &i, &j, &k);                         \
+    get3(q->x, q->y, q->z, i, j, k, /**/ a0, b0, c0);           \
+    get3(x, y, z, i, j, /**/ k, a, b, c);
+#define END }
 
 struct T {
     He *he;
@@ -43,7 +52,18 @@ int invariants_fin(T *q) {
     return HE_OK;
 }
 
+static int get3(const real *x, const real *y, const real *z,
+                int i, int j, int k,  /**/
+                real a[3], real b[3], real c[3]) {
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    return HE_OK;
+}
+
 int invariants_al(T *q, const real *x, const real *y, const real *z, real **a) {
+
+
     return HE_OK;
 }
 
