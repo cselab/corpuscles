@@ -27,11 +27,8 @@ gvv: dot(rv, rv) $
 g: matrix([guu, guv], [guv, gvv]) $
 g: trigsimp(g);
 
-pp: diff(r, 'u) $
-qq: diff(r, 'v) $
-
-[p0, q0]: [pp, qq], sph $
-[p1, q1]: [pp, qq], elp $
+[p0, q0]: [ru, rv], sph $
+[p1, q1]: [ru, rv], elp $
 
 M: matrix(
   [vabs(p1)/vabs(p0), 0],
