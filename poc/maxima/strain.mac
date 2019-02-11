@@ -6,6 +6,8 @@ dot(a, b):= a . b $
 
 assume(sin('u) > 0);
 
+(U: 1, V: 2, X: 1, Y: 2, Z: 3);
+
 rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q], 'a*q + 'b*q^3 + 'c*q^5)] $
 sph: ['v = 0, 'F = lambda([q],   q)] $
 elp: ['v = 0, 'F = lambda([q], 2*q)] $
