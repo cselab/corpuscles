@@ -1,7 +1,8 @@
 load("pdiff") $
 load("nchrpl") $
 
-vabs(a):= sqrt(a.a);
+vabs(a):= sqrt(dot(a, a)) $
+dot(a, b):= a . b $
 
 assume(sin('u) > 0);
 
@@ -16,6 +17,13 @@ y: sin('u)*cos('v) $
 z: F(cos('u)) $
 
 r: [x, y, z] $
+ru: diff(r, 'u) $
+rv: diff(r, 'v) $
+guu: dot(ru, ru) $
+guv: dot(ru, rv) $
+gvv: dot(rv, rv) $
+g: matrix([guu, guv], [guv, gvv]) $
+g: trigsimp(g);
 
 pp: diff(r, 'u) $
 qq: diff(r, 'v) $
@@ -31,7 +39,8 @@ S: transpose(M) . M $
 al: determinant(M) - 1 $
 be: 1/(2*determinant(M)) * (mattrace(S) - 2*determinant(M));
 
-eng: 'Ka/2*(al^2 + 'a3*al^3 + 'a4*al^4) + 'mu*(be + 'b1*al*be + 'b2*be^2) $
+f(al, be):='Ka/2*(al^2 + 'a3*al^3 + 'a4*al^4) + 'mu*(be + 'b1*al*be + 'b2*be^2) $
+eng: f(al, be);
 
 eps: 1e-9;
 lo:  eps;
