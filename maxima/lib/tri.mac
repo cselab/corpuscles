@@ -50,3 +50,8 @@ tri_2d_invariants(bx, cx, cy, ux, wx, wy):=block([px, py, qy, al, be],
   al: px*qy - 1,
   be: (qy^2-2*px*qy+py^2+px^2)/(2*px*qy),
   [al, be]);
+
+tri_3d_invariants(a, b, c, u, v, w):=block([i, jx, jy, x, yx, yy],
+  [i, jx, jy]: tri_3to2(a, b, c),
+  [x, yx, yy]: tri_3to2(u, v, w),
+  tri_2d_invariants(i, jx, jy, x, yx, yy));

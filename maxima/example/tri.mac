@@ -34,3 +34,8 @@ A1: x * v / 2;
 radcan(A0/A1);
 
 tri_2d_invariants(1, 2, 3, 4, 5, 6), numer;
+
+vec_any(a); vec_any(b); vec_any(c);
+vec_any(u); vec_any(v); vec_any(w);
+
+tri_3d_invariants(a, b, c , u, v, w), numer;
