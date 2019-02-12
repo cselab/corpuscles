@@ -103,7 +103,7 @@ static int q_al(void) {
     argv_str(&argv, off);
     invariants_ini(off, &invariants);
     invariants_al(invariants, x, y, z, &i);
-    ver(i);
+    tri(i);
     invariants_fin(invariants);
     return HE_OK;
 }
@@ -114,8 +114,9 @@ static int q_be(void) {
     char off[1024];
 
     argv_str(&argv, off);
+    invariants_ini(off, &invariants);
     invariants_be(invariants, x, y, z, &i);
-    ver(i);
+    tri(i);
     invariants_fin(invariants);
     return HE_OK;
 }
