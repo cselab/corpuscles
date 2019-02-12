@@ -208,3 +208,11 @@ int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const r
 
     return tri_2d_invariants(i, jx, jy,   x, yx, yy, /**/ al, be);
 }
+
+int tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    real A, A0;
+    A0 = tri_area(a, b, c);
+    A  = tri_area(u, v, w);
+    NOT_ZERO(A0);
+    return A/A0 - 1;
+}
