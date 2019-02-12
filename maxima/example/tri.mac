@@ -32,3 +32,5 @@ A0: tri_area(a, b, c);
 A1: x * v / 2;
 
 radcan(A0/A1);
+
+tri_2d_invariants(1, 2, 3, 4, 5, 6), numer;

@@ -48,5 +48,5 @@ tri_2d_invariants(bx, cx, cy, ux, wx, wy):=block([px, py, qy, al, be],
   py: -(cx*ux-bx*wx)/(bx*cy),
   qy: wy/cy,
   al: px*qy - 1,
-  be: (qy^2-2*px*qy+py^2+px^2)/(2*px*qy)
+  be: (qy^2-2*px*qy+py^2+px^2)/(2*px*qy),
   [al, be]);
