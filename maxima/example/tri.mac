@@ -39,3 +39,12 @@ vec_any(a); vec_any(b); vec_any(c);
 vec_any(u); vec_any(v); vec_any(w);
 
 tri_3d_invariants(a, b, c , u, v, w), numer;
+
+kill(a, b, c, u, v, w);
+
+vec_ini(a); vec_ini(b); vec_ini(c);
+vec_ini(u); vec_ini(v); vec_ini(w);
+
+al: tri_3d_invariants(a, b, c , u, v, w)[1];
+al0: tri_area(u, v, w)/tri_area(a, b, c) - 1;
+radcan(al / al0);
