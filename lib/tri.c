@@ -182,9 +182,7 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
     return HE_OK;
 }
 
-int tri_2d_invariants(real bx, real cx, real cy,
-                      real ux, real wx, real wy, /**/
-                      real *al, real *be) {
+int tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/ real *al, real *be) {
 #   define sq(x) ((x)*(x))
 #   define SET(key, val) if ((key) != NULL) *(key) = (val)
     real px, py, qy;
@@ -203,8 +201,7 @@ int tri_2d_invariants(real bx, real cx, real cy,
 #   undef SET
 }
 
-int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
-                      /**/ real *al, real *be) {
+int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *al, real *be) {
     real i, jx, jy;
     real x, yx, yy;
 
