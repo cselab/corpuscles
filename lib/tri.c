@@ -151,8 +151,7 @@ int tri_list(const real a[3], const real b[3], const real c[3],
     return HE_OK;
 }
 
-int tri_3to2(const real a[3], const real b[3], const real c[3],
-             /**/ real *ux, real *wx, real *wy) {
+int tri_3to2(const real a[3], const real b[3], const real c[3], /**/ real *ux, real *wx, real *wy) {
     real u[3], v[3], n[3], ey[3], nx[3], ny[3];
     vec_minus(b, a, /**/ u);
     vec_minus(c, a, /**/ v);
@@ -162,8 +161,7 @@ int tri_3to2(const real a[3], const real b[3], const real c[3],
     vec_cross(n, u,  ey);
     vec_norm(ey, ny);
 
-    *ux = vec_dot(u, nx); /* TODO */
-
+    *ux = vec_dot(u, nx);
     *wx = vec_dot(v, nx);
     *wy = vec_dot(v, ny);
     return HE_OK;
