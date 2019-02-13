@@ -1,0 +1,16 @@
+bx: b;
+cy: A / b;
+cx: sqrt(c^2 - cy^2);
+
+ux: u;
+wy: B / u;
+wx: sqrt(w^2 - wy^2);
+
+be: (bx*cy*(wy^2/cy^2-(2*ux*wy)/(bx*cy)+(bx*wx-cx*ux)^2/(bx^2*cy^2)+ux^2/bx^2))/(2*ux*wy);
+
+load("scifac");
+
+be: gcfac(expand(radcan(be)));
+
+factor(be), b = b*sqrt(A), c = c*sqrt(A), u = u*sqrt(B), w = w*sqrt(B);
+
