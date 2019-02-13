@@ -92,5 +92,3 @@ tri_beta(a, b00, c00, u, v00, w00):= block([A, B, b0, c0, v0, w0, b, c, v, w],
   w: vec_dot(w0, w0)/(2*B),
 
   -(2*sqrt((b*c-1)*(v*w-1))-b*w-c*v+2)/2);
-
-
