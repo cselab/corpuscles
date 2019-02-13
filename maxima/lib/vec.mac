@@ -54,6 +54,3 @@ vec_angle(a, b):=block([n, x, y, ang],
   atan2(y, x));
 
 vec_arg([L]):=printf(true, "~{~f ~}~%", flatten(L));
-
-
-
