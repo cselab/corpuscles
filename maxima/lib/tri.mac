@@ -55,3 +55,8 @@ tri_3d_invariants(a, b, c, u, v, w):=block([i, jx, jy, x, yx, yy],
   [i, jx, jy]: tri_3to2(a, b, c),
   [x, yx, yy]: tri_3to2(u, v, w),
   tri_2d_invariants(i, jx, jy, x, yx, yy));
+
+tri_alpha(a, b, c, u, v, w):= block([A0, A],
+  A: tri_area(a, b, c),
+  B : tri_area(u, v, w),
+  B/A - 1);

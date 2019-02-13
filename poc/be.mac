@@ -12,5 +12,15 @@ load("scifac");
 
 be: gcfac(expand(radcan(be)));
 
-factor(be), b = b*sqrt(A), c = c*sqrt(A), u = u*sqrt(B), w = w*sqrt(B);
+assume(b > 0, u > 0, A > 0, B > 0);
 
+radcan(be), b = b*sqrt(A), c = c*sqrt(A), u = u*sqrt(B), w = w*sqrt(B);
+
+
+be0: factor(expand(-(2*sqrt((b*c-1)*(b*c+1)*(u*w-1)*(u*w+1))-b^2*w^2-c^2*u^2+2)/2));
+
+radcan(be0 - be);
+
+be0, b^2 = b, c^2 = c, u^2 = u, w^2 = w;
+
+grind(be0);
