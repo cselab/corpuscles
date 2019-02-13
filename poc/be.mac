@@ -1,25 +1,24 @@
+load("scifac");
+assume(b > 0, u > 0, A > 0, B > 0);
+
 bx: b;
-cy: A / b;
+cy: 2*A/b;
 cx: sqrt(c^2 - cy^2);
 
 ux: u;
-wy: B / u;
+wy: 2*B/u;
 wx: sqrt(w^2 - wy^2);
 
-be: (bx*cy*(wy^2/cy^2-(2*ux*wy)/(bx*cy)+(bx*wx-cx*ux)^2/(bx^2*cy^2)+ux^2/bx^2))/(2*ux*wy);
-
-load("scifac");
+px: ux/bx;
+py: -(cx*ux-bx*wx)/(bx*cy);
+qy: wy/cy;
+be: (qy^2-2*px*qy+py^2+px^2)/(2*px*qy);
 
 be: gcfac(expand(radcan(be)));
-
-assume(b > 0, u > 0, A > 0, B > 0);
-
-radcan(be), b = b*sqrt(A), c = c*sqrt(A), u = u*sqrt(B), w = w*sqrt(B);
-
-
+be: radcan(be), b = b*sqrt(2*A), c = c*sqrt(2*A), u = u*sqrt(2*B), w = w*sqrt(2*B);
 be0: factor(expand(-(2*sqrt((b*c-1)*(b*c+1)*(u*w-1)*(u*w+1))-b^2*w^2-c^2*u^2+2)/2));
 
 radcan(be0 - be);
 
 be0: be0, b^2 = b, c^2 = c, u^2 = u, w^2 = w;
-be0, u = v;
+grind(be0), u = v;

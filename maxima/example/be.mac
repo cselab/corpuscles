@@ -1,0 +1,23 @@
+load("he/vec.mac") $
+load("he/tri.mac") $
+
+a: [0, 0, 0];
+u: [0, 0, 0];
+
+bz: cz: by: 0;
+vz: wz: vy: 0;
+
+bx: vx: 1;
+cx: wx: 1;
+cy: 1;
+
+vec_ini(b); vec_ini(c);
+vec_ini(v); vec_ini(w);
+
+assume(bx>0, cy>0, vx>0, wy>0);
+
+be: tri_3d_invariants(a, b, c , u, v, w)[2];
+be0: tri_beta(a, b, c, u, v, w);
+
+radcan(be), wy = 2, numer;
+radcan(be0), wy = 2, numer;
