@@ -60,3 +60,21 @@ tri_alpha(a, b, c, u, v, w):= block([A0, A],
   A: tri_area(a, b, c),
   B : tri_area(u, v, w),
   B/A - 1);
+
+tri_beta(a, b00, c00, u, v00, w00):= block([A, B, b0, c0, v0, w0, b, c, v, w],
+  A: tri_area(a, b00, c00),
+  B: tri_area(u, v00, w00),
+
+  b0: b00 - a,
+  c0: c00 - a,
+
+  v0: v00 - u,
+  w0: w00 - u,
+
+  b: vec_dot(b0, b0)/A,
+  c: vec_dot(c0, c0)/A,
+
+  v: vec_dot(v0, v0)/B,
+  w: vec_dot(w0, w0)/B,
+
+  -(2*sqrt((b*c-1)*(v*w-1))-b*w-c*v+2)/2);
