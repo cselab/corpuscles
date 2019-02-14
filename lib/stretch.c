@@ -13,6 +13,7 @@
 
 struct T {
     int nv;
+    int n;
     int *plus, *minus;
     real f;
 };
@@ -23,10 +24,13 @@ int stretch_argv(char ***v, He *he, real *x, real *y, real *z, /**/ T **pq) {
     *pq = q;
 }
 
+int stretch_fin(T *q) {
+    return HE_OK;
+}
+
 int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real *fx, real *fy, real *fz) {
     return HE_OK;
 }
 
-int stretch_fin(T *q) {
-    return HE_OK;
-}
+int stretch_n(T *q) { return q->n; }
+int stretch_f(T *q) { return q->f; }
