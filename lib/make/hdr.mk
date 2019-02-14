@@ -48,6 +48,7 @@ he/laplace.h\
 he/macro.h\
 he/memory.h\
 he/normal.h\
+he/obj.h\
 he/off.h\
 he/orient.h\
 he/ply.h\

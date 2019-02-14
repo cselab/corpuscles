@@ -50,6 +50,7 @@ H.s.o\
 invariants.s.o\
 laplace.s.o\
 normal.s.o\
+obj.s.o\
 off.s.o\
 orient.s.o\
 ply.s.o\
@@ -113,6 +114,7 @@ H.d.o\
 invariants.d.o\
 laplace.d.o\
 normal.d.o\
+obj.d.o\
 off.d.o\
 orient.d.o\
 ply.d.o\
@@ -176,6 +178,7 @@ H.l.o\
 invariants.l.o\
 laplace.l.o\
 normal.l.o\
+obj.l.o\
 off.l.o\
 orient.l.o\
 ply.l.o\
