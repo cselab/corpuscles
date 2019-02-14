@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "real.h"
 
@@ -15,19 +16,28 @@
 #define FMT   HE_REAL_OUT
 
 struct T {
-    int nv;
     int n;
     int *plus, *minus;
     real f;
 };
 
+const static real *QX;
+static int compare(const void *vi, const void *vj) {
+    int *pi, *pj, i, j;
+    pi = (int*)vi; pj = (int*)vj;
+    i = *pi; j = *pj;
+    return QX[i] < QX[j];
+}
+
 static int sort(int n, real *x, int *idx) {
+    QX = x;
+    qsort(idx, n, sizeof(idx[0]), compare);
     return HE_OK;
 }
 
 int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     T *q;
-    int status, nv, i, *idx;
+    int status, nv, n, i, *idx;
     char name[1024];
     real frac, f;
 
@@ -47,18 +57,27 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
         ERR(HE_IO, "fail to read force");
 
     nv = he_nv(he);
+    n = (int) (nv * frac);
 
     MALLOC(nv, &idx);
     for (i = 0; i < nv; i++)
         idx[i] = 0;
     sort(nv, x, /**/ idx);
 
+    MALLOC(n, &q->plus);
+    MALLOC(n, &q->minus);
+    for (i = 0; i < n; i++)
+        q->plus[i] = idx[i];
+    for (i = 0; i < n; i++)
+        q->plus[i] = idx[nv - 1 - i];
+
+    FREE(idx);
+
     MALLOC(1, &q);
-    q->nv = nv;
+    q->n = n;
     q->f = f;
     *pq = q;
 
-    FREE(idx);
     return HE_OK;
 }
 
