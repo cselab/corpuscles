@@ -33,4 +33,4 @@ int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real
 }
 
 int stretch_n(T *q) { return q->n; }
-int stretch_f(T *q) { return q->f; }
+real stretch_f(T *q) { return q->f; }
