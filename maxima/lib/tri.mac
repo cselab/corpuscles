@@ -34,20 +34,6 @@ tri_3to2(a, b, c):=block([ab, ac, ux, wx, wy],
   wy: vec_reject_scalar(ac, ab),
   [ux, wx, wy]);
 
-tri_3to20(a, b00, c00):=block([A, b0, c0, b, c, bx, cy, cx],
-  A: tri_area(a, b00, c00),
-
-  b0: b00 - a,
-  c0: c00 - a,
-
-  b: vec_abs(b0),
-  c: vec_abs(c0),
-
-  bx: b,
-  cy: 2*A/b,
-  cx: sqrt(c^2 - cy^2),
-  [bx, cx, cy]);
-
 tri_2to3(a, b, c):=block([u, v, nx, n, ey, ny],
   u: b - a,
   v: c - a,
