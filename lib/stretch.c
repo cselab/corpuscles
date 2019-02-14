@@ -29,9 +29,9 @@ struct T {
 
 typedef int (*IniFunType)(int, const real*, const real*, char***, T*);
 static int plain(int, const real*, const real*, char***, T*);
-static int cyliner(int, const real*, const real*, char***, T*);
-static const char *IniName[] = {"plain", "cyliner"};
-static const IniFunType IniFun[] = {plain, cyliner};
+static int cylinder(int, const real*, const real*, char***, T*);
+static const char *IniName[] = {"plain", "cylinder"};
+static const IniFunType IniFun[] = {plain, cylinder};
 
 const static real *QX;
 static int compare(const void *vi, const void *vj) {
@@ -90,7 +90,6 @@ static struct {
 } COUNT_DATA;
 #   define GET(k) k = COUNT_DATA.k
 #   define SET(k, v) COUNT_DATA.k = (v)
-
 static int count(real r0) {
 #   define sq(x) ((x)*(x))
     real x0;
@@ -99,7 +98,6 @@ static int count(real r0) {
     int i, cnt;
     real x, y, r, rsq;
     GET(x0); GET(n); GET(xx); GET(yy);
-
     cnt = 0;
     r0 = sq(r0);
     for (i = 0; i < n; i++) {
@@ -109,6 +107,26 @@ static int count(real r0) {
             cnt++;
     }
     return cnt;
+#   undef sq
+}
+
+static int select0(real r0, int *a) {
+#   define sq(x) ((x)*(x))
+    real x0;
+    int n;
+    const real *xx, *yy;
+    int i, cnt;
+    real x, y, r, rsq;
+    GET(x0); GET(n); GET(xx); GET(yy);
+    cnt = 0;
+    r0 = sq(r0);
+    for (i = 0; i < n; i++) {
+        x = xx[i]; y = yy[i];
+        r = sq(x - x0) + sq(y);
+        if (r < r0)
+            a[cnt++] = i;
+    }
+    return HE_OK;
 #   undef sq
 }
 
@@ -132,8 +150,10 @@ static real bin_search(int n, real h) {
     return m;
 }
 
-static int cyliner(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
-    real f, frac, x0, R0, rmax, n;
+static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
+    real f, frac, x0, rmax;
+    int *plus, *minus;
+    int n;
 
     if (argv_real(p, &f) != HE_OK)
         ERR(HE_IO, "fail to read force");
@@ -143,30 +163,27 @@ static int cyliner(int nv, const real *x, __UNUSED const real *y, char ***p, T *
         ERR(HE_IO, "frac=" FMT " > 0.5", frac);
     if (argv_real(p, &x0) != HE_OK)
         ERR(HE_IO, "fail to read x0");
-    if (argv_real(p, &R0) != HE_OK)
-        ERR(HE_IO, "fail to read R0");
 
     q->f = f;
-    n = (int)floor(nv*frac);
-    MSG("nv: %d", nv);
-    MSG("n: %d", n);
+    n = (int)(nv*frac);
 
     /* set data for count() */
-    rmax = get_rmax(nv, x, y);
-    MSG("rmax: %g", rmax);
-
+    rmax = fabs(x0) + get_rmax(nv, x, y);
     SET(n, nv); SET(xx, x); SET(yy, y);
-    SET(x0, x0);
-
+    
     real r;
-    r = bin_search(n, rmax);
+    SET(x0, x0); r = bin_search(n, rmax);
+    n = count(r);
+    MALLOC(n, &plus);
+    MALLOC(n, &minus);
+    select0(r, plus);
+    SET(x0, -x0); r = bin_search(n, rmax);
+    if (n != count(r))
+        ERR(HE_IO, "n=%d != count(rmax)=%d", n, count(rmax));
+    select0(r, minus);
 
-    MSG("n: %d", count(r));
-
-    exit(2);
-
-    //q->minus = minus;
-    //q->plus = plus;
+    q->minus = minus;
+    q->plus = plus;
     q->n  = n;
 
     return HE_OK;
