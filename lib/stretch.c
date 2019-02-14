@@ -71,7 +71,7 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     for (i = 0; i < n; i++)
         plus[i] = idx[i];
     for (i = 0; i < n; i++)
-        plus[i] = idx[nv - 1 - i];
+        minus[i] = idx[nv - 1 - i];
 
     FREE(idx);
 
