@@ -41,10 +41,10 @@ static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q)
     int *plus, *minus;
     real frac, f;
 
-    if (argv_real(p, &frac) != HE_OK)
-        ERR(HE_IO, "fail to read fraction");
     if (argv_real(p, &f) != HE_OK)
         ERR(HE_IO, "fail to read force");
+    if (argv_real(p, &frac) != HE_OK)
+        ERR(HE_IO, "fail to read fraction");
     if (frac > 0.5)
         ERR(HE_IO, "frac=" FMT " > 0.5", frac);
 
