@@ -47,12 +47,12 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
         ERR(HE_IO, "fail to read force");
 
     nv = he_nv(he);
-    
+
     MALLOC(nv, &idx);
     for (i = 0; i < nv; i++)
         idx[i] = 0;
     sort(nv, x, /**/ idx);
-    
+
     MALLOC(1, &q);
     q->nv = nv;
     q->f = f;
