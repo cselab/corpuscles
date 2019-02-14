@@ -14,13 +14,20 @@
 #include "he/util.h"
 
 #define T Stretch
-#define FMT   HE_REAL_OUT
+#define FMT HE_REAL_OUT
+#define SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
 struct T {
     int n;
     int *plus, *minus;
     real f;
 };
+
+typedef int (*IniFunType)(int, const real*, const real*, char***, T*);
+static int plain(int, const real*, const real*, char***, T*);
+static int cyliner(int, const real*, const real*, char***, T*);
+static const char *IniName[] = {"plain", "cyliner"};
+static const IniFunType IniFun[] = {plain, cyliner};
 
 const static real *QX;
 static int compare(const void *vi, const void *vj) {
@@ -29,7 +36,6 @@ static int compare(const void *vi, const void *vj) {
     i = *pi; j = *pj;
     return QX[i] < QX[j];
 }
-
 static int sort(int n, const real *x, int *idx) {
     QX = x;
     qsort(idx, n, sizeof(idx[0]), compare);
@@ -72,9 +78,13 @@ static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q)
     return HE_OK;
 }
 
+static int cyliner(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
+    return HE_OK;
+}
+
 int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     T *q;
-    int nv, status;
+    int i, nv, status;
     char name[1024];
 
     nv = he_nv(he);
@@ -83,10 +93,17 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     if ((status = argv_str(p, name)) != HE_OK)
         return status;
 
-    if (!util_eq(name, "plain"))
-        ERR(HE_IO, "expecting 'plain' got '%s'", name);
-
-    plain(nv, x, y, p, q);
+    i = 0;
+    for (i = 0; ; i++) {
+        if (i == SIZE(IniName))
+            ERR(HE_IO, "expecting 'plain' or 'cyliner' got '%s'", name);
+        if (util_eq(name, IniName[i])) {
+            status = IniFun[i](nv, x, y, p, q);
+            if (status != HE_OK)
+                return status;
+            break;
+        }
+    }
 
     *pq = q;
     return HE_OK;
