@@ -7,6 +7,7 @@
 #include "he/argv.h"
 #include "he/err.h"
 #include "he/he.h"
+#include "he/macro.h"
 #include "he/memory.h"
 #include "he/util.h"
 #include "he/stretch.h"
@@ -38,6 +39,7 @@ static int sort(int n, real *x, int *idx) {
 int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     T *q;
     int status, nv, n, i, *idx;
+    int *plus, *minus;
     char name[1024];
     real frac, f;
 
@@ -61,32 +63,52 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
 
     MALLOC(nv, &idx);
     for (i = 0; i < nv; i++)
-        idx[i] = 0;
+        idx[i] = i;
     sort(nv, x, /**/ idx);
 
-    MALLOC(n, &q->plus);
-    MALLOC(n, &q->minus);
+    MALLOC(n, &plus);
+    MALLOC(n, &minus);
     for (i = 0; i < n; i++)
-        q->plus[i] = idx[i];
+        plus[i] = idx[i];
     for (i = 0; i < n; i++)
-        q->plus[i] = idx[nv - 1 - i];
+        plus[i] = idx[nv - 1 - i];
 
     FREE(idx);
 
     MALLOC(1, &q);
     q->n = n;
     q->f = f;
+    q->minus = minus;
+    q->plus = plus;
     *pq = q;
 
     return HE_OK;
 }
 
 int stretch_fin(T *q) {
+    FREE(q->minus);
+    FREE(q->plus);
     FREE(q);
     return HE_OK;
 }
 
-int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real *fx, real *fy, real *fz) {
+int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
+    int i, j, n;
+    real f;
+
+    n = q->n;
+    f = q->f;
+
+    for (i = 0; i < n; i++) {
+        j = q->plus[i];
+        fx[j] += f/n;
+    }
+
+    for (i = 0; i < n; i++) {
+        j = q->minus[i];
+        fx[j] -= f/n;
+    }
+
     return HE_OK;
 }
 
