@@ -220,19 +220,18 @@ real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
 static int beta(const real a[3], const real b00[3], const real c00[3], /**/ real *b, real *c) {
     real A, B;
     real b0[3], c0[3];
-
     A = tri_area(a, b00, c00);
     NOT_ZERO(A);
-    
     vec_minus(b00, a, /**/ b0);
     vec_minus(c00, a, /**/ c0);
-
     *b = vec_dot(b0, b0)/(2*A);
     *c = vec_dot(c0, c0)/(2*A);
-
     return HE_OK;
 }
 
 real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
-    return 0.0;
+    real b, c, v, w;
+    beta(a, b0, c0, /**/ &b, &c);
+    beta(u, v0, w0, /**/ &b, &c);
+    return ((-2*sqrt((b*c-1)*(v*w-1)))+b*w+c*v-2)/2;
 }
