@@ -1,2 +1,2 @@
 typedef struct He He;
-int gts_fwrite(He*, const real *x, const real *y, const real *z, /**/ FILE *f);
+int gts_fwrite(He*, const real*, const real*, const real*, /**/ FILE*);
