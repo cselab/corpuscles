@@ -24,3 +24,4 @@ int tri_3d_invariants(const real[3], const real[3], const real[3], const real[3]
 int tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/ real *al, real *be);
 
 real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]);
+real tri_beta(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]);
