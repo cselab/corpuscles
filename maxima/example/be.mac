@@ -4,7 +4,7 @@ load("he/tri.mac") $
 set_random_state(make_random_state(42));
 vec_any(a); vec_any(u);
 vec_any(b); vec_any(c);
-vec_any(v); vec_ini(w);
+vec_any(v); vec_any(w);
 
 assume(bx>0, cy>0, vx>0, wy>0);
 
@@ -12,3 +12,5 @@ A: tri_beta(a, b, c, u, v, w);
 B: tri_3d_invariants(a, b, c, u, v, w)[2];
 
 radcan(A/B), numer;
+
+vec_arg(a, b, c, u, v, w);

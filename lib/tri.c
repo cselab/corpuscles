@@ -232,6 +232,6 @@ static int beta(const real a[3], const real b00[3], const real c00[3], /**/ real
 real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
     real b, c, v, w;
     beta(a, b0, c0, /**/ &b, &c);
-    beta(u, v0, w0, /**/ &b, &c);
+    beta(u, v0, w0, /**/ &v, &w);
     return ((-2*sqrt((b*c-1)*(v*w-1)))+b*w+c*v-2)/2;
 }

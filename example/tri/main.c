@@ -88,6 +88,10 @@ int main(__UNUSED int argc, const char **v0) {
         vec(a); vec(b); vec(c);
         vec(u); vec(v); vec(w);
         printf("%g\n",tri_alpha(a, b, c, u, v, w));
+    } else if (eq(op, "beta")) {
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        printf("%g\n",tri_beta(a, b, c, u, v, w));
     } else
         ER("unknown operation '%s'", op);
     return 0;
