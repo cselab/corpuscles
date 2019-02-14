@@ -59,6 +59,7 @@ restore.s.o\
 strain/2d.s.o\
 strain/3d.s.o\
 strain.s.o\
+stretch.s.o\
 sum.s.o\
 ten.s.o\
 transform.s.o\
@@ -121,6 +122,7 @@ restore.d.o\
 strain/2d.d.o\
 strain/3d.d.o\
 strain.d.o\
+stretch.d.o\
 sum.d.o\
 ten.d.o\
 transform.d.o\
@@ -183,6 +185,7 @@ restore.l.o\
 strain/2d.l.o\
 strain/3d.l.o\
 strain.l.o\
+stretch.l.o\
 sum.l.o\
 ten.l.o\
 transform.l.o\
