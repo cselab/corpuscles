@@ -78,8 +78,24 @@ static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q)
     return HE_OK;
 }
 
+static int count(real r0, real x0, int n, const real *xx, const real *yy) {
+#   define sq(x) ((x)*(x))
+    int i, cnt;
+    real x, y, r, rsq;
+    cnt = 0;
+    r0 = sq(r0);
+    for (i = 0; i < n; i++) {
+        x = xx[i]; y = yy[i];
+        r = sq(x - x0) + sq(y);
+        if (r < r0)
+            cnt++;
+    }
+    return cnt;
+#   undef sq
+}
+
 static int cyliner(int nv, const real *x0, __UNUSED const real *y, char ***p, T *q) {
-    real f, frac, x;
+    real f, frac, x, R0;
 
     if (argv_real(p, &f) != HE_OK)
         ERR(HE_IO, "fail to read force");
@@ -89,6 +105,8 @@ static int cyliner(int nv, const real *x0, __UNUSED const real *y, char ***p, T 
         ERR(HE_IO, "frac=" FMT " > 0.5", frac);
     if (argv_real(p, &x) != HE_OK)
         ERR(HE_IO, "fail to read x");
+    if (argv_real(p, &R0) != HE_OK)
+        ERR(HE_IO, "fail to read R0");
 
     q->f = f;
     //q->minus = minus;
