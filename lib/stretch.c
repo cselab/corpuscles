@@ -11,10 +11,8 @@
 
 #define T Stretch
 
-enum {END = -1};
-
 struct T {
-    int n;
+    int nv;
     int *plus, *minus;
     real f;
 };
