@@ -101,3 +101,7 @@ int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, 
     /* TODO */
     return HE_OK;
 }
+
+int dtri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real du[3], real dv[3], real dw[3]) {
+    return HE_OK;
+}
