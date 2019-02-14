@@ -93,15 +93,24 @@ int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, 
 
     NOT_ZERO(A);
     coef = 1/(2*A);
-    
+
     ten_scale(coef, x);
     ten_scale(coef, y);
     ten_scale(coef, z);
-    
+
     /* TODO */
     return HE_OK;
 }
 
 int dtri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real du[3], real dv[3], real dw[3]) {
+    real A, s;
+    A = tri_area(a, b, c);
+    NOT_ZERO(A);
+    dtri_area(u, v, w, du, dv, dw);
+    s = 1/A;
+    vec_scale(s, du);
+    vec_scale(s, dv);
+    vec_scale(s, dw);
+
     return HE_OK;
 }

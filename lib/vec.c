@@ -35,6 +35,13 @@ int vec_copy(const real a[3], real b[3]) {
     return HE_OK;
 }
 
+int vec_scale(real s, real a[3]) {
+    a[X] *= s;
+    a[Y] *= s;
+    a[Z] *= s;
+    return HE_OK;
+}
+
 int vec_plus(const real a[3], const real b[3], /**/ real c[3]) {
     c[X] = a[X] + b[X];
     c[Y] = a[Y] + b[Y];

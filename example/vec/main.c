@@ -61,6 +61,11 @@ int main(__UNUSED int argc, const char **v) {
         vec(a);
         vec_neg(a);
         vec_printf(a, "%g");
+    } else if (eq(op, "scale")) {
+        scl(&s);
+        vec(a);
+        vec_scale(s, a);
+        vec_printf(a, "%g");
     } else if (eq(op, "project")) {
         vec(a); vec(b);
         vec_project(a, b, c);
