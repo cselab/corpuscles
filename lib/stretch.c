@@ -78,7 +78,22 @@ static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q)
     return HE_OK;
 }
 
-static int cyliner(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
+static int cyliner(int nv, const real *x0, __UNUSED const real *y, char ***p, T *q) {
+    real f, frac, x;
+
+    if (argv_real(p, &f) != HE_OK)
+        ERR(HE_IO, "fail to read force");
+    if (argv_real(p, &frac) != HE_OK)
+        ERR(HE_IO, "fail to read fraction");
+    if (frac > 0.5)
+        ERR(HE_IO, "frac=" FMT " > 0.5", frac);
+    if (argv_real(p, &x) != HE_OK)
+        ERR(HE_IO, "fail to read x");
+
+    q->f = f;
+    //q->minus = minus;
+    //q->plus = plus;
+
     return HE_OK;
 }
 
