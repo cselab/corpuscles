@@ -1,9 +1,12 @@
 load("pdiff") $
 load("nchrpl") $
 
-vabs(a):= sqrt(a.a);
+vabs(a):= sqrt(dot(a, a)) $
+dot(a, b):= a . b $
 
 assume(sin('u) > 0);
+
+(U: 1, V: 2, X: 1, Y: 2, Z: 3);
 
 rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q], 'a*q + 'b*q^3 + 'c*q^5)] $
 sph: ['v = 0, 'F = lambda([q],   q)] $
@@ -16,22 +19,29 @@ y: sin('u)*cos('v) $
 z: F(cos('u)) $
 
 r: [x, y, z] $
+ru: diff(r, 'u) $
+rv: diff(r, 'v) $
+guu: dot(ru, ru) $
+guv: dot(ru, rv) $
+gvv: dot(rv, rv) $
+g: matrix([guu, guv], [guv, gvv]) $
+g: trigsimp(g);
 
-pp: diff(r, 'u) $
-qq: diff(r, 'v) $
-
-[p0, q0]: [pp, qq], sph $
-[p1, q1]: [pp, qq], elp $
+[p0, q0]: [ru, rv], sph $
+[p1, q1]: [ru, rv], elp $
 
 M: matrix(
   [vabs(p1)/vabs(p0), 0],
   [0, vabs(q1)/vabs(q0)]) $
+M: trigsimp(M);
 
 S: transpose(M) . M $
 al: determinant(M) - 1 $
-be: 1/(2*determinant(M)) * (mattrace(S) - 2*determinant(M));
+be: 1/(2*determinant(M)) * (mattrace(S) - 2*determinant(M)) $
 
-eng: 'Ka/2*(al^2 + 'a3*al^3 + 'a4*al^4) + 'mu*(be + 'b1*al*be + 'b2*be^2) $
+f(al, be):='Ka/2*(al^2 + 'a3*al^3 + 'a4*al^4) + 'mu*(be + 'b1*al*be + 'b2*be^2) $
+eng: f(al, be) $
+eng: trigsimp(eng) $
 
 eps: 1e-9;
 lo:  eps;

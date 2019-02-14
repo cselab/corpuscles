@@ -151,8 +151,7 @@ int tri_list(const real a[3], const real b[3], const real c[3],
     return HE_OK;
 }
 
-int tri_3to2(const real a[3], const real b[3], const real c[3],
-             /**/ real *ux, real *wx, real *wy) {
+int tri_3to2(const real a[3], const real b[3], const real c[3], /**/ real *ux, real *wx, real *wy) {
     real u[3], v[3], n[3], ey[3], nx[3], ny[3];
     vec_minus(b, a, /**/ u);
     vec_minus(c, a, /**/ v);
@@ -162,8 +161,7 @@ int tri_3to2(const real a[3], const real b[3], const real c[3],
     vec_cross(n, u,  ey);
     vec_norm(ey, ny);
 
-    *ux = vec_dot(u, nx); /* TODO */
-
+    *ux = vec_dot(u, nx);
     *wx = vec_dot(v, nx);
     *wy = vec_dot(v, ny);
     return HE_OK;
@@ -182,9 +180,7 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
     return HE_OK;
 }
 
-int tri_2d_invariants(real bx, real cx, real cy,
-                      real ux, real wx, real wy, /**/
-                      real *al, real *be) {
+int tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/ real *al, real *be) {
 #   define sq(x) ((x)*(x))
 #   define SET(key, val) if ((key) != NULL) *(key) = (val)
     real px, py, qy;
@@ -203,8 +199,7 @@ int tri_2d_invariants(real bx, real cx, real cy,
 #   undef SET
 }
 
-int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
-                      /**/ real *al, real *be) {
+int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *al, real *be) {
     real i, jx, jy;
     real x, yx, yy;
 
@@ -212,4 +207,31 @@ int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const r
     tri_3to2(u, v, w, /**/ &x, &yx, &yy);
 
     return tri_2d_invariants(i, jx, jy,   x, yx, yy, /**/ al, be);
+}
+
+real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    real A, B;
+    A = tri_area(a, b, c);
+    B = tri_area(u, v, w);
+    NOT_ZERO(A);
+    return B/A - 1;
+}
+
+static int beta(const real a[3], const real b00[3], const real c00[3], /**/ real *b, real *c) {
+    real A, B;
+    real b0[3], c0[3];
+    A = tri_area(a, b00, c00);
+    NOT_ZERO(A);
+    vec_minus(b00, a, /**/ b0);
+    vec_minus(c00, a, /**/ c0);
+    *b = vec_dot(b0, b0)/(2*A);
+    *c = vec_dot(c0, c0)/(2*A);
+    return HE_OK;
+}
+
+real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
+    real b, c, v, w;
+    beta(a, b0, c0, /**/ &b, &c);
+    beta(u, v0, w0, /**/ &v, &w);
+    return ((-2*sqrt((b*c-1)*(v*w-1)))+b*w+c*v-2)/2;
 }

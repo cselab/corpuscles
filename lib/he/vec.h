@@ -19,6 +19,7 @@ int vec_linear_combination(real, const real[3], real, const real[3], /**/ real[3
 int vec_scalar(const real[3], real, /**/ real[3]);
 int vec_negative(const real[3], /**/ real[3]);
 int vec_copy(const real[3], /**/ real[3]);
+int vec_scale(real, /*io*/ real[3]);
 
 int vec_append(const real[3],  int, /**/ real*, real*, real*);
 int vec_substr(const real [3], int, /**/ real*, real*, real*);

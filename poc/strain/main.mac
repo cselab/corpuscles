@@ -89,7 +89,7 @@ Fb: F2(param, 'I1, 'I2) $
 
 pI1: 'I1 $
 pI2: 'I2 $
-pA : select(-bx*cy/2, -ux*wy/2) $
+pA : select0(-bx*cy/2, -ux*wy/2) $
 
 with_stdout("body",
   printf(true, "NOT_ZERO(bx);~%"),

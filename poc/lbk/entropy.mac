@@ -1,0 +1,12 @@
+w: exp();
+
+assume(A > 0, B > 0, C > 0);
+
+(A: 1, B: -2, C: 1);
+
+S: -(A*x^2 + B*x*y + C*y^2)/2;
+w: exp(S);
+
+X: -diff(S, x);
+Y: -diff(S, y);
+

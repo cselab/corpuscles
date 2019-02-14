@@ -61,6 +61,7 @@ he/restore.h\
 he/strain/2d.h\
 he/strain/3d.h\
 he/strain.h\
+he/stretch.h\
 he/sum.h\
 he/ten.h\
 he/transform.h\

@@ -42,3 +42,39 @@ tri_2to3(a, b, c):=block([u, v, nx, n, ey, ny],
   ey: vec_cross(n, u),
   ny: vec_norm(ey),
   [nx, ny]);
+
+tri_2d_invariants(bx, cx, cy, ux, wx, wy):=block([px, py, qy, al, be],
+  px: ux/bx,
+  py: -(cx*ux-bx*wx)/(bx*cy),
+  qy: wy/cy,
+  al: px*qy - 1,
+  be: (qy^2-2*px*qy+py^2+px^2)/(2*px*qy),
+  [al, be]);
+
+tri_3d_invariants(a, b, c, u, v, w):=block([i, jx, jy, x, yx, yy],
+  [i, jx, jy]: tri_3to2(a, b, c),
+  [x, yx, yy]: tri_3to2(u, v, w),
+  tri_2d_invariants(i, jx, jy, x, yx, yy));
+
+tri_alpha(a, b, c, u, v, w):= block([A0, A],
+  A: tri_area(a, b, c),
+  B : tri_area(u, v, w),
+  B/A - 1);
+
+tri_beta(a, b00, c00, u, v00, w00):= block([A, B, b0, c0, v0, w0, b, c, v, w],
+  A: tri_area(a, b00, c00),
+  B: tri_area(u, v00, w00),
+
+  b0: b00 - a,
+  c0: c00 - a,
+
+  v0: v00 - u,
+  w0: w00 - u,
+
+  b: vec_dot(b0, b0)/(2*A),
+  c: vec_dot(c0, c0)/(2*A),
+
+  v: vec_dot(v0, v0)/(2*B),
+  w: vec_dot(w0, w0)/(2*B),
+
+  -(2*sqrt((b*c-1)*(v*w-1))-b*w-c*v+2)/2);
