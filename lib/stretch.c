@@ -30,35 +30,24 @@ static int compare(const void *vi, const void *vj) {
     return QX[i] < QX[j];
 }
 
-static int sort(int n, real *x, int *idx) {
+static int sort(int n, const real *x, int *idx) {
     QX = x;
     qsort(idx, n, sizeof(idx[0]), compare);
     return HE_OK;
 }
 
-int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
-    T *q;
-    int status, nv, n, i, *idx;
+static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
+    int n, i, *idx;
     int *plus, *minus;
-    char name[1024];
     real frac, f;
-
-    if ((status = argv_str(p, name)) != HE_OK)
-        return status;
-
-    if (!util_eq(name, "plain"))
-        ERR(HE_IO, "expecting 'plain' got '%s'", name);
 
     if (argv_real(p, &frac) != HE_OK)
         ERR(HE_IO, "fail to read fraction");
-
+    if (argv_real(p, &f) != HE_OK)
+        ERR(HE_IO, "fail to read force");
     if (frac > 0.5)
         ERR(HE_IO, "frac=" FMT " > 0.5", frac);
 
-    if (argv_real(p, &f) != HE_OK)
-        ERR(HE_IO, "fail to read force");
-
-    nv = he_nv(he);
     n = (int) (nv * frac);
 
     MALLOC(nv, &idx);
@@ -75,13 +64,31 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
 
     FREE(idx);
 
-    MALLOC(1, &q);
     q->n = n;
     q->f = f;
     q->minus = minus;
     q->plus = plus;
-    *pq = q;
 
+    return HE_OK;
+}
+
+int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
+    T *q;
+    int nv, status;
+    char name[1024];
+
+    nv = he_nv(he);
+    MALLOC(1, &q);
+
+    if ((status = argv_str(p, name)) != HE_OK)
+        return status;
+
+    if (!util_eq(name, "plain"))
+        ERR(HE_IO, "expecting 'plain' got '%s'", name);
+
+    plain(nv, x, y, p, q);
+
+    *pq = q;
     return HE_OK;
 }
 
