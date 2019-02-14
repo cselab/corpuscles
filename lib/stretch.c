@@ -21,9 +21,13 @@ struct T {
     real f;
 };
 
+static int sort(int n, real *x, int *idx) {
+    return HE_OK;
+}
+
 int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     T *q;
-    int status, nv;
+    int status, nv, i, *idx;
     char name[1024];
     real frac, f;
 
@@ -37,23 +41,29 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
         ERR(HE_IO, "fail to read fraction");
 
     if (frac > 0.5)
-        ERR(HE_IO, "frac=" FMT " < 0.5", frac);
+        ERR(HE_IO, "frac=" FMT " > 0.5", frac);
 
     if (argv_real(p, &f) != HE_OK)
         ERR(HE_IO, "fail to read force");
 
     nv = he_nv(he);
-
+    
+    MALLOC(nv, &idx);
+    for (i = 0; i < nv; i++)
+        idx[i] = 0;
+    sort(nv, x, /**/ idx);
+    
     MALLOC(1, &q);
-
     q->nv = nv;
     q->f = f;
-
     *pq = q;
+
+    FREE(idx);
     return HE_OK;
 }
 
 int stretch_fin(T *q) {
+    FREE(q);
     return HE_OK;
 }
 
