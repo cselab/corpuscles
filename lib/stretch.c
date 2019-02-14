@@ -1,10 +1,12 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <tgmath.h>
 
 #include "real.h"
 
 #include "he/argv.h"
+#include "he/array.h"
 #include "he/err.h"
 #include "he/he.h"
 #include "he/macro.h"
@@ -16,6 +18,8 @@
 #define T Stretch
 #define FMT HE_REAL_OUT
 #define SIZE(a) (sizeof(a)/sizeof((a)[0]))
+
+#define MAX_ITER (100)
 
 struct T {
     int n;
@@ -78,10 +82,24 @@ static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q)
     return HE_OK;
 }
 
-static int count(real r0, real x0, int n, const real *xx, const real *yy) {
+
+static struct {
+    int n;
+    real x0;
+    const real *xx, *yy;
+} COUNT_DATA;
+#   define GET(k) k = COUNT_DATA.k
+#   define SET(k, v) COUNT_DATA.k = (v)
+
+static int count(real r0) {
 #   define sq(x) ((x)*(x))
+    real x0;
+    int n;
+    const real *xx, *yy;
     int i, cnt;
     real x, y, r, rsq;
+    GET(x0); GET(n); GET(xx); GET(yy);
+
     cnt = 0;
     r0 = sq(r0);
     for (i = 0; i < n; i++) {
@@ -94,8 +112,28 @@ static int count(real r0, real x0, int n, const real *xx, const real *yy) {
 #   undef sq
 }
 
-static int cyliner(int nv, const real *x0, __UNUSED const real *y, char ***p, T *q) {
-    real f, frac, x, R0;
+static real get_rmax(int n, const real *x, const real *y) {
+    real a, b;
+    a = array_max(n, x) - array_min(n, x);
+    b = array_max(n, y) - array_min(n, y);
+    return a > b ? a : b;
+}
+
+static real bin_search(int n, real h) {
+    real l, m;
+    int i, c;
+    for (l = 0, i = 0; i < MAX_ITER; i++) {
+        m = (l + h) / 2;
+        c = count(m);
+        if (c == n) break;
+        else if (c < n) l = m;
+        else h = m;
+    }
+    return m;
+}
+
+static int cyliner(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
+    real f, frac, x0, R0, rmax, n;
 
     if (argv_real(p, &f) != HE_OK)
         ERR(HE_IO, "fail to read force");
@@ -103,14 +141,33 @@ static int cyliner(int nv, const real *x0, __UNUSED const real *y, char ***p, T 
         ERR(HE_IO, "fail to read fraction");
     if (frac > 0.5)
         ERR(HE_IO, "frac=" FMT " > 0.5", frac);
-    if (argv_real(p, &x) != HE_OK)
-        ERR(HE_IO, "fail to read x");
+    if (argv_real(p, &x0) != HE_OK)
+        ERR(HE_IO, "fail to read x0");
     if (argv_real(p, &R0) != HE_OK)
         ERR(HE_IO, "fail to read R0");
 
     q->f = f;
+    n = (int)floor(nv*frac);
+    MSG("nv: %d", nv);
+    MSG("n: %d", n);
+
+    /* set data for count() */
+    rmax = get_rmax(nv, x, y);
+    MSG("rmax: %g", rmax);
+
+    SET(n, nv); SET(xx, x); SET(yy, y);
+    SET(x0, x0);
+
+    real r;
+    r = bin_search(n, rmax);
+
+    MSG("n: %d", count(r));
+
+    exit(2);
+
     //q->minus = minus;
     //q->plus = plus;
+    q->n  = n;
 
     return HE_OK;
 }
