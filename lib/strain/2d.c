@@ -9,7 +9,7 @@
 #define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
 
 static real sq(real x) { return x*x; }
-static real select(real ref, real cur) {
+static real select0(real ref, real cur) {
     enum {UNSET, YES, NO};
     static int f = UNSET;
     if (f == UNSET) {
