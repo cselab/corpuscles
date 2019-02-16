@@ -1,6 +1,6 @@
 tri_edg(a, b, c):=block([ab, bc, ca],
   ab: b - a,
-  cb: b - c,
+  bc: c - b,
   ca: a - c,
   [ab, bc, ca]);
 
