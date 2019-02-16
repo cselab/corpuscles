@@ -1,0 +1,15 @@
+load("he/vec.mac") $
+load("he/ten.mac") $
+load("he/tri.mac") $
+load("he/dtri.mac") $
+load("he/dvec.mac") $
+load("he/edg.mac") $
+load("he/dedg.mac") $
+
+vec_ini(a); vec_ini(b); vec_ini(c);
+e: edg_sq(a, b)/tri_area(a, b, c);
+
+radcan(jacobian([e], a));
+
+dtri_area(a, b, c);
+

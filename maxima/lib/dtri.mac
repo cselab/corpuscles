@@ -25,3 +25,5 @@ dtri_cot(a, b, c):=block([ang, s, da, db, dc],
   s: -1/(s*s),
   [da, db, dc]: dtri_angle(a, b, c),
   [s*da, s*db, s*dc]);
+
+/* dtri_area(a, b, c):=block([], */
