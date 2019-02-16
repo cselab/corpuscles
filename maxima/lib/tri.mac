@@ -1,3 +1,9 @@
+tri_edg(a, b, c):=block([ab, bc, ca],
+  ab: b - a,
+  cb: b - c,
+  ca: a - c,
+  [ab, bc, ca]);
+
 tri_area(a, b, c):=block([u, v, n],
   u: b - a,
   v: c - a,

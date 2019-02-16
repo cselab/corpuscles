@@ -26,4 +26,10 @@ dtri_cot(a, b, c):=block([ang, s, da, db, dc],
   [da, db, dc]: dtri_angle(a, b, c),
   [s*da, s*db, s*dc]);
 
-/* dtri_area(a, b, c):=block([], */
+dtri_area(a, b, c):=block([n, ab, bc, ca, da, db, dc],
+  n: tri_normal(a, b, c)/2,
+  [ab, bc, ca]: tri_edg(a, b, c),
+  da: vec_cross(n, bc),
+  db: vec_cross(n, ca),
+  dc: vec_cross(n, dc),
+  [da, db, dc]);
