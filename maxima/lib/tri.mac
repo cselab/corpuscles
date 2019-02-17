@@ -62,12 +62,17 @@ tri_3d_invariants(a, b, c, u, v, w):=block([i, jx, jy, x, yx, yy],
   [x, yx, yy]: tri_3to2(u, v, w),
   tri_2d_invariants(i, jx, jy, x, yx, yy));
 
-tri_alpha(a, b, c, u, v, w):= block([A0, A],
+tri_alpha(a, b, c, u, v, w):=block([A0, A],
   A: tri_area(a, b, c),
   B : tri_area(u, v, w),
   B/A - 1);
 
-tri_beta(a, b00, c00, u, v00, w00):= block([A, B, b0, c0, v0, w0, b, c, v, w],
+tri_sq_area(a, b, c):=block([A, e],
+  A: tri_area(a, b, c),
+  e: edg_sq(a, b),
+  e/A);
+
+tri_beta(a, b00, c00, u, v00, w00):=block([A, B, b0, c0, v0, w0, b, c, v, w],
   A: tri_area(a, b00, c00),
   B: tri_area(u, v00, w00),
 
