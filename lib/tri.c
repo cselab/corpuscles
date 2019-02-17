@@ -228,9 +228,8 @@ real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
     return B/A - 1;
 }
 
-static real be(real b, real c, real v, real w) {
-    return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8;
-}
+static real be(real b, real c, real v, real w) { return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8; }
+
 real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
     real b, c, v, w;
     b = tri_edg_area(a, b0, c0);
