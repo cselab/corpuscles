@@ -47,8 +47,8 @@ dtri_edg_area(a, b, c):=block([A, s, Aa, Ab, Ac, sa, sb, da, db, dc],
 
   [da, db, dc]);
 
-be_v(b, c, v, w):=(c-(sqrt(b*c-4)*w)/sqrt(v*w-4))/8;
-be_w(b, c, v, w):=(b-(sqrt(b*c-4)*v)/sqrt(v*w-4))/8;
+%be_v(b, c, v, w):=(c-(sqrt(b*c-4)*w)/sqrt(v*w-4))/8;
+%be_w(b, c, v, w):=(b-(sqrt(b*c-4)*v)/sqrt(v*w-4))/8;
 
 dtri_beta(a, b0, c0, u, v0, w0):=block([b, c, v, w, vu, vv, vw, wu, ww, wv, bv, bw, du, dv, dw],
   b: tri_edg_area(a, b0, c0),
@@ -60,8 +60,8 @@ dtri_beta(a, b0, c0, u, v0, w0):=block([b, c, v, w, vu, vv, vw, wu, ww, wv, bv, 
   [vu, vv, vw]: dtri_edg_area(u, v0, w0),
   [wu, ww, wv]: dtri_edg_area(u, w0, v0),
 
-  bv: be_v(b, c, v, w),
-  bw: be_w(b, c, v, w),
+  bv: %be_v(b, c, v, w),
+  bw: %be_w(b, c, v, w),
 
   du: bv*vu + bw*wu,
   dv: bv*vv + bw*wv,

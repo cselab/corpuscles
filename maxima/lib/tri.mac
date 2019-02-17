@@ -72,6 +72,8 @@ tri_alpha(a, b, c, u, v, w):=block([A0, A],
   B : tri_area(u, v, w),
   B/A - 1);
 
+%be(b, c, v, w):=-(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8;
+
 tri_beta(a, b0, c0, u, v0, w0):=block([b, c, v, w],
   b: tri_edg_area(a, b0, c0),
   c: tri_edg_area(a, c0, b0),
@@ -79,4 +81,4 @@ tri_beta(a, b0, c0, u, v0, w0):=block([b, c, v, w],
   v: tri_edg_area(u, v0, w0),
   w: tri_edg_area(u, w0, v0),
 
-  -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8);
+  %be(b, c, v, w));
