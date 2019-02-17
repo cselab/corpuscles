@@ -1,6 +1,8 @@
 load("he/vec.mac") $
+load("he/dedg.mac") $
 load("he/edg.mac") $
 load("he/tri.mac") $
+load("he/dtri.mac") $
 
 vec_any(a); vec_any(b); vec_any(c);
 vec_any(u); vec_any(v); vec_any(w);
@@ -9,3 +11,8 @@ tri_edg_area(a, b, c), numer;
 tri_beta(a, b, c, u, v, w), numer;
 
 vec_arg(a, b, c, u, v, w);
+
+vec_ini(a); vec_ini(b); vec_ini(c);
+[da, db, dc]: dtri_edg_area(a, b, c), numer;
+
+radcan(dtri_edg_area(a, b, c)[1][3] - jacobian([tri_edg_area(a, b, c)], a)[1,3]);

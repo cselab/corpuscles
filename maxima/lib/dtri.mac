@@ -34,7 +34,7 @@ dtri_area(a, b, c):=block([n, ab, bc, ca, da, db, dc],
   dc: vec_cross(n, ab),
   [da, db, dc]);
 
-dtri_edg_area(a, b, c):=block([A, s, Aa, Ab, Acb, Ac, sa, sa, da, db, dc],
+dtri_edg_area(a, b, c):=block([A, s, Aa, Ab, Ac, sa, sb, da, db, dc],
   A: tri_area(a, b, c),
   s: edg_sq(a, b),
 
