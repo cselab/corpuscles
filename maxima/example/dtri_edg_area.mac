@@ -1,0 +1,11 @@
+load("he/vec.mac") $
+load("he/dedg.mac") $
+load("he/edg.mac") $
+load("he/tri.mac") $
+load("he/dtri.mac") $
+
+vec_any(a); vec_any(b); vec_any(c);
+
+dtri_edg_area(a, b, c), numer;
+
+vec_arg(a, b, c);

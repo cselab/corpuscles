@@ -2,9 +2,12 @@
 #include <stdio.h>
 
 #include "real.h"
+
 #include "he/err.h"
 #include "he/vec.h"
 #include "he/tri.h"
+#include "he/edg.h"
+#include "he/dedg.h"
 #include "he/dtri.h"
 #include "he/ten.h"
 
@@ -99,6 +102,24 @@ int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, 
     ten_scale(coef, z);
 
     /* TODO */
+    return HE_OK;
+}
+
+int dtri_edg_area(const real a[3], const real b[3], const real c[3],  /**/ real da[3], real db[3], real dc[3]) {
+    real A, s;
+    real Aa[3], Ab[3], Ac[3];
+    real sa[3], sb[3];
+
+    A = tri_area(a, b, c);
+    NOT_ZERO(A);
+    s = edg_sq(a, b)/(A*A);
+    
+    dtri_area(a, b, c, /**/ Aa, Ab, Ac);
+    dedg_sq(a, b, /**/ sa, sb);
+    vec_linear_combination(1/A, sa,  -s, Aa, /**/ da);
+    vec_linear_combination(1/A, sb,  -s, Ab, /**/ db);
+    vec_scalar(Ac, -s, /**/ dc);
+
     return HE_OK;
 }
 

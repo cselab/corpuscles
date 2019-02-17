@@ -55,6 +55,12 @@ int main(__UNUSED int argc, const char **v0) {
         ten_printf(&Da, "%g");
         ten_printf(&Db, "%g");
         ten_printf(&Dc, "%g");
+    } else if (eq(op, "edg_area")) {
+        vec(a); vec(b); vec(c);
+        dtri_edg_area(a, b, c, da, db, dc);
+        vec_printf(da, "%g");
+        vec_printf(db, "%g");
+        vec_printf(dc, "%g");
     } else if (eq(op, "alpha")) {
         vec(a); vec(b); vec(c);
         vec(u); vec(v); vec(w);
