@@ -8,7 +8,7 @@ import mathutils
 sys.path.append(".")
 import oogl
 
-Iblender = "blue.blend"
+Iblender = "red.blend"
 
 Base = sys.argv[4]
 Opng = sys.argv[5]
