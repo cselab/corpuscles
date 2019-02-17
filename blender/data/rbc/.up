@@ -1,0 +1,2 @@
+i="-t 0.00130807 0.0324792 -5.1516e-09 -r -106.021 -71.0314 13.4793 -f 24.9079"
+he.geomview $i -p 'he.align Da0.off' -OO `ls *.off -1 | sort -t a  -k 2 -g`
