@@ -9,15 +9,17 @@ sys.path.append(".")
 import oogl
 
 Iblender = "blue.blend"
-Camera = "data/elliptocyte/00001.camera"
-Geometry = "data/elliptocyte/00001.geometry"
-Oblender = "o.blend"
-Opng = "o.png"
+
+Base = sys.argv[4]
+Opng = sys.argv[5]
+Camera = "%s.camera" % Base
+Geometry = "%s.geometry" % Base
+Oblender = "o.blen"
 wx = 800
 wy = 600
 
 fov = oogl.fov(Camera)
-fov *= 2*math.pi/180
+fov *= math.pi*wx/wy/180
 bpy.ops.wm.open_mainfile(filepath = Iblender)
 
 mesh = oogl.off(Geometry)
