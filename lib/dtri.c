@@ -113,7 +113,7 @@ int dtri_edg_area(const real a[3], const real b[3], const real c[3],  /**/ real 
     A = tri_area(a, b, c);
     NOT_ZERO(A);
     s = edg_sq(a, b)/(A*A);
-    
+
     dtri_area(a, b, c, /**/ Aa, Ab, Ac);
     dedg_sq(a, b, /**/ sa, sb);
     vec_linear_combination(1/A, sa,  -s, Aa, /**/ da);
@@ -140,3 +140,27 @@ int dtri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
 static real be(real b, real c, real v, real w) { return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8; }
 static real be_v(real b, real c, real v, real w) { return (c-(sqrt(b*c-4)*w)/sqrt(v*w-4))/8; }
 static real be_w(real b, real c, real v, real w) { return (b-(sqrt(b*c-4)*v)/sqrt(v*w-4))/8; }
+
+int dtri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3], /**/ real du[3], real dv[3], real dw[3]) {
+    real b, c, v, w;
+    real vu[3], vv[3], vw[3], wu[3], wv[3], ww[3];
+    real bv, bw;
+
+    b = tri_edg_area(a, b0, c0);
+    c = tri_edg_area(a, c0, b0);
+
+    v = tri_edg_area(u, v0, w0);
+    w = tri_edg_area(u, w0, v0);
+
+    dtri_edg_area(u, v0, w0,  vu, vv, vw);
+    dtri_edg_area(u, w0, v0,  wu, wv, ww);
+
+    bv = be_v(b, c, v, w);
+    bw = be_w(b, c, v, w);
+
+    vec_linear_combination(bv, vu,   bw, wu, du);
+    vec_linear_combination(bv, vv,   bw, wv, dv);
+    vec_linear_combination(bv, vw,   bw, ww, dw);
+
+    return HE_OK;
+}
