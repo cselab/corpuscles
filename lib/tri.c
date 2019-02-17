@@ -2,11 +2,14 @@
 #include <stdio.h>
 
 #include "real.h"
+
 #include "he/err.h"
+#include "he/edg.h"
 #include "he/vec.h"
 #include "he/macro.h"
 
 #include "he/tri.h"
+
 #define FMT   HE_REAL_OUT
 
 static void swap(real *a, real *b) {
@@ -217,18 +220,15 @@ real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
     return B/A - 1;
 }
 
-static int beta(const real a[3], const real b00[3], const real c00[3], /**/ real *b, real *c) {
+
+static int beta(const real a[3], const real b[3], const real c[3], /**/ real *pb, real *pc) {
     real A, B;
-    real b0[3], c0[3];
-    A = tri_area(a, b00, c00);
+    A = tri_area(a, b, c);
     NOT_ZERO(A);
-    vec_minus(b00, a, /**/ b0);
-    vec_minus(c00, a, /**/ c0);
-    *b = vec_dot(b0, b0)/(2*A);
-    *c = vec_dot(c0, c0)/(2*A);
+    *pb = edg_sq(a, b)/(2*A);
+    *pc = edg_sq(a, c)/(2*A);
     return HE_OK;
 }
-
 real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
     real b, c, v, w;
     beta(a, b0, c0, /**/ &b, &c);
