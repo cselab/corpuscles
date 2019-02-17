@@ -1,3 +1,15 @@
 h: e/A;
 
-factor(diff(h));
+depends(e, [a, b]);
+depends(A, [a, b, c]);
+
+tellsimpafter('diff(e, a), ea);
+tellsimpafter('diff(e, b), eb);
+
+tellsimpafter('diff(A, a), Aa);
+tellsimpafter('diff(A, b), Ab);
+tellsimpafter('diff(A, c), Ac);
+
+expand(ratcoef(expand(diff(h)), del(a)));
+expand(ratcoef(expand(diff(h)), del(b)));
+expand(ratcoef(expand(diff(h)), del(c)));
