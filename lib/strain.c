@@ -186,9 +186,7 @@ int strain_force(T *q,
     return HE_OK;
 }
 
-real strain_energy(T* q,
-                   const real a0[3], const real b0[3], const real c0[3],
-                   const real a[3], const real b[3], const real c[3]) {
+real strain_energy(T* q, const real a0[3], const real b0[3], const real c0[3], const real a[3], const real b[3], const real c[3]) {
     real eng, deng;
     P *param;
     TypeFun F;
