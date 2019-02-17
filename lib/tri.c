@@ -212,6 +212,14 @@ int tri_3d_invariants(const real a[3], const real b[3], const real c[3], const r
     return tri_2d_invariants(i, jx, jy,   x, yx, yy, /**/ al, be);
 }
 
+real tri_edg_area(const real a[3], const real b[3], const real c[3]) {
+    real A, s;
+    s = edg_sq(a, b);
+    A = tri_area(a, b, c);
+    NOT_ZERO(A);
+    return s/A;
+}
+
 real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
     real A, B;
     A = tri_area(a, b, c);
@@ -219,8 +227,6 @@ real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
     NOT_ZERO(A);
     return B/A - 1;
 }
-
-
 static int beta(const real a[3], const real b[3], const real c[3], /**/ real *pb, real *pc) {
     real A, B;
     A = tri_area(a, b, c);

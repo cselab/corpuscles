@@ -12,6 +12,8 @@ tri_beta(a, b, c, u, v, w), numer;
 
 vec_arg(a, b, c, u, v, w);
 
+vec_arg(a, b, c);
+
 vec_ini(a); vec_ini(b); vec_ini(c);
 [da, db, dc]: dtri_edg_area(a, b, c), numer;
 
