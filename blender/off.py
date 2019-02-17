@@ -14,7 +14,7 @@ Base = sys.argv[4]
 Opng = sys.argv[5]
 Camera = "%s.camera" % Base
 Geometry = "%s.geometry" % Base
-Oblender = "o.blen"
+Oblender = "o.blend"
 wx = 800
 wy = 600
 
