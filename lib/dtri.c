@@ -136,8 +136,8 @@ int dtri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
     return HE_OK;
 }
 
-/* be, diff(be, v), diff(be, w) */
 static real be(real b, real c, real v, real w) { return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8; }
+/* diff(be, v), diff(be, w) */
 static real be_v(real b, real c, real v, real w) { return (c-(sqrt(b*c-4)*w)/sqrt(v*w-4))/8; }
 static real be_w(real b, real c, real v, real w) { return (b-(sqrt(b*c-4)*v)/sqrt(v*w-4))/8; }
 
@@ -153,7 +153,7 @@ int dtri_beta(const real a[3], const real b0[3], const real c0[3], const real u[
     w = tri_edg_area(u, w0, v0);
 
     dtri_edg_area(u, v0, w0,  vu, vv, vw);
-    dtri_edg_area(u, w0, v0,  wu, wv, ww);
+    dtri_edg_area(u, w0, v0,  wu, ww, wv);
 
     bv = be_v(b, c, v, w);
     bw = be_w(b, c, v, w);

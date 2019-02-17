@@ -68,6 +68,13 @@ int main(__UNUSED int argc, const char **v0) {
         vec_printf(du, "%g");
         vec_printf(dv, "%g");
         vec_printf(dw, "%g");
+    } else if (eq(op, "beta")) {
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        dtri_beta(a, b, c, u, v, w, /**/ du, dv, dw);
+        vec_printf(du, "%g");
+        vec_printf(dv, "%g");
+        vec_printf(dw, "%g");
     } else
         ER("unknown operation '%s'", op);
     return 0;

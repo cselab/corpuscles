@@ -1,0 +1,19 @@
+load("he/vec.mac") $
+load("he/edg.mac") $
+load("he/tri.mac") $
+
+set_random_state(make_random_state(42));
+vec_any(a); vec_any(u);
+vec_any(b); vec_any(c);
+vec_any(v); vec_ini(w);
+
+assume(bx>0, cy>0, vx>0, wy>0);
+
+A: tri_beta(a, b, c, u, v, w);
+
+dw: jacobian([A], w), numer;
+
+vec_any(w);
+dw, wx = 8, wy = 8, wz = 4;
+
+vec_arg(a, b, c, u, v, w);
