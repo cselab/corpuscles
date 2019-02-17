@@ -1,15 +1,17 @@
-h: e/A;
+h: s/A;
 
-depends(e, [a, b]);
+depends(s, [a, b]);
 depends(A, [a, b, c]);
 
-tellsimpafter('diff(e, a), ea);
-tellsimpafter('diff(e, b), eb);
+tellsimpafter('diff(s, a), sa);
+tellsimpafter('diff(s, b), sb);
 
 tellsimpafter('diff(A, a), Aa);
 tellsimpafter('diff(A, b), Ab);
 tellsimpafter('diff(A, c), Ac);
 
-expand(ratcoef(expand(diff(h)), del(a)));
-expand(ratcoef(expand(diff(h)), del(b)));
-expand(ratcoef(expand(diff(h)), del(c)));
+get(h, v):=expand(ratcoef(expand(diff(h)), del(v)));
+
+get(h, a);
+get(h, b);
+get(h, c);
