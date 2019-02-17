@@ -1,5 +1,4 @@
 for c in data/rbc/*.geometry
 do b=${c%.geometry}
-   o=$b.png
-   blender --background --python off.py $b $o &
+   blender --background --python off.py $b &
 done

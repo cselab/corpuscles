@@ -9,12 +9,11 @@ sys.path.append(".")
 import oogl
 
 Iblender = "red.blend"
-
 Base = sys.argv[4]
-Opng = sys.argv[5]
+Opng = "%s.png" % Base
 Camera = "%s.camera" % Base
 Geometry = "%s.geometry" % Base
-Oblender = "o.blend"
+Oblender = "%s.blend" % Base
 wx = 800
 wy = 600
 
