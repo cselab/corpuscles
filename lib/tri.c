@@ -227,17 +227,14 @@ real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
     NOT_ZERO(A);
     return B/A - 1;
 }
-static int beta(const real a[3], const real b[3], const real c[3], /**/ real *pb, real *pc) {
-    real A, B;
-    A = tri_area(a, b, c);
-    NOT_ZERO(A);
-    *pb = edg_sq(a, b)/(2*A);
-    *pc = edg_sq(a, c)/(2*A);
-    return HE_OK;
-}
+
 real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
     real b, c, v, w;
-    beta(a, b0, c0, /**/ &b, &c);
-    beta(u, v0, w0, /**/ &v, &w);
-    return ((-2*sqrt((b*c-1)*(v*w-1)))+b*w+c*v-2)/2;
+    b = tri_edg_area(a, b0, c0);
+    c = tri_edg_area(a, c0, b0);
+
+    v = tri_edg_area(u, v0, w0);
+    w = tri_edg_area(u, w0, v0);
+
+    return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8;
 }

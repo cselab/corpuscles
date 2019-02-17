@@ -1,4 +1,5 @@
 load("he/vec.mac") $
+load("he/edg.mac") $
 load("he/tri.mac") $
 
 set_random_state(make_random_state(42));

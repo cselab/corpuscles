@@ -1,0 +1,7 @@
+declare([b, c], constant);
+
+/* f(b, c, v, w):=((-2*sqrt((b*c-1)*(v*w-1)))+b*w+c*v-2)/2*/
+
+be: f(b, c, v, w);
+
+diff(be);
