@@ -233,10 +233,8 @@ real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[
     real b, c, v, w;
     b = tri_edg_area(a, b0, c0);
     c = tri_edg_area(a, c0, b0);
-
     v = tri_edg_area(u, v0, w0);
     w = tri_edg_area(u, w0, v0);
-
     return be(b, c, v, w);
 }
 
@@ -252,7 +250,6 @@ real tri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], 
 
     al = tri_alpha(a, b, c, u, v, w);
     be = tri_beta(a, b, c, u, v, w);
-
     return mu*(be + b1*al*be + b2*be*be);
 }
 
