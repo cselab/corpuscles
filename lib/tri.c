@@ -240,3 +240,24 @@ real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[
 
     return be(b, c, v, w);
 }
+
+real tri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    real al;
+
+    al = tri_alpha(a, b, c, u, v, w);
+    return Ka/2*(al*al + a3*al*al*al + a4*al*al*al*al);
+}
+
+real tri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    real al, be;
+
+    al = tri_alpha(a, b, c, u, v, w);
+    be = tri_beta(a, b, c, u, v, w);
+
+    return mu*(be + b1*al*be + b2*be*be);
+}
+
+real tri_lim(real Ka, real a3, real a4, real mu, real b1, real b2,
+             const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    return tri_lim_area(Ka, a3, a4, a, b, c, u, v, w) + tri_lim_shear(mu, b1, b2, a, b, c, u, v, w);
+}
