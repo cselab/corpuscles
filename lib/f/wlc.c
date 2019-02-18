@@ -141,8 +141,8 @@ static void compute_force(const real *e0, real K, real *dedg,
 }
 
 int he_f_wlc_force(T *q, He *he,
-                            const real *x, const real *y, const real *z, /**/
-                            real *fx, real *fy, real *fz) {
+                   const real *x, const real *y, const real *z, /**/
+                   real *fx, real *fy, real *fz) {
     int n;
     real *edg, *dedg, *e0, K;
     n = q->n;
