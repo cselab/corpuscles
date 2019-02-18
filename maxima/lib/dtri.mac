@@ -50,6 +50,11 @@ dtri_edg_area(a, b, c):=block([A, s, Aa, Ab, Ac, sa, sb, da, db, dc],
 %be_v(b, c, v, w):=(c-(sqrt(b*c-4)*w)/sqrt(v*w-4))/8;
 %be_w(b, c, v, w):=(b-(sqrt(b*c-4)*v)/sqrt(v*w-4))/8;
 
+dtri_alpha(a, b, c, u, v, w):=block([A, du, dv, dw],
+  A: tri_area(a, b, c),
+  [du, dv, dw]: dtri_area(u, v, w),
+  [du/A, dv/A, dw/A]);
+
 dtri_beta(a, b0, c0, u, v0, w0):=block([b, c, v, w, vu, vv, vw, wu, ww, wv, bv, bw, du, dv, dw],
   b: tri_edg_area(a, b0, c0),
   c: tri_edg_area(a, c0, b0),
@@ -66,5 +71,40 @@ dtri_beta(a, b0, c0, u, v0, w0):=block([b, c, v, w, vu, vv, vw, wu, ww, wv, bv, 
   du: bv*vu + bw*wu,
   dv: bv*vv + bw*wv,
   dw: bv*vw + bw*ww,
+
+  [du, dv, dw]);
+
+dtri_lim_area(Ka, a3, a4, a, b, c, u, v, w):=block([al, s, du, dv, dw],
+  al:  tri_alpha(a, b, c, u, v, w),
+  s: (Ka*al*(4*a4*al^2+3*a3*al+2))/2,
+  [du, dv, dw]: dtri_alpha(a, b, c, u, v, w),
+  [s*du, s*dv, s*dw]);
+
+
+dtri_lim_shear(mu, b1, b2, a, b, c, u, v, w):=block([al, be, d0, d1, du0, dv0, dw0, du1, dv1, dw1, du, dv, dw],
+  al: tri_alpha(a, b, c, u, v, w),
+  be: tri_beta(a, b, c, u, v, w),
+
+  d0: b1*be*mu,
+  d1: (2*b2*be+al*b1+1)*mu,
+
+  [du0, dv0, dw0]: dtri_alpha(a, b, c, u, v, w),
+  [du1, dv1, dw1]: dtri_beta(a, b, c, u, v, w),
+
+  du: d0*du0 + d1*du1,
+  dv: d0*dv0 + d1*dv1,
+  dw: d0*dw0 + d1*dw1,
+
+  [du, dv, dw]);
+
+
+dtri_lim(Ka, a2, a3, mu, b1, b2, a, b, c, u, v, w):=block([du0, dv0, dw0, du1, dv1, dw1, du, dv, dw],
+
+  [du0, dv0, dw0]: dtri_lim_area(Ka, a2, a3, a, b, c, u, v, w),
+  [du1, dv1, dw1]: dtri_lim_shear(mu, b1, b2, a, b, c, u, v, w),
+
+  du: du0 + du1,
+  dv: dv0 + dv1,
+  dw: dw0 + dw1,
 
   [du, dv, dw]);
