@@ -67,7 +67,7 @@ tri_edg_area(a, b, c):=block([A, e],
   A: tri_area(a, b, c),
   e/A);
 
-tri_alpha(a, b, c, u, v, w):=block([A0, A],
+tri_alpha(a, b, c, u, v, w):=block([A, B],
   A: tri_area(a, b, c),
   B : tri_area(u, v, w),
   B/A - 1);
@@ -92,5 +92,4 @@ tri_lim_shear(mu, b1, b2, a, b, c, u, v, w):=block([al, be],
   mu*(be + b1*al*be + b2*be*be));
 
 tri_lim(Ka, a3, a4, mu, b1, b2, a, b, c, u, v, w):=
-tri_lim_area(Ka, a3, a4, a, b, c, u, v, w) +
-tri_lim_shear(mu, b1, b1, a, b, c, u, v, w);
+tri_lim_area(Ka, a3, a4, a, b, c, u, v, w)+ tri_lim_shear(mu, b1, b2, a, b, c, u, v, w);

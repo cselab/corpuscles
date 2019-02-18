@@ -10,12 +10,6 @@ vec_any(u); vec_any(v); vec_any(w);
 (Ka: 2, a2: 3, a3: 4);
 (mu: 2, b1: 3, b2: 4);
 
-dtri_lim_area(Ka, a2, a3, a, b, c, u, v, w), numer;
-dtri_lim_shear(mu, b1, b2, a, b, c, u, v, w), numer;
-
 dtri_lim(Ka, a2, a3, mu, b1, b2, a, b, c, u, v, w), numer;
-
-vec_arg([Ka, a2, a3], a, b, c, u, v, w);
-vec_arg([mu, b1, b2], a, b, c, u, v, w);
 
 vec_arg([Ka, a2, a3, mu, b1, b2], a, b, c, u, v, w);
