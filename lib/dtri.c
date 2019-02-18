@@ -171,7 +171,7 @@ int dtri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], c
 }
 
 int dtri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
-                  real du[3], real dv[3], real dw[3]) {
+                   real du[3], real dv[3], real dw[3]) {
     real al, be, dal, dbe;
     real al_du[3], al_dv[3], al_dw[3];
     real be_du[3], be_dv[3], be_dw[3];
@@ -189,5 +189,20 @@ int dtri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], 
     vec_linear_combination(dal, al_dv, dbe, be_dv, /**/ dv);
     vec_linear_combination(dal, al_dw, dbe, be_dw, /**/ dw);
 
+    return HE_OK;
+}
+
+int dtri_lim(real Ka, real a3, real a4, real mu, real b1, real b2,
+             const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
+             /**/ real du[3], real dv[3], real dw[3]) {
+    real ar_du[3], ar_dv[3], ar_dw[3];
+    real sh_du[3], sh_dv[3], sh_dw[3];
+
+    dtri_lim_area(Ka, a3, a4, a, b, c, u, v, w,   ar_du, ar_dv, ar_dw);
+    dtri_lim_shear(mu, b1, b2, a, b, c, u, v, w,   sh_du, sh_dv, sh_dw);
+
+    vec_plus(ar_du, sh_du, du);
+    vec_plus(ar_dv, sh_dv, dv);
+    vec_plus(ar_dw, sh_dw, dw);
     return HE_OK;
 }
