@@ -159,3 +159,13 @@ int dtri_beta(const real a[3], const real b0[3], const real c0[3], const real u[
 
     return HE_OK;
 }
+
+int dtri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
+                  real du[3], real dv[3], real dw[3]) {
+    real l,s;
+    l = tri_alpha(a, b, c, u, v, w);
+    s = (Ka*(4*a4*l*l*l+3*a3*l*l+2*l))/2;
+    dtri_alpha(a, b, c, u, v, w, du, dv, dw);
+    vec_scale(s, du); vec_scale(s, dv); vec_scale(s, dw);
+    return HE_OK;
+}
