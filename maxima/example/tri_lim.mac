@@ -1,0 +1,13 @@
+load("he/vec.mac") $
+load("he/dedg.mac") $
+load("he/edg.mac") $
+load("he/tri.mac") $
+load("he/dtri.mac") $
+
+vec_any(a); vec_any(b); vec_any(c);
+vec_any(u); vec_any(v); vec_any(w);
+
+(Ka: 2, a2: 3, a3: 4);
+tri_lim_area(Ka, a2, a3, a, b, c, u, v, w);
+
+vec_arg([Ka, a2, a3], a, b, c, u, v, w);
