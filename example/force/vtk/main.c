@@ -29,7 +29,7 @@ static He *he, *he0;
 static Force *force;
 static real delta = 1e-6;
 
-static const char *me = "force/generic";
+static const char *me = "force/vtk";
 
 static void usg(void) {
     const char *list;
