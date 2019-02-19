@@ -6,17 +6,17 @@
 from `gerris-stable/tools/gfs2oogl.c`
 
 	fprintf (fp, "VECT 1 3 0 3 0 %g %g %g %g %g %g %g %g %g\n",
-		 pos.x + f.x - (f.x - f.y/2.)/5.,
-		 pos.y + f.y - (f.x/2. + f.y)/5.,
-		 pos.z + f.z,
-		 pos.x + f.x,
-		 pos.y + f.y,
-		 pos.z + f.z,
-		 pos.x + f.x - (f.x + f.y/2.)/5.,
-		 pos.y + f.y + (f.x/2. - f.y)/5.,
-		 pos.z + f.z);
+		 x + u - (u - v/2.)/5.,
+		 y + v - (u/2. + v)/5.,
+		 z + w,
+		 x + u,
+		 y + v,
+		 z + w,
+		 x + u - (u + v/2.)/5.,
+		 y + v + (u/2. - v)/5.,
+		 z + w);
 	fprintf (fp, "VECT 1 2 0 2 0 %g %g %g %g %g %g\n",
-		 pos.x, pos.y, pos.z,
-		 pos.x + f.x,
-		 pos.y + f.y,
-		 pos.z + f.z);
+		 x, y, z,
+		 x + u,
+		 y + v,
+		 z + w);

@@ -382,31 +382,48 @@ int boff_ver_fwrite(He *he, const real *x, const real *y, const real *z, const r
     return boff_lh_ver_fwrite(he, x, y, z, l, h, a, f);
 }
 
-int boff_vect_fwrite(He *he, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /**/ FILE *f) {
-    int nv, nc, i;
-    nv = he_nv(he);
+int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, const real *vv, const real *uu, const real *ww, /**/ FILE *f) {
+#   define P(x, y, z) fprintf(f, OUT " " OUT " " OUT "\n", x, y, z)
+    int n, nv, nc, np, i;
+    real x, y, z, u, v, w;
+
+    n = he_nv(he);
     nc = 0; /* number of colors */
     if (fputs("VECT\n", f) == EOF)
         ERR(HE_IO, "fail to write");
-    fprintf(f, "%d %d %d\n", nv, 2*nv, nc);
 
-    for (i = 0; i < nv; i++) {
+    np = n + n;
+    nv = 2*n + 3*n;
+    fprintf(f, "%d %d %d\n", np, nv, nc);
+    for (i = 0; i < n; i++) {
         if (i > 0) putc(' ', f);
         putc('2', f);
     }
+    for (i = 0; i < n; i++) {
+        putc(' ', f);
+        putc('3', f);
+    }
     putc('\n', f);
-
-    for (i = 0; i < nv; i++) {
+    for (i = 0; i < np; i++) {
         if (i > 0) putc(' ', f);
         putc('0', f);
     }
     putc('\n', f);
 
-    for (i = 0; i < nv; i++) {
-        fprintf(f, OUT " " OUT " " OUT "\n",
-                x[i], y[i], z[i]);
-        fprintf(f, OUT " " OUT " " OUT "\n",
-                x[i] + fx[i], y[i] + fy[i], z[i] + fz[i]);
+    for (i = 0; i < n; i++) {
+        x  = xx[i]; y = yy[i]; z = zz[i];
+        u  = uu[i]; v = vv[i]; w = ww[i];
+        P(x, y, z);
+        P(x + u, y + v, z + w);
+    }
+
+    for (i = 0; i < n; i++) {
+        u  = uu[i]; v = vv[i]; w = ww[i];
+        x  = xx[i] + u; y = yy[i] + v; z = zz[i] + w;
+        P(x - (u - v/2)/5, y - (u/2 + v)/5, z);
+        P(x, y, z);
+        P(x - (u + v/2)/5, y + (u/2 - v)/5, z - 2*w/5);
     }
     return HE_OK;
+#   undef P
 }
