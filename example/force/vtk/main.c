@@ -4,16 +4,16 @@
 
 #include <real.h>
 
-#include <he/force.h>
-#include <he/vtk.h>
 #include <he/area.h>
-#include <he/he.h>
-#include <he/memory.h>
-#include <he/err.h>
-#include <he/util.h>
 #include <he/argv.h>
+#include <he/err.h>
+#include <he/force.h>
+#include <he/he.h>
 #include <he/macro.h>
+#include <he/memory.h>
+#include <he/util.h>
 #include <he/vec.h>
+#include <he/vtk.h>
 #include <he/y.h>
 
 #define FMT_IN   HE_REAL_IN

@@ -4,15 +4,15 @@
 
 #include <real.h>
 
-#include <he/force.h>
-#include <he/vtk.h>
 #include <he/area.h>
-#include <he/he.h>
-#include <he/memory.h>
-#include <he/err.h>
-#include <he/util.h>
 #include <he/argv.h>
+#include <he/err.h>
+#include <he/force.h>
+#include <he/he.h>
 #include <he/macro.h>
+#include <he/memory.h>
+#include <he/off.h>
+#include <he/util.h>
 #include <he/vec.h>
 #include <he/y.h>
 
@@ -48,16 +48,7 @@ static void main0() {
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
 
-    for (i = 0; i < nv; i++) {
-        vec_get(i, x, y, z, /**/ r);
-        vec_get(i, fx, fy, fz, /**/ f);
-        rr[i] = vec_cylindrical_r(r);
-        fm[i] = vec_abs(f);
-    }
-
-    const char *na[] = {"fm", "fx", "fy", "fz", "area", NULL};
-    const real *sc[] = {fm, fx, fy, fz, area, NULL};
-    vtk_fwrite(he, x, y, z, sc, na, stdout);
+    boff_ver_fwrite(he, x, y, z, fx, fy, fz, stdout);
     force_fin(force);
 }
 
