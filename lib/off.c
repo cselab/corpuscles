@@ -395,20 +395,12 @@ int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, con
     np = n + n;
     nv = 2*n + 3*n;
     fprintf(f, "%d %d %d\n", np, nv, nc);
-    for (i = 0; i < n; i++) {
-        if (i > 0) putc(' ', f);
-        putc('2', f);
-    }
-    for (i = 0; i < n; i++) {
-        putc(' ', f);
-        putc('3', f);
-    }
-    putc('\n', f);
-    for (i = 0; i < np; i++) {
-        if (i > 0) putc(' ', f);
-        putc('0', f);
-    }
-    putc('\n', f);
+    for (i = 0; i < n; i++)
+        printf("%d\n", 2);
+    for (i = 0; i < n; i++)
+        printf("%d\n", 3);
+    for (i = 0; i < np; i++)
+        printf("%d\n", 0);
 
     for (i = 0; i < n; i++) {
         x  = xx[i]; y = yy[i]; z = zz[i];
