@@ -382,33 +382,51 @@ int boff_ver_fwrite(He *he, const real *x, const real *y, const real *z, const r
     return boff_lh_ver_fwrite(he, x, y, z, l, h, a, f);
 }
 
-int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, const real *vv, const real *uu, const real *ww, /**/ FILE *f) {
-#   define P(x, y, z) fprintf(f, OUT " " OUT " " OUT "\n", x, y, z)
-    int n, nv, nc, np, i;
+int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, const real *uu, const real *vv, const real *ww, /**/ FILE *f) {
+#   define P(x, y, z) do {                              \
+        fb[m++] = (x); fb[m++] = (y); fb[m++] = (z);    \
+    } while (0)
+
+    int n, nv, nc, np, i, cnt, m;
     real x, y, z, u, v, w;
+
+    short *sb;
+    int ib[3];
+    float *fb;
 
     n = he_nv(he);
     nc = 0; /* number of colors */
-    if (fputs("VECT\n", f) == EOF)
+    if (fputs("VECT BINARY\n", f) == EOF)
         ERR(HE_IO, "fail to write");
 
     np = n + n;
     nv = 2*n + 3*n;
-    fprintf(f, "%d %d %d\n", np, nv, nc);
-    for (i = 0; i < n; i++)
-        printf("%d\n", 2);
-    for (i = 0; i < n; i++)
-        printf("%d\n", 3);
-    for (i = 0; i < np; i++)
-        printf("%d\n", 0);
 
+    MALLOC(np, &sb);
+    MALLOC(3*nv, &fb);
+
+    m = 0; ib[m++] = np; ib[m++] = nv; ib[m++] = nc;
+    big_endian_int(m, ib);
+    FWRITE(ib, m);
+
+    m = 0;
+    for (i = 0; i < n; i++) sb[m++] = 2;
+    for (i = 0; i < n; i++) sb[m++] = 3;
+    big_endian_short(m, sb);
+    FWRITE(sb, m);
+
+    m = 0;
+    for (i = 0; i < np; i++) sb[m++] = 0;
+    big_endian_short(m, sb);
+    FWRITE(sb, m);
+
+    m = 0;
     for (i = 0; i < n; i++) {
         x  = xx[i]; y = yy[i]; z = zz[i];
         u  = uu[i]; v = vv[i]; w = ww[i];
         P(x, y, z);
         P(x + u, y + v, z + w);
     }
-
     for (i = 0; i < n; i++) {
         u  = uu[i]; v = vv[i]; w = ww[i];
         x  = xx[i] + u; y = yy[i] + v; z = zz[i] + w;
@@ -416,6 +434,10 @@ int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, con
         P(x, y, z);
         P(x - (u + v/2)/5, y + (u/2 - v)/5, z - 2*w/5);
     }
+    big_endian_flt(m, fb);
+    FWRITE(fb, m);
+
+    FREE(sb); FREE(fb);
     return HE_OK;
 #   undef P
 }
