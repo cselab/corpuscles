@@ -388,7 +388,7 @@ int boff_vect_fwrite(He *he, const real *x, const real *y, const real *z, const 
     nc = 0; /* number of colors */
     if (fputs("VECT\n", f) == EOF)
         ERR(HE_IO, "fail to write");
-    fprintf(f, "%d %d %d\n", nv, 3*nv, nc);
+    fprintf(f, "%d %d %d\n", nv, 2*nv, nc);
 
     for (i = 0; i < nv; i++) {
         if (i > 0) putc(' ', f);
@@ -396,5 +396,17 @@ int boff_vect_fwrite(He *he, const real *x, const real *y, const real *z, const 
     }
     putc('\n', f);
 
+    for (i = 0; i < nv; i++) {
+        if (i > 0) putc(' ', f);
+        putc('0', f);
+    }
+    putc('\n', f);
+
+    for (i = 0; i < nv; i++) {
+        fprintf(f, OUT " " OUT " " OUT "\n",
+                x[i], y[i], z[i]);
+        fprintf(f, OUT " " OUT " " OUT "\n",
+                x[i] + fx[i], y[i] + fy[i], z[i] + fz[i]);
+    }
     return HE_OK;
 }
