@@ -48,7 +48,7 @@ static void main0() {
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
 
-    boff_ver_fwrite(he, x, y, z, fx, fy, fz, stdout);
+    boff_vect_fwrite(he, x, y, z, fx, fy, fz, stdout);
     force_fin(force);
 }
 
