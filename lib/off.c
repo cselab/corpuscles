@@ -381,3 +381,7 @@ int boff_ver_fwrite(He *he, const real *x, const real *y, const real *z, const r
     h = array_max(n, a);
     return boff_lh_ver_fwrite(he, x, y, z, l, h, a, f);
 }
+
+int boff_vect_fwrite(He *he, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /**/ FILE *f) {
+    return HE_OK;
+}
