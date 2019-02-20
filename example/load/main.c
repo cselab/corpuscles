@@ -25,13 +25,15 @@ static Force *force;
 
 int main0(void) {
     int i, n;
-    n = 10;
+    real dt;
+
+    n = 10000;
+    dt = 0.001;
     for (i = 0; i < n; i++) {
+        array_zero3(nv, fx, fy, fz);
         stretch_force(stretch, x, y, z, fx, fy, fz);
         force_force(force, he, x, y, z, fx, fy, fz);
-        array_zero(nv, fx);
-        array_zero(nv, fy);
-        array_zero(nv, fz);
+        array_axpy3(nv, -dt, fx, fy, fz, x, y, z);
     }
 }
 
@@ -47,7 +49,8 @@ int main(__UNUSED int c, char **v) {
     stretch_argv(&v, he, x, y, z, &stretch);
 
     main0();
-    boff_point_fwrite(he, x, y, z, fx, stdout);
+    //boff_point_fwrite(he, x, y, z, fx, stdout);
+    boff_ver_fwrite(he, x, y, z, fx, stdout);
 
     force_fin(force);
     stretch_fin(stretch);

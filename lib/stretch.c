@@ -282,12 +282,12 @@ int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real
 
     for (i = 0; i < n; i++) {
         j = q->plus[i];
-        fx[j] += f/n;
+        fx[j] -= f/n;
     }
 
     for (i = 0; i < n; i++) {
         j = q->minus[i];
-        fx[j] -= f/n;
+        fx[j] += f/n;
     }
 
     return HE_OK;
