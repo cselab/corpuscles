@@ -28,7 +28,8 @@ int main(__UNUSED int c, char **v) {
 
     MSG("n = %d", stretch_n(stretch));
 
-    boff_ver_fwrite(he, x, y, z, fx, stdout);
+    //boff_ver_fwrite(he, x, y, z, fx, stdout);
+    boff_point_fwrite(he, x, y, z, fx, stdout);
 
     stretch_fin(stretch);
 
