@@ -49,8 +49,8 @@ static void main0() {
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
 
     //boff_vect_fwrite(he, x, y, z, fx, fy, fz, stdout);
-    boff_vect_fwrite(he, x, y, z, fx, fy, fz, stdout);
-    
+    boff_point_fwrite(he, x, y, z, fx, stdout);
+
     force_fin(force);
 }
 
