@@ -21,6 +21,11 @@
 
 #define MAX_ITER (100)
 
+static const char Help[] = \
+    "plain force fraction\n"
+    "cylinder force fraction x\n"
+    ;
+
 struct T {
     int n;
     int *plus, *minus;
@@ -128,6 +133,11 @@ static int select0(real r0, int *a) {
     }
     return HE_OK;
 #   undef sq
+}
+
+int stretch_help(const char **p) {
+    *p = Help;
+    return HE_OK;
 }
 
 static real get_rmax(int n, const real *x, const real *y) {
