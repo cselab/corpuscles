@@ -24,19 +24,20 @@ int off_tri_write(T*, const int *tri, /**/ const char*);
 int off_he_fwrite(T*, He*, FILE*);
 int off_he_write(T*, He*, /**/ const char*);
 
-int off_he_xyz_fwrite(He*, const real*, const real*, const real*, /**/ FILE*);
-int off_he_xyz_write(He*, const real*, const real*, const real*, /**/ const char*);
+int off_he_xyz_fwrite(He*, const real*, const real*, const real*, FILE*);
+int off_he_xyz_write(He*, const real*, const real*, const real*, const char*);
 
-int boff_fwrite(He*, const real*, const real*, const real*, /**/ FILE*);
+int boff_fwrite(He*, const real*, const real*, const real*, FILE*);
 
-int boff_lh_tri_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, /**/ FILE*);
-int boff_tri_fwrite(He*, const real*, const real*, const real*, const real *a, /**/ FILE*);
+int boff_lh_tri_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, FILE*);
+int boff_tri_fwrite(He*, const real*, const real*, const real*, const real *a, FILE*);
 
-int boff_lh_ver_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, /**/ FILE*);
-int boff_ver_fwrite(He*, const real*, const real*, const real*, const real*, /**/ FILE*);
+int boff_lh_ver_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, FILE*);
+int boff_ver_fwrite(He*, const real*, const real*, const real*, const real*, FILE*);
 
-int boff_vect_fwrite(He*, const real*, const real*, const real*, const real*, const real*, const real*, /**/ FILE*);
+int boff_vect_fwrite(He*, const real*, const real*, const real*, const real*, const real*, const real*, FILE*);
 
-int boff_lh_point_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, /**/ FILE *f);
+int boff_lh_point_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, FILE*);
+int boff_point_fwrite(He*, const real*, const real*, const real*, const real *a, FILE*)
 
 #undef T

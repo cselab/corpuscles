@@ -459,3 +459,12 @@ int boff_lh_point_fwrite(He *he, const real *x, const real *y, const real *z, re
     }
     return HE_OK;
 }
+
+int boff_point_fwrite(He *he, const real *x, const real *y, const real *z, const real *a, /**/ FILE *f) {
+    int nt;
+    real l, h;
+    nt = he_nt(he);
+    l = array_min(nt, a);
+    h = array_max(nt, a);
+    return boff_lh_point_fwrite(he, x, y, z, l, h, a, f);
+}
