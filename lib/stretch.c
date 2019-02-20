@@ -24,6 +24,7 @@
 static const char Help[] = \
     "plain force fraction\n"
     "cylinder force fraction x\n"
+    "edge"
     ;
 
 struct T {
@@ -35,8 +36,9 @@ struct T {
 typedef int (*IniFunType)(int, const real*, const real*, char***, T*);
 static int plain(int, const real*, const real*, char***, T*);
 static int cylinder(int, const real*, const real*, char***, T*);
-static const char *IniName[] = {"plain", "cylinder"};
-static const IniFunType IniFun[] = {plain, cylinder};
+static int edge(int, const real*, const real*, char***, T*);
+static const char *IniName[] = {"plain", "cylinder", "edge"};
+static const IniFunType IniFun[] = {plain, cylinder, edge};
 
 const static real *QX;
 static int compare(const void *vi, const void *vj) {
@@ -180,7 +182,7 @@ static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T 
     /* set data for count() */
     rmax = fabs(x0) + get_rmax(nv, x, y);
     SET(n, nv); SET(xx, x); SET(yy, y);
-    
+
     real r;
     SET(x0, x0); r = bin_search(n, rmax);
     n = count(r);
@@ -199,6 +201,38 @@ static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T 
     return HE_OK;
 }
 
+static real EDG_EPS = 1e-8;
+static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
+    int *plus, *minus;
+    real xmin, xmax;
+    int n, nmin, nmax, i, j;
+
+    n = nmin = nmax = 0;
+    xmin = array_min(nv, x);
+    xmax = array_max(nv, x);
+
+    for (i = 0; i < nv; i++)
+        if (fabs(x[i] - xmin) < EDG_EPS) nmin++;
+    for (i = 0; i < nv; i++)
+        if (fabs(x[i] - xmax) < EDG_EPS) nmax++;
+    if (nmax != nmin)
+        ERR(HE_IO, "nmax=%d != nmin=%d", nmax, nmin);
+
+    n = nmin;
+    MALLOC(n, &plus);
+    MALLOC(n, &minus);
+
+    for (i = j = 0; i < nv; i++)
+        if (fabs(x[i] - xmin) < EDG_EPS) minus[j++] = i;
+    for (i = j = 0; i < nv; i++)
+        if (fabs(x[i] - xmax) < EDG_EPS) plus[j++] = i;
+
+    q->n = n;
+    q->minus = minus;
+    q->plus = plus;
+    return HE_OK;
+}
+
 int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     T *q;
     int i, nv, status;
@@ -212,8 +246,10 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
 
     i = 0;
     for (i = 0; ; i++) {
-        if (i == SIZE(IniName))
-            ERR(HE_IO, "expecting 'plain' or 'cyliner' got '%s'", name);
+        if (i == SIZE(IniName)) {
+            MSG("unexpected stretch type '%s'", name);
+            MSG("%s", Help);
+        }
         if (util_eq(name, IniName[i])) {
             status = IniFun[i](nv, x, y, p, q);
             if (status != HE_OK)
