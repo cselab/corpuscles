@@ -28,7 +28,7 @@ int main0(void) {
     real dt;
 
     n = 10000;
-    dt = 0.001;
+    dt = 0.1;
     for (i = 0; i < n; i++) {
         array_zero3(nv, fx, fy, fz);
         stretch_force(stretch, x, y, z, fx, fy, fz);
