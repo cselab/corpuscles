@@ -26,6 +26,8 @@ int main(__UNUSED int c, char **v) {
     stretch_argv(&v, he, x, y, z, &stretch);
     stretch_force(stretch, x, y, z, fx, fy, fz);
 
+    MSG("n = %d", stretch_n(stretch));
+
     boff_ver_fwrite(he, x, y, z, fx, stdout);
 
     stretch_fin(stretch);

@@ -24,7 +24,7 @@
 static const char Help[] = \
     "plain force fraction\n"
     "cylinder force fraction x\n"
-    "edge"
+    "edge force"
     ;
 
 struct T {
@@ -204,8 +204,11 @@ static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T 
 static real EDG_EPS = 1e-8;
 static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
     int *plus, *minus;
-    real xmin, xmax;
+    real f, xmin, xmax;
     int n, nmin, nmax, i, j;
+
+    if (argv_real(p, &f) != HE_OK)
+        ERR(HE_IO, "fail to read force");
 
     n = nmin = nmax = 0;
     xmin = array_min(nv, x);
@@ -228,6 +231,7 @@ static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) 
         if (fabs(x[i] - xmax) < EDG_EPS) plus[j++] = i;
 
     q->n = n;
+    q->f = f;
     q->minus = minus;
     q->plus = plus;
     return HE_OK;
@@ -248,7 +252,7 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     for (i = 0; ; i++) {
         if (i == SIZE(IniName)) {
             MSG("unexpected stretch type '%s'", name);
-            MSG("%s", Help);
+            ERR(HE_IO, "possible types are\n%s", Help);
         }
         if (util_eq(name, IniName[i])) {
             status = IniFun[i](nv, x, y, p, q);
