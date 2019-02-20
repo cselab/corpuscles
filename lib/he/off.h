@@ -38,6 +38,6 @@ int boff_ver_fwrite(He*, const real*, const real*, const real*, const real*, FIL
 int boff_vect_fwrite(He*, const real*, const real*, const real*, const real*, const real*, const real*, FILE*);
 
 int boff_lh_point_fwrite(He*, const real*, const real*, const real*, real lo, real hi, const real*, FILE*);
-int boff_point_fwrite(He*, const real*, const real*, const real*, const real *a, FILE*)
+int boff_point_fwrite(He*, const real*, const real*, const real*, const real *a, FILE*);
 
 #undef T
