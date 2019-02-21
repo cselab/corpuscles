@@ -1,4 +1,4 @@
-element_size = 0.05;
+element_size = 0.1;
 l = -0.5; h = 0.5;
 
 Point(1) = {l, l, 0, element_size };
