@@ -1,0 +1,14 @@
+load("he/vec.mac") $
+load("he/edg.mac") $
+load("he/tri.mac") $
+
+vec_any(a); vec_any(b); vec_any(c);
+vec_any(u); vec_any(v); vec_any(w);
+
+[a0, b0, c0]: tri_abc(a, b, c, u, v, w), numer;
+
+al0: a0*c0 - 1;
+be0: 1/(2*a0*c0)*(a0^2 + b0^2 + c0^2 - 2*a0*c0);
+
+al0 - tri_alpha(a, b, c, u, v, w), numer;
+be0 - tri_beta(a, b, c, u, v, w), numer;
