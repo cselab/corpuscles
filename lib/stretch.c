@@ -273,7 +273,8 @@ int stretch_fin(T *q) {
     return HE_OK;
 }
 
-int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
+int stretch_force(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z,
+                  /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
     int i, j, n;
     real f;
 
@@ -292,6 +293,36 @@ int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real
 
     return HE_OK;
 }
+
+static int rigid(int n, const int *idx, real *f) {
+    int i, j;
+    real f0;
+
+    f0 = 0;
+    for (i = 0; i < n; i++) {
+        j = idx[i];
+        f0 += f[j];
+    }
+    f0 /= n;
+
+    for (i = 0; i < n; i++) {
+        j = idx[i];
+        f[j] = f0;
+    }
+    return HE_OK;
+}
+
+int stretch_constrain(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z,
+                      /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
+    int i, j, n;
+    real f;
+
+    n = q->n;
+    rigid(n, q->plus, fx);
+    rigid(n, q->minus, fx);
+    return HE_OK;
+}
+
 
 int stretch_n(T *q) { return q->n; }
 real stretch_f(T *q) { return q->f; }
