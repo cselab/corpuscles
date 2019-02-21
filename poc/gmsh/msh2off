@@ -2,25 +2,26 @@
 
 prog=he.msh2off
 
-"$AWK" -v prog=$prog  '
-BEGIN {
-    TRIANGLE = 2
+usg () {
+    msg "$prog MSH > OFF"
+    exit
 }
 
-{ L[++N] = $0 }
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
+"$AWK" -v prog=$prog  '
+BEGIN { TRIANGLE = 2 }
+{ L[++N] = $0 }
 END {
     read()
     write()
 }
-
 function read(   i, j, ne, A) {
     if (!eq(L[++I], "$MeshFormat"))
 	err("not a mesh file")
     find("$EndMeshFormat")
     find("$Nodes")
     nv = L[++I]
-    msg(nv)
     for (i = 0; i < nv; i++) {
 	split(L[++I], A)
 	j = A[1]; x[j] = A[2]; y[j] = A[3]; z[j] = A[4]
@@ -35,7 +36,6 @@ function read(   i, j, ne, A) {
     }
     nt = j
 }
-
 function write() {
     print "OFF"
     print nv, nt, 0
@@ -46,12 +46,10 @@ function write() {
 }
 
 function o(e) { return e - 1 }
-
 function find(s) {
     while (++I <= N && !eq(L[I], s)) ;
     if (I > N)	err("missing " s)
 }
-
 function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
 function err(s) { msg(s); exit(2) }
 function eq(a, b) { return "" a == "" b }
