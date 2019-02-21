@@ -33,6 +33,7 @@ int main0(void) {
         array_zero3(nv, fx, fy, fz);
         stretch_force(stretch, x, y, z, fx, fy, fz);
         force_force(force, he, x, y, z, fx, fy, fz);
+        stretch_constrain(stretch, x, y, z, fx, fy, fz);
         array_axpy3(nv, -dt, fx, fy, fz, x, y, z);
     }
 }
