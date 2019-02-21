@@ -15,4 +15,4 @@ for i=1:(length(t)-1)
   k4 = -2*y3;
   y(i+1) = y(i) + (k1+2*k2+2*k3+k4)*h/6;
 end
-plot(t,yexact,t,y);
+plot(t, yexact, t, y, 'o');
