@@ -36,6 +36,8 @@ int main0(void) {
         array_axpy3(nv, -dt, fx, fy, fz, x, y, z);
     }
     fprintf(stderr, FMT " " FMT "\n", array_max(nv, x), array_min(nv, x));
+    fprintf(stderr, FMT " " FMT "\n", array_max(nv, y), array_min(nv, y));
+    off_he_xyz_fwrite(he, x, y, z, stdout);
 }
 
 int main(__UNUSED int c, char **v) {
@@ -47,14 +49,12 @@ int main(__UNUSED int c, char **v) {
 
     argv_real(&v, &dt);
     argv_int(&v, &nstep);
-    
+
     argv_str(&v, name);
     force_argv(name, &v, he,  &force);
     stretch_argv(&v, he, x, y, z, &stretch);
 
     main0();
-    //boff_point_fwrite(he, x, y, z, fx, stdout);
-    boff_ver_fwrite(he, x, y, z, fx, stdout);
 
     force_fin(force);
     stretch_fin(stretch);
