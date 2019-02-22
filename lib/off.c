@@ -45,7 +45,7 @@ int off_inif(FILE *f, T **pq) {
         ERR(HE_IO, "unexpected EOF")
     NXT();
     if (!util_eq(line, "OFF"))
-        ERR(HE_IO, "not an off file");
+        ERR(HE_IO, "expecting 'OFF' got '%s'", line);
     NXT();
     cnt = sscanf(line, "%d %d %*d", &nv, &nt);
     if (cnt != 2)
