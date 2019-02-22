@@ -3,4 +3,7 @@ make
 # tri.plain 20 12 > ref.off
 cp data/main.off ref.off
 
-./main strain ref.off lim 0.1 0.5 0 0 0 0 edge 0.25 < ref.off  > o.off
+dt=1e-3
+Ka=1
+mu=0
+./main $dt strain ref.off lim $Ka $mu 0 0 0 0 edge 1 < ref.off  > o.off

@@ -17,18 +17,16 @@ static int nv;
 static He *he;
 static real *x, *y, *z;
 static real *fx, *fy, *fz;
-
 static Stretch *stretch;
+
+static real dt;
 
 static char name[1024];
 static Force *force;
 
 int main0(void) {
     int i, n;
-    real dt;
-
     n = 10000;
-    dt = 0.1;
     for (i = 0; i < n; i++) {
         array_zero3(nv, fx, fy, fz);
         stretch_force(stretch, x, y, z, fx, fy, fz);
@@ -45,6 +43,7 @@ int main(__UNUSED int c, char **v) {
     nv = he_nv(he);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
+    argv_real(&v, &dt);
     argv_str(&v, name);
     force_argv(name, &v, he,  &force);
     stretch_argv(&v, he, x, y, z, &stretch);
