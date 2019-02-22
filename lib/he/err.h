@@ -24,5 +24,5 @@ void he_err(int code, const char *file, int line, const char *fmt, ...);
 void he_msg(const char *file, int line, const char *fmt, ...);
 
 int err_set(int);
-int err_set_abort();
-int err_set_ignore();
+int err_set_abort(void);
+int err_set_ignore(void);
