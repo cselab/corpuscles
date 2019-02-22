@@ -10,7 +10,6 @@ int main(void) {
     real *x, *y, *z;
     He *he;
     err_set_ignore();
-
     status = y_inif(stdin, &he, &x, &y, &z);
     if (status != HE_OK)
         ER("y_inif failed");
