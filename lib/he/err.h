@@ -15,9 +15,6 @@ enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM, HE_NOT};
     } while(0)
 
 #define MSG(fmt, ...) he_msg(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
-/*MSGR is about result so that there is a # in front, therefore
-  it does not interfer with plot such as using gnuplot*/
-#define MSGR(fmt, ...) he_msgr(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 
 #ifdef __clang__
 #   pragma clang diagnostic pop
@@ -25,4 +22,3 @@ enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM, HE_NOT};
 
 void he_err(int code, const char *file, int line, const char *fmt, ...);
 void he_msg(const char *file, int line, const char *fmt, ...);
-void he_msgr(const char *file, int line, const char *fmt, ...);
