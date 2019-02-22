@@ -93,3 +93,14 @@ tri_lim_shear(mu, b1, b2, a, b, c, u, v, w):=block([al, be],
 
 tri_lim(Ka, a3, a4, mu, b1, b2, a, b, c, u, v, w):=
 tri_lim_area(Ka, a3, a4, a, b, c, u, v, w)+ tri_lim_shear(mu, b1, b2, a, b, c, u, v, w);
+
+tri_abc(a, b, c, u, v, w):=block([l0, lp0, p0, l, lp, p],
+   l0: edg_abs(a, b),
+   lp0: edg_abs(a, c),
+   p0: tri_angle(c, a, b),
+
+   l: edg_abs(u, v),
+   lp: edg_abs(u, w),
+   p: tri_angle(w, u, v),
+
+   [l/l0, 1/sin(p0)*(lp/lp0*cos(p) - l/l0*cos(p0)), lp/lp0*sin(p)/sin(p0)]);

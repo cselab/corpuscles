@@ -18,14 +18,17 @@ make PREFIX=$HOME
 ** Precision
 - prec/d/real.h :: double
 - prec/s/real.h :: single
+- prec/l/real.h :: long double
 
 ** Math
-- edg.h, dedg.h :: edges
-- tri.h, dtri.h :: triangles
+
+- edg.h, dedg.h :: edges and derivatives
+- tri.h, dtri.h :: triangles and derivatives
 - ten.h  :: tensor
-- vec.h, dvec.h :: vectors
+- vec.h, dvec.h :: vectors and derivatives
 
 ** Utility
+- array.h :: array related functions
 - err.h :: error handling
 - macro.h :: macros
 - memory.h :: memory related
@@ -55,9 +58,10 @@ make PREFIX=$HOME
 - off.h :: read OFF
 - punto.h :: read/write "punto" files
 - vtk.h :: write vtk file
+- gts.h :: write gts files
+- ply.h :: read/write ply files
+- obj.h :: read/write obj files
 
 ** X
 - x.h :: simplifyied interface for one mesh
 - y.h :: less simplifyied interface mesh
-
-* Examples

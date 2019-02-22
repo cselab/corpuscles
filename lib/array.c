@@ -25,3 +25,29 @@ int array_zero(int n, real a[]) {
         a[i] = 0;
     return HE_OK;
 }
+
+int array_zero3(int n, real a[], real b[], real c[]) {
+    int i;
+    if (n < 0)
+        ERR(HE_INDEX, "n=%d < 0", n);
+    array_zero(n, a);
+    array_zero(n, b);
+    array_zero(n, c);
+    return HE_OK;
+}
+
+int array_axpy(int n, real a, const real x[], /**/ real y[]) {
+    int i;
+    for (i = 0; i < n; i++)
+        y[i] += a * x[i];
+    return HE_OK;
+}
+
+int array_axpy3(int n, real a,
+                const real x0[], const real x1[], const real x2[],
+                real y0[], real y1[], real y2[]) {
+    array_axpy(n, a, x0, y0);
+    array_axpy(n, a, x1, y1);
+    array_axpy(n, a, x2, y2);
+    return HE_OK;
+}
