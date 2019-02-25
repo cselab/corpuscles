@@ -32,3 +32,5 @@ real tri_beta(const real a[3], const real b[3], const real c[3], const real u[3]
 real tri_lim_area(real Ka, real a3, real a4, const real[3], const real[3], const real[3], const real[3], const real[3], const real[3]);
 real tri_lim_shear(real mu, real b1, real b2, const real[3], const real[3], const real[3], const real[3], const real[3], const real[3]);
 real tri_lim(real Ka, real a3, real a4, real mu, real b1, real b2, const real[3], const real[3], const real[3], const real[3], const real[3], const real[3]);
+
+int tri_abc(const real[3], const real[3], const real[3], const real[3], const real[3], const real[3], /**/ real*, real*, real*);
