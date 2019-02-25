@@ -30,6 +30,7 @@ int main(__UNUSED int argc, const char **v0) {
     real ax, bx, by;
     real ux, vx, vy;
     real Ka, a3, a4, mu, b1, b2;
+    real a0, b0, c0;
 
     argv = v0;
     argv++;
@@ -112,6 +113,11 @@ int main(__UNUSED int argc, const char **v0) {
         vec(a); vec(b); vec(c);
         vec(u); vec(v); vec(w);
         printf("%g\n",tri_lim(Ka, a3, a4, mu, b1, b2, a, b, c, u, v, w));
+    } else if (eq(op, "abc")) {
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        tri_abc(a, b, c, u, v, w, &a0, &b0, &c0);
+        printf("%g %g %g\n", a0, b0, c0);
     } else
         ER("unknown operation '%s'", op);
     return 0;
