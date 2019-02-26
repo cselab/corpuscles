@@ -38,4 +38,9 @@ lib: bin/m4 m4/lib
 
 include make/dir.mk
 
+.c.m4.c:; he.m4 -s -o $@ $<
+
 .PHONY: tool bin/m4 m4/lib lib test install clean show
+
+.md.m4.md:; he.m4 -o $@ $<
+.SUFFIXES: .md.m4 .md

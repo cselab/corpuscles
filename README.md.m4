@@ -1,3 +1,7 @@
+include(`he.m4')dnl
+changequote(`[[', `]]')dnl
+h_define([[r_header]], [[[$1](lib/he/$1)]])dnl
+h_define([[r_file]], [[syscmd(cat '[[$1]]')]])dnl
 Intro
 =====
 ![Intro image](img/rbc/sde/00006.png)
@@ -19,10 +23,7 @@ git clone git@gitlab.ethz.ch:mavt-cse/he
 Adjust `conf.mk` if you want to change defaults
 
 ```
-CC =c99
-CFLAGS = -O2 -g
-PREFIX = $(HOME)
-MAXIMA_HOME = $(HOME)/.maxima
+r_file(conf.mk)dnl
 ```
 
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
