@@ -8,5 +8,5 @@ main: main.c
 test:
 install:
 
-.PHONY: clean test install
+.PHONY: clean test install doc
 clean:; rm -f main

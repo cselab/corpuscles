@@ -55,6 +55,17 @@ $ cat Makefile
 r_file(example/hello/Makefile)
 ```
 
+### read off file
+
+A simple example is in r_dir(example/off/read)
+
+```
+$ cat main.c
+r_file(example/off/read/main.c)
+```
+
+### read off file
+
 # Lib
 
 

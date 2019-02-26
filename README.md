@@ -50,6 +50,8 @@ $ cat main.c
 #include <real.h>
 #include <he/tri.h>
 
+#define FMT HE_REAL_OUT
+
 int main(void) {
     enum {X, Y, Z};
     real a[3], b[3], c[3], A;
@@ -59,7 +61,7 @@ int main(void) {
     c[X] = 0; c[Y] = 1; c[Z] = 0;
 
     A = tri_area(a, b, c);
-    printf(HE_REAL_OUT "\n", A);
+    printf("Area is " FMT "\n", A);
 }
 
 ```
@@ -76,10 +78,46 @@ main: main.c
 test:
 install:
 
-.PHONY: clean test install
+.PHONY: clean test install doc
 clean:; rm -f main
 
 ```
+
+### read off file
+
+A simple example is in [example/off/read](example/off/read/)
+
+```
+$ cat main.c
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <real.h>
+#include <he/array.h>
+#include <he/he.h>
+#include <he/y.h>
+
+#define FMT HE_REAL_OUT
+
+int main(void) {
+    real *x, *y, *z;
+    real hi, lo;
+    He *he;
+    int nv;
+
+    y_inif(stdin, &he, &x, &y, &z);
+    nv = he_nv(he);
+    hi = array_max(nv, x);
+    lo = array_min(nv, x);
+
+    printf("number of vertices is %d\n", nv);
+    printf(FMT " " FMT "\n", hi, lo);
+    y_fin(he, x, y, z);
+}
+
+```
+
+### read off file
 
 # Lib
 
