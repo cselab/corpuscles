@@ -1,6 +1,6 @@
 * Intro
 
-A library for the modelling of surfaces shaped by various forces and
+A library for the modelling of surfaces shaped by forces and
 constraints.
 
 * Install
