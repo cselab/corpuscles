@@ -64,10 +64,16 @@ $ cat main.c
 r_file(example/off/read/main.c)
 ```
 
-### read off file
+# visualisation
+
+We use [geomview](https://www.google.com).
+
+```
+$ he.geomview -h
+syscmd([[he.geomview -h]])
+```
 
 # Lib
-
 
 ## Precision
 
