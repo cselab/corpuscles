@@ -4,12 +4,10 @@ pkgconfig\
 bin/m4\
 m4/lib\
 lib\
-bin/align\
 bin/cmoment\
 bin/ffmpeg\
 bin/geomview\
 bin/maxima\
-bin/orient\
 bin/path\
 bin/q\
 bin/msh\
@@ -27,7 +25,12 @@ example/vec\
 example/volume\
 maxima/lib
 
-install: dir
+E = \
+bin/align\
+bin/orient
+
+
+install: show  dir
 test: dir
 clean: dir
 
@@ -35,4 +38,10 @@ lib: bin/m4 m4/lib
 
 include make/dir.mk
 
-.PHONY: tool bin/m4 m4/lib lib test install clean
+.c.m4.c:; he.m4 -s -o $@ $<
+doc: README.md
+
+.PHONY: tool bin/m4 m4/lib lib test install clean show
+
+.md.m4.md:; he.m4 -o $@ $<
+.SUFFIXES: .md.m4 .md

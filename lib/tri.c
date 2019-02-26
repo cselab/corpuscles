@@ -257,3 +257,20 @@ real tri_lim(real Ka, real a3, real a4, real mu, real b1, real b2,
              const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
     return tri_lim_area(Ka, a3, a4, a, b, c, u, v, w) + tri_lim_shear(mu, b1, b2, a, b, c, u, v, w);
 }
+
+static int tri2lphi(const real a[3], const real b[3], const real c[3], real *l, real *lp, real *p) {
+    *l = edg_abs(a, b);
+    *lp = edg_abs(a, c);
+    *p = tri_angle(c, a, b);
+    return HE_OK;
+}
+int tri_abc(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *a0, real *b0, real *c0) {
+    real l0, lp0, p0, l, lp, p;
+
+    tri2lphi(a, b, c, &l0, &lp0, &p0);
+    tri2lphi(u, v, w, &l, &lp, &p);
+
+    *a0 = l/l0;
+    *b0 = 1/sin(p0)*(lp/lp0*cos(p) - l/l0*cos(p0));
+    *c0 = lp/lp0*sin(p)/sin(p0);
+}
