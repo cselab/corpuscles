@@ -11,7 +11,7 @@ requrements `gsl`, `geomview`, `atest`, `maxima`.
 
 Download code from
 ```
-git clone git@gitlab.ethz.ch:mavt-cse/he
+$ git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
 
 Adjust `conf.mk` if you want to change defaults
@@ -29,12 +29,12 @@ Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 
 Run
 ```
-make
+$ make
 ```
 
-If you have `atest` installed you can run tests
+If you have `atest` installed you can run
 ```
-make test
+$ make test
 ```
 
 # Examples
@@ -85,7 +85,7 @@ clean:; rm -f main
 
 ### read off file
 
-A simple example is in [example/off/read](example/off/read/)
+An example is in [example/off/read](example/off/read/)
 
 ```
 $ cat main.c
@@ -117,9 +117,9 @@ int main(void) {
 
 ```
 
-# visualisation
+# visualization
 
-We use [geomview](https://www.google.com).
+We use a wrapper to [geomview](https://www.google.com).
 
 ```
 $ he.geomview -h
