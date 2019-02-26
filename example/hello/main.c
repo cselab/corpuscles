@@ -1,16 +1,16 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/vec.h>
 #include <he/tri.h>
-#include <he/macro.h>
-#include <he/util.h>
 
 int main(void) {
+    enum {X, Y, Z};
     real a[3], b[3], c[3], A;
+
+    a[X] = 0; a[Y] = 0; a[Z] = 0;
+    b[X] = 1; b[Y] = 0; b[Z] = 0;
+    c[X] = 0; c[Y] = 1; c[Z] = 0;
+
     A = tri_area(a, b, c);
     printf(HE_REAL_OUT "\n", A);
 }
