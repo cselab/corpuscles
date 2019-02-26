@@ -1,12 +1,10 @@
-Intro
-=====
+# Intro
 ![Intro image](img/rbc/sde/00006.png)
 
 A C library for the modelling of triangulated surfaces shaped by forces
 and constraints.
 
-Install
-=======
+# Install
 
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`.
@@ -19,7 +17,7 @@ git clone git@gitlab.ethz.ch:mavt-cse/he
 Adjust `conf.mk` if you want to change defaults
 
 ```
-CC =c99
+CC = c99
 CFLAGS = -O2 -g
 PREFIX = $(HOME)
 MAXIMA_HOME = $(HOME)/.maxima
@@ -39,11 +37,54 @@ If you have `atest` installed you can run tests
 make test
 ```
 
-Lib
-===
+# Examples
 
-Precision
----------
+### hello world
+
+A simple example is in [example/hello](example/hello/)
+
+```
+$ cat main.c
+#include <stdio.h>
+
+#include <real.h>
+#include <he/tri.h>
+
+int main(void) {
+    enum {X, Y, Z};
+    real a[3], b[3], c[3], A;
+
+    a[X] = 0; a[Y] = 0; a[Z] = 0;
+    b[X] = 1; b[Y] = 0; b[Z] = 0;
+    c[X] = 0; c[Y] = 1; c[Z] = 0;
+
+    A = tri_area(a, b, c);
+    printf(HE_REAL_OUT "\n", A);
+}
+
+```
+
+```
+$ cat Makefile
+include ../../conf.mk
+PREC = d
+HE_CFLAGS = `he.conf --cflags $(PREC)`
+HE_LDFLAGS = `he.conf --libs $(PREC)`
+
+main: main.c
+	$(CC) main.c $(CFLAGS) $(HE_CFLAGS) $(LDFLAGS) $(HE_LDFLAGS) -o main
+test:
+install:
+
+.PHONY: clean test install
+clean:; rm -f main
+
+```
+
+# Lib
+
+
+## Precision
 
 [prec/d/real.h](lib/prec/d/real.h)
 :   double
@@ -54,8 +95,7 @@ prec/s/real.h
 prec/l/real.h
 :   long double
 
-Math
-----
+## Math
 
 edg.h, dedg.h
 :   edges and derivatives
@@ -69,8 +109,7 @@ ten.h
 vec.h, dvec.h
 :   vectors and derivatives
 
-Utility
--------
+## Utility
 
 array.h
 :   array related functions
@@ -87,8 +126,7 @@ memory.h
 util.h
 :   uncategorazed
 
-Surface properties
----------------
+## Surface properties
 
 area.h
 :   area
@@ -102,8 +140,7 @@ laplace.h
 normal.h
 :   normal
 
-Surface transformation
--------------------
+## Surface transformation
 
 equiangulate.h
 :   equlatirate triangles
@@ -111,8 +148,7 @@ equiangulate.h
 orient.h
 :   orient surface in a direction of eigen values of momentum tensor
 
-Half-edg related
-----------------
+## Half-edg related
 
 read.h
 :   read half-edg to intermediate structure HeRead, used to initialize
@@ -126,8 +162,7 @@ hash.h
 	`int i, j, k;` `ini(n); v ` set(i, j); get(i,j)= `get(i,j)` return
 	-1 if `(i,j)` was not set
 
-IO
---
+## IO
 
 off.h
 :   read OFF
@@ -147,8 +182,7 @@ ply.h
 obj.h
 :   read/write obj files
 
-X
--
+## X and Y
 
 x.h
 :   simple interface for one surface

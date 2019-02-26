@@ -2,15 +2,14 @@ include(`he.m4')dnl
 changequote(`[[', `]]')dnl
 h_define([[r_header]], [[[$1](lib/he/$1)]])dnl
 h_define([[r_file]], [[syscmd(cat '[[$1]]')]])dnl
-Intro
-=====
+h_define([[r_dir]], [[[$1]($1/)]])dnl
+# Intro
 ![Intro image](img/rbc/sde/00006.png)
 
 A C library for the modelling of triangulated surfaces shaped by forces
 and constraints.
 
-Install
-=======
+# Install
 
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`.
@@ -40,11 +39,26 @@ If you have `atest` installed you can run tests
 make test
 ```
 
-Lib
-===
+# Examples
 
-Precision
----------
+### hello world
+
+A simple example is in r_dir(example/hello)
+
+```
+$ cat main.c
+r_file(example/hello/main.c)
+```
+
+```
+$ cat Makefile
+r_file(example/hello/Makefile)
+```
+
+# Lib
+
+
+## Precision
 
 [prec/d/real.h](lib/prec/d/real.h)
 :   double
@@ -55,8 +69,7 @@ prec/s/real.h
 prec/l/real.h
 :   long double
 
-Math
-----
+## Math
 
 edg.h, dedg.h
 :   edges and derivatives
@@ -70,8 +83,7 @@ ten.h
 vec.h, dvec.h
 :   vectors and derivatives
 
-Utility
--------
+## Utility
 
 array.h
 :   array related functions
@@ -88,8 +100,7 @@ memory.h
 util.h
 :   uncategorazed
 
-Surface properties
----------------
+## Surface properties
 
 area.h
 :   area
@@ -103,8 +114,7 @@ laplace.h
 normal.h
 :   normal
 
-Surface transformation
--------------------
+## Surface transformation
 
 equiangulate.h
 :   equlatirate triangles
@@ -112,8 +122,7 @@ equiangulate.h
 orient.h
 :   orient surface in a direction of eigen values of momentum tensor
 
-Half-edg related
-----------------
+## Half-edg related
 
 read.h
 :   read half-edg to intermediate structure HeRead, used to initialize
@@ -127,8 +136,7 @@ hash.h
 	`int i, j, k;` `ini(n); v ` set(i, j); get(i,j)= `get(i,j)` return
 	-1 if `(i,j)` was not set
 
-IO
---
+## IO
 
 off.h
 :   read OFF
@@ -148,8 +156,7 @@ ply.h
 obj.h
 :   read/write obj files
 
-X
--
+## X and Y
 
 x.h
 :   simple interface for one surface
