@@ -29,7 +29,8 @@ E = \
 bin/align\
 bin/orient
 
-install: dir
+
+install: show  dir
 test: dir
 clean: dir
 
@@ -37,4 +38,4 @@ lib: bin/m4 m4/lib
 
 include make/dir.mk
 
-.PHONY: tool bin/m4 m4/lib lib test install clean
+.PHONY: tool bin/m4 m4/lib lib test install clean show

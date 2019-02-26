@@ -10,24 +10,27 @@ Install
 =======
 
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
-requrements `gsl`, `geomview`, `atest`.
+requrements `gsl`, `geomview`, `atest`, `maxima`.
 
 Download code from
 ```
 git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
 
-Library is installed under directory `PREFIX`. Add `PREFIX/bin` to
-`PATH` and `PREFIX/man` to `MANPATH`.
+Adjust `conf.mk` if you want to change defaults
 
+Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
+`PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
+`make`.
+
+Run
 ```
-make PREFIX=$HOME/he
+make
 ```
 
-c compiler and flags can be set, for example
-
+If you have `atest` installed you can run tests
 ```
-make CC=clang CFLAGS='-Wall -Wextra -g -O2'
+make test
 ```
 
 Lib
