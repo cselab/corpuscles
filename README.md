@@ -81,7 +81,7 @@ memory.h
 util.h
 :   uncategorazed
 
-Mesh properties
+Surface properties
 ---------------
 
 area.h
@@ -96,14 +96,14 @@ laplace.h
 normal.h
 :   normal
 
-Mesh transformation
+Surface transformation
 -------------------
 
 equiangulate.h
 :   equlatirate triangles
 
 orient.h
-:   orient mesh in a direction of eigen values of momentum tensor
+:   orient surface in a direction of eigen values of momentum tensor
 
 Half-edg related
 ----------------
@@ -145,7 +145,7 @@ X
 -
 
 x.h
-:   simplifyied interface for one mesh
+:   simple interface for one surface
 
 y.h
-:   less simplifyied interface mesh
+:   not so simple interface
