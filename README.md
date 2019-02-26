@@ -16,13 +16,12 @@ Download code from
 git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
 
-Library is installed under directory `PREFIX`, default prefix is
-`$HOME`.
+Library is installed under directory `PREFIX`
 
 Add `PREFIX/bin` to `PATH` and `PREFIX/man` to `MANPATH`.
 
 ```
-make PREFIX=$HOME
+make PREFIX=$HOME/he
 ```
 
 c compiler and flags can be set, for example
