@@ -7,17 +7,17 @@ constraints.
 Install
 =======
 
-Requires 'pkg-config', 'libgsl', 'make', 'gcc-c\`
+Requires `pkg-config`, `make`, `gcc-c`
 
-``` {.bash}
+``` {.sh}
 git@gitlab.ethz.ch:mavt-cse/he
 ```
 
-``` {.bash}
+``` {.sh}
 make PREFIX=$HOME
 ```
 
-Add 'PREFIX/bin' to 'PATH' and 'PREFIX/man' to 'MANPATH'.
+Add `PREFIX/bin` to `PATH` and `PREFIX/man` to `MANPATH`.
 
 Lib
 ===
