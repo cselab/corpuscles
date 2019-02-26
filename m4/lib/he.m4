@@ -24,6 +24,8 @@ h_rename_h(`ifelse')
 h_rename_h(`pushdef')
 h_rename_h(`popdef')
 h_rename_h(`eval')
+h_rename_h(`syscmd')
+h_rename_h(`esycmd')
 h_copy(`m4exit', `h_exit')
 
 h_define(`h_location',
@@ -137,5 +139,12 @@ h_define(`_capitalize_alt',
 h_define(`capitalize',
   `_arg1(_to_alt()patsubst(<<[<<[$*]>>]>>, <<[\w+]>>,
     _from_alt()`]>>_$0_alt(<<[\&]>>)<<['_to_alt())_from_alt())')
+
+h_define(`h_cmd',
+`h_do(
+h_pushdef(`Cmd', `$1'),
+h_syscmd(`$1'),
+h_ifelse(`h_eval(0 == 0)', 1, `h_fatal(Cmd)'),
+h_popdef(`Cmd'))')
 
 divert`'dnl
