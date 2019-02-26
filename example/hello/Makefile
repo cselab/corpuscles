@@ -4,7 +4,7 @@ HE_CFLAGS = `he.conf --cflags $(PREC)`
 HE_LDFLAGS = `he.conf --libs $(PREC)`
 
 main: main.c
-	$(CC) main.c $(LDFLAGS) $(HE_CFLAGS) $(HE_LDFLAGS) -o main
+	$(CC) main.c $(CFLAGS) $(HE_CFLAGS) $(LDFLAGS)  $(HE_LDFLAGS) -o main
 test:
 install:
 
