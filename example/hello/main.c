@@ -3,6 +3,8 @@
 #include <real.h>
 #include <he/tri.h>
 
+#define FMT HE_REAL_OUT
+
 int main(void) {
     enum {X, Y, Z};
     real a[3], b[3], c[3], A;
@@ -12,5 +14,5 @@ int main(void) {
     c[X] = 0; c[Y] = 1; c[Z] = 0;
 
     A = tri_area(a, b, c);
-    printf(HE_REAL_OUT "\n", A);
+    printf("Area is " FMT "\n", A);
 }
