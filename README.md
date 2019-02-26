@@ -4,20 +4,22 @@ Intro
 A library for the modelling of surfaces shaped by forces and
 constraints.
 
+
 Install
 =======
 
+Download code from
+``` {.sh}
+git clone git@gitlab.ethz.ch:mavt-cse/he
+```
+
 Requires `pkg-config`, `make`, `gcc-c`
 
-``` {.sh}
-git@gitlab.ethz.ch:mavt-cse/he
-```
+Add `PREFIX/bin` to `PATH` and `PREFIX/man` to `MANPATH`.
 
 ``` {.sh}
 make PREFIX=$HOME
 ```
-
-Add `PREFIX/bin` to `PATH` and `PREFIX/man` to `MANPATH`.
 
 Lib
 ===
@@ -96,15 +98,15 @@ Half-edg related
 
 read.h
 :   read half-edg to intermediate structure HeRead, used to initialize
-    **he.h**
+	**he.h**
 
 he.h
 :   main half edg data structure (provides half-edg API)
 
 hash.h
 :   stores `v` for a pair of `(i, j)`, `i` must be in `[0, n)` API:
-    `int i, j, k;` `ini(n); v ` set(i, j); get(i,j)= `get(i,j)` return
-    -1 if `(i,j)` was not set
+	`int i, j, k;` `ini(n); v ` set(i, j); get(i,j)= `get(i,j)` return
+	-1 if `(i,j)` was not set
 
 IO
 --
