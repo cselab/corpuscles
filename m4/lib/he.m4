@@ -26,6 +26,7 @@ h_rename_h(`popdef')
 h_rename_h(`eval')
 h_rename_h(`syscmd')
 h_rename_h(`esycmd')
+h_rename_h(`sysval')
 h_copy(`m4exit', `h_exit')
 
 h_define(`h_location',
@@ -141,10 +142,8 @@ h_define(`capitalize',
     _from_alt()`]>>_$0_alt(<<[\&]>>)<<['_to_alt())_from_alt())')
 
 h_define(`h_cmd',
-`h_do(
-h_pushdef(`Cmd', `$1'),
-h_syscmd(`$1'),
-h_ifelse(`h_eval(0 == 0)', 1, `h_fatal(Cmd)'),
-h_popdef(`Cmd'))')
+`h_syscmd($1)
+h_ifelse(h_sysval, `0', `', `h_fatal(command "`$1'" failed)')')
+
 
 divert`'dnl
