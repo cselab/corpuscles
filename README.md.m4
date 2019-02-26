@@ -1,8 +1,8 @@
 include(`he.m4')dnl
+h_define(`r_header', `[$1](lib/he/$1)')dnl
+h_define(`r_file', `h_syscmd(cat $1)')dnl
+h_define(`r_dir', `[$1]($1/)')dnl
 changequote(`[[', `]]')dnl
-h_define([[r_header]], [[[$1](lib/he/$1)]])dnl
-h_define([[r_file]], [[syscmd(cat '[[$1]]')]])dnl
-h_define([[r_dir]], [[[$1]($1/)]])dnl
 # Intro
 ![Intro image](img/rbc/sde/00006.png)
 
@@ -70,7 +70,7 @@ We use a wrapper to [geomview](http://geomview.org).
 
 ```sh
 $ he.geomview -h
-syscmd([[he.geomview -h]])
+h_syscmd([[he.geomview -h]])
 ```
 
 # Lib
