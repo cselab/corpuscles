@@ -16,6 +16,9 @@ Download code from
 git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
 
+Library is installed under directory `PREFIX`, default prefix is
+`$HOME`.
+
 Add `PREFIX/bin` to `PATH` and `PREFIX/man` to `MANPATH`.
 
 ``` {.sh}
