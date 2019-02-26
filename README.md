@@ -37,7 +37,7 @@ Lib
 Precision
 ---------
 
-[prec/d/real.h](src/prec/d/real.h)
+[prec/d/real.h](lib/prec/d/real.h)
 :   double
 
 prec/s/real.h
