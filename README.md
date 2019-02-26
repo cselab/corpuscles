@@ -12,7 +12,7 @@ Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`.
 
 Download code from
-``` {.sh}
+```
 git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
 
@@ -21,8 +21,14 @@ Library is installed under directory `PREFIX`, default prefix is
 
 Add `PREFIX/bin` to `PATH` and `PREFIX/man` to `MANPATH`.
 
-``` {.sh}
+```
 make PREFIX=$HOME
+```
+
+c compiler and flags can be set, for example
+
+```
+make CC=clang CFLAGS='-Wall -Wextra -g -O2'
 ```
 
 Lib
