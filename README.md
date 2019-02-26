@@ -10,13 +10,13 @@ Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`.
 
 Download code from
-```
+```sh
 $ git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
 
 Adjust `conf.mk` if you want to change defaults
 
-```
+```makefile
 CC = c99
 CFLAGS = -O2 -g
 PREFIX = $(HOME)
@@ -28,12 +28,12 @@ Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `make`.
 
 Run
-```
+```sh
 $ make
 ```
 
 If you have `atest` installed you can run
-```
+```sh
 $ make test
 ```
 
@@ -43,7 +43,7 @@ $ make test
 
 A simple example is in [example/hello](example/hello/)
 
-```
+```c
 $ cat main.c
 #include <stdio.h>
 
@@ -66,7 +66,7 @@ int main(void) {
 
 ```
 
-```
+```make
 $ cat Makefile
 include ../../conf.mk
 PREC = d
@@ -87,7 +87,7 @@ clean:; rm -f main
 
 An example is in [example/off/read](example/off/read/)
 
-```
+```c
 $ cat main.c
 #include <stdio.h>
 #include <stdlib.h>
@@ -119,9 +119,9 @@ int main(void) {
 
 # visualization
 
-We use a wrapper to [geomview](geomview.org).
+We use a wrapper to [geomview](http://geomview.org).
 
-```
+```sh
 $ he.geomview -h
 he.geomview [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..
 he geomview wrapper

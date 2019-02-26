@@ -15,13 +15,13 @@ Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`.
 
 Download code from
-```
+```sh
 $ git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
 
 Adjust `conf.mk` if you want to change defaults
 
-```
+```makefile
 r_file(conf.mk)dnl
 ```
 
@@ -30,12 +30,12 @@ Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `make`.
 
 Run
-```
+```sh
 $ make
 ```
 
 If you have `atest` installed you can run
-```
+```sh
 $ make test
 ```
 
@@ -45,12 +45,12 @@ $ make test
 
 A simple example is in r_dir(example/hello)
 
-```
+```c
 $ cat main.c
 r_file(example/hello/main.c)
 ```
 
-```
+```make
 $ cat Makefile
 r_file(example/hello/Makefile)
 ```
@@ -59,7 +59,7 @@ r_file(example/hello/Makefile)
 
 An example is in r_dir(example/off/read)
 
-```
+```c
 $ cat main.c
 r_file(example/off/read/main.c)
 ```
@@ -68,7 +68,7 @@ r_file(example/off/read/main.c)
 
 We use a wrapper to [geomview](http://geomview.org).
 
-```
+```sh
 $ he.geomview -h
 syscmd([[he.geomview -h]])
 ```
