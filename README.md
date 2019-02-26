@@ -1,7 +1,7 @@
 Intro
 =====
 
-[Intro image](img/rbc/sde/00006.png)
+![Intro image](img/rbc/sde/00006.png)
 
 A library for the modelling of surfaces shaped by forces and
 constraints.
