@@ -4,12 +4,10 @@ pkgconfig\
 bin/m4\
 m4/lib\
 lib\
-bin/align\
 bin/cmoment\
 bin/ffmpeg\
 bin/geomview\
 bin/maxima\
-bin/orient\
 bin/path\
 bin/q\
 bin/msh\
@@ -26,6 +24,10 @@ example/valid\
 example/vec\
 example/volume\
 maxima/lib
+
+E = \
+bin/align\
+bin/orient
 
 install: dir
 test: dir
