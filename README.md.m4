@@ -66,7 +66,7 @@ r_file(example/off/read/main.c)
 
 # visualization
 
-We use a wrapper to [geomview](geomview.org).
+We use a wrapper to [geomview](http://geomview.org).
 
 ```
 $ he.geomview -h
