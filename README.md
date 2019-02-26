@@ -8,12 +8,13 @@ constraints.
 Install
 =======
 
+Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
+requrements `gsl`, `geomview`, `atest`.
+
 Download code from
 ``` {.sh}
 git clone git@gitlab.ethz.ch:mavt-cse/he
 ```
-
-Requires `pkg-config`, `make`, `gcc-c`
 
 Add `PREFIX/bin` to `PATH` and `PREFIX/man` to `MANPATH`.
 
