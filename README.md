@@ -3,9 +3,8 @@ Intro
 
 ![Intro image](img/rbc/sde/00006.png)
 
-A library for the modelling of surfaces shaped by forces and
-constraints.
-
+A C library for the modelling of triangulated surfaces shaped by forces
+and constraints.
 
 Install
 =======
@@ -38,7 +37,7 @@ Lib
 Precision
 ---------
 
-prec/d/real.h
+[prec/d/real.h](src/prec/d/real.h)
 :   double
 
 prec/s/real.h
