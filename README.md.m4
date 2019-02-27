@@ -13,7 +13,7 @@ r_geomview(
 <<img/rbc/sde/Da-0.358.png>>,
 <<Intro image>>)
 # Intro
-A C library for the modelling of triangulated surfaces shaped by forces
+A C library deal with triangulated surfaces shaped by forces
 and constraints.
 
 # Install
