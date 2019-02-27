@@ -82,3 +82,31 @@ loop_ver(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nv: gensym(),
       h: he_hdg_ver(he, i),
       a: [x[i], y[i], z[i]],
       block(splice(L)))));
+
+loop_ring(he, i0, [L])::=buildq([L, i0, h: gensym(), h0: gensym(), n: gensym(), f: gensym()],
+  block([h, h0, n, f, i, j],
+    i: i0,
+    h: he_hdg_ver(he, i),
+    h0: h: he_nxt(he, h),
+    while true do (
+      j: he_ver(he, h),
+      block(splice(L)),
+      n: he_nxt(he, h),
+      f: he_flp(he, n),
+      h: he_nxt(he, f),
+      if h = h0 then return('done))));
+
+loop_ring_tri(he, i0, [L])::=buildq([L, i0, h: gensym(), h0: gensym(), n: gensym(), f: gensym()],
+  block([h, h0, n, f, i, j, k],
+    i: i0,
+    h: he_hdg_ver(he, i),
+    h0: h: he_nxt(he, h),
+    while true do (
+      j: he_ver(he, h),
+      n: he_nxt(he, h),
+      k: he_ver(he, n),
+      block(splice(L)),
+      n: he_nxt(he, h),
+      f: he_flp(he, n),
+      h: he_nxt(he, f),
+      if h = h0 then return('done))));
