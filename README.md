@@ -1,5 +1,6 @@
 # Intro
 ![Intro image](img/rbc/sde/Da-0.358.png)
+
 A C library for the modelling of triangulated surfaces shaped by forces
 and constraints.
 
