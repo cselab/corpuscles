@@ -1,0 +1,57 @@
+. he.util
+
+prog=he.msh2off
+
+usg () {
+    msg "$prog MSH > OFF"
+    exit
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
+
+"$AWK" -v prog=$prog  '
+BEGIN { TRIANGLE = 2 }
+{ L[++N] = $0 }
+END {
+    read()
+    write()
+}
+function read(   i, j, ne, A) {
+    if (!eq(L[++I], "$MeshFormat"))
+	err("not a mesh file")
+    find("$EndMeshFormat")
+    find("$Nodes")
+    nv = L[++I]
+    for (i = 0; i < nv; i++) {
+	split(L[++I], A)
+	j = A[1]; x[j] = A[2]; y[j] = A[3]; z[j] = A[4]
+    }
+    find("$EndNodes")
+    find("$Elements")
+    ne = L[++I]
+    for (i = j = 0; i < ne; i++) {
+	split(L[++I], A)
+	if (A[2] != TRIANGLE) continue
+	t0[++j] = A[6]; t1[j] = A[7]; t2[j] = A[8]
+    }
+    nt = j
+}
+function write() {
+    print "OFF"
+    print nv, nt, 0
+    for (i = 1; i <= nv; i++)
+	print x[i], y[i], z[i]
+    for (i = 1; i <= nt; i++)
+	print 3, o(t0[i]), o(t1[i]), o(t2[i])
+}
+
+function o(e) { return e - 1 }
+function find(s) {
+    while (++I <= N && !eq(L[I], s)) ;
+    if (I > N)	err("missing " s)
+}
+function msg(s)  { printf "%s: %s\n", prog, s | "cat >&2" }
+function err(s) { msg(s); exit(2) }
+function eq(a, b) { return "" a == "" b }
+
+' "$@"

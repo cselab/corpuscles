@@ -229,14 +229,48 @@ real tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
 }
 
 static real be(real b, real c, real v, real w) { return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8; }
-
 real tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
     real b, c, v, w;
     b = tri_edg_area(a, b0, c0);
     c = tri_edg_area(a, c0, b0);
-
     v = tri_edg_area(u, v0, w0);
     w = tri_edg_area(u, w0, v0);
-
     return be(b, c, v, w);
+}
+
+real tri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    real al;
+
+    al = tri_alpha(a, b, c, u, v, w);
+    return Ka/2*(al*al + a3*al*al*al + a4*al*al*al*al);
+}
+
+real tri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    real al, be;
+
+    al = tri_alpha(a, b, c, u, v, w);
+    be = tri_beta(a, b, c, u, v, w);
+    return mu*(be + b1*al*be + b2*be*be);
+}
+
+real tri_lim(real Ka, real a3, real a4, real mu, real b1, real b2,
+             const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+    return tri_lim_area(Ka, a3, a4, a, b, c, u, v, w) + tri_lim_shear(mu, b1, b2, a, b, c, u, v, w);
+}
+
+static int tri2lphi(const real a[3], const real b[3], const real c[3], real *l, real *lp, real *p) {
+    *l = edg_abs(a, b);
+    *lp = edg_abs(a, c);
+    *p = tri_angle(c, a, b);
+    return HE_OK;
+}
+int tri_abc(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *a0, real *b0, real *c0) {
+    real l0, lp0, p0, l, lp, p;
+
+    tri2lphi(a, b, c, &l0, &lp0, &p0);
+    tri2lphi(u, v, w, &l, &lp, &p);
+
+    *a0 = l/l0;
+    *b0 = 1/sin(p0)*(lp/lp0*cos(p) - l/l0*cos(p0));
+    *c0 = lp/lp0*sin(p)/sin(p0);
 }

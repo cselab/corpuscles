@@ -1,7 +1,7 @@
 S = ../..
 include $S/conf.mk
 
-M=\
+M = \
 dih.mac\
 ddih.mac\
 dedg.mac\

@@ -21,6 +21,12 @@
 
 #define MAX_ITER (100)
 
+static const char Help[] = \
+    "plain force fraction\n"
+    "cylinder force fraction x\n"
+    "edge force"
+    ;
+
 struct T {
     int n;
     int *plus, *minus;
@@ -30,8 +36,9 @@ struct T {
 typedef int (*IniFunType)(int, const real*, const real*, char***, T*);
 static int plain(int, const real*, const real*, char***, T*);
 static int cylinder(int, const real*, const real*, char***, T*);
-static const char *IniName[] = {"plain", "cylinder"};
-static const IniFunType IniFun[] = {plain, cylinder};
+static int edge(int, const real*, const real*, char***, T*);
+static const char *IniName[] = {"plain", "cylinder", "edge"};
+static const IniFunType IniFun[] = {plain, cylinder, edge};
 
 const static real *QX;
 static int compare(const void *vi, const void *vj) {
@@ -130,6 +137,11 @@ static int select0(real r0, int *a) {
 #   undef sq
 }
 
+int stretch_help(const char **p) {
+    *p = Help;
+    return HE_OK;
+}
+
 static real get_rmax(int n, const real *x, const real *y) {
     real a, b;
     a = array_max(n, x) - array_min(n, x);
@@ -170,7 +182,7 @@ static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T 
     /* set data for count() */
     rmax = fabs(x0) + get_rmax(nv, x, y);
     SET(n, nv); SET(xx, x); SET(yy, y);
-    
+
     real r;
     SET(x0, x0); r = bin_search(n, rmax);
     n = count(r);
@@ -189,6 +201,42 @@ static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T 
     return HE_OK;
 }
 
+static real EDG_EPS = 1e-8;
+static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
+    int *plus, *minus;
+    real f, xmin, xmax;
+    int n, nmin, nmax, i, j;
+
+    if (argv_real(p, &f) != HE_OK)
+        ERR(HE_IO, "fail to read force");
+
+    n = nmin = nmax = 0;
+    xmin = array_min(nv, x);
+    xmax = array_max(nv, x);
+
+    for (i = 0; i < nv; i++)
+        if (fabs(x[i] - xmin) < EDG_EPS) nmin++;
+    for (i = 0; i < nv; i++)
+        if (fabs(x[i] - xmax) < EDG_EPS) nmax++;
+    if (nmax != nmin)
+        ERR(HE_IO, "nmax=%d != nmin=%d", nmax, nmin);
+
+    n = nmin;
+    MALLOC(n, &plus);
+    MALLOC(n, &minus);
+
+    for (i = j = 0; i < nv; i++)
+        if (fabs(x[i] - xmin) < EDG_EPS) minus[j++] = i;
+    for (i = j = 0; i < nv; i++)
+        if (fabs(x[i] - xmax) < EDG_EPS) plus[j++] = i;
+
+    q->n = n;
+    q->f = f;
+    q->minus = minus;
+    q->plus = plus;
+    return HE_OK;
+}
+
 int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     T *q;
     int i, nv, status;
@@ -202,8 +250,10 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
 
     i = 0;
     for (i = 0; ; i++) {
-        if (i == SIZE(IniName))
-            ERR(HE_IO, "expecting 'plain' or 'cyliner' got '%s'", name);
+        if (i == SIZE(IniName)) {
+            MSG("unexpected stretch type '%s'", name);
+            ERR(HE_IO, "possible types are\n%s", Help);
+        }
         if (util_eq(name, IniName[i])) {
             status = IniFun[i](nv, x, y, p, q);
             if (status != HE_OK)
@@ -223,7 +273,8 @@ int stretch_fin(T *q) {
     return HE_OK;
 }
 
-int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
+int stretch_force(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z,
+                  /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
     int i, j, n;
     real f;
 
@@ -232,16 +283,46 @@ int stretch_force(T *q, const real *x, const real *y, const real *z, /*io*/ real
 
     for (i = 0; i < n; i++) {
         j = q->plus[i];
-        fx[j] += f/n;
+        fx[j] -= f/n;
     }
 
     for (i = 0; i < n; i++) {
         j = q->minus[i];
-        fx[j] -= f/n;
+        fx[j] += f/n;
     }
 
     return HE_OK;
 }
+
+static int rigid(int n, const int *idx, real *f) {
+    int i, j;
+    real f0;
+
+    f0 = 0;
+    for (i = 0; i < n; i++) {
+        j = idx[i];
+        f0 += f[j];
+    }
+    f0 /= n;
+
+    for (i = 0; i < n; i++) {
+        j = idx[i];
+        f[j] = f0;
+    }
+    return HE_OK;
+}
+
+int stretch_constrain(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z,
+                      /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
+    int i, j, n;
+    real f;
+
+    n = q->n;
+    rigid(n, q->plus, fx);
+    rigid(n, q->minus, fx);
+    return HE_OK;
+}
+
 
 int stretch_n(T *q) { return q->n; }
 real stretch_f(T *q) { return q->f; }

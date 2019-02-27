@@ -10,16 +10,26 @@
 #include <he/macro.h>
 #include <he/util.h>
 
+#define FMT_IN   HE_REAL_IN
 static const char **argv;
 
-void vec(/**/ real a[3]) { vec_argv(&argv, a); }
+static void vec(/**/ real a[3]) { vec_argv(&argv, a); }
+static int scl(/**/ real *p) {
+    if (*argv == NULL) ER("not enough args");
+    if (sscanf(*argv, FMT_IN, p) != 1)
+        ER("not a number '%s'", *argv);
+    argv++;
+    return HE_OK;
+}
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
 
-int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v0) {
     const char *op;
     real a[3], b[3], c[3], d[3], da[3], db[3], dc[3];
     real u[3], v[3], w[3], du[3], dv[3], dw[3];
     Ten Da, Db, Dc;
+    real Ka, a3, a4, mu, b1, b2;
+
     argv = v0;
     argv++;
     if (*argv == NULL) ER("mssing OP");
@@ -75,6 +85,25 @@ int main(__UNUSED int argc, const char **v0) {
         vec_printf(du, "%g");
         vec_printf(dv, "%g");
         vec_printf(dw, "%g");
+    } else if (eq(op, "lim_area")) {
+        scl(&Ka); scl(&a3); scl(&a4);
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        dtri_lim_area(Ka, a3, a4, a, b, c, u, v, w, du, dv, dw);
+        vec_printf(du, "%g"); vec_printf(dv, "%g"); vec_printf(dw, "%g");
+    } else if (eq(op, "lim_shear")) {
+        scl(&mu); scl(&b1); scl(&b2);
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        dtri_lim_shear(mu, b1, b2, a, b, c, u, v, w, du, dv, dw);
+        vec_printf(du, "%g"); vec_printf(dv, "%g"); vec_printf(dw, "%g");
+    } else if (eq(op, "lim")) {
+        scl(&Ka); scl(&a3); scl(&a4);
+        scl(&mu); scl(&b1); scl(&b2);
+        vec(a); vec(b); vec(c);
+        vec(u); vec(v); vec(w);
+        dtri_lim(Ka, a3, a4, mu, b1, b2, a, b, c, u, v, w, du, dv, dw);
+        vec_printf(du, "%g"); vec_printf(dv, "%g"); vec_printf(dw, "%g");
     } else
         ER("unknown operation '%s'", op);
     return 0;

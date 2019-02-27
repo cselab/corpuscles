@@ -64,3 +64,20 @@ void big_endian_flt(int n, float *d) {
     for (i = 0; i < n; i++)
         big_endian_flt0(&d[i]);
 }
+
+
+static void big_endian_short0(short *px) {
+    const int n = sizeof(short);
+    int i;
+    unsigned char *c, b[n];
+    if (!little_p()) return;
+    c = (unsigned char*)px;
+    for (i = 0; i < n; i++) b[i] = c[i];
+    for (i = 0; i < n; i++) c[i] = b[n - i - 1];
+}
+
+void big_endian_short(int n, short *d) {
+    int i;
+    for (i = 0; i < n; i++)
+        big_endian_short0(&d[i]);
+}

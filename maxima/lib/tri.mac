@@ -67,7 +67,7 @@ tri_edg_area(a, b, c):=block([A, e],
   A: tri_area(a, b, c),
   e/A);
 
-tri_alpha(a, b, c, u, v, w):=block([A0, A],
+tri_alpha(a, b, c, u, v, w):=block([A, B],
   A: tri_area(a, b, c),
   B : tri_area(u, v, w),
   B/A - 1);
@@ -80,5 +80,27 @@ tri_beta(a, b0, c0, u, v0, w0):=block([b, c, v, w],
 
   v: tri_edg_area(u, v0, w0),
   w: tri_edg_area(u, w0, v0),
-
   %be(b, c, v, w));
+
+tri_lim_area(Ka, a3, a4, a, b, c, u, v, w):=block([al],
+  al:  tri_alpha(a, b, c, u, v, w),
+  (Ka*(a4*al^4+a3*al^3+al^2))/2);
+
+tri_lim_shear(mu, b1, b2, a, b, c, u, v, w):=block([al, be],
+  al:  tri_alpha(a, b, c, u, v, w),
+  be:  tri_beta(a, b, c, u, v, w),
+  mu*(be + b1*al*be + b2*be*be));
+
+tri_lim(Ka, a3, a4, mu, b1, b2, a, b, c, u, v, w):=
+tri_lim_area(Ka, a3, a4, a, b, c, u, v, w)+ tri_lim_shear(mu, b1, b2, a, b, c, u, v, w);
+
+tri_abc(a, b, c, u, v, w):=block([l0, lp0, p0, l, lp, p],
+   l0: edg_abs(a, b),
+   lp0: edg_abs(a, c),
+   p0: tri_angle(c, a, b),
+
+   l: edg_abs(u, v),
+   lp: edg_abs(u, w),
+   p: tri_angle(w, u, v),
+
+   [l/l0, 1/sin(p0)*(lp/lp0*cos(p) - l/l0*cos(p0)), lp/lp0*sin(p)/sin(p0)]);

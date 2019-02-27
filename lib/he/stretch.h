@@ -4,9 +4,11 @@ typedef struct T T;
 typedef struct He He;
 
 int stretch_argv(char***, He *he, real *x, real *y, real *z, /**/ T**);
+int stretch_help(const char**);
 int stretch_fin(T*);
 
 int stretch_force(T*, const real*, const real*, const real*, /*io*/ real*, real*, real*);
+int stretch_constrain(T*, const real*, const real*, const real*, /*io*/ real*, real*, real*);
 int stretch_n(T*);
 real stretch_f(T*);
 

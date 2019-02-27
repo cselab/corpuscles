@@ -45,7 +45,7 @@ int off_inif(FILE *f, T **pq) {
         ERR(HE_IO, "unexpected EOF")
     NXT();
     if (!util_eq(line, "OFF"))
-        ERR(HE_IO, "not an off file");
+        ERR(HE_IO, "expecting 'OFF' got '%s'", line);
     NXT();
     cnt = sscanf(line, "%d %d %*d", &nv, &nt);
     if (cnt != 2)
@@ -380,4 +380,118 @@ int boff_ver_fwrite(He *he, const real *x, const real *y, const real *z, const r
     l = array_min(n, a);
     h = array_max(n, a);
     return boff_lh_ver_fwrite(he, x, y, z, l, h, a, f);
+}
+
+int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, const real *uu, const real *vv, const real *ww, /**/ FILE *f) {
+#   define P(x, y, z) do {                              \
+        fb[m++] = (x); fb[m++] = (y); fb[m++] = (z);    \
+    } while (0)
+
+    int n, nv, nc, np, i, cnt, m;
+    real x, y, z, u, v, w;
+
+    short *sb;
+    int ib[3];
+    float *fb;
+
+    n = he_nv(he);
+    nc = 0; /* number of colors */
+    if (fputs("VECT BINARY\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+
+    np = n + n;
+    nv = 2*n + 3*n;
+
+    MALLOC(np, &sb);
+    MALLOC(3*nv, &fb);
+
+    m = 0; ib[m++] = np; ib[m++] = nv; ib[m++] = nc;
+    big_endian_int(m, ib);
+    FWRITE(ib, m);
+
+    m = 0;
+    for (i = 0; i < n; i++) sb[m++] = 2;
+    for (i = 0; i < n; i++) sb[m++] = 3;
+    big_endian_short(m, sb);
+    FWRITE(sb, m);
+
+    m = 0;
+    for (i = 0; i < np; i++) sb[m++] = 0;
+    big_endian_short(m, sb);
+    FWRITE(sb, m);
+
+    m = 0;
+    for (i = 0; i < n; i++) {
+        x  = xx[i]; y = yy[i]; z = zz[i];
+        u  = uu[i]; v = vv[i]; w = ww[i];
+        P(x, y, z);
+        P(x + u, y + v, z + w);
+    }
+    for (i = 0; i < n; i++) {
+        u  = uu[i]; v = vv[i]; w = ww[i];
+        x  = xx[i] + u; y = yy[i] + v; z = zz[i] + w;
+        P(x - (u - v/2)/5, y - (u/2 + v)/5, z);
+        P(x, y, z);
+        P(x - (u + v/2)/5, y + (u/2 - v)/5, z - 2*w/5);
+    }
+    big_endian_flt(m, fb);
+    FWRITE(fb, m);
+
+    FREE(sb);
+    FREE(fb);
+    return HE_OK;
+#   undef P
+}
+
+int boff_lh_point_fwrite(He *he, const real *x, const real *y, const real *z, real lo, real hi, const real *a, /**/ FILE *f) {
+    int n, m, i, cnt;
+    float red, blue, green, alpha;
+    int ib[3];
+    short *sb;
+    float *fb;
+
+    n = he_nv(he);
+    alpha = 0.5;
+    if (fputs("VECT BINARY\n", f) == EOF)
+        ERR(HE_IO, "fail to write");
+    MALLOC(2*n, &sb);
+    MALLOC(4*n, &fb);
+
+    m = 0; ib[m++] = n; ib[m++] = n; ib[m++] = n;
+    big_endian_int(m, ib);
+    FWRITE(ib, m);
+
+    m = 0;
+    for (i = 0; i < n; i++) sb[m++] = 1;
+    for (i = 0; i < n; i++) sb[m++] = 1;
+    big_endian_short(m, sb);
+    FWRITE(sb, m);
+
+    m = 0;
+    for (i = 0; i < n; i++) {
+        fb[m++] = x[i]; fb[m++] = y[i]; fb[m++] = z[i];
+    }
+    big_endian_flt(m, fb);
+    FWRITE(fb, m);
+
+    m = 0;
+    for (i = 0; i < n; i++) {
+        colormap(a[i], lo, hi, &red, &green, &blue);
+        fb[m++] = red; fb[m++] = green; fb[m++] = blue; fb[m++] = alpha;
+    }
+    big_endian_flt(m, fb);
+    FWRITE(fb, m);
+
+    FREE(sb);
+    FREE(fb);
+    return HE_OK;
+}
+
+int boff_point_fwrite(He *he, const real *x, const real *y, const real *z, const real *a, /**/ FILE *f) {
+    int nt;
+    real l, h;
+    nt = he_nt(he);
+    l = array_min(nt, a);
+    h = array_max(nt, a);
+    return boff_lh_point_fwrite(he, x, y, z, l, h, a, f);
 }

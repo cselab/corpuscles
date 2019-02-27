@@ -18,12 +18,17 @@ h_define(`h_rename',
 h_define(`h_rename_h',
 `h_rename(`$1', `h_$1')')
 
+h_rename_h(`translit')
+h_rename_h(`changequote')
 h_rename_h(`errprint')
 h_rename_h(`shift')
 h_rename_h(`ifelse')
 h_rename_h(`pushdef')
 h_rename_h(`popdef')
 h_rename_h(`eval')
+h_rename_h(`syscmd')
+h_rename_h(`esycmd')
+h_rename_h(`sysval')
 h_copy(`m4exit', `h_exit')
 
 h_define(`h_location',
@@ -124,18 +129,22 @@ h_define(`h_count', `$#')
 h_define(`h_curry', `$1(h_shift($@,)_$0')
 h_define(`_h_curry',             ``$1')')
 
-h_define(`upcase', `translit(`$*', `a-z', `A-Z')')
-h_define(`downcase', `translit(`$*', `A-Z', `a-z')')
+h_define(`upcase', `h_translit(`$*', `a-z', `A-Z')')
+h_define(`downcase', `h_translit(`$*', `A-Z', `a-z')')
 h_define(`_arg1', `$1')
-h_define(`_to_alt', `changequote(`<<[', `]>>')')
-h_define(`_from_alt', `changequote(<<[`]>>, <<[']>>)')
-h_define(`_upcase_alt', `translit(<<[$*]>>, <<[a-z]>>, <<[A-Z]>>)')
-h_define(`_downcase_alt', `translit(<<[$*]>>, <<[A-Z]>>, <<[a-z]>>)')
+h_define(`_to_alt', `h_changequote(`<<[', `]>>')')
+h_define(`_from_alt', `h_changequote(<<[`]>>, <<[']>>)')
+h_define(`_upcase_alt', `h_translit(<<[$*]>>, <<[a-z]>>, <<[A-Z]>>)')
+h_define(`_downcase_alt', `h_translit(<<[$*]>>, <<[A-Z]>>, <<[a-z]>>)')
 h_define(`_capitalize_alt',
   `regexp(<<[$1]>>, <<[^\(\w\)\(\w*\)]>>,
     <<[_upcase_alt(<<[<<[\1]>>]>>)_downcase_alt(<<[<<[\2]>>]>>)]>>)')
 h_define(`capitalize',
   `_arg1(_to_alt()patsubst(<<[<<[$*]>>]>>, <<[\w+]>>,
     _from_alt()`]>>_$0_alt(<<[\&]>>)<<['_to_alt())_from_alt())')
+
+h_define(`h_cmd',
+`h_syscmd($1)dnl
+h_ifelse(h_sysval, `0', `', `h_fatal(command "`$1'" failed)')')
 
 divert`'dnl
