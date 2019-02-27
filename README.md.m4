@@ -8,12 +8,11 @@ r_define(`r_dir', `[$1]($1/)')dnl
 r_define(`r_geomview', `h_syscmd(WX=400 WY=300 he.geomview -o $2 -i "convert %i %o" $1)dnl
 ![$3]($2)')dnl
 h_changequote(`<<', `>>')dnl
-# Intro
 r_geomview(
 <<-p 'he.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
 <<img/rbc/sde/Da-0.358.png>>,
 <<Intro image>>)
-
+# Intro
 A C library for the modelling of triangulated surfaces shaped by forces
 and constraints.
 
