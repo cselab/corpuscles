@@ -18,6 +18,8 @@ h_define(`h_rename',
 h_define(`h_rename_h',
 `h_rename(`$1', `h_$1')')
 
+h_rename_h(`translit')
+h_rename_h(`changequote')
 h_rename_h(`errprint')
 h_rename_h(`shift')
 h_rename_h(`ifelse')
@@ -127,13 +129,13 @@ h_define(`h_count', `$#')
 h_define(`h_curry', `$1(h_shift($@,)_$0')
 h_define(`_h_curry',             ``$1')')
 
-h_define(`upcase', `translit(`$*', `a-z', `A-Z')')
-h_define(`downcase', `translit(`$*', `A-Z', `a-z')')
+h_define(`upcase', `h_translit(`$*', `a-z', `A-Z')')
+h_define(`downcase', `h_translit(`$*', `A-Z', `a-z')')
 h_define(`_arg1', `$1')
-h_define(`_to_alt', `changequote(`<<[', `]>>')')
-h_define(`_from_alt', `changequote(<<[`]>>, <<[']>>)')
-h_define(`_upcase_alt', `translit(<<[$*]>>, <<[a-z]>>, <<[A-Z]>>)')
-h_define(`_downcase_alt', `translit(<<[$*]>>, <<[A-Z]>>, <<[a-z]>>)')
+h_define(`_to_alt', `h_changequote(`<<[', `]>>')')
+h_define(`_from_alt', `h_changequote(<<[`]>>, <<[']>>)')
+h_define(`_upcase_alt', `h_translit(<<[$*]>>, <<[a-z]>>, <<[A-Z]>>)')
+h_define(`_downcase_alt', `h_translit(<<[$*]>>, <<[A-Z]>>, <<[a-z]>>)')
 h_define(`_capitalize_alt',
   `regexp(<<[$1]>>, <<[^\(\w\)\(\w*\)]>>,
     <<[_upcase_alt(<<[<<[\1]>>]>>)_downcase_alt(<<[<<[\2]>>]>>)]>>)')

@@ -1,0 +1,6 @@
+# cTEST: upcase
+he.m4 > main.out.txt <<'!'
+include(`he.m4')dnl
+upcase(`abcd')
+upcase(`AbcD')
+!
