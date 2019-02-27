@@ -1,0 +1,13 @@
+load("stringproc")$
+
+load("he/off.mac")$
+load("he/util.mac")$
+load("he/he.mac")$
+load("he/util.mac")$
+load("he/loop.mac")$
+
+i: "data/ring.off";
+he: he(i) $
+
+loop_ring(he, 0, print(i, j));
+loop_ring_tri(he, 0, print(i, j, k));
