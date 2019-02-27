@@ -144,8 +144,7 @@ h_define(`capitalize',
     _from_alt()`]>>_$0_alt(<<[\&]>>)<<['_to_alt())_from_alt())')
 
 h_define(`h_cmd',
-`h_syscmd($1)
+`h_syscmd($1)dnl
 h_ifelse(h_sysval, `0', `', `h_fatal(command "`$1'" failed)')')
-
 
 divert`'dnl
