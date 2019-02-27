@@ -1,14 +1,18 @@
 include(`he.m4')dnl
 h_define(`r_define',
-`h_define($1, `h_changequote()h_changequote(`,')$2h_changequote(`<<',`>>')')')dnl
+`h_define($1, `h_changequote()h_changequote(`,')`'$2`'h_changequote(`<<',`>>')')')dnl
 r_define(`r_header', `[$1](lib/he/$1)')dnl
 r_define(`r_file', `h_cmd(cat $1)')dnl
 r_define(`r_cmd', `h_cmd($1)')dnl
 r_define(`r_dir', `[$1]($1/)')dnl
+r_define(`r_geomview', `h_syscmd(he.geomview -o $2 -i "convert %i %o" $1)dnl
+![$3]($2)')dnl
 h_changequote(`<<', `>>')dnl
 # Intro
-![Intro image](img/rbc/sde/00006.png)
-
+r_geomview(
+<<-p 'he.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
+<<img/rbc/sde/Da-0.358.png>>,
+<<Intro image>>)
 A C library for the modelling of triangulated surfaces shaped by forces
 and constraints.
 
