@@ -3,6 +3,7 @@ load("stringproc")$
 load("he/off.mac")$
 load("he/util.mac")$
 load("he/he.mac")$
+load("he/edg.mac")$
 load("he/vec.mac")$
 load("he/tri.mac")$
 load("he/util.mac")$
@@ -13,12 +14,23 @@ he: he(f) $
 
 i: 0;
 n: loop_ring(he, i, s) + 1;
+
 alloc(n, be, th);
+alloc2(n, 6, A);
+
 (Al: 0,
   loop_ring(he, i, Al += be[s]: tri_angle(c, a, b)));
 
-for i: 0 thru n - 1 do be[i]: 2*%pi*be[i]/Al;
+for i: 0 thru n - 1 do be[i]: float(2*%pi*be[i]/Al);
 
 th[0]: 0;
 for i: 1 thru n - 1 do th[i]: th[i - 1] + be[i];
 
+loop_ring(he, i,
+  block([th: th[s], q, p: 0],
+    q: edg_abs(a, b),
+    u: q*cos(th),
+    v: q*sin(th),
+    A[s, p++]: 1, A[s, p++]: u, A[s, p++]: v,
+    A[s, p++]: 1/2*u^2, A[s, p++]: u*v, A[s, p++]: 1/2*v^2,
+    print(float([u, v])))) $
