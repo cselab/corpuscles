@@ -4,7 +4,6 @@ pkgconfig\
 bin/m4\
 m4/lib\
 lib\
-bin/cmoment\
 bin/ffmpeg\
 bin/geomview\
 bin/maxima\
@@ -27,6 +26,7 @@ maxima/lib
 
 E = \
 bin/align\
+bin/cmoment\
 bin/orient
 
 

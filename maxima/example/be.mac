@@ -7,11 +7,23 @@ vec_any(a); vec_any(u);
 vec_any(b); vec_any(c);
 vec_any(v); vec_any(w);
 
+a: [0.995624, 0.677187, 0.0884153];
+b: [0.292892, 0.939917, 0.291391];
+c: [0.530555, 0.291538, 0.735473];
+
+u: [0.114221, 0.622651, 0.582448];
+v: [0.609712, 0.461878, 0.920586];
+w: [0.159326, 0.483616, 0.381649];
+
 assume(bx>0, cy>0, vx>0, wy>0);
 
 A: tri_beta(a, b, c, u, v, w);
 B: tri_3d_invariants(a, b, c, u, v, w)[2];
 
+A: tri_beta(b, c, a, v, w, u);
+B: tri_3d_invariants(b, c, a, v, w, u)[2];
+
 radcan(A/B), numer;
 
-vec_arg(a, b, c, u, v, w);
+[a0, b0, c0]: tri_abc(a, b, c, u, v, w), numer;
+be0: 1/(2*a0*c0)*(a0^2 + b0^2 + c0^2 - 2*a0*c0);

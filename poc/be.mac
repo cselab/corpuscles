@@ -1,5 +1,5 @@
 load("scifac");
-assume(b > 0, u > 0, A > 0, B > 0);
+/* assume(b > 0, u > 0, A > 0, B > 0); */
 
 bx: b;
 cy: 2*A/b;
