@@ -14,10 +14,9 @@ array2matrix(A):= block([n, m], local(A),
   [n, m]: arrayinfo(A)[3],
   genmatrix(lambda([i, j], A[i - 1, j - 1]), n + 1, m + 1)) $
 
-array2vector(A):= block([n, m, ans], local(A),
+array2vector(A):= block([n], local(A),
   [n]: arrayinfo(A)[3],
-  ans: genmatrix(lambda([i, j], A[i - 1]), 1, n + 1),
-  args(ans)[1]) $
+  makelist(A[i - 1], i, n + 1));
 
 pinv(B):=block([sigma, U, VT, m, n, Sigma, SigmaR, SigmaT, V, UT],
 [sigma, U, VT]: dgesvd(B, true, true),
@@ -29,8 +28,7 @@ V: transpose(VT),
 UT: transpose(U),
 V . SigmaR . UT) $
 
-f: "data/ring.off";
-he: he(f) $
+he: he("data/12.off") $
 
 i: 0;
 n: loop_ring(he, i, s) + 1;
@@ -67,6 +65,35 @@ C: pinv(B) . transpose(A) $
 
 C1: C[2] $
 C2: C[3] $
+C11: C[4] $
+C12: C[5] $
+C22: C[6] $
 
 xu: rr . transpose(C1);
 xv: rr . transpose(C2);
+xu: map('first, args(xu));
+xv: map('first, args(xv));
+
+u: vec_cross(xu, xv);
+n: vec_norm(u);
+
+g11: xu.xu;
+g12: g21: xu.xv;
+g22: xv.xv;
+
+g: determinant(matrix([g11, g12], [g21, g22]));
+
+xuu: rr . transpose(C11);
+xuv: rr . transpose(C12);
+xvv: rr . transpose(C22);
+
+gu: 1/g*(g22*xu - g12*xv);
+gv: 1/g*(g11*xv - g12*xu);
+
+df: [0, 0, 0];
+f[s]:=10;
+loop_ring(he, i,
+  w: gu*C1[s + 1] + gv*C2[s + 1],
+  df += w*f[s]);
+
+float(df);
