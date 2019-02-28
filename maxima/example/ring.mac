@@ -1,4 +1,5 @@
 load("stringproc")$
+load("lapack") $
 
 load("he/off.mac")$
 load("he/util.mac")$
@@ -32,5 +33,23 @@ loop_ring(he, i,
     u: q*cos(th),
     v: q*sin(th),
     A[s, p++]: 1, A[s, p++]: u, A[s, p++]: v,
-    A[s, p++]: 1/2*u^2, A[s, p++]: u*v, A[s, p++]: 1/2*v^2,
-    print(float([u, v])))) $
+    A[s, p++]: 1/2*u^2, A[s, p++]: u*v, A[s, p++]: 1/2*v^2)) $
+
+array2matrix(A):= block([n, m], local(A),
+  [n, m]: arrayinfo(A)[3],
+  genmatrix(lambda([i, j], A[i - 1, j - 1]), n + 1, m + 1));
+
+A: array2matrix(A) $
+B: transpose(A) . A $
+
+pinv(B):=block([sigma, U, VT, m, n, Sigma, SigmaR, SigmaT, V, UT],
+[sigma, U, VT]: dgesvd(B, true, true),
+m: length(U),
+n: length(VT),
+SigmaR: genmatrix(lambda([i, j], if i = j then 1/sigma[i] else 0), m, n),
+SigmaT: transpose(SigmaR),
+V: transpose(VT),
+UT: transpose(U),
+V . SigmaR . UT);
+
+pinv(A: matrix([2, 0], [5, 3])) . A;
