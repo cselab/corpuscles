@@ -20,7 +20,7 @@ trap 'rm -f $Tmp; echo 2' 1 2 3 15
 
 "$AWK" -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
 foreach(Args, `-v A="$A"') \
-changequote()dnl
+h_changequote()dnl
 '
 function ini(   i) {
     noff = ARGC - 1; ioff = 1

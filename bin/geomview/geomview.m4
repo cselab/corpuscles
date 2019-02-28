@@ -1,7 +1,7 @@
 include(`he.m4')dnl
 include(`args.m4')dnl
 include(`util.m4')dnl
-changequote(,)dnl
+h_changequote(,)dnl
 . he.util
 
 prog=he.geomview
@@ -69,8 +69,8 @@ formatp () {
     esac
 }
 
-changequote()dnl
-changequote(`, ')dnl
+h_changequote()dnl
+h_changequote(`, ')dnl
 gview () {
     local status translate rotate background
     translate="$tx $ty $tz"
@@ -86,7 +86,7 @@ gview () {
     fi
     return $status
 }
-changequote(,)dnl
+h_changequote(,)dnl
 
 off0() {
     test -f "$1" &&
