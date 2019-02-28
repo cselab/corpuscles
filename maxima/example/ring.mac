@@ -14,9 +14,10 @@ array2matrix(A):= block([n, m], local(A),
   [n, m]: arrayinfo(A)[3],
   genmatrix(lambda([i, j], A[i - 1, j - 1]), n + 1, m + 1)) $
 
-array2vector(A):= block([n, m], local(A),
+array2vector(A):= block([n, m, ans], local(A),
   [n]: arrayinfo(A)[3],
-  genmatrix(lambda([i, j], A[i - 1]), 1, n + 1)) $
+  ans: genmatrix(lambda([i, j], A[i - 1]), 1, n + 1),
+  args(ans)[1]) $
 
 pinv(B):=block([sigma, U, VT, m, n, Sigma, SigmaR, SigmaT, V, UT],
 [sigma, U, VT]: dgesvd(B, true, true),
@@ -59,10 +60,13 @@ A: array2matrix(A) $
 xx: array2vector(xx) $
 yy: array2vector(yy) $
 zz: array2vector(zz) $
+rr: matrix(xx, yy, zz) $
 
 B: transpose(A) . A $
 C: pinv(B) . transpose(A) $
 
-cx: xx . transpose(C);
-cy: yy . transpose(C);
-cz: zz . transpose(C);
+C1: C[2] $
+C2: C[3] $
+
+xu: rr . transpose(C1);
+xv: rr . transpose(C2);
