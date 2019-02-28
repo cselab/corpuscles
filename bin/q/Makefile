@@ -13,7 +13,7 @@ install: $M
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) $(ALG_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
 
-test: install; atest test/*
+test:
 
 .PHONY: clean test install
 clean:; rm -f $M.o $M

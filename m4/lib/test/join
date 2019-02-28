@@ -1,0 +1,5 @@
+# TEST: join
+he.m4 > main.out.txt <<'!'
+include(`he.m4')dnl
+h_join(`+', a, b, c, d)
+!

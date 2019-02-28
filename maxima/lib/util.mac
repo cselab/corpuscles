@@ -20,6 +20,13 @@ alloc(n, [l])::=
     [a: first(l), r: rest(l), n],
     (alloc0(n, a), alloc(n, splice(r))));
 
+alloc20(n, m, a)::=buildq([n, m, a], a: make_array('any, n, m));
+alloc2(n, m, [l])::=
+  if not emptyp(l) then
+  buildq(
+    [a: first(l), r: rest(l), n, m],
+    (alloc20(n, m, a), alloc2(n, m, splice(r))));
+
 calloc(n, [l])::=
   if not emptyp(l) then
   buildq(

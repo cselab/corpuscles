@@ -99,7 +99,7 @@ real bending_energy_bend(T *q) { return q->vtable->energy_bend(q); }
 real bending_energy_ad(T *q) { return q->vtable->energy_ad(q); }
 int bending_fin(T *q) { return q->vtable->fin(q); }
 
-h_define(`f2type', `translit(capitalize(translit($1, `_', ` ')), ` ', `')')dnl
+h_define(`f2type', `h_translit(capitalize(h_translit($1, `_', ` ')), ` ', `')')dnl
 h_define(`fun',dnl
 `typedef struct f2type($1) f2type($1);
 struct f2type($1) {T bending; HeF`'f2type($1) *local;};

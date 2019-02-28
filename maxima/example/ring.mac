@@ -1,0 +1,64 @@
+load("stringproc")$
+load("lapack") $
+
+load("he/off.mac")$
+load("he/util.mac")$
+load("he/he.mac")$
+load("he/edg.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
+load("he/util.mac")$
+load("he/loop.mac")$
+
+array2matrix(A):= block([n, m], local(A),
+  [n, m]: arrayinfo(A)[3],
+  genmatrix(lambda([i, j], A[i - 1, j - 1]), n + 1, m + 1)) $
+
+array2vector(A):= block([n, m], local(A),
+  [n]: arrayinfo(A)[3],
+  genmatrix(lambda([i, j], A[i - 1]), n + 1, 1)) $
+
+pinv(B):=block([sigma, U, VT, m, n, Sigma, SigmaR, SigmaT, V, UT],
+[sigma, U, VT]: dgesvd(B, true, true),
+m: length(U),
+n: length(VT),
+SigmaR: genmatrix(lambda([i, j], if i = j then 1/sigma[i] else 0), m, n),
+SigmaT: transpose(SigmaR),
+V: transpose(VT),
+UT: transpose(U),
+V . SigmaR . UT) $
+
+f: "data/ring.off";
+he: he(f) $
+
+i: 0;
+n: loop_ring(he, i, s) + 1;
+
+alloc(n, be, th);
+alloc2(n, 6, A);
+alloc(n, xx, yy, zz);
+
+(Al: 0,
+  loop_ring(he, i, Al += be[s]: tri_angle(c, a, b)));
+
+for i: 0 thru n - 1 do be[i]: float(2*%pi*be[i]/Al);
+
+th[0]: 0;
+for i: 1 thru n - 1 do th[i]: th[i - 1] + be[i];
+
+loop_ring(he, i,
+  block([th: th[s], q, p: 0, X: 1, Y: 2, Z: 3],
+    q: edg_abs(a, b),
+    xx[s]: b[X], yy[s]: b[Y], zz[s]: b[Z],
+    u: q*cos(th),
+    v: q*sin(th),
+    A[s, p++]: 1, A[s, p++]: u, A[s, p++]: v,
+    A[s, p++]: 1/2*u^2, A[s, p++]: u*v, A[s, p++]: 1/2*v^2)) $
+
+A: array2matrix(A) $
+xx: array2vector(xx) $
+yy: array2vector(yy) $
+zz: array2vector(zz) $
+
+B: transpose(A) . A $
+(pinv(B) . transpose(A)) . yy;
