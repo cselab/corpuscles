@@ -3,11 +3,22 @@ load("stringproc")$
 load("he/off.mac")$
 load("he/util.mac")$
 load("he/he.mac")$
+load("he/vec.mac")$
+load("he/tri.mac")$
 load("he/util.mac")$
 load("he/loop.mac")$
 
-i: "data/ring.off";
-he: he(i) $
+f: "data/ring.off";
+he: he(f) $
 
-loop_ring(he, 0, print(i, j));
-loop_ring_tri(he, 0, print(i, j, k));
+i: 0;
+n: loop_ring(he, i, s) + 1;
+alloc(n, be, th);
+(Al: 0,
+  loop_ring(he, i, Al += be[s]: tri_angle(c, a, b)));
+
+for i: 0 thru n - 1 do be[i]: 2*%pi*be[i]/Al;
+
+th[0]: 0;
+for i: 1 thru n - 1 do th[i]: th[i - 1] + be[i];
+
