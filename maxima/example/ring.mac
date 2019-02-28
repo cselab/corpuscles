@@ -16,8 +16,8 @@ array2matrix(A):= block([n, m], local(A),
 
 array2vector(A):= block([n, m, ans], local(A),
   [n]: arrayinfo(A)[3],
-  ans: genmatrix(lambda([i, j], A[i - 1]), 1, n + 1),
-  args(ans)[1]) $
+  ans: genmatrix(lambda([i, j], A[i - 1]), n + 1, 1),
+  args(transpose(ans))[1]) $
 
 pinv(B):=block([sigma, U, VT, m, n, Sigma, SigmaR, SigmaT, V, UT],
 [sigma, U, VT]: dgesvd(B, true, true),
@@ -29,7 +29,7 @@ V: transpose(VT),
 UT: transpose(U),
 V . SigmaR . UT) $
 
-f: "data/ring.off";
+f: "data/11.off";
 he: he(f) $
 
 i: 0;
@@ -70,3 +70,8 @@ C2: C[3] $
 
 xu: rr . transpose(C1);
 xv: rr . transpose(C2);
+xu: map('first, args(xu));
+xv: map('first, args(xv));
+
+vec_dot(xu, xv);
+vec_cross(xu, xv);
