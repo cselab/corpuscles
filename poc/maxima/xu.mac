@@ -1,0 +1,4 @@
+f(u, v):= op(C, f(r));
+
+diff(f(u, v));
+

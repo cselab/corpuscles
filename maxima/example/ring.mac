@@ -74,26 +74,42 @@ xv: rr . transpose(C2);
 xu: map('first, args(xu));
 xv: map('first, args(xv));
 
+xuu: rr . transpose(C11);
+xuv: rr . transpose(C12);
+xvv: rr . transpose(C22);
+
 u: vec_cross(xu, xv);
 n: vec_norm(u);
 
 g11: xu.xu;
 g12: g21: xu.xv;
 g22: xv.xv;
-
 g: determinant(matrix([g11, g12], [g21, g22]));
 
-xuu: rr . transpose(C11);
-xuv: rr . transpose(C12);
-xvv: rr . transpose(C22);
+g111: xu . xuu;
+g112: xu . xuv;
+g122: xu . xvv;
+g212: xv . xuv;
+g211: xv . xuu;
+g222: xv . xvv;
 
-gu: 1/g*(g22*xu - g12*xv);
-gv: 1/g*(g11*xv - g12*xu);
-
-df: [0, 0, 0];
-f[s]:=10;
-loop_ring(he, i,
+block([gu, gv, df],
+gu: 1/g*(g22*xu - g12*xv),
+gv: 1/g*(g11*xv - g12*xu),
+df: [0, 0, 0],
+loop_ring(he, i, block([X, Y, Z, f, w],
+  X: 1, Y: 2, Z: 3,
+  f: b[Y],
   w: gu*C1[s + 1] + gv*C2[s + 1],
-  df += w*f[s]);
+  df += w*f)));
 
-float(df);
+block([gu, gv, guu, guv, gvv, H],
+  gu: -(g11*(g22*g122 - g12*g222) + 2*g12*(g12*g212 - g22*g112) + g22*(g22*g111 - g12*g211))/g^2,
+  gv: -(g11*(g11*g222 - g12*g122) + 2*g12*(g12*g112 - g11*g212) + g22*(g11*g211 - g12*g111))/g^2,
+  guu: g22/g,
+  guv: -2*g12/g,
+  gvv: g11/g,
+  H: 0,
+  loop_ring(he, i, block([w],
+      w: gu*C1[s + 1] + gv*C2[s + 1] + guu*C11[s + 1] + guv*C12[s + 1] +  gvv*C22[s + 1],
+      H += 1/2*w*vec_dot(n, b))));
