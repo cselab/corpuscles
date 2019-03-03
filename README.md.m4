@@ -147,9 +147,7 @@ r_header(he.h)
 :   half edg data structure (provides half-edg API)
 
 r_header(hash.h)
-:   stores `v` for a pair of `(i, j)`, `i` must be in `[0, n)` API:
-	`int i, j, k;` `ini(n); v ` set(i, j); get(i,j)= `get(i,j)` return
-	-1 if `(i,j)` was not set
+:   stores an integer for a pair of integers
 
 ## IO
 
