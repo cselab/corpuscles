@@ -88,7 +88,7 @@ int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const
     return CO_OK;
 }
 
-int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pxyz) {
+int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const real *z, /**/ real **pxyz) {
     int s, p, j, k;
     real *xyz;
     real a[3];
