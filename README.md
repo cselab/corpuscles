@@ -3,7 +3,7 @@
 
 # Intro
 A C library deal with triangulated surfaces shaped by forces
-and constraints. [Documentation](https://cselab.github.io/corpuscles)
+and constraints.
 
 # Install
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
@@ -307,6 +307,7 @@ r_sum(sum.h)
 
 # Documentation
 
+[git pages](https://cselab.github.io/corpuscles)
 [docs/index.html](docs/index.html) is generated from
 [README.md.m4](README.md.m4). To update run
 

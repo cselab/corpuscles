@@ -83,7 +83,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="img/rbc/sde/Da-0.358.png" /><br />
 </p>
 <h1 id="intro">Intro</h1>
-<p>A C library deal with triangulated surfaces shaped by forces and constraints. <a href="https://cselab.github.io/corpuscles">Documentation</a></p>
+<p>A C library deal with triangulated surfaces shaped by forces and constraints.</p>
 <h1 id="install">Install</h1>
 <p>Minimal requirements <code>pkg-config</code>, <code>make</code>, <code>gcc-c</code>. Optional requrements <code>gsl</code>, <code>geomview</code>, <code>atest</code>, <code>maxima</code>.</p>
 <p>Download code from</p>
@@ -251,11 +251,20 @@ clean:; rm -f main
 <dt><a href="lib/co/array.h">array.h</a></dt>
 <dd>array related functions
 </dd>
+<dt><a href="lib/co/argv.h">argv.h</a></dt>
+<dd>read from <code>argv</code> and shift
+</dd>
 <dt><a href="lib/co/err.h">err.h</a></dt>
 <dd>error handling
 </dd>
+<dt>r_enddian(endian.h)</dt>
+<dd>deal with endianess
+</dd>
 <dt><a href="lib/co/macro.h">macro.h</a></dt>
 <dd>macros
+</dd>
+<dt>r_sum(sum.h)</dt>
+<dd>Kahan summation
 </dd>
 <dt><a href="lib/co/memory.h">memory.h</a></dt>
 <dd>memory related
@@ -279,6 +288,18 @@ clean:; rm -f main
 <dd>normal
 </dd>
 </dl>
+<h2 id="forces">“Forces”</h2>
+<dl>
+<dt><a href="lib/co/bending.h">bending.h</a></dt>
+<dd>generic interface to several bending forces
+</dd>
+<dt><a href="lib/co/forces.h">forces.h</a></dt>
+<dd>generic interface to forces
+</dd>
+<dt><a href="lib/co/stretch.h">stretch.h</a></dt>
+<dd>stretching force
+</dd>
+</dl>
 <h2 id="surface-transformation">Surface transformation</h2>
 <dl>
 <dt><a href="lib/co/equiangulate.h">equiangulate.h</a></dt>
@@ -289,6 +310,9 @@ clean:; rm -f main
 </dd>
 <dt><a href="lib/co/restore.h">restore.h</a></dt>
 <dd>restore a volume of the surface
+</dd>
+<dt><a href="lib/co/transformation.h">transformation.h</a></dt>
+<dd>translate, rotate, and and scale surface
 </dd>
 </dl>
 <h2 id="half-edg-related">Half-edg related</h2>
@@ -319,7 +343,7 @@ clean:; rm -f main
 </dd>
 </dl>
 <h1 id="documentation">Documentation</h1>
-<p><a href="docs/index.html">docs/index.html</a> is generated from <a href="README.md.m4">README.md.m4</a>. To update run</p>
+<p><a href="https://cselab.github.io/corpuscles">git pages</a> <a href="docs/index.html">docs/index.html</a> is generated from <a href="README.md.m4">README.md.m4</a>. To update run</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1"><span class="fu">make</span> html</a></code></pre></div>
 <p>requires <a href="http://pandoc.org">pandoc</a>.</p>
 </body>
