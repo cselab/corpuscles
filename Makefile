@@ -1,4 +1,5 @@
 include conf.mk
+PANDOC = pandoc
 
 D = \
 tool\
@@ -41,7 +42,7 @@ include make/dir.mk
 
 doc: README.md
 html: README.md
-	pandoc --css=css/github.css --standalone README.md --resource-path=docs --metadata pagetitle=corpuscles --output=docs/index.html
+	$(PANDOC) --css=css/github.css --standalone README.md --resource-path=docs --metadata pagetitle=corpuscles --output=docs/index.html
 
 .PHONY: tool bin/m4 m4/lib lib test install clean show
 
