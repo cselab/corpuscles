@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.m4
+prog=co.m4
 : ${M4=m4}
 
 usg () {
@@ -43,7 +43,7 @@ then
     e "$M4" -I"$include" "$@"
     if test $? -ne 0; then err failed; fi
 else
-    t=/tmp/he.m4.$$
+    t=/tmp/co.m4.$$
     trap 'rm -f $t; exit 1' 1 2 3 4 15
     e "$M4" -I"$include" "$@" > $t
     if test $? -ne 0; then err failed; fi

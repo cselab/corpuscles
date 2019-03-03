@@ -9,7 +9,7 @@ HE_LDFLAGS = `co.conf --libs $(PREC)`
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
 
-.m4.c:; he.m4 -s -o $@ $<
+.m4.c:; co.m4 -s -o $@ $<
 
 test: $M; atest test/*
 install:

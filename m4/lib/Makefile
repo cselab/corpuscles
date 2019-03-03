@@ -1,6 +1,6 @@
 include ../../conf.mk
 
-M = he.m4
+M = co.m4
 
 install: $M
 	co.install $M "$(PREFIX)/include"

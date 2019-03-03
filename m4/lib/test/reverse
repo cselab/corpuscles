@@ -1,5 +1,5 @@
 # TEST: reverse
-he.m4 > main.out.txt <<'!'
-include(`he.m4')dnl
+co.m4 > main.out.txt <<'!'
+include(`co.m4')dnl
 h_reverse(a, (b, c), d)
 !

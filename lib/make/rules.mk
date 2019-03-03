@@ -9,8 +9,8 @@ libhe_d.a: $O $(O_D); ar r $@ $O $(O_D) && ranlib $@
 libhe_l.a: $O $(O_L); ar r $@ $O $(O_L) && ranlib $@
 $O : $H $I
 
-.c.m4.c:; he.m4 -s -o $@ $<
-.h.m4.h:; he.m4 -s -o $@ $<
+.c.m4.c:; co.m4 -s -o $@ $<
+.h.m4.h:; co.m4 -s -o $@ $<
 .c.o:;   $(CC)                         -I. $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<
 .c.s.o:; $(CC) -I$(TRG)/prec/s -Iinc/s -I. $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<
 .c.d.o:; $(CC) -I$(TRG)/prec/d -Iinc/d -I. $(CFLAGS) $(HE_CFLAGS) -c -o $@ $<

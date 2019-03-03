@@ -21,7 +21,7 @@
 - load("he/.") -> load("he/.")$
 
 - In m4
-  include(`he.m4')
+  include(`co.m4')
 
 + In some function names he_ / co_
 + he_f_ / co_f_

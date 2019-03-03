@@ -63,7 +63,7 @@ function err(s) { printf msg(s); exit(2) }
 
 ' "$@" | poc/xin/arg Arg > arg.m4
 
-he.m4 poc/xin/gnuplot > main.gp
+co.m4 poc/xin/gnuplot > main.gp
 gnuplot main.gp
 
 # rm -r $tmp

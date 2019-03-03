@@ -1,6 +1,6 @@
 # TEST: capitalize
-he.m4 > main.out.txt <<'!'
-include(`he.m4')dnl
+co.m4 > main.out.txt <<'!'
+include(`co.m4')dnl
 capitalize(`abcd')
 capitalize(`AbcD')
 !

@@ -1,7 +1,7 @@
 Run 
 
     poc/xin/geomview poc/xin/list.dat
-	he.m4 poc/xin/gnuplot | gnuplot - && feh q.png
+	co.m4 poc/xin/gnuplot | gnuplot - && feh q.png
 
 
 Sergey

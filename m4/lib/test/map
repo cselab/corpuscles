@@ -1,6 +1,6 @@
 # TEST: map
-he.m4 > main.out.txt <<'!'
-include(`he.m4')dnl
+co.m4 > main.out.txt <<'!'
+include(`co.m4')dnl
 h_pushdef(`F', `f[$1]')dnl
 h_map(`F', `a,b,c,x,y,z')
 h_popdef(`F')dnl
