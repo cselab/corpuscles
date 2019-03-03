@@ -4,8 +4,10 @@
 
 #include "co/err.h"
 #include "co/memory.h"
-#include "inc/def.h"
+#include "co/tri.h"
+#include "co/vec.h"
 #include "co/ring.h"
+#include "inc/def.h"
 
 #define T Ring
 #define N (RANK_MAX + 1)
@@ -24,4 +26,65 @@ int ring_ini(T **pq) {
 
 int ring_fin(T *q) {
     FREE(q);
+}
+
+static int get2(int i, int j,
+                const real *x, const real *y, const real *z,
+                real a[3], real b[3]) {
+    vec_get(i, x, y, z, a);
+    vec_get(j, x, y, z, a);
+    return CO_OK;
+}
+int ring_alpha(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pang) {
+    int s, p, j, k;
+    real *ang;
+    real a[3], b[3], c[3];
+    ang = q->alpha;
+    vec_get(i, x, y, z, a);
+    for (s = 0; ring[s] != -1; s++) {
+        p = ring[s + 1];
+        if (p == -1)
+            p = ring[0];
+        j = ring[s];
+        k = ring[p];
+        get2(j, k, x, y, z, /**/ b, c);
+        ang[s] = tri_angle(c, a, b);
+    }
+    *pang = ang;
+    return CO_OK;
+}
+
+int ring_beta(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pang) {
+    int s, p, j, k;
+    real *ang, *alpha, A;
+
+    ring_alpha(q, i, ring, x, y, z, /**/ &alpha);
+    ang = q->beta;
+    A = 0;
+    for (s = 0; ring[s] != -1; s++)
+        A += alpha[s];
+
+    if (A == 0)
+        ERR(CO_NUM, "A == 0");
+
+    for (s = 0; ring[s] != -1; s++)
+        ang[s] /= A;
+    
+    *pang = ang;
+    return CO_OK;
+}
+
+int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pang) {
+    int s, p, j, k;
+    real *ang, *beta, A;
+
+    ring_beta(q, i, ring, x, y, z, /**/ &beta);
+    ang = q->theta;
+
+    ang[0] = 0;
+    for (s = 1; ring[s] != -1; s++)
+        ang[s] = ang[s - 1];
+
+    *pang = ang;
+    return CO_OK;
 }
