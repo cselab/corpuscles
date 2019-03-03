@@ -41,6 +41,8 @@ include make/dir.mk
 
 .c.m4.c:; co.m4 -s -o $@ $<
 doc: README.md
+html: README.md
+	pandoc --self-contained README.md --output=docs/index.html
 
 .PHONY: tool bin/m4 m4/lib lib test install clean show
 
