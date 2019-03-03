@@ -1,14 +1,16 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "co/err.h"
-#include "co/he.h"
-#include "co/vec.h"
-#include "co/tri.h"
-#include "co/edg.h"
+
 #include "co/dedg.h"
 #include "co/dtri.h"
+#include "co/edg.h"
+#include "co/err.h"
+#include "co/he.h"
 #include "co/memory.h"
+#include "co/tri.h"
+#include "co/vec.h"
+
 #include "co/da.h"
 
 #define T Da
