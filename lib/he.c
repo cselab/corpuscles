@@ -1,4 +1,4 @@
-#include <stdio.h>
+v#include <stdio.h>
 #include <assert.h>
 
 #include "he/err.h"
@@ -379,8 +379,8 @@ int he_ring(T *he, int v, int *prank, int **pring) {
     int *ring;
     ring = he->ring;
 
-    if (v < he->nv)
-        ERR(HE_INDEX, "v=%d < q->nv=%d", v, he->nv);
+    if (v >= he->nv)
+        ERR(HE_INDEX, "v=%d >= q->nv=%d", v, he->nv);
     h = he_hdg_ver(he, v);
     if (he_bnd(he, h))
         ERR(HE_INDEX, "call ring for boundary v = %d, h = %d", v, h);

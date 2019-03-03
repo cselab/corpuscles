@@ -16,7 +16,7 @@ bin/vtk\
 data\
 example/area/tri\
 example/area/voronoi\
-example/he\
+example/he/dump\
 example/punto\
 example/ten\
 example/valid\
