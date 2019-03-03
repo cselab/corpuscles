@@ -1,11 +1,7 @@
 include ../../conf.mk
+M = $P.m4
 
-M = co.m4
-
-install: $M
-	co.install $M "$(PREFIX)/include"
-
+install: $M; co.install $M "$(PREFIX)/include"
 test:; atest test/*
 clean:
-
 .PHONY: install test clean
