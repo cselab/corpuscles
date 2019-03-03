@@ -169,95 +169,77 @@ he.geomview -c off.volume      data/rbc.off data/sph.off
 
 ## Math
 
-edg.h, dedg.h
-:   edges and derivatives
+[vec.h](lib/he/vec.h), [edg.h](lib/he/edg.h), [tri.h](lib/he/tri.h), [dih.h](lib/he/dih.h), [ten.h](lib/he/ten.h)
+: vector, edges, triangels, dihidrals, tensors
 
-tri.h, dtri.h
-:   triangles and derivatives
-
-ten.h
-:   tensor
-
-vec.h, dvec.h
-:   vectors and derivatives
+[dvec.h](lib/he/dvec.h), [dedg.h](lib/he/dedg.h), [dtri.h](lib/he/dtri.h), [ddih.h](lib/he/ddih.h)
+: derivatives of vector edges, triagels, dihidrals
 
 ## Utility
 
-array.h
-:   array related functions
+[array.h](lib/he/array.h)
+:  array related functions
 
-err.h
+[err.h](lib/he/err.h)
 :   error handling
 
-macro.h
+[macro.h](lib/he/macro.h)
 :   macros
 
-memory.h
+[memory.h](lib/he/memory.h)
 :   memory related
 
-util.h
+[util.h](lib/he/util.h)
 :   uncategorazed
 
 ## Surface properties
 
-area.h
+[area.h](lib/he/area.h)
 :   area
 
-volume.h
+[volume.h](lib/he/volume.h)
 :   volume
 
-laplace.h
+[laplace.h](lib/he/laplace.h)
 :   Laplace operator of coordinates
 
-normal.h
+[normal.h](lib/he/normal.h)
 :   normal
 
 ## Surface transformation
 
-equiangulate.h
+[equiangulate.h](lib/he/equiangulate.h)
 :   equlatirate triangles
 
-orient.h
+[orient.h](lib/he/orient.h)
 :   orient surface in a direction of eigen values of momentum tensor
+
+[restore.h](lib/he/restore.h)
+:  restore a volume of the surface
 
 ## Half-edg related
 
-read.h
+[read.h](lib/he/read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize
-	**he.h**
+    **he.h**
 
-he.h
-:   main half edg data structure (provides half-edg API)
+[he.h](lib/he/he.h)
+:   half edg data structure (provides half-edg API)
 
-hash.h
+[hash.h](lib/he/hash.h)
 :   stores `v` for a pair of `(i, j)`, `i` must be in `[0, n)` API:
 	`int i, j, k;` `ini(n); v ` set(i, j); get(i,j)= `get(i,j)` return
 	-1 if `(i,j)` was not set
 
 ## IO
 
-off.h
-:   read OFF
-
-punto.h
-:   read/write "punto" files
-
-vtk.h
-:   write vtk file
-
-gts.h
-:   write gts files
-
-ply.h
-:   read/write ply files
-
-obj.h
-:   read/write obj files
+[off.h](lib/he/off.h), [punto.h](lib/he/punto.h), [vtk.h](lib/he/vtk.h), [gts.h](lib/he/gts.h), [ply.h](lib/he/ply.h), [obj.h](lib/he/obj.h)
+:   read/write off files, punto, vtk, gts, ply, obj files
 
 ## X and Y
 
-x.h
+[x.h](lib/he/x.h)
 :   simple interface for one surface
 
-y.h
+[y.h](lib/he/y.h)
 :   not so simple interface
