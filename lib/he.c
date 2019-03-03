@@ -4,13 +4,13 @@
 #include "co/err.h"
 #include "co/memory.h"
 #include "co/read.h"
+#include "inc/def.h"
 
 #include "co/he.h"
 
 #define T He
 
 #define MAGIC (43)
-#define RANK_MAX (99)
 
 struct T {
     int nv, nt, ne, nh;

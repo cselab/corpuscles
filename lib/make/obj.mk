@@ -57,6 +57,7 @@ ply.s.o\
 punto.s.o\
 real.s.o\
 restore.s.o\
+ring.s.o\
 strain/2d.s.o\
 strain/3d.s.o\
 strain.s.o\
@@ -121,6 +122,7 @@ ply.d.o\
 punto.d.o\
 real.d.o\
 restore.d.o\
+ring.d.o\
 strain/2d.d.o\
 strain/3d.d.o\
 strain.d.o\
@@ -185,6 +187,7 @@ ply.l.o\
 punto.l.o\
 real.l.o\
 restore.l.o\
+ring.l.o\
 strain/2d.l.o\
 strain/3d.l.o\
 strain.l.o\

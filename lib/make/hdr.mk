@@ -59,6 +59,7 @@ co/punto.h\
 co/read.h\
 co/real.h\
 co/restore.h\
+co/ring.h\
 co/strain/2d.h\
 co/strain/3d.h\
 co/strain.h\
