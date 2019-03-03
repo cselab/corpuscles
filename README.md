@@ -153,7 +153,7 @@ int main() {
 ```
 
 ```sh
-co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off 
+co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 ```
 
 ![](img/area.png)\
@@ -263,7 +263,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 
 [read.h](lib/co/read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize
-    **co.h**
+	**co.h**
 
 [co.h](lib/co/co.h)
 :   half edg data structure (provides half-edg API)
