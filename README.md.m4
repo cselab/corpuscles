@@ -156,10 +156,9 @@ r_header(restore.h)
 ## Half-edg related
 
 r_header(read.h)
-:   read half-edg to intermediate structure HeRead, used to initialize
-	**co.h**
+:   read half-edg to intermediate structure HeRead, used to initialize half-edg
 
-r_header(co.h)
+r_header(he.h)
 :   half edg data structure (provides half-edg API)
 
 r_header(hash.h)
