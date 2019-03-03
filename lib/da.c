@@ -2,7 +2,7 @@
 
 #include "real.h"
 #include "co/err.h"
-#include "co/he.h
+#include "co/he.h"
 #include "co/vec.h"
 #include "co/tri.h"
 #include "co/edg.h"

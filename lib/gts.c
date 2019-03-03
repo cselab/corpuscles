@@ -5,7 +5,7 @@
 #include "real.h"
 #include "co/err.h"
 #include "co/util.h"
-#include "co/he.h
+#include "co/he.h"
 #include "inc/def.h"
 
 #include "co/gts.h"

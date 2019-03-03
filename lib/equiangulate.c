@@ -5,7 +5,7 @@
 #include "inc/def.h"
 #include "co/err.h"
 #include "co/vec.h"
-#include "co/he.h
+#include "co/he.h"
 #include "co/tri.h"
 #include "co/equiangulate.h"
 

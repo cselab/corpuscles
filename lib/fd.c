@@ -3,7 +3,7 @@
 #include "real.h"
 
 #include "co/err.h"
-#include "co/he.h
+#include "co/he.h"
 
 #include "co/force.h"
 

@@ -2,7 +2,7 @@
 
 #include "real.h"
 
-#include "co/he.h
+#include "co/he.h"
 #include "co/invariants.h"
 #include "co/err.h"
 #include "co/memory.h"

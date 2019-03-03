@@ -8,7 +8,7 @@
 #include "co/err.h"
 #include "co/endian.h"
 #include "co/util.h"
-#include "co/he.h
+#include "co/he.h"
 #include "inc/def.h"
 
 #include "co/ply.h"
