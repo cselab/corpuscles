@@ -2,7 +2,7 @@
 
 # Intro
 A C library deal with triangulated surfaces shaped by forces
-and constraints.
+and constraints. [Documentation](https://cselab.github.io/corpuscles)
 
 # Install
 
