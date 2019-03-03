@@ -7,20 +7,20 @@
 
 #include <real.h>
 
-#include <he/bending.h>
-#include <he/ddih.h>
-#include <he/dedg.h>
-#include <he/dtri.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/tri.h>
-#include <he/util.h>
-#include <he/vec.h>
-#include <he/vtk.h>
-#include <he/x.h>
+#include <co/bending.h>
+#include <co/ddih.h>
+#include <co/dedg.h>
+#include <co/dtri.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/tri.h>
+#include <co/util.h>
+#include <co/vec.h>
+#include <co/vtk.h>
+#include <co/x.h>
 
 static const real pi = 3.141592653589793115997964;
 

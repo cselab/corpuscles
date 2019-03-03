@@ -3,11 +3,11 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/vec.h>
-#include <he/punto.h>
+#include <co/err.h>
+#include <co/vec.h>
+#include <co/punto.h>
 
-#include <he/x.h>
+#include <co/x.h>
 #include <alg/min.h>
 #include <alg/x.h>
 

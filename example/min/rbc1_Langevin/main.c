@@ -10,20 +10,20 @@
 #include <time.h>
 #include <stdlib.h>
 #include <real.h>
-#include <he/argv.h>
-#include <he/err.h>
-#include <he/punto.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/memory.h>
-#include <he/tri.h>
-#include <he/dedg.h>
-#include <he/ddih.h>
-#include <he/dtri.h>
-#include <he/bending.h>
-#include <he/x.h>
-#include <he/force.h>
+#include <co/argv.h>
+#include <co/err.h>
+#include <co/punto.h>
+#include <co/vec.h>
+#include <co/macro.h>
+#include <co/util.h>
+#include <co/memory.h>
+#include <co/tri.h>
+#include <co/dedg.h>
+#include <co/ddih.h>
+#include <co/dtri.h>
+#include <co/bending.h>
+#include <co/x.h>
+#include <co/force.h>
 
 #define FMT_IN   HE_REAL_IN
 

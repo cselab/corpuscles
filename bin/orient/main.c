@@ -2,14 +2,14 @@
 #include <stdlib.h>
 
 #include <real.h>
-#include <he/memory.h>
-#include <he/off.h>
-#include <he/orient.h>
-#include <he/he.h>
-#include <he/err.h>
-#include <he/util.h>
-#include <he/macro.h>
-#include <he/y.h>
+#include <co/memory.h>
+#include <co/off.h>
+#include <co/orient.h>
+#include <co/he.h>
+#include <co/err.h>
+#include <co/util.h>
+#include <co/macro.h>
+#include <co/y.h>
 
 static int nv;
 static real *x, *y, *z;

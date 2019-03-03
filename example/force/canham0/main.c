@@ -2,12 +2,12 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/off.h>
-#include <he/punto.h>
-#include <he/memory.h>
-#include <he/f/canham.h>
-#include <he/he.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/punto.h>
+#include <co/memory.h>
+#include <co/f/canham.h>
+#include <co/he.h>
 
 typedef struct Param Param;
 struct Param { real Kb, C0, Kad, DA0D; };

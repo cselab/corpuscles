@@ -2,8 +2,8 @@
 #include <stdlib.h>
 
 #include <real.h>
-#include <he/y.h>
-#include <he/err.h>
+#include <co/y.h>
+#include <co/err.h>
 
 int main(void) {
     int status;

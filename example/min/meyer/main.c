@@ -7,30 +7,30 @@
 
 #include <real.h>
 
-#include <he/area.h>
-#include <he/ddih.h>
-#include <he/dedg.h>
-#include <he/dtri.h>
-#include <he/equiangulate.h>
-#include <he/err.h>
-#include <he/f/area.h>
-#include <he/f/edg_sq.h>
-#include <he/f/garea.h>
-#include <he/filter.h>
-#include <he/f/meyer.h>
-#include <he/f/volume_normal.h>
-#include <he/filter.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/memory.h>
-#include <he/off.h>
-#include <he/punto.h>
-#include <he/tri.h>
-#include <he/util.h>
-#include <he/vec.h>
-#include <he/volume.h>
-#include <he/vtk.h>
-#include <he/y.h>
+#include <co/area.h>
+#include <co/ddih.h>
+#include <co/dedg.h>
+#include <co/dtri.h>
+#include <co/equiangulate.h>
+#include <co/err.h>
+#include <co/f/area.h>
+#include <co/f/edg_sq.h>
+#include <co/f/garea.h>
+#include <co/filter.h>
+#include <co/f/meyer.h>
+#include <co/f/volume_normal.h>
+#include <co/filter.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/off.h>
+#include <co/punto.h>
+#include <co/tri.h>
+#include <co/util.h>
+#include <co/vec.h>
+#include <co/volume.h>
+#include <co/vtk.h>
+#include <co/y.h>
 
 #define FMT_IN   HE_REAL_IN
 

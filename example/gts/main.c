@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/gts.h>
+#include <co/err.h>
+#include <co/gts.h>
 
-#include <he/y.h>
+#include <co/y.h>
 
 static real *x, *y, *z;
 static He *he;

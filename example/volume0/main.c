@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/x.h>
+#include <co/err.h>
+#include <co/x.h>
 
 int main() {
     ini("/dev/stdin");

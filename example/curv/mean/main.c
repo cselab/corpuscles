@@ -3,12 +3,12 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/x.h>
-#include <he/vec.h>
-#include <he/tri.h>
-#include <he/memory.h>
-#include <he/punto.h>
+#include <co/err.h>
+#include <co/x.h>
+#include <co/vec.h>
+#include <co/tri.h>
+#include <co/memory.h>
+#include <co/punto.h>
 
 real *tx, *ty, *tz, *ang, *vx, *vy, *vz;
 

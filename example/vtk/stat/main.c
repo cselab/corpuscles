@@ -4,14 +4,14 @@
 #include <string.h>
 
 #include <real.h>
-#include <he/area.h>
-#include <he/array.h>
-#include <he/memory.h>
-#include <he/macro.h>
-#include <he/y.h>
-#include <he/he.h>
-#include <he/err.h>
-#include <he/vtk.h>
+#include <co/area.h>
+#include <co/array.h>
+#include <co/memory.h>
+#include <co/macro.h>
+#include <co/y.h>
+#include <co/he.h>
+#include <co/err.h>
+#include <co/vtk.h>
 
 #define FMT  HE_REAL_OUT
 

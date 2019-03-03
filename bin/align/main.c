@@ -5,17 +5,17 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/memory.h>
-#include <he/off.h>
-#include <he/orient.h>
-#include <he/memory.h>
-#include <he/ten.h>
-#include <he/vec.h>
-#include <he/util.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/off.h>
+#include <co/orient.h>
+#include <co/memory.h>
+#include <co/ten.h>
+#include <co/vec.h>
+#include <co/util.h>
+#include <co/y.h>
 
 const char *me = "he.align";
 

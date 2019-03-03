@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/real.h>
+#include <co/err.h>
+#include <co/real.h>
 
 const int n = 5;
 HeReal *he_real;

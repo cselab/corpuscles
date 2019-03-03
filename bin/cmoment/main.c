@@ -4,15 +4,15 @@
 #include <string.h>
 
 #include <real.h>
-#include <he/bending.h>
-#include <he/punto.h>
-#include <he/he.h>
-#include <he/memory.h>
-#include <he/err.h>
-#include <he/util.h>
-#include <he/macro.h>
-#include <he/vec.h>
-#include <he/y.h>
+#include <co/bending.h>
+#include <co/punto.h>
+#include <co/he.h>
+#include <co/memory.h>
+#include <co/err.h>
+#include <co/util.h>
+#include <co/macro.h>
+#include <co/vec.h>
+#include <co/y.h>
 
 #define FMT_IN   HE_REAL_IN
 

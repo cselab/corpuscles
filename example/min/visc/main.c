@@ -7,15 +7,15 @@
 
 #include <real.h>
 
-#include <he/bending.h>
-#include <he/err.h>
-#include <he/f/strain.h>
-#include <he/macro.h>
-#include <he/memory.h>
-#include <he/strain.h>
-#include <he/util.h>
-#include <he/vec.h>
-#include <he/x.h>
+#include <co/bending.h>
+#include <co/err.h>
+#include <co/f/strain.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/strain.h>
+#include <co/util.h>
+#include <co/vec.h>
+#include <co/x.h>
 
 static const real pi = 3.141592653589793115997964;
 static const real EPS = 1e-6;

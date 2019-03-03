@@ -3,17 +3,17 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/util.h>
-#include <he/x.h>
-#include <he/vec.h>
-#include <he/ddih.h>
-#include <he/tri.h>
-#include <he/dtri.h>
-#include <he/memory.h>
-#include <he/macro.h>
-#include <he/punto.h>
-#include <he/dedg.h>
+#include <co/err.h>
+#include <co/util.h>
+#include <co/x.h>
+#include <co/vec.h>
+#include <co/ddih.h>
+#include <co/tri.h>
+#include <co/dtri.h>
+#include <co/memory.h>
+#include <co/macro.h>
+#include <co/punto.h>
+#include <co/dedg.h>
 
 #include <alg/x.h>
 #include <alg/min.h>

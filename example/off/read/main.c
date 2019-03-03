@@ -2,9 +2,9 @@
 #include <stdlib.h>
 
 #include <real.h>
-#include <he/array.h>
-#include <he/he.h>
-#include <he/y.h>
+#include <co/array.h>
+#include <co/he.h>
+#include <co/y.h>
 
 #define FMT HE_REAL_OUT
 

@@ -2,12 +2,12 @@
 #include <assert.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/off.h>
-#include <he/read.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/equiangulate.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/read.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/equiangulate.h>
 
 static HeOff *off;
 static HeRead *read;

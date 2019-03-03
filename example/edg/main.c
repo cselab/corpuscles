@@ -3,13 +3,13 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/util.h>
+#include <co/err.h>
+#include <co/vec.h>
+#include <co/macro.h>
+#include <co/util.h>
 
-#include <he/edg.h>
-#include <he/dedg.h>
+#include <co/edg.h>
+#include <co/dedg.h>
 
 
 static const char **argv;

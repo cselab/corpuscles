@@ -1,4 +1,4 @@
-#include <he/endian.h>
+#include <co/endian.h>
 
 static int little_p0() {
     int a;

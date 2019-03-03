@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include <he/err.h>
-#include <he/hash.h>
-#include <he/util.h>
+#include <co/err.h>
+#include <co/hash.h>
+#include <co/util.h>
 
 static HeHash *hash;
 

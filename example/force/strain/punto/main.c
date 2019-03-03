@@ -3,15 +3,15 @@
 #include <string.h>
 
 #include <real.h>
-#include <he/area.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/macro.h>
-#include <he/y.h>
-#include <he/he.h>
-#include <he/err.h>
-#include <he/strain.h>
-#include <he/f/strain.h>
+#include <co/area.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/macro.h>
+#include <co/y.h>
+#include <co/he.h>
+#include <co/err.h>
+#include <co/strain.h>
+#include <co/f/strain.h>
 
 static const real pi = 3.141592653589793115997964;
 static char **argv;

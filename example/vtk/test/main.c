@@ -1,12 +1,12 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/off.h>
-#include <he/vtk.h>
-#include <he/memory.h>
-#include <he/bending.h>
-#include <he/he.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/vtk.h>
+#include <co/memory.h>
+#include <co/bending.h>
+#include <co/he.h>
 
 static HeOff *read;
 static Bending *bending;

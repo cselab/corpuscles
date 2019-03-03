@@ -2,12 +2,12 @@
 #include <stdlib.h>
 
 #include <real.h>
-#include <he/macro.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/ply.h>
-#include <he/off.h>
-#include <he/util.h>
+#include <co/macro.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/ply.h>
+#include <co/off.h>
+#include <co/util.h>
 
 static const char **argv;
 static Ply *read;

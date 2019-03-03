@@ -2,11 +2,11 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/memory.h>
-#include <he/off.h>
-#include <he/restore.h>
-#include <he/he.h>
-#include <he/y.h>
+#include <co/memory.h>
+#include <co/off.h>
+#include <co/restore.h>
+#include <co/he.h>
+#include <co/y.h>
 
 static int nv;
 static real *x, *y, *z;

@@ -1,17 +1,17 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/vec.h>
-#include <he/normal.h>
-#include <he/dH.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/sum.h>
-#include <he/ten.h>
-#include <he/punto.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/vec.h>
+#include <co/normal.h>
+#include <co/dH.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/sum.h>
+#include <co/ten.h>
+#include <co/punto.h>
+#include <co/y.h>
 
 static real ddh(void *p, real area, real H) { return   4*H/area; }
 static real dda(void *p, real area, real H) { return  -(2*H*H)/(area*area); }

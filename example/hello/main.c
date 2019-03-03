@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/tri.h>
+#include <co/tri.h>
 
 #define FMT HE_REAL_OUT
 

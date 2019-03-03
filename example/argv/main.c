@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/macro.h>
-#include <he/argv.h>
+#include <co/err.h>
+#include <co/macro.h>
+#include <co/argv.h>
 
 #define  SIZE (1024)
 

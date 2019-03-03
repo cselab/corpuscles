@@ -5,15 +5,15 @@ include(`co.m4')dnl
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/he.h>
-#include <he/vec.h>
-#include <he/tri.h>
-#include <he/macro.h>
-#include <he/off.h>
-#include <he/transform.h>
-#include <he/util.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/vec.h>
+#include <co/tri.h>
+#include <co/macro.h>
+#include <co/off.h>
+#include <co/transform.h>
+#include <co/util.h>
+#include <co/y.h>
 
 #define FMT_OUT HE_REAL_OUT
 #define FMT_IN HE_REAL_IN

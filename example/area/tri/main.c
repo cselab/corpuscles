@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/x.h>
-#include <he/vec.h>
-#include <he/tri.h>
+#include <co/err.h>
+#include <co/x.h>
+#include <co/vec.h>
+#include <co/tri.h>
 
 void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
     vec_get(i, XX, YY, ZZ, a);

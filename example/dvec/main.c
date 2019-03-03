@@ -3,12 +3,12 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/vec.h>
-#include <he/ten.h>
-#include <he/dvec.h>
-#include <he/macro.h>
-#include <he/util.h>
+#include <co/err.h>
+#include <co/vec.h>
+#include <co/ten.h>
+#include <co/dvec.h>
+#include <co/macro.h>
+#include <co/util.h>
 
 #define FMT_IN   HE_REAL_IN
 static const char **argv;

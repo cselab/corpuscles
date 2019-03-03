@@ -1,14 +1,14 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/off.h>
-#include <he/read.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/tri.h>
-#include <he/memory.h>
-#include <he/equiangulate.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/read.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/tri.h>
+#include <co/memory.h>
+#include <co/equiangulate.h>
 
 static const real pi = 3.141592653589793;
 

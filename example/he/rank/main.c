@@ -1,11 +1,11 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/memory.h>
-#include <he/vtk.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/memory.h>
+#include <co/vtk.h>
+#include <co/y.h>
 
 int main() {
     real *x, *y, *z, *rank;

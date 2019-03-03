@@ -5,14 +5,14 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/f/harmonic_ref.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/util.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/f/harmonic_ref.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/util.h>
+#include <co/y.h>
 
 static const char *me = "force/harmonic_ref/off";
 static HeFHarmonicRef *force;

@@ -3,16 +3,16 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/vec.h>
-#include <he/tri.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/strain/3d.h>
-#include <he/strain/2d.h>
+#include <co/err.h>
+#include <co/vec.h>
+#include <co/tri.h>
+#include <co/macro.h>
+#include <co/util.h>
+#include <co/strain/3d.h>
+#include <co/strain/2d.h>
 
-#include <he/dih.h>
-#include <he/ddih.h>
+#include <co/dih.h>
+#include <co/ddih.h>
 
 #define FMT_IN   HE_REAL_IN
 static const char **argv;

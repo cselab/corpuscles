@@ -4,15 +4,15 @@
 
 #include <real.h>
 
-#include <he/f/juelicher.h>
+#include <co/f/juelicher.h>
 
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/vec.h>
-#include <he/err.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/x.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/vec.h>
+#include <co/err.h>
+#include <co/macro.h>
+#include <co/util.h>
+#include <co/x.h>
 
 #define FMT_IN   HE_REAL_IN
 

@@ -2,11 +2,11 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/f/dvolume.h>
-#include <he/he.h>
-#include <he/y.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/f/dvolume.h>
+#include <co/he.h>
+#include <co/y.h>
 
 static int nv;
 static real *fx, *fy, *fz;

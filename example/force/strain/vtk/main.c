@@ -3,15 +3,15 @@
 #include <string.h>
 
 #include <real.h>
-#include <he/area.h>
-#include <he/memory.h>
-#include <he/macro.h>
-#include <he/y.h>
-#include <he/he.h>
-#include <he/err.h>
-#include <he/strain.h>
-#include <he/vtk.h>
-#include <he/f/strain.h>
+#include <co/area.h>
+#include <co/memory.h>
+#include <co/macro.h>
+#include <co/y.h>
+#include <co/he.h>
+#include <co/err.h>
+#include <co/strain.h>
+#include <co/vtk.h>
+#include <co/f/strain.h>
 
 static char **argv;
 static real *x, *y, *z, *fm, *fx, *fy, *fz, *area, *area0, *area_tri, *area0_tri;

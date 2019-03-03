@@ -4,13 +4,13 @@
 #include <string.h>
 
 #include <real.h>
-#include <he/bending.h>
-#include <he/memory.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/off.h>
-#include <he/restore.h>
-#include <he/y.h>
+#include <co/bending.h>
+#include <co/memory.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/off.h>
+#include <co/restore.h>
+#include <co/y.h>
 
 static He *he;
 static real *x, *y, *z, *fx, *fy, *fz;

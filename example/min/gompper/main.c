@@ -4,10 +4,10 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/x.h>
+#include <co/err.h>
+#include <co/macro.h>
+#include <co/util.h>
+#include <co/x.h>
 
 #include <alg/x.h>
 #include <alg/min.h>

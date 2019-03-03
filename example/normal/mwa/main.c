@@ -1,13 +1,13 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/normal.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/sum.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/normal.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/sum.h>
+#include <co/y.h>
 
 int main() {
     He *he;

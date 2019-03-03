@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/read.h>
-#include <he/off.h>
+#include <co/err.h>
+#include <co/read.h>
+#include <co/off.h>
 
 static HeRead *read;
 static HeOff *off;

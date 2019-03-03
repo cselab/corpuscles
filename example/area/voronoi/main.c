@@ -2,12 +2,12 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/x.h>
-#include <he/vec.h>
-#include <he/tri.h>
-#include <he/memory.h>
-#include <he/sum.h>
+#include <co/err.h>
+#include <co/x.h>
+#include <co/vec.h>
+#include <co/tri.h>
+#include <co/memory.h>
+#include <co/sum.h>
 
 static void get4(int i, int j, int k, int l, /**/
           real a[3], real b[3], real c[3], real d[3]) {

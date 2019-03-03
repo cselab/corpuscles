@@ -1,13 +1,13 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/area.h>
-#include <he/err.h>
-#include <he/off.h>
-#include <he/he.h>
-#include <he/memory.h>
+#include <co/area.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/he.h>
+#include <co/memory.h>
 
-#include <he/y.h>
+#include <co/y.h>
 
 static HeOff *off;
 static int nt;

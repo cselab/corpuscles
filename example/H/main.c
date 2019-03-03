@@ -1,14 +1,14 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/H.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/sum.h>
-#include <he/vec.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/H.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/sum.h>
+#include <co/vec.h>
+#include <co/y.h>
 
 enum {X, Y, Z};
 

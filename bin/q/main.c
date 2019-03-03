@@ -2,19 +2,19 @@
 #include <stdlib.h>
 
 #include <real.h>
-#include <he/argv.h>
-#include <he/area.h>
-#include <he/array.h>
-#include <he/bending.h>
-#include <he/invariants.h>
-#include <he/err.h>
-#include <he/off.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/memory.h>
-#include <he/util.h>
+#include <co/argv.h>
+#include <co/area.h>
+#include <co/array.h>
+#include <co/bending.h>
+#include <co/invariants.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/util.h>
 
-#include <he/y.h>
+#include <co/y.h>
 
 #define FMT   HE_REAL_OUT
 

@@ -7,17 +7,17 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/vec.h>
-#include <he/macro.h>
-#include <he/util.h>
-#include <he/memory.h>
-#include <he/tri.h>
-#include <he/dedg.h>
-#include <he/ddih.h>
-#include <he/dtri.h>
-#include <he/bending.h>
-#include <he/x.h>
+#include <co/err.h>
+#include <co/vec.h>
+#include <co/macro.h>
+#include <co/util.h>
+#include <co/memory.h>
+#include <co/tri.h>
+#include <co/dedg.h>
+#include <co/ddih.h>
+#include <co/dtri.h>
+#include <co/bending.h>
+#include <co/x.h>
 #include <alg/x.h>
 #include <alg/min.h>
 

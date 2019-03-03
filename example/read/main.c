@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <he/err.h>
-#include <he/macro.h>
-#include <he/read.h>
+#include <co/err.h>
+#include <co/macro.h>
+#include <co/read.h>
 
 int main() {
     HeRead *read;

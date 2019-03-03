@@ -5,8 +5,8 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv2.h>
 
-#include <he/err.h>
-#include <he/macro.h>
+#include <co/err.h>
+#include <co/macro.h>
 
 #include "sys.h"
 

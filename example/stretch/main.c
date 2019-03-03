@@ -2,13 +2,13 @@
 
 #include <real.h>
 
-#include <he/err.h>
-#include <he/he.h>
-#include <he/macro.h>
-#include <he/memory.h>
-#include <he/off.h>
-#include <he/stretch.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/off.h>
+#include <co/stretch.h>
+#include <co/y.h>
 
 static int nv;
 static He *he;

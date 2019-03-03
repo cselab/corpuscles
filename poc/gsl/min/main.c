@@ -6,8 +6,8 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multimin.h>
 
-#include <he/err.h>
-#include <he/macro.h>
+#include <co/err.h>
+#include <co/macro.h>
 
 /* Paraboloid centered on (p[0],p[1]), with
    scale factors (p[2],p[3]) and minimum p[4] */

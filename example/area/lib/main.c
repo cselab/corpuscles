@@ -1,12 +1,12 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/he.h>
-#include <he/area.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/area.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/y.h>
 
 int main() {
     He *he;

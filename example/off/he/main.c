@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/off.h>
-#include <he/read.h>
-#include <he/he.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/read.h>
+#include <co/he.h>
 
 static HeOff *off;
 static HeRead *read;

@@ -3,14 +3,14 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/x.h>
-#include <he/vec.h>
-#include <he/ten.h>
-#include <he/tri.h>
-#include <he/dtri.h>
-#include <he/memory.h>
-#include <he/punto.h>
+#include <co/err.h>
+#include <co/x.h>
+#include <co/vec.h>
+#include <co/ten.h>
+#include <co/tri.h>
+#include <co/dtri.h>
+#include <co/memory.h>
+#include <co/punto.h>
 
 #include "inc/util.h"
 #include "inc/mesh.h"

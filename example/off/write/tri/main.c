@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/off.h>
+#include <co/err.h>
+#include <co/off.h>
 
 static HeOff *off;
 static real *ver;

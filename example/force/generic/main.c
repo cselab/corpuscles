@@ -4,18 +4,18 @@
 
 #include <real.h>
 
-#include <he/force.h>
-#include <he/punto.h>
-#include <he/area.h>
-#include <he/he.h>
-#include <he/memory.h>
-#include <he/err.h>
-#include <he/util.h>
-#include <he/argv.h>
-#include <he/macro.h>
-#include <he/vec.h>
-#include <he/fd.h>
-#include <he/y.h>
+#include <co/force.h>
+#include <co/punto.h>
+#include <co/area.h>
+#include <co/he.h>
+#include <co/memory.h>
+#include <co/err.h>
+#include <co/util.h>
+#include <co/argv.h>
+#include <co/macro.h>
+#include <co/vec.h>
+#include <co/fd.h>
+#include <co/y.h>
 
 #define FMT_IN   HE_REAL_IN
 

@@ -2,10 +2,10 @@
 #include <tgmath.h>
 
 #include <real.h>
-#include <he/f/garea.h>
-#include <he/memory.h>
-#include <he/punto.h>
-#include <he/x.h>
+#include <co/f/garea.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/x.h>
 
 static real *FX, *FY, *FZ;
 

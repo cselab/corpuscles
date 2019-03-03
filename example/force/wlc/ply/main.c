@@ -4,14 +4,14 @@
 #include <string.h>
 
 #include <real.h>
-#include <he/err.h>
-#include <he/memory.h>
-#include <he/macro.h>
-#include <he/ply.h>
-#include <he/f/wlc.h>
-#include <he/he.h>
-#include <he/sum.h>
-#include <he/y.h>
+#include <co/err.h>
+#include <co/memory.h>
+#include <co/macro.h>
+#include <co/ply.h>
+#include <co/f/wlc.h>
+#include <co/he.h>
+#include <co/sum.h>
+#include <co/y.h>
 
 static HeFWlc *force;
 static Ply *cell;
