@@ -1,8 +1,7 @@
 include ../conf.mk
 
 I = inc/def.h
-TRG = he
-L = libhe_s.a libhe_d.a libhe_l.a
+L = lib$P_s.a lib$P_d.a lib$P_l.a
 
 include make/hdr.mk
 include make/obj.mk

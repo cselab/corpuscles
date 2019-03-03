@@ -36,10 +36,10 @@ format () {
 
 name () {
     s=$1; shift
-    sed -e "s,\.c$,.$s,1" -e "s,\.m4$,.$s,1"
+    sed -e "s,\.c$,.$s,1" -e "s,\.c.m4$,.$s,1"
 }
 
-src () { find . -name '*.c' -or -name '*.m4'; }
+src () { find . -name '*.c' -or -name '*.c.m4'; }
 hdr () { find . -name '*.h'; }
 
 hdr | norm |                    format H     > make/hdr.mk
