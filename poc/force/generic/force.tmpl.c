@@ -6,7 +6,7 @@
 
 #include "co/memory.h"
 #include "co/err.h"
-#include "co/he.h
+#include "co/he.h"
 #include "co/container.h"
 #include "co/macro.h"
 #include "co/util.h"
