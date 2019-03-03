@@ -102,6 +102,8 @@ r_header(vec.h), r_header(edg.h), r_header(tri.h), r_header(dih.h), r_header(ten
 r_header(dvec.h), r_header(dedg.h), r_header(dtri.h), r_header(ddih.h)
 : derivatives of vector edges, triagels, dihidrals
 
+r_header(ring.h)
+: operation on the first ring of neighbors
 
 ## Utility
 
