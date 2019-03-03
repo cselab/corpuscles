@@ -1,4 +1,4 @@
-# TEST: 0
+# nTEST: 0
 i=obdisco_obdisco/v095_Nt5120/ref/v095.off
 he.run ./main juelicher_xin 1.0 1.0 0.641998677173 0 1000 5000 0 1 0 0.63662 -119.96 0.000898798148042 1.0 0.00001 0 10 10 10 . strain $i lim 278.521 139.260575205 -2 8 0.7 0.75 < $i
-cp 0000010.off main.out.off
+uscale 1.0e6 0000010.off > main.out.off
