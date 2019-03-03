@@ -1,3 +1,5 @@
+include conf.mk
+
 D = \
 tool\
 pkgconfig\
