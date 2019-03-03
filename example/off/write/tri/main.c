@@ -9,7 +9,7 @@ static real *ver;
 static int  nv, nt, *tri;
 
 static void ini() {
-    off_ini("/dev/stdin", &off);
+    off_inif(stdin, &off);
     nv = off_nv(off);
     nt = off_nt(off);
     off_ver(off, &ver);
