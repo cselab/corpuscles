@@ -18,10 +18,10 @@ enum {SIZE = MAX_STRING_SIZE};
 
 #define FWRITE(ptr, size) \
     if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))         \
-        ERR(HE_IO, "fwrite failed: need = %d, got = %d", size, cnt)
+        ERR(CO_IO, "fwrite failed: need = %d, got = %d", size, cnt)
 
-#define FMT HE_REAL_IN
-#define OUT HE_REAL_OUT
+#define FMT CO_REAL_IN
+#define OUT CO_REAL_OUT
 
 struct T {
     real *ver; /* x[0] y[0] z[0] ... */
@@ -39,19 +39,19 @@ int off_inif(FILE *f, T **pq) {
 
     MALLOC(1, &q);
     if (f == NULL)
-        ERR(HE_IO, "fail to read");
+        ERR(CO_IO, "fail to read");
 
 #   define NXT() if (util_comment_fgets(line, f) == NULL)  \
-        ERR(HE_IO, "unexpected EOF")
+        ERR(CO_IO, "unexpected EOF")
     NXT();
     if (!util_eq(line, "OFF"))
-        ERR(HE_IO, "expecting 'OFF' got '%s'", line);
+        ERR(CO_IO, "expecting 'OFF' got '%s'", line);
     NXT();
     cnt = sscanf(line, "%d %d %*d", &nv, &nt);
     if (cnt != 2)
-        ERR(HE_IO, "fail to parse: '%s'", line);
+        ERR(CO_IO, "fail to parse: '%s'", line);
     if (3*nt < nv)
-        ERR(HE_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
+        ERR(CO_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
 
     MALLOC(3*nv, &q->ver); ver = q->ver;
     MALLOC(3*nt, &q->tri); tri = q->tri;
@@ -60,7 +60,7 @@ int off_inif(FILE *f, T **pq) {
         x = ver++; y = ver++; z = ver++;
         cnt  = sscanf(line, FMT " " FMT " " FMT, x, y, z);
         if (cnt != 3)
-            ERR(HE_IO, "wrong vertex line '%s'", line);
+            ERR(CO_IO, "wrong vertex line '%s'", line);
     }
 
     for (i = 0; i < nt; i++) {
@@ -68,36 +68,36 @@ int off_inif(FILE *f, T **pq) {
         t0 = tri++; t1 = tri++; t2 = tri++;
         cnt  = sscanf(line, "%d %d %d %d", &np, t0, t1, t2);
         if (cnt != 4)
-            ERR(HE_IO, "wrong triangle line '%s'", line);
+            ERR(CO_IO, "wrong triangle line '%s'", line);
         if (np != 3)
-            ERR(HE_IO, "not a triangle '%s'", line);
+            ERR(CO_IO, "not a triangle '%s'", line);
     }
     q->nv = nv; q->nt = nt;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 #   undef NXT
 }
 
 int off_ini(const char *path, T **pq) {
     FILE *f;
     if ((f = fopen(path, "r")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (off_inif(f, pq) != HE_OK)
-        ERR(HE_IO, "off_fini failed for '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (off_inif(f, pq) != CO_OK)
+        ERR(CO_IO, "off_fini failed for '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 
 int off_fin(T *q) {
     FREE(q->ver); FREE(q->tri);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int off_nt(T *q) { return q->nt; }
 int off_nv(T *q) { return q->nv; };
-int off_ver(T *q, real **p) { *p = q->ver; return HE_OK; }
+int off_ver(T *q, real **p) { *p = q->ver; return CO_OK; }
 int off_xyz(T *q, real *x, real *y, real *z) {
     int i, nv;
     real *ver;
@@ -106,14 +106,14 @@ int off_xyz(T *q, real *x, real *y, real *z) {
     for (i = 0; i < nv; i++) {
         x[i] = *ver++; y[i] = *ver++; z[i] = *ver++;
     }
-    return HE_OK;
+    return CO_OK;
 }
-int off_tri(T *q, int  **p) { *p = q->tri; return HE_OK; }
+int off_tri(T *q, int  **p) { *p = q->tri; return CO_OK; }
 
 int off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, npv, *tri, m, i, j, k;
     if (fputs("OFF\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     nv = q->nv; nt = q->nt; ne = 0; npv = 3;
     tri = q->tri;
 
@@ -125,18 +125,18 @@ int off_fwrite(T *q, const real *x, const real *y, const real *z, /**/ FILE *f) 
         i = *tri++; j = *tri++; k = *tri++;
         fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int off_write0(T *q, const real *x, const real *y, const real *z, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (off_fwrite(q, x, y, z, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (off_fwrite(q, x, y, z, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 
 int off_tri_fwrite(T *q, const int *tri, /**/ FILE *f) {
@@ -146,7 +146,7 @@ int off_tri_fwrite(T *q, const int *tri, /**/ FILE *f) {
 
     ver = q->ver;
     if (fputs("OFF\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     nv = q->nv; nt = q->nt; ne = 0; npv = 3;
 
     fprintf(f, "%d %d %d\n", nv, nt, ne);
@@ -159,18 +159,18 @@ int off_tri_fwrite(T *q, const int *tri, /**/ FILE *f) {
         i = *tri++; j = *tri++; k = *tri++;
         fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int off_tri_write(T *q, const int *tri, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (off_tri_fwrite(q, tri, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (off_tri_fwrite(q, tri, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 
 int off_he_fwrite(T *q, He *he, /**/ FILE *f) {
@@ -180,10 +180,10 @@ int off_he_fwrite(T *q, He *he, /**/ FILE *f) {
 
     ver = q->ver;
     if (fputs("OFF\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
     if (q->nv != nv)
-        ERR(HE_INDEX, "q->nv=%d   !=   nv=%d", q->nv, nv);
+        ERR(CO_INDEX, "q->nv=%d   !=   nv=%d", q->nv, nv);
 
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (i = m = 0; m < nv; m++) {
@@ -198,24 +198,24 @@ int off_he_fwrite(T *q, He *he, /**/ FILE *f) {
         i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
         fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int off_he_write(T *q, He *he, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (off_he_fwrite(q, he, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (off_he_fwrite(q, he, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 
 int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, npv, m, i, j, k;
     if (fputs("OFF\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3;
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (m = 0; m < nv; m++)
@@ -224,18 +224,18 @@ int off_he_xyz_fwrite(He *he, const real *x, const real *y, const real *z, /**/ 
         he_tri_ijk(he, m, &i, &j, &k);
         fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int off_he_xyz_write(He *he, const real *x, const real *y, const real *z, /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (off_he_xyz_fwrite(he, x, y, z, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (off_he_xyz_fwrite(he, x, y, z, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 
 int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
@@ -244,7 +244,7 @@ int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *
     float db[3];
 
     if (fputs("OFF BINARY\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 0;
 
     n = 0; ib[n++] = nv; ib[n++] = nt; ib[n++] = ne;
@@ -264,7 +264,7 @@ int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *
         big_endian_int(n, ib);
         FWRITE(ib, n);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int colormap(real v, real l, real h, /**/ float *pR, float *pG, float *pB) {
@@ -289,7 +289,7 @@ static int colormap(real v, real l, real h, /**/ float *pR, float *pG, float *pB
     }
 
     *pR = R; *pG = G; *pB = B;
-    return HE_OK;
+    return CO_OK;
 }
 
 int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real lo, real hi, const real *a, /**/ FILE *f) {
@@ -299,7 +299,7 @@ int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real
     float red, blue, green, alpha;
 
     if (fputs("OFF BINARY\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 4;
     alpha = 0.5;
 
@@ -326,7 +326,7 @@ int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real
         big_endian_flt(n, db);
         FWRITE(db, n);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int boff_tri_fwrite(He *he, const real *x, const real *y, const real *z, const real *a, /**/ FILE *f) {
@@ -347,7 +347,7 @@ int boff_lh_ver_fwrite(He *he, const real *x, const real *y, const real *z, real
     float red, blue, green, alpha;
 
     if (fputs("COFF BINARY\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     nv = he_nv(he); nt = he_nt(he); ne = 0; npv = 3; nc = 0;
     alpha = 0.5;
 
@@ -370,7 +370,7 @@ int boff_lh_ver_fwrite(He *he, const real *x, const real *y, const real *z, real
         big_endian_int(n, ib);
         FWRITE(ib, n);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int boff_ver_fwrite(He *he, const real *x, const real *y, const real *z, const real *a, /**/ FILE *f) {
@@ -397,7 +397,7 @@ int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, con
     n = he_nv(he);
     nc = 0; /* number of colors */
     if (fputs("VECT BINARY\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
 
     np = n + n;
     nv = 2*n + 3*n;
@@ -439,7 +439,7 @@ int boff_vect_fwrite(He *he, const real *xx, const real *yy, const real *zz, con
 
     FREE(sb);
     FREE(fb);
-    return HE_OK;
+    return CO_OK;
 #   undef P
 }
 
@@ -453,7 +453,7 @@ int boff_lh_point_fwrite(He *he, const real *x, const real *y, const real *z, re
     n = he_nv(he);
     alpha = 0.5;
     if (fputs("VECT BINARY\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     MALLOC(2*n, &sb);
     MALLOC(4*n, &fb);
 
@@ -484,7 +484,7 @@ int boff_lh_point_fwrite(He *he, const real *x, const real *y, const real *z, re
 
     FREE(sb);
     FREE(fb);
-    return HE_OK;
+    return CO_OK;
 }
 
 int boff_point_fwrite(He *he, const real *x, const real *y, const real *z, const real *a, /**/ FILE *f) {

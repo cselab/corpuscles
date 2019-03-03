@@ -68,7 +68,7 @@ int he_f_harmonic_ref_ini(real K, const real *x, const real *y, const real *z, H
     }
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_harmonic_ref_argv(char ***p, He *he, T **pq) {
@@ -78,20 +78,20 @@ int he_f_harmonic_ref_argv(char ***p, He *he, T **pq) {
     char s[MAX_STRING_SIZE];
     He *he0;
 
-    if ((status = argv_real(p, &K)) != HE_OK)
+    if ((status = argv_real(p, &K)) != CO_OK)
         return status;
 
-    if ((status = argv_str(p, s)) != HE_OK)
+    if ((status = argv_str(p, s)) != CO_OK)
         return status;
 
-    if ((y_ini(s, &he0, &x, &y, &z) != HE_OK))
+    if ((y_ini(s, &he0, &x, &y, &z) != CO_OK))
         return status;
 
     if (he_nv(he) != he_nv(he0))
-        ERR(HE_IO, "he_nv(he)=%d != he_nv(he0)=%d", he_nv(he), he_nv(he0));
+        ERR(CO_IO, "he_nv(he)=%d != he_nv(he0)=%d", he_nv(he), he_nv(he0));
 
     if (he_nt(he) != he_nt(he0))
-        ERR(HE_IO, "he_nt(he)=%d != he_nt(he0)=%d", he_nt(he), he_nt(he0));
+        ERR(CO_IO, "he_nt(he)=%d != he_nt(he0)=%d", he_nt(he), he_nt(he0));
         
     status = he_f_harmonic_ref_ini(K, x, y, z, he, pq);
 
@@ -102,12 +102,12 @@ int he_f_harmonic_ref_argv(char ***p, He *he, T **pq) {
 int he_f_harmonic_ref_fin(T *q) {
     FREE(q->edg); FREE(q->dedg); FREE(q->e0);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_harmonic_ref_e(T *q, /**/ real  **pa) {
     *pa = q->edg;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void compute_edg(He *he, const real *e0, const real *x, const real *y, const real *z, /**/ real *edg, real *dedg) {
@@ -151,10 +151,10 @@ int he_f_harmonic_ref_force(T *q, He *he,
     K  = q->K;
     e0 = q->e0;
     if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     compute_force(e0, K, dedg, he, x, y, z, /**/ fx, fy, fz);
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_harmonic_ref_energy(T *q, He *he,
@@ -168,7 +168,7 @@ real he_f_harmonic_ref_energy(T *q, He *he,
     K  = q->K;
 
     if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     v = sum_sq_norm(n, dedg, e0);

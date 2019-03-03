@@ -159,15 +159,15 @@ int strain_ini(const char *name, P param, /**/ T **pq) {
         q->F1 = F1_lim;
         q->F2 = F2_lim;
     } else
-        ERR(HE_INDEX, "unknown strain model: '%s'", name);
+        ERR(CO_INDEX, "unknown strain model: '%s'", name);
 
     q->param = param;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 int strain_fin(T *q) {
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int strain_force(T *q,
@@ -183,7 +183,7 @@ int strain_force(T *q,
     F2 = q->F2;
 
     strain_force_3d((void*)param, F, F1, F2, a0, b0, c0,   a, b, c,   da, db, dc);
-    return HE_OK;
+    return CO_OK;
 }
 
 real strain_energy(T* q, const real a0[3], const real b0[3], const real c0[3], const real a[3], const real b[3], const real c[3]) {

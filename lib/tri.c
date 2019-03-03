@@ -10,7 +10,7 @@
 
 #include "co/tri.h"
 
-#define FMT   HE_REAL_OUT
+#define FMT   CO_REAL_OUT
 
 static void swap(real *a, real *b) {
     double t;
@@ -28,7 +28,7 @@ static real kahan_area0(real a, real b, real c) {
     sort3(&c, &b, &a); /* make a > b > c */
     s = (a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c));
     if (s < 0)
-        ERR(HE_NUM, "s < 0: a = %g, b = %g, c = %g", a, b, c);
+        ERR(CO_NUM, "s < 0: a = %g, b = %g, c = %g", a, b, c);
     return sqrt(s)/4;
 }
 
@@ -66,7 +66,7 @@ int tri_normal(const real a[3], const real b[3], const real c[3], /**/ real e[3]
     vec_minus(c, a,   v);
     vec_cross(u, v,   n);
     vec_norm(n,   e);
-    return HE_OK;
+    return CO_OK;
 }
 
 real tri_angle(const real a[3], const real b[3], const real c[3]) { /* at `b' */
@@ -76,7 +76,7 @@ real tri_angle(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     return fabs(vec_angle(u, v));
 }
 
-#define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
+#define NOT_ZERO(x) if ((x) == 0) ERR(CO_NUM, "should not be zero");
 real tri_cot(const real a[3], const real b[3], const real c[3]) { /* at `b' */
     real x, y, u[3], v[3];
     y = 2 * tri_area(a, b, c);
@@ -91,7 +91,7 @@ int tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], 
     vec_minus(b, a,   ab);
     vec_minus(c, b,   bc);
     vec_minus(a, c,   ca);
-    return HE_OK;
+    return CO_OK;
 }
 
 int tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3]) {
@@ -103,12 +103,12 @@ int tri_off(const real a[3], const real b[3], const real c[3], FILE *f) {
     status = fputs("OFF\n"
                    "3 1 0\n", f);
     if (status == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     vec_fprintf(a, f, FMT);
     vec_fprintf(b, f, FMT);
     vec_fprintf(c, f, FMT);
     fputs("3 0 1 2\n", f);
-    return HE_OK;
+    return CO_OK;
 }
 
 int tri_vect(const real a[3], const real b[3], const real c[3],
@@ -125,7 +125,7 @@ int tri_vect(const real a[3], const real b[3], const real c[3],
                    "2 2 2\n"
                    "0 0 0\n", f);
     if (status == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     vec_fprintf(a, f, FMT);
     vec_fprintf(x, f, FMT);
 
@@ -135,23 +135,23 @@ int tri_vect(const real a[3], const real b[3], const real c[3],
     vec_fprintf(c, f, FMT);
     vec_fprintf(z, f, FMT);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int tri_list(const real a[3], const real b[3], const real c[3],
              const real u[3], const real v[3], const real w[3],
              FILE *f) {
     if (fputs("LIST\n", f) == EOF)
-        ERR(HE_IO, "fail to write");
+        ERR(CO_IO, "fail to write");
     fputs("{\n", f);
-    if (tri_off(a, b, c, f) != HE_OK)
-        ERR(HE_IO, "tri_vect failed");
+    if (tri_off(a, b, c, f) != CO_OK)
+        ERR(CO_IO, "tri_vect failed");
     fputs("}\n", f);
     fputs("{\n", f);
-    if (tri_vect(a, b, c, u, v, w, f) != HE_OK)
-        ERR(HE_IO, "tri_vect failed");
+    if (tri_vect(a, b, c, u, v, w, f) != CO_OK)
+        ERR(CO_IO, "tri_vect failed");
     fputs("}\n", f);
-    return HE_OK;
+    return CO_OK;
 }
 
 int tri_3to2(const real a[3], const real b[3], const real c[3], /**/ real *ux, real *wx, real *wy) {
@@ -167,7 +167,7 @@ int tri_3to2(const real a[3], const real b[3], const real c[3], /**/ real *ux, r
     *ux = vec_dot(u, nx);
     *wx = vec_dot(v, nx);
     *wy = vec_dot(v, ny);
-    return HE_OK;
+    return CO_OK;
 }
 
 int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3], real ny[3]) {
@@ -180,7 +180,7 @@ int tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3],
     vec_cross(n, u,  ey);
     vec_norm(ey, ny);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/ real *al, real *be) {
@@ -197,7 +197,7 @@ int tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/
     SET(al, px*qy-1);
     SET(be, (sq(qy)-2*px*qy+sq(py)+sq(px))/(2*px*qy));
 
-    return HE_OK;
+    return CO_OK;
 #   undef sq
 #   undef SET
 }
@@ -262,7 +262,7 @@ static int tri2lphi(const real a[3], const real b[3], const real c[3], real *l, 
     *l = edg_abs(a, b);
     *lp = edg_abs(a, c);
     *p = tri_angle(c, a, b);
-    return HE_OK;
+    return CO_OK;
 }
 int tri_abc(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *a0, real *b0, real *c0) {
     real l0, lp0, p0, l, lp, p;

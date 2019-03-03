@@ -21,7 +21,7 @@ void he_err(__UNUSED int code, const char *file, int line, const char *fmt, ...)
     if (Type == ERR_ABORT)
         abort();
     else
-        if (code == HE_USER) exit(2);
+        if (code == CO_USER) exit(2);
 }
 
 void he_msg(const char *file, int line, const char *fmt, ...) {

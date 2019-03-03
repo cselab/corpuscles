@@ -27,5 +27,5 @@ int fd(Force *f, He *he, real delta, real *x, real *y, real *z,
         fz[i] = fd0(&z[i], f, he, delta, x, y, z);
     }
 
-    return HE_OK;
+    return CO_OK;
 }

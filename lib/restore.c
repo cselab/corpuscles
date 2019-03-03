@@ -32,14 +32,14 @@ int restore_ini(real volume, He *he, T **pq) {
     he_f_dvolume_ini(he, &q->dvolume);
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int restore_fin(T *q) {
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
     he_f_dvolume_fin(q->dvolume);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 static real sum_sq(int n, real *x, real *y, real *z) {
@@ -60,7 +60,7 @@ static int zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int add(int n, real step,
@@ -72,7 +72,7 @@ static int add(int n, real step,
         y[i] += step * fy[i];
         z[i] += step * fz[i];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int restore_volume(T *q, He *he, /**/
@@ -88,13 +88,13 @@ int restore_volume(T *q, He *he, /**/
     n = he_nv(he);
     zero(n, fx); zero(n, fy); zero(n, fz);
     status = he_f_dvolume_force(dvolume, he, x, y, z, /**/ fx, fy, fz);
-    if (status != HE_OK)
-        ERR(HE_NUM, "he_f_dvolume_force failed");
+    if (status != CO_OK)
+        ERR(CO_NUM, "he_f_dvolume_force failed");
     volume = he_f_dvolume_energy(dvolume, he, x, y, z);
     lambda = sum_sq(n, fx, fy, fz);
     delta = volume - volume0;
     step = -delta/lambda;
     add(n, step, fx, fy, fz, x, y, z);
 
-    return HE_OK;
+    return CO_OK;
 }

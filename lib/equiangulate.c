@@ -89,5 +89,5 @@ int he_equiangulate(He *he, const real *x, const real *y, const real *z, /**/ in
         }
     }
     *pcnt = cnt;
-    return HE_OK;
+    return CO_OK;
 }

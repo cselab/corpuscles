@@ -7,60 +7,60 @@
 #include "co/vec.h"
 
 enum {X, Y, Z};
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 enum {SIZE = MAX_STRING_SIZE};
 
 int vec_ini(real x, real y, real z, /**/ real a[3]) {
     a[X] = x; a[Y] = y; a[Z] = z;
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_get(int i, const real x[], const real y[], const real z[], /**/ real a[3]) {
     a[X] = x[i]; a[Y] = y[i]; a[Z] = z[i];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_set(const real a[3], int i, /**/ real x[], real y[], real z[]) {
     x[i] = a[X]; y[i] = a[Y]; z[i] = a[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_coord(const real a[3], /**/ real *px, real *py, real *pz) {
     *px = a[X]; *py = a[Y]; *pz = a[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_copy(const real a[3], real b[3]) {
     b[X] = a[X]; b[Y] = a[Y]; b[Z] = a[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_scale(real s, real a[3]) {
     a[X] *= s;
     a[Y] *= s;
     a[Z] *= s;
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_plus(const real a[3], const real b[3], /**/ real c[3]) {
     c[X] = a[X] + b[X];
     c[Y] = a[Y] + b[Y];
     c[Z] = a[Z] + b[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_minus(const real a[3], const real b[3], /**/ real c[3]) {
     c[X] = a[X] - b[X];
     c[Y] = a[Y] - b[Y];
     c[Z] = a[Z] - b[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_add(const real a[3], /*io*/ real b[3]) {
     b[X] += a[X];
     b[Y] += a[Y];
     b[Z] += a[Y];
-    return HE_OK;
+    return CO_OK;
 }
 
 /* y += a*x */
@@ -68,12 +68,12 @@ int vec_axpy(real a, const real x[3], /*io*/ real y[3]) {
     y[X] += a*x[X];
     y[Y] += a*x[Y];
     y[Z] += a*x[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_neg(real x[3]) {
     x[X] = -x[X]; x[Y] = -x[Y]; x[Z] = -x[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_linear_combination(real al, const real a[3], real be, const real b[3],
@@ -81,32 +81,32 @@ int vec_linear_combination(real al, const real a[3], real be, const real b[3],
     c[X] = al*a[X] + be*b[X];
     c[Y] = al*a[Y] + be*b[Y];
     c[Z] = al*a[Z] + be*b[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_scalar(const real a[3], real s, /**/ real b[3]) {
     b[X] = s*a[X]; b[Y] = s*a[Y]; b[Z] = s*a[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_negative(const real a[3], /**/ real b[3]) {
     b[X] = -a[X]; b[Y] = -a[Y]; b[Z] = -a[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_append(const real a[3], int i, /**/ real *x, real *y, real *z) {
    x[i] += a[X]; y[i] += a[Y]; z[i] += a[Z];
-   return HE_OK;
+   return CO_OK;
 }
 
 int vec_substr(const real a[3], int i, /**/ real *x, real *y, real *z) {
    x[i] -= a[X]; y[i] -= a[Y]; z[i] -= a[Z];
-   return HE_OK;
+   return CO_OK;
 }
 
 int vec_scalar_append(const real a[3], real s, int i, /**/ real *x, real *y, real *z) {
     x[i] += s*a[X]; y[i] += s*a[Y]; z[i] += s*a[Z];
-    return HE_OK;
+    return CO_OK;
 }
 
 real vec_dot(const real a[3], const real b[3]) {
@@ -126,7 +126,7 @@ int vec_cross(const real a[3], const real b[3], /**/ real c[3]) {
    c[X] = a[Y]*b[Z]-b[Y]*a[Z];
    c[Y] = b[X]*a[Z]-a[X]*b[Z];
    c[Z] = a[X]*b[Y]-b[X]*a[Y];
-   return HE_OK;
+   return CO_OK;
 }
 real vec_abs(const real a[3]) { return sqrt(vec_dot(a, a)); }
 
@@ -149,7 +149,7 @@ int vec_norm(const real a[3], /**/ real b[3]) {
     s = vec_abs(a);
     if (!small(s)) vec_scalar(a, 1/s, /**/ b);
     else vec_copy(a, b);
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_project(const real a[3], const real b[3], /**/ real c[3]) {
@@ -157,7 +157,7 @@ int vec_project(const real a[3], const real b[3], /**/ real c[3]) {
     vec_norm(b, /**/ n);
     s = vec_dot(a, n);
     vec_scalar(n, s, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 
 real vec_project_scalar(const real a[3], const real b[3]) {
@@ -179,14 +179,14 @@ int vec_reject(const real a[3], const real b[3], /**/ real c[3]) {
     real p[3];
     vec_project(a, b, /**/ p);
     vec_minus(a, p, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_mean3(const real a[3], const real b[3], const real c[3], /**/ real m[3]) {
     m[X] = (a[X] + b[X] + c[X])/3;
     m[Y] = (a[Y] + b[Y] + c[Y])/3;
     m[Z] = (a[Z] + b[Z] + c[Z])/3;
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_printf(const real a[3], const char *fmt) {
@@ -198,10 +198,10 @@ int vec_fprintf(const real a[3], FILE *f, const char *fmt0) {
     int r;
     r = snprintf(fmt, SIZE, "%s %s %s\n", fmt0, fmt0, fmt0);
     if (r < 0)
-        ERR(HE_IO, "snprintf failed for fmt0='%s'", fmt0);
+        ERR(CO_IO, "snprintf failed for fmt0='%s'", fmt0);
 
     r = fprintf(f, fmt, a[X], a[Y], a[Z]);
-    return r < 0 ? HE_IO : HE_OK;
+    return r < 0 ? CO_IO : CO_OK;
 }
 
 static int nxt(const char *a, real *p) {
@@ -212,18 +212,18 @@ int vec_argv(const char **pq[], /**/ real a[3]) {
     q = *pq;
 #   define NXT(d)                                                       \
     do {                                                                \
-        if (*q == NULL) ERR(HE_IO, "not enough args");                  \
+        if (*q == NULL) ERR(CO_IO, "not enough args");                  \
         if (!nxt(*q, &a[d]))                                            \
-            ERR(HE_IO, "not a number '%s", *q);                         \
+            ERR(CO_IO, "not a number '%s", *q);                         \
         q++;                                                            \
     } while (0);
     NXT(X); NXT(Y); NXT(Z);
 #   undef NXT
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int vec_zero(real a[3]) {
     vec_ini(0, 0, 0, /**/ a);
-    return HE_OK;
+    return CO_OK;
 }

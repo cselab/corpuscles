@@ -7,7 +7,7 @@
 #include "co/err.h"
 #include "co/he.h"
 
-#define FMT  HE_REAL_OUT
+#define FMT  CO_REAL_OUT
 
 #define SIZE (MAX_STRING_SIZE)
 
@@ -30,7 +30,7 @@ int vtk_fwrite(He *he, const real *x, const real *y, const real *z,
     nt = he_nt(he);
 
     r = fprintf(f, "# vtk DataFile Version 2.0\n");
-    if (r <= 0) ERR(HE_IO, "fail to write");
+    if (r <= 0) ERR(CO_IO, "fail to write");
     fprintf(f, "created with he\n");
     fprintf(f, "ASCII\n");
     fprintf(f, "DATASET POLYDATA\n");
@@ -50,26 +50,26 @@ int vtk_fwrite(He *he, const real *x, const real *y, const real *z,
         fprintf(f, "POINT_DATA %d\n", nv);
         for (i_sc = 0; i_sc < n_sc; i_sc++) {
             if (names[i_sc] == NULL)
-                ERR(HE_IO, "not enough names: n_sc=%d, i_sc=%d", n_sc, i_sc);
+                ERR(CO_IO, "not enough names: n_sc=%d, i_sc=%d", n_sc, i_sc);
             fprintf(f, "SCALARS %s double 1\n", names[i_sc]);
             fprintf(f, "LOOKUP_TABLE default\n");
             for (i = 0; i < nv; i++)
                 fprintf(f, FMT "\n", scalars[i_sc][i]);
         }
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int vtk_write(He *he, const real *x, const real *y, const real *z,
               const real *scalars[], const char *names[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (vtk_fwrite(he, x, y, z, scalars, names, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (vtk_fwrite(he, x, y, z, scalars, names, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 
 int vtk_tri_fwrite(He *he, const real *x, const real *y, const real *z,
@@ -82,7 +82,7 @@ int vtk_tri_fwrite(He *he, const real *x, const real *y, const real *z,
     nt = he_nt(he);
 
     r = fprintf(f, "# vtk DataFile Version 2.0\n");
-    if (r <= 0) ERR(HE_IO, "fail to write");
+    if (r <= 0) ERR(CO_IO, "fail to write");
     fprintf(f, "created with he\n");
     fprintf(f, "ASCII\n");
     fprintf(f, "DATASET POLYDATA\n");
@@ -102,24 +102,24 @@ int vtk_tri_fwrite(He *he, const real *x, const real *y, const real *z,
         fprintf(f, "CELL_DATA %d\n", nt);
         for (i_sc = 0; i_sc < n_sc; i_sc++) {
             if (names[i_sc] == NULL)
-                ERR(HE_IO, "not enough names: n_sc=%d, i_sc=%d", n_sc, i_sc);
+                ERR(CO_IO, "not enough names: n_sc=%d, i_sc=%d", n_sc, i_sc);
             fprintf(f, "SCALARS %s double 1\n", names[i_sc]);
             fprintf(f, "LOOKUP_TABLE default\n");
             for (i = 0; i < nt; i++)
                 fprintf(f, FMT "\n", scalars[i_sc][i]);
         }
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int vtk_tri_write(He *he, const real *x, const real *y, const real *z,
                   const real *scalars[], const char *names[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (vtk_tri_fwrite(he, x, y, z, scalars, names, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (vtk_tri_fwrite(he, x, y, z, scalars, names, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }

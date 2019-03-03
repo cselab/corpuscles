@@ -52,13 +52,13 @@ static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
         b[i] += a[i];
-    return HE_OK;
+    return CO_OK;
 }
 static int scale(real sc, int n, /*io*/ real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] *= sc;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_area_voronoi_ini(real a0, real K, He *he, T **pq) {
@@ -79,7 +79,7 @@ int he_f_area_voronoi_ini(real a0, real K, He *he, T **pq) {
     da_ini(he, &q->da);
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 #   undef S
 #   undef M
 }
@@ -88,9 +88,9 @@ int he_f_area_voronoi_ini(real a0, real K, He *he, T **pq) {
 int he_f_area_voronoi_argv(char ***p, He *he, T **pq) {
     int status;
     real x, y;
-    if ((status = argv_real(p, &x)) != HE_OK)
+    if ((status = argv_real(p, &x)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &y)) != HE_OK)
+    if ((status = argv_real(p, &y)) != CO_OK)
         return status;
     return he_f_area_voronoi_ini(x, y, he, pq);
 }
@@ -102,7 +102,7 @@ int he_f_area_voronoi_fin(T *q) {
     F(fx); F(fy); F(fz);
     F(H);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 #   undef F
 }
 
@@ -112,7 +112,7 @@ static int compute_energy(int n,
     int i;
     for (i = 0; i < n; i++)
         energy[i] = e(area0, area[i]);
-    return HE_OK;
+    return CO_OK;
 }
 real he_f_area_voronoi_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
@@ -168,7 +168,7 @@ int he_f_area_voronoi_force(T *q, He *he,
     scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
 
-    return HE_OK;
+    return CO_OK;
 #   undef A
 #   undef S
 }

@@ -24,7 +24,7 @@ int he_hash_ini(int n, T **pq) {
     for (i = 0; i < n; i++)
         q->node[i] = NULL;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void free_node(Node *p) {
@@ -42,7 +42,7 @@ int he_hash_fin(T *q) {
         free_node(q->node[i]);
     FREE(q->node);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_hash_set(T *q, int i, int j, int v) {
@@ -50,13 +50,13 @@ int he_hash_set(T *q, int i, int j, int v) {
     Node *nxt, *prv, *new;
     n = q->n;
     if (0 > i || i >= n || 0 > j || j >= n)    
-        ERR(HE_INDEX, "[%d %d], n = %d", i, j, n);
+        ERR(CO_INDEX, "[%d %d], n = %d", i, j, n);
     
     prv = q->node[i];
     while (prv != NULL) {
         if (prv->j == j) {
             prv->v = v;
-            return HE_OK;
+            return CO_OK;
         }
         nxt = prv->nxt;
         if (nxt == NULL) break;
@@ -69,7 +69,7 @@ int he_hash_set(T *q, int i, int j, int v) {
     new->nxt = NULL;
     if (prv == NULL) q->node[i] = new;
     else prv->nxt = new;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_hash_get(T *q, int i, int j) {
@@ -77,7 +77,7 @@ int he_hash_get(T *q, int i, int j) {
     Node *node;
     n = q->n;
     if (0 > i || i >= n || 0 > j || j >= n)
-        ERR(HE_INDEX, "[%d %d], n = %d", i, j, n);
+        ERR(CO_INDEX, "[%d %d], n = %d", i, j, n);
     node = q->node[i];
     while (node != NULL) {
         if (node->j == j) return node->v;

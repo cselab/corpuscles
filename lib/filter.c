@@ -22,30 +22,30 @@ int filter_ini(He *he, T **pq) {
     MALLOC(n, &q->sum);
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int filter_fin(T *q) {
     FREE(q->B);
     FREE(q->sum);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int div(int n, const real *a, const real *b, /*io*/ real *c) {
     int i;
     for (i = 0; i < n; i++) {
-        if (b[i] == 0) ERR(HE_NUM, "b[%d] == 0", i);
+        if (b[i] == 0) ERR(CO_NUM, "b[%d] == 0", i);
         c[i] = a[i]/b[i];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int get3(const real *x, const real *y, const real *z,
@@ -54,7 +54,7 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 
 int filter_apply(T *q, He *he,
@@ -81,5 +81,5 @@ int filter_apply(T *q, He *he,
     }
 
     div(nv, B, sum, A);
-    return HE_OK;
+    return CO_OK;
 }

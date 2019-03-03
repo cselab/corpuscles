@@ -16,7 +16,7 @@
 #include "co/util.h"
 
 #define T Stretch
-#define FMT HE_REAL_OUT
+#define FMT CO_REAL_OUT
 #define SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
 #define MAX_ITER (100)
@@ -50,7 +50,7 @@ static int compare(const void *vi, const void *vj) {
 static int sort(int n, const real *x, int *idx) {
     QX = x;
     qsort(idx, n, sizeof(idx[0]), compare);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) {
@@ -58,12 +58,12 @@ static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q)
     int *plus, *minus;
     real frac, f;
 
-    if (argv_real(p, &f) != HE_OK)
-        ERR(HE_IO, "fail to read force");
-    if (argv_real(p, &frac) != HE_OK)
-        ERR(HE_IO, "fail to read fraction");
+    if (argv_real(p, &f) != CO_OK)
+        ERR(CO_IO, "fail to read force");
+    if (argv_real(p, &frac) != CO_OK)
+        ERR(CO_IO, "fail to read fraction");
     if (frac > 0.5)
-        ERR(HE_IO, "frac=" FMT " > 0.5", frac);
+        ERR(CO_IO, "frac=" FMT " > 0.5", frac);
 
     n = (int) (nv * frac);
 
@@ -86,7 +86,7 @@ static int plain(int nv, const real *x, __UNUSED const real *y, char ***p, T *q)
     q->minus = minus;
     q->plus = plus;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 
@@ -133,13 +133,13 @@ static int select0(real r0, int *a) {
         if (r < r0)
             a[cnt++] = i;
     }
-    return HE_OK;
+    return CO_OK;
 #   undef sq
 }
 
 int stretch_help(const char **p) {
     *p = Help;
-    return HE_OK;
+    return CO_OK;
 }
 
 static real get_rmax(int n, const real *x, const real *y) {
@@ -167,14 +167,14 @@ static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T 
     int *plus, *minus;
     int n;
 
-    if (argv_real(p, &f) != HE_OK)
-        ERR(HE_IO, "fail to read force");
-    if (argv_real(p, &frac) != HE_OK)
-        ERR(HE_IO, "fail to read fraction");
+    if (argv_real(p, &f) != CO_OK)
+        ERR(CO_IO, "fail to read force");
+    if (argv_real(p, &frac) != CO_OK)
+        ERR(CO_IO, "fail to read fraction");
     if (frac > 0.5)
-        ERR(HE_IO, "frac=" FMT " > 0.5", frac);
-    if (argv_real(p, &x0) != HE_OK)
-        ERR(HE_IO, "fail to read x0");
+        ERR(CO_IO, "frac=" FMT " > 0.5", frac);
+    if (argv_real(p, &x0) != CO_OK)
+        ERR(CO_IO, "fail to read x0");
 
     q->f = f;
     n = (int)(nv*frac);
@@ -191,14 +191,14 @@ static int cylinder(int nv, const real *x, __UNUSED const real *y, char ***p, T 
     select0(r, plus);
     SET(x0, -x0); r = bin_search(n, rmax);
     if (n != count(r))
-        ERR(HE_IO, "n=%d != count(rmax)=%d", n, count(rmax));
+        ERR(CO_IO, "n=%d != count(rmax)=%d", n, count(rmax));
     select0(r, minus);
 
     q->minus = minus;
     q->plus = plus;
     q->n  = n;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 static real EDG_EPS = 1e-8;
@@ -207,8 +207,8 @@ static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) 
     real f, xmin, xmax;
     int n, nmin, nmax, i, j;
 
-    if (argv_real(p, &f) != HE_OK)
-        ERR(HE_IO, "fail to read force");
+    if (argv_real(p, &f) != CO_OK)
+        ERR(CO_IO, "fail to read force");
 
     n = nmin = nmax = 0;
     xmin = array_min(nv, x);
@@ -219,7 +219,7 @@ static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) 
     for (i = 0; i < nv; i++)
         if (fabs(x[i] - xmax) < EDG_EPS) nmax++;
     if (nmax != nmin)
-        ERR(HE_IO, "nmax=%d != nmin=%d", nmax, nmin);
+        ERR(CO_IO, "nmax=%d != nmin=%d", nmax, nmin);
 
     n = nmin;
     MALLOC(n, &plus);
@@ -234,7 +234,7 @@ static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) 
     q->f = f;
     q->minus = minus;
     q->plus = plus;
-    return HE_OK;
+    return CO_OK;
 }
 
 int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
@@ -245,32 +245,32 @@ int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
     nv = he_nv(he);
     MALLOC(1, &q);
 
-    if ((status = argv_str(p, name)) != HE_OK)
+    if ((status = argv_str(p, name)) != CO_OK)
         return status;
 
     i = 0;
     for (i = 0; ; i++) {
         if (i == SIZE(IniName)) {
             MSG("unexpected stretch type '%s'", name);
-            ERR(HE_IO, "possible types are\n%s", Help);
+            ERR(CO_IO, "possible types are\n%s", Help);
         }
         if (util_eq(name, IniName[i])) {
             status = IniFun[i](nv, x, y, p, q);
-            if (status != HE_OK)
+            if (status != CO_OK)
                 return status;
             break;
         }
     }
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int stretch_fin(T *q) {
     FREE(q->minus);
     FREE(q->plus);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int stretch_force(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z,
@@ -291,7 +291,7 @@ int stretch_force(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED
         fx[j] += f/n;
     }
 
-    return HE_OK;
+    return CO_OK;
 }
 
 static int rigid(int n, const int *idx, real *f) {
@@ -309,7 +309,7 @@ static int rigid(int n, const int *idx, real *f) {
         j = idx[i];
         f[j] = f0;
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int stretch_constrain(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z,
@@ -320,7 +320,7 @@ int stretch_constrain(T *q, __UNUSED const real *x, __UNUSED const real *y, __UN
     n = q->n;
     rigid(n, q->plus, fx);
     rigid(n, q->minus, fx);
-    return HE_OK;
+    return CO_OK;
 }
 
 

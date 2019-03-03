@@ -5,8 +5,8 @@
 #include "inc/def.h"
 #include "co/err.h"
 
-#define FMT_IN   HE_REAL_IN
-#define FMT_OUT  HE_REAL_OUT
+#define FMT_IN   CO_REAL_IN
+#define FMT_OUT  CO_REAL_OUT
 
 #define SIZE (MAX_STRING_SIZE)
 
@@ -17,7 +17,7 @@ int punto_fwrite(int n, const real *queue[], /**/ FILE *f) {
         q = queue;
         for (;;) {
             r = fprintf(f, FMT_OUT, (*q)[i]); q++;
-            if (r < 0) ERR(HE_IO, "fail to write");
+            if (r < 0) ERR(CO_IO, "fail to write");
             if (*q != NULL) fputc(' ', f);
             else {
                 fputc('\n', f);
@@ -25,17 +25,17 @@ int punto_fwrite(int n, const real *queue[], /**/ FILE *f) {
             }
         }
     }
-    return HE_OK;
+    return CO_OK;
 }
 int punto_write(int n, const real *queue[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "w")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (punto_fwrite(n, queue, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (punto_fwrite(n, queue, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 int punto_fappend(int n, const real *queue[], /**/ FILE *f) {
     int i, r;
@@ -44,7 +44,7 @@ int punto_fappend(int n, const real *queue[], /**/ FILE *f) {
         q = queue;
         for (;;) {
             r = fprintf(f, FMT_OUT, (*q)[i]); q++;
-            if (r < 0) ERR(HE_IO, "fail to write");
+            if (r < 0) ERR(CO_IO, "fail to write");
             if (*q != NULL) fputc(' ', f);
             else {
                 fputc('\n', f);
@@ -53,18 +53,18 @@ int punto_fappend(int n, const real *queue[], /**/ FILE *f) {
         }
     }
     fputc('\n', f);
-    return HE_OK;
+    return CO_OK;
 }
 
 int punto_append(int n, const real *queue[], /**/ const char *path) {
     FILE *f;
     if ((f = fopen(path, "a")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (punto_fappend(n, queue, f) != HE_OK)
-        ERR(HE_IO, "fail to write to '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (punto_fappend(n, queue, f) != CO_OK)
+        ERR(CO_IO, "fail to write to '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 enum {OK, FAIL};
 static int read(char *s, int i, real *q[]) {
@@ -92,15 +92,15 @@ int punto_read(const char *path, /**/ int *pn, real *queue[]) {
     int n;
     char s[SIZE];
     if ((f = fopen(path, "r")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
+        ERR(CO_IO, "fail to open '%s'", path);
     n = 0;
     while (fgets(s, SIZE, f) != NULL  && !blank(s)) {
         if (read(s, n++, queue) != OK)
-            ERR(HE_IO, "wrong line '%s' in file '%s'", s, path);
+            ERR(CO_IO, "wrong line '%s' in file '%s'", s, path);
     }
     
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
+        ERR(CO_IO, "fail to close '%s'", path);
     *pn = n;
-    return HE_OK;
+    return CO_OK;
 }

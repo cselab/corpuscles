@@ -64,21 +64,21 @@ static int divide(int n, const real *a, const real *b, /**/ real *c) {
     int i;
     for (i = 0; i < n; i++)
         c[i] = a[i] / b[i];
-    return HE_OK;
+    return CO_OK;
 }
 
 static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
         b[i] += a[i];
-    return HE_OK;
+    return CO_OK;
 }
 
 static int scale(int n, real sc, /*io*/ real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] *= sc;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_juelicher_xin_ini(real K, real C0, real Kad, real DA0D,
@@ -119,19 +119,19 @@ int he_f_juelicher_xin_ini(real K, real C0, real Kad, real DA0D,
 
     *pq = q;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_juelicher_xin_argv(char ***p, He *he, T **pq) {
     int status;
     real Kb, C0, Kad, DA0D;
-    if ((status = argv_real(p, &Kb)) != HE_OK)
+    if ((status = argv_real(p, &Kb)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &C0)) != HE_OK)
+    if ((status = argv_real(p, &C0)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &Kad)) != HE_OK)
+    if ((status = argv_real(p, &Kad)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &DA0D)) != HE_OK)
+    if ((status = argv_real(p, &DA0D)) != CO_OK)
         return status;
     return he_f_juelicher_xin_ini(Kb, C0, Kad, DA0D, he, pq);
 }
@@ -147,7 +147,7 @@ int he_f_juelicher_xin_fin(T *q) {
     FREE(q->fx); FREE(q->fy); FREE(q->fz);
     FREE(q->fxad); FREE(q->fyad); FREE(q->fzad);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
@@ -157,7 +157,7 @@ static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
     nn = nxt(n);
     i = ver(h); j = ver(n); k = ver(nn);
     *pi = i; *pj = j; *pk = k;
-    return HE_OK;
+    return CO_OK;
 }
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
@@ -165,7 +165,7 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 static int get2(int h, He *he, const real *x, const real *y, const real *z,
                 /**/ real a[3], real b[3]) {
@@ -175,7 +175,7 @@ static int get2(int h, He *he, const real *x, const real *y, const real *z,
     j = ver(f);
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
-    return HE_OK;
+    return CO_OK;
 }
 
 enum {BULK, BND};
@@ -194,7 +194,7 @@ static int get_ij(int h, He *he, /**/ int *pi, int *pj) {
     f = flp(h);
     i = ver(h); j = ver(f);
     *pi = i; *pj = j;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int get4(const real *x, const real *y, const real *z,
@@ -204,7 +204,7 @@ static int get4(const real *x, const real *y, const real *z,
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
     vec_get(l, x, y, z, /**/ d);
-    return HE_OK;
+    return CO_OK;
 }
 static int compute_area(He *he, Size size, const real *xx, const real *yy, const real *zz, /**/ real *area) {
     int t, i, j, k;
@@ -223,7 +223,7 @@ static int compute_area(He *he, Size size, const real *xx, const real *yy, const
         area[j] += area0;
         area[k] += area0;
     }
-    return HE_OK;
+    return CO_OK;
 }
 static int compute_len(He *he, Size size, const real *xx, const real *yy, const real *zz,
                        /**/ real *len) {
@@ -238,7 +238,7 @@ static int compute_len(He *he, Size size, const real *xx, const real *yy, const 
         vec_minus(c, b, /**/ u);
         len[e] = vec_abs(u);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int compute_theta(He *he, Size size, const real *xx, const real *yy, const real *zz,
@@ -255,7 +255,7 @@ static int compute_theta(He *he, Size size, const real *xx, const real *yy, cons
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         theta[e] = dih_angle_sup(a, b, c, d);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int compute_len_theta(He *he, Size size, real *len, real *theta, /**/ real *len_theta) {
@@ -274,7 +274,7 @@ static int compute_len_theta(He *he, Size size, real *len, real *theta, /**/ rea
         len_theta[i] += cur;
         len_theta[j] += cur;
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int compute_energy_local(Param param, int nv, real *area, real *H, /**/ real *energy) {
@@ -284,7 +284,7 @@ static int compute_energy_local(Param param, int nv, real *area, real *H, /**/ r
     H0 = param.H0;
     for (v = 0; v < nv; v++)
         energy[v] = (H[v] - H0)*(H[v] - H0)*area[v];
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_juelicher_xin_energy(T *q, He *he,
@@ -361,7 +361,7 @@ static int f_len(Param param, He *he, Size size,
         vec_scalar_append(db, coef, i, fx, fy, fz);
         vec_scalar_append(dc, coef, j, fx, fy, fz);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int f_theta(Param param, He *he, Size size,
@@ -389,7 +389,7 @@ static int f_theta(Param param, He *he, Size size,
         vec_scalar_append(dc, coef, k, fx, fy, fz);
         vec_scalar_append(dd, coef, l, fx, fy, fz);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int f_area(Param param, He *he, Size size, const real *H,
@@ -410,7 +410,7 @@ static int f_area(Param param, He *he, Size size, const real *H,
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int fad_len(He *he, Size size, real coef, const real *theta,
@@ -429,7 +429,7 @@ static int fad_len(He *he, Size size, real coef, const real *theta,
         vec_scalar_append(db, coef*theta[e], i, fx, fy, fz);
         vec_scalar_append(dc, coef*theta[e], j, fx, fy, fz);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int fad_theta(He *he, Size size, real coef,
@@ -452,7 +452,7 @@ static int fad_theta(He *he, Size size, real coef,
         vec_scalar_append(dc, coef*len[e], k, fx, fy, fz);
         vec_scalar_append(dd, coef*len[e], l, fx, fy, fz);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int fad_area(He *he, Size size, real coef,
@@ -470,7 +470,7 @@ static int fad_area(He *he, Size size, real coef,
         vec_scalar_append(db, coef, j, fx, fy, fz);
         vec_scalar_append(dc, coef, k, fx, fy, fz);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 
@@ -536,22 +536,22 @@ int he_f_juelicher_xin_force(T *q, He *he,
     plus(nv, fxad, /*io*/ fx_tot);
     plus(nv, fyad, /*io*/ fy_tot);
     plus(nv, fzad, /*io*/ fz_tot);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_juelicher_xin_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->H;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_juelicher_xin_energy_ver(T *q, /**/ real **pa) {
     *pa = q->energy;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_juelicher_xin_area_ver(T *q, /**/ real **pa) {
     *pa = q->area;
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_juelicher_xin_energy_ad(T *q) {

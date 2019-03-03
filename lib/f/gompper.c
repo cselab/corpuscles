@@ -49,7 +49,7 @@ static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
     nn = nxt(n);
     i = ver(h); j = ver(n); k = ver(nn);
     *pi = i; *pj = j; *pk = k;
-    return HE_OK;
+    return CO_OK;
 }
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
@@ -57,7 +57,7 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 static void zero(int n, real *a) {
     int i;
@@ -102,19 +102,19 @@ int he_f_gompper_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     MALLOC(nv, &q->area);
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_gompper_argv(char ***p, He *he, T **pq) {
     int status;
     real Kb, C0, Kad, DA0D;
-    if ((status = argv_real(p, &Kb)) != HE_OK)
+    if ((status = argv_real(p, &Kb)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &C0)) != HE_OK)
+    if ((status = argv_real(p, &C0)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &Kad)) != HE_OK)
+    if ((status = argv_real(p, &Kad)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &DA0D)) != HE_OK)
+    if ((status = argv_real(p, &DA0D)) != CO_OK)
         return status;
 
     return he_f_gompper_ini(Kb, C0, Kad, DA0D, he, pq);
@@ -128,35 +128,35 @@ int he_f_gompper_fin(T *q) {
     FREE(q->curva_mean);FREE(q->curva_gauss);
     FREE(q->energy); FREE(q->area);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_gompper_area_ver(T *q, /**/ real **pa) {
     *pa = q->area;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_gompper_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *px = q->lbx;
     *py = q->lby;
     *pz = q->lbz;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_gompper_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *px = q->normx;
     *py = q->normy;
     *pz = q->normz;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_gompper_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->curva_mean;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_gompper_curva_gauss_ver(T *q, /**/ real **pa) {
     *pa = q->curva_gauss;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_gompper_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy;
-    return HE_OK;
+    return CO_OK;
 }
 static void compute_l2(He *he, const real *x, const real *y, const real *z, /**/ real *H) {
     int nh;
@@ -245,7 +245,7 @@ static int compute_norm(T *q, He *he,
         //vec_negative(u0, u); /*This reverses the sign of norm to be inwards*/
         //vec_set(u, i, /**/ normx, normy, normz);
     }
-    return HE_OK;
+    return CO_OK;
 }
 static int compute_curva_mean(He *he,
                               real *lbx, real *lby, real *lbz,
@@ -263,7 +263,7 @@ static int compute_curva_mean(He *he,
         curva_mean[i] = vec_dot(u, v)/2;
     }
 
-    return HE_OK;
+    return CO_OK;
 
 }
 static real compute_energy_local(T *q, const real *curva_mean, const real *area, /**/ real *energy) {
@@ -344,7 +344,7 @@ real he_f_gompper_energy(T *q, He *he,
     }
 
     if (he_nv(he) != nv)
-        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
+        ERR(CO_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
 
     compute_l2(he, x, y, z, /**/ l2);
     compute_cot(he, x, y, z, /**/ t);
@@ -450,7 +450,7 @@ int he_f_gompper_force(T *q, He *he,
     }
 
     if (he_nv(he) != nv)
-        ERR(HE_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
+        ERR(CO_INDEX, "he_nv(he)=%d != nv = %d", he_nv(he), nv);
 
     compute_l2(he, x, y, z, /**/ l2);
     compute_cot(he, x, y, z, /**/ t);
@@ -464,7 +464,7 @@ int he_f_gompper_force(T *q, He *he,
     compute_force_dt(q, he, x, y, z, lbx, lby, lbz,
                      /**/ fx, fy, fz);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_gompper_energy_ad(T *q) {

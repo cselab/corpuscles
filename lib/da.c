@@ -52,7 +52,7 @@ int da_ini(He *he, /**/ T **pq) {
     q->nv = nv;
     q->nh = nh;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 #   undef M
 }
 
@@ -62,7 +62,7 @@ int da_fin(T *q) {
     F(dda); F(area);
     F(f);
 
-    return HE_OK;
+    return CO_OK;
 #   undef F
 }
 
@@ -95,7 +95,7 @@ int da_compute_area(T *q, He *he, const real *x, const real *y, const real *z) {
         area[i] += (tb[h]*sc[h] + tc[h]*sb[h])/8;
     } END_HE;
 
-    return HE_OK;
+    return CO_OK;
 #   undef A
 }
 
@@ -180,12 +180,12 @@ int da_force(T *q, dAParam param, He *he, const real *x, const real *y, const re
         vec_append(v, i, fx, fy, fz);
     } END_VER;
 
-    return HE_OK;
+    return CO_OK;
 #   undef A
 }
 
 
 int da_area(T *q, real **parea) {
     *parea = q->area;
-    return HE_OK;
+    return CO_OK;
 }

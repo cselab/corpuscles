@@ -43,18 +43,18 @@ int invariants_inif(FILE *f, /**/ T **pq) {
 
     *pq = q;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int invariants_ini(const char *path, T **pq) {
     FILE *f;
     if ((f = fopen(path, "r")) == NULL)
-        ERR(HE_IO, "fail to open '%s'", path);
-    if (invariants_inif(f, pq) != HE_OK)
-        ERR(HE_IO, "off_fini failed for '%s", path);
+        ERR(CO_IO, "fail to open '%s'", path);
+    if (invariants_inif(f, pq) != CO_OK)
+        ERR(CO_IO, "off_fini failed for '%s", path);
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close '%s'", path);
-    return HE_OK;
+        ERR(CO_IO, "fail to close '%s'", path);
+    return CO_OK;
 }
 
 int invariants_fin(T *q) {
@@ -62,7 +62,7 @@ int invariants_fin(T *q) {
     FREE(q->al); FREE(q->be);
 
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int get3(const real *x, const real *y, const real *z,
@@ -71,7 +71,7 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 
 int invariants_al(T *q, const real *x, const real *y, const real *z, real **pq) {
@@ -85,7 +85,7 @@ int invariants_al(T *q, const real *x, const real *y, const real *z, real **pq) 
         q->al[t] = v;
     } END;
     *pq = q->al;
-    return HE_OK;
+    return CO_OK;
 }
 
 int invariants_be(T *q, const real *x, const real *y, const real *z, real **pq) {
@@ -99,5 +99,5 @@ int invariants_be(T *q, const real *x, const real *y, const real *z, real **pq) 
         q->be[t] = v;
     } END;
     *pq = q->be;
-    return HE_OK;
+    return CO_OK;
 }

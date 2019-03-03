@@ -79,7 +79,7 @@ int RZERO(int n, real **pq) { /* alloc and make zero */
     MALLOC(n, &q);
     for (i = 0; i < n; i++) q[i] = 0;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 int ini(const char *path) {
     int i, j, k, l, h, e, n, nn, nnf;
@@ -132,7 +132,7 @@ int ini(const char *path) {
 
     he_read_fin(read);
 
-    return HE_OK;
+    return CO_OK;
 }
 int  fin()      {
     FREE(XX); FREE(YY); FREE(ZZ);
@@ -143,12 +143,12 @@ int  fin()      {
 
     off_fin(off);
     he_fin(he);
-    return HE_OK;
+    return CO_OK;
 }
 
 int x_he(He** phe) {
     *phe = he;
-    return HE_OK;
+    return CO_OK;
 }
 
 int equiangulate(int *cnt) {
@@ -157,11 +157,11 @@ int equiangulate(int *cnt) {
 
 int f_area_ini(real a0, real K) {
     he_f_area_ini(a0, K, he, /**/ &f_area);
-    return HE_OK;
+    return CO_OK;
 }
 int f_area_fin() {
     he_f_area_fin(f_area);
-    return HE_OK;
+    return CO_OK;
 }
 real f_area_energy(const real *x, const real *y, const real *z) {
     return he_f_area_energy(f_area, he, x, y, z);
@@ -172,11 +172,11 @@ int f_area_force(const real *x, const real *y, const real *z, /**/ real *fx, rea
 
 int f_area_voronoi_ini(real a0, real K) {
     he_f_area_voronoi_ini(a0, K, he, /**/ &f_area_voronoi);
-    return HE_OK;
+    return CO_OK;
 }
 int f_area_voronoi_fin() {
     he_f_area_voronoi_fin(f_area_voronoi);
-    return HE_OK;
+    return CO_OK;
 }
 real f_area_voronoi_energy(const real *x, const real *y, const real *z) {
     return he_f_area_voronoi_energy(f_area_voronoi, he, x, y, z);
@@ -187,11 +187,11 @@ int f_area_voronoi_force(const real *x, const real *y, const real *z, /**/ real 
 
 int f_volume_normal_ini(real a0, real K) {
     he_f_volume_normal_ini(a0, K, he, /**/ &f_volume_normal);
-    return HE_OK;
+    return CO_OK;
 }
 int f_volume_normal_fin() {
     he_f_volume_normal_fin(f_volume_normal);
-    return HE_OK;
+    return CO_OK;
 }
 real f_volume_normal_energy(const real *x, const real *y, const real *z) {
     return he_f_volume_normal_energy(f_volume_normal, he, x, y, z);
@@ -202,11 +202,11 @@ int f_volume_normal_force(const real *x, const real *y, const real *z, /**/ real
 
 int f_garea_voronoi_ini(real a0, real K) {
     he_f_garea_voronoi_ini(a0, K, he, /**/ &f_garea_voronoi);
-    return HE_OK;
+    return CO_OK;
 }
 int f_garea_voronoi_fin() {
     he_f_garea_voronoi_fin(f_garea_voronoi);
-    return HE_OK;
+    return CO_OK;
 }
 real f_garea_voronoi_energy(const real *x, const real *y, const real *z) {
     return he_f_garea_voronoi_energy(f_garea_voronoi, he, x, y, z);
@@ -217,11 +217,11 @@ int f_garea_voronoi_force(const real *x, const real *y, const real *z, /**/ real
 
 int f_garea_ini(real a0, real K) {
     he_f_garea_ini(a0, K, he, /**/ &f_garea);
-    return HE_OK;
+    return CO_OK;
 }
 int f_garea_fin() {
     he_f_garea_fin(f_garea);
-    return HE_OK;
+    return CO_OK;
 }
 
 real f_garea_energy(const real *x, const real *y, const real *z) {
@@ -233,15 +233,15 @@ int f_garea_force(const real *x, const real *y, const real *z, /**/ real *fx, re
 }
 int f_volume_ini(real a0, real K) {
     he_f_volume_ini(a0, K, he, /**/ &f_volume);
-    return HE_OK;
+    return CO_OK;
 }
 int f_volume_set_v(real v) {
     he_f_volume_set_v(f_volume, v);
-    return HE_OK;
+    return CO_OK;
 }
 int f_volume_fin() {
     he_f_volume_fin(f_volume);
-    return HE_OK;
+    return CO_OK;
 }
 
 real f_volume_energy(const real *x, const real *y, const real *z) {
@@ -252,11 +252,11 @@ int f_volume_force(const real *x, const real *y, const real *z, /**/ real *fx, r
 }
 int f_harmonic_ini(real a0, real K) {
     he_f_harmonic_ini(a0, K, he, /**/ &f_harmonic);
-    return HE_OK;
+    return CO_OK;
 }
 int f_harmonic_fin() {
     he_f_harmonic_fin(f_harmonic);
-    return HE_OK;
+    return CO_OK;
 }
 real f_harmonic_energy(const real *x, const real *y, const real *z) {
     return he_f_harmonic_energy(f_harmonic, he, x, y, z);
@@ -267,11 +267,11 @@ int f_harmonic_force(const real *x, const real *y, const real *z, /**/ real *fx,
 
 int f_edg_sq_ini(real K) {
     he_f_edg_sq_ini(K, he, /**/ &f_edg_sq);
-    return HE_OK;
+    return CO_OK;
 }
 int f_edg_sq_fin() {
     he_f_edg_sq_fin(f_edg_sq);
-    return HE_OK;
+    return CO_OK;
 }
 real f_edg_sq_energy(const real *x, const real *y, const real *z) {
     return he_f_edg_sq_energy(f_edg_sq, he, x, y, z);
@@ -282,11 +282,11 @@ int f_edg_sq_force(const real *x, const real *y, const real *z, /**/ real *fx, r
 
 int f_harmonic_ref_ini(real K, const real *x, const real *y, const real *z) {
     he_f_harmonic_ref_ini(K, x, y, z, he, /**/ &f_harmonic_ref);
-    return HE_OK;
+    return CO_OK;
 }
 int f_harmonic_ref_fin() {
     he_f_harmonic_ref_fin(f_harmonic_ref);
-    return HE_OK;
+    return CO_OK;
 }
 real f_harmonic_ref_energy(const real *x, const real *y, const real *z) {
     return he_f_harmonic_ref_energy(f_harmonic_ref, he, x, y, z);
@@ -297,11 +297,11 @@ int f_harmonic_ref_force(const real *x, const real *y, const real *z, /**/ real 
 
 int f_kantor_ini(real K, real theta0) {
     he_f_kantor_ini(K, theta0, he, /**/ &f_kantor);
-    return HE_OK;
+    return CO_OK;
 }
 int f_kantor_fin() {
     he_f_kantor_fin(f_kantor);
-    return HE_OK;
+    return CO_OK;
 }
 real f_kantor_energy(const real *x, const real *y, const real *z) {
     return he_f_kantor_energy(f_kantor, he, x, y, z);
@@ -311,11 +311,11 @@ int f_kantor_force(const real *x, const real *y, const real *z, /**/ real *fx, r
 }
 int f_gompper_ini(real Kb, real C0, real Kad, real DA0D) {
   he_f_gompper_ini(Kb, C0, Kad, DA0D, he, /**/ &f_gompper);
-  return HE_OK;
+  return CO_OK;
 }
 int f_gompper_fin() {
   he_f_gompper_fin(f_gompper);
-  return HE_OK;
+  return CO_OK;
 }
 real f_gompper_energy(const real *x, const real *y, const real *z) {
   return he_f_gompper_energy(f_gompper, he, x, y, z);
@@ -343,11 +343,11 @@ int f_gompper_energy_ver(real **p) {
 }
 int f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D) {
   he_f_gompper_kroll_ini(Kb, C0, Kad, DA0D, he, /**/ &f_gompper_kroll);
-  return HE_OK;
+  return CO_OK;
 }
 int f_gompper_kroll_fin() {
   he_f_gompper_kroll_fin(f_gompper_kroll);
-  return HE_OK;
+  return CO_OK;
 }
 real f_gompper_kroll_energy(const real *x, const real *y, const real *z) {
   return he_f_gompper_kroll_energy(f_gompper_kroll, he, x, y, z);
@@ -375,11 +375,11 @@ int f_gompper_kroll_energy_ver(real **p) {
 }
 int f_bending_ini(const  char *name, BendingParam param) {
     bending_ini(name, param, he, /**/ &f_bending);
-    return HE_OK;
+    return CO_OK;
 }
 int f_bending_fin() {
     bending_fin(f_bending);
-    return HE_OK;
+    return CO_OK;
 }
 real f_bending_energy(const real *x, const real *y, const real *z) {
     return bending_energy(f_bending, he, x, y, z);
@@ -422,5 +422,5 @@ int x_filter_apply(const real *x, const real *y, const real *z, /*io*/ real *a)
 
 int x_get_he(He **phe) {
     *phe = he;
-    return HE_OK;
+    return CO_OK;
 }

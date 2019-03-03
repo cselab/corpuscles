@@ -39,32 +39,32 @@ int he_f_volume_ini(real v0, real K, He *he, T **pq) {
     q->K = K;
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_volume_argv(char ***p, He *he, T **pq) {
     int status;
     real x, y;
-    if ((status = argv_real(p, &x)) != HE_OK)
+    if ((status = argv_real(p, &x)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &y)) != HE_OK)
+    if ((status = argv_real(p, &y)) != CO_OK)
         return status;
     return he_f_volume_ini(x, y, he, pq);
 }
 
 int he_f_volume_fin(T *q) {
     FREE(q->volume); FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_volume_set_v(T *q, real v0) {
     q->v0 = v0;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_volume_v(T *q, /**/ real  **pa) {
     *pa = q->volume;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
@@ -123,11 +123,11 @@ int he_f_volume_force(T *q, He *he,
     K  = q->K;
     v0 = q->v0;
     if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+        ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
     compute_volume(he, x, y, z, /**/ volume);
     v = sum(n, volume);
     compute_force(v0, K, v, he, x, y, z, /**/ fx, fy, fz);
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_volume_energy(T *q, He *he,
@@ -140,7 +140,7 @@ real he_f_volume_energy(T *q, He *he,
     K  = q->K;
 
     if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+        ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_volume(he, x, y, z, /**/ volume);
     v = sum(n, volume);

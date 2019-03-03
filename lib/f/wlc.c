@@ -39,13 +39,13 @@ static void get(int m, He *he,
 
 static real wlc(real x) {
     if (1 - x == 0)
-        ERR(HE_NUM, "1 - x == 0");
+        ERR(CO_NUM, "1 - x == 0");
     return (3*pow(x,2)-2*pow(x,3))/(1-x);
 }
 
 static real dwlc(real x) {
     if (1 - x == 0)
-        ERR(HE_NUM, "1 - x == 0");
+        ERR(CO_NUM, "1 - x == 0");
     return x*(((3-2*x)*x)/pow(1-x,2)+6);
 }
 
@@ -92,22 +92,22 @@ int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, H
     }
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_wlc_argv(char ***p, He *he, T **pq) {
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_wlc_fin(T *q) {
     FREE(q->edg); FREE(q->dedg); FREE(q->e0);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_wlc_e(T *q, /**/ real  **pa) {
     *pa = q->edg;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void compute_edg(He *he, const real *e0, const real *x, const real *y, const real *z, /**/ real *edg, real *dedg) {
@@ -151,10 +151,10 @@ int he_f_wlc_force(T *q, He *he,
     K  = q->K;
     e0 = q->e0;
     if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     compute_force(e0, K, dedg, he, x, y, z, /**/ fx, fy, fz);
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_wlc_energy(T *q, He *he,
@@ -169,7 +169,7 @@ real he_f_wlc_energy(T *q, He *he,
     K  = q->K;
 
     if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_edg(he, e0, x, y, z, /**/ edg, dedg);
     v = compute_energy(x0, n, edg, e0);

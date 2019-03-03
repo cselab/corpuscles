@@ -16,10 +16,10 @@ int he_sum_ini(/**/ T **pq) {
     MALLOC(1, &q);
     q->c = q->sum = 0;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
-int he_sum_fin(T *q) { FREE(q); return HE_OK; }
+int he_sum_fin(T *q) { FREE(q); return CO_OK; }
 int he_sum_add(T *q, real input) {
     real t;
     real y, c, sum;
@@ -31,7 +31,7 @@ int he_sum_add(T *q, real input) {
     sum = t;
 
     q->c = c; q->sum = sum;
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_sum_get(const T *q) { return q->sum; }

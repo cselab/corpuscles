@@ -24,7 +24,7 @@ static int sum3_ini(Sum3 *s) {
     he_sum_ini(&s->y);
     he_sum_ini(&s->z);
     he_sum_ini(&s->a);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int sum3_fin(Sum3 s) {
@@ -32,7 +32,7 @@ static int sum3_fin(Sum3 s) {
     he_sum_fin(s.y);
     he_sum_fin(s.z);
     he_sum_fin(s.a);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int sum3_scalar_add(Sum3 s, real a, const real r[3]) {
@@ -40,7 +40,7 @@ static int sum3_scalar_add(Sum3 s, real a, const real r[3]) {
     he_sum_add(s.y, a*r[Y]);
     he_sum_add(s.z, a*r[Z]);
     he_sum_add(s.a, a);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int sum3_get(Sum3 s, /**/ real r[3]) {
@@ -48,13 +48,13 @@ static int sum3_get(Sum3 s, /**/ real r[3]) {
     real a;
     a = he_sum_get(s.a);
     if (a == 0)
-        ERR(HE_NUM, "a = 0");
+        ERR(CO_NUM, "a = 0");
     
     r[X] = he_sum_get(s.x)/a;
     r[Y] = he_sum_get(s.y)/a;
     r[Z] = he_sum_get(s.z)/a;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/ real com[3])
@@ -79,7 +79,7 @@ int transform_centroid(He *he, const real *x, const real *y, const real *z, /**/
     }
     sum3_get(s, com);
     sum3_fin(s);
-    return HE_OK;
+    return CO_OK;
 }
 
 h_define(`ROT', `
@@ -96,7 +96,7 @@ int transform_rot$1(real rad, int n, /*io*/ real *x, real *y, real *z)
         r[Q] = s*p + c*q;
         vec_set(r, i, x, y, z);
     }
-    return HE_OK;
+    return CO_OK;
 }')
 ROT(`x', `{P = Y, Q = Z}')dnl
 ROT(`y', `{P = Z, Q = X}')dnl
@@ -107,7 +107,7 @@ int transform_tran$1(real s, int n, /*io*/ real *x, real *y, real *z) {
     int i;
     for (i = 0; i < n; i++)
         $1[i] += s;
-    return HE_OK;
+    return CO_OK;
 }')
 TRAN(`x')dnl
 TRAN(`y')dnl
@@ -118,7 +118,7 @@ int transform_tran(const real s[3], int n, /*io*/ real *x, real *y, real *z) {
     transform_tranx(s[X], n, x, y, z);
     transform_trany(s[Y], n, x, y, z);
     transform_tranz(s[Z], n, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }
 
 h_define(`SCAL', `
@@ -126,7 +126,7 @@ int transform_scal$1(real s, int n, /*io*/ real *x, real *y, real *z) {
     int i;
     for (i = 0; i < n; i++)
         $1[i] *= s;
-    return HE_OK;
+    return CO_OK;
 }')
 SCAL(`x')dnl
 SCAL(`y')dnl
@@ -137,5 +137,5 @@ int transform_scal(const real s[3], int n, /*io*/ real *x, real *y, real *z) {
     transform_scalx(s[X], n, x, y, z);
     transform_scaly(s[Y], n, x, y, z);
     transform_scalz(s[Z], n, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

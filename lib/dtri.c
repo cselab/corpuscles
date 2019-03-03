@@ -17,9 +17,9 @@ static int angle0(const real a[3], const real b[3], const real n[3], /**/ real d
     vec_minus(b, a,  v);
     vec_cross(n, v, nv);
     v0 = vec_dot(v, v);
-    if (v0 == 0) ERR(HE_NUM, "s = v0");
+    if (v0 == 0) ERR(CO_NUM, "s = v0");
     vec_scalar(nv, 1/v0,  da);
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_angle(const real a[3], const real b[3], const real c[3],   real da[3], real db[3], real dc[3]) {
@@ -29,7 +29,7 @@ int dtri_angle(const real a[3], const real b[3], const real c[3],   real da[3], 
     angle0(b, a, n,   da);
     vec_plus(dc, da,  nda);
     vec_scalar(nda, -1,   db);
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_cot(const real a[3], const real b[3], const real c[3],   real da[3], real db[3], real dc[3]) {
@@ -37,13 +37,13 @@ int dtri_cot(const real a[3], const real b[3], const real c[3],   real da[3], re
     ang = tri_angle(a, b, c);
     s = sin(ang);
     if (s == 0)
-        ERR(HE_NUM, "s = 0");
+        ERR(CO_NUM, "s = 0");
     s = -1/(s*s);
     dtri_angle(a, b, c,   da0, db0, dc0);
     vec_scalar(da0, s,   da);
     vec_scalar(db0, s,   db);
     vec_scalar(dc0, s,   dc);
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_area(const real a[3], const real b[3], const real c[3],  /**/ real da[3], real db[3], real dc[3]) {
@@ -54,7 +54,7 @@ int dtri_area(const real a[3], const real b[3], const real c[3],  /**/ real da[3
     vec_cross(n2, bc,   da);
     vec_cross(n2, ca,   db);
     vec_cross(n2, ab,   dc);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int dvolume(const real a[3], const real b[3], const real c[3], /**/ real dd[3]) {
@@ -62,7 +62,7 @@ static int dvolume(const real a[3], const real b[3], const real c[3], /**/ real 
     tri_normal(a, b, c, /**/ n);
     area = tri_area(a, b, c);
     vec_scalar(n, area/3, /**/ dd);
-    return HE_OK;
+    return CO_OK;
 }
 int dtri_volume(const real a[3], const  real b[3], const real c[3], /**/ real da[3], real db[3], real dc[3]) {
     real z[3];
@@ -70,17 +70,17 @@ int dtri_volume(const real a[3], const  real b[3], const real c[3], /**/ real da
     dvolume(z, a, b, /**/ dc);
     dvolume(z, b, c, /**/ da);
     dvolume(z, c, a, /**/ db);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int normal0(const real a[3], const real n[3], /**/ Ten *t) {
     real u[3];
     vec_cross(a, n, u);
     ten_dyadic(u, n, t);
-    return HE_OK;
+    return CO_OK;
 }
 
-#define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
+#define NOT_ZERO(x) if ((x) == 0) ERR(CO_NUM, "should not be zero");
 int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, Ten *y, Ten *z) {
     real n[3], A, u[3], v[3], w[3], coef;
     tri_normal(a, b, c,   n);
@@ -102,7 +102,7 @@ int dtri_normal(const real a[3], const real b[3], const real c[3], /**/ Ten *x, 
     ten_scale(coef, z);
 
     /* TODO */
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_edg_area(const real a[3], const real b[3], const real c[3],  /**/ real da[3], real db[3], real dc[3]) {
@@ -120,7 +120,7 @@ int dtri_edg_area(const real a[3], const real b[3], const real c[3],  /**/ real 
     vec_linear_combination(1/A, sb,  -s, Ab, /**/ db);
     vec_scalar(Ac, -s, /**/ dc);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real du[3], real dv[3], real dw[3]) {
@@ -133,7 +133,7 @@ int dtri_alpha(const real a[3], const real b[3], const real c[3], const real u[3
     vec_scale(s, dv);
     vec_scale(s, dw);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 static real be(real b, real c, real v, real w) { return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8; }
@@ -157,7 +157,7 @@ int dtri_beta(const real a[3], const real b0[3], const real c0[3], const real u[
     vec_linear_combination(bv, vv,   bw, wv, /**/ dv);
     vec_linear_combination(bv, vw,   bw, ww, /**/ dw);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
@@ -167,7 +167,7 @@ int dtri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], c
     s = (Ka*(4*a4*l*l*l+3*a3*l*l+2*l))/2;
     dtri_alpha(a, b, c, u, v, w, du, dv, dw);
     vec_scale(s, du); vec_scale(s, dv); vec_scale(s, dw);
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3],
@@ -189,7 +189,7 @@ int dtri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], 
     vec_linear_combination(dal, al_dv, dbe, be_dv, /**/ dv);
     vec_linear_combination(dal, al_dw, dbe, be_dw, /**/ dw);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int dtri_lim(real Ka, real a3, real a4, real mu, real b1, real b2,
@@ -204,5 +204,5 @@ int dtri_lim(real Ka, real a3, real a4, real mu, real b1, real b2,
     vec_plus(ar_du, sh_du, du);
     vec_plus(ar_dv, sh_dv, dv);
     vec_plus(ar_dw, sh_dw, dw);
-    return HE_OK;
+    return CO_OK;
 }

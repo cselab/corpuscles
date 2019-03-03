@@ -25,8 +25,8 @@ int H_ini(He *he, /**/ T **pq) {
     MALLOC(1, &q);
     nv = he_nv(he);
     status = laplace_ini(he, &q->laplace);
-    if (status != HE_OK)
-        ERR(HE_NUM, "laplace_ini failed");
+    if (status != CO_OK)
+        ERR(CO_NUM, "laplace_ini failed");
 
     MALLOC(nv, &q->hh);
     MALLOC(nv, &q->nx);
@@ -43,7 +43,7 @@ int H_fin(T *q) {
     FREE(q->hh);
     FREE(q->nx); FREE(q->ny); FREE(q->nz);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int H_apply(T *q, He *he, const real *x, const real *y, const real *z,
@@ -65,5 +65,5 @@ int H_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
     *pH = q->hh;
     *parea = area;
-    return HE_OK;
+    return CO_OK;
 }

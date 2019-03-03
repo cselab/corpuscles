@@ -17,12 +17,12 @@
 enum {SIZE = MAX_STRING_SIZE};
 enum {X, Y, Z};
 
-#define FMT HE_REAL_IN
+#define FMT CO_REAL_IN
 #define FLT "%.16e"
 
 #   define FWRITE(ptr, size) \
         if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))          \
-            ERR(HE_IO, "fwrite failed: need = %d, got = %d", size, cnt)
+            ERR(CO_IO, "fwrite failed: need = %d, got = %d", size, cnt)
 
 struct Work {
     float *ver;
@@ -43,9 +43,9 @@ static int get_nb(void) {
     int n;
     char *s;
     if ((s = getenv("nb")) == NULL)
-        ERR(HE_IO, "environment variable `nb' is not set");
+        ERR(CO_IO, "environment variable `nb' is not set");
     if (sscanf(s, "%d", &n) != 1)
-        ERR(HE_IO, "`nb = %s' is not integer", s);
+        ERR(CO_IO, "`nb = %s' is not integer", s);
     return n;
 }
 
@@ -55,28 +55,28 @@ int ply_fread(FILE *f, T **pq) {
     char line[SIZE];
 
 #   define NXT() if (util_fgets(line, f) == NULL)  \
-        ERR(HE_IO, "unexpected EOF")
+        ERR(CO_IO, "unexpected EOF")
 #   define MATCH(s) do { \
         NXT();                                  \
         if (!util_eq(line, s)) {                \
             MSG("expecting: '%s'", s);          \
-            ERR(HE_IO, "got: '%s'", line);      \
+            ERR(CO_IO, "got: '%s'", line);      \
         }                                       \
     } while(0)
 #   define FREAD(ptr, size) \
         if (size != (cnt = fread(ptr, sizeof((ptr)[0]), size, f)))          \
-            ERR(HE_IO, "fread failed: need = %d, got = %d", size, cnt)
+            ERR(CO_IO, "fread failed: need = %d, got = %d", size, cnt)
     MALLOC(1, &q);
     NXT();
     if (!util_eq(line, "ply"))
-        ERR(HE_IO, "not a ply file");
+        ERR(CO_IO, "not a ply file");
     MATCH("format binary_little_endian 1.0");
 
     NXT();
     if (sscanf(line, "element vertex %d", &nv) != 1)
-        ERR(HE_IO, "fail to parse: '%s'", line);
+        ERR(CO_IO, "fail to parse: '%s'", line);
     if (nv < 0)
-        ERR(HE_IO, "nv=%d < 0", nv);
+        ERR(CO_IO, "nv=%d < 0", nv);
     MATCH("property float x");
     MATCH("property float y");
     MATCH("property float z");
@@ -92,9 +92,9 @@ int ply_fread(FILE *f, T **pq) {
     }
 
     if (sscanf(line, "element face %d", &nt) != 1)
-        ERR(HE_IO, "fail to parse: '%s'", line);
+        ERR(CO_IO, "fail to parse: '%s'", line);
     if (nt < 0)
-        ERR(HE_IO, "nt=%d < 0", nt);
+        ERR(CO_IO, "nt=%d < 0", nt);
     MATCH("property list int int vertex_index");
     MATCH("end_header");
 
@@ -120,11 +120,11 @@ int ply_fread(FILE *f, T **pq) {
 
     nb = get_nb();
     if (nv % nb != 0)
-        ERR(HE_IO, "nv=%d %% nb=%d != 0", nv, nb);
+        ERR(CO_IO, "nv=%d %% nb=%d != 0", nv, nb);
 
     nm = nv / nb;
     if (nt % nm != 0)
-        ERR(HE_IO, "nt=%d %% nm=%d != 0", nv, nm);
+        ERR(CO_IO, "nt=%d %% nm=%d != 0", nv, nm);
     nt /= nm;
     nv /= nm;
 
@@ -135,8 +135,8 @@ int ply_fread(FILE *f, T **pq) {
         q->tri[k++] = q->w.tri[j++];
         q->tri[k++] = q->w.tri[j++];
     }
-    if (he_tri_ini(nv, nt, q->tri, &q->he) != HE_OK)
-        ERR(HE_IO, "he_tri_ini failed");
+    if (he_tri_ini(nv, nt, q->tri, &q->he) != CO_OK)
+        ERR(CO_IO, "he_tri_ini failed");
 
     q->nvar = nvar;
     q->nv = nv;
@@ -144,7 +144,7 @@ int ply_fread(FILE *f, T **pq) {
     q->nm = nm;
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_fin(T *q) {
@@ -153,7 +153,7 @@ int ply_fin(T *q) {
     FREE(q->w.ver); FREE(q->w.tri);
     FREE(q->w.scalar); FREE(q->w.tscalar);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_nv(T *q) { return q->nv; }
@@ -162,33 +162,33 @@ int ply_nm(T *q) { return q->nm; }
 
 int ply_he(T *q, He **p) {
     *p = q->he;
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_tri(T *q, int **p) {
     *p = q->tri;
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_x(T *q, int m, real **p) {
     if (m >= q->nm)
-        ERR(HE_INDEX, "m=%d >= q->nm=%d", m, q->nm);
+        ERR(CO_INDEX, "m=%d >= q->nm=%d", m, q->nm);
     *p = q->x + m*q->nv ;
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_y(T *q, int m, real **p) {
     if (m >= q->nm)
-        ERR(HE_INDEX, "m=%d >= q->nm=%d", m, q->nm);
+        ERR(CO_INDEX, "m=%d >= q->nm=%d", m, q->nm);
     *p = q->y + m*q->nv ;
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_z(T *q, int m, real **p) {
     if (m >= q->nm)
-        ERR(HE_INDEX, "m=%d >= q->nm=%d", m, q->nm);
+        ERR(CO_INDEX, "m=%d >= q->nm=%d", m, q->nm);
     *p = q->z + m*q->nv ;
-    return HE_OK;
+    return CO_OK;
 }
 
 #define FILL() \
@@ -265,7 +265,7 @@ int ply_fwrite(T *q, FILE *f, int *b) {
     FWRITE(ver, 3*nv*onm);
     FWRITE(wtri, 4*nt*onm);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
@@ -314,7 +314,7 @@ int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
     for (i = 0; i < n; i++)
         fprintf(f, "%d\n", i % nt);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
@@ -371,5 +371,5 @@ int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
     big_endian_flt(n, tscalar);
     FWRITE(tscalar, n);
 
-    return HE_OK;
+    return CO_OK;
 }

@@ -33,27 +33,27 @@ int he_f_garea_ini(real A0, real K, He *he, T **pq) {
     q->K = K;
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_garea_argv(char ***p, He *he, T **pq) {
     int status;
     real x, y;
-    if ((status = argv_real(p, &x)) != HE_OK)
+    if ((status = argv_real(p, &x)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &y)) != HE_OK)
+    if ((status = argv_real(p, &y)) != CO_OK)
         return status;
     return he_f_garea_ini(x, y, he, pq);
 }
 
 int he_f_garea_fin(T *q) {
     FREE(q->area); FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_garea_a(T *q, /**/ real  **pa) {
     *pa = q->area;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
@@ -114,13 +114,13 @@ int he_f_garea_force(T *q, He *he,
     K  = q->K;
 
     if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+        ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(he, x, y, z, /**/ area);
     A = he_sum_array(n, area);
     compute_force(K, A0, A,   he, x, y, z, /**/ fx, fy, fz);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_garea_energy(T *q, He *he,
@@ -133,7 +133,7 @@ real he_f_garea_energy(T *q, He *he,
     K  = q->K;
 
     if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+        ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(he, x, y, z, /**/ area);    
     A = he_sum_array(n, area);

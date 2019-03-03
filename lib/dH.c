@@ -75,7 +75,7 @@ int dh_ini(He *he, /**/ T **pq) {
     q->nv = nv;
     q->nh = nh;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 #   undef M
 }
 
@@ -87,7 +87,7 @@ int dh_fin(T *q) {
     F(lp); F(m); F(n); F(ldn); F(f);
     F(nx); F(ny); F(nz);
 
-    return HE_OK;
+    return CO_OK;
 #   undef F
 }
 
@@ -138,7 +138,7 @@ int dh_area_h(T *q, He *he, const real *x, const real *y, const real *z) {
         H[i] = vec_dot(lp[i].v, n[i].v)/2;
     } END_VER;
 
-    return HE_OK;
+    return CO_OK;
 #   undef A
 }
 
@@ -270,19 +270,19 @@ int dh_force(T *q, dHParam param, He *he, const real *x, const real *y, const re
         vec_append(v, i, fx, fy, fz);
     } END_VER;
 
-    return HE_OK;
+    return CO_OK;
 #   undef A
 }
 
 
 int dh_area(T *q, real **parea) {
     *parea = q->area;
-    return HE_OK;
+    return CO_OK;
 }
 
 int dh_h(T *q, real **pH) {
     *pH = q->H;
-    return HE_OK;
+    return CO_OK;
 }
 
 int dh_norm(T *q, real **pnx, real **pny, real **pnz) {
@@ -300,6 +300,6 @@ int dh_norm(T *q, real **pnx, real **pny, real **pnz) {
 
     *pnx = nx; *pny = ny; *pnz = nz;
 
-    return HE_OK;
+    return CO_OK;
 #   undef G
 }

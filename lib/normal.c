@@ -20,7 +20,7 @@ static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
     nn = he_nxt(he, n);
     i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
     *pi = i; *pj = j; *pk = k;
-    return HE_OK;
+    return CO_OK;
 }
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
@@ -28,7 +28,7 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 
 int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
@@ -59,5 +59,5 @@ int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
         vec_norm(u, /**/ u0);
         vec_set(u0, i, /**/ normx, normy, normz);
     }
-    return HE_OK;
+    return CO_OK;
 }

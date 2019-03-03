@@ -10,7 +10,7 @@
 
 #include "co/gts.h"
 
-#define OUT HE_REAL_OUT
+#define OUT CO_REAL_OUT
 
 int gts_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
     int nv, nt, ne, v, e, t, i, j, k, h, n, m;
@@ -38,5 +38,5 @@ int gts_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f
         k = he_edg(he, m);
         fprintf(f, "%d %d %d\n", k + 1, j + 1, i + 1);
     }
-    return HE_OK;
+    return CO_OK;
 }

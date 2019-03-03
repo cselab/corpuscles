@@ -11,7 +11,7 @@
 #include "co/dtri.h"
 #include "co/strain/2d.h"
 
-#define FMT HE_REAL_OUT
+#define FMT CO_REAL_OUT
 
 static const real EPS = 1e-8;
 
@@ -80,12 +80,12 @@ int strain_force_3d(void *param,
               &dvx, &dvy, &dux, &duy, &dwx, &dwy,
               &I1, &I2, &area);
     if (!small(dvx + dux + dwx))
-        ERR(HE_NUM,
+        ERR(CO_NUM,
             "2d force fails: " FMT " " FMT " " FMT,
             dvx, dux, dwx);
 
     if (!small(dvy + duy + dwy))
-        ERR(HE_NUM,
+        ERR(CO_NUM,
             "2d force fails: " FMT " " FMT " " FMT,
             dvy, duy, dwy);
 
@@ -94,7 +94,7 @@ int strain_force_3d(void *param,
     vec_linear_combination(dux, ex,  duy, ey, /**/ db);
     vec_linear_combination(dwx, ex,  dwy, ey, /**/ dc);
     if (!assert_force_3d(a, b, c, da, db, dc))
-        ERR(HE_NUM, "bad 3d forces in triangle");
+        ERR(CO_NUM, "bad 3d forces in triangle");
     area = fabs(area);
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
@@ -106,7 +106,7 @@ int strain_force_3d(void *param,
         vec_axpy(deng, db, db_tot);
         vec_axpy(deng, dc, dc_tot);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static real Dummy(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 0; }
@@ -132,7 +132,7 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
     *p_eng = eng;
     *p_deng = deng;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int strain_invariants(const real a0[3], const real b0[3], const real c0[3],

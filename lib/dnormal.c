@@ -52,14 +52,14 @@ int dnormal_ini(He *he, /**/ T **pq) {
     q->nv = nv;
     q->nh = nh;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int dnormal_fin(T *q) {
     FREE(q->u); FREE(q->ang); FREE(q->n);
     FREE(q->Dn); FREE(q->m); FREE(q->F);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int QplusAbc(const Ten *A, const Vec b, const real c[3],
@@ -69,7 +69,7 @@ static int QplusAbc(const Ten *A, const Vec b, const real c[3],
     ten_vec(A, b.v, /**/ x);
     ten_dyadic(x, c, /**/ &Y);
     ten_add(&Y, Q);
-    return HE_OK;
+    return CO_OK;
 }
 int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
                   /**/ Ten **pF) {
@@ -123,5 +123,5 @@ int dnormal_apply(T *q, He *he, const real *x, const real *y, const real *z,
         QplusAbc(&Dn[i], u[h], dc, /*io*/ &F[k]);
     } END_LOOP;
     *pF = F;
-    return HE_OK;
+    return CO_OK;
 }

@@ -34,11 +34,11 @@ static int distinct(const int a[]) {
 
 int he_file_ini(const char *path, T **pq) {
     HeRead *read;
-    if (he_read_ini(path, &read) != HE_OK)
-        ERR(HE_IO, "he_read_ini failed");
+    if (he_read_ini(path, &read) != CO_OK)
+        ERR(CO_IO, "he_read_ini failed");
     he_ini(read, /**/ pq);
     he_read_fin(read);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_ini(HeRead *r, T **pq) {
@@ -81,7 +81,7 @@ int he_ini(HeRead *r, T **pq) {
     q->magic = MAGIC;
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_tri_ini(int nv, int nt, int *tri, T **pq) {
@@ -95,7 +95,7 @@ int he_tri_ini(int nv, int nt, int *tri, T **pq) {
 
 int he_fin(T *q) {
     if (q->magic != MAGIC)
-        ERR(HE_MEMORY, "wrong fin() call");
+        ERR(CO_MEMORY, "wrong fin() call");
     FREE(q->nxt); FREE(q->flp);
     FREE(q->ver); FREE(q->tri); FREE(q->edg);
     FREE(q->hdg_ver);
@@ -106,7 +106,7 @@ int he_fin(T *q) {
     FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
 
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 int he_nv(T *q) { return q->nv; }
 int he_nt(T *q) { return q->nt; }
@@ -115,13 +115,13 @@ int he_nh(T *q) { return q->nh; }
 
 /* validate */
 #define V(i, n) if (0 > (i) || (i) >= n)                        \
-        ERR(HE_INDEX, "%s=%d is not in [0, %d)", #i, i, n)
+        ERR(CO_INDEX, "%s=%d is not in [0, %d)", #i, i, n)
 int he_nxt(T *q, int h) { V(h,q->nh); return q->nxt[h]; }
 int he_flp(T *q, int h) {
     int f;
     V(h, q->nh);
     if ((f = q->flp[h]) == -1)
-        ERR(HE_INDEX, "no flip for %d", h);
+        ERR(CO_INDEX, "no flip for %d", h);
     return f;
 }
 int he_ver(T *q, int h) { V(h, q->nh); return q->ver[h]; }
@@ -138,14 +138,14 @@ int he_ijk(T *q, int h, /**/ int *pi, int *pj, int *pk) {
     nn = he_nxt(q, n);
     i = he_ver(q, h); j = he_ver(q, n); k = he_ver(q, nn);
     *pi = i; *pj = j; *pk = k;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_tri_ijk(T *q, int t, /**/ int *i, int *j, int *k) {
     int h;
     h = he_hdg_tri(q, t);
     he_ijk(q, h, i, j, k);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_edg_ij(T *q, int e, /**/ int *pi, int *pj) {
@@ -157,18 +157,18 @@ int he_edg_ij(T *q, int e, /**/ int *pi, int *pj) {
     j = he_ver(q, n);
 
     *pi = i; *pj = j;
-    return HE_OK;
+    return CO_OK;
 }
 
 
-static int set_nxt(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->nxt[h] = i; return HE_OK;}
-static int set_flp(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->flp[h] = i; return HE_OK;}
-static int set_ver(T *q, int h, int i) { V(h, q->nh); V(i, q->nv); q->ver[h] = i; return HE_OK;}
-static int set_tri(T *q, int h, int i) { V(h, q->nh); V(i, q->nt); q->tri[h] = i; return HE_OK;}
-static int set_edg(T *q, int h, int i) { V(h, q->nh); V(i, q->ne); q->edg[h] = i; return HE_OK;}
-static int set_hdg_ver(T *q, int v, int i) { V(v, q->nv); V(i, q->nh); q->hdg_ver[v] = i; return HE_OK;}
-static int set_hdg_edg(T *q, int e, int i) { V(e, q->ne); V(i, q->nh); q->hdg_edg[e] = i; return HE_OK;}
-static int set_hdg_tri(T *q, int t, int i) { V(t, q->nt); V(i, q->nh); q->hdg_tri[t] = i; return HE_OK;}
+static int set_nxt(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->nxt[h] = i; return CO_OK;}
+static int set_flp(T *q, int h, int i) { V(h, q->nh); V(i, q->nh); q->flp[h] = i; return CO_OK;}
+static int set_ver(T *q, int h, int i) { V(h, q->nh); V(i, q->nv); q->ver[h] = i; return CO_OK;}
+static int set_tri(T *q, int h, int i) { V(h, q->nh); V(i, q->nt); q->tri[h] = i; return CO_OK;}
+static int set_edg(T *q, int h, int i) { V(h, q->nh); V(i, q->ne); q->edg[h] = i; return CO_OK;}
+static int set_hdg_ver(T *q, int v, int i) { V(v, q->nv); V(i, q->nh); q->hdg_ver[v] = i; return CO_OK;}
+static int set_hdg_edg(T *q, int e, int i) { V(e, q->ne); V(i, q->nh); q->hdg_edg[e] = i; return CO_OK;}
+static int set_hdg_tri(T *q, int t, int i) { V(t, q->nt); V(i, q->nh); q->hdg_tri[t] = i; return CO_OK;}
 
 int he_edg_rotate(T *q, int e0) {
 #define  nxt(h)     he_nxt(q, (h))
@@ -231,7 +231,7 @@ int he_edg_rotate(T *q, int e0) {
         MSG("t: %d %d", t0, t1);
         MSG("t: h2 = %d   h8 = %d", h2, h8);
         MSG("t: h4 = %d   h7 = %d", h4, h7);
-        ERR(HE_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
+        ERR(CO_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
             h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
     }
 
@@ -334,7 +334,7 @@ int he_edg_rotate(T *q, int e0) {
     assert(flp(flp(h8)) == h8);
     assert(flp(flp(h9)) == h9);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_T(T *he, int **pT0, int **pT1, int **pT2) {
@@ -351,7 +351,7 @@ int he_T(T *he, int **pT0, int **pT1, int **pT2) {
     }
 
     *pT0 = T0; *pT1 = T1; *pT2 = T2;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_D(T *he, int **pD0, int **pD1, int **pD2, int **pD3) {
@@ -371,7 +371,7 @@ int he_D(T *he, int **pD0, int **pD1, int **pD2, int **pD3) {
         }
     }
     *pD0 = D0; *pD1 = D1; *pD2 = D2; *pD3 = D3;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_bnd_ver(T *he, int v) {
@@ -381,7 +381,7 @@ int he_bnd_ver(T *he, int v) {
     h0 = h = he_nxt(he, h);
     for (;;) {
         if (rank >= RANK_MAX)
-            ERR(HE_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank, RANK_MAX);
+            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank, RANK_MAX);
         i = he_ver(he, h);
         rank++;
         n = he_nxt(he, h);
@@ -399,16 +399,16 @@ int he_ring(T *he, int v, int *prank, int **pring) {
     ring = he->ring;
 
     if (v >= he->nv)
-        ERR(HE_INDEX, "v=%d >= q->nv=%d", v, he->nv);
+        ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
     h = he_hdg_ver(he, v);
     if (he_bnd(he, h))
-        ERR(HE_INDEX, "call ring for boundary v = %d, h = %d", v, h);
+        ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
 
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
         if (rank >= RANK_MAX)
-            ERR(HE_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank, RANK_MAX);
+            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank, RANK_MAX);
         i = he_ver(he, h);
         ring[rank++] = i;
         n = he_nxt(he, h);
@@ -421,5 +421,5 @@ int he_ring(T *he, int v, int *prank, int **pring) {
 
     *prank = rank;
     *pring = he->ring;
-    return HE_OK;
+    return CO_OK;
 }

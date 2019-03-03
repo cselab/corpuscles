@@ -51,7 +51,7 @@ static int zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] = 0;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int get3(const real *x, const real *y, const real *z,
@@ -60,7 +60,7 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int norm_mwn(__UNUSED T *q, He *he,
@@ -249,7 +249,7 @@ static int H_norm(T *q, He *he, /**/ real *H) {
         vec_get(i, normx, normy, normz, v);
         H[i] = vec_dot(u, v)/2;
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int H_lap(T *q, He *he, /**/ real *H) {
@@ -269,7 +269,7 @@ static int H_lap(T *q, He *he, /**/ real *H) {
         if (vec_dot(n, lb) < 0)
             H[i] = -H[i];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 
@@ -320,11 +320,11 @@ int he_f_meyer_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     q->energy_total_nonlocal = 0;
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_meyer_xin_argv(char ***p, He *he, T **pq) {
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_meyer_xin_fin(T *q) {
@@ -335,39 +335,39 @@ int he_f_meyer_xin_fin(T *q) {
     FREE(q->energy_local); FREE(q->area);
     FREE(q->lbH);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_meyer_xin_area_ver(T *q, /**/ real **pa) {
     *pa = q->area;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_meyer_xin_laplace_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *px = q->lbx;
     *py = q->lby;
     *pz = q->lbz;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_meyer_xin_norm_ver(T *q, /**/ real **px, real **py, real **pz ) {
     *px = q->normx;
     *py = q->normy;
     *pz = q->normz;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_meyer_xin_curva_mean_ver(T *q, /**/ real **pa) {
     *pa = q->H;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_meyer_xin_K_ver(T *q, /**/ real **pa) {
     *pa = q->K;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_meyer_xin_energy_ver(T *q, /**/ real**pa) {
     *pa = q->energy_local;
-    return HE_OK;
+    return CO_OK;
 }
 int he_f_meyer_xin_laplace_H_ver(T *q, /**/ real **px ) {
     *px = q->lbH;
-    return HE_OK;
+    return CO_OK;
 }
 static int compute_cot(He *he, const real *x, const real *y, const real *z,
                        /**/ real *cot) {
@@ -384,7 +384,7 @@ static int compute_cot(He *he, const real *x, const real *y, const real *z,
         cot[h] += tt;
         if (!bnd(h)) cot[flp(h)] += tt;
     }
-    return HE_OK;
+    return CO_OK;
 }
 static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
     enum {X, Y, Z};
@@ -409,7 +409,7 @@ static int compute_lb(T *q, He *he, const real *x, /**/ real *lbx ) {
         lbx[i] /=area[i];
     }
 
-    return HE_OK;
+    return CO_OK;
 
 }
 static int compute_K(T *q, He *he,
@@ -447,7 +447,7 @@ static int compute_K(T *q, He *he,
         K[i] = ( K[i] + 2 * pi ) / area[i];
     }
 
-    return HE_OK;
+    return CO_OK;
 }
 real he_f_meyer_xin_energy(T *q, He *he,
                            const real *x, const real *y, const real *z) {
@@ -579,7 +579,7 @@ int he_f_meyer_xin_force(T *q, He *he,
         fy[v] += fm * normy[v] * area[v];
         fz[v] += fm * normz[v] * area[v];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_meyer_xin_energy_ad(T *q) {

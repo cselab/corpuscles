@@ -62,7 +62,7 @@ int laplace_ini(He *he, /**/ T **pq) {
     q->nv = nv;
     q->nh = nh;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int laplace_fin(T *q) {
@@ -72,7 +72,7 @@ int laplace_fin(T *q) {
     FREE(q->area); FREE(q->lp);
     FREE(q->lx); FREE(q->ly); FREE(q->lz);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
@@ -126,5 +126,5 @@ int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
     }
 
     *plx = lx; *ply = ly; *plz = lz; *parea = area;
-    return HE_OK;
+    return CO_OK;
 }

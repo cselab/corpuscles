@@ -18,13 +18,13 @@ int ddih_angle(const real a[3], const real b[3], const real c[3], const real d[3
     tri_normal(c, b, d,   k);
 
     e = edg_abs(c, b);
-    if (e == 0) ERR(HE_NUM, "e == 0");
+    if (e == 0) ERR(CO_NUM, "e == 0");
 
     An = tri_area(a, b, c);
-    if (An == 0) ERR(HE_NUM, "An == 0");
+    if (An == 0) ERR(CO_NUM, "An == 0");
 
     Ak = tri_area(c, b, d);
-    if (Ak == 0) ERR(HE_NUM, "Ak == 0");
+    if (Ak == 0) ERR(CO_NUM, "Ak == 0");
 
     vec_scalar(n, e/(2*An),   da);
     vec_scalar(k, e/(2*Ak),   dd);
@@ -38,7 +38,7 @@ int ddih_angle(const real a[3], const real b[3], const real c[3], const real d[3
     vec_linear_combination(-bn/e, n, -bk/e, k,    dc);
     vec_linear_combination(-cn/e, n, -ck/e, k,    db);
 
-    return HE_OK;
+    return CO_OK;
 }
 int ddih_angle_sup(const real a[3], const real b[3], const real c[3], const real d[3], /**/
                real da_s[3], real db_s[3], real dc_s[3], real dd_s[3]) {
@@ -53,7 +53,7 @@ int ddih_angle_sup(const real a[3], const real b[3], const real c[3], const real
   vec_negative(dc, dc_s);
   vec_negative(dd, dd_s);
   
-  return HE_OK;
+  return CO_OK;
 }
 
 int ddih_cos(const real a[3], const real b[3], const real c[3], const real d[3], /**/
@@ -62,8 +62,8 @@ int ddih_cos(const real a[3], const real b[3], const real c[3], const real d[3],
     real ang, coef, da0[3], db0[3], dc0[3], dd0[3];
 
     status = ddih_angle(a, b, c, d, /**/ da0, db0, dc0, dd0);
-    if (status != HE_OK)
-        ERR(HE_NUM, "ddih_angle failed");
+    if (status != CO_OK)
+        ERR(CO_NUM, "ddih_angle failed");
 
     ang  =  dih_angle(a, b, c, d);
     coef = -sin(ang);
@@ -73,7 +73,7 @@ int ddih_cos(const real a[3], const real b[3], const real c[3], const real d[3],
     vec_scalar(dc0, coef,   dc);
     vec_scalar(dd0, coef,   dd);
 
-    return HE_OK;
+    return CO_OK;
 }
 int ddih_cos_sup(const real a[3], const real b[3], const real c[3], const real d[3], /**/
              real da[3], real db[3], real dc[3], real dd[3]) {
@@ -81,8 +81,8 @@ int ddih_cos_sup(const real a[3], const real b[3], const real c[3], const real d
     real ang, coef, da0[3], db0[3], dc0[3], dd0[3];
 
     status = ddih_angle_sup(a, b, c, d, /**/ da0, db0, dc0, dd0);
-    if (status != HE_OK)
-        ERR(HE_NUM, "ddih_angle_sup failed");
+    if (status != CO_OK)
+        ERR(CO_NUM, "ddih_angle_sup failed");
 
     ang  =  dih_angle_sup(a, b, c, d);
     coef = -sin(ang);
@@ -92,5 +92,5 @@ int ddih_cos_sup(const real a[3], const real b[3], const real c[3], const real d
     vec_scalar(dc0, coef,   dc);
     vec_scalar(dd0, coef,   dd);
 
-    return HE_OK;
+    return CO_OK;
 }

@@ -40,15 +40,15 @@ static int valid(int n, int *a, int *b) {
 static int alloc_hdg(int nh, T *q) {
     MALLOC(nh, &q->nxt); MALLOC(nh, &q->flp);
     MALLOC(nh, &q->ver); MALLOC(nh, &q->tri); MALLOC(nh, &q->edg);
-    return HE_OK;
+    return CO_OK;
 }
-static int alloc_ver(int nv, T *q) { MALLOC(nv, &q->hdg_ver); return HE_OK; }
-static int alloc_edg(int ne, T *q) { MALLOC(ne, &q->hdg_edg); return HE_OK; }
-static int alloc_tri(int nt, T *q) { MALLOC(nt, &q->hdg_tri); return HE_OK; }
+static int alloc_ver(int nv, T *q) { MALLOC(nv, &q->hdg_ver); return CO_OK; }
+static int alloc_edg(int ne, T *q) { MALLOC(ne, &q->hdg_edg); return CO_OK; }
+static int alloc_tri(int nt, T *q) { MALLOC(nt, &q->hdg_tri); return CO_OK; }
 static int alloc(int nv, int ne, int nt, int nh, T *q) {
     alloc_hdg(nh, q);
     alloc_ver(nv, q); alloc_edg(ne, q); alloc_tri(nt, q);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int afree(T *q) {
@@ -57,7 +57,7 @@ static int afree(T *q) {
     FREE(q->hdg_ver);
     FREE(q->hdg_edg);
     FREE(q->hdg_tri);
-    return HE_OK;
+    return CO_OK;
 }
 
 static void setup_edg(T *q, HeHash *hdg, int i, int j,  int *pe) {
@@ -133,7 +133,7 @@ int he_read_tri_ini(int nv, int nt, int *tri0, T **pq) {
     q->nv = nv; q->ne = ne; q->nt = nt; q->nh = nh;
     q->magic = MAGIC;
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_read_ini(const char *path, T **pq) {
@@ -144,19 +144,19 @@ int he_read_ini(const char *path, T **pq) {
     int nv, nt, ne, nh;
 
 #   define NXT() if (util_fgets(line, f) == NULL)  \
-        ERR(HE_IO, "unexpected EOF in '%s'", path)
+        ERR(CO_IO, "unexpected EOF in '%s'", path)
     MALLOC(1, &q);
     f = fopen(path, "r");
-    if (f == NULL) ERR(HE_IO, "fail to open '%s'", path);
+    if (f == NULL) ERR(CO_IO, "fail to open '%s'", path);
     NXT();
     if (!util_eq(line, "HE"))
-        ERR(HE_IO, "'%s' is not a he file", path);
+        ERR(CO_IO, "'%s' is not a he file", path);
     NXT();
     cnt = sscanf(line, "%d %d %d %d", &nv, &ne, &nt, &nh);
     if (cnt != 4)
-        ERR(HE_IO, "'%s' != [nv nt ne nh] in '%s'", line, path);
+        ERR(CO_IO, "'%s' != [nv nt ne nh] in '%s'", line, path);
     if (nv <= 0 || nt <= 0 || ne <= 0 || nh <= 0)
-        ERR(HE_IO, "wrong sizes '%s' in '%s'", line, path);
+        ERR(CO_IO, "wrong sizes '%s' in '%s'", line, path);
 
     alloc(nv, ne, nt, nh, /**/ q);
 
@@ -164,46 +164,46 @@ int he_read_ini(const char *path, T **pq) {
         NXT();
         cnt = sscanf(line, "%d %d  %d %d %d",
                      &q->nxt[i], &q->flp[i], &q->ver[i], &q->edg[i], &q->tri[i]);
-        if (cnt != 5) ERR(HE_IO, "wrong half-edg line '%s' in '%s'", line, path);
+        if (cnt != 5) ERR(CO_IO, "wrong half-edg line '%s' in '%s'", line, path);
     }
     for (i = 0; i < nv; i++) {
         NXT();
         cnt = sscanf(line, "%d", &q->hdg_ver[i]);
-        if (cnt != 1) ERR(HE_IO, "wrong ver line '%s' in '%s'", line, path);
+        if (cnt != 1) ERR(CO_IO, "wrong ver line '%s' in '%s'", line, path);
     }
     for (i = 0; i < ne; i++) {
         NXT();
         cnt = sscanf(line, "%d", &q->hdg_edg[i]);
-        if (cnt != 1) ERR(HE_IO, "wrong edg line '%s' in '%s'", line, path);
+        if (cnt != 1) ERR(CO_IO, "wrong edg line '%s' in '%s'", line, path);
     }
     for (i = 0; i < nt; i++) {
         NXT();
         cnt = sscanf(line, "%d", &q->hdg_tri[i]);
-        if (cnt != 1) ERR(HE_IO, "wrong tri line '%s' in '%s'", line, path);
+        if (cnt != 1) ERR(CO_IO, "wrong tri line '%s' in '%s'", line, path);
     }
     if (fclose(f) != 0)
-        ERR(HE_IO, "fail to close file '%s'", path);
+        ERR(CO_IO, "fail to close file '%s'", path);
 
     q->nv = nv; q->nt = nt; q->ne = ne; q->nh = nh;
     q->magic = MAGIC;
 
     if (valid(nv, q->hdg_ver, q->ver) != OK)
-        ERR(HE_IO, "invalid ver references");
+        ERR(CO_IO, "invalid ver references");
     if (valid(ne, q->hdg_edg, q->edg) != OK)
-        ERR(HE_IO, "invalid edg references");
+        ERR(CO_IO, "invalid edg references");
     if (valid(nt, q->hdg_tri, q->tri) != OK)
-        ERR(HE_IO, "invalid tri references");
+        ERR(CO_IO, "invalid tri references");
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_read_fin(T *q) {
     if (q->magic != MAGIC)
-        ERR(HE_MEMORY, "wrong fin() call");
+        ERR(CO_MEMORY, "wrong fin() call");
     afree(q);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_read_info(T *q, FILE *f) {
@@ -221,7 +221,7 @@ int he_read_info(T *q, FILE *f) {
 
     r = fprintf(f, "%d %d %d %d\n", nv, ne, nt, nh);
     if (r <= 0)
-        ERR(HE_IO, "fprintf() failed");
+        ERR(CO_IO, "fprintf() failed");
 
     fprintf(f, "[nh=%d lines]\n", nh);
     fprintf(f, "%d %d %d %d %d\n",
@@ -244,7 +244,7 @@ int he_read_info(T *q, FILE *f) {
     fputs("...\n", f);
     fprintf(f, "%d\n", hdg_tri[nt-1]);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_read_nv(T *q) { return q->nv; }
@@ -252,12 +252,12 @@ int he_read_nt(T *q) { return q->nt; }
 int he_read_ne(T *q) { return q->ne; }
 int he_read_nh(T *q) { return q->nh; }
 
-int he_read_nxt(T *q, int **p) { *p = q->nxt; return HE_OK; }
-int he_read_flp(T *q, int **p) { *p = q->flp; return HE_OK; }
-int he_read_ver(T *q,  int **p) { *p = q->ver; return HE_OK; }
-int he_read_tri(T *q,  int **p) { *p = q->tri; return HE_OK; }
-int he_read_edg(T *q,  int **p) { *p = q->edg; return HE_OK; }
+int he_read_nxt(T *q, int **p) { *p = q->nxt; return CO_OK; }
+int he_read_flp(T *q, int **p) { *p = q->flp; return CO_OK; }
+int he_read_ver(T *q,  int **p) { *p = q->ver; return CO_OK; }
+int he_read_tri(T *q,  int **p) { *p = q->tri; return CO_OK; }
+int he_read_edg(T *q,  int **p) { *p = q->edg; return CO_OK; }
 
-int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return HE_OK; }
-int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return HE_OK; }
-int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return HE_OK; }
+int he_read_hdg_ver(T *q, int **p) { *p = q->hdg_ver; return CO_OK; }
+int he_read_hdg_edg(T *q, int **p) { *p = q->hdg_edg; return CO_OK; }
+int he_read_hdg_tri(T *q, int **p) { *p = q->hdg_tri; return CO_OK; }

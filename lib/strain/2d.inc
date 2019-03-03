@@ -43,5 +43,5 @@ int strain_2d(void *param, real (*F1)(void*, real, real), real (*F2)(void*, real
     SET(pI2, I2);
     SET(pA, select0(-(bx*cy)/2.0E+0,-(ux*wy)/2.0E+0));
 
-    return HE_OK;
+    return CO_OK;
 }

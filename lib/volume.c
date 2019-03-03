@@ -18,7 +18,7 @@ static int get(int t, He *he,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_volume_tri(He *he, const real *x, const real *y, const real *z) {

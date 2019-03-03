@@ -38,13 +38,13 @@ int he_f_edg_sq_ini(real K, He *he, T **pq) {
     q->K = K;
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_edg_sq_argv(char ***p, He *he, T **pq) {
     int status;
     real x;
-    if ((status = argv_real(p, &x)) != HE_OK)
+    if ((status = argv_real(p, &x)) != CO_OK)
         return status;
     return he_f_edg_sq_ini(x, he, pq);
 }
@@ -52,12 +52,12 @@ int he_f_edg_sq_argv(char ***p, He *he, T **pq) {
 int he_f_edg_sq_fin(T *q) {
     FREE(q->edg);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_edg_sq_e(T *q, /**/ real  **pa) {
     *pa = q->edg;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void get_ij(int m, He *he, /**/ int *pi, int *pj) {
@@ -111,10 +111,10 @@ int he_f_edg_sq_force(T *q, He *he,
     edg = q->edg;
     K  = q->K;
     if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
     compute_edg(he, x, y, z, /**/ edg);
     compute_force(he, K, edg, x, y, z, /**/ fx, fy, fz);
-    return HE_OK;
+    return CO_OK;
 }
 
 real he_f_edg_sq_energy(T *q, He *he,
@@ -126,7 +126,7 @@ real he_f_edg_sq_energy(T *q, He *he,
     K  = q->K;
 
     if (he_ne(he) != n)
-        ERR(HE_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
 
     compute_edg(he, x, y, z, /**/ edg);
     v = sum_sq(n, edg);

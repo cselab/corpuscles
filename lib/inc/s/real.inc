@@ -13,12 +13,12 @@ int he_real_ini(int n, T **pq) {
     MALLOC(n, &q->d);
     MALLOC(n, &q->r);
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 int he_real_fin(T *q) {
     FREE(q->r); FREE(q->d);
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 double* he_real_to(T *q, real *a) {

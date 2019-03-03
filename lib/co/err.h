@@ -1,5 +1,5 @@
 /* error codes */
-enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM, HE_NOT};
+enum {CO_OK, CO_IO, CO_MEMORY, CO_SYS, CO_USER, CO_INDEX, CO_NUM, CO_NOT};
 
 #ifdef __clang__
 #    pragma clang diagnostic push
@@ -7,7 +7,7 @@ enum {HE_OK, HE_IO, HE_MEMORY, HE_SYS, HE_USER, HE_INDEX, HE_NUM, HE_NOT};
 #endif
 
 /* for user code */
-#define ER(fmt, ...) ERR(HE_USER, (fmt), ##__VA_ARGS__)
+#define ER(fmt, ...) ERR(CO_USER, (fmt), ##__VA_ARGS__)
 #define ERR(code, fmt, ...)                                             \
     do {                                                                \
         he_err(code, __FILE__, __LINE__, (fmt), ##__VA_ARGS__);         \

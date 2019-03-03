@@ -33,32 +33,32 @@ int he_f_area_ini(real a0, real K, He *he, T **pq) {
     q->K = K;
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_area_argv(char ***p, He *he, T **pq) {
     int status;
     real x, y;
-    if ((status = argv_real(p, &x)) != HE_OK)
+    if ((status = argv_real(p, &x)) != CO_OK)
         return status;
-    if ((status = argv_real(p, &y)) != HE_OK)
+    if ((status = argv_real(p, &y)) != CO_OK)
         return status;
     return he_f_area_ini(x, y, he, pq);
 }
 
 int he_f_area_fin(T *q) {
     FREE(q->area); FREE(q->darea); FREE(q);
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_area_a(T *q, /**/ real  **pa) {
     *pa = q->area;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_area_da(T *q, /**/ real  **pa) {
     *pa = q->darea;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void get(int t, He *he,
@@ -111,12 +111,12 @@ int he_f_area_force(T *q, He *he,
     K  = q->K;
 
     if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+        ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(a0, he, x, y, z, /**/ area, darea);
     compute_force(K, a0, darea, he, x, y, z, /**/ fx, fy, fz);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 static real compute_energy(real K, real a0, real *darea, int n) {
@@ -141,7 +141,7 @@ real he_f_area_energy(T *q, He *he,
     K  = q->K;
 
     if (he_nt(he) != n)
-        ERR(HE_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+        ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(a0, he, x, y, z, /**/ area, darea);
     return compute_energy(K, a0, darea, n);

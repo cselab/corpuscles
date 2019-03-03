@@ -59,7 +59,7 @@ int bending_ini(const char *name, BendingParam param, He *he, T **pq) {
     MSG("possible values:");
     for (i = 0; i < n; i++)
         MSG("%s", Name[i]);
-    ERR(HE_INDEX, "");
+    ERR(CO_INDEX, "");
 }
 
 const char *bending_list() {

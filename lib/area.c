@@ -47,7 +47,7 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
-    return HE_OK;
+    return CO_OK;
 }
 static void zero(int n, real *a) {
     int i;
@@ -71,7 +71,7 @@ int he_area_ver(He *he, const real *x, const real *y, const real *z, /**/ real *
         area[j] += area0;
         area[k] += area0;
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_area_tri(He *he, const real *x, const real *y, const real *z, /**/ real *area) {
@@ -84,5 +84,5 @@ int he_area_tri(He *he, const real *x, const real *y, const real *z, /**/ real *
         area[m] = tri_area(a, b, c);
     }
 
-    return HE_OK;
+    return CO_OK;
 }
