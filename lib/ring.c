@@ -87,3 +87,18 @@ int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const
     *pang = ang;
     return CO_OK;
 }
+
+int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pxyz) {
+    int s, p, j, k;
+    real *xyz;
+    real a[3];
+    xyz = q->xyz;
+    k = 0;
+    xyz[k++] = x[i]; xyz[k++] = y[i]; xyz[k++] = z[i];
+    for (s = 0; ring[s] != -1; s++) {
+        i = ring[s];
+        xyz[k++] = x[i]; xyz[k++] = y[i]; xyz[k++] = z[i];
+    }
+    *pxyz = xyz;
+    return CO_OK;
+}
