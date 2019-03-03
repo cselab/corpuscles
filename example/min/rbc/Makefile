@@ -7,7 +7,7 @@ HE_LDFLAGS = `he.conf --libs $(PREC)`
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
 
-test: $M; atest test/*
+test: $M; atest test/0
 install:
 
 .PHONY: clean test install
