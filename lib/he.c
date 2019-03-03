@@ -19,7 +19,7 @@ struct T {
     int *hdg_ver, *hdg_edg, *hdg_tri;
     int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
-    int ring[RANK_MAX + 2];
+    int ring[RANK_MAX + 1];
     int magic;
 };
 
@@ -416,8 +416,7 @@ int he_ring(T *he, int v, int *prank, int **pring) {
         h = he_nxt(he, f);
         if (h == h0) break;
     }
-    ring[rank + 1] = ring[0];
-    ring[rank + 2] = -1;
+    ring[rank] = -1;
 
     *prank = rank;
     *pring = he->ring;
