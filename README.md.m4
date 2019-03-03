@@ -116,11 +116,17 @@ r_header(dvec.h), r_header(dedg.h), r_header(dtri.h), r_header(ddih.h)
 r_header(array.h)
 :  array related functions
 
+r_header(argv.h)
+:  read from `argv` and shift
+
 r_header(err.h)
 :   error handling
 
 r_header(macro.h)
 :   macros
+
+r_sum(sum.h)
+:   Kahan summation
 
 r_header(memory.h)
 :   memory related
