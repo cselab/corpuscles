@@ -39,7 +39,6 @@ lib: bin/m4 m4/lib
 
 include make/dir.mk
 
-.c.m4.c:; co.m4 -s -o $@ $<
 doc: README.md
 html: README.md
 	pandoc --css=css/github.css --standalone README.md --resource-path=docs --metadata pagetitle=corpuscles --output=docs/index.html
