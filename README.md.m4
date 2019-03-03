@@ -111,6 +111,7 @@ r_header(vec.h), r_header(edg.h), r_header(tri.h), r_header(dih.h), r_header(ten
 r_header(dvec.h), r_header(dedg.h), r_header(dtri.h), r_header(ddih.h)
 : derivatives of vector edges, triagels, dihidrals
 
+
 ## Utility
 
 r_header(array.h)
@@ -121,6 +122,9 @@ r_header(argv.h)
 
 r_header(err.h)
 :   error handling
+
+r_enddian(endian.h)
+:   deal with endianess
 
 r_header(macro.h)
 :   macros
@@ -148,6 +152,17 @@ r_header(laplace.h)
 r_header(normal.h)
 :   normal
 
+## "Forces"
+
+r_header(bending.h)
+:   generic interface to several bending forces
+
+r_header(forces.h)
+:   generic interface to forces
+
+r_header(stretch.h)
+:   stretching force
+
 ## Surface transformation
 
 r_header(equiangulate.h)
@@ -158,6 +173,9 @@ r_header(orient.h)
 
 r_header(restore.h)
 :  restore a volume of the surface
+
+r_header(transformation.h)
+:  translate, rotate, and and scale surface
 
 ## Half-edg related
 

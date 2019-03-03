@@ -215,16 +215,26 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [dvec.h](lib/co/dvec.h), [dedg.h](lib/co/dedg.h), [dtri.h](lib/co/dtri.h), [ddih.h](lib/co/ddih.h)
 : derivatives of vector edges, triagels, dihidrals
 
+
 ## Utility
 
 [array.h](lib/co/array.h)
 :  array related functions
 
+[argv.h](lib/co/argv.h)
+:  read from `argv` and shift
+
 [err.h](lib/co/err.h)
 :   error handling
 
+r_enddian(endian.h)
+:   deal with endianess
+
 [macro.h](lib/co/macro.h)
 :   macros
+
+r_sum(sum.h)
+:   Kahan summation
 
 [memory.h](lib/co/memory.h)
 :   memory related
@@ -246,6 +256,17 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [normal.h](lib/co/normal.h)
 :   normal
 
+## "Forces"
+
+[bending.h](lib/co/bending.h)
+:   generic interface to several bending forces
+
+[forces.h](lib/co/forces.h)
+:   generic interface to forces
+
+[stretch.h](lib/co/stretch.h)
+:   stretching force
+
 ## Surface transformation
 
 [equiangulate.h](lib/co/equiangulate.h)
@@ -256,6 +277,9 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 
 [restore.h](lib/co/restore.h)
 :  restore a volume of the surface
+
+[transformation.h](lib/co/transformation.h)
+:  translate, rotate, and and scale surface
 
 ## Half-edg related
 
