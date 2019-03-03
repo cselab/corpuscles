@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.dep
+prog=co.dep
 
 usg () {
     msg "$prog [-Idir].. [FILE]..."

@@ -30,8 +30,8 @@ a4=0
 b1=0
 b2=0
 
-off=$(he.path)/sph/icosa/Nt5120.off
-ref=$(he.path)/sph/icosa/Nt5120.off
+off=$(co.path)/sph/icosa/Nt5120.off
+ref=$(co.path)/sph/icosa/Nt5120.off
 
 export HE_ARG="-W 24:00"
 

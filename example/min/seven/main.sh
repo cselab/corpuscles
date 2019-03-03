@@ -5,7 +5,7 @@ set -eu
 make
 
 Nt=$1; shift
-off=$(he.path)/oblate/laplace/Nt${Nt}/oblate_area_Vr0.3.off
+off=$(co.path)/oblate/laplace/Nt${Nt}/oblate_area_Vr0.3.off
 
 Da=2.15
 

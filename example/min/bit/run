@@ -10,7 +10,7 @@ C0=0
 Kad=1
 DA0D=28.6514
 
-#off=$(he.path)/sph/laplace/Nt5120.off
+#off=$(co.path)/sph/laplace/Nt5120.off
 off=data/2.off
 
 end=200000

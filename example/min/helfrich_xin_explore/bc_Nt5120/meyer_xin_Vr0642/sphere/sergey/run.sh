@@ -16,7 +16,7 @@ A=$(echo  $pi | awk '{print $1*4.0}')
 end=200000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt5120.off
+off=$(co.path)/sph/laplace/Nt5120.off
 
 (cd ../../../../ && make)
 

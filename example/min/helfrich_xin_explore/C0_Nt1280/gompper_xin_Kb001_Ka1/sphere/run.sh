@@ -7,7 +7,7 @@ DA0D=0
 end=200000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt1280.off
+off=$(co.path)/sph/laplace/Nt1280.off
 
 #(cd ../../.. && make clean && make)
 

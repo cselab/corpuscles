@@ -7,7 +7,7 @@ DA0D=0
 end=50000
 freq=500
 
-off=$(he.path)/sph/icosa/Nt320.off
+off=$(co.path)/sph/icosa/Nt320.off
 
 if test $# -ne 0
 then

@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.install
+prog=co.install
 
 usg () {
     msg "$prog FILE... DIRECTORY"

@@ -1,2 +1,2 @@
 # nTEST: 0
-./main < $(he.path)/rbc/laplace/1.off > q.out.vtk
+./main < $(co.path)/rbc/laplace/1.off > q.out.vtk

@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.conf
+prog=co.conf
 PREFIX='@PREFIX@'
 : ${PKG_CONFIG=pkg-config}
 
@@ -35,4 +35,4 @@ esac
 
 e PKG_CONFIG_PATH="$PREFIX/share/pkgconfig:$PKG_CONFIG_PATH"
 e export PKG_CONFIG_PATH
-e "$PKG_CONFIG" "$a" he_$p
+e "$PKG_CONFIG" "$a" co_$p

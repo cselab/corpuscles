@@ -18,7 +18,7 @@ A=$(echo  $pi | awk '{print $1*4.0}')
 end=200000
 freq=500
 
-off=$(he.path)/sph/laplace/Nt20480.off
+off=$(co.path)/sph/laplace/Nt20480.off
 
 if test $# -ne 0
 then

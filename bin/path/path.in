@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.path
+prog=co.path
 
 usg () {
     msg "$prog returns he path"

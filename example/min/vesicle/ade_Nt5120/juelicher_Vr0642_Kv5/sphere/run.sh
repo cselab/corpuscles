@@ -22,7 +22,7 @@ end=500000
 freq=100
 
 
-off=$(he.path)/sph/laplace/Nt5120.off
+off=$(co.path)/sph/laplace/Nt5120.off
 
 export HE_ARG="-W 20:00"
 

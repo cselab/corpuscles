@@ -6,7 +6,7 @@ freq=500
 end=99999999
 
 #off=start/main.off
-off=$(he.path)/sph/laplace/Nt1280.off
+off=$(co.path)/sph/laplace/Nt1280.off
 make
 
 he.run ./voronoi meyer_xin $Vr 1 2 2 0 \

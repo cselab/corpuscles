@@ -7,7 +7,7 @@ DA0D=0
 end=50000
 freq=500
 
-off=$(he.path)/oblate/laplace/Nt1280/oblate_area_Vr
+off=$(co.path)/oblate/laplace/Nt1280/oblate_area_Vr
 
 if test $# -ne 0
 then

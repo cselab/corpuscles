@@ -7,7 +7,7 @@ Vr=0.95
 : ${freq=2000}
 
 #off=data/2.off
-off=$(he.path)/sph/laplace/1.off
+off=$(co.path)/sph/laplace/1.off
 make
 
 LAP= he.run ./main $Vr 0.25 1 1 0 \

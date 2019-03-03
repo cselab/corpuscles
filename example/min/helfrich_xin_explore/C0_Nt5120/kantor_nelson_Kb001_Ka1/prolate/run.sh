@@ -7,7 +7,7 @@ DA0D=0
 end=50000
 freq=500
 
-off=$(he.path)/prolate/laplace/Nt5120/prolate_area_Vr
+off=$(co.path)/prolate/laplace/Nt5120/prolate_area_Vr
 
 if test $# -ne 0
 then

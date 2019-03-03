@@ -1,7 +1,7 @@
 include list.mk
 
 install:
-	@path=`he.path`; \
+	@path=`co.path`; \
 	for i in $H; \
 	do he.install "$$i" "$$path"; \
 	done

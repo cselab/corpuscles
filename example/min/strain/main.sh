@@ -4,8 +4,8 @@ set -eu
 
 make
 
-off=$(he.path)/sph/laplace/0.off
-ref=$(he.path)/sph/laplace/0.off
+off=$(co.path)/sph/laplace/0.off
+ref=$(co.path)/sph/laplace/0.off
 
 pi=3.141592653589793115997964
 Vr=0.642

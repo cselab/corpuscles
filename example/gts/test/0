@@ -1,2 +1,2 @@
 # TEST: 0
-he.run ./main < `he.path`/rbc/icosahedron/0.off  > main.out.gts
+he.run ./main < `co.path`/rbc/icosahedron/0.off  > main.out.gts

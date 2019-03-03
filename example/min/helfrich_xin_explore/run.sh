@@ -7,7 +7,7 @@ DA0D=0
 end=20000
 freq=200
 
-off=`he.path`/sph/laplace/Nt1280.off
+off=`co.path`/sph/laplace/Nt1280.off
 
 if test $# -ne 0
 then
