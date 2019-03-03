@@ -8,7 +8,7 @@
 int main() {
     real *x, *y, *z;
     He      *he;
-    int nv, nt, i, n, *ring, status;
+    int nv, nt, i, j, n, *ring, status;
 
     err_set_ignore();
 
@@ -20,6 +20,11 @@ int main() {
         if (status != HE_OK)
             ER("he_ring failed for i = %d", i);
         printf("%d %d\n", i, n);
+        for (j = 0; j < n; j++) {
+            fputs(j == 0 ? ": " : " ", stdout);
+            printf("%d", ring[j]);
+        }
+        printf("\n");
     }
     return y_fin(he, x, y, z);
 }
