@@ -31,7 +31,6 @@ bin/align\
 bin/cmoment\
 bin/orient
 
-
 install: show  dir
 test: dir
 clean: dir

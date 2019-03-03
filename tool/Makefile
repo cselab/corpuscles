@@ -1,6 +1,5 @@
-include ../conf.mk
-
 S = ..
+include $S/conf.mk
 
 B = $(PREFIX)/bin
 P = he
