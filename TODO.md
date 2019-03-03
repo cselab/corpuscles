@@ -3,6 +3,8 @@
 - Change scripts
 
     he. -> co.
+	
+- HE_LDFLAGS, HE_CFLAGS
 
 - I make files
   `P = he -> `P = co`

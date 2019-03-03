@@ -2,8 +2,8 @@ include ../../conf.mk
 
 M = main
 PREC = d
-HE_CFLAGS = -Wall -Wextra -O2 -g `he.conf --cflags $(PREC)`
-HE_LDFLAGS = `he.conf --libs $(PREC)`
+HE_CFLAGS = -Wall -Wextra -O2 -g `co.conf --cflags $(PREC)`
+HE_LDFLAGS = `co.conf --libs $(PREC)`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
