@@ -1,4 +1,4 @@
-load("he/vec.mac");
+load("co/vec.mac");
 
 depends(['x, 'y, 'z], ['u, 'v]);
 

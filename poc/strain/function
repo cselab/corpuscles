@@ -13,7 +13,7 @@ BEGIN {
     WIDTH = 60; TAB = 4; TYPE = "real"
 
     inc =       FILE ".inc"
-    hdr = "he/" FILE ".h"
+    hdr = "co/" FILE ".h"
     STREAM = inc; main();                      close(STREAM)
     STREAM = hdr; decl(); cprint("%s\n", ";"); close(STREAM)
 }

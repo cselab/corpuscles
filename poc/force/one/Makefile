@@ -28,11 +28,11 @@ diff: all
 	diff gompper_xin.c ref.c
 
 install: all
-	cp area_voronoi.h $S/lib/he/f
+	cp area_voronoi.h $S/lib/co/f
 	cp area_voronoi.c $S/lib/f
-	cp garea_voronoi.h $S/lib/he/f
+	cp garea_voronoi.h $S/lib/co/f
 	cp garea_voronoi.c $S/lib/f
-	cp volume_normal.h $S/lib/he/f
+	cp volume_normal.h $S/lib/co/f
 	cp volume_normal.c $S/lib/f
 
 clean:; rm -f $M
