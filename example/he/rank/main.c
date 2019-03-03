@@ -22,7 +22,7 @@ int main() {
             rank[i] = 0;
         else  {
             status = he_ring(he, i, &n, &ring);
-            if (status != HE_OK)
+            if (status != CO_OK)
                 ER("he_ring failed for i = %d", i);
             rank[i] = n;
         }

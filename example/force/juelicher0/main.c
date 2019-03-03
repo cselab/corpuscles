@@ -14,7 +14,7 @@
 #include <co/util.h>
 #include <co/x.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 static real K, C0, Kad;
 static real *FX, *FY, *FZ;
@@ -36,7 +36,7 @@ int scl(/**/ real *p) {
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();

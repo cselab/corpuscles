@@ -30,7 +30,7 @@ static int write() {
         color[i] = i;
     ply_vtk_bin(read, stdout, NULL, color);
     FREE(color);
-    return HE_OK;
+    return CO_OK;
 }
 
 int main(__UNUSED int c, const char **v) {

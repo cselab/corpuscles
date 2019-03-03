@@ -14,7 +14,7 @@
 #include <co/macro.h>
 #include <co/vec.h>
 #include <co/vtk.h>
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 static const char **argv;
 static char name[4048];
@@ -45,7 +45,7 @@ static int scl(/**/ real *p) {
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int num(/**/ int *p) {
     if (*argv == NULL) {
@@ -55,7 +55,7 @@ static int num(/**/ int *p) {
     if (sscanf(*argv, "%d", p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int str(/**/ char *p) {
     if (*argv == NULL) {
@@ -64,7 +64,7 @@ static int str(/**/ char *p) {
     }
     strncpy(p, *argv, 4048);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int arg() {
     if (*argv != NULL && eq(*argv, "-h")) {
@@ -77,7 +77,7 @@ static int arg() {
     num(&every);
     if (every < 1)
       ER("every < 1");
-    return HE_OK;
+    return CO_OK;
 }
 
 static int diff(int id, /**/ real f[3]) {
@@ -87,7 +87,7 @@ static int diff(int id, /**/ real f[3]) {
     tmp = xx[id]; xx[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[X] = (eh - e)/h; xx[id] = tmp;
     tmp = yy[id]; yy[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Y] = (eh - e)/h; yy[id] = tmp;
     tmp = zz[id]; zz[id] += h; eh = bending_energy(bending, he, xx, yy, zz); f[Z] = (eh - e)/h; zz[id] = tmp;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void main0() {

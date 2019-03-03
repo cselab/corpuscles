@@ -27,5 +27,5 @@ void fin() {
 int main() {
     ini();
     fin();
-    return HE_OK;
+    return CO_OK;
 }

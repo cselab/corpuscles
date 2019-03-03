@@ -31,15 +31,15 @@ static int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
     strncpy(p, *argv, 4048);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
-    if (sscanf(*argv, HE_REAL_IN, p) != 1)
+    if (sscanf(*argv, CO_REAL_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static real mean(int n, real *x) {
@@ -49,7 +49,7 @@ static real mean(int n, real *x) {
 static void main0() {
     real en;
     en = he_f_wlc_energy(force, he0, x, y, z);
-    printf(HE_REAL_OUT "\n", en);
+    printf(CO_REAL_OUT "\n", en);
 }
 
 int main(int __UNUSED argc, const char *v[]) {

@@ -26,7 +26,7 @@ static int num(/**/ int *p) {
     if (sscanf(*argv, "%d", p) != 1)
         ER("not an integer '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void ini() {
@@ -47,7 +47,7 @@ static int write() {
     ply_z(read, m, &z);
 
     off_he_xyz_fwrite(he, x, y, z, stdout);
-    return HE_OK;
+    return CO_OK;
 }
 
 int main(__UNUSED int c, const char **v) {

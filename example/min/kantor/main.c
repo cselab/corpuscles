@@ -14,7 +14,7 @@
 #include <alg/x.h>
 #include <alg/min.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 static real rVolume, Ka, Kga, Kv, Ke, Kb;
 static real A0, V0;
@@ -36,7 +36,7 @@ static int f_bending_ini(const char *bending, real K) {
         f_gompper_ini(K, C0, Kad, DA0D);
     } else
         ER("unknown bending type: %s", bending);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int f_bending_fin() {
@@ -76,13 +76,13 @@ int scl(/**/ real *p) {
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
     strncpy(p, *argv, 4048);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();

@@ -42,13 +42,13 @@ static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
         b[i] += a[i];
-    return HE_OK;
+    return CO_OK;
 }
 static int scale(real sc, int n, /*io*/ real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] *= sc;
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_%name%_ini(real A0, real K, He *he, T **pq) {
@@ -67,7 +67,7 @@ int he_f_%name%_ini(real A0, real K, He *he, T **pq) {
     da_ini(he, &q->da);
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 #   undef S
 #   undef M
 }
@@ -77,7 +77,7 @@ int he_f_%name%_fin(T *q) {
     da_fin(q->da);
     //%free
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 #   undef F
 }
 
@@ -135,7 +135,7 @@ int he_f_%name%_force(T *q, He *he,
     scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
 
-    return HE_OK;
+    return CO_OK;
 #   undef A
 #   undef S
 }

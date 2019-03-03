@@ -13,7 +13,7 @@
 #include <co/dih.h>
 #include <co/ddih.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 static const char **argv;
 static const real h = 1e-6;
 
@@ -27,10 +27,10 @@ int print3(const real a[3], const real b[3], const real c[3]) {
     enum {X, Y, Z};
     printf("%.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g %.16g\n",
            a[X], a[Y], a[Z], b[X], b[Y], b[Z], c[X], c[Y], c[Z]);
-    return HE_OK;
+    return CO_OK;
 }
 
-int vec(/**/ real a[3]) { vec_argv(&argv, a); return HE_OK; }
+int vec(/**/ real a[3]) { vec_argv(&argv, a); return CO_OK; }
 int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **argv0) {
     const char *op;

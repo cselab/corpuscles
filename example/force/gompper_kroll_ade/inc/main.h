@@ -87,5 +87,5 @@ int main() {
     ini("/dev/stdin");
     gompper_kroll_ext();
     fin();
-    return HE_OK;
+    return CO_OK;
 }

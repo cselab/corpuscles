@@ -16,7 +16,7 @@
 
 #include <co/y.h>
 
-#define FMT   HE_REAL_OUT
+#define FMT   CO_REAL_OUT
 
 static const char *me = "co.q";
 static void usg(void) {
@@ -36,7 +36,7 @@ static int divide(int n, const real *a, const real *b, /**/ real *c) {
     int i;
     for (i = 0; i < n; i ++)
         c[i] = a[i] / b[i];
-    return HE_OK;
+    return CO_OK;
 }
 
 static int ver(const real *a) {
@@ -69,7 +69,7 @@ static int q_area(void) {
     he_area_tri(he, x, y, z, a);
     tri(a);
     FREE(a);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int q_bending(void) {
@@ -92,7 +92,7 @@ static int q_bending(void) {
 
     bending_fin(b);
     FREE(deng);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int q_al(void) {
@@ -105,7 +105,7 @@ static int q_al(void) {
     invariants_al(invariants, x, y, z, &i);
     tri(i);
     invariants_fin(invariants);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int q_be(void) {
@@ -118,7 +118,7 @@ static int q_be(void) {
     invariants_be(invariants, x, y, z, &i);
     tri(i);
     invariants_fin(invariants);
-    return HE_OK;
+    return CO_OK;
 }
 
 static const char *Name[] = {"x", "y", "z", "area", "bending", "al", "be"};
@@ -127,7 +127,7 @@ static int (*Func[])(void) = {q_x, q_y, q_z, q_area, q_bending, q_al, q_be};
 int eputs(const char *s) {
     fputs(s, stderr);
     fputs("\n", stderr);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int nxt(const char *b) {

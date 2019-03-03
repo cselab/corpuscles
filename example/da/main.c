@@ -51,5 +51,5 @@ int main() {
     da_fin(da);
     FREE(fx); FREE(fy); FREE(fz); FREE(ff); FREE(rr);
     y_fin(he, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

@@ -17,7 +17,7 @@ int main() {
     for (i = 0; i < nv; i++) {
         if (he_bnd_ver(he, i)) continue;
         status = he_ring(he, i, &n, &ring);
-        if (status != HE_OK)
+        if (status != CO_OK)
             ER("he_ring failed for i = %d", i);
         printf("%d %d\n", i, n);
         for (j = 0; j < n; j++) {

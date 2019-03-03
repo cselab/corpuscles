@@ -34,5 +34,5 @@ int main() {
 
     dnormal_fin(dnormal);
     y_fin(he, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

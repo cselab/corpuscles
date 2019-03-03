@@ -16,7 +16,7 @@ int main(__UNUSED int argc, const char *argv[]) {
     const char *i, *o;
     int n;
     if (argv[1] == NULL)
-        ERR(HE_IO, "needs FILE.in");
+        ERR(CO_IO, "needs FILE.in");
     i = argv[1]; argv++;
 
     o = NULL;

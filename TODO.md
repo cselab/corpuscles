@@ -4,7 +4,7 @@
 
     co. -> co.
 	
-- HE_LDFLAGS, HE_CFLAGS
+- CO_LDFLAGS, CO_CFLAGS
 
 - I make files
   `P = he -> `P = co`

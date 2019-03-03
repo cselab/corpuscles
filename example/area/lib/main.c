@@ -23,7 +23,7 @@ int main() {
     A = he_area(he, x, y, z);
     he_area_tri(he, x, y, z, /**/ area);
 
-    MSG("area: " HE_REAL_OUT, A);
+    MSG("area: " CO_REAL_OUT, A);
 
     const real *queue[] = {area, NULL};
     puts("area");
@@ -31,5 +31,5 @@ int main() {
 
     FREE(area);
     y_fin(he, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

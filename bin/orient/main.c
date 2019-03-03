@@ -43,7 +43,7 @@ int main(__UNUSED int c, const char **v) {
         usg();
     f = (*v == NULL) ? stream : *v;
 
-    if (y_ini(f, &he, &x, &y, &z) != HE_OK) {
+    if (y_ini(f, &he, &x, &y, &z) != CO_OK) {
         fprintf(stderr, "%s: fail to open '%s'", me, f);
         exit(1);
     }

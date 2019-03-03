@@ -35,13 +35,13 @@ static int axypz(int n, real a, const real *x, const real *y,
     int i;
     for (i = 0; i < n; i++)
         z[i] += a*x[i]*y[i];
-    return HE_OK;
+    return CO_OK;
 }
 static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
         b[i] += a[i];
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_%name%_ini(real v0, real K, He *he, T **pq) {
@@ -60,7 +60,7 @@ int he_f_%name%_ini(real v0, real K, He *he, T **pq) {
     dh_ini(he, &q->dh);
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 #   undef S
 #   undef M
 }
@@ -70,7 +70,7 @@ int he_f_%name%_fin(T *q) {
     dh_fin(q->dh);
     //%free
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 #   undef F
 }
 
@@ -119,7 +119,7 @@ int he_f_%name%_force(T *q, He *he,
     axypz(nv, C, area, ny, fy);
     axypz(nv, C, area, nz, fz);
 
-    return HE_OK;
+    return CO_OK;
 #   undef A
 #   undef S
 }

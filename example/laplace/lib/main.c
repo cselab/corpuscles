@@ -38,5 +38,5 @@ int main() {
 
     laplace_fin(laplace);
     y_fin(he, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

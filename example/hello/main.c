@@ -3,7 +3,7 @@
 #include <real.h>
 #include <co/tri.h>
 
-#define FMT HE_REAL_OUT
+#define FMT CO_REAL_OUT
 
 int main(void) {
     enum {X, Y, Z};

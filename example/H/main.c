@@ -44,7 +44,7 @@ static int fd(int i, /**/ real v[3]) {
     v[X] = fd0(&x[i]);
     v[Y] = fd0(&y[i]);
     v[Z] = fd0(&z[i]);
-    return HE_OK;
+    return CO_OK;
 }
 
 int main() {
@@ -82,5 +82,5 @@ int main() {
 
     H_fin(h);
     y_fin(he, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

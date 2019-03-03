@@ -35,5 +35,5 @@ int main() {
 
     FREE(nx); FREE(ny); FREE(nz);
     y_fin(he, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

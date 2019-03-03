@@ -5,13 +5,13 @@ prog=co.run
 : ${VALGRIND=valgrind}
 : ${TIME=time}
 : ${GDB_EXEC=gdb}
-: ${HE_ARG=}
+: ${CO_ARG=}
 
 : ${host=falcon}
 
 usg () {
     msg "$prog 'prog' [args ...]"
-    msg 'environment variable HE_ARG is  used as an argument to bsub'
+    msg 'environment variable CO_ARG is  used as an argument to bsub'
     exit
 }
 
@@ -42,7 +42,7 @@ else
     if test $host = euler
     then
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
-	e bsub $HE_ARG "$@"
+	e bsub $CO_ARG "$@"
     else
 	e "$@"
     fi

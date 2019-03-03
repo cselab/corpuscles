@@ -73,7 +73,7 @@ function body(   l, tab) {
     while (getline l < BODY > 0)
 	cprint(tab "%s\n", l)
     cprint("%s", "\n")
-    cprint(tab "%s\n", "return HE_OK;")
+    cprint(tab "%s\n", "return CO_OK;")
     close(BODY)
 }
 

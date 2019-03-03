@@ -56,7 +56,7 @@ static int fp(const double q[], const double p[], double f[]) {
 
     f[X] = dx; f[Y] = dy; f[Z] = dz;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 static int fq(const double q[], double f[]) {
@@ -73,7 +73,7 @@ static int fq(const double q[], double f[]) {
 
     f[X] = dx; f[Y] = dy; f[Z] = dz;
 
-    return HE_OK;
+    return CO_OK;
 }
 
 static int f(__UNUSED double t, const double Q[], double dQ[], __UNUSED void *vparam) {
@@ -139,5 +139,5 @@ static int print(FILE *f, const char *fmt) {
     la = eigen(q0, p0);
 
     fprintf(f, " %.16e %.16e %.16e %.16e", v[X], v[Y], v[Z], la);
-    return HE_OK;
+    return CO_OK;
 }

@@ -39,7 +39,7 @@ b2=0
 off=$(co.path)/sph/laplace/Nt1280.off
 ref=$(co.path)/sph/laplace/Nt1280.off
 
-export HE_ARG="-W 24:00"
+export CO_ARG="-W 24:00"
 
 if test $# -ne 0
 then

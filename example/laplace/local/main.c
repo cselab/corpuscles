@@ -116,5 +116,5 @@ int main() {
     ini("/dev/stdin");
     main0();
     fin();
-    return HE_OK;
+    return CO_OK;
 }

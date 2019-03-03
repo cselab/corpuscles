@@ -12,7 +12,7 @@
 #include <co/dih.h>
 #include <co/ddih.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 static const char **argv;
 static const real h = 1e-6;
 static real a[2], b[2], c[2];
@@ -27,7 +27,7 @@ static real F2(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { retur
 static int print2(const real a[2], const real u[2], const real p[2], const real q[2]) {
     enum {X, Y};
     printf("%.16g %.16g %.16g %.16g %.16g %.16g\n", a[X] + u[X], a[Y] + u[Y], p[X], p[Y], q[X], q[Y]);
-    return HE_OK;
+    return CO_OK;
 }
 
 static real energy() {
@@ -56,13 +56,13 @@ static int scl(/**/ real *p) {
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int vec2(/**/ real v[2]) {
     scl(&v[X]);
     scl(&v[Y]);
-    return HE_OK;
+    return CO_OK;
 }
 
 static real fd0(real *p) {
@@ -78,7 +78,7 @@ static int fd(real dv[2], real du[2], real dw[2]) {
     dv[X] = fd0(&v[X]); dv[Y] = fd0(&v[Y]);
     du[X] = fd0(&u[X]); du[Y] = fd0(&u[Y]);
     dw[X] = fd0(&w[X]); dw[Y] = fd0(&w[Y]);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }

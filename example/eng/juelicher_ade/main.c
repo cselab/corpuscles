@@ -162,5 +162,5 @@ int main() {
   ini("/dev/stdin");
   energy_juelicher_ext();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

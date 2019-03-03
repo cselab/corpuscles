@@ -20,7 +20,7 @@ int main(__UNUSED int argc, char **argv) {
 
     printf("s = %s\n", s);
     printf("i = %d\n", i);
-    printf("x = " HE_REAL_OUT "\n", x);
+    printf("x = " CO_REAL_OUT "\n", x);
 
-    return HE_OK;
+    return CO_OK;
 }

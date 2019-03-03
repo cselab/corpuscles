@@ -23,7 +23,7 @@ static int Energy(real s[3]) {
     s[X] = he_sum_array(n, nx);
     s[Y] = he_sum_array(n, ny);
     s[Z] = he_sum_array(n, nz);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int fd0(real *p, /**/ real f[3]) {
@@ -35,7 +35,7 @@ static int fd0(real *p, /**/ real f[3]) {
     f[X] = (hi[X] - lo[X])/(2*h);
     f[Y] = (hi[Y] - lo[Y])/(2*h);
     f[Z] = (hi[Z] - lo[Z])/(2*h);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int fd(int i, /**/ Ten *t) {
@@ -44,7 +44,7 @@ static int fd(int i, /**/ Ten *t) {
     fd0(&y[i], cy);
     fd0(&z[i], cz);
     ten_col_ini(cx, cy, cz, /**/ t);
-    return HE_OK;
+    return CO_OK;
 }
 
 int main() {
@@ -83,5 +83,5 @@ int main() {
     FREE(trace); FREE(determinant);
     FREE(r);
     y_fin(he, x, y, z);
-    return HE_OK;
+    return CO_OK;
 }

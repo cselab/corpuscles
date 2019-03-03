@@ -24,7 +24,7 @@ static int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
     strncpy(p, *argv, 4048);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void main0() {

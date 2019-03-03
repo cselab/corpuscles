@@ -17,7 +17,7 @@
 #include <co/fd.h>
 #include <co/y.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 static const char **argv;
 

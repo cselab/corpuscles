@@ -49,7 +49,7 @@ $ cat main.c
 #include <real.h>
 #include <co/tri.h>
 
-#define FMT HE_REAL_OUT
+#define FMT CO_REAL_OUT
 
 int main(void) {
     enum {X, Y, Z};
@@ -69,11 +69,11 @@ int main(void) {
 $ cat Makefile
 include ../../conf.mk
 PREC = d
-HE_CFLAGS = `co.conf --cflags $(PREC)`
-HE_LDFLAGS = `co.conf --libs $(PREC)`
+CO_CFLAGS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 main: main.c
-	$(CC) main.c $(CFLAGS) $(HE_CFLAGS) $(LDFLAGS) $(HE_LDFLAGS) -o main
+	$(CC) main.c $(CFLAGS) $(CO_CFLAGS) $(LDFLAGS) $(CO_LDFLAGS) -o main
 test:
 install:
 
@@ -96,7 +96,7 @@ $ cat main.c
 #include <co/he.h>
 #include <co/y.h>
 
-#define FMT HE_REAL_OUT
+#define FMT CO_REAL_OUT
 
 int main(void) {
     real *x, *y, *z;

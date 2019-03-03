@@ -26,7 +26,7 @@ static int num(/**/ int *p) {
     if (sscanf(*argv, "%d", p) != 1)
         ER("not an integer '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void ini() {
@@ -42,7 +42,7 @@ static int write() {
         ban[i] = (i == m);
     ply_fwrite(read, stdout, ban);
     FREE(ban);
-    return HE_OK;
+    return CO_OK;
 }
 
 int main(__UNUSED int c, const char **v) {

@@ -25,7 +25,7 @@
 #include <co/x.h>
 #include <co/force.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 #define DT_ADPTIVE
 //#define THERMOSTAT_LANGEVIN
@@ -71,7 +71,7 @@ static int mkdir0(const char *path) {
     rc = system(cmd);
     if (rc != 0)
         ER("fail to create directory '%s'\n", path);
-    return HE_OK;
+    return CO_OK;
 }
 
 static char *fullpath(const char *path) {
@@ -93,7 +93,7 @@ static int num(/**/ int *p) {
   if (sscanf(*argv, "%d", p) != 1)
     ER("not a number '%s'", *argv);
   argv++;
-  return HE_OK;
+  return CO_OK;
 }
 
 static int scl(/**/ real *p) {
@@ -269,7 +269,7 @@ static int diff(int i, int j, const real *x, const real *y, const real *z, /**/ 
     vec_get(i, x, y, z, a);
     vec_get(j, x, y, z, b);
     vec_minus(a, b, e);
-    return HE_OK;
+    return CO_OK;
 }
 
 static void visc_pair(real xi, 

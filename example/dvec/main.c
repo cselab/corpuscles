@@ -10,7 +10,7 @@
 #include <co/macro.h>
 #include <co/util.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 static const char **argv;
 
 static void vec(/**/ real a[3]) { vec_argv(&argv, a); }

@@ -13,7 +13,7 @@
 #include <co/argv.h>
 #include <co/y.h>
 
-#define FMT   HE_REAL_OUT
+#define FMT   CO_REAL_OUT
 static int nv;
 static He *he;
 static real *x, *y, *z;

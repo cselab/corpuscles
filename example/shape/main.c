@@ -25,6 +25,6 @@ int main() {
   
   fin();
   
-  return HE_OK;
+  return CO_OK;
   
 }

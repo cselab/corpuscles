@@ -32,15 +32,15 @@ static int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
     strncpy(p, *argv, 4048);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
-    if (sscanf(*argv, HE_REAL_IN, p) != 1)
+    if (sscanf(*argv, CO_REAL_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static void main0() {
@@ -53,7 +53,7 @@ static void main0() {
 
     en = he_f_harmonic_ref_energy(force, he0, x, y, z);
     he_f_harmonic_ref_force(force, he0, x, y, z, /**/ fx, fy, fz);
-    printf(HE_REAL_OUT "\n", en);
+    printf(CO_REAL_OUT "\n", en);
 
     char *key = "x y z fm fx fy fz";
     const real *queue[] = {x, y, z, fx, fy, fz, NULL};

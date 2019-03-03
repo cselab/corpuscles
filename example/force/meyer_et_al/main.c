@@ -328,5 +328,5 @@ int main() {
   ini("/dev/stdin");
   force_meyer_et_al();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

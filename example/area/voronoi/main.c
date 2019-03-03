@@ -86,5 +86,5 @@ int main() {
     main1();
     main2();
     fin();
-    return HE_OK;
+    return CO_OK;
 }

@@ -41,5 +41,5 @@ static int print(FILE *f, const char *fmt) {
         if (fprintf(f, fmt, q[i]) < 0)
             ER("failt to print");
     }
-    return HE_OK;
+    return CO_OK;
 }

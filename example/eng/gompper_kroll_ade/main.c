@@ -237,5 +237,5 @@ int main() {
   ini("/dev/stdin");
   energy_gompper_kroll();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

@@ -65,5 +65,5 @@ int main() {
 
     fin();
     MSG("ok");
-    return(HE_OK);
+    return(CO_OK);
 }

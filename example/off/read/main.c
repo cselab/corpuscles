@@ -6,7 +6,7 @@
 #include <co/he.h>
 #include <co/y.h>
 
-#define FMT HE_REAL_OUT
+#define FMT CO_REAL_OUT
 
 int main(void) {
     real *x, *y, *z;

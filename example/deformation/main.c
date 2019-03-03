@@ -13,12 +13,12 @@
 #include <co/dih.h>
 #include <co/ddih.h>
 
-#define FMT_IN   HE_REAL_IN
-#define FMT_OUT  HE_REAL_OUT
+#define FMT_IN   CO_REAL_IN
+#define FMT_OUT  CO_REAL_OUT
 
 static const char **argv;
 
-int vec(/**/ real a[3]) { vec_argv(&argv, a); return HE_OK; }
+int vec(/**/ real a[3]) { vec_argv(&argv, a); return CO_OK; }
 
 static real  F_I1(__UNUSED void *param, real I1, __UNUSED real I2) { return I1; }
 static real  F_I2(__UNUSED void *param, __UNUSED  real I1, real I2) { return I2; }

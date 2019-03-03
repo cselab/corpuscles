@@ -20,7 +20,7 @@
 #include <co/bending.h>
 #include <co/x.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 static const real pi = 3.141592653589793115997964;
 static const real tolerA = 1.0e-2;
@@ -50,7 +50,7 @@ static int mkdir0(const char *path) {
     rc = system(cmd);
     if (rc != 0)
         ER("fail to create directory '%s'\n", path);
-    return HE_OK;
+    return CO_OK;
 }
 
 static char *fullpath(const char *path) {
@@ -76,20 +76,20 @@ static int num(/**/ int *p) {
     if (sscanf(*argv, "%d", p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
     strncpy(p, *argv, 4048);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
@@ -163,7 +163,7 @@ static int diff(int i, int j, const real *x, const real *y, const real *z, /**/ 
     vec_get(i, x, y, z, a);
     vec_get(j, x, y, z, b);
     vec_minus(a, b, e);
-    return HE_OK;
+    return CO_OK;
 }
 
 static void visc_pair(real mu,
@@ -204,21 +204,21 @@ static int equiangulate0(void) {
             MSG("cnt : %d", cnt);
         j++;
     } while (cnt > 0 && j < 10);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int filter0(real *vx, real *vy, real *vz) {
     x_filter_apply(XX, YY, ZZ, vx);
     x_filter_apply(XX, YY, ZZ, vy);
     x_filter_apply(XX, YY, ZZ, vz);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int filter(real *vx, real *vy, real *vz) {
     int i;
     for (i = 0; i < 10; i++)
         filter0(vx, vy, vz);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int main0(real *vx, real *vy, real *vz,
@@ -281,7 +281,7 @@ static int main0(real *vx, real *vy, real *vz,
             off_write(XX, YY, ZZ, fullpath(file));
         }
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static real sph_volume(real area) { return 0.09403159725795977*pow(area, 1.5); }

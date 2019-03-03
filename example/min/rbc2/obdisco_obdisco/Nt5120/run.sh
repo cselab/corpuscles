@@ -32,7 +32,7 @@ b2=0.75
 off=../ref/v095.off
 ref=../ref/v095.off
 
-export HE_ARG="-W 24:00"
+export CO_ARG="-W 24:00"
 
 if test $# -ne 0
 then

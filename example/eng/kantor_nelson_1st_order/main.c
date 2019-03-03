@@ -133,5 +133,5 @@ int main() {
   ini("/dev/stdin");
   energy_kantor_nelson();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

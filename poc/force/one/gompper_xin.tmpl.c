@@ -74,21 +74,21 @@ static int plus(int n, const real *a, /*io*/ real *b) {
     int i;
     for (i = 0; i < n; i++)
         b[i] += a[i];
-    return HE_OK;
+    return CO_OK;
 }
 static int scale(real sc, int n, /*io*/ real *a) {
     int i;
     for (i = 0; i < n; i++)
         a[i] *= sc;
-    return HE_OK;
+    return CO_OK;
 }
 static int div(int n, const real *a, const real *b, /*io*/ real *c) {
     int i;
     for (i = 0; i < n; i++) {
-        if (b[i] == 0) ERR(HE_NUM, "b[%d] == 0", i);
+        if (b[i] == 0) ERR(CO_NUM, "b[%d] == 0", i);
         c[i] = a[i]/b[i];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 int he_f_%name%_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
@@ -107,7 +107,7 @@ int he_f_%name%_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) {
     dh_ini(he, &q->dh);
 
     *pq = q;
-    return HE_OK;
+    return CO_OK;
 #   undef S
 #   undef M
 }
@@ -117,7 +117,7 @@ int he_f_%name%_fin(T *q) {
     dh_fin(q->dh);
     //%free
     FREE(q);
-    return HE_OK;
+    return CO_OK;
 #   undef F
 }
 
@@ -128,7 +128,7 @@ static int compute_energy(real H0, int n,
     for (i = 0; i < n; i++) {
         energy[i] = area[i]*e_local(H0, area[i], h[i]);
     }
-    return HE_OK;
+    return CO_OK;
 }
 real he_f_%name%_energy(T *q, He *he,
                              const real *x, const real *y, const real *z) {
@@ -212,7 +212,7 @@ int he_f_%name%_force(T *q, He *he,
     scale(C, nv, gx); scale(C, nv, gy); scale(C, nv, gz);
     plus(nv, gx, hx); plus(nv, gy, hy); plus(nv, gz, hz);
 
-    return HE_OK;
+    return CO_OK;
 
 #   undef A
 #   undef S

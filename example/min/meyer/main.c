@@ -32,7 +32,7 @@
 #include <co/vtk.h>
 #include <co/y.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 static const real pi = 3.141592653589793115997964;
 static const real tolerA = 1;
@@ -82,14 +82,14 @@ static int num(/**/ int *p) {
     if (sscanf(*argv, "%d", p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();
@@ -191,14 +191,14 @@ static int filter0() {
     filter_apply(filter, he, XX, YY, ZZ, vx);
     filter_apply(filter, he, XX, YY, ZZ, vy);
     filter_apply(filter, he, XX, YY, ZZ, vz);
-    return HE_OK;
+    return CO_OK;
 }
 
 static int step(real dt) {
     euler(-dt, vx, vy, vz, /**/ XX, YY, ZZ);
     euler( dt, fx, fy, fz, /**/ vx, vy, vz);
     filter0();
-    return HE_OK;
+    return CO_OK;
 }
 
 static void main0() {

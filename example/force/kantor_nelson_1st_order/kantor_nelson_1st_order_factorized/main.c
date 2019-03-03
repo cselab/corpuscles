@@ -213,5 +213,5 @@ int main() {
   ini("/dev/stdin");
   force_kantor_nelson();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

@@ -139,5 +139,5 @@ int main() {
   ini("/dev/stdin");
   energy_juelicher();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

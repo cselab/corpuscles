@@ -38,5 +38,5 @@ int main() {
     off_fin(off);
     he_fin(he);
 
-    return HE_OK;
+    return CO_OK;
 }

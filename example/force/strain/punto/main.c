@@ -44,7 +44,7 @@ int main0() {
 
     he_f_strain_fin(strain);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int main(int __UNUSED argc, char *v[]) {

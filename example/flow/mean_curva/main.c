@@ -24,7 +24,7 @@ int dump(void) {
     char name[4048];
     snprintf(name, sizeof(name) - 1, "%05d.off", i++);
     off_he_xyz_write(he, x, y, z, name);
-    return HE_OK;
+    return CO_OK;
 }
 
 int euler(real dt, const real *fx, const real *fy, const real *fz,
@@ -33,7 +33,7 @@ int euler(real dt, const real *fx, const real *fy, const real *fz,
     for (i = 0; i < nv; i++) {
         x[i] += dt*fx[i]; y[i] += dt*fy[i]; z[i] += dt*fz[i];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 

@@ -53,7 +53,7 @@ static int invert(const Ten *t, int n, real *x, real *y, real *z) {
         ten_vec(t, v, u);
         vec_set(u, i, x, y, z);
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int push(void) {
@@ -63,7 +63,7 @@ static int push(void) {
         yb[i] = b.y[i];
         zb[i] = b.z[i];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static int pop(void) {
@@ -73,7 +73,7 @@ static int pop(void) {
         b.y[i] = yb[i];
         b.z[i] = zb[i];
     }
-    return HE_OK;
+    return CO_OK;
 }
 
 static real sq(real x) { return x*x; };
@@ -112,7 +112,7 @@ static int str(/**/ char *p) {
         ER("not enough arguments");
     strncpy(p, *argv, 4047);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 
 static int arg() {

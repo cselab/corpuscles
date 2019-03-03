@@ -337,5 +337,5 @@ int main() {
   ini("/dev/stdin");
   force_juelicher();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

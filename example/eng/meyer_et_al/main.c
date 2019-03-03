@@ -448,5 +448,5 @@ int main() {
   energy_meyer_et_al1();
   energy_meyer_et_al2();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

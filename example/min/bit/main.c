@@ -33,7 +33,7 @@ static void zero(int n, real *a) {
 }
 
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 
 static real rVolume, Ka, Kga, Kv, Ke;
 static int end;
@@ -60,7 +60,7 @@ static int copy(int n, real *a, real *b) {
     int i;
     for (i = 0; i < n; i++)
         b[i] = a[i];
-    return HE_OK;
+    return CO_OK;
 }
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
@@ -72,20 +72,20 @@ static int num(/**/ int *p) {
     if (sscanf(*argv, "%d", p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int scl(/**/ real *p) {
     if (*argv == NULL) ER("not enough args");
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static int str(/**/ char *p) {
     if (*argv == NULL) ER("not enough args");
     strncpy(p, *argv, 4048);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static void arg() {
     if (*argv != NULL && eq(*argv, "-h")) usg();

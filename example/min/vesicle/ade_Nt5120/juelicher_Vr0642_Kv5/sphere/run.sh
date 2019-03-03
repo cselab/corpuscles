@@ -24,7 +24,7 @@ freq=100
 
 off=$(co.path)/sph/laplace/Nt5120.off
 
-export HE_ARG="-W 20:00"
+export CO_ARG="-W 20:00"
 
 if test $# -ne 0
 then

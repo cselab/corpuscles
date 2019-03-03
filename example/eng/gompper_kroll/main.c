@@ -307,5 +307,5 @@ int main() {
   energy_gompper_kroll1();
   energy_gompper_kroll2();
   fin();
-  return HE_OK;
+  return CO_OK;
 }

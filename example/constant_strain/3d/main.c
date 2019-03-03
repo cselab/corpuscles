@@ -14,10 +14,10 @@
 #include <co/dih.h>
 #include <co/ddih.h>
 
-#define FMT_IN   HE_REAL_IN
+#define FMT_IN   CO_REAL_IN
 static const char **argv;
 
-int vec(/**/ real a[3]) { vec_argv(&argv, a); return HE_OK; }
+int vec(/**/ real a[3]) { vec_argv(&argv, a); return CO_OK; }
 
 static real ks = 0, ka = 3;
 static real sq(real x) { return x*x; }

@@ -13,7 +13,7 @@
 #include <co/err.h>
 #include <co/vtk.h>
 
-#define FMT  HE_REAL_OUT
+#define FMT  CO_REAL_OUT
 
 static real *x, *y, *z, *area;
 static int nv;
@@ -31,7 +31,7 @@ int main0() {
 
     vtk_fwrite(he, x, y, z, sc, na, stdout);
 
-    return HE_OK;
+    return CO_OK;
 }
 
 int main(int __UNUSED argc, char *v[]) {

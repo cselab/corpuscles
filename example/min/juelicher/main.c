@@ -18,7 +18,7 @@
 #include <alg/x.h>
 #include <alg/min.h>
 
-#define FMT_IN   (HE_REAL_IN)
+#define FMT_IN   (CO_REAL_IN)
 
 static real *lentheta, *AREA, *curva_mean;
 static real Ka, Kga, Kv, Kb, Ke;
@@ -31,7 +31,7 @@ static int scl(/**/ real *p) {
     if (sscanf(*argv, FMT_IN, p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
-    return HE_OK;
+    return CO_OK;
 }
 static void usg(void) {
     fprintf(stderr, "%s Ka Kga Kv Kb Ke < OFF\n", me);
@@ -271,5 +271,5 @@ int main(int __UNUSED argc, const char *v[]) {
     energy_fin();
     force_fin();
     fin();
-    return HE_OK;
+    return CO_OK;
 }
