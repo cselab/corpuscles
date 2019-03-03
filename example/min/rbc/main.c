@@ -374,8 +374,7 @@ static int main0(real *vx, real *vy, real *vz,
   
   fclose(fm);
   
-  //nsub = 100;
-  nsub = 0;
+  nsub = 100;
   zero(NV, vx); zero(NV, vy); zero(NV, vz);
 
   Force0(XX, YY, ZZ, /**/ fx, fy, fz);
