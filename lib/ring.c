@@ -32,7 +32,7 @@ static int get2(int i, int j,
                 const real *x, const real *y, const real *z,
                 real a[3], real b[3]) {
     vec_get(i, x, y, z, a);
-    vec_get(j, x, y, z, a);
+    vec_get(j, x, y, z, b);
     return CO_OK;
 }
 int ring_alpha(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pang) {
@@ -42,11 +42,10 @@ int ring_alpha(T *q, int i, const int *ring, const real *x, const real *y, const
     ang = q->alpha;
     vec_get(i, x, y, z, a);
     for (s = 0; ring[s] != -1; s++) {
-        p = ring[s + 1];
-        if (p == -1)
-            p = ring[0];
         j = ring[s];
-        k = ring[p];
+        k = ring[s + 1];
+        if (k == -1)
+            k = ring[0];
         get2(j, k, x, y, z, /**/ b, c);
         ang[s] = tri_angle(c, a, b);
     }
@@ -68,7 +67,7 @@ int ring_beta(T *q, int i, const int *ring, const real *x, const real *y, const 
         ERR(CO_NUM, "A == 0");
 
     for (s = 0; ring[s] != -1; s++)
-        ang[s] /= A;
+        ang[s] = alpha[s] / A;
     
     *pang = ang;
     return CO_OK;
@@ -83,7 +82,7 @@ int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const
 
     ang[0] = 0;
     for (s = 1; ring[s] != -1; s++)
-        ang[s] = ang[s - 1];
+        ang[s] = ang[s - 1] + beta[s];
 
     *pang = ang;
     return CO_OK;
