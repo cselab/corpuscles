@@ -5,7 +5,7 @@ r_geomview(
 <<img/rbc/sde/Da-0.358.png>>)dnl
 \
 
-# Intro
+# Introduction
 A C library deal with triangulated surfaces shaped by forces
 and constraints.
 
