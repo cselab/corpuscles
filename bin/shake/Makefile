@@ -1,5 +1,5 @@
-PREFIX = $(HOME)
 S = ../..
+include $S/conf.mk
 
 B = $(PREFIX)/bin
 P = he

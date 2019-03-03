@@ -1,4 +1,4 @@
-PREFIX = $(HOME)
+include ../conf.mk
 TRG = he
 P = he_s.pc he_d.pc he_l.pc
 SED = sed

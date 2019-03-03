@@ -1,7 +1,6 @@
 S = ../..
 include $S/conf.mk
 
-PREFIX = $(HOME)
 B = $(PREFIX)/bin
 P = he
 
