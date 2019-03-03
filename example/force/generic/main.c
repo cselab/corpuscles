@@ -7,7 +7,7 @@
 #include <co/force.h>
 #include <co/punto.h>
 #include <co/area.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/memory.h>
 #include <co/err.h>
 #include <co/util.h>

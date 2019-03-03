@@ -7,7 +7,7 @@
 #include <co/memory.h>
 #include <co/macro.h>
 #include <co/y.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/err.h>
 #include <co/strain.h>
 #include <co/vtk.h>

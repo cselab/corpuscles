@@ -9,7 +9,7 @@
 #include <co/macro.h>
 #include <co/ply.h>
 #include <co/f/harmonic_ref.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/y.h>
 
 static HeFHarmonicRef *force;

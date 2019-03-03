@@ -3,7 +3,7 @@
 
 #include <real.h>
 #include <co/array.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/y.h>
 
 #define FMT HE_REAL_OUT

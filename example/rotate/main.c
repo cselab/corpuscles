@@ -5,7 +5,7 @@
 #include <co/err.h>
 #include <co/off.h>
 #include <co/read.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/macro.h>
 #include <co/equiangulate.h>
 

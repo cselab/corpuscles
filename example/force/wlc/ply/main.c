@@ -9,7 +9,7 @@
 #include <co/macro.h>
 #include <co/ply.h>
 #include <co/f/wlc.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/sum.h>
 #include <co/y.h>
 

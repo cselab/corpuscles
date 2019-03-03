@@ -5,7 +5,7 @@
 #include <co/memory.h>
 #include <co/off.h>
 #include <co/orient.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/y.h>
 
 static int nv;

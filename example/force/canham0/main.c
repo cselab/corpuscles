@@ -7,7 +7,7 @@
 #include <co/punto.h>
 #include <co/memory.h>
 #include <co/f/canham.h>
-#include <co/he.h
+#include <co/he.h>
 
 typedef struct Param Param;
 struct Param { real Kb, C0, Kad, DA0D; };

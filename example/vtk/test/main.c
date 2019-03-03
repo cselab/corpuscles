@@ -6,7 +6,7 @@
 #include <co/vtk.h>
 #include <co/memory.h>
 #include <co/bending.h>
-#include <co/he.h
+#include <co/he.h>
 
 static HeOff *read;
 static Bending *bending;

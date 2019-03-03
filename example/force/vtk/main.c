@@ -8,7 +8,7 @@
 #include <co/argv.h>
 #include <co/err.h>
 #include <co/force.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/util.h>

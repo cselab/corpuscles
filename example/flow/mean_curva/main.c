@@ -7,7 +7,7 @@
 #include <co/bending.h>
 #include <co/memory.h>
 #include <co/err.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/off.h>
 #include <co/restore.h>
 #include <co/y.h>

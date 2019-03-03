@@ -4,7 +4,7 @@
 #include <co/err.h>
 #include <co/off.h>
 #include <co/read.h>
-#include <co/he.h
+#include <co/he.h>
 
 static HeOff *off;
 static HeRead *read;

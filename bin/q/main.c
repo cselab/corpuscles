@@ -9,7 +9,7 @@
 #include <co/invariants.h>
 #include <co/err.h>
 #include <co/off.h>
-#include <co/he.h
+#include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/util.h>
