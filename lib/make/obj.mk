@@ -2,7 +2,7 @@ O = \
 endian.o\
 err.o\
 hash.o\
-co.o\
+he.o\
 memory.o\
 read.o\
 util.o

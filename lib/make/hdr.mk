@@ -41,7 +41,7 @@ co/f/volume_normal.h\
 co/f/wlc.h\
 co/gts.h\
 co/hash.h\
-co/he.h
+co/he.h\
 co/H.h\
 co/invariants.h\
 co/laplace.h\
