@@ -1,7 +1,7 @@
 M = main
 PREC = s
-HE_CFLAGS = -Wall -Wextra -O2 -g `he.conf --cflags $(PREC)`
-HE_LDFLAGS = `he.conf --libs $(PREC)`
+HE_CFLAGS = -Wall -Wextra -O2 -g `co.conf --cflags $(PREC)`
+HE_LDFLAGS = `co.conf --libs $(PREC)`
 
 GSL_CFLAGS  = `gsl-config --cflags`
 GSL_LDFLAGS = `gsl-config --libs`

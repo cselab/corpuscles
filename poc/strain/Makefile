@@ -4,8 +4,8 @@ include $S/conf.mk
 M = strain/2d
 
 PREC = s
-HE_CFLAGS =  `he.conf --cflags $(PREC)`
-HE_LDFLAGS = `he.conf --libs $(PREC)`
+HE_CFLAGS =  `co.conf --cflags $(PREC)`
+HE_LDFLAGS = `co.conf --libs $(PREC)`
 
 $M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) -I. $< -c -o $@
 $M.o: $M.inc he/$M.h
