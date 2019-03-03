@@ -13,7 +13,7 @@ int main() {
     He      *he;
     int nv, nt, i, j, n, s, *rring, status;
     Ring *ring;
-    real *alpha, *beta, *theta, *xyz;
+    real *alpha, *beta, *theta, *xyz, *A;
 
     err_set_ignore();
 
@@ -32,17 +32,29 @@ int main() {
         ring_beta(ring, i, rring, x, y, z, &beta);
         ring_theta(ring, i, rring, x, y, z, &theta);
         ring_xyz(ring, i, rring, x, y, z, &xyz);
+        ring_A(ring, i, rring, x, y, z, &A);
 
         for (s = 0; s < n; s++)
             printf("ang: " FMT " " FMT " " FMT "\n",
                    alpha[s], beta[s], theta[s]);
 
-        for (j = s = 0; s < n; s++) {
+        for (j = s = 0; s < n + 1; s++) {
             printf("xyz: ");
             printf(FMT " ", xyz[j++]);
-            printf(FMT " ",  xyz[j++]);
+            printf(FMT " ", xyz[j++]);
             printf(FMT "\n", xyz[j++]);
         }
+
+        for (j = s = 0; s < n + 1; s++) {
+            printf("A: ");
+            printf(FMT " ", A[j++]);
+            printf(FMT " ", A[j++]);
+            printf(FMT " ", A[j++]);
+            printf(FMT " ", A[j++]);
+            printf(FMT " ", A[j++]);
+            printf(FMT "\n",A[j++]);
+        }
+
     }
 
     ring_fin(ring);

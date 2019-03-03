@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "real.h"
 
@@ -6,11 +7,14 @@
 #include "co/memory.h"
 #include "co/tri.h"
 #include "co/vec.h"
+#include "co/edg.h"
 #include "co/ring.h"
 #include "inc/def.h"
 
 #define T Ring
 #define N (RANK_MAX + 1)
+
+static const real pi = 3.141592653589793115997964;
 
 struct T {
     real alpha[N], beta[N], theta[N];
@@ -67,7 +71,7 @@ int ring_beta(T *q, int i, const int *ring, const real *x, const real *y, const 
         ERR(CO_NUM, "A == 0");
 
     for (s = 0; ring[s] != -1; s++)
-        ang[s] = alpha[s] / A;
+        ang[s] = 2*pi*alpha[s]/A;
     
     *pang = ang;
     return CO_OK;
@@ -100,5 +104,42 @@ int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const r
         xyz[k++] = x[i]; xyz[k++] = y[i]; xyz[k++] = z[i];
     }
     *pxyz = xyz;
+    return CO_OK;
+}
+
+static int B(real u, real v, /**/ real **pa) {
+    real *a;
+    a = *pa;
+    
+    *a++ = 1;
+    *a++ = u;
+    *a++ = v;
+    *a++ = u*u/2;
+    *a++ = u*v;
+    *a++ = v*v/2;
+
+    *pa = a;
+    return CO_OK;
+}
+int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pA) {
+    int s, p, j, k;
+    real u, v;
+    real *A, *theta;
+    real a[3], b[3], r;
+    A = q->A;
+    vec_get(i, x, y, z, a);
+    ring_theta(q, i, ring, x, y, z, &theta);
+
+    u = v = 0;
+    B(u, v, &A);
+    for (s = 0; ring[s] != -1; s++) {
+        j = ring[s];
+        vec_get(j, x, y, z, /**/ b);
+        r = edg_abs(a, b);
+        u = r*cos(theta[s]);
+        v = r*sin(theta[s]);
+        B(u, v, &A);
+    }
+    *pA = q->A;
     return CO_OK;
 }
