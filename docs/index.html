@@ -141,30 +141,29 @@ clean:; rm -f main
 <p>An example is in <a href="example/off/read/">example/off/read</a></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" title="1">$ cat main.c</a>
 <a class="sourceLine" id="cb7-2" title="2"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span></a>
-<a class="sourceLine" id="cb7-4" title="4"></a>
-<a class="sourceLine" id="cb7-5" title="5"><span class="pp">#include </span><span class="im">&lt;real.h&gt;</span></a>
-<a class="sourceLine" id="cb7-6" title="6"><span class="pp">#include </span><span class="im">&lt;co/array.h&gt;</span></a>
-<a class="sourceLine" id="cb7-7" title="7"><span class="pp">#include </span><span class="im">&lt;co/he.h&gt;</span></a>
-<a class="sourceLine" id="cb7-8" title="8"><span class="pp">#include </span><span class="im">&lt;co/y.h&gt;</span></a>
-<a class="sourceLine" id="cb7-9" title="9"></a>
-<a class="sourceLine" id="cb7-10" title="10"><span class="pp">#define FMT CO_REAL_OUT</span></a>
-<a class="sourceLine" id="cb7-11" title="11"></a>
-<a class="sourceLine" id="cb7-12" title="12"><span class="dt">int</span> main(<span class="dt">void</span>) {</a>
-<a class="sourceLine" id="cb7-13" title="13">    real *x, *y, *z;</a>
-<a class="sourceLine" id="cb7-14" title="14">    real hi, lo;</a>
-<a class="sourceLine" id="cb7-15" title="15">    He *he;</a>
-<a class="sourceLine" id="cb7-16" title="16">    <span class="dt">int</span> nv;</a>
-<a class="sourceLine" id="cb7-17" title="17"></a>
-<a class="sourceLine" id="cb7-18" title="18">    y_inif(stdin, &amp;he, &amp;x, &amp;y, &amp;z);</a>
-<a class="sourceLine" id="cb7-19" title="19">    nv = he_nv(he);</a>
-<a class="sourceLine" id="cb7-20" title="20">    hi = array_max(nv, x);</a>
-<a class="sourceLine" id="cb7-21" title="21">    lo = array_min(nv, x);</a>
-<a class="sourceLine" id="cb7-22" title="22"></a>
-<a class="sourceLine" id="cb7-23" title="23">    printf(<span class="st">&quot;number of vertices is %d</span><span class="sc">\n</span><span class="st">&quot;</span>, nv);</a>
-<a class="sourceLine" id="cb7-24" title="24">    printf(FMT <span class="st">&quot; &quot;</span> FMT <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, hi, lo);</a>
-<a class="sourceLine" id="cb7-25" title="25">    y_fin(he, x, y, z);</a>
-<a class="sourceLine" id="cb7-26" title="26">}</a></code></pre></div>
+<a class="sourceLine" id="cb7-3" title="3"></a>
+<a class="sourceLine" id="cb7-4" title="4"><span class="pp">#include </span><span class="im">&lt;real.h&gt;</span></a>
+<a class="sourceLine" id="cb7-5" title="5"><span class="pp">#include </span><span class="im">&lt;co/array.h&gt;</span></a>
+<a class="sourceLine" id="cb7-6" title="6"><span class="pp">#include </span><span class="im">&lt;co/he.h&gt;</span></a>
+<a class="sourceLine" id="cb7-7" title="7"><span class="pp">#include </span><span class="im">&lt;co/y.h&gt;</span></a>
+<a class="sourceLine" id="cb7-8" title="8"></a>
+<a class="sourceLine" id="cb7-9" title="9"><span class="pp">#define FMT CO_REAL_OUT</span></a>
+<a class="sourceLine" id="cb7-10" title="10"></a>
+<a class="sourceLine" id="cb7-11" title="11"><span class="dt">int</span> main(<span class="dt">void</span>) {</a>
+<a class="sourceLine" id="cb7-12" title="12">    real *x, *y, *z;</a>
+<a class="sourceLine" id="cb7-13" title="13">    real hi, lo;</a>
+<a class="sourceLine" id="cb7-14" title="14">    He *he;</a>
+<a class="sourceLine" id="cb7-15" title="15">    <span class="dt">int</span> nv;</a>
+<a class="sourceLine" id="cb7-16" title="16"></a>
+<a class="sourceLine" id="cb7-17" title="17">    y_inif(stdin, &amp;he, &amp;x, &amp;y, &amp;z);</a>
+<a class="sourceLine" id="cb7-18" title="18">    nv = he_nv(he);</a>
+<a class="sourceLine" id="cb7-19" title="19">    hi = array_max(nv, x);</a>
+<a class="sourceLine" id="cb7-20" title="20">    lo = array_min(nv, x);</a>
+<a class="sourceLine" id="cb7-21" title="21"></a>
+<a class="sourceLine" id="cb7-22" title="22">    printf(<span class="st">&quot;number of vertices is %d</span><span class="sc">\n</span><span class="st">&quot;</span>, nv);</a>
+<a class="sourceLine" id="cb7-23" title="23">    printf(FMT <span class="st">&quot; &quot;</span> FMT <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>, hi, lo);</a>
+<a class="sourceLine" id="cb7-24" title="24">    y_fin(he, x, y, z);</a>
+<a class="sourceLine" id="cb7-25" title="25">}</a></code></pre></div>
 <h3 id="write-off-file">write off file</h3>
 <p>Read off, compute area fro every triangle, and output off file with colors (<a href="example/off/write/area/">example/off/write/area</a>)</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb8-1" title="1"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></a>
@@ -177,7 +176,7 @@ clean:; rm -f main
 <a class="sourceLine" id="cb8-8" title="8"><span class="pp">#include </span><span class="im">&lt;co/memory.h&gt;</span></a>
 <a class="sourceLine" id="cb8-9" title="9"><span class="pp">#include </span><span class="im">&lt;co/y.h&gt;</span></a>
 <a class="sourceLine" id="cb8-10" title="10"></a>
-<a class="sourceLine" id="cb8-11" title="11"><span class="dt">int</span> main() {</a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="dt">int</span> main(<span class="dt">void</span>) {</a>
 <a class="sourceLine" id="cb8-12" title="12">    <span class="dt">int</span> nt;</a>
 <a class="sourceLine" id="cb8-13" title="13">    real *x, *y, *z, *a;</a>
 <a class="sourceLine" id="cb8-14" title="14">    He *he;</a>
@@ -188,8 +187,7 @@ clean:; rm -f main
 <a class="sourceLine" id="cb8-19" title="19">    boff_tri_fwrite(he, x, y, z, a, stdout);</a>
 <a class="sourceLine" id="cb8-20" title="20">    y_fin(he, x, y, z);</a>
 <a class="sourceLine" id="cb8-21" title="21">    FREE(a);</a>
-<a class="sourceLine" id="cb8-22" title="22">    <span class="cf">return</span> <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb8-23" title="23">}</a></code></pre></div>
+<a class="sourceLine" id="cb8-22" title="22">}</a></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1"><span class="ex">./main</span> <span class="op">&lt;</span> <span class="va">$(</span><span class="ex">co.path</span><span class="va">)</span>/rbc/laplace/0.off <span class="op">&gt;</span> out.off</a></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1"><span class="ex">co.geomview</span> -r 55.9195 -13.672 8.69021 -f 25.0389 out.off</a></code></pre></div>
 <p><img src="img/area.png" /><br />
@@ -296,9 +294,9 @@ clean:; rm -f main
 <h2 id="half-edg-related">Half-edg related</h2>
 <dl>
 <dt><a href="lib/co/read.h">read.h</a></dt>
-<dd>read half-edg to intermediate structure HeRead, used to initialize <strong>co.h</strong>
+<dd>read half-edg to intermediate structure HeRead, used to initialize half-edg
 </dd>
-<dt><a href="lib/co/co.h">co.h</a></dt>
+<dt><a href="lib/co/he.h">he.h</a></dt>
 <dd>half edg data structure (provides half-edg API)
 </dd>
 <dt><a href="lib/co/hash.h">hash.h</a></dt>
@@ -320,5 +318,9 @@ clean:; rm -f main
 <dd>not so simple interface
 </dd>
 </dl>
+<h1 id="documentation">Documentation</h1>
+<p><a href="docs/index.html">docs/index.html</a> is generated from <a href="README.md.m4">README.md.m4</a>. To update run</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1"><span class="fu">make</span> html</a></code></pre></div>
+<p>requires <a href="http://pandoc.org">pandoc</a>.</p>
 </body>
 </html>

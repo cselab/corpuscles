@@ -91,7 +91,6 @@ An example is in [example/off/read](example/off/read/)
 ```c
 $ cat main.c
 #include <stdio.h>
-#include <stdlib.h>
 
 #include <real.h>
 #include <co/array.h>
@@ -133,7 +132,7 @@ Read off, compute area fro every triangle, and output off file with colors ([exa
 #include <co/memory.h>
 #include <co/y.h>
 
-int main() {
+int main(void) {
     int nt;
     real *x, *y, *z, *a;
     He *he;
@@ -144,7 +143,6 @@ int main() {
     boff_tri_fwrite(he, x, y, z, a, stdout);
     y_fin(he, x, y, z);
     FREE(a);
-    return 0;
 }
 
 ```
@@ -262,10 +260,9 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 ## Half-edg related
 
 [read.h](lib/co/read.h)
-:   read half-edg to intermediate structure HeRead, used to initialize
-	**co.h**
+:   read half-edg to intermediate structure HeRead, used to initialize half-edg
 
-[co.h](lib/co/co.h)
+[he.h](lib/co/he.h)
 :   half edg data structure (provides half-edg API)
 
 [hash.h](lib/co/hash.h)
@@ -283,3 +280,14 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 
 [y.h](lib/co/y.h)
 :   not so simple interface
+
+# Documentation
+
+[docs/index.html](docs/index.html) is generated from
+[README.md.m4](README.md.m4). To update run
+
+``` sh
+make html
+```
+
+requires [pandoc](http://pandoc.org).

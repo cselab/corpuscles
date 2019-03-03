@@ -176,3 +176,14 @@ r_header(x.h)
 
 r_header(y.h)
 :   not so simple interface
+
+# Documentation
+
+[docs/index.html](docs/index.html) is generated from
+[README.md.m4](README.md.m4). To update run
+
+``` sh
+make html
+```
+
+requires [pandoc](http://pandoc.org).
