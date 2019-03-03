@@ -1,2 +1,2 @@
 # TEST: 0
-co.run ./main < $(co.path)/hex/flat.off > co.out.txt
+co.run ./main < $(co.path)/hex/flat.off > he.out.txt

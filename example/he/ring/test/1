@@ -1,2 +1,2 @@
 # TEST: 1
-co.run ./main < $(co.path)/rbc/icosahedron/0.off > co.out.txt
+co.run ./main < $(co.path)/rbc/icosahedron/0.off > he.out.txt
