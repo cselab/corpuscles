@@ -1,4 +1,4 @@
-v#include <stdio.h>
+#include <stdio.h>
 #include <assert.h>
 
 #include "he/err.h"
@@ -372,6 +372,25 @@ int he_D(T *he, int **pD0, int **pD1, int **pD2, int **pD3) {
     }
     *pD0 = D0; *pD1 = D1; *pD2 = D2; *pD3 = D3;
     return HE_OK;
+}
+
+int he_bnd_ver(T *he, int v) {
+    int h, h0, n, f, i, rank;
+    h = he_hdg_ver(he, v);
+    rank = 0;
+    h0 = h = he_nxt(he, h);
+    for (;;) {
+        if (rank >= RANK_MAX)
+            ERR(HE_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank, RANK_MAX);
+        i = he_ver(he, h);
+        rank++;
+        n = he_nxt(he, h);
+        if (he_bnd(he, n))
+            return 1;
+        f = he_flp(he, n);
+        h = he_nxt(he, f);
+        if (h == h0) return 0;
+    }
 }
 
 int he_ring(T *he, int v, int *prank, int **pring) {
