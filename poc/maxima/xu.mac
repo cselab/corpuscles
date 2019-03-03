@@ -1,0 +1,6 @@
+ru: [xu, yu, zu];
+rv: [xv, yv, zv];
+
+gg: matrix([ru.ru, ru.rv], [ru.rv, rv.rv]);
+g: determinant(gg);
+

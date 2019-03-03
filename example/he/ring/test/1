@@ -1,0 +1,2 @@
+# TEST: 1
+he.run ./main < $(he.path)/rbc/icosahedron/0.off > he.out.txt

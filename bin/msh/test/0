@@ -1,2 +1,2 @@
-# cTEST: 0
+# TEST: 0
 he.msh2off data/main.msh > main.out.off

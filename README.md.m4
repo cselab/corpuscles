@@ -82,108 +82,82 @@ r_cmd(<<he.geomview -h>>)
 
 # Lib
 
-## Precision
+## Floating point precision
 
-[prec/d/real.h](lib/prec/d/real.h)
-:   double
-
-prec/s/real.h
-:   single
-
-prec/l/real.h
-:   long double
+r_header(prec/s/real.h), r_header(prec/d/real.h), r_header(prec/l/real.h)
+:   single, double, long double
 
 ## Math
 
-edg.h, dedg.h
-:   edges and derivatives
+r_header(vec.h), r_header(edg.h), r_header(tri.h), r_header(dih.h), r_header(ten.h)
+: vector, edges, triangels, dihidrals, tensors
 
-tri.h, dtri.h
-:   triangles and derivatives
-
-ten.h
-:   tensor
-
-vec.h, dvec.h
-:   vectors and derivatives
+r_header(dvec.h), r_header(dedg.h), r_header(dtri.h), r_header(ddih.h)
+: derivatives of vector edges, triagels, dihidrals
 
 ## Utility
 
-array.h
-:   array related functions
+r_header(array.h)
+:  array related functions
 
-err.h
+r_header(err.h)
 :   error handling
 
-macro.h
+r_header(macro.h)
 :   macros
 
-memory.h
+r_header(memory.h)
 :   memory related
 
-util.h
+r_header(util.h)
 :   uncategorazed
 
 ## Surface properties
 
-area.h
+r_header(area.h)
 :   area
 
-volume.h
+r_header(volume.h)
 :   volume
 
-laplace.h
+r_header(laplace.h)
 :   Laplace operator of coordinates
 
-normal.h
+r_header(normal.h)
 :   normal
 
 ## Surface transformation
 
-equiangulate.h
+r_header(equiangulate.h)
 :   equlatirate triangles
 
-orient.h
+r_header(orient.h)
 :   orient surface in a direction of eigen values of momentum tensor
+
+r_header(restore.h)
+:  restore a volume of the surface
 
 ## Half-edg related
 
-read.h
+r_header(read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize
-	**he.h**
+    **he.h**
 
-he.h
-:   main half edg data structure (provides half-edg API)
+r_header(he.h)
+:   half edg data structure (provides half-edg API)
 
-hash.h
-:   stores `v` for a pair of `(i, j)`, `i` must be in `[0, n)` API:
-	`int i, j, k;` `ini(n); v ` set(i, j); get(i,j)= `get(i,j)` return
-	-1 if `(i,j)` was not set
+r_header(hash.h)
+:   stores an integer for a pair of integers
 
 ## IO
 
-off.h
-:   read OFF
-
-punto.h
-:   read/write "punto" files
-
-vtk.h
-:   write vtk file
-
-gts.h
-:   write gts files
-
-ply.h
-:   read/write ply files
-
-obj.h
-:   read/write obj files
+r_header(off.h), r_header(punto.h), r_header(vtk.h), r_header(gts.h), r_header(ply.h), r_header(obj.h)
+:   read/write off files, punto, vtk, gts, ply, obj files
 
 ## X and Y
 
-x.h
+r_header(x.h)
 :   simple interface for one surface
 
-y.h
+r_header(y.h)
 :   not so simple interface

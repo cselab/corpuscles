@@ -1,0 +1,19 @@
+load("he/vec.mac");
+
+depends(['x, 'y, 'z], ['u, 'v]);
+
+u: diff(['x, 'y, 'z], 'u);
+v: diff(['x, 'y, 'z], 'v);
+
+g11: u.u;
+g12: g21: u.v;
+g22: v.v;
+
+gg: matrix([g11, g12], [g12, g22]);
+g: determinant(gg);
+gi: invert(gg);
+
+n: vec_norm(vec_cross(u, v))
+
+df: ['u, 'v] . gi . ['fu, 'fv];
+ratcoef(ratsubst('g, determinant(gg), df));
