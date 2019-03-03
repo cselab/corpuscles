@@ -1,10 +1,10 @@
 M = main
 PREC = d
-HE_CFLAGS = -Wall -Wextra -O2 -g `co.conf --cflags $(PREC)`
-HE_LDFLAGS = `co.conf --libs $(PREC)`
+CO_CFLAGS = -Wall -Wextra -O2 -g `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
-$M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
-$M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
+$M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+$M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
 $M.o: inc/main.h  inc/mesh.h  inc/util.h
 
 test: $M; atest test/*

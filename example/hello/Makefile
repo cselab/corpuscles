@@ -1,10 +1,10 @@
 include ../../conf.mk
 PREC = d
-HE_CFLAGS = `co.conf --cflags $(PREC)`
-HE_LDFLAGS = `co.conf --libs $(PREC)`
+CO_CFLAGS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 main: main.c
-	$(CC) main.c $(CFLAGS) $(HE_CFLAGS) $(LDFLAGS) $(HE_LDFLAGS) -o main
+	$(CC) main.c $(CFLAGS) $(CO_CFLAGS) $(LDFLAGS) $(CO_LDFLAGS) -o main
 test:
 install:
 

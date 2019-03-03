@@ -1,13 +1,13 @@
 include ../../../conf.mk
 M = main
 PREC = d
-HE_CFLAGS = `co.conf --cflags $(PREC)`
-HE_LDFLAGS = `co.conf --libs $(PREC)`
+CO_CFLAGS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 all: $M
 
-main: main.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) -o $@
-main.o: main.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
+main: main.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+main.o: main.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
 
 test: $M; atest test/*
 install:

@@ -2,12 +2,12 @@ include ../../conf.mk
 
 M = main
 PREC = s
-HE_CFLAGS =  `co.conf --cflags $(PREC)`
-HE_LDFLAGS = `co.conf --libs $(PREC)`
+CO_CFLAGS =  `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 ALG_LDFLAGS = `alg.conf --libs $(PREC)`
 
-$M: $M.o; $(CC) $< $(LDFLAGS) $(HE_LDFLAGS) $(ALG_LDFLAGS) -o $@
-$M.o: $M.c; $(CC) $(CFLAGS) $(HE_CFLAGS) $< -c -o $@
+$M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) $(ALG_LDFLAGS) -o $@
+$M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
 
 test: $M; atest test/*
 install:
