@@ -34,8 +34,8 @@ i: 0;
 n: loop_ring(he, i, s) + 1;
 
 alloc(n, be, th);
-alloc2(n, 6, A);
-alloc(n, xx, yy, zz);
+alloc2(n + 1, 6, A);
+alloc(n + 1, xx, yy, zz);
 
 (Al: 0,
   loop_ring(he, i, Al += be[s]: tri_angle(c, a, b)));
@@ -45,14 +45,17 @@ for i: 0 thru n - 1 do be[i]: float(2*%pi*be[i]/Al);
 th[0]: 0;
 for i: 1 thru n - 1 do th[i]: th[i - 1] + be[i];
 
+A[0, 0]: 1;
+A[0, 1]: A[0, 2]: A[0, 3]: A[0, 4]: A[0, 5]: 0;
 loop_ring(he, i,
   block([th: th[s], q, p: 0, X: 1, Y: 2, Z: 3],
     q: edg_abs(a, b),
-    xx[s]: b[X], yy[s]: b[Y], zz[s]: b[Z],
+    xx[0]: a[X], yy[0]: a[Y], zz[0]: a[Z],
+    xx[s + 1]: b[X], yy[s + 1]: b[Y], zz[s + 1]: b[Z],
     u: q*cos(th),
     v: q*sin(th),
-    A[s, p++]: 1, A[s, p++]: u, A[s, p++]: v,
-    A[s, p++]: 1/2*u^2, A[s, p++]: u*v, A[s, p++]: 1/2*v^2)) $
+    A[s + 1, p++]: 1, A[s + 1, p++]: u, A[s + 1, p++]: v,
+    A[s + 1, p++]: 1/2*u^2, A[s + 1, p++]: u*v, A[s + 1, p++]: 1/2*v^2)) $
 
 A: array2matrix(A) $
 xx: array2vector(xx) $
