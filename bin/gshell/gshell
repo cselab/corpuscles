@@ -1,4 +1,4 @@
-. he.util
+. co.util
 
 prog=he.gshell
 prog0=he.gshell0

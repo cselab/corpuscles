@@ -1,7 +1,7 @@
 include(`he.m4')dnl
 include(`util.m4')dnl
 include(`args.m4')dnl
-. he.util
+. co.util
 
 prog=he.geomview0
 

@@ -1,4 +1,4 @@
-. he.util
+. co.util
 
 prog=he.m4
 : ${M4=m4}

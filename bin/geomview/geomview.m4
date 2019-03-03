@@ -2,7 +2,7 @@ include(`he.m4')dnl
 include(`args.m4')dnl
 include(`util.m4')dnl
 h_changequote(,)dnl
-. he.util
+. co.util
 
 prog=he.geomview
 prog0=he.geomview0

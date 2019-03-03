@@ -1,6 +1,6 @@
 set -eu
 
-. he.util
+. co.util
 
 make
 
