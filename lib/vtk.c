@@ -4,8 +4,8 @@
 
 #include "real.h"
 #include "inc/def.h"
-#include "he/err.h"
-#include "he/he.h"
+#include "co/err.h"
+#include "co/he.h"
 
 #define FMT  HE_REAL_OUT
 

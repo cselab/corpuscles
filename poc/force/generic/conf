@@ -1,4 +1,4 @@
-#include "he/f/area.h"
+#include "co/f/area.h"
 area
 HeFArea
 he_f_area_fin
@@ -6,7 +6,7 @@ he_f_area_force
 he_f_area_energy
 he_f_area_argv
 
-#include "he/f/garea.h"
+#include "co/f/garea.h"
 garea
 HeFGarea
 he_f_garea_fin
@@ -14,7 +14,7 @@ he_f_garea_force
 he_f_garea_energy
 he_f_garea_argv
 
-#include "he/f/volume.h"
+#include "co/f/volume.h"
 volume
 HeFVolume
 he_f_volume_fin
@@ -22,7 +22,7 @@ he_f_volume_force
 he_f_volume_energy
 he_f_volume_argv
 
-#include "he/f/juelicher_xin.h"
+#include "co/f/juelicher_xin.h"
 juelicher_xin
 HeFJuelicherXin
 he_f_juelicher_xin_fin
@@ -30,7 +30,7 @@ he_f_juelicher_xin_force
 he_f_juelicher_xin_energy
 he_f_juelicher_xin_argv
 
-#include "he/f/edg_sq.h"
+#include "co/f/edg_sq.h"
 edg_sq
 HeFEdgSq
 he_f_edg_sq_fin
@@ -38,7 +38,7 @@ he_f_edg_sq_force
 he_f_edg_sq_energy
 he_f_edg_sq_argv
 
-#include "he/f/harmonic.h"
+#include "co/f/harmonic.h"
 harmonic
 HeFHarmonic
 he_f_harmonic_fin
@@ -46,7 +46,7 @@ he_f_harmonic_force
 he_f_harmonic_energy
 he_f_harmonic_argv
 
-#include "he/f/harmonic_ref.h"
+#include "co/f/harmonic_ref.h"
 harmonic_ref
 HeFHarmonicRef
 he_f_harmonic_ref_fin
@@ -54,7 +54,7 @@ he_f_harmonic_ref_force
 he_f_harmonic_ref_energy
 he_f_harmonic_ref_argv
 
-#include "he/f/area_voronoi.h"
+#include "co/f/area_voronoi.h"
 area_voronoi
 HeFAreaVoronoi
 he_f_area_voronoi_fin
@@ -62,7 +62,7 @@ he_f_area_voronoi_force
 he_f_area_voronoi_energy
 he_f_area_voronoi_argv
 
-#include "he/f/garea_voronoi.h"
+#include "co/f/garea_voronoi.h"
 garea_voronoi
 HeFGareaVoronoi
 he_f_garea_voronoi_fin
@@ -70,7 +70,7 @@ he_f_garea_voronoi_force
 he_f_garea_voronoi_energy
 he_f_garea_voronoi_argv
 
-#include "he/f/volume_normal.h"
+#include "co/f/volume_normal.h"
 volume_normal
 HeFVolumeNormal
 he_f_volume_normal_fin
@@ -78,7 +78,7 @@ he_f_volume_normal_force
 he_f_volume_normal_energy
 he_f_volume_normal_argv
 
-#include "he/f/area_sq.h"
+#include "co/f/area_sq.h"
 area_sq
 HeFAreaSq
 he_f_area_sq_fin
@@ -86,7 +86,7 @@ he_f_area_sq_force
 he_f_area_sq_energy
 he_f_area_sq_argv
 
-#include "he/f/gompper.h"
+#include "co/f/gompper.h"
 gompper
 HeFGompper
 he_f_gompper_fin
@@ -94,7 +94,7 @@ he_f_gompper_force
 he_f_gompper_energy
 he_f_gompper_argv
 
-#include "he/f/strain.h"
+#include "co/f/strain.h"
 strain
 HeFStrain
 he_f_strain_fin

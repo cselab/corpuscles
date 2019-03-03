@@ -4,10 +4,10 @@
 #include <ctype.h>
 
 #include "real.h"
-#include "he/err.h"
+#include "co/err.h"
 
 #include "inc/def.h"
-#include "he/argv.h"
+#include "co/argv.h"
 
 int argv_real(char ***pargv, real *p) {
     char **argv;

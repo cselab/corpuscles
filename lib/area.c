@@ -2,13 +2,13 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/tri.h"
-#include "he/sum.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/tri.h"
+#include "co/sum.h"
 
-#include "he/area.h"
+#include "co/area.h"
 
 static void get(int t, He *he,
                 const real *x, const real *y, const real *z,

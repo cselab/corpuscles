@@ -2,11 +2,11 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/vec.h"
-#include "he/tri.h"
+#include "co/err.h"
+#include "co/vec.h"
+#include "co/tri.h"
 
-#include "he/dih.h"
+#include "co/dih.h"
 static const real pi = 3.141592653589793115997964;
   
 real dih_angle(const real a[3], const real b[3], const real c[3], const real d[3]) {

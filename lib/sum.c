@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <tgmath.h>
 
-#include "he/memory.h"
-#include "he/err.h"
+#include "co/memory.h"
+#include "co/err.h"
 
 #include "real.h"
 

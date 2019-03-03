@@ -2,9 +2,9 @@
 
 #include "real.h"
 
-#include "he/err.h"
-#include "he/macro.h"
-#include "he/memory.h"
+#include "co/err.h"
+#include "co/macro.h"
+#include "co/memory.h"
 
-#include "he/real.h"
+#include "co/real.h"
 #include "real.inc"

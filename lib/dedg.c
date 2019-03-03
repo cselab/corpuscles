@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/vec.h"
+#include "co/err.h"
+#include "co/vec.h"
 
-#include "he/dedg.h"
+#include "co/dedg.h"
 
 int dedg_abs(const real a[3], const real b[3], /**/ real da[3], real db[3]) {
     real u[3], e[3];

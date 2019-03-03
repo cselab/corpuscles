@@ -3,8 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "he/err.h"
-#include "he/util.h"
+#include "co/err.h"
+#include "co/util.h"
 
 #include "inc/def.h"
 

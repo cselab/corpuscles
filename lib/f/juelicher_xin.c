@@ -1,19 +1,19 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/argv.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/dih.h"
-#include "he/ddih.h"
-#include "he/dedg.h"
-#include "he/tri.h"
-#include "he/dtri.h"
-#include "he/sum.h"
+#include "co/argv.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/dih.h"
+#include "co/ddih.h"
+#include "co/dedg.h"
+#include "co/tri.h"
+#include "co/dtri.h"
+#include "co/sum.h"
 
-#include "he/f/juelicher_xin.h"
+#include "co/f/juelicher_xin.h"
 
 #define T HeFJuelicherXin
 

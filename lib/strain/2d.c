@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 #include "real.h"
-#include "he/err.h"
+#include "co/err.h"
 
 #define SET(key, val) if ((key) != NULL) *(key) = (val)
 #define NOT_ZERO(x) if ((x) == 0) ERR(HE_NUM, "should not be zero");
@@ -24,5 +24,5 @@ static real select0(real ref, real cur) {
     return f == YES ? cur : ref;
 }
 
-#include "he/strain/2d.h"
+#include "co/strain/2d.h"
 #include "strain/2d.inc"

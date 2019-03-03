@@ -1,19 +1,19 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/argv.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/tri.h"
-#include "he/dtri.h"
-#include "he/dedg.h"
-#include "he/sum.h"
-#include "he/da.h"
-#include "he/macro.h"
+#include "co/argv.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/tri.h"
+#include "co/dtri.h"
+#include "co/dedg.h"
+#include "co/sum.h"
+#include "co/da.h"
+#include "co/macro.h"
 
-#include "he/f/area_voronoi.h"
+#include "co/f/area_voronoi.h"
 
 #define T HeFAreaVoronoi
 

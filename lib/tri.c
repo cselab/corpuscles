@@ -3,12 +3,12 @@
 
 #include "real.h"
 
-#include "he/err.h"
-#include "he/edg.h"
-#include "he/vec.h"
-#include "he/macro.h"
+#include "co/err.h"
+#include "co/edg.h"
+#include "co/vec.h"
+#include "co/macro.h"
 
-#include "he/tri.h"
+#include "co/tri.h"
 
 #define FMT   HE_REAL_OUT
 

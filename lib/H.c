@@ -2,12 +2,12 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/memory.h"
-#include "he/laplace.h"
-#include "he/normal.h"
-#include "he/H.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/memory.h"
+#include "co/laplace.h"
+#include "co/normal.h"
+#include "co/H.h"
 
 #define T H
 

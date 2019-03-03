@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/hash.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/hash.h"
 
 #define T HeHash
 

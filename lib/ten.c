@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
+#include "co/err.h"
 #include "inc/def.h"
-#include "he/ten.h"
+#include "co/ten.h"
 
 enum {X, Y, Z};
 enum {XX, XY, XZ,   YX, YY, YZ,   ZX, ZY, ZZ};

@@ -2,17 +2,17 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/dvec.h"
-#include "he/tri.h"
-#include "he/edg.h"
-#include "he/dedg.h"
-#include "he/dtri.h"
-#include "he/ten.h"
-#include "he/memory.h"
-#include "he/dH.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/dvec.h"
+#include "co/tri.h"
+#include "co/edg.h"
+#include "co/dedg.h"
+#include "co/dtri.h"
+#include "co/ten.h"
+#include "co/memory.h"
+#include "co/dH.h"
 
 #define T Dh
 

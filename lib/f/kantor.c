@@ -2,15 +2,15 @@
 #include <tgmath.h>
 
 #include "real.h"
-#include "he/memory.h"
-#include "he/macro.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/dih.h"
-#include "he/ddih.h"
-#include "he/tri.h"
-#include "he/f/kantor.h"
+#include "co/memory.h"
+#include "co/macro.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/dih.h"
+#include "co/ddih.h"
+#include "co/tri.h"
+#include "co/f/kantor.h"
 
 #define T HeFKantor
 

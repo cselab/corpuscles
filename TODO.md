@@ -16,7 +16,7 @@
 - Library names
 `he_d / co_d`, `he_s / co_s`, `he_l / co_l`
 
-- #include "he/" -> #include "co/"
+- #include "co/" -> #include "co/"
 
 - load("he/.") -> load("he/.")$
 

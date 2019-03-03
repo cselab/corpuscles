@@ -3,12 +3,12 @@
 #include <ctype.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/util.h"
-#include "he/he.h"
+#include "co/err.h"
+#include "co/util.h"
+#include "co/he.h"
 #include "inc/def.h"
 
-#include "he/gts.h"
+#include "co/gts.h"
 
 #define OUT HE_REAL_OUT
 

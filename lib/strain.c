@@ -2,13 +2,13 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
+#include "co/err.h"
 
-#include "he/memory.h"
-#include "he/macro.h"
-#include "he/strain/3d.h"
-#include "he/util.h"
-#include "he/strain.h"
+#include "co/memory.h"
+#include "co/macro.h"
+#include "co/strain/3d.h"
+#include "co/util.h"
+#include "co/strain.h"
 
 #define T Strain
 #define P StrainParam

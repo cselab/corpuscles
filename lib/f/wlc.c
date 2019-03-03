@@ -2,14 +2,14 @@
 #include <tgmath.h>
 
 #include "real.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/edg.h"
-#include "he/dedg.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/edg.h"
+#include "co/dedg.h"
 
-#include "he/f/wlc.h"
+#include "co/f/wlc.h"
 
 #define T HeFWlc
 

@@ -2,14 +2,14 @@
 
 #include "real.h"
 
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/sum.h"
-#include "he/ten.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/sum.h"
+#include "co/ten.h"
 
-#include "he/orient.h"
+#include "co/orient.h"
 
 #define T Orient
 

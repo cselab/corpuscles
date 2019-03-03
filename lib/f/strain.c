@@ -2,22 +2,22 @@
 
 #include "real.h"
 
-#include "he/argv.h"
-#include "he/array.h"
-#include "he/macro.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/tri.h"
-#include "he/y.h"
-#include "he/util.h"
-#include "he/strain.h"
-#include "he/strain/3d.h"
+#include "co/argv.h"
+#include "co/array.h"
+#include "co/macro.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/tri.h"
+#include "co/y.h"
+#include "co/util.h"
+#include "co/strain.h"
+#include "co/strain/3d.h"
 
 #include "inc/def.h"
 
-#include "he/f/strain.h"
+#include "co/f/strain.h"
 
 #define T HeFStrain
 #define OUT HE_REAL_OUT

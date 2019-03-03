@@ -2,14 +2,14 @@
 #include <tgmath.h>
 
 #include "real.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/tri.h"
-#include "he/dtri.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/tri.h"
+#include "co/dtri.h"
 
-#include "he/f/gompper_kroll.h"
+#include "co/f/gompper_kroll.h"
 
 #define T HeFGompperKroll
 

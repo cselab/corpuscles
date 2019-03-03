@@ -3,15 +3,15 @@
 #include <ctype.h>
 
 #include "real.h"
-#include "he/array.h"
-#include "he/endian.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/util.h"
-#include "he/he.h"
+#include "co/array.h"
+#include "co/endian.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/util.h"
+#include "co/he.h"
 #include "inc/def.h"
 
-#include "he/off.h"
+#include "co/off.h"
 
 #define T HeOff
 enum {SIZE = MAX_STRING_SIZE};

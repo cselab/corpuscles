@@ -1,11 +1,11 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/macro.h"
-#include "he/ten.h"
-#include "he/vec.h"
-#include "he/dvec.h"
+#include "co/err.h"
+#include "co/macro.h"
+#include "co/ten.h"
+#include "co/vec.h"
+#include "co/dvec.h"
 
 enum {X, Y, Z};
 

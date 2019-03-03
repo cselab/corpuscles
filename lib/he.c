@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "he/err.h"
-#include "he/memory.h"
-#include "he/read.h"
+#include "co/err.h"
+#include "co/memory.h"
+#include "co/read.h"
 
-#include "he/he.h"
+#include "co/he.h"
 
 #define T He
 

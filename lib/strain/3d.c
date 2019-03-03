@@ -4,12 +4,12 @@
 
 #include "real.h"
 
-#include "he/vec.h"
-#include "he/tri.h"
-#include "he/err.h"
-#include "he/macro.h"
-#include "he/dtri.h"
-#include "he/strain/2d.h"
+#include "co/vec.h"
+#include "co/tri.h"
+#include "co/err.h"
+#include "co/macro.h"
+#include "co/dtri.h"
+#include "co/strain/2d.h"
 
 #define FMT HE_REAL_OUT
 

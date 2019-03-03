@@ -4,13 +4,13 @@ include(`co.m4')dnl
 
 #include "real.h"
 
-#include "he/err.h"
-#include "he/he.h"
-#include "he/tri.h"
-#include "he/sum.h"
-#include "he/vec.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/tri.h"
+#include "co/sum.h"
+#include "co/vec.h"
 
-#include "he/transform.h"
+#include "co/transform.h"
 
 enum {X, Y, Z};
 struct Sum3 {

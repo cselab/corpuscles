@@ -5,22 +5,22 @@ include(`co.m4')dnl
 
 #include "real.h"
 
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/container.h"
-#include "he/macro.h"
-#include "he/util.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/container.h"
+#include "co/macro.h"
+#include "co/util.h"
 
-#include "he/f/kantor.h"
-#include "he/f/juelicher_xin.h"
-#include "he/f/gompper.h"
-#include "he/f/gompper_kroll.h"
-#include "he/f/gompper_xin.h"
-#include "he/f/meyer_xin.h"
-#include "he/f/meyer.h"
+#include "co/f/kantor.h"
+#include "co/f/juelicher_xin.h"
+#include "co/f/gompper.h"
+#include "co/f/gompper_kroll.h"
+#include "co/f/gompper_xin.h"
+#include "co/f/meyer_xin.h"
+#include "co/f/meyer.h"
 
-#include "he/bending.h"
+#include "co/bending.h"
 
 #define T Bending
 

@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "he/err.h"
-#include "he/memory.h"
+#include "co/err.h"
+#include "co/memory.h"
 
 int he_malloc(int size, /**/ void **pq) {
     void *q;

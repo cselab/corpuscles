@@ -1,12 +1,12 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/tri.h"
-#include "he/filter.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/tri.h"
+#include "co/filter.h"
 
 #define T Filter
 

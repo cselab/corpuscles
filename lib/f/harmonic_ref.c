@@ -1,18 +1,18 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "he/argv.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/edg.h"
-#include "he/dedg.h"
-#include "he/y.h"
+#include "co/argv.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/edg.h"
+#include "co/dedg.h"
+#include "co/y.h"
 
 #include "inc/def.h"
 
-#include "he/f/harmonic_ref.h"
+#include "co/f/harmonic_ref.h"
 
 #define T HeFHarmonicRef
 

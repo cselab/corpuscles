@@ -3,13 +3,13 @@
 #include <assert.h>
 
 #include "inc/def.h"
-#include "he/err.h"
-#include "he/memory.h"
-#include "he/macro.h"
-#include "he/util.h"
-#include "he/hash.h"
+#include "co/err.h"
+#include "co/memory.h"
+#include "co/macro.h"
+#include "co/util.h"
+#include "co/hash.h"
 
-#include "he/read.h"
+#include "co/read.h"
 
 #define T HeRead
 #define SIZE (MAX_STRING_SIZE)

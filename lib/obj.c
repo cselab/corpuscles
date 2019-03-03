@@ -4,12 +4,12 @@
 
 #include "real.h"
 
-#include "he/err.h"
-#include "he/he.h"
-#include "he/util.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/util.h"
 #include "inc/def.h"
 
-#include "he/obj.h"
+#include "co/obj.h"
 
 #define OUT HE_REAL_OUT
 

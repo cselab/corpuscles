@@ -3,17 +3,17 @@
 #include <stdlib.h>
 
 #include "real.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/vec.h"
-#include "he/dih.h"
-#include "he/ddih.h"
-#include "he/tri.h"
-#include "he/normal.h"
-#include "he/macro.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/vec.h"
+#include "co/dih.h"
+#include "co/ddih.h"
+#include "co/tri.h"
+#include "co/normal.h"
+#include "co/macro.h"
 
-#include "he/f/meyer.h"
+#include "co/f/meyer.h"
 
 #define T HeFMeyer
 

@@ -3,11 +3,11 @@
 
 #include "real.h"
 #include "inc/def.h"
-#include "he/err.h"
-#include "he/vec.h"
-#include "he/he.h"
-#include "he/tri.h"
-#include "he/equiangulate.h"
+#include "co/err.h"
+#include "co/vec.h"
+#include "co/he.h"
+#include "co/tri.h"
+#include "co/equiangulate.h"
 
 static const real pi = 3.141592653589793;
 

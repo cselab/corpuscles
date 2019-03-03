@@ -2,13 +2,13 @@
 
 #include "real.h"
 
-#include "he/he.h"
-#include "he/invariants.h"
-#include "he/err.h"
-#include "he/memory.h"
-#include "he/vec.h"
-#include "he/tri.h"
-#include "he/y.h"
+#include "co/he.h"
+#include "co/invariants.h"
+#include "co/err.h"
+#include "co/memory.h"
+#include "co/vec.h"
+#include "co/tri.h"
+#include "co/y.h"
 
 #define T Invariants
 

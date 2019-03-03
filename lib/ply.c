@@ -4,14 +4,14 @@
 #include <stdlib.h>
 
 #include "real.h"
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/endian.h"
-#include "he/util.h"
-#include "he/he.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/endian.h"
+#include "co/util.h"
+#include "co/he.h"
 #include "inc/def.h"
 
-#include "he/ply.h"
+#include "co/ply.h"
 
 #define T Ply
 enum {SIZE = MAX_STRING_SIZE};

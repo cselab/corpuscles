@@ -2,11 +2,11 @@
 
 #include "real.h"
 
-#include "he/err.h"
-#include "he/he.h"
-#include "he/memory.h"
-#include "he/off.h"
-#include "he/y.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/memory.h"
+#include "co/off.h"
+#include "co/y.h"
 
 int y_inif(FILE *f, /**/ He **phe, real **px, real **py, real **pz) {
     HeOff *off;

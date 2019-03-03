@@ -5,15 +5,15 @@
 
 #include "real.h"
 
-#include "he/argv.h"
-#include "he/array.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/macro.h"
-#include "he/memory.h"
-#include "he/util.h"
-#include "he/stretch.h"
-#include "he/util.h"
+#include "co/argv.h"
+#include "co/array.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/macro.h"
+#include "co/memory.h"
+#include "co/util.h"
+#include "co/stretch.h"
+#include "co/util.h"
 
 #define T Stretch
 #define FMT HE_REAL_OUT

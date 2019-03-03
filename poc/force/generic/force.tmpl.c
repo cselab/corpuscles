@@ -4,17 +4,17 @@
 
 #include "real.h"
 
-#include "he/memory.h"
-#include "he/err.h"
-#include "he/he.h"
-#include "he/container.h"
-#include "he/macro.h"
-#include "he/util.h"
+#include "co/memory.h"
+#include "co/err.h"
+#include "co/he.h"
+#include "co/container.h"
+#include "co/macro.h"
+#include "co/util.h"
 
 //%header
 #define SIZE (4048)
 
-#include "he/force.h"
+#include "co/force.h"
 
 #define T Force
 

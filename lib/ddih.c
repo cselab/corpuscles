@@ -2,12 +2,12 @@
 #include <tgmath.h>
 
 #include "real.h"
-#include "he/err.h"
-#include "he/vec.h"
-#include "he/tri.h"
+#include "co/err.h"
+#include "co/vec.h"
+#include "co/tri.h"
 
-#include "he/dih.h"
-#include "he/edg.h"
+#include "co/dih.h"
+#include "co/edg.h"
 
 int ddih_angle(const real a[3], const real b[3], const real c[3], const real d[3], /**/
                real da[3], real db[3], real dc[3], real dd[3]) {

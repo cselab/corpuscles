@@ -3,8 +3,8 @@
 
 #include "real.h"
 #include "inc/def.h"
-#include "he/err.h"
-#include "he/vec.h"
+#include "co/err.h"
+#include "co/vec.h"
 
 enum {X, Y, Z};
 #define FMT_IN   HE_REAL_IN

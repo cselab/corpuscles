@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 #include "inc/def.h"
-#include "he/macro.h"
-#include "he/err.h"
+#include "co/macro.h"
+#include "co/err.h"
 
 #define SIZE (MAX_STRING_SIZE)
 
