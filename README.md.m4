@@ -6,18 +6,19 @@ r_define(`r_file', `h_cmd(cat $1)')dnl
 r_define(`r_cmd', `h_cmd($1)')dnl
 r_define(`r_dir', `[$1]($1/)')dnl
 r_define(`r_geomview', `h_syscmd(WX=400 WY=300 co.geomview -o $2 -i "convert %i %o" $1)dnl
+h_syscmd(co.install "$2" docs)
 ![]($2)')dnl
 h_changequote(`<<', `>>')dnl
 r_geomview(
 <<-p 'co.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
-<<img/rbc/sde/Da-0.358.png>>)
+<<img/rbc/sde/Da-0.358.png>>)dnl
+\
 
 # Intro
 A C library deal with triangulated surfaces shaped by forces
 and constraints. [Documentation](https://cselab.github.io/corpuscles)
 
 # Install
-
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`.
 

@@ -1,11 +1,11 @@
-![](img/rbc/sde/Da-0.358.png)
+
+![](img/rbc/sde/Da-0.358.png)\
 
 # Intro
 A C library deal with triangulated surfaces shaped by forces
 and constraints. [Documentation](https://cselab.github.io/corpuscles)
 
 # Install
-
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`.
 
