@@ -82,16 +82,10 @@ r_cmd(<<he.geomview -h>>)
 
 # Lib
 
-## Precision
+## Floating point precision
 
-[prec/d/real.h](lib/prec/d/real.h)
-:   double
-
-prec/s/real.h
-:   single
-
-prec/l/real.h
-:   long double
+r_header(prec/s/real.h), r_header(prec/d/real.h), r_header(prec/l/real.h)
+:   single, double, long double
 
 ## Math
 

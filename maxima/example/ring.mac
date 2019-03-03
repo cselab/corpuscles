@@ -63,6 +63,8 @@ rr: matrix(xx, yy, zz) $
 B: transpose(A) . A $
 C: pinv(B) . transpose(A) $
 
+C;
+
 C1: C[2] $
 C2: C[3] $
 C11: C[4] $

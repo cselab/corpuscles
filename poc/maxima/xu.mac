@@ -1,4 +1,6 @@
-f(u, v):= op(C, f(r));
+ru: [xu, yu, zu];
+rv: [xv, yv, zv];
 
-diff(f(u, v));
+gg: matrix([ru.ru, ru.rv], [ru.rv, rv.rv]);
+g: determinant(gg);
 
