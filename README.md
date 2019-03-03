@@ -19,7 +19,11 @@ Adjust `conf.mk` if you want to change defaults
 CC = c99
 CFLAGS = -O2 -g
 PREFIX = $(HOME)
+DATAPATH = $(HOME)/.co
 MAXIMA_HOME = $(HOME)/.maxima
+
+# prefix
+P = co
 ```
 
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
@@ -164,80 +168,80 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 
 ## Floating point precision
 
-[prec/s/real.h](lib/he/prec/s/real.h), [prec/d/real.h](lib/he/prec/d/real.h), [prec/l/real.h](lib/he/prec/l/real.h)
+[prec/s/real.h](lib/co/prec/s/real.h), [prec/d/real.h](lib/co/prec/d/real.h), [prec/l/real.h](lib/co/prec/l/real.h)
 :   single, double, long double
 
 ## Math
 
-[vec.h](lib/he/vec.h), [edg.h](lib/he/edg.h), [tri.h](lib/he/tri.h), [dih.h](lib/he/dih.h), [ten.h](lib/he/ten.h)
+[vec.h](lib/co/vec.h), [edg.h](lib/co/edg.h), [tri.h](lib/co/tri.h), [dih.h](lib/co/dih.h), [ten.h](lib/co/ten.h)
 : vector, edges, triangels, dihidrals, tensors
 
-[dvec.h](lib/he/dvec.h), [dedg.h](lib/he/dedg.h), [dtri.h](lib/he/dtri.h), [ddih.h](lib/he/ddih.h)
+[dvec.h](lib/co/dvec.h), [dedg.h](lib/co/dedg.h), [dtri.h](lib/co/dtri.h), [ddih.h](lib/co/ddih.h)
 : derivatives of vector edges, triagels, dihidrals
 
 ## Utility
 
-[array.h](lib/he/array.h)
+[array.h](lib/co/array.h)
 :  array related functions
 
-[err.h](lib/he/err.h)
+[err.h](lib/co/err.h)
 :   error handling
 
-[macro.h](lib/he/macro.h)
+[macro.h](lib/co/macro.h)
 :   macros
 
-[memory.h](lib/he/memory.h)
+[memory.h](lib/co/memory.h)
 :   memory related
 
-[util.h](lib/he/util.h)
+[util.h](lib/co/util.h)
 :   uncategorazed
 
 ## Surface properties
 
-[area.h](lib/he/area.h)
+[area.h](lib/co/area.h)
 :   area
 
-[volume.h](lib/he/volume.h)
+[volume.h](lib/co/volume.h)
 :   volume
 
-[laplace.h](lib/he/laplace.h)
+[laplace.h](lib/co/laplace.h)
 :   Laplace operator of coordinates
 
-[normal.h](lib/he/normal.h)
+[normal.h](lib/co/normal.h)
 :   normal
 
 ## Surface transformation
 
-[equiangulate.h](lib/he/equiangulate.h)
+[equiangulate.h](lib/co/equiangulate.h)
 :   equlatirate triangles
 
-[orient.h](lib/he/orient.h)
+[orient.h](lib/co/orient.h)
 :   orient surface in a direction of eigen values of momentum tensor
 
-[restore.h](lib/he/restore.h)
+[restore.h](lib/co/restore.h)
 :  restore a volume of the surface
 
 ## Half-edg related
 
-[read.h](lib/he/read.h)
+[read.h](lib/co/read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize
     **co.h**
 
-[co.h](lib/he/co.h)
+[co.h](lib/co/co.h)
 :   half edg data structure (provides half-edg API)
 
-[hash.h](lib/he/hash.h)
+[hash.h](lib/co/hash.h)
 :   stores an integer for a pair of integers
 
 ## IO
 
-[off.h](lib/he/off.h), [punto.h](lib/he/punto.h), [vtk.h](lib/he/vtk.h), [gts.h](lib/he/gts.h), [ply.h](lib/he/ply.h), [obj.h](lib/he/obj.h)
+[off.h](lib/co/off.h), [punto.h](lib/co/punto.h), [vtk.h](lib/co/vtk.h), [gts.h](lib/co/gts.h), [ply.h](lib/co/ply.h), [obj.h](lib/co/obj.h)
 :   read/write off files, punto, vtk, gts, ply, obj files
 
 ## X and Y
 
-[x.h](lib/he/x.h)
+[x.h](lib/co/x.h)
 :   simple interface for one surface
 
-[y.h](lib/he/y.h)
+[y.h](lib/co/y.h)
 :   not so simple interface
