@@ -3,9 +3,6 @@ include  $S/conf.mk
 
 B = $(PREFIX)/bin
 I = $(PREFIX)/include
-
-P = he
-
 M = m4
 
 include $S/make/tool.mk

@@ -2,7 +2,6 @@ S = ../..
 include $S/conf.mk
 
 B = $(PREFIX)/bin
-P = he
 
 M = maxima
 MAXIMA_HOME = $(HOME)/.maxima

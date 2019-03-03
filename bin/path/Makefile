@@ -2,17 +2,12 @@ S = ../..
 include  $S/conf.mk
 
 B = $(PREFIX)/bin
-
-P = he
-
 M = path
-
-path = $(HOME)/.he
 
 include $S/make/tool.mk
 
 $M: $M.in
-	sed 's,%path%,$(path),g' $< > $@
+	sed 's,%path%,$(DATAPATH),g' $< > $@
 	chmod a+x $@
 
 test:

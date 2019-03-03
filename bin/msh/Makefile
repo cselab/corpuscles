@@ -1,7 +1,6 @@
 S = ../..
 include  $S/conf.mk
 B = $(PREFIX)/bin
-P = he
 M = msh2off
 
 include $S/make/tool.mk

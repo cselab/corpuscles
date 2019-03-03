@@ -1,9 +1,6 @@
 S = ..
 include $S/conf.mk
-
 B = $(PREFIX)/bin
-P = he
-
 M = conf dep util install
 
 include $S/make/tool.mk

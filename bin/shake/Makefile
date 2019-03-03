@@ -2,8 +2,6 @@ S = ../..
 include $S/conf.mk
 
 B = $(PREFIX)/bin
-P = he
-
 M = shake
 
 include $S/make/tool.mk

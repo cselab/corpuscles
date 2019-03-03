@@ -1,5 +1,5 @@
-P = ../..
-include $P/conf.mk
+S = ../..
+include $S/conf.mk
 
 M = strain/2d
 

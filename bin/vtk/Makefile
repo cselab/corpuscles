@@ -2,9 +2,6 @@ S = ../..
 include  $S/conf.mk
 
 B = $(PREFIX)/bin
-
-P = he
-
 M = vtk2off
 
 path = $(HOME)/.he

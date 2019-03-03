@@ -2,8 +2,6 @@ S = ../..
 include $S/conf.mk
 
 B = $(PREFIX)/bin
-P = he
-
 M = ffmpeg
 
 include $S/make/tool.mk

@@ -1,6 +1,6 @@
 # run make in all directory in `D`
 dir:
-	@install0 () ( cd "$$d" && $(MAKE) PREFIX=$(PREFIX) S=$S $(MAKECMDGOALS) ); \
+	@install0 () ( cd "$$d" && $(MAKE) $(MAKECMDGOALS) ); \
 	for d in $D; \
 	do echo dir "'$$d'"; \
 	install0; \

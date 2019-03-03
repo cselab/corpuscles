@@ -2,8 +2,6 @@ S = ../..
 include $S/conf.mk
 
 B = $(PREFIX)/bin
-P = he
-
 M = geomview geomview0
 
 include $S/conf.mk
