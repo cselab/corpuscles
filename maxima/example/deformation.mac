@@ -1,5 +1,5 @@
-load("he/vec.mac") $
-load("he/tri.mac") $
+load("co/vec.mac") $
+load("co/tri.mac") $
 
 block([a, b, c, x, y, z],
   vec_any(a),

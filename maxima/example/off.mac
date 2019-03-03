@@ -1,5 +1,5 @@
 load("stringproc") $
-load("he/off.mac") $
+load("co/off.mac") $
 
 file: "~/0.off";
 [x, y, z, tt] : off_read(file) $

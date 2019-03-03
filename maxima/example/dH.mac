@@ -1,18 +1,18 @@
 load("stringproc")$
 
-load("he/off.mac")$
-load("he/util.mac")$
-load("he/co.mac")$
-load("he/util.mac")$
-load("he/loop.mac")$
-load("he/vec.mac")$
-load("he/tri.mac")$
-load("he/ten.mac")$
-load("he/dtri.mac")$
-load("he/edg.mac")$
-load("he/dedg.mac")$
-load("he/punto.mac")$
-load("he/dvec.mac")$
+load("co/off.mac")$
+load("co/util.mac")$
+load("co/co.mac")$
+load("co/util.mac")$
+load("co/loop.mac")$
+load("co/vec.mac")$
+load("co/tri.mac")$
+load("co/ten.mac")$
+load("co/dtri.mac")$
+load("co/edg.mac")$
+load("co/dedg.mac")$
+load("co/punto.mac")$
+load("co/dvec.mac")$
 
 if not stringp(o) then o: "q";
 if not stringp(i) then i: "data/q.off";

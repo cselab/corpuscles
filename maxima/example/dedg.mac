@@ -1,7 +1,7 @@
-load("he/vec.mac") $
-load("he/ten.mac") $
-load("he/dvec.mac") $
-load("he/dedg.mac") $
+load("co/vec.mac") $
+load("co/ten.mac") $
+load("co/dvec.mac") $
+load("co/dedg.mac") $
 
 vec_ini(a);
 vec_ini(b);

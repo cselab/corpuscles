@@ -1,6 +1,6 @@
-load("he/vec.mac") $
-load("he/edg.mac") $
-load("he/tri.mac") $
+load("co/vec.mac") $
+load("co/edg.mac") $
+load("co/tri.mac") $
 
 vec_any(a); vec_any(b); vec_any(c);
 vec_any(u); vec_any(v); vec_any(w);

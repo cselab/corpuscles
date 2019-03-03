@@ -1,14 +1,14 @@
 load("stringproc")$
 load("lapack") $
 
-load("he/off.mac")$
-load("he/util.mac")$
-load("he/co.mac")$
-load("he/edg.mac")$
-load("he/vec.mac")$
-load("he/tri.mac")$
-load("he/util.mac")$
-load("he/loop.mac")$
+load("co/off.mac")$
+load("co/util.mac")$
+load("co/co.mac")$
+load("co/edg.mac")$
+load("co/vec.mac")$
+load("co/tri.mac")$
+load("co/util.mac")$
+load("co/loop.mac")$
 
 array2matrix(A):= block([n, m], local(A),
   [n, m]: arrayinfo(A)[3],

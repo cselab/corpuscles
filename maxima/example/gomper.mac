@@ -1,7 +1,7 @@
-load("he/tri.mac") $
-load("he/vec.mac") $
-load("he/ten.mac") $
-load("he/dtri.mac") $
+load("co/tri.mac") $
+load("co/vec.mac") $
+load("co/ten.mac") $
+load("co/dtri.mac") $
 
 grad(f, v):=ten_block([diff(f, v[X]), diff(f, v[Y]), diff(f, v[Z])]);
 

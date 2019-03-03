@@ -1,12 +1,12 @@
 load("stringproc")$
 
-load("he/off.mac")$
-load("he/util.mac")$
-load("he/co.mac")$
-load("he/util.mac")$
-load("he/loop.mac")$
-load("he/vec.mac")$
-load("he/tri.mac")$
+load("co/off.mac")$
+load("co/util.mac")$
+load("co/co.mac")$
+load("co/util.mac")$
+load("co/loop.mac")$
+load("co/vec.mac")$
+load("co/tri.mac")$
 
 file: "~/rbc.off"$
 he: he(file) $
