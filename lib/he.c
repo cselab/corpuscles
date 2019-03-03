@@ -10,6 +10,7 @@
 #define T He
 
 #define MAGIC (43)
+#define RANK_MAX (99)
 
 struct T {
     int nv, nt, ne, nh;
@@ -18,6 +19,7 @@ struct T {
     int *hdg_ver, *hdg_edg, *hdg_tri;
     int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
+    int ring[RANK_MAX + 2];
     int magic;
 };
 
@@ -369,5 +371,36 @@ int he_D(T *he, int **pD0, int **pD1, int **pD2, int **pD3) {
         }
     }
     *pD0 = D0; *pD1 = D1; *pD2 = D2; *pD3 = D3;
+    return HE_OK;
+}
+
+int he_ring(T *he, int v, int *prank, int **pring) {
+    int h, h0, n, f, i, rank;
+    int *ring;
+    ring = he->ring;
+
+    if (v < he->nv)
+        ERR(HE_INDEX, "v=%d < q->nv=%d", v, he->nv);
+    h = he_hdg_ver(he, v);
+    if (he_bnd(he, h))
+        ERR(HE_INDEX, "call ring for boundary v = %d, h = %d", v, h);
+
+    rank = 0;
+    h0 = h = he_nxt(he, h);
+    for (;;) {
+        if (rank >= RANK_MAX)
+            ERR(HE_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank, RANK_MAX);
+        i = he_ver(he, h);
+        ring[rank++] = i;
+        n = he_nxt(he, h);
+        f = he_flp(he, n);
+        h = he_nxt(he, f);
+        if (h == h0) break;
+    }
+    ring[rank + 1] = ring[0];
+    ring[rank + 2] = -1;
+
+    *prank = rank;
+    *pring = he->ring;
     return HE_OK;
 }
