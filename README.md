@@ -215,6 +215,8 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [dvec.h](lib/co/dvec.h), [dedg.h](lib/co/dedg.h), [dtri.h](lib/co/dtri.h), [ddih.h](lib/co/ddih.h)
 : derivatives of vector edges, triagels, dihidrals
 
+[ring.h](lib/co/ring.h)
+: operation on the first ring of neighbors
 
 ## Utility
 
