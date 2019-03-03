@@ -1,1 +1,206 @@
-Test
+<p><img src="img/rbc/sde/Da-0.358.png" alt="Intro image" /> # Intro A C library deal with triangulated surfaces shaped by forces and constraints.</p>
+<h1 id="install">Install</h1>
+<p>Minimal requirements <code>pkg-config</code>, <code>make</code>, <code>gcc-c</code>. Optional requrements <code>gsl</code>, <code>geomview</code>, <code>atest</code>, <code>maxima</code>.</p>
+<p>Download code from</p>
+<pre class="sh"><code>$ git clone git@gitlab.ethz.ch:mavt-cse/he</code></pre>
+<p>Adjust <code>conf.mk</code> if you want to change defaults</p>
+<div class="sourceCode"><pre class="sourceCode makefile"><code class="sourceCode makefile"><span class="dt">CC </span><span class="ch">=</span><span class="st"> c99</span>
+<span class="dt">CFLAGS </span><span class="ch">=</span><span class="st"> -O2 -g</span>
+<span class="dt">PREFIX </span><span class="ch">=</span><span class="st"> </span><span class="ch">$(</span><span class="dt">HOME</span><span class="ch">)</span>
+<span class="dt">MAXIMA_HOME </span><span class="ch">=</span><span class="st"> </span><span class="ch">$(</span><span class="dt">HOME</span><span class="ch">)</span><span class="st">/.maxima</span></code></pre></div>
+<p>Library is installed under the path <code>PREFIX</code>. Add <code>PREFIX/bin</code> and <code>PREFIX/man</code> to envariament variables <code>PATH</code> and <code>MANPATH</code>. Run <code>make</code>.</p>
+<p>Run</p>
+<pre class="sh"><code>$ make</code></pre>
+<p>If you have <code>atest</code> installed you can run</p>
+<pre class="sh"><code>$ make test</code></pre>
+<h1 id="examples">Examples</h1>
+<h3 id="hello-world">hello world</h3>
+<p>A simple example is in <a href="example/hello/">example/hello</a></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">$ cat main.c
+<span class="ot">#include &lt;stdio.h&gt;</span>
+
+<span class="ot">#include &lt;real.h&gt;</span>
+<span class="ot">#include &lt;co/tri.h&gt;</span>
+
+<span class="ot">#define FMT HE_REAL_OUT</span>
+
+<span class="dt">int</span> main(<span class="dt">void</span>) {
+    <span class="kw">enum</span> {X, Y, Z};
+    real a[<span class="dv">3</span>], b[<span class="dv">3</span>], c[<span class="dv">3</span>], A;
+
+    a[X] = <span class="dv">0</span>; a[Y] = <span class="dv">0</span>; a[Z] = <span class="dv">0</span>;
+    b[X] = <span class="dv">1</span>; b[Y] = <span class="dv">0</span>; b[Z] = <span class="dv">0</span>;
+    c[X] = <span class="dv">0</span>; c[Y] = <span class="dv">1</span>; c[Z] = <span class="dv">0</span>;
+
+    A = tri_area(a, b, c);
+    printf(<span class="st">&quot;Area is &quot;</span> FMT <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, A);
+}</code></pre></div>
+<pre class="make"><code>$ cat Makefile
+include ../../conf.mk
+PREC = d
+HE_CFLAGS = `co.conf --cflags $(PREC)`
+HE_LDFLAGS = `co.conf --libs $(PREC)`
+
+main: main.c
+    $(CC) main.c $(CFLAGS) $(HE_CFLAGS) $(LDFLAGS) $(HE_LDFLAGS) -o main
+test:
+install:
+
+.PHONY: clean test install doc
+clean:; rm -f main
+</code></pre>
+<h3 id="read-off-file">read off file</h3>
+<p>An example is in <a href="example/off/read/">example/off/read</a></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">$ cat main.c
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &lt;stdlib.h&gt;</span>
+
+<span class="ot">#include &lt;real.h&gt;</span>
+<span class="ot">#include &lt;co/array.h&gt;</span>
+<span class="ot">#include &lt;co/he.h&gt;</span>
+<span class="ot">#include &lt;co/y.h&gt;</span>
+
+<span class="ot">#define FMT HE_REAL_OUT</span>
+
+<span class="dt">int</span> main(<span class="dt">void</span>) {
+    real *x, *y, *z;
+    real hi, lo;
+    He *he;
+    <span class="dt">int</span> nv;
+
+    y_inif(stdin, &amp;he, &amp;x, &amp;y, &amp;z);
+    nv = he_nv(he);
+    hi = array_max(nv, x);
+    lo = array_min(nv, x);
+
+    printf(<span class="st">&quot;number of vertices is %d</span><span class="ch">\n</span><span class="st">&quot;</span>, nv);
+    printf(FMT <span class="st">&quot; &quot;</span> FMT <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>, hi, lo);
+    y_fin(he, x, y, z);
+}</code></pre></div>
+<h1 id="visualization">visualization</h1>
+<p>We use a wrapper to <a href="http://geomview.org">geomview</a>.</p>
+<pre class="sh"><code>$ co.geomview -h
+co.geomview [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..
+he geomview wrapper
+-t x y z      translation
+-r x y z      rotation in degree
+-f zoom       field of view (default is 40)
+-a APPEARANCE load appearance from a file
+-o FILE       write FILE and exit
+-O            write all PPM files and exit
+-OO           write all oogl files and exit
+-format ppmscreen|ppm|ps|ppmosmesa|ppmosglx
+-p command    process every off file by running &#39;command&#39; &lt; IN.off &gt; OUT.off
+-n none|each|all|keep normalization status (see geomview manual)
+-c command    run command on every file and write output to stderr, %f is replaced by a file name
+-i command    run command on every image, %i replaced by input; %o -- by output; %b --- by basename
+
+Keys:
+    q: quit
+    s: save snap.ppm
+    S: save every snapshot
+    p: panel
+    j/k: switch between off files
+    J: dump file name
+    [SPC]: dump orientation and field of view
+
+Environment variables:
+WX, WY: resolution of the snapshot (default: 800x600)
+BACKGROUND: default (&#39;1 1 1&#39;)
+
+Examples:
+co.geomview -t 0.25 0.25 0     data/rbc.off
+co.geomview -a data/appearance data/rbc.off
+co.geomview -o snap.ppm        data/rbc.off
+co.geomview                    data/rbc.off data/sph.off
+co.geomview -p co.orient       data/rbc.off data/sph.off
+co.geomview -c off.volume      data/rbc.off data/sph.off
+</code></pre>
+<h1 id="lib">Lib</h1>
+<h2 id="floating-point-precision">Floating point precision</h2>
+<dl>
+<dt><a href="lib/he/prec/s/real.h">prec/s/real.h</a>, <a href="lib/he/prec/d/real.h">prec/d/real.h</a>, <a href="lib/he/prec/l/real.h">prec/l/real.h</a></dt>
+<dd>single, double, long double
+</dd>
+</dl>
+<h2 id="math">Math</h2>
+<dl>
+<dt><a href="lib/he/vec.h">vec.h</a>, <a href="lib/he/edg.h">edg.h</a>, <a href="lib/he/tri.h">tri.h</a>, <a href="lib/he/dih.h">dih.h</a>, <a href="lib/he/ten.h">ten.h</a></dt>
+<dd>vector, edges, triangels, dihidrals, tensors
+</dd>
+<dt><a href="lib/he/dvec.h">dvec.h</a>, <a href="lib/he/dedg.h">dedg.h</a>, <a href="lib/he/dtri.h">dtri.h</a>, <a href="lib/he/ddih.h">ddih.h</a></dt>
+<dd>derivatives of vector edges, triagels, dihidrals
+</dd>
+</dl>
+<h2 id="utility">Utility</h2>
+<dl>
+<dt><a href="lib/he/array.h">array.h</a></dt>
+<dd>array related functions
+</dd>
+<dt><a href="lib/he/err.h">err.h</a></dt>
+<dd>error handling
+</dd>
+<dt><a href="lib/he/macro.h">macro.h</a></dt>
+<dd>macros
+</dd>
+<dt><a href="lib/he/memory.h">memory.h</a></dt>
+<dd>memory related
+</dd>
+<dt><a href="lib/he/util.h">util.h</a></dt>
+<dd>uncategorazed
+</dd>
+</dl>
+<h2 id="surface-properties">Surface properties</h2>
+<dl>
+<dt><a href="lib/he/area.h">area.h</a></dt>
+<dd>area
+</dd>
+<dt><a href="lib/he/volume.h">volume.h</a></dt>
+<dd>volume
+</dd>
+<dt><a href="lib/he/laplace.h">laplace.h</a></dt>
+<dd>Laplace operator of coordinates
+</dd>
+<dt><a href="lib/he/normal.h">normal.h</a></dt>
+<dd>normal
+</dd>
+</dl>
+<h2 id="surface-transformation">Surface transformation</h2>
+<dl>
+<dt><a href="lib/he/equiangulate.h">equiangulate.h</a></dt>
+<dd>equlatirate triangles
+</dd>
+<dt><a href="lib/he/orient.h">orient.h</a></dt>
+<dd>orient surface in a direction of eigen values of momentum tensor
+</dd>
+<dt><a href="lib/he/restore.h">restore.h</a></dt>
+<dd>restore a volume of the surface
+</dd>
+</dl>
+<h2 id="half-edg-related">Half-edg related</h2>
+<dl>
+<dt><a href="lib/he/read.h">read.h</a></dt>
+<dd>read half-edg to intermediate structure HeRead, used to initialize <strong>co.h</strong>
+</dd>
+<dt><a href="lib/he/co.h">co.h</a></dt>
+<dd>half edg data structure (provides half-edg API)
+</dd>
+<dt><a href="lib/he/hash.h">hash.h</a></dt>
+<dd>stores an integer for a pair of integers
+</dd>
+</dl>
+<h2 id="io">IO</h2>
+<dl>
+<dt><a href="lib/he/off.h">off.h</a>, <a href="lib/he/punto.h">punto.h</a>, <a href="lib/he/vtk.h">vtk.h</a>, <a href="lib/he/gts.h">gts.h</a>, <a href="lib/he/ply.h">ply.h</a>, <a href="lib/he/obj.h">obj.h</a></dt>
+<dd>read/write off files, punto, vtk, gts, ply, obj files
+</dd>
+</dl>
+<h2 id="x-and-y">X and Y</h2>
+<dl>
+<dt><a href="lib/he/x.h">x.h</a></dt>
+<dd>simple interface for one surface
+</dd>
+<dt><a href="lib/he/y.h">y.h</a></dt>
+<dd>not so simple interface
+</dd>
+</dl>
