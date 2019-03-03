@@ -1,4 +1,5 @@
-![Intro image](img/rbc/sde/Da-0.358.png)
+![](img/rbc/sde/Da-0.358.png){.center}
+
 # Intro
 A C library deal with triangulated surfaces shaped by forces
 and constraints.
