@@ -20,7 +20,7 @@ int main() {
         if (status != CO_OK)
             ER("he_ring failed for i = %d", i);
         printf("%d %d\n", i, n);
-        for (j = 0; j < n; j++) {
+        for (j = 0; ring[j] != -1; j++) {
             fputs(j == 0 ? ": " : " ", stdout);
             printf("%d", ring[j]);
         }
