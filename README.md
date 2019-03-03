@@ -1,6 +1,6 @@
 ![Intro image](img/rbc/sde/Da-0.358.png)
 # Intro
-A C library for the modelling of triangulated surfaces shaped by forces
+A C library deal with triangulated surfaces shaped by forces
 and constraints.
 
 # Install
@@ -162,16 +162,10 @@ he.geomview -c off.volume      data/rbc.off data/sph.off
 
 # Lib
 
-## Precision
+## Floating point precision
 
-[prec/d/real.h](lib/prec/d/real.h)
-:   double
-
-prec/s/real.h
-:   single
-
-prec/l/real.h
-:   long double
+[prec/s/real.h](lib/he/prec/s/real.h), [prec/d/real.h](lib/he/prec/d/real.h), [prec/l/real.h](lib/he/prec/l/real.h)
+:   single, double, long double
 
 ## Math
 
