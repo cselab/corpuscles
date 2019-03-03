@@ -80,7 +80,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <![endif]-->
 </head>
 <body>
-<p><img src="img/rbc/sde/Da-0.358.png" /><br />
+<p><img src="img/rbc/sde/Da-0.358.png" alt="red cell" /><br />
 </p>
 <h1 id="introduction">Introduction</h1>
 <p>A C library deal with triangulated surfaces shaped by forces and constraints.</p>
@@ -190,9 +190,9 @@ clean:; rm -f main
 <a class="sourceLine" id="cb8-22" title="22">}</a></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1"><span class="ex">./main</span> <span class="op">&lt;</span> <span class="va">$(</span><span class="ex">co.path</span><span class="va">)</span>/rbc/laplace/0.off <span class="op">&gt;</span> out.off</a></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1"><span class="ex">co.geomview</span> -r 55.9195 -13.672 8.69021 -f 25.0389 out.off</a></code></pre></div>
-<p><img src="img/area.png" /><br />
+<p><img src="img/area.png" alt="mesh colored by triangle area" /><br />
 </p>
-<h1 id="visualization">visualization</h1>
+<h1 id="visualization">Visualization</h1>
 <p>We use a wrapper to <a href="http://geomview.org">geomview</a>.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1">$ <span class="ex">co.geomview</span> -h</a>
 <a class="sourceLine" id="cb11-2" title="2"><span class="ex">co.geomview</span> [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..</a>

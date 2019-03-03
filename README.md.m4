@@ -2,7 +2,8 @@ include(`co.m4')dnl
 include(`m4/util.m4')dnl
 r_geomview(
 <<-p 'co.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
-<<img/rbc/sde/Da-0.358.png>>)dnl
+<<img/rbc/sde/Da-0.358.png>>,
+red cell)dnl
 \
 
 # Introduction
@@ -75,10 +76,11 @@ r_file(example/off/write/area/main.c)
 co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 ```
 r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
-<<img/area.png>>)dnl
+<<img/area.png>>,
+mesh colored by triangle area)dnl
 \
 
-# visualization
+# Visualization
 
 We use a wrapper to [geomview](http://geomview.org).
 

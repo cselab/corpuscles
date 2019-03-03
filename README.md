@@ -1,5 +1,5 @@
 
-![](img/rbc/sde/Da-0.358.png)\
+![red cell](img/rbc/sde/Da-0.358.png)\
 
 # Introduction
 A C library deal with triangulated surfaces shaped by forces
@@ -154,9 +154,9 @@ int main(void) {
 co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 ```
 
-![](img/area.png)\
+![mesh colored by triangle area](img/area.png)\
 
-# visualization
+# Visualization
 
 We use a wrapper to [geomview](http://geomview.org).
 

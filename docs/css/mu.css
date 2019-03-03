@@ -16,6 +16,12 @@ h1, h2, h3, h4, h5 {
     line-height: 1.2;
 }
 
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 hr {
     border: 0;
     margin: 25px 0;

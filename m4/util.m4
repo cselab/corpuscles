@@ -6,5 +6,5 @@ r_define(`r_cmd', `h_cmd($1)')dnl
 r_define(`r_dir', `[$1]($1/)')dnl
 r_define(`r_geomview', `h_syscmd(WX=400 WY=300 co.geomview -o $2 -i "convert %i %o" $1)dnl
 h_syscmd(co.install "$2" docs)
-![]($2)')dnl
+![$3]($2)')dnl
 h_changequote(`<<', `>>')dnl
