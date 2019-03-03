@@ -1,2 +1,0 @@
-# TEST: 0
-he.run ./main < ../../data/hex/flat.off > he.out.txt
