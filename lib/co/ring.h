@@ -4,11 +4,12 @@ typedef struct T T;
 
 int ring_ini(/**/ T**);
 
-int ring_alpha(T*, const int*, const real*, const real*, const real*, /**/ real**);
-int ring_beta(T*, const int*, const real*, const real*, const real*, /**/ real**);
-int ring_theta(T*, const int*, const real*, const real*, const real*, /**/ real**);
-int ring_xyz(T*, const int*, const real*, const real*, const real*, /**/ real**);
-int ring_A(T*, const int*, const real*, const real*, const real*, /**/ real**);
+/* vertice, ring[], x, y, z */
+int ring_alpha(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
+int ring_beta(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
+int ring_theta(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
+int ring_xyz(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
+int ring_A(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 
 int ring_fin(T);
 
