@@ -1,17 +1,16 @@
 include ../conf.mk
-TRG = he
-P = he_s.pc he_d.pc he_l.pc
+PC = co_s.pc co_d.pc co_l.pc
 SED = sed
 
-install: $P
+install: $(PC)
 	mkdir -p -- "$(PREFIX)/share/pkgconfig"
-	cp $P "$(PREFIX)/share/pkgconfig"
+	cp $(PC) "$(PREFIX)/share/pkgconfig"
 
-he_s.pc: $(TRG).pc.in
+co_s.pc: $P.pc.in
 	$(SED) "s,@PREFIX@,$(PREFIX),g; s,@PREC@,s,g" $< > $@
-he_d.pc: $(TRG).pc.in
+co_d.pc: $P.pc.in
 	$(SED) "s,@PREFIX@,$(PREFIX),g; s,@PREC@,d,g" $< > $@
-he_l.pc: $(TRG).pc.in
+co_l.pc: $P.pc.in
 	$(SED) "s,@PREFIX@,$(PREFIX),g; s,@PREC@,l,g" $< > $@
 
 clean:; rm -f $P
