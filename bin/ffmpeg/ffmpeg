@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.ffmpeg
+prog=co.ffmpeg
 
 usg () {
     msg "$prog -o OUTPUT.mp4 IMAGES.."
@@ -41,7 +41,7 @@ if test $# -eq 0; then err 'no IMAGES..'; fi
 for i; do filep "$i"; done
 if ! intp "$R"; then err "not an integer '$R'"; fi
 
-t=/tmp/he.ffmpeg.$$
+t=/tmp/co.ffmpeg.$$
 trap 'rm -f $t' 1 2 3 15
 p=`pwd`
 for i; do echo file \'"$p/$i"\'; done > $t

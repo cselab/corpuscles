@@ -9,7 +9,7 @@
 #include <co/invariants.h>
 #include <co/err.h>
 #include <co/off.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/util.h>
@@ -18,7 +18,7 @@
 
 #define FMT   HE_REAL_OUT
 
-static const char *me = "he.q";
+static const char *me = "co.q";
 static void usg(void) {
     fprintf(stderr, "%s query [ARGS..] < IN.off > OUT.off\n", me);
     fputs("color off file\n", stderr);

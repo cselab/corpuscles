@@ -1,2 +1,2 @@
 # TEST: 2to3
-he.run ./main 2to3 -5.0 -7.0 -4.0 7.0 -1.0 3.0 3.0 2.0 -7.0 > main.out.txt
+co.run ./main 2to3 -5.0 -7.0 -4.0 7.0 -1.0 3.0 3.0 2.0 -7.0 > main.out.txt

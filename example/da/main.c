@@ -3,7 +3,7 @@
 
 #include <real.h>
 #include <co/err.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/vec.h>
 #include <co/normal.h>
 #include <co/da.h>

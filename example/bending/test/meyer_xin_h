@@ -1,2 +1,2 @@
 # nTEST: meyer_xin_h
-he.run ./main meyer_xin 1 0 0 0 < `co.path`/rbc/laplace/0.off  | uscale 1000 > q.out.txt
+co.run ./main meyer_xin 1 0 0 0 < `co.path`/rbc/laplace/0.off  | uscale 1000 > q.out.txt

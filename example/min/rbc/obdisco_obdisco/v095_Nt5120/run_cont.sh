@@ -50,7 +50,7 @@ then
     fi
     cd xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}_cont
     
-    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' ../xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}/$off 
+    co.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' ../xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}/$off 
 else
 
     Da1=1.717

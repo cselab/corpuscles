@@ -5,7 +5,7 @@
 #include <co/memory.h>
 #include <co/off.h>
 #include <co/orient.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/err.h>
 #include <co/util.h>
 #include <co/macro.h>
@@ -16,7 +16,7 @@ static real *x, *y, *z;
 static He *he;
 static Orient *orient;
 
-static const char *me = "he.orient";
+static const char *me = "co.orient";
 
 static void usg(void) {
     fprintf(stderr, "%s < IN.off > OUT.off\n", me);

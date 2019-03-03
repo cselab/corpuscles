@@ -44,7 +44,7 @@ then
     fi
     cd v${v}_xi${xi}_kBT${kBT}_dt${dt}
     
-    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off '>' v$v.msg
+    co.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off '>' v$v.msg
 else
 
     v=0.642

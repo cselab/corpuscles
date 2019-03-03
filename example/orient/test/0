@@ -1,2 +1,2 @@
 # TEST: 0
-he.run ./main < data/kantor.off > o.out.kantor
+co.run ./main < data/kantor.off > o.out.kantor

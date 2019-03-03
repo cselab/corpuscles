@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.msh2off
+prog=co.msh2off
 
 usg () {
     msg "$prog MSH > OFF"

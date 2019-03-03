@@ -8,7 +8,7 @@ ALG_LDFLAGS = `alg.conf --libs $(PREC)`
 
 install: $M
 	mkdir -p $(PREFIX)/bin
-	cp main $(PREFIX)/bin/he.align
+	cp main $(PREFIX)/bin/co.align
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) $(ALG_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@

@@ -17,7 +17,7 @@
 #include <co/dedg.h>
 #include <co/ddih.h>
 #include <co/dtri.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/bending.h>
 #include <co/force.h>
 #include <co/x.h>

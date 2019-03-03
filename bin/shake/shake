@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.shake
+prog=co.shake
 : ${h=1e-4}
 
 usg () {

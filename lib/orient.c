@@ -4,7 +4,7 @@
 
 #include "co/memory.h"
 #include "co/err.h"
-#include "co/he.h"
+#include "co/he.h
 #include "co/vec.h"
 #include "co/sum.h"
 #include "co/ten.h"

@@ -8,7 +8,7 @@
 #include <co/memory.h>
 #include <co/macro.h>
 #include <co/f/wlc.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/sum.h>
 #include <co/util.h>
 #include <co/y.h>

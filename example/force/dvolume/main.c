@@ -5,7 +5,7 @@
 #include <co/memory.h>
 #include <co/punto.h>
 #include <co/f/dvolume.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/y.h>
 
 static int nv;

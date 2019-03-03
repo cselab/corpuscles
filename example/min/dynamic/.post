@@ -7,7 +7,7 @@ do d=`dirname "$s"`
    {
     echo ' h0 h1 h2'
     for o in $d/*.off
-    do he.cmoment $scheme < $o
+    do co.cmoment $scheme < $o
     done
    } > $d/cmoment
 done

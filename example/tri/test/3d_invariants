@@ -1,2 +1,2 @@
 # TEST: 3d_invariants
-he.run ./main 3d_invariants -3 5 -6 -1 0 -1 0 -9 2 -5 5 -5 -9 -9 -6 5 -4 6 > main.out.txt
+co.run ./main 3d_invariants -3 5 -6 -1 0 -1 0 -9 2 -5 5 -5 -9 -9 -6 5 -4 6 > main.out.txt

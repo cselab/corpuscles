@@ -30,5 +30,5 @@ DA0D=0
 
 dir=o
 
-he.run ./main juelicher_xin $Vr $Ka $Kga $Kv $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir  \
+co.run ./main juelicher_xin $Vr $Ka $Kga $Kv $Kb $C0 $Kad $DA0D $mu $dt $end $freq    $dir  \
        strain $ref lim $Kas $mus 0 0 0 0 < $off

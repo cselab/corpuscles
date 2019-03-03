@@ -1,3 +1,3 @@
 # TEST: i
-he.geomview -O -i 'i/rvolume %f %i %o' data/rbc.off data/sph.off 2>err.txt
+co.geomview -O -i 'i/rvolume %f %i %o' data/rbc.off data/sph.off 2>err.txt
 cp err.txt err.out.txt

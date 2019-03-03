@@ -4,8 +4,8 @@ include(`util.m4')dnl
 h_changequote(,)dnl
 . co.util
 
-prog=he.geomview
-prog0=he.geomview0
+prog=co.geomview
+prog0=co.geomview0
 
 usg () {
     cat <<EOF
@@ -42,7 +42,7 @@ $prog -t 0.25 0.25 0     data/rbc.off
 $prog -a data/appearance data/rbc.off
 $prog -o snap.ppm        data/rbc.off
 $prog                    data/rbc.off data/sph.off
-$prog -p he.orient       data/rbc.off data/sph.off
+$prog -p co.orient       data/rbc.off data/sph.off
 $prog -c off.volume      data/rbc.off data/sph.off
 EOF
     exit
@@ -159,7 +159,7 @@ fi
 
 if test "$process" = -
 then gview "$@"
-else t=/tmp/he.geomview.off.$$
+else t=/tmp/co.geomview.off.$$
      mkdir -p $t
      trap 'rm -rf $t' 1 2 3 4 15
      i=0

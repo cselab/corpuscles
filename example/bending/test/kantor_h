@@ -1,2 +1,2 @@
 # nTEST: kantor_h
-he.run ./main kantor 1 0 0 0 < `co.path`/rbc/laplace/0.off  | uscale 1000 > q.out.txt
+co.run ./main kantor 1 0 0 0 < `co.path`/rbc/laplace/0.off  | uscale 1000 > q.out.txt

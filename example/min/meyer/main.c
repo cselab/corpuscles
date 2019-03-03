@@ -20,7 +20,7 @@
 #include <co/f/meyer.h>
 #include <co/f/volume_normal.h>
 #include <co/filter.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/off.h>

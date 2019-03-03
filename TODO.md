@@ -2,7 +2,7 @@
 
 - Change scripts
 
-    he. -> co.
+    co. -> co.
 	
 - HE_LDFLAGS, HE_CFLAGS
 

@@ -9,7 +9,7 @@ dvec.mac\
 dtri.mac\
 edg.mac\
 err.mac\
-he.mac\
+co.mac\
 off.mac\
 tri.mac\
 loop.mac\

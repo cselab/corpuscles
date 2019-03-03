@@ -6,7 +6,7 @@
 #include <real.h>
 
 #include <co/err.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/off.h>
@@ -17,7 +17,7 @@
 #include <co/util.h>
 #include <co/y.h>
 
-const char *me = "he.align";
+const char *me = "co.align";
 
 const static int perms[][3] = {
     {0, 0, 0}, {0, 0, 1},

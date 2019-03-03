@@ -1,2 +1,2 @@
 # nTEST: 0
-he.orient < data/kantor.off | uscale 1e3 > o.out.kantor
+co.orient < data/kantor.off | uscale 1e3 > o.out.kantor

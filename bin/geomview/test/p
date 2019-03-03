@@ -1,4 +1,4 @@
 # TEST: p
 rm -f 00001.ppm 00002.ppm
-he.geomview -O -p he.orient       data/rbc.off data/sph.off
+co.geomview -O -p co.orient       data/rbc.off data/sph.off
 test -f 00001.ppm && test -f 00002.ppm  && echo 0 > status.out.txt

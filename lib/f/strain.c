@@ -7,7 +7,7 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/err.h"
-#include "co/he.h"
+#include "co/he.h
 #include "co/vec.h"
 #include "co/tri.h"
 #include "co/y.h"

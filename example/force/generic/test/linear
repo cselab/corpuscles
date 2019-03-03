@@ -1,4 +1,4 @@
 # nTEST: linear
 r=`co.path`/sph/laplace/0.off
 i=`co.path`/rbc/laplace/0.off
-he.run ./main strain $r linear 1 2 < $i | uscale 1e6 > main.out.txt
+co.run ./main strain $r linear 1 2 < $i | uscale 1e6 > main.out.txt

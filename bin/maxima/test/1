@@ -1,2 +1,2 @@
 # TEST: 1
-he.maxima x:- y:10 data/0.mac || echo FAIL > error.out.txt
+co.maxima x:- y:10 data/0.mac || echo FAIL > error.out.txt

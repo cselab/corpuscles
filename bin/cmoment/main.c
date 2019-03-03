@@ -6,7 +6,7 @@
 #include <real.h>
 #include <co/bending.h>
 #include <co/punto.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/memory.h>
 #include <co/err.h>
 #include <co/util.h>
@@ -24,7 +24,7 @@ static int nv, nt;
 static He *he;
 static Bending *bending;
 static BendingParam param;
-static const char *me = "he.cmoment";
+static const char *me = "co.cmoment";
 
 static void usg() {
     const char *list;

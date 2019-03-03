@@ -46,7 +46,7 @@ then
     cd v${v}_xi${xi}_kBT${kBT}_dt${dt}
 
     DA0D=1.112597
-    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq $freq_stat . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off '>' v$v.msg
+    co.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq $freq_stat . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off '>' v$v.msg
 
 else
 

@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.vtk2off
+prog=co.vtk2off
 
 usg () {
     msg "$prog [-l low] [-h hi] --[scalar] [FILE.vtk]"

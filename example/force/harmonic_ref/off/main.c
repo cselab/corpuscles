@@ -7,7 +7,7 @@
 
 #include <co/err.h>
 #include <co/f/harmonic_ref.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/punto.h>

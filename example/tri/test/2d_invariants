@@ -1,2 +1,2 @@
 # TEST: 2d_invariants
-he.run ./main 2d_invariants 1 2 3 4 5 6 > main.out.txt
+co.run ./main 2d_invariants 1 2 3 4 5 6 > main.out.txt

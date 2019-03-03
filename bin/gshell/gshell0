@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.gshell0
+prog=co.gshell0
 
 usg () {
     msg "$prog"

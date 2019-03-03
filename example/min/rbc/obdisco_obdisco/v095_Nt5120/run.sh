@@ -52,7 +52,7 @@ then
     cd xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
     
     
-    he.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq $freq_stat . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off 
+    co.run ../../../main juelicher_xin $R $rho $v $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $D $xi $dt $kBT $end $freq $freq_stat . strain $ref lim $mua $mub $a3 $a4 $b1 $b2 '<' $off 
 else
 
     Da1=-0.858

@@ -1,4 +1,4 @@
 # nTEST: rbc2
 i=`co.path`/rbc/laplace/0.off
-he.maxima dH.mac i=$i o=o P:'H^2/area'
+co.maxima dH.mac i=$i o=o P:'H^2/area'
 uscale 1e6 o > o.out.txt

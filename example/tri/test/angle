@@ -1,2 +1,2 @@
 # TEST: angle
-he.run ./main angle 0 0 0   0 1 0  1 0 0 > main.out.txt
+co.run ./main angle 0 0 0   0 1 0  1 0 0 > main.out.txt

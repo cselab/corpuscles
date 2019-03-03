@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.run
+prog=co.run
 
 : ${VALGRIND=valgrind}
 : ${TIME=time}

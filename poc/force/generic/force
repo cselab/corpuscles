@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.force
+prog=co.force
 
 usg () {
     cat <<!

@@ -5,11 +5,11 @@ r_define(`r_header', `[$1](lib/he/$1)')dnl
 r_define(`r_file', `h_cmd(cat $1)')dnl
 r_define(`r_cmd', `h_cmd($1)')dnl
 r_define(`r_dir', `[$1]($1/)')dnl
-r_define(`r_geomview', `h_syscmd(WX=400 WY=300 he.geomview -o $2 -i "convert %i %o" $1)dnl
+r_define(`r_geomview', `h_syscmd(WX=400 WY=300 co.geomview -o $2 -i "convert %i %o" $1)dnl
 ![$3]($2)')dnl
 h_changequote(`<<', `>>')dnl
 r_geomview(
-<<-p 'he.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
+<<-p 'co.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
 <<img/rbc/sde/Da-0.358.png>>,
 <<Intro image>>)
 # Intro
@@ -76,8 +76,8 @@ r_file(example/off/read/main.c)
 We use a wrapper to [geomview](http://geomview.org).
 
 ```sh
-$ he.geomview -h
-r_cmd(<<he.geomview -h>>)
+$ co.geomview -h
+r_cmd(<<co.geomview -h>>)
 ```
 
 # Lib
@@ -141,9 +141,9 @@ r_header(restore.h)
 
 r_header(read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize
-    **he.h**
+    **co.h**
 
-r_header(he.h)
+r_header(co.h)
 :   half edg data structure (provides half-edg API)
 
 r_header(hash.h)

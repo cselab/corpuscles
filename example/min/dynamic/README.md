@@ -14,7 +14,7 @@
 
 # Off
 
-	$ he.geomview -f 27 -r -130 0 0 Nt_1280/dt_0.005/mu_1/*.off
+	$ co.geomview -f 27 -r -130 0 0 Nt_1280/dt_0.005/mu_1/*.off
 
 	Nt_1280/dt_0.005/mu_1/00000000.off 0
 	Nt_1280/dt_0.005/mu_1/00050000.off 250

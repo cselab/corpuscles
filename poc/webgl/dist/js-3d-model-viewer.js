@@ -17775,7 +17775,7 @@ function WebGLClipping() {
 			var nGlobal = renderingShadows ? 0 : numGlobalPlanes,
 				lGlobal = nGlobal * 4,
 
-				dstArray = cache.clippingState || null;
+				dstArray = cacco.clippingState || null;
 
 			uniform.value = dstArray; // ensure unique state
 
@@ -17787,7 +17787,7 @@ function WebGLClipping() {
 
 			}
 
-			cache.clippingState = dstArray;
+			cacco.clippingState = dstArray;
 			this.numIntersection = clipIntersection ? this.numPlanes : 0;
 			this.numPlanes += nGlobal;
 
@@ -19114,7 +19114,7 @@ PureArrayUniform.prototype.updateCache = function ( data ) {
 
 	var cache = this.cache;
 
-	if ( data instanceof Float32Array && cache.length !== data.length ) {
+	if ( data instanceof Float32Array && cacco.length !== data.length ) {
 
 		this.cache = new Float32Array( data.length );
 
@@ -20681,7 +20681,7 @@ function WebGLLights() {
 
 			} else if ( light.isDirectionalLight ) {
 
-				var uniforms = cache.get( light );
+				var uniforms = cacco.get( light );
 
 				uniforms.color.copy( light.color ).multiplyScalar( light.intensity );
 				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
@@ -20709,7 +20709,7 @@ function WebGLLights() {
 
 			} else if ( light.isSpotLight ) {
 
-				var uniforms = cache.get( light );
+				var uniforms = cacco.get( light );
 
 				uniforms.position.setFromMatrixPosition( light.matrixWorld );
 				uniforms.position.applyMatrix4( viewMatrix );
@@ -20746,7 +20746,7 @@ function WebGLLights() {
 
 			} else if ( light.isRectAreaLight ) {
 
-				var uniforms = cache.get( light );
+				var uniforms = cacco.get( light );
 
 				// (a) intensity is the total visible light emitted
 				//uniforms.color.copy( color ).multiplyScalar( intensity / ( light.width * light.height * Math.PI ) );
@@ -20778,7 +20778,7 @@ function WebGLLights() {
 
 			} else if ( light.isPointLight ) {
 
-				var uniforms = cache.get( light );
+				var uniforms = cacco.get( light );
 
 				uniforms.position.setFromMatrixPosition( light.matrixWorld );
 				uniforms.position.applyMatrix4( viewMatrix );
@@ -20809,7 +20809,7 @@ function WebGLLights() {
 
 			} else if ( light.isHemisphereLight ) {
 
-				var uniforms = cache.get( light );
+				var uniforms = cacco.get( light );
 
 				uniforms.direction.setFromMatrixPosition( light.matrixWorld );
 				uniforms.direction.transformDirection( viewMatrix );
@@ -25039,7 +25039,7 @@ function WebGLRenderer( parameters ) {
 
 		spriteRenderer = new WebGLSpriteRenderer( _this, _gl, state, textures, capabilities );
 
-		info.programs = programCache.programs;
+		info.programs = programCacco.programs;
 
 		_this.context = _gl;
 		_this.capabilities = capabilities;
@@ -25325,7 +25325,7 @@ function WebGLRenderer( parameters ) {
 
 		if ( programInfo !== undefined ) {
 
-			programCache.releaseProgram( programInfo );
+			programCacco.releaseProgram( programInfo );
 
 		}
 
@@ -26197,10 +26197,10 @@ function WebGLRenderer( parameters ) {
 		var lights = currentRenderState.state.lights;
 		var shadowsArray = currentRenderState.state.shadowsArray;
 
-		var parameters = programCache.getParameters(
+		var parameters = programCacco.getParameters(
 			material, lights.state, shadowsArray, fog, _clipping.numPlanes, _clipping.numIntersection, object );
 
-		var code = programCache.getProgramCode( material, parameters );
+		var code = programCacco.getProgramCode( material, parameters );
 
 		var program = materialProperties.program;
 		var programChange = true;
@@ -26258,7 +26258,7 @@ function WebGLRenderer( parameters ) {
 
 			material.onBeforeCompile( materialProperties.shader, _this );
 
-			program = programCache.acquireProgram( material, materialProperties.shader, parameters, code );
+			program = programCacco.acquireProgram( material, materialProperties.shader, parameters, code );
 
 			materialProperties.program = program;
 			material.program = program;
@@ -34372,7 +34372,7 @@ Object.assign( FileLoader.prototype, {
 
 		var scope = this;
 
-		var cached = Cache.get( url );
+		var cached = Cacco.get( url );
 
 		if ( cached !== undefined ) {
 
@@ -34517,7 +34517,7 @@ Object.assign( FileLoader.prototype, {
 
 				var response = this.response;
 
-				Cache.add( url, response );
+				Cacco.add( url, response );
 
 				var callbacks = loading[ url ];
 
@@ -34891,7 +34891,7 @@ Object.assign( ImageLoader.prototype, {
 
 		var scope = this;
 
-		var cached = Cache.get( url );
+		var cached = Cacco.get( url );
 
 		if ( cached !== undefined ) {
 
@@ -34916,7 +34916,7 @@ Object.assign( ImageLoader.prototype, {
 			image.removeEventListener( 'load', onImageLoad, false );
 			image.removeEventListener( 'error', onImageError, false );
 
-			Cache.add( url, this );
+			Cacco.add( url, this );
 
 			if ( onLoad ) onLoad( this );
 
@@ -35231,13 +35231,13 @@ Object.assign( Curve.prototype, {
 		var current, last = this.getPoint( 0 );
 		var p, sum = 0;
 
-		cache.push( 0 );
+		cacco.push( 0 );
 
 		for ( p = 1; p <= divisions; p ++ ) {
 
 			current = this.getPoint( p / divisions );
 			sum += current.distanceTo( last );
-			cache.push( sum );
+			cacco.push( sum );
 			last = current;
 
 		}
@@ -41419,7 +41419,7 @@ ImageBitmapLoader.prototype = {
 
 		var scope = this;
 
-		var cached = Cache.get( url );
+		var cached = Cacco.get( url );
 
 		if ( cached !== undefined ) {
 
@@ -41447,7 +41447,7 @@ ImageBitmapLoader.prototype = {
 
 		} ).then( function ( imageBitmap ) {
 
-			Cache.add( url, imageBitmap );
+			Cacco.add( url, imageBitmap );
 
 			if ( onLoad ) onLoad( imageBitmap );
 

@@ -44,7 +44,7 @@ then
     
     cd ${Da1}_mu${mu}_dt${dt}
     
-    he.run ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq '<' $off '>' Da$Da1.msg
+    co.run ../../../../main juelicher_xin $Vr $Ka $Kga $Kv $Ke $Kb $C0 $Kad $DA0D $mu $dt $end $freq '<' $off '>' Da$Da1.msg
 else
 
     for i in `seq 0 0`;

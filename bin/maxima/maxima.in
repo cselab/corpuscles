@@ -1,6 +1,6 @@
 . co.util
 
-prog=he.maxima
+prog=co.maxima
 : ${MAXIMA=maxima}
 : ${MAXIMA_HOME=@MAXIMA_HOME@}
 
@@ -73,5 +73,5 @@ if test ! -f "$File"; then err "Not a file '$File'"; fi
 "$MAXIMA" $Opt --very-quiet --batch-lisp "$batch" ---- "$File" $Var
 
 if test $? -ne 0
-then err 'he.maxima failed'
+then err 'co.maxima failed'
 fi

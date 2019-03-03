@@ -93,7 +93,7 @@ $ cat main.c
 
 #include <real.h>
 #include <co/array.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/y.h>
 
 #define FMT HE_REAL_OUT
@@ -121,8 +121,8 @@ int main(void) {
 We use a wrapper to [geomview](http://geomview.org).
 
 ```sh
-$ he.geomview -h
-he.geomview [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..
+$ co.geomview -h
+co.geomview [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..
 he geomview wrapper
 -t x y z      translation
 -r x y z      rotation in degree
@@ -151,12 +151,12 @@ WX, WY: resolution of the snapshot (default: 800x600)
 BACKGROUND: default ('1 1 1')
 
 Examples:
-he.geomview -t 0.25 0.25 0     data/rbc.off
-he.geomview -a data/appearance data/rbc.off
-he.geomview -o snap.ppm        data/rbc.off
-he.geomview                    data/rbc.off data/sph.off
-he.geomview -p he.orient       data/rbc.off data/sph.off
-he.geomview -c off.volume      data/rbc.off data/sph.off
+co.geomview -t 0.25 0.25 0     data/rbc.off
+co.geomview -a data/appearance data/rbc.off
+co.geomview -o snap.ppm        data/rbc.off
+co.geomview                    data/rbc.off data/sph.off
+co.geomview -p co.orient       data/rbc.off data/sph.off
+co.geomview -c off.volume      data/rbc.off data/sph.off
 
 ```
 
@@ -221,9 +221,9 @@ he.geomview -c off.volume      data/rbc.off data/sph.off
 
 [read.h](lib/he/read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize
-    **he.h**
+    **co.h**
 
-[he.h](lib/he/he.h)
+[co.h](lib/he/co.h)
 :   half edg data structure (provides half-edg API)
 
 [hash.h](lib/he/hash.h)

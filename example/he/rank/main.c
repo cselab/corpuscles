@@ -2,7 +2,7 @@
 
 #include <real.h>
 #include <co/err.h>
-#include <co/he.h>
+#include <co/he.h
 #include <co/memory.h>
 #include <co/vtk.h>
 #include <co/y.h>

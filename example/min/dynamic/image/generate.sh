@@ -1,7 +1,7 @@
 dt=0.005
 
 m () {
-    he.geomview -f 27 -r -130 0 0 -a ~/app/app42 -o /tmp/t.ppm $1
+    co.geomview -f 27 -r -130 0 0 -a ~/app/app42 -o /tmp/t.ppm $1
     convert -transparent 'rgb(255,255,255)' /tmp/t.ppm $2.png
 }
 

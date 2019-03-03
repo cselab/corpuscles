@@ -1,2 +1,2 @@
 # TEST: al
-he.run ./main al 0 0 0 1 0 0 0 1 0   0 0 0 0.5 0 0 0 3 0 > main.out.txt
+co.run ./main al 0 0 0 1 0 0 0 1 0   0 0 0 0.5 0 0 0 3 0 > main.out.txt
