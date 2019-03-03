@@ -18,7 +18,7 @@ ten.mac\
 vec.mac\
 util.mac
 
-install: $M; he.install $M $(MAXIMA_HOME)/$P
+install: $M; co.install $M $(MAXIMA_HOME)/$P
 clean:
 test:
 

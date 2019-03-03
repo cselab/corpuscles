@@ -1,8 +1,8 @@
 .SUFFIXES: .c.m4 .h.m4 .s.o .d.o .l.o
 
 install: $L $H
-	he.install $L $(PREFIX)/lib
-	he.install $H $(PREFIX)/include
+	co.install $L $(PREFIX)/lib
+	co.install $H $(PREFIX)/include
 
 libhe_s.a: $O $(O_S); ar r $@ $O $(O_S) && ranlib $@
 libhe_d.a: $O $(O_D); ar r $@ $O $(O_D) && ranlib $@

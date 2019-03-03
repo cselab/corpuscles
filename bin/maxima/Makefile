@@ -14,7 +14,7 @@ maxima: maxima.in
 
 
 clean:; rm -f maxima
-conf:; he.install batch.lisp $(MAXIMA_HOME)/he
+conf:; co.install batch.lisp $(MAXIMA_HOME)/he
 install: conf
 test: install conf; atest test/*
 

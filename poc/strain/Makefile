@@ -18,9 +18,9 @@ param var body: main.mac
 	u.maxima $<
 
 install: $M.o
-	he.install strain/2d.inc   $P/lib && \
-	he.install strain/2d.c     $P/lib && \
-	he.install he/strain/2d.h  $P/lib
+	co.install strain/2d.inc   $P/lib && \
+	co.install strain/2d.c     $P/lib && \
+	co.install he/strain/2d.h  $P/lib
 
 .PHONY: clean install
 
