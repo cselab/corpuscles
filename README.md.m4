@@ -69,6 +69,24 @@ $ cat main.c
 r_file(example/off/read/main.c)
 ```
 
+### write off file
+
+Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))
+
+```c
+r_file(example/off/write/area/main.c)
+```
+```sh
+./main < $(co.path)/rbc/laplace/0.off > out.off
+```
+
+```sh
+co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
+```
+r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
+<<img/area.png>>)dnl
+\
+
 # visualization
 
 We use a wrapper to [geomview](http://geomview.org).
@@ -139,7 +157,7 @@ r_header(restore.h)
 
 r_header(read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize
-    **co.h**
+	**co.h**
 
 r_header(co.h)
 :   half edg data structure (provides half-edg API)

@@ -8,7 +8,6 @@
 #include <co/memory.h>
 #include <co/y.h>
 
-
 int main() {
     int nt;
     real *x, *y, *z, *a;

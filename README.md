@@ -29,9 +29,6 @@ P = co
 
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
-`make`.
-
-Run
 ```sh
 $ make
 ```
@@ -120,6 +117,46 @@ int main(void) {
 }
 
 ```
+
+### write off file
+
+Read off, compute area fro every triangle, and output off file with colors ([example/off/write/area](example/off/write/area/))
+
+```c
+#include <stdio.h>
+
+#include <real.h>
+#include <co/area.h>
+#include <co/err.h>
+#include <co/off.h>
+#include <co/he.h>
+#include <co/memory.h>
+#include <co/y.h>
+
+int main() {
+    int nt;
+    real *x, *y, *z, *a;
+    He *he;
+    y_inif(stdin, &he, &x, &y, &z);
+    nt = he_nt(he);
+    CALLOC(nt, &a);
+    he_area_tri(he, x, y, z, a);
+    boff_tri_fwrite(he, x, y, z, a, stdout);
+    y_fin(he, x, y, z);
+    FREE(a);
+    return 0;
+}
+
+```
+```sh
+./main < $(co.path)/rbc/laplace/0.off > out.off
+```
+
+```sh
+co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off 
+```
+
+![](img/area.png)\
 
 # visualization
 
