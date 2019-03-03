@@ -8,7 +8,7 @@
 #include <co/memory.h>
 #include <co/y.h>
 
-int main() {
+int main(void) {
     int nt;
     real *x, *y, *z, *a;
     He *he;
@@ -19,5 +19,4 @@ int main() {
     boff_tri_fwrite(he, x, y, z, a, stdout);
     y_fin(he, x, y, z);
     FREE(a);
-    return 0;
 }
