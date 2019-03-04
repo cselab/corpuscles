@@ -6,23 +6,25 @@ This is a C library to resolve the elastic energy and force
 of a membrane surface, which is represented by an unstructured triangulated mesh.
 It also simulates transformations between different configurations/shapes
 of a closed membrane by a minimization procedure
-under various constraints, such as a constratint of total area, total volume and/or
-area difference between outer- and inner-surface.
+under various constraints.
 
-Various optional components can be switched on/off at will,
-such as
-I. Bending elasticity of lipip bilayer.
-II. Strain (both shear and strecth) easlticity of cytoskeleton.
-III. Viscosity of lipid membrane.
-IV. Thermal fluctuations of lipid membrane.
-V. Constraint of total area of a closed membrane surface.
-VI. Constratin of total volume of a closed membrane surface.
+Various components can be switched on/off at will, such as
+A. Bending elasticity of lipip bilayer.
+B. Strain (both shear and strecth) easlticity of cytoskeleton.
+C. Viscosity of lipid membrane.
+D. Thermal fluctuations of lipid membrane.
+E. Constraint of total area of a closed membrane surface.
+F. Constratin of total volume of a closed membrane surface.
+G  Constratin of area difference between outer- and inner-surface.
 
 For different components, variations of model/law can be selected
-such as Helfrich/spontaneous model for bending elasticity
+such as Helfrich/spontaneous curvature model for bending elasticity
 and Skalak law for strain elasticity.
 Please see user_manual.pdf[to be created]
 
+For different models/laws, variations of schemes impelemented
+can also be choosen such as Gompper&Kroll scheme
+and Juelicher schemes for the bending model of spontaneous curvature.
 
 # Install
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
