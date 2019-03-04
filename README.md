@@ -9,35 +9,20 @@ of a closed membrane by a minimization procedure
 under various constraints, such as a constratint of total area, total volume and/or
 area difference between outer- and inner-surface.
 
-Different optional components can be switched on/off at will
+Various optional components can be switched on/off at will,
+such as
+I. Bending elasticity of lipip bilayer.
+II. Strain (both shear and strecth) easlticity of cytoskeleton.
+III. Viscosity of lipid membrane.
+IV. Thermal fluctuations of lipid membrane.
+V. Constraint of total area of a closed membrane surface.
+VI. Constratin of total volume of a closed membrane surface.
 
-I. Bending elasticity of lipip bilayer
+For different components, variations of model/law can be selected
+such as Helfrich/spontaneous model for bending elasticity
+and Skalak law for strain elasticity.
+Please see user_manual.pdf[to be created]
 
-a) minimal model [ref/eq to fill]
-
-b) Helfrich/spontaneous model [ref/eq]
-
-c) bilayer-couple model [ref/eq]
-
-d) area-difference elasticity model [ref/eq]
-
-II. Strain (both shear and strecth) easlticity of cytoskeleton
-
-a) harmoic chain model [ref/eq]
-
-b) worm-like chain model [ref/eq]
-
-c) Skalal et al. law [ref/eq]
-
-D) LimS et al. law [ref/eq]
-
-III. Viscosity of lipid membrane
-
-IV. Thermal fluctuations of lipid membrane
-
-V. Constraint of total area of a closed membrane surface
-
-VI. Constratin of total volume of a closed membrane surface
 
 # Install
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
