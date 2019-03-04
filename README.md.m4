@@ -140,14 +140,14 @@ r_header(argv.h)
 r_header(err.h)
 :   error handling
 
-r_enddian(endian.h)
+r_header(endian.h)
 :   deal with endianess
 
 r_header(macro.h)
 :   macros
 
-r_sum(sum.h)
-:   Kahan summation
+r_header(sum.h)
+:   [Kahan summation](en.wikipedia.org/wiki/Kahan_summation_algorithm)
 
 r_header(memory.h)
 :   memory related

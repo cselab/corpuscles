@@ -250,14 +250,14 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [err.h](https://github.com/cselab/corpuscles/blob/master/lib/co/err.h)
 :   error handling
 
-r_enddian(endian.h)
+[endian.h](https://github.com/cselab/corpuscles/blob/master/lib/co/endian.h)
 :   deal with endianess
 
 [macro.h](https://github.com/cselab/corpuscles/blob/master/lib/co/macro.h)
 :   macros
 
-r_sum(sum.h)
-:   Kahan summation
+[sum.h](https://github.com/cselab/corpuscles/blob/master/lib/co/sum.h)
+:   [Kahan summation](en.wikipedia.org/wiki/Kahan_summation_algorithm)
 
 [memory.h](https://github.com/cselab/corpuscles/blob/master/lib/co/memory.h)
 :   memory related
