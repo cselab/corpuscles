@@ -40,7 +40,7 @@ lib: bin/m4 m4/lib
 
 include make/dir.mk
 
-doc: README.md
+README.md: m4/util.m4
 html: README.md
 	$(PANDOC) --css=css/mu.css --standalone README.md --resource-path=docs --metadata pagetitle=corpuscles --output=docs/index.html
 
