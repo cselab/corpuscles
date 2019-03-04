@@ -2,8 +2,30 @@
 ![red cell](img/rbc/sde/Da-0.358.png)\
 
 # Introduction
-A C library deal with triangulated surfaces shaped by forces
-and constraints.
+Corpuscles is a C library to resolve the elastic energy and force
+of a membrane surface, which is represented by an unstructured triangulated mesh.
+It also simulates transformations between different configurations/shapes
+of a closed membrane by a minimization procedure
+under various constraints.
+
+Various components can be switched on/off at will, such as
+A. Bending elasticity of lipip bilayer.
+B. Strain (both shear and strecth) easlticity of cytoskeleton.
+C. Viscosity of lipid membrane.
+D. Thermal fluctuations of lipid membrane.
+E. Constraint of total area of a closed membrane surface.
+F. Constratin of total volume of a closed membrane surface.
+G.  Constratin of area difference between outer- and inner-surface.
+
+For different components, variations of model/law can be selected
+such as Helfrich/spontaneous curvature model for bending elasticity
+and Skalak law for strain elasticity.
+
+For different models/laws, variations of schemes impelemented
+can also be choosen such as Gompper&Kroll scheme
+and Juelicher schemes for the bending model of spontaneous curvature.
+
+Please see details in https://cselab.github.io/corpuscles/
 
 # Install
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
@@ -11,7 +33,7 @@ requrements `gsl`, `geomview`, `atest`, `maxima`.
 
 Download code from
 ```sh
-$ git clone git@gitlab.ethz.ch:mavt-cse/he
+$ git@github.com:cselab/corpuscles.git
 ```
 
 Adjust `conf.mk` if you want to change defaults
