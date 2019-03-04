@@ -1,0 +1,6 @@
+# TEST: cmd1
+co.m4 << '!'
+include(`co.m4')dnl
+h_cmd(`exit 1')dnl
+!
+echo $? > main.out.txt
