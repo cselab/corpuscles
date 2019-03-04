@@ -22,6 +22,11 @@ img {
     margin-right: auto;
 }
 
+.navbar {
+    padding: .1em;
+    margin-bottom:2em;
+}
+
 hr {
     border: 0;
     margin: 25px 0;
