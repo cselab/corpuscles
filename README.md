@@ -2,7 +2,7 @@
 ![red cell](img/rbc/sde/Da-0.358.png)\
 
 # Introduction
-This is a C library to resolve the elastic energy and force
+Corpuscles is a C library to resolve the elastic energy and force
 of a membrane surface, which is represented by an unstructured triangulated mesh.
 It also simulates transformations between different configurations/shapes
 of a closed membrane by a minimization procedure
@@ -15,7 +15,7 @@ C. Viscosity of lipid membrane.
 D. Thermal fluctuations of lipid membrane.
 E. Constraint of total area of a closed membrane surface.
 F. Constratin of total volume of a closed membrane surface.
-G  Constratin of area difference between outer- and inner-surface.
+G.  Constratin of area difference between outer- and inner-surface.
 
 For different components, variations of model/law can be selected
 such as Helfrich/spontaneous curvature model for bending elasticity
