@@ -25,7 +25,7 @@ For different models/laws, variations of schemes impelemented
 can also be choosen such as Gompper&Kroll scheme
 and Juelicher schemes for the bending model of spontaneous curvature.
 
-Please see details in r_link(https://cselab.github.io/corpuscles)
+Please see details in [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
 # Install
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
