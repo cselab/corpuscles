@@ -12,15 +12,23 @@ area difference between outer- and inner-surface.
 Different optional components can be switched on/off at will
 
 I. Bending elasticity of lipip bilayer
+
 a) minimal model [ref/eq to fill]
+
 b) Helfrich/spontaneous model [ref/eq]
+
 c) bilayer-couple model [ref/eq]
+
 d) area-difference elasticity model [ref/eq]
 
 II. Strain (both shear and strecth) easlticity of cytoskeleton
+
 a) harmoic chain model [ref/eq]
+
 b) worm-like chain model [ref/eq]
+
 c) Skalal et al. law [ref/eq]
+
 D) LimS et al. law [ref/eq]
 
 III. Viscosity of lipid membrane
