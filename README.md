@@ -11,7 +11,7 @@ requrements `gsl`, `geomview`, `atest`, `maxima`.
 
 Download code from
 ```sh
-$ git clone git@gitlab.ethz.ch:mavt-cse/he
+$ git@github.com:cselab/corpuscles.git
 ```
 
 Adjust `conf.mk` if you want to change defaults
