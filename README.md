@@ -32,7 +32,7 @@ Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`, `pandoc`.
 
 Download code from
-p```sh
+```sh
 $ git@github.com:cselab/corpuscles.git
 ```
 
