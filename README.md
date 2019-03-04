@@ -2,8 +2,12 @@
 ![red cell](img/rbc/sde/Da-0.358.png)\
 
 # Introduction
-A C library deal with triangulated surfaces shaped by forces
-and constraints.
+This is a C library to resolve the elastic energy and force
+of a membrane surface, which is represented by an unstructured triangulate surface.
+It also simulates transformations between different configurations/shapes
+of a closed membrane by a minimization procedure
+under various constraints, such as a constratint of total area, total volume and/or
+area difference between outer- and inner-surface.
 
 # Install
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
