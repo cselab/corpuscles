@@ -1,4 +1,4 @@
-# cTEST: cmd
+# TEST: cmd
 co.m4 > main.out.txt <<'!'
 include(`co.m4')dnl
 h_cmd(`echo 42')dnl
