@@ -1,4 +1,4 @@
-#define T HeReal
+#define T Real
 
 struct T {
     int n;
@@ -6,7 +6,7 @@ struct T {
     real *r;
 };
 
-int he_real_ini(int n, T **pq) {
+int real_ini(int n, T **pq) {
     T *q;
     MALLOC(1, &q);
     q->n = n;
@@ -15,13 +15,13 @@ int he_real_ini(int n, T **pq) {
     *pq = q;
     return CO_OK;
 }
-int he_real_fin(T *q) {
+int real_fin(T *q) {
     FREE(q->r); FREE(q->d);
     FREE(q);
     return CO_OK;
 }
 
-double* he_real_to(T *q, real *a) {
+double* real_to(T *q, real *a) {
     int n, i;
     double *d;
     n = q->n;

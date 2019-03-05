@@ -5,7 +5,7 @@
 #include <co/real.h>
 
 const int n = 5;
-HeReal *he_real;
+Real *he_real;
 
 int main() {
     int i;
@@ -16,12 +16,12 @@ int main() {
         d[i] = 10*i;
     }
 
-    he_real_ini(n, &he_real);
+    real_ini(n, &he_real);
     r0 = real_from(he_real, d);
-    d0 = he_real_to(he_real, r);
+    d0 = real_to(he_real, r);
 
     for (i = 0; i < n; i++)
         printf("%g %g\n", r0[i], d0[i]);
 
-    he_real_fin(he_real);
+    real_fin(he_real);
 }
