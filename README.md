@@ -62,7 +62,7 @@ $ make test
 
 # Examples
 
-### hello world
+## hello world
 
 A simple example is in [example/hello](https://github.com/cselab/corpuscles/blob/master/example/hello/)
 
@@ -106,7 +106,7 @@ clean:; rm -f main
 
 ```
 
-### read off file
+## read off file
 
 An example is in [example/off/read](https://github.com/cselab/corpuscles/blob/master/example/off/read/)
 
@@ -139,7 +139,7 @@ int main(void) {
 
 ```
 
-### write off file
+## write off file
 
 Read off, compute area fro every triangle, and output off file with colors ([example/off/write/area](https://github.com/cselab/corpuscles/blob/master/example/off/write/area/))
 

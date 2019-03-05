@@ -1,6 +1,6 @@
 include(`co.m4')dnl
 include(`../m4/util.m4')dnl
-r_navbar(dev)dnl
+r_nav(dev)dnl
 r_geomview(
 <<-p 'co.q al ../img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 ../img/rbc/sde/Da-0.358.off>>,
 <<../img/rbc/sde/Da-0.358.png>>,
@@ -61,7 +61,7 @@ $ make test
 
 # Examples
 
-### hello world
+## hello world
 
 A simple example is in r_dir(example/hello)
 
@@ -75,7 +75,7 @@ $ cat Makefile
 r_file(../example/hello/Makefile)
 ```
 
-### read off file
+## read off file
 
 An example is in r_dir(example/off/read)
 
@@ -84,7 +84,7 @@ $ cat main.c
 r_file(../example/off/read/main.c)
 ```
 
-### write off file
+## write off file
 
 Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))
 

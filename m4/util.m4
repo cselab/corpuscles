@@ -10,8 +10,8 @@ r_define(`r_dir', `[$1](r_PREFIX/$1/)')
 r_define(`r_geomview', `h_syscmd(WX=400 WY=300 co.geomview -o $2 -i "convert %i %o" $1)dnl
 h_syscmd(co.install "$2" docs)dnl
 ![$3]($2)')
-h_define(`r_navbar',
-`<div class="navbar">
+h_define(`r_nav',
+`<div class="nav">
 [Home](index.html) / $1
 </div>')dnl
 h_changequote(`<<', `>>')

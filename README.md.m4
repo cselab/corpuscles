@@ -60,7 +60,7 @@ $ make test
 
 # Examples
 
-### hello world
+## hello world
 
 A simple example is in r_dir(example/hello)
 
@@ -74,7 +74,7 @@ $ cat Makefile
 r_file(example/hello/Makefile)
 ```
 
-### read off file
+## read off file
 
 An example is in r_dir(example/off/read)
 
@@ -83,7 +83,7 @@ $ cat main.c
 r_file(example/off/read/main.c)
 ```
 
-### write off file
+## write off file
 
 Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))
 

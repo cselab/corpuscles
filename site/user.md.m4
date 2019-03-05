@@ -1,6 +1,6 @@
 include(`co.m4')dnl
 include(`../m4/util.m4')dnl
-r_navbar(user)
+r_nav(user)
 # A
 
 $$e^{i \pi} = -1$$
