@@ -6,6 +6,7 @@ prog=co.run
 : ${TIME=time}
 : ${GDB_EXEC=gdb}
 : ${CO_ARG=}
+: ${BSUB=bsub}
 
 usg () {
     msg "$prog 'prog' [args ...]"
@@ -38,8 +39,9 @@ then
 else
     if test "$host" = euler
     then
+        if ! "$BSUB" -V &2>/dev/null; then err "$BSUB is not found"; fi
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
-	e bsub $CO_ARG "$@"
+	e $BSUB $CO_ARG "$@"
     else
 	e "$@"
     fi
