@@ -146,7 +146,7 @@ int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const rea
     return CO_OK;
 }
 
-int ring_B(T *q, int v, const int *ring, const real *x, const real *y, const real *z, real **pB) {
+int ring_B(T *q, int v, const int *ring, const real *x, const real *y, const real *z, real **p) {
     real *A, *B;
     int n, i, j, k, m;
 
@@ -161,8 +161,8 @@ int ring_B(T *q, int v, const int *ring, const real *x, const real *y, const rea
 
     for (m = i = 0; i < 6; i++)
         for (j = 0; j < 6; j++, m++)
-            for (k = 0; k < n; k++)
-                B[m] += A[6*i + j] * A[6*k  + j];
-
+            for (k = 0; k < n + 1; k++)
+                B[m] += A[6*k + i] * A[6*k  + j];
+    *p = q->B;
     return CO_OK;
 }
