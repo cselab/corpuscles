@@ -7,8 +7,6 @@ prog=co.run
 : ${GDB_EXEC=gdb}
 : ${CO_ARG=}
 
-: ${host=falcon}
-
 usg () {
     msg "$prog 'prog' [args ...]"
     msg 'environment variable CO_ARG is  used as an argument to bsub'
@@ -21,9 +19,8 @@ gdb0() {
     e "$GDB_EXEC" "$GDB" "$@"
 }
 
-case `hostname` in
-    eu-*) host=euler ;;
-esac
+host="`co.host`"
+if test $? -ne 0; then err 'co.host failed'; fi
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0
