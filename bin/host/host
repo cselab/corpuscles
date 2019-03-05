@@ -1,49 +1,20 @@
 . co.util
 
-prog=co.run
-
-: ${VALGRIND=valgrind}
-: ${TIME=time}
-: ${GDB_EXEC=gdb}
-: ${CO_ARG=}
-
-: ${host=falcon}
+prog=co.host
 
 usg () {
-    msg "$prog 'prog' [args ...]"
-    msg 'environment variable CO_ARG is  used as an argument to bsub'
+    msg "$prog"
+    msg 'return host nickname if CO_HOST is set returns CO_HOST'
     exit
 }
 
-quote () { printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/" ; }
+: ${CO_HOST=-}
 
-gdb0() {
-    e "$GDB_EXEC" "$GDB" "$@"
-}
-
-case `hostname` in
-    eu-*) host=euler ;;
-esac
-
-if test $# -ne 0 && test "$1" = -h; then usg; fi
-if test $# -eq 0
-then err "'prog' is missing"; fi
-
-if test ! -z "${VAL+x}"
+if test ${CO_HOST} = -
 then
-    e "$VALGRIND" "$VAL" "$@"
-elif test ! -z "${TIM+x}"
-then
-    e "$TIME" "$TIM" "$@"
-elif test ! -z "${GDB+x}"
-then
-    gdb0 "$@"
-else
-    if test $host = euler
-    then
-	for i; do shift; set -- "$@" "`quote "$i"`"; done
-	e bsub $CO_ARG "$@"
-    else
-	e "$@"
-    fi
+    case `hostname` in
+	eu-*) echo euler ;;
+	*) echo falcon
+    esac
+else printf '%s\n' "${CO_HOST}"
 fi
