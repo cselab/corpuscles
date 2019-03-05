@@ -1,7 +1,7 @@
 include ../../conf.mk
 
 M = main
-PREC = s
+PREC = l
 CO_CFLAGS = -Wall -Wextra -O2 -g `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`
 

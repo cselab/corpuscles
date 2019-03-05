@@ -7,6 +7,8 @@
 const int n = 5;
 Real *he_real;
 
+#define FMT CO_REAL_OUT
+
 int main() {
     int i;
     real r[n], *r0;
@@ -21,7 +23,7 @@ int main() {
     d0 = real_to(he_real, r);
 
     for (i = 0; i < n; i++)
-        printf("%g %g\n", r0[i], d0[i]);
+        printf(FMT " %g\n", r0[i], d0[i]);
 
     real_fin(he_real);
 }
