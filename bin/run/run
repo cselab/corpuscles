@@ -36,7 +36,7 @@ elif test ! -z "${GDB+x}"
 then
     gdb0 "$@"
 else
-    if test $host = euler
+    if test "$host" = euler
     then
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
 	e bsub $CO_ARG "$@"
