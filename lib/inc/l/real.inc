@@ -30,7 +30,7 @@ double* he_real_to(T *q, real *a) {
     return d;
 }
 
-real*   he_real_from(T *q, double *a) {
+real*   real_from(T *q, double *a) {
     int n, i;
     real *r;
     n = q->n;

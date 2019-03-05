@@ -17,7 +17,7 @@ int main() {
     }
 
     he_real_ini(n, &he_real);
-    r0 = he_real_from(he_real, d);
+    r0 = real_from(he_real, d);
     d0 = he_real_to(he_real, r);
 
     for (i = 0; i < n; i++)
