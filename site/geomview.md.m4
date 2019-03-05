@@ -7,3 +7,8 @@ r_nav(geomveiw)dnl
 ```sh
 co.geomview -f 25 $(co.path)/regular/octa.off
 ````
+
+r_geomview(
+<<-f 25 $(co.path)/regular/octa.off>>,
+<<../img/octa.png>>,
+octagon)
