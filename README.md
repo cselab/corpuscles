@@ -50,7 +50,7 @@ P = co
 ```
 
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
-`PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
+`PREFIX/man` to environment variables `PATH` and `MANPATH`. Run
 ```sh
 $ make
 ```
