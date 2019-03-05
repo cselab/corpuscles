@@ -18,7 +18,7 @@ static const real pi = 3.141592653589793115997964;
 
 struct T {
     real alpha[N], beta[N], theta[N];
-    real xyz[3*N], A[6*N];
+    real xyz[3*N], A[6*N], B[6*6];
 };
 
 int ring_ini(T **pq) {
@@ -72,7 +72,7 @@ int ring_beta(T *q, int i, const int *ring, const real *x, const real *y, const 
 
     for (s = 0; ring[s] != -1; s++)
         ang[s] = 2*pi*alpha[s]/A;
-    
+
     *pang = ang;
     return CO_OK;
 }
@@ -110,7 +110,7 @@ int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const r
 static int B(real u, real v, /**/ real **pa) {
     real *a;
     a = *pa;
-    
+
     *a++ = 1;
     *a++ = u;
     *a++ = v;
@@ -128,7 +128,9 @@ int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const rea
     real a[3], b[3], r;
     A = q->A;
     vec_get(i, x, y, z, a);
-    ring_theta(q, i, ring, x, y, z, &theta);
+
+    if (ring_theta(q, i, ring, x, y, z, &theta) != CO_OK)
+        ERR(CO_INDEX, "ring_theta failed");
 
     u = v = 0;
     B(u, v, &A);
@@ -141,5 +143,26 @@ int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const rea
         B(u, v, &A);
     }
     *pA = q->A;
+    return CO_OK;
+}
+
+int ring_B(T *q, int v, const int *ring, const real *x, const real *y, const real *z, real **pB) {
+    real *A, *B;
+    int n, i, j, k, m;
+
+    B = q->B;
+    if (ring_A(q, v, ring, x, y, z, &A) != CO_OK)
+        ERR(CO_INDEX, "ring_A failed");
+    for (n = 0; ring[n] != -1; n++) ;
+
+    for (m = i = 0; i < 6; i++)
+        for (j = 0; j < 6; j++, m++)
+            B[m] = 0;
+
+    for (m = i = 0; i < 6; i++)
+        for (j = 0; j < 6; j++, m++)
+            for (k = 0; k < n; k++)
+                B[m] += A[6*i + j] * A[6*k  + j];
+
     return CO_OK;
 }
