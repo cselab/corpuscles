@@ -10,7 +10,7 @@ usg () {
 
 : ${CO_HOST=-}
 
-if test ${CO_HOST} = -
+if test "${CO_HOST}" = -
 then
     case `hostname` in
 	eu-*) echo euler ;;
