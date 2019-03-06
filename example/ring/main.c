@@ -1,12 +1,23 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <real.h>
 #include <co/err.h>
 #include <co/he.h>
+#include <co/macro.h>
 #include <co/ring.h>
+#include <co/util.h>
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT
+
+static const char **argv;
+
+static const char *me = "ring";
+static void usg(void) {
+    fprintf(stderr, "%s OP [ARG..]\n", me);
+    exit(2);
+}
 
 static int write(int n, int m, real *A) {
     int i, j, s;
@@ -17,27 +28,38 @@ static int write(int n, int m, real *A) {
     }
 }
 
-int main() {
+static int eq(const char *a, const char *b) { return util_eq(a, b); }
+int main(__UNUSED int argc, const char **v0) {
+    const char *op;    
     real *x, *y, *z;
     He      *he;
     int nv, nt, i, j, n, s, *rring, status;
     Ring *ring;
     real *alpha, *beta, *theta, *xyz, *A, *B, *C;
 
+    
+    argv = v0;
+    argv++;
+    if (*argv == NULL) ER("mssing OP");
+
+    op = *argv++;
     err_set_ignore();
 
     y_inif(stdin, &he, &x, &y, &z);
     ring_ini(&ring);
-
     nv = he_nv(he);
+    status = he_ring(he, i, &n, &rring);
+
+    if (eq(op, "alpha")) {
+        ring_alpha(ring, i, rring, x, y, z, &alpha);
+    }
 
     for (i = 0; i < nv; i++) {
         if (he_bnd_ver(he, i)) continue;
-        status = he_ring(he, i, &n, &rring);
         if (status != CO_OK)
             ER("he_ring failed for i = %d", i);
 
-        ring_alpha(ring, i, rring, x, y, z, &alpha);
+        
         ring_beta(ring, i, rring, x, y, z, &beta);
         ring_theta(ring, i, rring, x, y, z, &theta);
         ring_xyz(ring, i, rring, x, y, z, &xyz);
