@@ -89,15 +89,13 @@ int he_f_darea_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *area, K;
+    real K;
     n = q->n;
-    area = q->area;
     K  = q->K;
-
+    
     if (he_nt(he) != n)
-        ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
-
-    compute_area(he, x, y, z, /**/ area);
+      ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
+    
     compute_force(K, he, x, y, z, /**/ fx, fy, fz);
 
     return CO_OK;
@@ -110,7 +108,7 @@ static real compute_energy(real K, real *area, int n) {
     for (t = 0; t < n; t++) {
       e += area[t];
     }
-    return e;
+    return e*K;
 }
 
 real he_f_darea_energy(T *q, He *he,

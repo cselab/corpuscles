@@ -12,6 +12,7 @@
 #include "co/util.h"
 
 #include "co/f/area.h"
+#include "co/f/darea.h"
 #include "co/f/garea.h"
 #include "co/f/volume.h"
 #include "co/f/dvolume.h"
@@ -32,6 +33,7 @@
 #define T Force
 
 static int force_area_argv(char***, He*, T**);
+static int force_darea_argv(char***, He*, T**);
 static int force_garea_argv(char***, He*, T**);
 static int force_volume_argv(char***, He*, T**);
 static int force_dvolume_argv(char***, He*, T**);
@@ -57,6 +59,7 @@ typedef int (*TypeArgv)(char***, He*, T**);
 
 static const char *Name[] = {
     "area",
+    "darea",
     "garea",
     "volume",
     "dvolume",
@@ -74,6 +77,7 @@ static const char *Name[] = {
 
 static const TypeArgv Argv[] = {
     force_area_argv,
+    force_darea_argv,
     force_garea_argv,
     force_volume_argv,
     force_dvolume_argv,
@@ -185,6 +189,43 @@ int force_area_argv(char ***p, He *he, /**/ T **pq)
     q->force.vtable = &area_vtable;
     *pq = &q->force;
     return he_f_area_argv(p, he, &q->local);
+}
+typedef struct Darea Darea;
+struct Darea {
+    T force;
+    HeFDarea *local;
+};
+static int darea_fin(T *q)
+{
+    int status;
+    Darea *b = CONTAINER_OF(q, Darea, force);
+    status = he_f_darea_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int darea_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Darea *b = CONTAINER_OF(q, Darea, force);
+    return he_f_darea_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real darea_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Darea *b = CONTAINER_OF(q, Darea, force);
+    return he_f_darea_energy(b->local, he, x, y, z);
+}
+static Vtable darea_vtable = {
+    darea_fin,
+    darea_force,
+    darea_energy,
+};
+int force_darea_argv(char ***p, He *he, /**/ T **pq)
+{
+    Darea *q;
+    MALLOC(1, &q);
+    q->force.vtable = &darea_vtable;
+    *pq = &q->force;
+    return he_f_darea_argv(p, he, &q->local);
 }
 typedef struct Garea Garea;
 struct Garea {
