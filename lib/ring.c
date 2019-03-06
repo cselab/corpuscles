@@ -41,6 +41,7 @@ int ring_ini(T **pq) {
 int ring_fin(T *q) {
     alg_pinv_fin(q->pinv);
     FREE(q);
+    return CO_OK;
 }
 
 static int get2(int i, int j,
