@@ -6,12 +6,12 @@ prog=co.run
 : ${TIME=time}
 : ${GDB_EXEC=gdb}
 : ${CO_ARG=}
-
-: ${host=falcon}
+: ${BSUB=bsub}
 
 usg () {
     msg "$prog 'prog' [args ...]"
     msg 'environment variable CO_ARG is  used as an argument to bsub'
+    msg 'CO_HOST if set is used as a host nickname'
     exit
 }
 
@@ -21,9 +21,8 @@ gdb0() {
     e "$GDB_EXEC" "$GDB" "$@"
 }
 
-case `hostname` in
-    eu-*) host=euler ;;
-esac
+host="`co.host`"
+if test $? -ne 0; then err 'co.host failed'; fi
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0
@@ -39,10 +38,11 @@ elif test ! -z "${GDB+x}"
 then
     gdb0 "$@"
 else
-    if test $host = euler
+    if test "$host" = euler
     then
+        if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
-	e bsub $CO_ARG "$@"
+	e $BSUB $CO_ARG "$@"
     else
 	e "$@"
     fi

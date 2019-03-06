@@ -11,5 +11,7 @@ int ring_beta(T*, int, const int*, const real*, const real*, const real*, /**/ r
 int ring_theta(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 int ring_xyz(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 int ring_A(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
+int ring_B(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
+int ring_C(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 
 #undef T

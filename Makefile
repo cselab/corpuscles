@@ -10,6 +10,7 @@ lib\
 bin/ffmpeg\
 bin/geomview\
 bin/maxima\
+bin/host\
 bin/path\
 bin/q\
 bin/msh\

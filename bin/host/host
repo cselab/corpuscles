@@ -1,0 +1,20 @@
+. co.util
+
+prog=co.host
+
+usg () {
+    msg "$prog"
+    msg 'return host nickname if CO_HOST is set returns CO_HOST'
+    exit
+}
+
+: ${CO_HOST=-}
+
+if test "${CO_HOST}" = -
+then
+    case `hostname` in
+	eu-*) echo euler ;;
+	*) echo falcon
+    esac
+else printf '%s\n' "${CO_HOST}"
+fi

@@ -11,24 +11,35 @@
 #include "co/ring.h"
 #include "inc/def.h"
 
+/* #include <alg/pinv.h> */
+typedef struct AlgPinv AlgPinv;
+int alg_pinv_ini(int dim, AlgPinv**);
+int alg_pinv_fin(AlgPinv*);
+int alg_pinv_apply(AlgPinv*, real*, /**/ real*);
+/**/
+
 #define T Ring
 #define N (RANK_MAX + 1)
+#define D (6)
 
 static const real pi = 3.141592653589793115997964;
 
 struct T {
     real alpha[N], beta[N], theta[N];
-    real xyz[3*N], A[6*N];
+    real xyz[3*N], A[D*N], B[D*D], Binv[D*D], C[D*N];
+    AlgPinv *pinv;
 };
 
 int ring_ini(T **pq) {
     T *q;
     MALLOC(1, &q);
+    alg_pinv_ini(D, &q->pinv);
     *pq = q;
     return CO_OK;
 }
 
 int ring_fin(T *q) {
+    alg_pinv_fin(q->pinv);
     FREE(q);
 }
 
@@ -72,7 +83,7 @@ int ring_beta(T *q, int i, const int *ring, const real *x, const real *y, const 
 
     for (s = 0; ring[s] != -1; s++)
         ang[s] = 2*pi*alpha[s]/A;
-    
+
     *pang = ang;
     return CO_OK;
 }
@@ -110,7 +121,7 @@ int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const r
 static int B(real u, real v, /**/ real **pa) {
     real *a;
     a = *pa;
-    
+
     *a++ = 1;
     *a++ = u;
     *a++ = v;
@@ -128,7 +139,9 @@ int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const rea
     real a[3], b[3], r;
     A = q->A;
     vec_get(i, x, y, z, a);
-    ring_theta(q, i, ring, x, y, z, &theta);
+
+    if (ring_theta(q, i, ring, x, y, z, &theta) != CO_OK)
+        ERR(CO_INDEX, "ring_theta failed");
 
     u = v = 0;
     B(u, v, &A);
@@ -141,5 +154,58 @@ int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const rea
         B(u, v, &A);
     }
     *pA = q->A;
+    return CO_OK;
+}
+
+static int compute_B(int n, const real *A, real *B) {
+    int i, j, k, m;
+    for (m = i = 0; i < D; i++)
+        for (j = 0; j < D; j++, m++) {
+            B[m] = 0;
+            for (k = 0; k < n + 1; k++)
+                B[m] += A[D*k + i] * A[D*k  + j];
+        }
+    return CO_OK;
+}
+int ring_B(T *q, int v, const int *ring, const real *x, const real *y, const real *z, real **p) {
+    real *A, *B;
+    int n;
+    B = q->B;
+    if (ring_A(q, v, ring, x, y, z, &A) != CO_OK)
+        ERR(CO_INDEX, "ring_A failed");
+    for (n = 0; ring[n] != -1; n++) ;
+    compute_B(n, A, B);
+    *p = q->B;
+    return CO_OK;
+}
+
+static int compute_C(int n, const real *Binv, const real *A, real *C) {
+    int i, j, k, m;
+    for (m = i = 0; i < D; i++)
+        for (j = 0; j < n + 1; j++, m++) {
+            C[m] = 0;
+            for (k = 0; k < D; k++)
+                C[m] += Binv[D*i + k] * A[D*j  + k];
+        }
+    return CO_OK;
+}
+int ring_C(T *q, int v, const int *ring, const real *x, const real *y, const real *z, real **p) {
+    real *A, *B, *Binv, *C;
+    int n;
+    AlgPinv *pinv;
+    
+    B = q->B;
+    C = q->C;
+    Binv = q->Binv;
+    pinv = q->pinv;
+
+    if (ring_A(q, v, ring, x, y, z, &A) != CO_OK)
+        ERR(CO_INDEX, "ring_A failed");
+    for (n = 0; ring[n] != -1; n++) ;
+    compute_B(n, A, B);
+    alg_pinv_apply(pinv, B, /**/ Binv);
+    compute_C(n, Binv, A, /**/ C);
+    
+    *p = q->C;
     return CO_OK;
 }

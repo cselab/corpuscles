@@ -5,7 +5,6 @@
 #include <co/real.h>
 
 const int n = 5;
-Real *he_real;
 
 #define FMT CO_REAL_OUT
 
@@ -13,6 +12,8 @@ int main() {
     int i;
     real r[n], *r0;
     double d[n], *d0;
+    Real *he_real;
+
     for (i = 0; i < n; i++) {
         r[i] = i;
         d[i] = 10*i;
