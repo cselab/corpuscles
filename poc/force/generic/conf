@@ -6,6 +6,14 @@ he_f_area_force
 he_f_area_energy
 he_f_area_argv
 
+#include "co/f/darea.h"
+darea
+HeFDarea
+he_f_darea_fin
+he_f_darea_force
+he_f_darea_energy
+he_f_darea_argv
+
 #include "co/f/garea.h"
 garea
 HeFGarea
