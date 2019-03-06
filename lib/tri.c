@@ -273,5 +273,5 @@ int tri_abc(const real a[3], const real b[3], const real c[3], const real u[3], 
     *a0 = l/l0;
     *b0 = 1/sin(p0)*(lp/lp0*cos(p) - l/l0*cos(p0));
     *c0 = lp/lp0*sin(p)/sin(p0);
-    return HE_OK;
+    return CO_OK;
 }
