@@ -14,6 +14,7 @@
 #include "co/f/area.h"
 #include "co/f/garea.h"
 #include "co/f/volume.h"
+#include "co/f/dvolume.h"
 #include "co/f/juelicher_xin.h"
 #include "co/f/edg_sq.h"
 #include "co/f/harmonic.h"
@@ -33,6 +34,7 @@
 static int force_area_argv(char***, He*, T**);
 static int force_garea_argv(char***, He*, T**);
 static int force_volume_argv(char***, He*, T**);
+static int force_dvolume_argv(char***, He*, T**);
 static int force_juelicher_xin_argv(char***, He*, T**);
 static int force_edg_sq_argv(char***, He*, T**);
 static int force_harmonic_argv(char***, He*, T**);
@@ -57,6 +59,7 @@ static const char *Name[] = {
     "area",
     "garea",
     "volume",
+    "dvolume",
     "juelicher_xin",
     "edg_sq",
     "harmonic",
@@ -73,6 +76,7 @@ static const TypeArgv Argv[] = {
     force_area_argv,
     force_garea_argv,
     force_volume_argv,
+    force_dvolume_argv,
     force_juelicher_xin_argv,
     force_edg_sq_argv,
     force_harmonic_argv,
@@ -255,6 +259,43 @@ int force_volume_argv(char ***p, He *he, /**/ T **pq)
     q->force.vtable = &volume_vtable;
     *pq = &q->force;
     return he_f_volume_argv(p, he, &q->local);
+}
+typedef struct Dvolume Dvolume;
+struct Dvolume {
+    T force;
+    HeFDvolume *local;
+};
+static int dvolume_fin(T *q)
+{
+    int status;
+    Dvolume *b = CONTAINER_OF(q, Dvolume, force);
+    status = he_f_dvolume_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int dvolume_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Dvolume *b = CONTAINER_OF(q, Dvolume, force);
+    return he_f_dvolume_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real dvolume_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Dvolume *b = CONTAINER_OF(q, Dvolume, force);
+    return he_f_dvolume_energy(b->local, he, x, y, z);
+}
+static Vtable dvolume_vtable = {
+    dvolume_fin,
+    dvolume_force,
+    dvolume_energy,
+};
+int force_dvolume_argv(char ***p, He *he, /**/ T **pq)
+{
+    Dvolume *q;
+    MALLOC(1, &q);
+    q->force.vtable = &dvolume_vtable;
+    *pq = &q->force;
+    return he_f_dvolume_argv(p, he, &q->local);
 }
 typedef struct Juelicher_xin Juelicher_xin;
 struct Juelicher_xin {

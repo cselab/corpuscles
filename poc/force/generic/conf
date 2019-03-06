@@ -22,6 +22,14 @@ he_f_volume_force
 he_f_volume_energy
 he_f_volume_argv
 
+#include "co/f/dvolume.h"
+dvolume
+HeFDvolume
+he_f_dvolume_fin
+he_f_dvolume_force
+he_f_dvolume_energy
+he_f_dvolume_argv
+
 #include "co/f/juelicher_xin.h"
 juelicher_xin
 HeFJuelicherXin
