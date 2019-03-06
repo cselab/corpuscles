@@ -40,7 +40,7 @@ then
 else
     if test "$host" = euler
     then
-        if ! "$BSUB" -V &2>/dev/null; then err "$BSUB is not found"; fi
+        if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
 	e $BSUB $CO_ARG "$@"
     else
