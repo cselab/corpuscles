@@ -1,0 +1,2 @@
+# TEST: B
+./main B < $(co.path)/rbc/icosahedron/0.off | uscale 1e6 > main.out.txt
