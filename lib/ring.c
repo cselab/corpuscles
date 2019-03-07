@@ -160,14 +160,7 @@ int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const rea
 }
 
 static int compute_B(int n, const real *A, real *B) {
-    int i, j, k, m;
-    for (m = i = 0; i < D; i++)
-        for (j = 0; j < D; j++, m++) {
-            B[m] = 0;
-            for (k = 0; k < n + 1; k++)
-                B[m] += A[D*k + i] * A[D*k  + j];
-        }
-    return CO_OK;
+    return matrix_mult_tn(D, n + 1, D, A, A, B);
 }
 int ring_B(T *q, int v, const int *ring, const real *x, const real *y, const real *z, real **p) {
     real *A, *B;
@@ -182,14 +175,7 @@ int ring_B(T *q, int v, const int *ring, const real *x, const real *y, const rea
 }
 
 static int compute_C(int n, const real *Binv, const real *A, real *C) {
-    int i, j, k, m;
-    for (m = i = 0; i < D; i++)
-        for (j = 0; j < n + 1; j++, m++) {
-            C[m] = 0;
-            for (k = 0; k < D; k++)
-                C[m] += Binv[D*i + k] * A[D*j  + k];
-        }
-    return CO_OK;
+    return matrix_mult_nt(D, D, n + 1,   Binv, A, C);
 }
 int ring_C(T *q, int v, const int *ring, const real *x, const real *y, const real *z, real **p) {
     real *A, *B, *Binv, *C;
