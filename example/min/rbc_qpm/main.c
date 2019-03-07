@@ -1,4 +1,12 @@
 //**********************************************************
+//This is a minimization procedure using
+//steepest descent + viscosity and one may
+//intepret this as a version of conjugate gradient method.
+//
+//The two constratints on area and volume are implemented
+//as quadratic penalty meothod (QPM) so that the constrained
+//optimization is converted to an unconstratined one.
+//
 //We note that the force is currently in the opposite direction
 //due to an obsolete convention.
 //Therefore, the negative force is employed to update velocity.
@@ -27,21 +35,25 @@
 
 #define FMT_IN   CO_REAL_IN
 
+//This Macro defines if we need adaptive time step
 #define DT_ADPTIVE
 
-static const char *me = "min/rbc";
+static const char *me = "min/rbc_qpm";
 static const real pi = 3.141592653589793115997964;
-static const real tolerA = 1.0e-3;
+
+static He *he;
 
 static Force *force_a;
 static Force *force_v;
 static Force *force_b;
 static Force *force_s;
 
-static He *he;
 
 static char fname_b[1024];
 static char fname_s[1024];
+static char **argv;
+static char bscheme[1024];
+static char dir[4049], fpath[4049];
 
 static real R, rho, v;
 static real Kc;
@@ -49,12 +61,10 @@ static real Kb, C0, Kad, DA0D, D;
 static real xi, dt_in, kBT;
 static int  end;
 static int  freq, freq_stat;
+
+static real mass;
 static real A0, V0, e0;
 static real eb, ega, ev, ebl, ebn, es;
-static real mass;
-static char **argv;
-static char bscheme[1024];
-static char dir[4049], fpath[4049];
 
 static void zero(int n, real *a) {
     int i;
@@ -63,9 +73,9 @@ static void zero(int n, real *a) {
 
 static void usg(void) {
     fprintf(stderr, "%s juelicher_xin R rho v Kc Kb C0 Kad DA0D xi dt_in kBT", me);
-    fprintf(stderr, "end: number of steps\n");
-    fprintf(stderr, "freq: frequency of step to output off files\n");
-    fprintf(stderr, "freq: frequency of step to output statistics\n");
+    fprintf(stderr, "end: total number of steps\n");
+    fprintf(stderr, "freq: frequency in steps to output off files\n");
+    fprintf(stderr, "freq: frequency in steps to output statistics\n");
     fprintf(stderr, "< init.off > msg\n");
     exit(0);
 }
@@ -148,7 +158,7 @@ real Energy0(const real *x, const real *y, const real *z) {
   ebl = f_bending_energy_bend();
   ebn = f_bending_energy_ad();
   
-  es  = force_energy(force, he, x, y, z);
+  es  = force_energy(force_s, he, x, y, z);
 
   et  = ega + ev + eb + es;
   
@@ -162,7 +172,7 @@ void Force0(const real *x, const real *y, const real *z, /**/
   f_garea_force(x, y, z, /**/ fx, fy, fz);
   f_volume_force(x, y, z, /**/ fx, fy, fz);
   f_bending_force(x, y, z, /**/ fx, fy, fz);
-  force_force(force, he, x, y, z, /**/ fx, fy, fz);
+  force_force(force_s, he, x, y, z, /**/ fx, fy, fz);
   
 }
 
@@ -383,6 +393,7 @@ static real eq_tri_edg(real area) {
 }
 
 int main(int __UNUSED argc, char *v[]) {
+
   real *fx, *fy, *fz;
   real *vx, *vy, *vz;
   real A, V, Vr;
@@ -397,6 +408,9 @@ int main(int __UNUSED argc, char *v[]) {
   ini("/dev/stdin");
 
   x_he(&he);
+
+  force_argv("darea", &argv, he,  &force_a);
+  force_argv("dvolume", &argv, he,  &force_v);
 
   str(fname_b);
   force_argv(fname_b, &argv, he,  &force_b);
@@ -417,7 +431,7 @@ int main(int __UNUSED argc, char *v[]) {
 
   MSG("v              : %g", v);
   MSG("bending scheme : %s", bscheme);
-  MSG("strain scheme  : %s", fname);
+  MSG("strain scheme  : %s", fname_s);
  
   MSG("Targeted Area, Volume: %g %g", A0, V0);
   MSG("V/V0: %g", V/V0);
