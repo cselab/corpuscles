@@ -39,7 +39,7 @@ int main(__UNUSED int argc, const char **v0) {
     He      *he;
     int nv, i, n, *rring, status;
     Ring *ring;
-    real *out, *xyz, *C, xx[3];
+    real *out, *xyz, *C, xx[3], gcov[2*2], gcnt[2*2];
 
     argv = v0;
     argv++;
@@ -99,6 +99,14 @@ int main(__UNUSED int argc, const char **v0) {
         } else if (eq(op, "xvv")) {
             ring_xvv(n, xyz, C, xx);
             vec_printf(xx, FMT);
+        } else if (eq(op, "gcov")) {
+            ring_gcov(n, xyz, C, gcov);
+            write(1, 3, gcov);
+        } else if (eq(op, "gcnt")) {
+            ring_gcnt(n, xyz, C, gcnt);
+            write(1, 3, gcnt);
+        } else if (eq(op, "g")) {
+            printf(FMT "\n", ring_g(n, xyz, C));
         } else
             ER("unknown operation '%s'", op);
     }

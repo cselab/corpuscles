@@ -234,3 +234,35 @@ int ring_xvv(int n, const real *xyz, const real *C, /**/ real x[3]) {
     matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
     return CO_OK;
 }
+
+int ring_gcov(int n, const real *xyz, const real *C, /**/ real g[3]) {
+    enum {UU, UV, VV};
+    real xu[3], xv[3];
+    ring_xu(n, xyz, C, /**/ xu);
+    ring_xv(n, xyz, C, /**/ xv);
+
+    g[UU] = vec_dot(xu, xu);
+    g[UV] = vec_dot(xu, xv);
+    g[VV] = vec_dot(xv, xv);
+    return CO_OK;
+}
+
+real ring_g(int n, const real *xyz, const real *C) {
+    enum {UU, UV, VV};
+    real g[3];
+    ring_gcov(n, xyz, C, /**/ g);
+    return g[UU]*g[VV] - g[UV]*g[UV];
+}
+
+real ring_gcnt(int n, const real *xyz, const real *C, /**/ real ginv[3]) {
+    enum {UU, UV, VV};
+    real g[3], g0;
+    ring_gcov(n, xyz, C, /**/ g);
+    g0 = g[UU]*g[VV] - g[UV]*g[UV];
+    if (g0 == 0)
+        ERR(CO_NUM, "g = 0");
+    ginv[UU] =  g[VV]/g0;
+    ginv[UV] = -g[UV]/g0;
+    ginv[VV] =  g[UU]/g0;
+    return CO_OK;
+}
