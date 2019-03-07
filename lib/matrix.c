@@ -25,9 +25,16 @@ int matrix_mult_nn(int M, int N, int K, const real *a, const real *b, /**/ real 
 
 int matrix_fwrite(int M, int N, const real *a, FILE *f) {
     int m, n, s;
-    for (m = s = 0; m < M; m++)
+    for (m = s = 0; m < M; m++) {
         for (n = 0; n < N; n++, s++) {
             if (n > 0)
-            fprintf(f, FMT, a[s]);
+                if (EOF == fputc(' ', f))
+                    ERR(CO_IO, "fail to write");
+            if (fprintf(f, FMT, a[s]) < 0)
+                ERR(CO_IO, "fail to write");
         }
+        if (EOF == fputc('\n', f))
+            ERR(CO_IO, "fail to write");
+    }
+    return CO_OK;
 }
