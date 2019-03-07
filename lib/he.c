@@ -17,6 +17,7 @@ struct T {
     int *nxt, *flp;
     int *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
+    int *E0, *E1;
     int *T0, *T1, *T2;
     int *D0, *D1, *D2, *D3;
     int ring[RANK_MAX + 1];
@@ -59,6 +60,7 @@ int he_ini(HeRead *r, T **pq) {
     MALLOC(ne, &q->hdg_edg);
     MALLOC(nt, &q->hdg_tri);
 
+    MALLOC(nt, &q->E0); MALLOC(nt, &q->E1);
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
 
@@ -102,6 +104,7 @@ int he_fin(T *q) {
     FREE(q->hdg_edg);
     FREE(q->hdg_tri);
 
+    FREE(q->E0); FREE(q->E1);
     FREE(q->T0); FREE(q->T1); FREE(q->T2);
     FREE(q->D0); FREE(q->D1); FREE(q->D2); FREE(q->D3);
 
@@ -334,6 +337,25 @@ int he_edg_rotate(T *q, int e0) {
     assert(flp(flp(h8)) == h8);
     assert(flp(flp(h9)) == h9);
 
+    return CO_OK;
+}
+
+int he_E(T *he, int **pE0, int **pE1) {
+    int ne, e, *E0, *E1;
+    int h, n;
+    E0 = he->E0; E1 = he->E1;
+    ne = he_ne(he);
+
+    for (e = 0; e < ne; e++) {
+        h = he_hdg_edg(he, e);
+        if (he_bnd(he, h)) {
+            E0[e] = E1[e] = -1;
+        } else {
+            h = he_hdg_edg(he, e); n = he_nxt(he, h);
+            E0[e] = he_ver(he, h); E1[e] = he_ver(he, n);
+        }
+    }
+    *pE0 = E0; *pE1 = E1;
     return CO_OK;
 }
 
