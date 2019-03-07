@@ -1,0 +1,3 @@
+# TEST: darea
+i=`co.path`/rbc/laplace/0.off
+co.run ./main darea 42 < $i | uscale 1e6 > main.out.txt
