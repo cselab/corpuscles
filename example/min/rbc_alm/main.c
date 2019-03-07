@@ -1,12 +1,12 @@
 //**********************************************************
-//corpuslces/exmample/min/rbc_qpm
+//corpuslces/exmample/min/rbc_alm
 //
 //This is a minimization procedure using
 //steepest descent + viscosity and one may
 //intepret this as a version of conjugate gradient method.
 //
 //The two constratints on area and volume are implemented
-//as quadratic penalty meothod (QPM) so that the constrained
+//as augmented Lagrangian meothod (ALM) so that the constrained
 //optimization is converted to an unconstratined one.
 //
 //
@@ -67,10 +67,13 @@ static real mass;
 static real A0, V0, e0;
 static real A, V, vc;
 static real eb, ea, ev, ebl, ebn, es;
+static real eal, evl;
 
 static real *x, *y, *z;
 static int Nt, Ne, Nv;
 static int *D0, *D1, *D2, *D3;
+
+static int lambda0, lambda;
 
 static void zero(int n, real *a) {
     int i;
@@ -166,6 +169,7 @@ static void init() {
     force_argv("darea",   &argv, he, &force_area);
     force_argv("dvolume", &argv, he, &force_volume);
 
+    lambda0 = 1.0;
 }
 
 real EnergyArea(const real *x, const real *y, const real *z) {
@@ -175,6 +179,16 @@ real EnergyArea(const real *x, const real *y, const real *z) {
     e  = (A/A0-1);
     e *= e;
     e *= Kc/2.0;
+
+    return e;
+
+}
+real EnergyAreaLagrangian(const real *x, const real *y, const real *z) {
+
+    real e;
+
+    e  = (A/A0-1);
+    e *= -lambda;
 
     return e;
 
@@ -190,6 +204,16 @@ real EnergyVolume(const real *x, const real *y, const real *z) {
     return e;
 
 }
+real EnergyVolumeLagrangian(const real *x, const real *y, const real *z) {
+
+    real e;
+
+    e  = (V/V0-1);
+    e *= -lambda;
+
+    return e;
+
+}
 
 real Energy0(const real *x, const real *y, const real *z) {
 
@@ -199,16 +223,19 @@ real Energy0(const real *x, const real *y, const real *z) {
     V   = force_energy(force_volume, he, x, y, z);
     vc  = reduced_volume(A, V);
 
-    ea  = EnergyArea(x, y, z);
+    ea  = EnergyArea(x, y, z);    
     ev  = EnergyVolume(x, y, z);
 
+    eal = EnergyAreaLagrangian(x, y, z);
+    evl = EnergyVolumeLagrangian(x, y, z);
+      
     eb  = force_energy(force_bend, he, x, y, z);
     ebl = he_f_juelicher_xin_energy_bend(force_pointer(force_bend));
     ebn = he_f_juelicher_xin_energy_ad(force_pointer(force_bend));
 
     es  = force_energy(force_strain, he, x, y, z);
 
-    et  = ea + ev + eb + es;
+    et  = ea + ev + eal + evl + eb + es;
 
     return et;
 }
