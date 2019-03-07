@@ -9,6 +9,7 @@
 //as quadratic penalty meothod (QPM) so that the constrained
 //optimization is converted to an unconstratined one.
 //
+//
 //We note that the force is currently in the opposite direction
 //due to an obsolete convention.
 //Therefore, the negative force is employed to update velocity.
@@ -169,24 +170,24 @@ static void init() {
 
 real EnergyArea(const real *x, const real *y, const real *z) {
 
-    real ea;
+    real e;
 
-    ea  = (A/A0-1);
-    ea *= ea;
-    ea *= Kc/2.0;
+    e  = (A/A0-1);
+    e *= e;
+    e *= Kc/2.0;
 
-    return ea;
+    return e;
 
 }
 real EnergyVolume(const real *x, const real *y, const real *z) {
 
-    real ev;
+    real e;
 
-    ev  = (V/V0-1);
-    ev *= ev;
-    ev *= Kc/2.0;
+    e  = (V/V0-1);
+    e *= e;
+    e *= Kc/2.0;
 
-    return ev;
+    return e;
 
 }
 
