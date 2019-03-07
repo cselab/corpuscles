@@ -88,7 +88,7 @@ int he_f_darea_force(T *q, He *he,
     if (he_nt(he) != n)
       ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
     
-    compute_force(K, he, x, y, z, /**/ fx, fy, fz);
+    compute_force(he, x, y, z, /**/ fx, fy, fz);
 
     return CO_OK;
 }
