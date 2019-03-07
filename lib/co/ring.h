@@ -24,5 +24,6 @@ int ring_xvv(int, const real *xyz, const real *C, /**/ real[3]);
 int ring_gcov(int, const real *xyz, const real *C, /**/ real[3]);
 real ring_g(int, const real *xyz, const real *C);
 int ring_gcnt(int, const real *xyz, const real *C, /**/ real[3]);
+int ring_normal(int, const real *xyz, const real *C, /**/ real[3]);
 
 #undef T

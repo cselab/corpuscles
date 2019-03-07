@@ -254,7 +254,7 @@ real ring_g(int n, const real *xyz, const real *C) {
     return g[UU]*g[VV] - g[UV]*g[UV];
 }
 
-real ring_gcnt(int n, const real *xyz, const real *C, /**/ real ginv[3]) {
+int ring_gcnt(int n, const real *xyz, const real *C, /**/ real ginv[3]) {
     enum {UU, UV, VV};
     real g[3], g0;
     ring_gcov(n, xyz, C, /**/ g);
@@ -264,5 +264,16 @@ real ring_gcnt(int n, const real *xyz, const real *C, /**/ real ginv[3]) {
     ginv[UU] =  g[VV]/g0;
     ginv[UV] = -g[UV]/g0;
     ginv[VV] =  g[UU]/g0;
+    return CO_OK;
+}
+
+int ring_normal(int n, const real *xyz, const real *C, /**/ real u[3]) {
+    real xu[3], xv[3], w[3];
+    ring_xu(n, xyz, C, /**/ xu);
+    ring_xv(n, xyz, C, /**/ xv);
+
+    vec_cross(xu, xv, w);
+    vec_norm(w, u);
+
     return CO_OK;
 }
