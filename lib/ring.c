@@ -106,16 +106,18 @@ int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const
 }
 
 int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const real *z, /**/ real **pxyz) {
-    int s, p, j, k;
+    int n, p, j, k;
     real *xyz;
     real a[3];
     xyz = q->xyz;
     k = 0;
     xyz[k++] = x[i]; xyz[k++] = y[i]; xyz[k++] = z[i];
-    for (s = 0; ring[s] != -1; s++) {
-        i = ring[s];
+    for (n = 0; ring[n] != -1; n++) {
+        i = ring[n];
         xyz[k++] = x[i]; xyz[k++] = y[i]; xyz[k++] = z[i];
     }
+    matrix_transpose(n + 1, 3, xyz);
+
     *pxyz = xyz;
     return CO_OK;
 }
@@ -181,7 +183,7 @@ int ring_C(T *q, int v, const int *ring, const real *x, const real *y, const rea
     real *A, *B, *Binv, *C;
     int n;
     AlgPinv *pinv;
-    
+
     B = q->B;
     C = q->C;
     Binv = q->Binv;
@@ -193,7 +195,7 @@ int ring_C(T *q, int v, const int *ring, const real *x, const real *y, const rea
     compute_B(n, A, B);
     alg_pinv_apply(pinv, B, /**/ Binv);
     compute_C(n, Binv, A, /**/ C);
-    
+
     *p = q->C;
     return CO_OK;
 }
@@ -201,6 +203,13 @@ int ring_C(T *q, int v, const int *ring, const real *x, const real *y, const rea
 int ring_xu(int n, const real *xyz, const real *C, /**/ real x[3]) {
     const real *C1;
     C1 = C + (n + 1);
+    matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
+    return CO_OK;
+}
+
+int ring_xv(int n, const real *xyz, const real *C, /**/ real x[3]) {
+    const real *C1;
+    C1 = C + 2*(n + 1);
     matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
     return CO_OK;
 }

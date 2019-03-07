@@ -48,7 +48,7 @@ int main(__UNUSED int argc, const char **v0) {
     op = *argv++;
     if (eq(op, "-h"))
         usg();
-    
+
     err_set_ignore();
 
     y_inif(stdin, &he, &x, &y, &z);
@@ -88,6 +88,11 @@ int main(__UNUSED int argc, const char **v0) {
             ring_C(ring, i, rring, x, y, z, &C);
             ring_xu(n, xyz, C, xu);
             vec_printf(xu, FMT);
+        } else if (eq(op, "xv")) {
+            ring_xyz(ring, i, rring, x, y, z, &xyz);
+            ring_C(ring, i, rring, x, y, z, &C);
+            ring_xv(n, xyz, C, xv);
+            vec_printf(xv, FMT);
         } else
             ER("unknown operation '%s'", op);
     }
