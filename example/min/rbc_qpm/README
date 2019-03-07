@@ -1,0 +1,3 @@
+This is a client for minimization of rbc elastict energies.
+The constraints on area and volume are considered by
+quadratic penalty method (QPM).

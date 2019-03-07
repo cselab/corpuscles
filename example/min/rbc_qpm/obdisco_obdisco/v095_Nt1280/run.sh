@@ -28,9 +28,8 @@ b1=0.7
 b2=0.75
 
 end=300000
-freq=1000
-freq_stat=100
-
+freqo=1000
+freqs=100
 
 off=../ref/v095.off
 ref=../ref/v095.off
@@ -47,18 +46,19 @@ then
     DA0=$(echo $Kb, $C0, $Kad, $Da0, $D, $pi, $A | awk '{print $4*$7}')
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
     #echo $Da0, $Da1, $Kb, $C0, $Kad, $DA0D
-	  
-    if [ ! -d xi${xi}_kBT${kBT}_dt${dt}_Da${Da1} ]; then
-	mkdir xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
+
+    #create a folder to run and folder name consists of parameters
+    if [ ! -d Kc${Kc}_xi${xi}_kBT${kBT}_dt${dt}_Da${Da1} ]; then
+	mkdir Kc${Kc}_xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
     fi
-    cd xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
+    cd Kc${Kc}_xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
     
     
-    co.run ../../../main  $R $rho $v $Kc 
-    juelicher_xin $Kb $C0 $Kad $DA0D $D
-    $xi $dt $kBT
-    strain $ref lim $Ka $mub $a3 $a4 $b1 $b2
-    $end $freq $freq_stat . '<' $off
+    co.run ../../../main  $R $rho $v $Kc \
+    juelicher_xin $Kb $C0 $Kad $DA0D \
+    $D $xi $dt $kBT \
+    strain $ref lim $Ka $mub $a3 $a4 $b1 $b2 \
+    $end $freqo $freqs '<' $off
     
 else
 

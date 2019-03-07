@@ -33,7 +33,7 @@
 #include <co/off.h>
 #include <co/area.h>
 #include <co/volume.h>
-#include <co/bending.h>
+#include <co/f/juelicher_xin.h>
 
 //This Macro defines if we need adaptive time step
 #define DT_ADPTIVE
@@ -64,7 +64,8 @@ static int  freqo, freqs;
 
 static real mass;
 static real A0, V0, e0;
-static real eb, ega, ev, ebl, ebn, es;
+static real A, V, vc;
+static real eb, ea, ev, ebl, ebn, es;
 
 static real *x, *y, *z;
 static int Nt, Ne, Nv;
@@ -76,15 +77,18 @@ static void zero(int n, real *a) {
 }
 
 static void usg(void) {
+  
     fprintf(stderr, "%s juelicher_xin R rho v Kc Kb C0 Kad DA0D xi dt_in kBT", me);
     fprintf(stderr, "end: total number of steps\n");
     fprintf(stderr, "freqo: frequency in steps to output off files\n");
     fprintf(stderr, "freqs: frequency in steps to output statistics\n");
     fprintf(stderr, "< init.off > msg\n");
     exit(0);
+    
 }
 
 static int mkdir0(const char *path) {
+  
     int rc;
     char cmd[4048];
     sprintf(cmd, "mkdir -p \"%s\"", path);
@@ -92,6 +96,7 @@ static int mkdir0(const char *path) {
     if (rc != 0)
         ER("fail to create directory '%s'\n", path);
     return CO_OK;
+    
 }
 
 static char *fullpath(const char *path) {
@@ -142,12 +147,8 @@ static void init() {
   
   scl(&Kc);
   
-  //printf("R, rho, v, Kc = %f, %f, %f, %f\n", R, rho, v, Kc);
   
   str(fname_bend);
-  //printf("fname_bend = %s\n", fname_bend);
-  //printf("%s %s %s %s\n", argv[0], argv[1], argv[2], argv[3]);
-  
   force_argv(fname_bend, &argv, he, &force_bend);
 
   scl(&D);
@@ -155,66 +156,128 @@ static void init() {
   scl(&dt_in);
   scl(&kBT);
 
-  //printf("D, xi, dt_in, kBT = %f, %f, %f, %f\n", D, xi, dt_in, kBT);
-  
   str(fname_strain);
-  
-  //printf("fname_strain = %s\n", fname_strain);
-  //printf("%s %s %s %s %s %s %s %s\n", argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]);
-  
-  force_argv(fname_strain, &argv, he,  &force_strain);
+  force_argv(fname_strain, &argv, he, &force_strain);
 
   num(&end);
   num(&freqo);
   num(&freqs);
 
-  //printf("end, freqo, freqs = %d, %d, %d\n", end, freqo, freqs);
-
-  force_argv("darea", &argv, he,  &force_area);
-  force_argv("dvolume", &argv, he,  &force_volume);
+  force_argv("darea",   &argv, he, &force_area);
+  force_argv("dvolume", &argv, he, &force_volume);
 
 }
+
+real EnergyArea(const real *x, const real *y, const real *z) {
+
+  real ea;
+  
+  ea  = (A/A0-1);
+  ea *= ea;
+  ea *= Kc/2.0;
+
+  return ea;
+  
+}
+real EnergyVolume(const real *x, const real *y, const real *z) {
+  
+  real ev;
+  
+  ev  = (V/V0-1);
+  ev *= ev;
+  ev *= Kc/2.0;
+
+  return ev;
+  
+}  
 
 real Energy0(const real *x, const real *y, const real *z) {
   
   real et;
-
   
-  ega = force_energy(force_area, he, x, y, z);
-  ev  = force_energy(force_volume, he, x, y, z);
+  A   = force_energy(force_area, he, x, y, z);
+  V   = force_energy(force_volume, he, x, y, z);
+  vc  = reduced_volume(A, V);
+
+  ea  = EnergyArea(x, y, z);
+  ev  = EnergyVolume(x, y, z);
+  
   eb  = force_energy(force_bend, he, x, y, z);
-  //ebl = f_bending_energy_bend();
-  //ebn = f_bending_energy_ad();
-  ebl = bending_energy_bend(force_pointer(force_bend));
-  ebn = bending_energy_ad(force_pointer(force_bend));
+  ebl = he_f_juelicher_xin_energy_bend(force_pointer(force_bend));
+  ebn = he_f_juelicher_xin_energy_ad(force_pointer(force_bend));
+
   es  = force_energy(force_strain, he, x, y, z);
 
-  et  = ega + ev + eb + es;
+  et  = ea + ev + eb + es;
   
   return et;
 }
 
-void Force0(const real *x, const real *y, const real *z, /**/
-	    real *fx, real *fy, real *fz) {
+void ForceArea(const real *x, const real *y, const real *z,
+	       /**/ real *fx, real *fy, real *fz) {
+
+  real *fax, *fay, *faz;
+  real coef;
+  int i;
+  
+  MALLOC(Nv, &fax); MALLOC(Nv, &fay); MALLOC(Nv, &faz);
+  zero(Nv, fax); zero(Nv, fay); zero(Nv, faz);
+
+  force_force(force_area, he, x, y, z, /**/ fax, fay, faz);
+
+  coef = Kc * (A/A0 - 1) / A0;
+  
+  for ( i = 0; i < Nv; i ++ ) {
+    fx[i] += coef * fax[i];
+    fy[i] += coef * fay[i];
+    fz[i] += coef * faz[i];
+  }
+
+  FREE(fax); FREE(fay); FREE(faz);
+
+}
+void ForceVolume(const real *x, const real *y, const real *z,
+		 /**/ real *fx, real *fy, real *fz) {
+  
+  real *fvx, *fvy, *fvz;
+  real coef;
+  int i;
+  
+  MALLOC(Nv, &fvx); MALLOC(Nv, &fvy); MALLOC(Nv, &fvz);
+  zero(Nv, fvx); zero(Nv, fvy); zero(Nv, fvz);
+
+  force_force(force_volume, he, x, y, z, /**/ fvx, fvy, fvz);
+
+  coef = Kc * (V/V0 - 1) / V0;
+
+  for ( i = 0; i < Nv; i ++ ) {
+    fx[i] += coef * fvx[i];
+    fy[i] += coef * fvy[i];
+    fz[i] += coef * fvz[i];
+  }
+
+  FREE(fvx); FREE(fvy); FREE(fvz);
+  
+}
+
+void Force0(const real *x, const real *y, const real *z,
+	    /**/ real *fx, real *fy, real *fz) {
   
   zero(Nv, fx); zero(Nv, fy); zero(Nv, fz);
-  force_force(force_area, he, x, y, z, /**/ fx, fy, fz);
-  force_force(force_volume, he, x, y, z, /**/ fx, fy, fz);
+
+  A  = force_energy(force_area, he, x, y, z);
+  V  = force_energy(force_volume, he, x, y, z);
+  vc = reduced_volume(A, V);
+
+  ForceArea(x, y, z, /**/ fx, fy, fz);
+  ForceVolume(x, y, z, /**/ fx, fy, fz);
+
   force_force(force_bend, he, x, y, z, /**/ fx, fy, fz);
   force_force(force_strain, he, x, y, z, /**/ fx, fy, fz);
   
 }
 
-void ForceArea(const real *x, const real *y, const real *z, /**/
-	       real *fx, real *fy, real *fz) {
-  
-  zero(Nv, fx); zero(Nv, fy); zero(Nv, fz);
-  force_force(force_area, he, x, y, z, /**/ fx, fy, fz);
-  
-}
-
-static void euler(real dt,
-                  const real *fx, const real *fy, const real *fz,
+static void euler(real dt, const real *fx, const real *fy, const real *fz,
                   real *vx, real *vy, real *vz) {
   int i;
   
@@ -226,12 +289,15 @@ static void euler(real dt,
   
 }
 
-static int diff(int i, int j, const real *x, const real *y, const real *z, /**/ real e[3]) {
+static int diff(int i, int j, const real *x, const real *y, const real *z,
+		/**/ real e[3]) {
+  
     real a[3], b[3];
     vec_get(i, x, y, z, a);
     vec_get(j, x, y, z, b);
     vec_minus(a, b, e);
     return CO_OK;
+    
 }
 
 static void visc_pair(real xi, 
@@ -258,8 +324,8 @@ static void visc_pair(real xi,
 }
 
 static void rand_pair(real xi, real kBT, real dt,
-                      const real *vx, const real *vy, const real *vz, /*io*/
-                      real *fx, real *fy, real *fz) {
+                      const real *vx, const real *vy, const real *vz,
+		      /*io*/real *fx, real *fy, real *fz) {
 
   int e, i, j;
   real u[3], r[3], rn[3], p[3];
@@ -276,7 +342,7 @@ static void rand_pair(real xi, real kBT, real dt,
     vec_norm(r, rn);
 
     ra  = coef*(rand()/(real)RAND_MAX - 0.5);
-    ra *=sigma;
+    ra *= sigma;
     vec_scalar_append(rn, -ra, i, fx, fy, fz);
     vec_scalar_append(rn, ra, j, fx, fy, fz);
     
@@ -295,6 +361,7 @@ static real Kinetic0(real *vx, real *vy, real *vz, real m) {
     s += vz[i]*vz[i];
   }
   return m*s/2.0;
+  
 }
 
 static real max_vec(real *fx, real *fy, real *fz) {
@@ -311,10 +378,9 @@ static real max_vec(real *fx, real *fy, real *fz) {
 
 static int main0(real *vx, real *vy, real *vz,
 		 real *fx, real *fy, real *fz) {
-  int cnt, i, j;
+
+  int i, j;
   real rnd;
-  real A, V, vc;
-  real errA;
   real et, ep, ek;
   char file[4048];
   char filemsg[4048]="stat.dat";
@@ -345,7 +411,9 @@ static int main0(real *vx, real *vy, real *vz,
 #endif
 
   if ( kBT > 0 ) {
+    
     rand_pair(xi, kBT, dt, vx, vy, vz, /**/ fx, fy, fz);
+    
   }
   
   
@@ -364,22 +432,19 @@ static int main0(real *vx, real *vy, real *vz,
       ek = Kinetic0(vx, vy, vz, mass);
       et = ep + ek;
       
-      A  = he_area(he, x, y, z);
-      V  = he_volume_tri(he, x, y, z);
-      vc =reduced_volume(A, V);
       MSG("dt, s, t: %g %d %g", dt, i, time);
       MSG("A/A0, V/V0, v: %g %g %g", A/A0, V/V0, vc);
-      MSG("et,  ega,  ev,  ek,  eb, ebl, ebn, es");
-      MSG("%g %g %g %g %g %g %g %g", et, ega, ev, ek, eb, ebl, ebn, es); 
+      MSG("et,  ea,  ev,  ek,  eb, ebl, ebn, es");
+      MSG("%g %g %g %g %g %g %g %g", et, ea, ev, ek, eb, ebl, ebn, es); 
       
       fm = fopen(fullpath(filemsg), "a");
       static int First = 1;
       if (First) {
-	fputs("dt s t A/A0 V/V0 v et ega ev ek eb ebl ebn es\n", fm);
+	fputs("dt s t A/A0 V/V0 v et ea ev ek eb ebl ebn es\n", fm);
 	First = 0;
       }
       fprintf(fm, "%g %d %g %g %g %g %g %g %g %g %g %g %g %g \n",
-	      dt, i, time, A/A0, V/V0, vc, et, ega, ev, ek, eb, ebl, ebn, es);
+	      dt, i, time, A/A0, V/V0, vc, et, ea, ev, ek, eb, ebl, ebn, es);
       fclose(fm);
       
     }//i%freq_screen
@@ -406,6 +471,7 @@ static int main0(real *vx, real *vy, real *vz,
   }//i=0;i<end
   
   return 1;
+  
 }
 
 
@@ -423,7 +489,6 @@ int main(int __UNUSED ac, char *av[]) {
 
   real *fx, *fy, *fz;
   real *vx, *vy, *vz;
-  real A, V, vc;
   real a0;
   
   //printf("Here is the first line\n");
@@ -445,13 +510,14 @@ int main(int __UNUSED ac, char *av[]) {
   
   srand(time(NULL));
 
-  A0 = he_area(he, x, y, z);
+  A0 = force_energy(force_area, he, x, y, z);
+  A  = A0;
+
   V0 = target_volume(A0, v);
   a0 = A0/Nt;
   e0 = eq_tri_edg(a0);
 
-  A  = A0;
-  V  = he_volume_tri(he, x, y, z);
+  V  = force_energy(force_volume, he, x, y, z);
   vc = reduced_volume(A, V);
 
   mass = 4.0*pi*R*R*D*rho/Nv;
