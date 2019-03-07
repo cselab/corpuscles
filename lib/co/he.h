@@ -34,7 +34,7 @@ int he_E(T*, int**, int**);
 int he_T(T*, int**, int**, int**);
 int he_D(T*, int**, int**, int**, int**);
 
-int he_bnd_ver(T *he, int v);
+int he_bnd_ver(T*, int v);
 int he_ring(T*, int v, /**/ int *n, int **ring);
 
 #undef T
