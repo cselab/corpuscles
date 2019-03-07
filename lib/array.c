@@ -1,5 +1,6 @@
 #include "real.h"
 #include "co/err.h"
+#include "co/array.h"
 
 real array_min(int n, const real a[]) {
     int i;
