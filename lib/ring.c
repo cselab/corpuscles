@@ -213,3 +213,24 @@ int ring_xv(int n, const real *xyz, const real *C, /**/ real x[3]) {
     matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
     return CO_OK;
 }
+
+int ring_xuu(int n, const real *xyz, const real *C, /**/ real x[3]) {
+    const real *C1;
+    C1 = C + 3*(n + 1);
+    matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
+    return CO_OK;
+}
+
+int ring_xuv(int n, const real *xyz, const real *C, /**/ real x[3]) {
+    const real *C1;
+    C1 = C + 4*(n + 1);
+    matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
+    return CO_OK;
+}
+
+int ring_xvv(int n, const real *xyz, const real *C, /**/ real x[3]) {
+    const real *C1;
+    C1 = C + 5*(n + 1);
+    matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
+    return CO_OK;
+}

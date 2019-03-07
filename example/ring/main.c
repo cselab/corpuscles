@@ -39,7 +39,7 @@ int main(__UNUSED int argc, const char **v0) {
     He      *he;
     int nv, i, n, *rring, status;
     Ring *ring;
-    real *out, *xyz, *C, xu[3], xv[3];
+    real *out, *xyz, *C, xx[3];
 
     argv = v0;
     argv++;
@@ -60,6 +60,8 @@ int main(__UNUSED int argc, const char **v0) {
         status = he_ring(he, i, &n, &rring);
         if (status != CO_OK)
             ER("he_ring failed for i = %d", i);
+        ring_xyz(ring, i, rring, x, y, z, &xyz);
+        ring_C(ring, i, rring, x, y, z, &C);
         if (eq(op, "alpha")) {
             ring_alpha(ring, i, rring, x, y, z, &out);
             write(1, n, out);
@@ -70,9 +72,8 @@ int main(__UNUSED int argc, const char **v0) {
             ring_theta(ring, i, rring, x, y, z, &out);
             write(1, n, out);
         } else if (eq(op, "xyz")) {
-            ring_xyz(ring, i, rring, x, y, z, &out);
             printf("%d\n", n + 1);
-            write(3, n + 1, out);
+            write(3, n + 1, xyz);
         } else if (eq(op, "A")) {
             ring_A(ring, i, rring, x, y, z, &out);
             printf("%d\n", n + 1);
@@ -84,15 +85,20 @@ int main(__UNUSED int argc, const char **v0) {
             ring_C(ring, i, rring, x, y, z, &out);
             write(6, n + 1, out);
         } else if (eq(op, "xu")) {
-            ring_xyz(ring, i, rring, x, y, z, &xyz);
-            ring_C(ring, i, rring, x, y, z, &C);
-            ring_xu(n, xyz, C, xu);
-            vec_printf(xu, FMT);
+            ring_xu(n, xyz, C, xx);
+            vec_printf(xx, FMT);
         } else if (eq(op, "xv")) {
-            ring_xyz(ring, i, rring, x, y, z, &xyz);
-            ring_C(ring, i, rring, x, y, z, &C);
-            ring_xv(n, xyz, C, xv);
-            vec_printf(xv, FMT);
+            ring_xv(n, xyz, C, xx);
+            vec_printf(xx, FMT);
+        } else if (eq(op, "xuu")) {
+            ring_xuu(n, xyz, C, xx);
+            vec_printf(xx, FMT);
+        } else if (eq(op, "xuv")) {
+            ring_xuv(n, xyz, C, xx);
+            vec_printf(xx, FMT);
+        } else if (eq(op, "xvv")) {
+            ring_xvv(n, xyz, C, xx);
+            vec_printf(xx, FMT);
         } else
             ER("unknown operation '%s'", op);
     }
