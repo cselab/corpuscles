@@ -66,9 +66,11 @@ int main(__UNUSED int argc, const char **v0) {
             write(1, n, out);
         } else if (eq(op, "xyz")) {
             ring_xyz(ring, i, rring, x, y, z, &out);
+            printf("%d\n", n + 1);
             write(n + 1, 3, out);
         } else if (eq(op, "A")) {
             ring_A(ring, i, rring, x, y, z, &out);
+            printf("%d\n", n + 1);
             write(n + 1, 6, out);
         } else if (eq(op, "B")) {
             ring_B(ring, i, rring, x, y, z, &out);
