@@ -6,7 +6,7 @@ rho=1.0
 v=0.641998677173
 A=$(echo  $pi | awk '{print $1*4.0}')
 
-Kc=5000
+Kc=20000
 
 Kb=1
 C0=0
@@ -62,7 +62,25 @@ then
     
 else
 
+    Da1=-0.858
+    bash run.sh $Da1
+
+    Da1=-0.358
+    bash run.sh $Da1
+
+    Da1=0.072
+    bash run.sh $Da1
+
     Da1=0.143
+    bash run.sh $Da1
+
+    Da1=1.717
+    bash run.sh $Da1
+
+    Da1=1.788
+    bash run.sh $Da1
+
+    Da1=2.003
     bash run.sh $Da1
 
 fi
