@@ -19,7 +19,7 @@ static int get3(const real *x, const real *y, const real *z,
     return CO_OK;
 }
 int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
-                  real *normx, real *normy, real *normz) {
+                  real *nx, real *ny, real *nz) {
     enum {X, Y, Z};
     int t, nt;
     int i, j, k, nv;
@@ -28,7 +28,7 @@ int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
 
     nt = he_nt(he);
     nv = he_nv(he);
-    array_zero3(nv, normx, normy, normz);
+    array_zero3(nv, nx, ny, nz);
     for ( t = 0; t < nt; t++ ) {
         he_tri_ijk(he, t, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
@@ -36,15 +36,15 @@ int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
         theta_b = tri_angle(a, b, c);
         theta_c = tri_angle(b, c, a);
         tri_normal(a, b, c, u);
-        vec_scalar_append(u, theta_a, i, normx, normy, normz);
-        vec_scalar_append(u, theta_b, j, normx, normy, normz);
-        vec_scalar_append(u, theta_c, k, normx, normy, normz);
+        vec_scalar_append(u, theta_a, i, nx, ny, nz);
+        vec_scalar_append(u, theta_b, j, nx, ny, nz);
+        vec_scalar_append(u, theta_c, k, nx, ny, nz);
     }
 
     for (i = 0; i < nv; i++) {
-        vec_get(i, normx, normy, normz, /**/ u);
+        vec_get(i, nx, ny, nz, /**/ u);
         vec_norm(u, /**/ u0);
-        vec_set(u0, i, /**/ normx, normy, normz);
+        vec_set(u0, i, /**/ nx, ny, nz);
     }
     return CO_OK;
 }
