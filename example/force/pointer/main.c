@@ -48,6 +48,6 @@ int main(int __UNUSED argc, char *argv[]) {
     juelicher_xin = force_pointer(force);
     ad = he_f_juelicher_xin_energy_ad(juelicher_xin);
     bend = he_f_juelicher_xin_energy_bend(juelicher_xin);
-    printf("tot, ad, bend: " FMT " " FMT " " FMT "\n", e, ad, bend);
+    printf(FMT " " FMT " " FMT "\n", e, ad, bend);
     y_fin(he, x, y, z);
 }

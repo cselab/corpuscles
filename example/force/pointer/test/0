@@ -1,0 +1,2 @@
+# TEST: 0
+co.run ./main juelicher_xin 1 2 3 4 5 < `co.path`/rbc/laplace/0.off > main.out.txt
