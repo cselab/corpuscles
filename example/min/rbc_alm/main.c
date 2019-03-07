@@ -67,13 +67,14 @@ static real mass;
 static real A0, V0, e0;
 static real A, V, vc;
 static real eb, ea, ev, ebl, ebn, es;
-static real eal, evl;
 
 static real *x, *y, *z;
 static int Nt, Ne, Nv;
 static int *D0, *D1, *D2, *D3;
 
-static int lambda0, lambda;
+static real c1, c2;
+static real lama0, lama;
+static real lamv0, lamv;
 
 static void zero(int n, real *a) {
     int i;
@@ -169,49 +170,43 @@ static void init() {
     force_argv("darea",   &argv, he, &force_area);
     force_argv("dvolume", &argv, he, &force_volume);
 
-    lambda0 = 1.0;
+    lama0 = 1.0;
+    lamv0 = 1.0;
+    
+    lama  = lama0;
+    lamv  = lamv0;
 }
 
 real EnergyArea(const real *x, const real *y, const real *z) {
 
-    real e;
+  real e1, e2, e;
 
-    e  = (A/A0-1);
-    e *= e;
-    e *= Kc/2.0;
-
-    return e;
-
-}
-real EnergyAreaLagrangian(const real *x, const real *y, const real *z) {
-
-    real e;
-
-    e  = (A/A0-1);
-    e *= -lambda;
-
-    return e;
-
+  c1  = (A/A0-1);
+  
+  e1  = c1*c1;
+  e1 *= Kc/2.0;
+  
+  e2 = -lama*c1;
+  
+  e = e1 + e2;
+  
+  return e;
+    
 }
 real EnergyVolume(const real *x, const real *y, const real *z) {
 
-    real e;
+  real e1, e2, e;
 
-    e  = (V/V0-1);
-    e *= e;
-    e *= Kc/2.0;
-
-    return e;
-
-}
-real EnergyVolumeLagrangian(const real *x, const real *y, const real *z) {
-
-    real e;
-
-    e  = (V/V0-1);
-    e *= -lambda;
-
-    return e;
+  c2  = (V/V0-1);
+  
+  e1  = e0*e0;
+  e1 *= Kc/2.0;
+  
+  e2 = -lamv*c2;
+  
+  e = e1 + e2;
+  
+  return e;
 
 }
 
@@ -225,17 +220,14 @@ real Energy0(const real *x, const real *y, const real *z) {
 
     ea  = EnergyArea(x, y, z);    
     ev  = EnergyVolume(x, y, z);
-
-    eal = EnergyAreaLagrangian(x, y, z);
-    evl = EnergyVolumeLagrangian(x, y, z);
-      
+    
     eb  = force_energy(force_bend, he, x, y, z);
     ebl = he_f_juelicher_xin_energy_bend(force_pointer(force_bend));
     ebn = he_f_juelicher_xin_energy_ad(force_pointer(force_bend));
 
     es  = force_energy(force_strain, he, x, y, z);
-
-    et  = ea + ev + eal + evl + eb + es;
+    
+    et  = ea + ev + eb + es;
 
     return et;
 }
@@ -252,16 +244,18 @@ void ForceArea(const real *x, const real *y, const real *z,
 
     force_force(force_area, he, x, y, z, /**/ fax, fay, faz);
 
-    coef = Kc * (A/A0 - 1) / A0;
-
+    c1 = (A/A0 - 1);
+    
+    coef = ( Kc * c1 - lama ) / A0;
+    
     for ( i = 0; i < Nv; i ++ ) {
-        fx[i] += coef * fax[i];
-        fy[i] += coef * fay[i];
-        fz[i] += coef * faz[i];
+      fx[i] += coef * fax[i];
+      fy[i] += coef * fay[i];
+      fz[i] += coef * faz[i];
     }
-
+    
     FREE(fax); FREE(fay); FREE(faz);
-
+    
 }
 void ForceVolume(const real *x, const real *y, const real *z,
                  /**/ real *fx, real *fy, real *fz) {
@@ -269,14 +263,16 @@ void ForceVolume(const real *x, const real *y, const real *z,
     real *fvx, *fvy, *fvz;
     real coef;
     int i;
-
+    
     MALLOC(Nv, &fvx); MALLOC(Nv, &fvy); MALLOC(Nv, &fvz);
     zero(Nv, fvx); zero(Nv, fvy); zero(Nv, fvz);
 
     force_force(force_volume, he, x, y, z, /**/ fvx, fvy, fvz);
 
-    coef = Kc * (V/V0 - 1) / V0;
-
+    c2 = (V/V0 - 1);
+    
+    coef = ( Kc * c2  - lamv ) / V0;
+    
     for ( i = 0; i < Nv; i ++ ) {
         fx[i] += coef * fvx[i];
         fy[i] += coef * fvy[i];
@@ -479,9 +475,12 @@ static int main0(real *vx, real *vy, real *vz,
         euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
         euler(dt, vx, vy, vz, /**/ x, y, z);
 
+	lama = lama - Kc * c1;
+	lamv = lamv - Kc * c2;
+	  
         time += dt;
-
-        Force0(x, y, z, /**/ fx, fy, fz);
+	
+	Force0(x, y, z, /**/ fx, fy, fz);
 
         visc_pair(xi, vx, vy, vz, /**/ fx, fy, fz);
 
