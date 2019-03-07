@@ -62,6 +62,7 @@ static real Kb, C0, Kad, DA0D, D;
 static real xi, dt_in, kBT;
 static int  end;
 static int  freqo, freqs;
+static int  freqlam;
 
 static real mass;
 static real A0, V0, e0;
@@ -170,11 +171,13 @@ static void init() {
     force_argv("darea",   &argv, he, &force_area);
     force_argv("dvolume", &argv, he, &force_volume);
 
-    lama0 = 1.0;
-    lamv0 = 1.0;
+    lama0 = 0.0;
+    lamv0 = 0.0;
     
     lama  = lama0;
     lamv  = lamv0;
+
+    freqlam = 100;
 }
 
 real EnergyArea(const real *x, const real *y, const real *z) {
@@ -246,7 +249,7 @@ void ForceArea(const real *x, const real *y, const real *z,
 
     c1 = (A/A0 - 1);
     
-    coef = ( Kc * c1 - lama ) / A0;
+    coef = (Kc*c1 - lama)/A0;
     
     for ( i = 0; i < Nv; i ++ ) {
       fx[i] += coef * fax[i];
@@ -271,7 +274,7 @@ void ForceVolume(const real *x, const real *y, const real *z,
 
     c2 = (V/V0 - 1);
     
-    coef = ( Kc * c2  - lamv ) / V0;
+    coef = (Kc*c2 - lamv)/V0;
     
     for ( i = 0; i < Nv; i ++ ) {
         fx[i] += coef * fvx[i];
@@ -456,9 +459,8 @@ static int main0(real *vx, real *vy, real *vz,
             et = ep + ek;
 
             MSG("dt, s, t: %g %d %g", dt, i, time);
-            MSG("A/A0, V/V0, v: %g %g %g", A/A0, V/V0, vc);
-            MSG("et,  ea,  ev,  ek,  eb, ebl, ebn, es");
-            MSG("%g %g %g %g %g %g %g %g", et, ea, ev, ek, eb, ebl, ebn, es);
+            MSG("A/A0, V/V0, v, lama, lamv: %g %g %g %g %g", A/A0, V/V0, vc, lama, lamv);
+            MSG("et,  ea,  ev,  ek,  eb, ebl, ebn, es: %g %g %g %g %g %g %g %g", et, ea, ev, ek, eb, ebl, ebn, es);
 
             fm = fopen(fullpath(filemsg), "a");
             static int First = 1;
@@ -475,8 +477,13 @@ static int main0(real *vx, real *vy, real *vz,
         euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
         euler(dt, vx, vy, vz, /**/ x, y, z);
 
-	lama = lama - Kc * c1;
-	lamv = lamv - Kc * c2;
+	
+	if ( i % freqlam == 0 && i != 0 ) {
+
+	  //lama = lama - Kc * c1;
+	  //lamv = lamv - Kc * c2;
+
+	}
 	  
         time += dt;
 	
