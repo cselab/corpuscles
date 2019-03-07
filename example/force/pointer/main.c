@@ -13,74 +13,41 @@
 #include <co/util.h>
 #include <co/argv.h>
 #include <co/macro.h>
+#include <co/f/juelicher_xin.h>
 #include <co/vec.h>
 #include <co/y.h>
 
-#define FMT_IN   CO_REAL_IN
+#define FMT   CO_REAL_OUT
 
+static const char *me = "force/pointer";
 static const char **argv;
 
 static char name[1024];
-
-static real *fx, *fy, *fz, *fm, *x, *y, *z, *rr, *area;
-static int nv, nt;
+static real *x, *y, *z;
 static He *he;
 static Force *force;
-static real delta = 1e-6;
-
-static const char *me = "force/pointer";
+static HeFJuelicherXin *juelicher_xin;
 
 static void usg(void) {
     const char *list;
     list = force_list();
-    fprintf(stderr, "%s %s [args..] < OFF > PUNTO\n", me, list);
+    fprintf(stderr, "%s %s [args..]\n", me, list);
     exit(2);
 }
 
-static void main0() {
-    int i;
-    real e, r[3], f[3];
-
-    force_force(force, he, x, y, z, /**/ fx, fy, fz);
-    e = force_energy(force, he, x, y, z);
-    he_area_ver(he, x, y, z, /**/ area);
-
-    MSG("name: %s", force_name(force));
-    MSG("energy: %g", e);
-    MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
-
-    for (i = 0; i < nv; i++) {
-        vec_get(i, x, y, z, /**/ r);
-        vec_get(i, fx, fy, fz, /**/ f);
-        rr[i] = vec_cylindrical_r(r);
-        fm[i] = vec_abs(f);
-    }
-
-    char *key = "r x y z fm fx fy fz area";
-    const real *queue[] = {rr, x, y, z, fm, fx, fy, fz, area, NULL};
-    puts(key);
-    punto_fwrite(nv, queue, stdout);
-    force_fin(force);
-}
-
 int main(int __UNUSED argc, char *argv[]) {
+    real ad, bend, e;
+    
     argv++;
     if (util_eq(*argv, "-h"))
         usg();
     y_inif(stdin, &he, &x, &y, &z);
-
     argv_str(&argv, name);
     force_argv(name, &argv, he,  &force);
-    nv = he_nv(he);
-    nt = he_nt(he);
-
-    MALLOC(nv, &rr); MALLOC(nv, &fm); MALLOC(nv, &area);
-    CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
-
-    main0();
-
-    FREE(rr); FREE(fm);
-    FREE(fx); FREE(fy); FREE(fz);
-
+    e = force_energy(force, he, x, y, z);
+    juelicher_xin = force_pointer(force);
+    ad = he_f_juelicher_xin_energy_ad(juelicher_xin);
+    bend = he_f_juelicher_xin_energy_bend(juelicher_xin);
+    printf("tot, ad, bend: " FMT " " FMT " " FMT "\n", e, ad, bend);
     y_fin(he, x, y, z);
 }

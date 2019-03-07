@@ -186,7 +186,7 @@ static real area_energy(T *q, He *he, const real *x, const real *y, const real *
 static void* area_pointer(T *q)
 {
     Area *b = CONTAINER_OF(q, Area, force);
-    return b;
+    return b->local;
 }
 static Vtable area_vtable = {
     area_fin,
@@ -229,7 +229,7 @@ static real darea_energy(T *q, He *he, const real *x, const real *y, const real 
 static void* darea_pointer(T *q)
 {
     Darea *b = CONTAINER_OF(q, Darea, force);
-    return b;
+    return b->local;
 }
 static Vtable darea_vtable = {
     darea_fin,
@@ -272,7 +272,7 @@ static real garea_energy(T *q, He *he, const real *x, const real *y, const real 
 static void* garea_pointer(T *q)
 {
     Garea *b = CONTAINER_OF(q, Garea, force);
-    return b;
+    return b->local;
 }
 static Vtable garea_vtable = {
     garea_fin,
@@ -315,7 +315,7 @@ static real volume_energy(T *q, He *he, const real *x, const real *y, const real
 static void* volume_pointer(T *q)
 {
     Volume *b = CONTAINER_OF(q, Volume, force);
-    return b;
+    return b->local;
 }
 static Vtable volume_vtable = {
     volume_fin,
@@ -358,7 +358,7 @@ static real dvolume_energy(T *q, He *he, const real *x, const real *y, const rea
 static void* dvolume_pointer(T *q)
 {
     Dvolume *b = CONTAINER_OF(q, Dvolume, force);
-    return b;
+    return b->local;
 }
 static Vtable dvolume_vtable = {
     dvolume_fin,
@@ -401,7 +401,7 @@ static real juelicher_xin_energy(T *q, He *he, const real *x, const real *y, con
 static void* juelicher_xin_pointer(T *q)
 {
     Juelicher_xin *b = CONTAINER_OF(q, Juelicher_xin, force);
-    return b;
+    return b->local;
 }
 static Vtable juelicher_xin_vtable = {
     juelicher_xin_fin,
@@ -444,7 +444,7 @@ static real edg_sq_energy(T *q, He *he, const real *x, const real *y, const real
 static void* edg_sq_pointer(T *q)
 {
     Edg_sq *b = CONTAINER_OF(q, Edg_sq, force);
-    return b;
+    return b->local;
 }
 static Vtable edg_sq_vtable = {
     edg_sq_fin,
@@ -487,7 +487,7 @@ static real harmonic_energy(T *q, He *he, const real *x, const real *y, const re
 static void* harmonic_pointer(T *q)
 {
     Harmonic *b = CONTAINER_OF(q, Harmonic, force);
-    return b;
+    return b->local;
 }
 static Vtable harmonic_vtable = {
     harmonic_fin,
@@ -530,7 +530,7 @@ static real harmonic_ref_energy(T *q, He *he, const real *x, const real *y, cons
 static void* harmonic_ref_pointer(T *q)
 {
     Harmonic_ref *b = CONTAINER_OF(q, Harmonic_ref, force);
-    return b;
+    return b->local;
 }
 static Vtable harmonic_ref_vtable = {
     harmonic_ref_fin,
@@ -573,7 +573,7 @@ static real area_voronoi_energy(T *q, He *he, const real *x, const real *y, cons
 static void* area_voronoi_pointer(T *q)
 {
     Area_voronoi *b = CONTAINER_OF(q, Area_voronoi, force);
-    return b;
+    return b->local;
 }
 static Vtable area_voronoi_vtable = {
     area_voronoi_fin,
@@ -616,7 +616,7 @@ static real garea_voronoi_energy(T *q, He *he, const real *x, const real *y, con
 static void* garea_voronoi_pointer(T *q)
 {
     Garea_voronoi *b = CONTAINER_OF(q, Garea_voronoi, force);
-    return b;
+    return b->local;
 }
 static Vtable garea_voronoi_vtable = {
     garea_voronoi_fin,
@@ -659,7 +659,7 @@ static real volume_normal_energy(T *q, He *he, const real *x, const real *y, con
 static void* volume_normal_pointer(T *q)
 {
     Volume_normal *b = CONTAINER_OF(q, Volume_normal, force);
-    return b;
+    return b->local;
 }
 static Vtable volume_normal_vtable = {
     volume_normal_fin,
@@ -702,7 +702,7 @@ static real area_sq_energy(T *q, He *he, const real *x, const real *y, const rea
 static void* area_sq_pointer(T *q)
 {
     Area_sq *b = CONTAINER_OF(q, Area_sq, force);
-    return b;
+    return b->local;
 }
 static Vtable area_sq_vtable = {
     area_sq_fin,
@@ -745,7 +745,7 @@ static real gompper_energy(T *q, He *he, const real *x, const real *y, const rea
 static void* gompper_pointer(T *q)
 {
     Gompper *b = CONTAINER_OF(q, Gompper, force);
-    return b;
+    return b->local;
 }
 static Vtable gompper_vtable = {
     gompper_fin,
@@ -788,7 +788,7 @@ static real strain_energy(T *q, He *he, const real *x, const real *y, const real
 static void* strain_pointer(T *q)
 {
     Strain *b = CONTAINER_OF(q, Strain, force);
-    return b;
+    return b->local;
 }
 static Vtable strain_vtable = {
     strain_fin,

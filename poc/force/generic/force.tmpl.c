@@ -133,7 +133,7 @@ static real %name%_energy(T *q, He *he, const real *x, const real *y, const real
 static void* %name%_pointer(T *q)
 {
     %Name% *b = CONTAINER_OF(q, %Name%, force);
-    return b;
+    return b->local;
 }
 static Vtable %name%_vtable = {
     %name%_fin,
