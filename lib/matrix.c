@@ -6,6 +6,12 @@
 
 #define FMT CO_REAL_OUT
 
+#define BEGIN                                   \
+    for (m = 0; m < M; m++)                     \
+        for (k = 0; k < K; k++)                 \
+            for (n = 0; n < N; n++) {
+#define END }
+
 int matrix_zero(int M, int N, real *a) {
     int i;
     for (i = 0; i < N*M; i++)
@@ -15,11 +21,34 @@ int matrix_zero(int M, int N, real *a) {
 
 int matrix_mult_nn(int M, int N, int K, const real *a, const real *b, /**/ real *c) {
     int m, n, k;
+    BEGIN {
+        c[K*m + k] += a[N*m + n] * b[M*n + k];
+    } END;
+    return CO_OK;
+}
+
+int matrix_mult_tn(int M, int N, int K, const real *a, const real *b, /**/ real *c) {
+    int m, n, k;
     matrix_zero(M, K, c);
-    for (m = 0; m < M; m++)
-        for (k = 0; k < K; k++)
-            for (n = 0; n < N; n++)
-                c[K*m + k] += a[N*m + n] * b[M*n + m];
+    BEGIN {
+        c[K*m + k] += a[M*n + m] * b[M*n + k];
+    } END;
+    return CO_OK;
+}
+
+int matrix_mult_nt(int M, int N, int K, const real *a, const real *b, /**/ real *c) {
+    int m, n, k;
+    BEGIN {
+        c[K*m + k] += a[N*m + n] * b[N*k + n];
+    } END;
+    return CO_OK;
+}
+
+int matrix_mult_tt(int M, int N, int K, const real *a, const real *b, /**/ real *c) {
+    int m, n, k;
+    BEGIN {
+        c[K*m + k] += a[M*n + m] * b[N*k + n];
+    } END;
     return CO_OK;
 }
 

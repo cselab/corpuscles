@@ -12,4 +12,5 @@ int main(void) {
     real c[999];
     M = N = K = 2;
     matrix_mult_nn(M, N, K, a, b, c);
+    matrix_fwrite(M, K, c, stdout);
 }
