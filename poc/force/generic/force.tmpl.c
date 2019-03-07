@@ -76,7 +76,8 @@ typedef struct Vtable Vtable;
 struct Vtable {
     int (*fin)(T*);
     int (*force)(T*, He*, const real *x, const real *y, const real *z, /**/ real *fx, real *fy, real *fz);
-    real (*energy)(T*, He*, const real *x, const real *y, const real *z);
+    real  (*energy)(T*, He*, const real *x, const real *y, const real *z);
+    void* (*pointer)(T*);
 };
 
 int force_fin(T *q)
@@ -97,6 +98,11 @@ real force_energy(T *q, He *he, const real *x, const real *y, const real *z)
 const char *force_name(T *q)
 {
     return q->name;
+}
+
+void *force_pointer(T *q)
+{
+    return q->vtable->pointer(q);
 }
 
 //%begin
@@ -124,10 +130,16 @@ static real %name%_energy(T *q, He *he, const real *x, const real *y, const real
     %Name% *b = CONTAINER_OF(q, %Name%, force);
     return %energy%(b->local, he, x, y, z);
 }
+static void* %name%_pointer(T *q)
+{
+    %Name% *b = CONTAINER_OF(q, %Name%, force);
+    return b;
+}
 static Vtable %name%_vtable = {
     %name%_fin,
     %name%_force,
     %name%_energy,
+    %name%_pointer,
 };
 int force_%name%_argv(char ***p, He *he, /**/ T **pq)
 {
