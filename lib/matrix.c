@@ -57,6 +57,16 @@ int matrix_mult_tt(int M, int N, int K, const real *a, const real *b, /**/ real 
     return CO_OK;
 }
 
+int matrix_transpose(int M, int N, real *a) {
+    int m, n;
+    real t;
+    for (m = 0; m < M; m++)
+        for (n = m + 1; n < N; n++) {
+            t = a[N*m+n]; a[N*m+n] = a[M*n+m]; a[M*n+m] = t;
+        }
+    return CO_OK;
+}
+
 int matrix_fwrite(int M, int N, const real *a, FILE *f) {
     int m, n, s;
     if (fprintf(f, "%d %d\n", M, N) < 0)

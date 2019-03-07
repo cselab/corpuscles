@@ -14,4 +14,7 @@ int ring_A(T*, int, const int*, const real*, const real*, const real*, /**/ real
 int ring_B(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 int ring_C(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 
+int ring_xu(int n, const real *xyz, const real *C, /**/ real[3]);
+int ring_xv(int n, const real *xyz, const real *C, /**/ real[3]);
+
 #undef T

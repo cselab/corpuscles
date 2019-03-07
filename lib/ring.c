@@ -197,3 +197,10 @@ int ring_C(T *q, int v, const int *ring, const real *x, const real *y, const rea
     *p = q->C;
     return CO_OK;
 }
+
+int ring_xu(int n, const real *xyz, const real *C, /**/ real x[3]) {
+    const real *C1;
+    C1 = C + (n + 1);
+    matrix_mult_nt(3, n + 1, 1, xyz, C1, x);
+    return CO_OK;
+}
