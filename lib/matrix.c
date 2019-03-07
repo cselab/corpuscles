@@ -59,6 +59,8 @@ int matrix_mult_tt(int M, int N, int K, const real *a, const real *b, /**/ real 
 
 int matrix_fwrite(int M, int N, const real *a, FILE *f) {
     int m, n, s;
+    if (fprintf(f, "%d %d\n", M, N) < 0)
+        ERR(CO_IO, "fail to write");
     for (m = s = 0; m < M; m++) {
         for (n = 0; n < N; n++, s++) {
             if (n > 0)
@@ -76,7 +78,7 @@ int matrix_fwrite(int M, int N, const real *a, FILE *f) {
 int matrix_fread(FILE *f, int *pM, int *pN, real **pa) {
     int M, N, n, m, s;
     real *a;
-    if (EOF == fscanf(f, "%d %d\n", &N, &M))
+    if (EOF == fscanf(f, "%d %d\n", &M, &N))
         ERR(CO_IO, "fail to read");
     MALLOC((N*M), &a);
     for (m = s = 0; m < M; m++)
