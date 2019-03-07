@@ -1,0 +1,2 @@
+# TEST: transpose
+cat data/a | co.run ./main transpose > main.out.txt

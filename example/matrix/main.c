@@ -25,23 +25,34 @@ int main(__UNUSED int argc, const char **v0) {
         matrix_fread(stdin, &N0, &K, &b);
         if (N0 != N) ER("N0=%d != N=%d", N0, N);
         matrix_mult_nn(M, N, K, a, b, c);
+        matrix_fwrite(M, K, c, stdout);
+        matrix_free(a); matrix_free(b);
     } else if (eq(op, "nt")) {
         matrix_fread(stdin, &M,  &N, &a);
         matrix_fread(stdin, &K, &N0, &b);
         if (N0 != N) ER("N0=%d != N=%d", N0, N);
         matrix_mult_nt(M, N, K, a, b, c);
+        matrix_fwrite(M, K, c, stdout);
+        matrix_free(a); matrix_free(b);
     } else if (eq(op, "tn")) {
         matrix_fread(stdin, &N,  &M, &a);
         matrix_fread(stdin, &N0, &K, &b);
         if (N0 != N) ER("N0=%d != N=%d", N0, N);
         matrix_mult_tn(M, N, K, a, b, c);
+        matrix_fwrite(M, K, c, stdout);
+        matrix_free(a); matrix_free(b);
     } else if (eq(op, "tt")) {
         matrix_fread(stdin, &N,  &M, &a);
         matrix_fread(stdin, &K, &N0, &b);
         if (N0 != N) ER("N0=%d != N=%d", N0, N);
         matrix_mult_nn(M, N, K, a, b, c);
+        matrix_fwrite(M, K, c, stdout);
+        matrix_free(a); matrix_free(b);
+    } else if (eq(op, "transpose")) {
+        matrix_fread(stdin, &N,  &M, &a);
+        matrix_transpose(M, N, a);
+        matrix_fwrite(M, N, a, stdout);
+        matrix_free(a);
     } else
         ER("unknown operation '%s'", op);
-    matrix_fwrite(M, K, c, stdout);
-    matrix_free(a); matrix_free(b);
 }

@@ -57,13 +57,28 @@ int matrix_mult_tt(int M, int N, int K, const real *a, const real *b, /**/ real 
     return CO_OK;
 }
 
-int matrix_transpose(int M, int N, real *a) {
-    int m, n;
-    real t;
-    for (m = 0; m < M; m++)
-        for (n = m + 1; n < N; n++) {
-            t = a[N*m+n]; a[N*m+n] = a[M*n+m]; a[M*n+m] = t;
+int matrix_transpose(int h, int w, real *m) {
+    for (int start = 0; start <= w * h - 1; ++start) {
+        int next = start;
+        int i = 0;
+        do
+        {
+            ++i;
+            next = (next % h) * w + next / h;
+        } while (next > start);
+
+        if (next >= start && i != 1)
+        {
+            real tmp = m[start];
+            next = start;
+            do
+            {
+                i = (next % h) * w + next / h;
+                m[next] = (i == start) ? tmp : m[i];
+                next = i;
+            } while (next > start);
         }
+    }
     return CO_OK;
 }
 
