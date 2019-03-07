@@ -1,0 +1,2 @@
+# TEST: nn
+cat data/a  data/b | co.run ./main nn > main.out.txt

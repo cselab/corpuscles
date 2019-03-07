@@ -1,0 +1,2 @@
+# TEST: tn
+cat data/at  data/b | co.run ./main tn > main.out.txt
