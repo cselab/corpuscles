@@ -72,6 +72,8 @@ static real *x, *y, *z;
 static int Nt, Ne, Nv;
 static int *D0, *D1, *D2, *D3;
 
+static real c1, c2;
+
 static void zero(int n, real *a) {
     int i;
     for (i = 0; i < n; i++) a[i] = 0;
@@ -172,19 +174,21 @@ real EnergyArea(const real *x, const real *y, const real *z) {
 
     real e;
 
-    e  = (A/A0-1);
-    e *= e;
+    c1  = (A/A0-1);
+    
+    e  = c1*c1;
     e *= Kc/2.0;
-
+    
     return e;
-
+    
 }
 real EnergyVolume(const real *x, const real *y, const real *z) {
 
     real e;
 
-    e  = (V/V0-1);
-    e *= e;
+    c2  = (V/V0-1);
+    
+    e *= c2*c2;
     e *= Kc/2.0;
 
     return e;
@@ -225,7 +229,9 @@ void ForceArea(const real *x, const real *y, const real *z,
 
     force_force(force_area, he, x, y, z, /**/ fax, fay, faz);
 
-    coef = Kc * (A/A0 - 1) / A0;
+    c1 = (A/A0 - 1);
+    
+    coef = Kc * c1 / A0;
 
     for ( i = 0; i < Nv; i ++ ) {
         fx[i] += coef * fax[i];
@@ -248,7 +254,9 @@ void ForceVolume(const real *x, const real *y, const real *z,
 
     force_force(force_volume, he, x, y, z, /**/ fvx, fvy, fvz);
 
-    coef = Kc * (V/V0 - 1) / V0;
+    c2 = (V/V0 - 1);
+
+    coef = Kc * c2 / V0;
 
     for ( i = 0; i < Nv; i ++ ) {
         fx[i] += coef * fvx[i];
