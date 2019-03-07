@@ -4,6 +4,7 @@
 #include "real.h"
 
 #include "co/err.h"
+#include "co/matrix.h"
 #include "co/memory.h"
 #include "co/tri.h"
 #include "co/vec.h"
