@@ -60,7 +60,7 @@ int he_ini(HeRead *r, T **pq) {
     MALLOC(ne, &q->hdg_edg);
     MALLOC(nt, &q->hdg_tri);
 
-    MALLOC(nt, &q->E0); MALLOC(nt, &q->E1);
+    MALLOC(ne, &q->E0); MALLOC(ne, &q->E1);
     MALLOC(nt, &q->T0); MALLOC(nt, &q->T1); MALLOC(nt, &q->T2);
     MALLOC(ne, &q->D0); MALLOC(ne, &q->D1); MALLOC(ne, &q->D2); MALLOC(ne, &q->D3);
 
@@ -351,7 +351,7 @@ int he_E(T *he, int **pE0, int **pE1) {
         if (he_bnd(he, h)) {
             E0[e] = E1[e] = -1;
         } else {
-            h = he_hdg_edg(he, e); n = he_nxt(he, h);
+            n = he_nxt(he, h);
             E0[e] = he_ver(he, h); E1[e] = he_ver(he, n);
         }
     }
