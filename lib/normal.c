@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "co/array.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/vec.h"
@@ -9,19 +10,6 @@
 
 #include "co/normal.h"
 
-static void zero(int n, real *a) {
-    int i;
-    for (i = 0; i < n; i++) a[i] = 0;
-}
-static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
-    int h, n, nn, i, j, k;
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    i = he_ver(he, h); j = he_ver(he, n); k = he_ver(he, nn);
-    *pi = i; *pj = j; *pk = k;
-    return CO_OK;
-}
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
@@ -30,7 +18,6 @@ static int get3(const real *x, const real *y, const real *z,
     vec_get(k, x, y, z, /**/ c);
     return CO_OK;
 }
-
 int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
                   real *normx, real *normy, real *normz) {
     enum {X, Y, Z};
@@ -41,9 +28,9 @@ int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
 
     nt = he_nt(he);
     nv = he_nv(he);
-    zero(nv, normx); zero(nv, normy); zero(nv, normz);
+    array_zero3(nv, normx, normy, normz);
     for ( t = 0; t < nt; t++ ) {
-        get_ijk(t, he, &i, &j, &k);
+        he_tri_ijk(he, t, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);

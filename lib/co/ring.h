@@ -14,16 +14,15 @@ int ring_A(T*, int, const int*, const real*, const real*, const real*, /**/ real
 int ring_B(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 int ring_C(T*, int, const int*, const real*, const real*, const real*, /**/ real**);
 
-int ring_xu(int, const real *xyz, const real *C, /**/ real[3]);
-int ring_xv(int, const real *xyz, const real *C, /**/ real[3]);
-
-int ring_xuu(int, const real *xyz, const real *C, /**/ real[3]);
-int ring_xuv(int, const real *xyz, const real *C, /**/ real[3]);
-int ring_xvv(int, const real *xyz, const real *C, /**/ real[3]);
-
-int ring_gcov(int, const real *xyz, const real *C, /**/ real[3]);
-real ring_g(int, const real *xyz, const real *C);
-int ring_gcnt(int, const real *xyz, const real *C, /**/ real[3]);
-int ring_normal(int, const real *xyz, const real *C, /**/ real[3]);
+/* n, xyz, C */
+int ring_xu(int, const real*, const real*, /**/ real[3]);
+int ring_xv(int, const real*, const real*, /**/ real[3]);
+int ring_xuu(int, const real*, const real*, /**/ real[3]);
+int ring_xuv(int, const real*, const real*, /**/ real[3]);
+int ring_xvv(int, const real*, const real*, /**/ real[3]);
+int ring_gcov(int, const real*, const real*, /**/ real[3]);
+real ring_g(int, const real*, const real*);
+int ring_gcnt(int, const real*, const real*, /**/ real[3]);
+int ring_normal(int, const real*, const real*, /**/ real[3]);
 
 #undef T
