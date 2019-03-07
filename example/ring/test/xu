@@ -1,0 +1,2 @@
+# nTEST: xu
+./main xu < $(co.path)/rbc/icosahedron/0.off | uscale 1e6 > main.out.txt
