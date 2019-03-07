@@ -37,7 +37,7 @@ int main0(void) {
     }
     fprintf(stderr, FMT " " FMT "\n", array_max(nv, x), array_min(nv, x));
     fprintf(stderr, FMT " " FMT "\n", array_max(nv, y), array_min(nv, y));
-    off_he_xyz_fwrite(he, x, y, z, stdout);
+    boff_ver_fwrite(he, x, y, z, fx, stdout);
 }
 
 int main(__UNUSED int c, char **v) {
