@@ -5,11 +5,6 @@
 #include <real.h>
 
 #include <co/force.h>
-#include <co/punto.h>
-#include <co/area.h>
-#include <co/he.h>
-#include <co/memory.h>
-#include <co/err.h>
 #include <co/util.h>
 #include <co/argv.h>
 #include <co/macro.h>
