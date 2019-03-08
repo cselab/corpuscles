@@ -26,7 +26,7 @@ static const real pi = 3.141592653589793115997964;
 
 struct T {
     real alpha[N], beta[N], theta[N];
-    real xyz[3*N], A[D*N], B[D*D], Binv[D*D], C[D*N], wgrad[N];
+    real xyz[3*N], A[D*N], B[D*D], Binv[D*D], C[D*N], wgrad[3*N];
     AlgPinv *pinv;
 };
 
@@ -278,8 +278,16 @@ int ring_normal(int n, const real *xyz, const real *C, /**/ real u[3]) {
 }
 
 int ring_wgrad(T *q, int n, const real *xyz, const real *C, /**/ real **p) {
+    enum {X, Y, Z};
     enum {UU, UV, VV};
-    real g[3], xu[3], xv[3], gu[3], gv[3], g0;
+    int i, j;
+    real g[3], xu[3], xv[3], gu[3], gv[3], g0, w[3];
+    real *wgrad;
+    const real *C1, *C2;
+
+    wgrad = q->wgrad;
+    C1 = C +   (n + 1);
+    C2 = C + 2*(n + 1);
 
     ring_gcov(n, xyz, C, /**/ g);
     ring_xu(n, xyz, C, /**/ xu);
@@ -291,6 +299,14 @@ int ring_wgrad(T *q, int n, const real *xyz, const real *C, /**/ real **p) {
     vec_linear_combination(g[VV]/g0, xu, -g[UV]/g0, xv, /**/ gu);
     vec_linear_combination(g[UU]/g0, xv, -g[UV]/g0, xu, /**/ gv);
 
-    *p = q->wgrad;
+    for (i = j = 0; j < n + 1; j++) {
+        vec_linear_combination(C1[j], gu, C2[j], gv, /**/ w);
+        wgrad[i++] = w[X];
+        wgrad[i++] = w[Y];
+        wgrad[i++] = w[Z];
+    }
+    matrix_transpose(n + 1, 3, wgrad);
+
+    *p = wgrad;
     return CO_OK;
 }
