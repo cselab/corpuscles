@@ -52,3 +52,9 @@ int array_axpy3(int n, real a,
     array_axpy(n, a, x2, y2);
     return CO_OK;
 }
+
+int array_copy(int n, const real* a, real *b) {
+    for (i = 0; i < n; i++)
+        b[i] = a[i];
+    return CO_OK;
+}
