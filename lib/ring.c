@@ -21,13 +21,12 @@ int alg_pinv_apply(AlgPinv*, real*, /**/ real*);
 
 #define T Ring
 #define N (RANK_MAX + 1)
-#define D (6)
-
+#define D (6) /* number of basis functions */
 static const real pi = 3.141592653589793115997964;
 
 struct T {
     real alpha[N], beta[N], theta[N];
-    real xyz[3*N], A[D*N], B[D*D], Binv[D*D], C[D*N];
+    real xyz[3*N], A[D*N], B[D*D], Binv[D*D], C[D*N], wgrad[N];
     AlgPinv *pinv;
 };
 
@@ -260,7 +259,7 @@ int ring_gcnt(int n, const real *xyz, const real *C, /**/ real ginv[3]) {
     ring_gcov(n, xyz, C, /**/ g);
     g0 = g[UU]*g[VV] - g[UV]*g[UV];
     if (g0 == 0)
-        ERR(CO_NUM, "g = 0");
+        ERR(CO_NUM, "g0 = 0");
     ginv[UU] =  g[VV]/g0;
     ginv[UV] = -g[UV]/g0;
     ginv[VV] =  g[UU]/g0;
@@ -275,5 +274,23 @@ int ring_normal(int n, const real *xyz, const real *C, /**/ real u[3]) {
     vec_cross(xu, xv, w);
     vec_norm(w, u);
 
+    return CO_OK;
+}
+
+int ring_wgrad(T *q, int n, const real *xyz, const real *C, /**/ real **p) {
+    enum {UU, UV, VV};
+    real g[3], xu[3], xv[3], gu[3], gv[3], g0;
+
+    ring_gcov(n, xyz, C, /**/ g);
+    ring_xu(n, xyz, C, /**/ xu);
+    ring_xv(n, xyz, C, /**/ xv);
+    g0 = g[UU]*g[VV] - g[UV]*g[UV];
+    if (g0 == 0)
+        ERR(CO_NUM, "g0 = 0");
+
+    vec_linear_combination(g[VV]/g0, xu, -g[UV]/g0, xv, /**/ gu);
+    vec_linear_combination(g[UU]/g0, xv, -g[UV]/g0, xu, /**/ gv);
+
+    *p = q->wgrad;
     return CO_OK;
 }
