@@ -448,19 +448,6 @@ static int main0(real *vx, real *vy, real *vz,
 
     for (i = 0; i <= end; i++) {
 
-      if ( i % freqk == 0 ) {
-	
-	err1 = ca > 0 ? ca : 0;
-	err2 = cv > 0 ? cv : 0;
-	
-	if ( err1 > toler || err2 > toler ) {
-	  
-	  Kc *= coefk;
-	  
-	}
-	
-      }
-
       if ( i % freqo == 0 ) {
 	
 	sprintf(file, "%07d.off", i);
@@ -491,7 +478,20 @@ static int main0(real *vx, real *vy, real *vz,
             fclose(fm);
 
         }//i%freq_screen
-	
+
+	if ( i % freqk == 0 ) {
+	  
+	  err1 = ca > 0 ? ca : -ca;
+	  err2 = cv > 0 ? cv : -cv;
+	  
+	  if ( err1 > toler || err2 > toler ) {
+	    
+	    Kc *= coefk;
+	    
+	  }
+	  
+	}
+
         euler(-dt/2.0/mass, fx, fy, fz, /**/ vx, vy, vz);
         euler(dt, vx, vy, vz, /**/ x, y, z);
 
