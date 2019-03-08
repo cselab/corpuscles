@@ -1,3 +1,5 @@
 This is a client for minimization of rbc elastict energies.
 The constraints on area and volume are considered by
-quadratic penalty method (QPM).
+a quadratic penalty method (QPM).
+
+Subfolder name follows convention: "reference-shape"_"initial-shape"
