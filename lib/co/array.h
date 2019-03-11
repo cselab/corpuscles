@@ -6,3 +6,6 @@ int array_zero3(int, real[], real[], real[]);
 
 int array_axpy(int, real, const real[], /**/ real[]);
 int array_axpy3(int, real, const real[], const real[], const real[], /**/ real[], real[], real[]);
+
+int array_copy(int, const real*, /**/ real*);
+

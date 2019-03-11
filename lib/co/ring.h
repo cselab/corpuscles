@@ -25,4 +25,6 @@ real ring_g(int, const real*, const real*);
 int ring_gcnt(int, const real*, const real*, /**/ real[3]);
 int ring_normal(int, const real*, const real*, /**/ real[3]);
 
+int ring_wgrad(T*, int, const real*, const real*, /**/ real**);
+
 #undef T
