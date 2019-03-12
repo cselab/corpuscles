@@ -38,6 +38,14 @@ he_f_dvolume_force
 he_f_dvolume_energy
 he_f_dvolume_argv
 
+#include "co/f/rvolume.h"
+rvolume
+HeFRvolume
+he_f_rvolume_fin
+he_f_rvolume_force
+he_f_rvolume_energy
+he_f_rvolume_argv
+
 #include "co/f/juelicher_xin.h"
 juelicher_xin
 HeFJuelicherXin

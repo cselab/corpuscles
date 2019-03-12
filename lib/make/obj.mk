@@ -8,14 +8,15 @@ read.o\
 util.o
 
 O_S = \
+H.s.o\
 area.s.o\
 argv.s.o\
 array.s.o\
 bending.s.o\
+dH.s.o\
 da.s.o\
 ddih.s.o\
 dedg.s.o\
-dH.s.o\
 dih.s.o\
 dnormal.s.o\
 dtri.s.o\
@@ -26,7 +27,6 @@ f/area.s.o\
 f/area_sq.s.o\
 f/area_voronoi.s.o\
 f/darea.s.o\
-fd.s.o\
 f/dvolume.s.o\
 f/edg_sq.s.o\
 f/garea.s.o\
@@ -36,18 +36,19 @@ f/gompper_kroll.s.o\
 f/gompper_xin.s.o\
 f/harmonic.s.o\
 f/harmonic_ref.s.o\
-filter.s.o\
 f/juelicher_xin.s.o\
 f/kantor.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
-force.s.o\
+f/rvolume.s.o\
 f/strain.s.o\
 f/volume.s.o\
 f/volume_normal.s.o\
 f/wlc.s.o\
+fd.s.o\
+filter.s.o\
+force.s.o\
 gts.s.o\
-H.s.o\
 invariants.s.o\
 laplace.s.o\
 matrix.s.o\
@@ -60,9 +61,9 @@ punto.s.o\
 real.s.o\
 restore.s.o\
 ring.s.o\
+strain.s.o\
 strain/2d.s.o\
 strain/3d.s.o\
-strain.s.o\
 stretch.s.o\
 sum.s.o\
 ten.s.o\
@@ -75,14 +76,15 @@ x.s.o\
 y.s.o
 
 O_D = \
+H.d.o\
 area.d.o\
 argv.d.o\
 array.d.o\
 bending.d.o\
+dH.d.o\
 da.d.o\
 ddih.d.o\
 dedg.d.o\
-dH.d.o\
 dih.d.o\
 dnormal.d.o\
 dtri.d.o\
@@ -93,7 +95,6 @@ f/area.d.o\
 f/area_sq.d.o\
 f/area_voronoi.d.o\
 f/darea.d.o\
-fd.d.o\
 f/dvolume.d.o\
 f/edg_sq.d.o\
 f/garea.d.o\
@@ -103,18 +104,19 @@ f/gompper_kroll.d.o\
 f/gompper_xin.d.o\
 f/harmonic.d.o\
 f/harmonic_ref.d.o\
-filter.d.o\
 f/juelicher_xin.d.o\
 f/kantor.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
-force.d.o\
+f/rvolume.d.o\
 f/strain.d.o\
 f/volume.d.o\
 f/volume_normal.d.o\
 f/wlc.d.o\
+fd.d.o\
+filter.d.o\
+force.d.o\
 gts.d.o\
-H.d.o\
 invariants.d.o\
 laplace.d.o\
 matrix.d.o\
@@ -127,9 +129,9 @@ punto.d.o\
 real.d.o\
 restore.d.o\
 ring.d.o\
+strain.d.o\
 strain/2d.d.o\
 strain/3d.d.o\
-strain.d.o\
 stretch.d.o\
 sum.d.o\
 ten.d.o\
@@ -142,14 +144,15 @@ x.d.o\
 y.d.o
 
 O_L = \
+H.l.o\
 area.l.o\
 argv.l.o\
 array.l.o\
 bending.l.o\
+dH.l.o\
 da.l.o\
 ddih.l.o\
 dedg.l.o\
-dH.l.o\
 dih.l.o\
 dnormal.l.o\
 dtri.l.o\
@@ -160,7 +163,6 @@ f/area.l.o\
 f/area_sq.l.o\
 f/area_voronoi.l.o\
 f/darea.l.o\
-fd.l.o\
 f/dvolume.l.o\
 f/edg_sq.l.o\
 f/garea.l.o\
@@ -170,18 +172,19 @@ f/gompper_kroll.l.o\
 f/gompper_xin.l.o\
 f/harmonic.l.o\
 f/harmonic_ref.l.o\
-filter.l.o\
 f/juelicher_xin.l.o\
 f/kantor.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
-force.l.o\
+f/rvolume.l.o\
 f/strain.l.o\
 f/volume.l.o\
 f/volume_normal.l.o\
 f/wlc.l.o\
+fd.l.o\
+filter.l.o\
+force.l.o\
 gts.l.o\
-H.l.o\
 invariants.l.o\
 laplace.l.o\
 matrix.l.o\
@@ -194,9 +197,9 @@ punto.l.o\
 real.l.o\
 restore.l.o\
 ring.l.o\
+strain.l.o\
 strain/2d.l.o\
 strain/3d.l.o\
-strain.l.o\
 stretch.l.o\
 sum.l.o\
 ten.l.o\

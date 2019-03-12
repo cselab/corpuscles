@@ -8,7 +8,6 @@
 #include "co/vec.h"
 #include "co/tri.h"
 #include "co/dtri.h"
-
 #include "co/f/darea.h"
 
 #define T HeFDarea
