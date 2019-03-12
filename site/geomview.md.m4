@@ -54,3 +54,23 @@ co.ffmpeg -o movie.mp4 <PATH>/*.ppm
 ```sh
 gmv -O $i -a app2 <PATH>/*.ply
 ```
+
+### Color by various quantities
+
+```
+x
+y
+z
+area
+bending
+al
+be
+```
+
+```sh
+co.geomview -p 'co.q al ../../ref.off <' *.off
+```
+
+```sh
+co.geomview -p 'co.q -l 0 -h 1 al ../../ref.off <' *.off
+```
