@@ -15,12 +15,13 @@ under various constraints.
 
 Various components can be switched on/off at will, such as
 A. Bending elasticity of lipip bilayer.
-B. Strain (both shear and strecth) easlticity of cytoskeleton.
+B. Strain (both shear and strecth) elasticity of cytoskeleton.
 C. Viscosity of lipid membrane.
 D. Thermal fluctuations of lipid membrane.
-E. Constraint of total area of a closed membrane surface.
-F. Constratin of total volume of a closed membrane surface.
-G.  Constratin of area difference between outer- and inner-surface.
+E. Constraint of reduced volume of a closed membrane surface.
+F. Constraint of total area of a closed membrane surface.
+G. Constratin of total volume of a closed membrane surface.
+H.  Constratin of area difference between outer- and inner-surface.
 
 For different components, variations of model/law can be selected
 such as Helfrich/spontaneous curvature model for bending elasticity
@@ -28,7 +29,7 @@ and Skalak law for strain elasticity.
 
 For different models/laws, variations of schemes impelemented
 can also be choosen such as Gompper&Kroll scheme
-and Juelicher schemes for the bending model of spontaneous curvature.
+and Juelicher scheme for the bending model of spontaneous curvature.
 
 Please see details in r_link(https://cselab.github.io/corpuscles)
 
