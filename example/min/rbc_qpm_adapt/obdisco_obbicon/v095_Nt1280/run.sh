@@ -6,7 +6,9 @@ rho=1.0
 v=0.641998677173
 A=$(echo  $pi | awk '{print $1*4.0}')
 
-Kc=20000
+Kc=1000
+freqk=100
+coefk=1.1
 
 Kb=1
 C0=0
@@ -48,12 +50,12 @@ then
     #echo $Da0, $Da1, $Kb, $C0, $Kad, $DA0D
 
     #create a folder to run and folder name consists of parameters
-    if [ ! -d Kc${Kc}_xi${xi}_kBT${kBT}_dt${dt}_Da${Da1} ]; then
-	mkdir Kc${Kc}_xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
+    if [ ! -d Kc${Kc}_freqk${freqk}_coefk${coefk}_Da${Da1} ]; then
+	mkdir Kc${Kc}_freqk${freqk}_coefk${coefk}_Da${Da1}
     fi
-    cd Kc${Kc}_xi${xi}_kBT${kBT}_dt${dt}_Da${Da1}
-        
-    co.run ../../../main $R $rho $v $Kc \
+    cd Kc${Kc}_freqk${freqk}_coefk${coefk}_Da${Da1}
+    
+    co.run ../../../main $R $rho $v $Kc $freqk $coefk \
     juelicher_xin $Kb $C0 $Kad $DA0D \
     $D $xi $dt $kBT \
     strain $ref lim $Ka $mub $a3 $a4 $b1 $b2 \
@@ -81,5 +83,5 @@ else
 
     Da1=2.003
     bash run.sh $Da1
-
+    
 fi
