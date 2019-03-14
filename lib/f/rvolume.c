@@ -24,7 +24,6 @@ struct T {
     TA *qa;
     TV *qv;
     int n;
-    real rvolume;
 };
 
 
@@ -37,7 +36,7 @@ int he_f_rvolume_ini(He *he, T **pq) {
     he_f_darea_ini(he, &q->qa);
     he_f_dvolume_ini(he, &q->qv);
     q->n = n;
-    q->rvolume = 0;
+
     
     *pq = q;
     return CO_OK;
