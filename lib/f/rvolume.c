@@ -24,20 +24,26 @@ struct T {
     TA *qa;
     TV *qv;
     int n;
+    real *ftx, *fty, *ftz;
 };
 
 
 int he_f_rvolume_ini(He *he, T **pq) {
     T *q;
-    int n;
+    int nt, nv;
     MALLOC(1, &q);
-    
-    n = he_nt(he);
+
+    nt = he_nt(he);
+    nv = he_nv(he);
+
     he_f_darea_ini(he, &q->qa);
     he_f_dvolume_ini(he, &q->qv);
-    q->n = n;
+    q->n = nt;
 
-    
+    MALLOC(nv, &q->ftx);
+    MALLOC(nv, &q->fty);
+    MALLOC(nv, &q->ftz);
+
     *pq = q;
     return CO_OK;
 }
@@ -49,6 +55,7 @@ int he_f_rvolume_argv(char ***p, He *he, T **pq) {
 int he_f_rvolume_fin(T *q) {
     he_f_darea_fin(q->qa);
     he_f_dvolume_fin(q->qv);
+    FREE(q->ftx); FREE(q->fty); FREE(q->ftz);
     FREE(q);
     return CO_OK;
 }
@@ -71,24 +78,22 @@ int he_f_rvolume_force(T *q, He *he,
     real coef;
     int n;
     n = q->n;
-  
+    ftx = q->ftx; fty = q->fty; ftz = q->ftz;
+
     A  = he_f_darea_energy(q->qa, he, x, y, z);
     V  = he_f_dvolume_energy(q->qv, he, x, y, z);
     R  = sradius(A);
     Vs = svolume(R);
-  
+
     Nv = he_nv(he);
-  
-    MALLOC(Nv, &ftx); MALLOC(Nv, &fty); MALLOC(Nv, &ftz);
-  
     if (he_nt(he) != n)
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
-  
+
     zero(Nv, ftx); zero(Nv, fty); zero(Nv, ftz);
     he_f_darea_force(q->qa, he, x, y, z, /**/ ftx, fty,ftz);
 
     coef = -V*R/Vs/Vs/2.0;
-  
+
     for ( i = 0; i < Nv; i ++ ) {
         fx[i] += coef * ftx[i];
         fy[i] += coef * fty[i];
@@ -114,12 +119,12 @@ real he_f_rvolume_energy(T *q, He *he,
     real A, V, Vs, R;
     int n;
     n = q->n;
-  
+
     A  = he_f_darea_energy(q->qa, he, x, y, z);
     V  = he_f_dvolume_energy(q->qv, he, x, y, z);
     R  = sradius(A);
     Vs = svolume(R);
-  
+
     if (he_nt(he) != n)
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
