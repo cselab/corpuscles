@@ -2,12 +2,14 @@
 #include <stdlib.h>
 
 #include <real.h>
+
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
-#include <co/vec.h>
+#include <co/matrix.h>
 #include <co/ring.h>
 #include <co/util.h>
+#include <co/vec.h>
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT
@@ -112,7 +114,7 @@ int main(__UNUSED int argc, const char **v0) {
             vec_printf(u, FMT);
         } else if (eq(op, "wgrad")) {
             ring_wgrad(ring, n, xyz, C, &out);
-            write(3, n + 1, out);
+            matrix_fwrite(3, n + 1, out, stdout);
         } else
             ER("unknown operation '%s'", op);
     }
