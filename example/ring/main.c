@@ -110,6 +110,9 @@ int main(__UNUSED int argc, const char **v0) {
         } else if (eq(op, "normal")) {
             ring_normal(n, xyz, C, u);
             vec_printf(u, FMT);
+        } else if (eq(op, "wgrad")) {
+            ring_wgrad(ring, n, xyz, C, &out);
+            write(3, n + 1, out);
         } else
             ER("unknown operation '%s'", op);
     }
