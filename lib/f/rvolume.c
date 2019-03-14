@@ -110,9 +110,6 @@ int he_f_rvolume_force(T *q, He *he,
         fy[i] += coef * fty[i];
         fz[i] += coef * ftz[i];
     }
-
-    FREE(ftx); FREE(fty); FREE(ftz);
-
     return CO_OK;
 }
 real he_f_rvolume_energy(T *q, He *he,
