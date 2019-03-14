@@ -1,2 +1,2 @@
 # nTEST: theta
-./main theta < $(co.path)/rbc/icosahedron/0.off | uscale 1e6 > main.out.txt
+co.run ./main theta < $(co.path)/rbc/icosahedron/0.off | uscale 1e6 > main.out.txt
