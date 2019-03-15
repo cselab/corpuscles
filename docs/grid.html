@@ -697,12 +697,6 @@ function DrawGrid(u) {
             q = Math.floor((1-q) * 255 + q * 127);
             ctx.fillStyle = RGBToHex(q, q, q);
             ctx.fillRect(x, y, w, w);
-
-            ctx.font = "20px Arial";
-            ctx.fillStyle = "#000000";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText((u[j][i]).toFixed(2), x + w * 0.5, y + w * 0.5);
         }
     }
 }
