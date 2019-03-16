@@ -2,7 +2,7 @@ set -eu
 
 R=1.0
 rho=1.0
-v=0.85
+v=0.65
 Ka=0
 Kga=0
 Kv=0
