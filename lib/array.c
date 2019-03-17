@@ -59,3 +59,13 @@ int array_copy(int n, const real* a, real *b) {
         b[i] = a[i];
     return CO_OK;
 }
+
+real array_dot(int n, const real *a, const real *b) {
+    int i;
+    real s;
+    s = 0;
+    for (i = 0; i < n; i++)
+        s += a[i] * b[i];
+    return s;
+}
+

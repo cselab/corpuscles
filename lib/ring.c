@@ -323,3 +323,7 @@ int ring_wgrad(T *q, int n, const real *xyz, const real *C, /**/ real **p) {
     *p = wgrad;
     return CO_OK;
 }
+
+real ring_grad(int n, const real *wgrad,  const real *scalar) {
+    return array_dot(n, wgrad, scalar);
+}
