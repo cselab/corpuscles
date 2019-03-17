@@ -326,7 +326,7 @@ real he_f_gompper_energy(T *q, He *he,
     real *normx, *normy, *normz;
     real *curva_mean;
     real *energy, *area;
-    real energy_tot, eng_bend, eng_ad;
+    real eng_bend, eng_ad;
 
     T0 = q->T0; T1 = q->T1; T2 = q->T2;
     l2 = q->l2; t = q->t;

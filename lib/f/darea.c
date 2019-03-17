@@ -1,14 +1,16 @@
 #include <stdio.h>
 
 #include "real.h"
+
 #include "co/argv.h"
-#include "co/memory.h"
-#include "co/err.h"
-#include "co/he.h"
-#include "co/vec.h"
-#include "co/tri.h"
 #include "co/dtri.h"
+#include "co/err.h"
 #include "co/f/darea.h"
+#include "co/he.h"
+#include "co/macro.h"
+#include "co/memory.h"
+#include "co/tri.h"
+#include "co/vec.h"
 
 #define T HeFDarea
 
@@ -31,7 +33,7 @@ int he_f_darea_ini(He *he, T **pq) {
     return CO_OK;
 }
 
-int he_f_darea_argv(char ***p, He *he, T **pq) {
+int he_f_darea_argv(__UNUSED char ***p, He *he, T **pq) {
   return he_f_darea_ini(he, pq);
 }
 

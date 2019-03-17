@@ -53,7 +53,7 @@ static int get2(int i, int j,
     return CO_OK;
 }
 int ring_alpha(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pang) {
-    int s, p, j, k;
+    int s, j, k;
     real *ang;
     real a[3], b[3], c[3];
     ang = q->alpha;
@@ -71,7 +71,7 @@ int ring_alpha(T *q, int i, const int *ring, const real *x, const real *y, const
 }
 
 int ring_beta(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pang) {
-    int s, p, j, k;
+    int s;
     real *ang, *alpha, A;
 
     ring_alpha(q, i, ring, x, y, z, /**/ &alpha);
@@ -91,8 +91,8 @@ int ring_beta(T *q, int i, const int *ring, const real *x, const real *y, const 
 }
 
 int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pang) {
-    int s, p, j, k;
-    real *ang, *beta, A;
+    int s;
+    real *ang, *beta;
 
     ring_beta(q, i, ring, x, y, z, /**/ &beta);
     ang = q->theta;
@@ -106,7 +106,7 @@ int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const
 }
 
 int ring_scalar(T *q, int i, const int *ring, const real *s, /**/ real **pscalar) {
-    int n, p, k;
+    int n, k;
     real *scalar;
     scalar = q->scalar;
     k = 0;
@@ -120,7 +120,7 @@ int ring_scalar(T *q, int i, const int *ring, const real *s, /**/ real **pscalar
 }
 
 int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const real *z, /**/ real **pxyz) {
-    int n, p, k;
+    int n, k;
     real *xyz;
     xyz = q->xyz;
     k = 0;
@@ -150,7 +150,7 @@ static int B(real u, real v, /**/ real **pa) {
     return CO_OK;
 }
 int ring_A(T *q, int i, const int *ring, const real *x, const real *y, const real *z, real **pA) {
-    int s, p, j, k;
+    int s, j;
     real u, v;
     real *A, *theta;
     real a[3], b[3], r;

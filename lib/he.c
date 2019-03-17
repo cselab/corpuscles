@@ -397,14 +397,13 @@ int he_D(T *he, int **pD0, int **pD1, int **pD2, int **pD3) {
 }
 
 int he_bnd_ver(T *he, int v) {
-    int h, h0, n, f, i, rank;
+    int h, h0, n, f, rank;
     h = he_hdg_ver(he, v);
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
         if (rank >= RANK_MAX)
             ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank, RANK_MAX);
-        i = he_ver(he, h);
         rank++;
         n = he_nxt(he, h);
         if (he_bnd(he, n))

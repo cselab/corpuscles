@@ -291,7 +291,7 @@ real he_f_juelicher_xin_energy(T *q, He *he,
                                const real *x, const real *y, const real *z) {
     Size size;
     Param param;
-    real K, H0, Kad, DA0D;
+    real K, Kad, DA0D;
     real *area, *H, *energy, *theta, *len, *len_theta;
     real area_tot, len_theta_tot, scurv;
     real eng_bend, eng_ad;
@@ -301,7 +301,6 @@ real he_f_juelicher_xin_energy(T *q, He *he,
 
     param = q->param;
     K = param.K;
-    H0 = param.H0;
     Kad = param.Kad;
     DA0D = param.DA0D;
 
@@ -479,8 +478,8 @@ int he_f_juelicher_xin_force(T *q, He *he,
                              real *fx_tot, real *fy_tot, real *fz_tot) {
     Size size;
     Param param;
-    int nv, ne;
-    real K, H0, Kad, DA0D;
+    int nv;
+    real K, Kad, DA0D;
     real *theta, *len, *area, *len_theta, *H;
     real area_tot, len_theta_tot, scurv;
     real *fx, *fy, *fz, *fxad, *fyad, *fzad;
@@ -489,7 +488,6 @@ int he_f_juelicher_xin_force(T *q, He *he,
     size = q->size;
 
     K = param.K;
-    H0 = param.H0;
     DA0D = param.DA0D;
     Kad = param.Kad;
 
@@ -502,7 +500,6 @@ int he_f_juelicher_xin_force(T *q, He *he,
     fxad = q->fxad; fyad = q->fyad; fzad = q->fzad;
 
     nv = size.nv;
-    ne = size.ne;
 
     zero(nv, fx); zero(nv, fy); zero(nv, fz);
     zero(nv, fxad); zero(nv, fyad); zero(nv, fzad);

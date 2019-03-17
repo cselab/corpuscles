@@ -28,7 +28,6 @@ int array_zero(int n, real a[]) {
 }
 
 int array_zero3(int n, real a[], real b[], real c[]) {
-    int i;
     if (n < 0)
         ERR(CO_INDEX, "n=%d < 0", n);
     array_zero(n, a);

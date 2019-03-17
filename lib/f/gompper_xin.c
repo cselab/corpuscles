@@ -1,16 +1,18 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "co/memory.h"
+
+#include "co/dedg.h"
+#include "co/dH.h"
+#include "co/dtri.h"
 #include "co/err.h"
 #include "co/he.h"
-#include "co/vec.h"
-#include "co/tri.h"
-#include "co/dtri.h"
-#include "co/dedg.h"
-#include "co/sum.h"
-#include "co/dH.h"
 #include "co/macro.h"
+#include "co/macro.h"
+#include "co/memory.h"
+#include "co/sum.h"
+#include "co/tri.h"
+#include "co/vec.h"
 
 #include "co/f/gompper_xin.h"
 
@@ -114,7 +116,7 @@ int he_f_gompper_xin_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq) 
 #   undef M
 }
 
-int he_f_gompper_xin_argv(char ***p, He *he, T **pq) {
+int he_f_gompper_xin_argv(__UNUSED char ***p, __UNUSED He *he, T __UNUSED **pq) {
     return CO_OK;
 }
 

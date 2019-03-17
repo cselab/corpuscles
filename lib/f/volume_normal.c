@@ -1,16 +1,17 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "co/memory.h"
+
+#include "co/dedg.h"
+#include "co/dH.h"
+#include "co/dtri.h"
 #include "co/err.h"
 #include "co/he.h"
-#include "co/vec.h"
-#include "co/tri.h"
-#include "co/dtri.h"
-#include "co/dedg.h"
-#include "co/sum.h"
-#include "co/dH.h"
 #include "co/macro.h"
+#include "co/memory.h"
+#include "co/sum.h"
+#include "co/tri.h"
+#include "co/vec.h"
 #include "co/volume.h"
 
 #include "co/f/volume_normal.h"
@@ -59,7 +60,7 @@ int he_f_volume_normal_ini(real v0, real K, He *he, T **pq) {
 #   undef M
 }
 
-int he_f_volume_normal_argv(char ***p, He *he, T **pq) {
+int he_f_volume_normal_argv(__UNUSED char ***p, __UNUSED He *he, __UNUSED T **pq) {
     return CO_OK;
 }
 
