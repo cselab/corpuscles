@@ -26,7 +26,7 @@ static const real pi = 3.141592653589793115997964;
 
 struct T {
     real alpha[N], beta[N], theta[N];
-    real xyz[3*N], A[D*N], B[D*D], Binv[D*D], C[D*N], wgrad[3*N];
+    real scalar[N], xyz[3*N], A[D*N], B[D*D], Binv[D*D], C[D*N], wgrad[3*N];
     AlgPinv *pinv;
 };
 
@@ -104,10 +104,23 @@ int ring_theta(T *q, int i, const int *ring, const real *x, const real *y, const
     return CO_OK;
 }
 
+int ring_scalar(T *q, int i, const int *ring, const real *s, /**/ real **pscalar) {
+    int n, p, k;
+    real *scalar;
+    scalar = q->scalar;
+    k = 0;
+    scalar[k++] = s[i];
+    for (n = 0; ring[n] != -1; n++) {
+        i = ring[n];
+        scalar[k++] = s[i];
+    }
+    *pscalar = scalar;
+    return CO_OK;
+}
+
 int ring_xyz(T *q, int i, const int *ring, const real *x, const real *y, const real *z, /**/ real **pxyz) {
-    int n, p, j, k;
+    int n, p, k;
     real *xyz;
-    real a[3];
     xyz = q->xyz;
     k = 0;
     xyz[k++] = x[i]; xyz[k++] = y[i]; xyz[k++] = z[i];
