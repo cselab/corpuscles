@@ -3,13 +3,14 @@
 
 #include "real.h"
 
+#include "co/array.h"
+#include "co/edg.h"
 #include "co/err.h"
 #include "co/matrix.h"
 #include "co/memory.h"
+#include "co/ring.h"
 #include "co/tri.h"
 #include "co/vec.h"
-#include "co/edg.h"
-#include "co/ring.h"
 #include "inc/def.h"
 
 /* #include <alg/pinv.h> */
