@@ -3,10 +3,12 @@
 
 #include <real.h>
 
+#include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/matrix.h>
+#include <co/memory.h>
 #include <co/ring.h>
 #include <co/util.h>
 #include <co/vec.h>
@@ -37,11 +39,11 @@ static int write(int n, int m, real *A) {
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v0) {
     const char *op;
-    real *x, *y, *z;
+    real *x, *y, *z, *scalar;
     He      *he;
     int nv, i, n, *rring, status;
     Ring *ring;
-    real *out, *xyz, *C, xx[3], gcov[2*2], gcnt[2*2], u[3];
+    real *out, *xyz, *C, *wgrad, *scalar_grid, xx[3], gcov[2*2], gcnt[2*2], u[3];
 
     argv = v0;
     argv++;
@@ -56,6 +58,8 @@ int main(__UNUSED int argc, const char **v0) {
     y_inif(stdin, &he, &x, &y, &z);
     ring_ini(&ring);
     nv = he_nv(he);
+    MALLOC(nv, &scalar);
+    array_copy(nv, z, scalar);
 
     for (i = 0; i < nv; i++) {
         if (he_bnd_ver(he, i)) continue;
@@ -116,12 +120,17 @@ int main(__UNUSED int argc, const char **v0) {
             ring_wgrad(ring, n, xyz, C, &out);
             matrix_fwrite(3, n + 1, out, stdout);
         } else if (eq(op, "scalar")) {
-            ring_scalar(ring, i, rring, &out);
-            matrix_fwrtite(1, n + 1, out, stdout);
-        }
+            ring_scalar(ring, i, rring, scalar, &out);
+            matrix_fwrite(1, n + 1, out, stdout);
+        } else if (eq(op, "grad")) {
+            ring_scalar(ring, i, rring, scalar, &scalar_grid);
+            ring_wgrad(ring, n, xyz, C, &wgrad);
+            printf(FMT "\n", ring_grad(n, wgrad, scalar_grid));        
         } else
             ER("unknown operation '%s'", op);
     }
+
+    FREE(scalar);
     ring_fin(ring);
     return y_fin(he, x, y, z);
 }
