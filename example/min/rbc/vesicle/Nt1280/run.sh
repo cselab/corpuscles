@@ -50,28 +50,28 @@ else
     v=0.642
     bash run.sh $v
 
-    v=0.706
-    bash run.sh $v
+#  v=0.706
+#   bash run.sh $v
     
-    v=0.732
-    bash run.sh $v
+#   v=0.732
+#   bash run.sh $v
 
-    v=0.745
-    bash run.sh $v
+#   v=0.745
+#   bash run.sh $v
 
-    v=0.758
-    bash run.sh $v
+#   v=0.758
+#   bash run.sh $v
     
-    v=0.835
-    bash run.sh $v
+#   v=0.835
+#   bash run.sh $v
     
-    v=0.95
-    bash run.sh $v
+#   v=0.95
+#   bash run.sh $v
 
-    v=0.976
-    bash run.sh $v
+#   v=0.976
+#   bash run.sh $v
 
-    v=0.989
-    bash run.sh $v
+#   v=0.989
+#   bash run.sh $v
 
 fi
