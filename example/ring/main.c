@@ -115,6 +115,10 @@ int main(__UNUSED int argc, const char **v0) {
         } else if (eq(op, "wgrad")) {
             ring_wgrad(ring, n, xyz, C, &out);
             matrix_fwrite(3, n + 1, out, stdout);
+        } else if (eq(op, "scalar")) {
+            ring_scalar(ring, i, rring, &out);
+            matrix_fwrtite(1, n + 1, out, stdout);
+        }
         } else
             ER("unknown operation '%s'", op);
     }
