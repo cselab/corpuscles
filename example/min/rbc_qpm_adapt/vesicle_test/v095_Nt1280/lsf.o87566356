@@ -1,0 +1,36 @@
+Sender: LSF System <lsfadmin@eu-ms-024-33>
+Subject: Job 87566356: <../../../main 1.0 1.0 0.641998677173 1000 100 1.1 juelicher_xin 1 0 0 19.9934 0.000898798148042 0.1 0.000001 0.0 strain ../ref/v095.off lim 11.1408460164 2.22816920329 0 0 0 0 300000 1000 100 < ../init/init.off> in cluster <euler> Exited
+
+Job <../../../main 1.0 1.0 0.641998677173 1000 100 1.1 juelicher_xin 1 0 0 19.9934 0.000898798148042 0.1 0.000001 0.0 strain ../ref/v095.off lim 11.1408460164 2.22816920329 0 0 0 0 300000 1000 100 < ../init/init.off> was submitted from host <eu-login-07-ng> by user <boylel> in cluster <euler> at Tue Mar 19 19:40:35 2019
+Job was executed on host(s) <eu-ms-024-33>, in queue <normal.24h>, as user <boylel> in cluster <euler> at Tue Mar 19 19:40:49 2019
+</cluster/home/boylel> was used as the home directory.
+</cluster/scratch/boylel/corpuscles/example/min/rbc_qpm_adapt/vesicle_test/v095_Nt1280/Kc1000_freqk100_coefk1.1_Da0.143> was used as the working directory.
+Started at Tue Mar 19 19:40:49 2019
+Terminated at Tue Mar 19 19:40:50 2019
+Results reported at Tue Mar 19 19:40:50 2019
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+../../../main 1.0 1.0 0.641998677173 1000 100 1.1 juelicher_xin 1 0 0 19.9934 0.000898798148042 0.1 0.000001 0.0 strain ../ref/v095.off lim 11.1408460164 2.22816920329 0 0 0 0 300000 1000 100 < ../init/init.off
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   0.04 sec.
+    Max Memory :                                 2 MB
+    Average Memory :                             -
+    Total Requested Memory :                     1024.00 MB
+    Delta Memory :                               1022.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   24 sec.
+    Turnaround time :                            15 sec.
+
+The output (if any) follows:
+
+/cluster/shadow/.lsbatch/1553020835.87566356: line 8: ../init/init.off: No such file or directory
