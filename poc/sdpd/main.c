@@ -240,17 +240,46 @@ int alist_n(T *q)
 typedef struct T T;
 struct Clist {
 	int n;
-	Alist *a;
+	Alist **a;
+	Ilist **c; /* cells */
 };
 
 int clist_ini(int, T**);
-int clist_connect(Alist*, T*);
+int clist_alist(T*, Alist*);
 int clist_fin(T*);
 int clist_reset(T*);
-
 int clist_push(T*, int cell, int part);
 int clist_len(T*);
 int clist_head(T*, int cell, int**);
+
+int clist_ini(int n, T **pq)
+{
+	T *q;
+	Ilist **c;
+	int i;
+	MALLOC(1, &q);
+	MALLOC(n, &c);
+	for (i = 0; i < n; i++)
+		ilist_ini(&c[i]);
+
+	q->n = n;
+	q->c = c;
+	*pq = q;
+	return CO_OK;
+}
+
+int clist_free(T *q)
+{
+	int n, i;
+	Ilist **c;
+	n = q->n;
+	c = q->c;
+	for (i = 0; i < n; i++)
+		ilist_fin(c[i]);
+	FREE(c);
+	FREE(q);
+	return CO_OK;
+}
 
 
 /*
