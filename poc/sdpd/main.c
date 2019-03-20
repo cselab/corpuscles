@@ -273,10 +273,11 @@ int clist_ini(int n, T **pq)
 	return CO_OK;
 }
 
-int clist_free(T *q)
+int clist_fin(T *q)
 {
 	int n, i;
 	Ilist **c, **p;
+
 	n = q->n;
 	c = q->c;
 	p = q->p;
@@ -306,6 +307,11 @@ int clist_reset(T *q)
 
 int clist_alist(T *q, Alist *alist)
 {
+	int n, m;
+	n = q->n;
+	m = alist_n(alist);
+	if (n != m)
+		ERR(CO_INDEX, "n=%d != m=%d", n, m);
 	q->alist = alist;
 	return CO_OK;
 }
@@ -325,6 +331,8 @@ int clist_push(T *q, int cell, int part)
 	if (cell >= n) ERR(CO_INDEX, "cell=%d >=n=%d", cell, n);
 	if (cell < 0) ERR(CO_INDEX, "cell=%d < 0", cell);
 
+	ilist_push(c[cell], cell);
+	ilist_push(p[cell], part);
 	alist_head(alist, cell, &a);
 	for (;;) {
 		i = *(a++);
@@ -334,7 +342,7 @@ int clist_push(T *q, int cell, int part)
 		if (i  < 0) ERR(CO_INDEX, "i=%d <0", i, n);
 		ilist_push(c[i],  cell);
 		ilist_push(p[i], part);
-         }
+	}
 	return CO_OK;
 }
 
@@ -359,6 +367,25 @@ int clist_parts(T *q, int cell, int **a)
 	return ilist_head(p[cell], a);
 }
 
+int clist_fwrite(FILE *f, T *q)
+{
+	int n, m, i, j;
+	int *cells, *parts;
+
+	n = q->n;
+	fprintf(f, "%d\n", n);
+	for (i = 0; i < n; i++) {
+		m = clist_len(q, i);
+		fprintf(f, "%d", m);
+		clist_cells(q, i, &cells);
+		clist_parts(q, i, &parts);
+		for (j = 0; j < m; j++)
+			fprintf(f, " %d:%d", cells[j], parts[j]);
+		fprintf(f, "\n");
+	}
+	return CO_OK;
+}
+
 /*
 int main(void)
 {
@@ -375,7 +402,7 @@ int main(void)
 
 	ilist_fin(a);
 	return 0;
-} */
+}
 
 int main(void)
 {
@@ -391,6 +418,36 @@ int main(void)
 
 	alist_fwrite(stdout, alist);
 
+	alist_fin(alist);
+
+	return 0;
+}
+
+
+*/
+
+int main(void)
+{
+	int n;
+	Alist *alist;
+	Clist *clist;
+
+	n = 5;
+	alist_ini(n, &alist);
+	alist_push(alist, 0, 1);
+	alist_push(alist, 0, 2);
+	alist_push(alist, 1, 2);
+	alist_push(alist, 3, 4);
+
+	clist_ini(n, &clist);
+	clist_alist(clist, alist);
+
+	clist_push(clist, 0, 100);
+	clist_push(clist, 1, 101);
+	clist_push(clist, 3, 103);
+	clist_fwrite(stdout, clist);
+	
+	clist_fin(clist);
 	alist_fin(alist);
 
 	return 0;
