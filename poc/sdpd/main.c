@@ -25,11 +25,7 @@ struct T { /* size, head, tail */
 	int s;
 	int *h, *t;
 };
-
-enum {
-	SIZE = 16, END = ILIST_END
-};
-
+enum { SIZE = 28, END = ILIST_END };
 int ilist_ini(T **pq)
 {
 	T *q;
