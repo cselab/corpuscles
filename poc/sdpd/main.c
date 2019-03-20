@@ -242,6 +242,7 @@ struct Clist {
 	int n;
 	Alist *alist;
 	Ilist **c, **p; /* cells, particles */
+	int own;
 };
 
 int clist_ini(int, T**);
@@ -252,6 +253,9 @@ int clist_push(T*, int cell, int part);
 int clist_len(T*, int);
 int clist_cells(T*, int cell, int**);
 int clist_parts(T*, int cell, int**);
+
+int clist_gen_n(int, T**);
+int clist_gen_p(int, T**);
 
 int clist_ini(int n, T **pq)
 {
@@ -269,6 +273,7 @@ int clist_ini(int n, T **pq)
 	q->c = c;
 	q->p = p;
 	q->alist = NULL;
+	q->own = 0;
 	*pq = q;
 	return CO_OK;
 }
@@ -285,6 +290,8 @@ int clist_fin(T *q)
 		ilist_fin(c[i]);
 		ilist_fin(p[i]);
 	}
+	if (q->own)
+		alist_fin(q->alist);
 	FREE(c);
 	FREE(p);
 	FREE(q);
@@ -316,6 +323,18 @@ int clist_alist(T *q, Alist *alist)
 	return CO_OK;
 }
 
+int clist_alist_own(T *q, Alist *alist)
+{
+	int n, m;
+	n = q->n;
+	m = alist_n(alist);
+	if (n != m)
+		ERR(CO_INDEX, "n=%d != m=%d", n, m);
+	q->alist = alist;
+	q->own = 1;
+	return CO_OK;
+}
+
 int clist_push(T *q, int cell, int part)
 {
 	int n, i;
@@ -327,7 +346,8 @@ int clist_push(T *q, int cell, int part)
 	c = q->c;
 	p = q->p;
 	alist = q->alist;
-
+	
+	if (alist == NULL) ERR(CO_INDEX, "alist == NULL");
 	if (cell >= n) ERR(CO_INDEX, "cell=%d >=n=%d", cell, n);
 	if (cell < 0) ERR(CO_INDEX, "cell=%d < 0", cell);
 
@@ -383,6 +403,21 @@ int clist_fwrite(FILE *f, T *q)
 			fprintf(f, " %d:%d", cells[j], parts[j]);
 		fprintf(f, "\n");
 	}
+	return CO_OK;
+}
+
+int clist_gen_n(int k, T **pq)
+{
+	int i;
+	T *q;
+	Alist *a;
+	alist_ini(k, &a);
+	for (i = 0; i < k - 1; i++)
+		alist_push(a, i, i + 1);
+	MALLOC(1, &q);
+	clist_ini(k, &q);
+	clist_alist_own(q, a);
+	*pq = q;
 	return CO_OK;
 }
 
@@ -445,12 +480,11 @@ int main(void)
 	clist_push(clist, 0, 100);
 	clist_push(clist, 1, 101);
 	clist_push(clist, 3, 103);
+	/* clist_reset(clist); */
 	clist_fwrite(stdout, clist);
-	
+
 	clist_fin(clist);
 	alist_fin(alist);
 
 	return 0;
 }
-
-
