@@ -121,15 +121,14 @@ struct T {
 	Ilist **a;
 };
 
-int alist_int(int n, T **pq)
+int alist_ini(int n, T **pq)
 {
 	T *q;
 	int i;
 	Ilist **a;
-
-	MALLOC(1, &q);
 	if (n <= 0)
 		ERR(CO_INDEX, "n=%d <= 0", n);
+	MALLOC(1, &q);
 	MALLOC(n,  &a);
 	for (i = 0; i < n; i++)
 		ilist_ini(&a[i]);
@@ -143,6 +142,7 @@ int alist_fin(T *q)
 {
 	int n, i;
 	Ilist **a;
+         n = q->n;
 	a = q->a;
 	for (i = 0; i < n; i++)
 		ilist_fin(a[i]);
@@ -196,6 +196,7 @@ int alist_len(T *q, int i) {
 	return ilist_len(q->a[i]);
 }
 
+/*
 int main(void)
 {
 	int i;
@@ -210,5 +211,17 @@ int main(void)
 	ilist_fwrite(stdout, a);
 
 	ilist_fin(a);
+	return 0;
+} */
+
+int main(void)
+{
+	int n;
+	Alist *a;
+
+	n = 2;
+	alist_ini(n, &a);
+	alist_fin(a);
+
 	return 0;
 }
