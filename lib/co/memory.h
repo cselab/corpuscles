@@ -1,5 +1,5 @@
 #define MALLOC(n, pp) co_malloc((n)*sizeof(**(pp)), (void**)(pp))
-#define REALLOC(n, pp) co_realloc((n)*sizeoff(**(pp)), (void**)(pp))
+#define REALLOC(n, pp) co_realloc((n)*sizeof(**(pp)), (void**)(pp))
 #define CALLOC(n, pp) co_calloc((n)*sizeof(**(pp)), (void**)(pp))
 #define FREE(p) co_free(p)
 #define MEMCPY(n, src, dest) co_memcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
