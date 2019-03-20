@@ -108,13 +108,16 @@ int ilist_fwrite(FILE *f, T *q)
 
 #define T Alist
 typedef struct T T;
-
+enum {
+	ALIST_END = ILIST_END
+};
 int alist_ini(int,  T**);
 int alist_fin(T*);
 int alist_reset(T*);
 int alist_push(T*, int, int);
 int alist_head(T*, int, int**);
 int alist_len(T*, int);
+int alist_fwrite(FILE*, T*);
 
 struct T {
 	int n;
@@ -173,6 +176,9 @@ int alist_push(T *q, int i, int j) {
 	if (j >= n)
 		ERR(CO_INDEX, "j=%d >= n=%d", j, n);
 
+	if (i == j)
+		ERR(CO_INDEX, "i == j=%d", i);
+
 	ilist_push(a[i], j);
 	ilist_push(a[j], i);
 
@@ -196,6 +202,40 @@ int alist_len(T *q, int i) {
 	return ilist_len(q->a[i]);
 }
 
+int alist_fwrite(FILE *f, T *q) {
+	int n, m, i, j;
+	Ilist **a;
+	int *b;
+
+	n = q->n;
+	a = q->a;
+
+	fprintf(f, "%d\n", n);
+	for (i = 0; i < n;  i++) {
+		m = ilist_len(a[i]);
+		ilist_head(a[i], &b);
+		fprintf(f, "%d", m);
+		for (j = 0; j < m; j++)
+			fprintf(f, " %d", b[j]);
+		fprintf(f, "\n");
+	}
+	return CO_OK;
+}
+
+
+#undef T
+
+#define T Clist
+typedef struct T T;
+int clist_ini(int, T**);
+int clist_connect(Alist*, T*);
+int clist_fin(T*);
+int clist_reset(T*);
+
+int clist_push(T*, int cell, int part);
+int clist_len(T*);
+int clist_head(T*, int cell, int**);
+
 /*
 int main(void)
 {
@@ -217,11 +257,20 @@ int main(void)
 int main(void)
 {
 	int n;
-	Alist *a;
+	Alist *alist;
+	int *a;
 
-	n = 2;
-	alist_ini(n, &a);
-	alist_fin(a);
+	n = 4;
+	alist_ini(n, &alist);
+	alist_push(alist, 0, 1);
+	alist_push(alist, 0, 2);
+	alist_push(alist, 1, 2);
+
+	alist_fwrite(stdout, alist);
+
+	alist_fin(alist);
 
 	return 0;
 }
+
+
