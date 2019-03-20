@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <co/err.h>
 #include <co/memory.h>
 
@@ -15,7 +16,7 @@ struct T { /* size, head, tail */
 int ilist_ini(T**);
 int ilist_fin(T*);
 int ilist_push(T*, int);
-int ilist_size(T*);
+int ilist_len(T*);
 int ilist_head(T*, int**);
 int ilist_reset(T*);
 
@@ -36,13 +37,15 @@ int ilist_ini(T **pq)
 	return CO_OK;
 }
 
-int ilist_fin(T *q) {
+int ilist_fin(T *q)
+{
 	FREE(q->h);
 	FREE(q);
 	return CO_OK;
 }
 
-int ilist_push(T *q, int x) {
+int ilist_push(T *q, int x)
+{
 	int n;
 	int s, *h, *t;
 
@@ -52,8 +55,8 @@ int ilist_push(T *q, int x) {
 	n = t - h;
 	if (n >= s) {
 		s *= 2;
-		s = realloc(&h, s);
-		t = s + n;
+		h = realloc(&h, s);
+		t = h + n;
 	}
 	*(t++) = x;
 
@@ -63,10 +66,22 @@ int ilist_push(T *q, int x) {
 	return CO_OK;
 }
 
+int ilist_len(T *q)
+{
+	return q->t - q->h;
+}
+
+int ilist_head(T *q, int **ph) {
+	*ph = q->h;
+	return CO_OK;
+}
+
+int ilist_reset(T *q) {
+	q->t = q->h;
+	return CO_OK;
+}
+
 int main(void)
 {
 	printf("hello a_list\n");
 }
-
-
-
