@@ -146,7 +146,7 @@ int alist_fin(T *q)
 {
 	int n, i;
 	Ilist **a;
-         n = q->n;
+	n = q->n;
 	a = q->a;
 	for (i = 0; i < n; i++)
 		ilist_fin(a[i]);
@@ -240,8 +240,8 @@ int alist_n(T *q)
 typedef struct T T;
 struct Clist {
 	int n;
-	Alist **a;
-	Ilist **c; /* cells */
+	Alist *alist;
+	Ilist **c, **p; /* cells, particles */
 };
 
 int clist_ini(int, T**);
@@ -249,21 +249,26 @@ int clist_alist(T*, Alist*);
 int clist_fin(T*);
 int clist_reset(T*);
 int clist_push(T*, int cell, int part);
-int clist_len(T*);
-int clist_head(T*, int cell, int**);
+int clist_len(T*, int);
+int clist_cells(T*, int cell, int**);
+int clist_parts(T*, int cell, int**);
 
 int clist_ini(int n, T **pq)
 {
 	T *q;
-	Ilist **c;
+	Ilist **c, **p;
 	int i;
 	MALLOC(1, &q);
 	MALLOC(n, &c);
-	for (i = 0; i < n; i++)
+	MALLOC(n, &p);
+	for (i = 0; i < n; i++) {
 		ilist_ini(&c[i]);
-
+		ilist_ini(&p[i]);
+	}
 	q->n = n;
 	q->c = c;
+	q->p = p;
+	q->alist = NULL;
 	*pq = q;
 	return CO_OK;
 }
@@ -271,12 +276,16 @@ int clist_ini(int n, T **pq)
 int clist_free(T *q)
 {
 	int n, i;
-	Ilist **c;
+	Ilist **c, **p;
 	n = q->n;
 	c = q->c;
-	for (i = 0; i < n; i++)
+	p = q->p;
+	for (i = 0; i < n; i++) {
 		ilist_fin(c[i]);
+		ilist_fin(p[i]);
+	}
 	FREE(c);
+	FREE(p);
 	FREE(q);
 	return CO_OK;
 }
@@ -284,12 +293,70 @@ int clist_free(T *q)
 int clist_reset(T *q)
 {
 	int n, i;
-	Ilist **c;
+	Ilist **c, **p;
 	n = q->n;
 	c = q->c;
-	for (i = 0; i < n; i++)
+	p = q->p;
+	for (i = 0; i < n; i++) {
 		ilist_reset(c[i]);
+		ilist_reset(p[i]);
+	}
 	return CO_OK;
+}
+
+int clist_alist(T *q, Alist *alist)
+{
+	q->alist = alist;
+	return CO_OK;
+}
+
+int clist_push(T *q, int cell, int part)
+{
+	int n, i;
+	Ilist **c, **p;
+	Alist *alist;
+	int *a;
+
+	n = q->n;
+	c = q->c;
+	p = q->p;
+	alist = q->alist;
+
+	if (cell >= n) ERR(CO_INDEX, "cell=%d >=n=%d", cell, n);
+	if (cell < 0) ERR(CO_INDEX, "cell=%d < 0", cell);
+
+	alist_head(alist, cell, &a);
+	for (;;) {
+		i = *(a++);
+		if (i == ALIST_END)
+			break;
+		if (i >= n) ERR(CO_INDEX, "i=%d >= n=%d", i, n);
+		if (i  < 0) ERR(CO_INDEX, "i=%d <0", i, n);
+		ilist_push(c[i],  cell);
+		ilist_push(p[i], part);
+         }
+	return CO_OK;
+}
+
+int clist_len(T *q, int cell)
+{
+	Ilist **p;
+	p = q->p;
+	return ilist_len(p[cell]);
+}
+
+int clist_cells(T *q, int cell, int **a)
+{
+	Ilist **c;
+	c = q->c;
+	return ilist_head(c[cell], a);
+}
+
+int clist_parts(T *q, int cell, int **a)
+{
+	Ilist **p;
+	p = q->p;
+	return ilist_head(p[cell], a);
 }
 
 /*
