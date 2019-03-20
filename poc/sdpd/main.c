@@ -115,6 +115,8 @@ int main(void)
 
 	for (i = 0; i < 20; i++)
 		ilist_push(a, i);
+         ilist_reset(a);
+         ilist_push(a, 10);
 	fprintf(stderr, "size: %d\n", a->s);
 	ilist_fwrite(stdout, a);
 
