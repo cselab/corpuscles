@@ -6,11 +6,10 @@
 #pragma	src	"$HOME/co/lib"
 
 #define T Ilist
-
 typedef struct T T;
-struct T { /* size, head, tail */
-	int s;
-	int *h, *t;
+
+enum {
+	ILIST_END = -1
 };
 
 int ilist_ini(T**);
@@ -20,8 +19,14 @@ int ilist_len(T*);
 int ilist_head(T*, int**);
 int ilist_reset(T*);
 
+
+struct T { /* size, head, tail */
+	int s;
+	int *h, *t;
+};
+
 enum {
-	SIZE = 16
+	SIZE = 16, END = ILIST_END
 };
 
 int ilist_ini(T **pq)
@@ -31,7 +36,7 @@ int ilist_ini(T **pq)
 	MALLOC(1, &q);
 	q->s = SIZE;
 	MALLOC(q->s, &q->h);
-	*(q->h) = -1;
+	*(q->h) = END;
 	q->t = q->h;
 	*pq = q;
 	return CO_OK;
@@ -59,7 +64,7 @@ int ilist_push(T *q, int x)
 		t = h + n;
 	}
 	*(t++) = x;
-
+	*(t++) = END;
 	q->s = s;
 	q->h = h;
 	q->t = t;
@@ -71,17 +76,32 @@ int ilist_len(T *q)
 	return q->t - q->h;
 }
 
-int ilist_head(T *q, int **ph) {
+int ilist_head(T *q, int **ph)
+{
 	*ph = q->h;
 	return CO_OK;
 }
 
-int ilist_reset(T *q) {
+int ilist_reset(T *q)
+{
 	q->t = q->h;
+	*(q->h) = END;
 	return CO_OK;
+}
+
+int illist_fwrite(FILE *f, T *q) {
+	int n, *a;
+
+	ilist_head(q, &a);
+	n = ilist_len(q);
+	fprintf(f, "%d\n", n);
+	while (*a != ILIST_END) {
+		fprintf(f,  "%d\n", *a);
+	}
 }
 
 int main(void)
 {
 	printf("hello a_list\n");
 }
+
