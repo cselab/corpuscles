@@ -112,7 +112,7 @@ int alist_ini(int,  T**);
 int alist_fin(T*);
 int alist_reset(T*);
 int alist_push(T*, int, int);
-int alist_head(T*, int);
+int alist_head(T*, int, int**);
 int alist_len(T*, int);
 
 struct T {
@@ -158,6 +158,41 @@ int alist_reset(T *q) {
 	for (i = 0; i < n; i++)
 		ilist_reset(a[i]);
 	return CO_OK;
+}
+
+int alist_push(T *q, int i, int j) {
+	int n;
+	Ilist **a;
+	a = q->a;
+	n = q->n;
+
+	if (i >= n)
+		ERR(CO_INDEX, "i=%d >= n=%d", i, n);
+
+	if (j >= n)
+		ERR(CO_INDEX, "j=%d >= n=%d", j, n);
+
+	ilist_push(a[i], j);
+	ilist_push(a[j], i);
+
+	return CO_OK;
+}
+
+int alist_head(T *q, int i, int **h) {
+	int n;
+	Ilist **a;
+	a = q->a;
+	n = q->n;
+	if (i >= n)
+		ERR(CO_INDEX, "i=%d >= n=%d", i, n);
+
+	return ilist_head(a[i], h);
+}
+
+int alist_len(T *q, int i) {
+	Ilist **a;
+	a = q->a;
+	return ilist_len(q->a[i]);
 }
 
 int main(void)
