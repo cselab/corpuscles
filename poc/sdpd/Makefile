@@ -9,6 +9,7 @@ $M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
 
 test: $M; atest test/*
 install:
+run: $M; co.run ./main
 
-.PHONY: clean test install
+.PHONY: clean test install run
 clean:; rm -f $M.o $M
