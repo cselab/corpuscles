@@ -281,6 +281,16 @@ int clist_free(T *q)
 	return CO_OK;
 }
 
+int clist_reset(T *q)
+{
+	int n, i;
+	Ilist **c;
+	n = q->n;
+	c = q->c;
+	for (i = 0; i < n; i++)
+		ilist_reset(c[i]);
+	return CO_OK;
+}
 
 /*
 int main(void)
