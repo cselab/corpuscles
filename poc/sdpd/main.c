@@ -8,10 +8,7 @@
 #define T Ilist
 typedef struct T T;
 
-enum {
-	ILIST_END = -1
-};
-
+enum { ILIST_END = -1 };
 int ilist_ini(T**);
 int ilist_fin(T*);
 int ilist_push(T*, int);
@@ -19,8 +16,6 @@ int ilist_len(T*);
 int ilist_head(T*, int**);
 int ilist_reset(T*);
 int illist_fwrite(FILE*, T*);
-
-
 struct T { /* size, head, tail */
 	int s;
 	int *h, *t;
@@ -102,6 +97,8 @@ int ilist_fwrite(FILE *f, T *q) {
 		fprintf(f,  "%d\n", *(a++));
 	}
 }
+
+
 
 int main(void)
 {
