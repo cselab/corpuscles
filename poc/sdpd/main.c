@@ -196,7 +196,6 @@ int alist_head(T *q, int i, int **h)
 	n = q->n;
 	if (i >= n)
 		ERR(CO_INDEX, "i=%d >= n=%d", i, n);
-
 	return ilist_head(a[i], h);
 }
 
@@ -346,7 +345,7 @@ int clist_push(T *q, int cell, int part)
 	c = q->c;
 	p = q->p;
 	alist = q->alist;
-	
+
 	if (alist == NULL) ERR(CO_INDEX, "alist == NULL");
 	if (cell >= n) ERR(CO_INDEX, "cell=%d >=n=%d", cell, n);
 	if (cell < 0) ERR(CO_INDEX, "cell=%d < 0", cell);
