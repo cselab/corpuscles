@@ -42,6 +42,27 @@ int ilist_fin(T *q) {
 	return CO_OK;
 }
 
+int ilist_push(T *q, int x) {
+	int n;
+	int s, *h, *t;
+
+	s = q->s;
+	h = q->h;
+	t = q->t;
+	n = t - h;
+	if (n >= s) {
+		s *= 2;
+		s = realloc(&h, s);
+		t = s + n;
+	}
+	*(t++) = x;
+
+	q->s = s;
+	q->h = h;
+	q->t = t;
+	return CO_OK;
+}
+
 int main(void)
 {
 	printf("hello a_list\n");
