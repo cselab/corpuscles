@@ -117,6 +117,7 @@ int alist_reset(T*);
 int alist_push(T*, int, int);
 int alist_head(T*, int, int**);
 int alist_len(T*, int);
+int alist_n(T*);
 int alist_fwrite(FILE*, T*);
 
 struct T {
@@ -154,7 +155,8 @@ int alist_fin(T *q)
 	return CO_OK;
 }
 
-int alist_reset(T *q) {
+int alist_reset(T *q)
+{
 	int n, i;
 	Ilist **a;
 	n = q->n;
@@ -164,7 +166,8 @@ int alist_reset(T *q) {
 	return CO_OK;
 }
 
-int alist_push(T *q, int i, int j) {
+int alist_push(T *q, int i, int j)
+{
 	int n;
 	Ilist **a;
 	a = q->a;
@@ -185,7 +188,8 @@ int alist_push(T *q, int i, int j) {
 	return CO_OK;
 }
 
-int alist_head(T *q, int i, int **h) {
+int alist_head(T *q, int i, int **h)
+{
 	int n;
 	Ilist **a;
 	a = q->a;
@@ -196,13 +200,15 @@ int alist_head(T *q, int i, int **h) {
 	return ilist_head(a[i], h);
 }
 
-int alist_len(T *q, int i) {
+int alist_len(T *q, int i)
+{
 	Ilist **a;
 	a = q->a;
 	return ilist_len(q->a[i]);
 }
 
-int alist_fwrite(FILE *f, T *q) {
+int alist_fwrite(FILE *f, T *q)
+{
 	int n, m, i, j;
 	Ilist **a;
 	int *b;
@@ -222,11 +228,21 @@ int alist_fwrite(FILE *f, T *q) {
 	return CO_OK;
 }
 
+int alist_n(T *q)
+{
+	return q->n;
+}
+
 
 #undef T
 
 #define T Clist
 typedef struct T T;
+struct Clist {
+	int n;
+	Alist *a;
+};
+
 int clist_ini(int, T**);
 int clist_connect(Alist*, T*);
 int clist_fin(T*);
@@ -235,6 +251,7 @@ int clist_reset(T*);
 int clist_push(T*, int cell, int part);
 int clist_len(T*);
 int clist_head(T*, int cell, int**);
+
 
 /*
 int main(void)
