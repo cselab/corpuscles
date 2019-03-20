@@ -9,7 +9,8 @@
 typedef struct T T;
 
 enum {
-	ILIST_END = -1 };
+	ILIST_END = -1
+};
 int ilist_ini(T**);
 int ilist_fin(T*);
 int ilist_push(T*, int);
