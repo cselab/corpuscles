@@ -4,7 +4,7 @@
 #include "co/err.h"
 #include "co/memory.h"
 
-int he_malloc(int size, /**/ void **pq)
+int co_malloc(int size, /**/ void **pq)
 {
 	void *q;
 	q = malloc(size);
@@ -13,7 +13,7 @@ int he_malloc(int size, /**/ void **pq)
 	return CO_OK;
 }
 
-int he_realloc(int size, /**/ void **pa)
+int co_realloc(int size, /**/ void **pa)
 {
 	void *a, *b;
 	a = *pa;
@@ -25,7 +25,7 @@ int he_realloc(int size, /**/ void **pa)
 }
 
 
-int he_calloc(int size, /**/ void **pq)
+int co_calloc(int size, /**/ void **pq)
 {
 	void *q;
 	q = calloc(1, size);
@@ -34,14 +34,14 @@ int he_calloc(int size, /**/ void **pq)
 	return CO_OK;
 }
 
-int he_free(void *q)
+int co_free(void *q)
 {
 	free(q);
 	q = NULL;
 	return CO_OK;
 }
 
-int he_memcpy(void *dest, const void *src, size_t n)
+int co_memcpy(void *dest, const void *src, size_t n)
 {
 	if (dest == NULL) ERR(CO_MEMORY, "dest == NULL");
 	if (src == NULL) ERR(CO_MEMORY, "src == NULL");
