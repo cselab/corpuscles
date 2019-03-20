@@ -98,7 +98,18 @@ int ilist_fwrite(FILE *f, T *q) {
 	}
 }
 
+#undef T
 
+
+#define T Alist
+typedef struct T T;
+
+int alist_ini(int,  T**);
+int alist_fin(T*);
+int alist_reset(T*);
+int alist_push(T*, int, int);
+int alist_head(T*, int);
+int alist_len(T*, int);
 
 int main(void)
 {
