@@ -9,6 +9,7 @@ int clist_push(T*, int cell, int part);
 int clist_len(T*, int);
 int clist_cells(T*, int cell, int**);
 int clist_parts(T*, int cell, int**);
+int clist_fwrite(FILE*, T*);
 
 int clist_gen_n(int, T**);
 int clist_gen_p(int, T**);
