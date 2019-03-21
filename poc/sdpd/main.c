@@ -176,9 +176,13 @@ int alist_push(T *q, int i, int j)
 
 	if (i >= n)
 		ERR(CO_INDEX, "i=%d >= n=%d", i, n);
+	if (i < 0)
+		ERR(CO_INDEX, "i=%d < 0", i);
 
 	if (j >= n)
 		ERR(CO_INDEX, "j=%d >= n=%d", j, n);
+	if (j < 0)
+		ERR(CO_INDEX, "j=%d < 0", j);
 
 	if (i == j)
 		ERR(CO_INDEX, "i == j=%d", i);
@@ -256,6 +260,7 @@ int clist_parts(T*, int cell, int**);
 
 int clist_gen_n(int, T**);
 int clist_gen_p(int, T**);
+int clist_gen_nn(int, int, T**);
 
 int clist_ini(int n, T **pq)
 {
@@ -421,6 +426,62 @@ int clist_gen_n(int k, T **pq)
 	return CO_OK;
 }
 
+int clist_gen_p(int k, T **pq)
+{
+	int i;
+	T *q;
+	Alist *a;
+	alist_ini(k, &a);
+	for (i = 0; i < k - 1; i++)
+		alist_push(a, i, i + 1);
+	alist_push(a, 0, k - 1);
+	MALLOC(1, &q);
+	clist_ini(k, &q);
+	clist_alist_own(q, a);
+	*pq = q;
+	return CO_OK;
+}
+
+enum {
+	X, Y, Z
+};
+static int dd[][2] = {
+	{-1, -1},
+	{-1, 0},
+	{-1, 1},
+	{0, -1},
+	{0, 1},
+	{1, -1},
+	{1, 0},
+	{1, 1},
+};
+static int bc(int K, int M, int i, int j)
+{
+	return 0 <= i && i < K && 0 <= j && j < M;
+}
+int clist_gen_nn(int K,  int M, T **pq)
+{
+	int nd = sizeof(dd)/sizeof(dd[0]);
+	int k, m, l, *d, i, j;
+	T *q;
+	Alist *a;
+	alist_ini(K*M, &a);
+	for (k = 0; k < K; k++)
+		for (m = 0; m < M; m++)
+			for (l = 0; l < nd; l++) {
+				d = dd[l];
+				i = k + d[X];
+				j = m + d[Y];
+				if (bc(K, M, i, j))
+					alist_push(a, i*M + j,  k*M + m);
+			}
+	MALLOC(1, &q);
+	clist_ini(K*M, &q);
+	clist_alist_own(q, a);
+	*pq = q;
+	return CO_OK;
+}
+
 /*
 int main(void)
 {
@@ -459,8 +520,6 @@ int main(void)
 }
 
 
-*/
-
 int main(void)
 {
 	int n;
@@ -480,11 +539,30 @@ int main(void)
 	clist_push(clist, 0, 100);
 	clist_push(clist, 1, 101);
 	clist_push(clist, 3, 103);
-	/* clist_reset(clist); */
 	clist_fwrite(stdout, clist);
 
 	clist_fin(clist);
 	alist_fin(alist);
 
+	return 0;
+}
+
+*/
+
+int main(void)
+{
+	Clist *clist;
+	int n;
+
+	n = 2;
+	clist_gen_nn(n, n, &clist);
+
+         clist_push(clist, 0, 100);
+	//clist_push(clist, 1, 101);
+	//clist_push(clist, 2, 102);
+	//clist_push(clist, 3, 103);
+	clist_fwrite(stdout, clist);
+	clist_fin(clist);
+	
 	return 0;
 }
