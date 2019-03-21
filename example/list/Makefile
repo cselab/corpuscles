@@ -1,5 +1,5 @@
 include ../../conf.mk
-M = i a c1
+M = i a c1 c2
 O = $(M:=.o)
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
