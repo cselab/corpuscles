@@ -276,3 +276,95 @@ int clist_gen_pp(int K, int M, T **pq)
 {
 	return gen2(K, M, bc_pp, pq);
 }
+
+static int ee[][3] = {
+	{-1, -1, -1},
+	{-1, -1, 0},
+	{-1, -1, 1},
+	{-1, 0, -1},
+	{-1, 0, 0},
+	{-1, 0, 1},
+	{-1, 1, -1},
+	{-1, 1, 0},
+	{-1, 1, 1},
+	{0, -1, -1},
+	{0, -1, 0},
+	{0, -1, 1},
+	{0, 0, -1},
+	{0, 0, 1},
+	{0, 1, -1},
+	{0, 1, 0},
+	{0, 1, 1},
+	{1, -1, -1},
+	{1, -1, 0},
+	{1, -1, 1},
+	{1, 0, -1},
+	{1, 0, 0},
+	{1, 0, 1},
+	{1, 1, -1},
+	{1, 1, 0},
+	{1, 1, 1},
+};
+
+static int bc_nnn(int K, int M, int N, int *k, int *m, int *n)
+{
+	return 0 <= *k && *k < K && 0 <= *m && *m < M && 0 <= *n && *n < N; 
+}
+
+static int bc_pnn(int K, int M, int N, int *k, int *m, int *n)
+{
+	if (*k < 0) *k += K;
+	if (*k >= K) *k -= K;
+	return 0 <= *m && *m < M && 0 <= *n && *n < N; 
+}
+
+static int bc_ppp(int K, int M, int N, int *k, int *m, int *n)
+{
+	if (*k < 0) *k += K;
+	if (*k >= K) *k -= K;
+	if (*m < 0) *m += M;
+	if (*m >= M) *m -= M;
+	if (*n < 0) *n += N;
+	if (*n >= N) *n -= N;
+	return 1; 
+}
+
+static int gen3(int K,  int M,  int N, int (*bc)(int, int, int, int*, int*, int*), T **pq)
+{
+	int nd = sizeof(ee)/sizeof(ee[0]);
+	int  l, *d, x, y, z, i, j, k;
+	T *q;
+	Alist *a;
+	alist_ini(K*M*N, &a);
+	for (x = 0; x < K; x++)
+		for (y = 0; y < M; y++)
+			for (z = 0; z < N; z++)
+				for (l = 0; l < nd; l++) {
+					d = ee[l];
+					i = x + d[X];
+					j = y + d[Y];
+					k = z + d[Z];
+					if (bc(K, M, N, &i, &j, &k))
+						alist_push_uniq(a, i*M*N + j*N + k,  x*M*N + y*N + z);
+				}
+	MALLOC(1, &q);
+	clist_ini(K*M*N, &q);
+	clist_alist_own(q, a);
+	*pq = q;
+	return CO_OK;
+}
+
+int clist_gen_nnn(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_nnn, pq);
+}
+
+int clist_gen_ppp(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_ppp, pq);
+}
+
+int clist_gen_pnn(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_pnn, pq);
+}
