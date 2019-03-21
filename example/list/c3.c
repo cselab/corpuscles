@@ -6,15 +6,9 @@
 int main(void)
 {
 	Clist *clist;
-	int n;
-
-	n = 3;
-	clist_gen_nnn(n, n, n, &clist);
+	clist_gen_ppn(3, 3, 3, &clist);
 
 	clist_push(clist, 0, 100);
-	clist_push(clist, 1, 101);
-	clist_push(clist, 2, 102);
-	clist_push(clist, 3, 103);
 	clist_fwrite(stdout, clist);
 	clist_fin(clist);
 
