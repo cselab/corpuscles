@@ -21,9 +21,10 @@ int illist_fwrite(FILE*, T*);
 struct T { /* size, head, tail */
 	int s;
 	int *h, *t;
-};
+};  
 enum {
-	SIZE = 28, END = ILIST_END };
+	SIZE = 28, END = ILIST_END
+};
 int ilist_ini(T **pq)
 {
 	T *q;
