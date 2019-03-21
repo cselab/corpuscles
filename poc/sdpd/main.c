@@ -14,6 +14,7 @@ enum {
 int ilist_ini(T**);
 int ilist_fin(T*);
 int ilist_push(T*, int);
+int ilist_push_uniq(T*, int);
 int ilist_len(T*);
 int ilist_head(T*, int**);
 int ilist_reset(T*);
@@ -101,7 +102,6 @@ int ilist_push_uniq(T *q, int x)
 	return ilist_push(q, x);
 }
 
-
 int ilist_fwrite(FILE *f, T *q)
 {
 	int n, *a;
@@ -127,6 +127,7 @@ int alist_ini(int,  T**);
 int alist_fin(T*);
 int alist_reset(T*);
 int alist_push(T*, int, int);
+int alist_push_uniq(T*, int, int);
 int alist_head(T*, int, int**);
 int alist_len(T*, int);
 int alist_n(T*);
@@ -201,6 +202,30 @@ int alist_push(T *q, int i, int j)
 	ilist_push(a[i], j);
 	ilist_push(a[j], i);
 
+	return CO_OK;
+}
+
+int alist_push_uniq(T *q, int i, int j)
+{
+	int n;
+	Ilist **a;
+	a = q->a;
+	n = q->n;
+
+	if (i >= n)
+		ERR(CO_INDEX, "i=%d >= n=%d", i, n);
+	if (i < 0)
+		ERR(CO_INDEX, "i=%d < 0", i);
+
+	if (j >= n)
+		ERR(CO_INDEX, "j=%d >= n=%d", j, n);
+	if (j < 0)
+		ERR(CO_INDEX, "j=%d < 0", j);
+
+	if (i != j) {
+		ilist_push_uniq(a[i], j);
+		ilist_push_uniq(a[j], i);
+	}
 	return CO_OK;
 }
 
