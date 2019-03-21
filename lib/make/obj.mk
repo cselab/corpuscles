@@ -3,7 +3,7 @@ endian.o\
 err.o\
 hash.o\
 he.o\
-list/a.o\
+list/i.o\
 memory.o\
 read.o\
 util.o

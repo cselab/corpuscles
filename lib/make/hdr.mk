@@ -47,7 +47,7 @@ co/he.h\
 co/H.h\
 co/invariants.h\
 co/laplace.h\
-co/list/a.h\
+co/list/i.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
