@@ -91,6 +91,17 @@ int ilist_reset(T *q)
 	return CO_OK;
 }
 
+int ilist_push_uniq(T *q, int x)
+{
+	int *a;
+	ilist_head(q, &a);
+	while (*a != ILIST_END)
+		if (*a == x)
+			return CO_OK;
+	return ilist_push(q, x);
+}
+
+
 int ilist_fwrite(FILE *f, T *q)
 {
 	int n, *a;
