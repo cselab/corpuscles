@@ -97,7 +97,7 @@ int ilist_push_uniq(T *q, int x)
 	int *a;
 	ilist_head(q, &a);
 	while (*a != ILIST_END)
-		if (*a == x)
+		if (*(a++) == x)
 			return CO_OK;
 	return ilist_push(q, x);
 }
@@ -491,11 +491,25 @@ static int dd[][2] = {
 	{1, 0},
 	{1, 1},
 };
-static int bc(int K, int M, int i, int j)
+static int bc_nn(int K, int M, int *i, int *j)
 {
-	return 0 <= i && i < K && 0 <= j && j < M;
+	return 0 <= *i && *i < K && 0 <= *j && *j < M;
 }
-int clist_gen_nn(int K,  int M, T **pq)
+static int bc_pn(int K, int M, int *i, int *j)
+{
+	if (*i < 0) *i += K;
+	if (*i >= K) *i -= K;
+	return  0 <= *j && *j < M;
+}
+static int bc_pp(int K, int M, int *i, int *j)
+{
+	if (*i < 0) *i += K;
+	if (*i >= K) *i -= K;
+	if (*j < 0) *j += M;
+	if (*j >= M) *j -= M;
+	return 1;
+}
+static int gen2(int K,  int M,  int (*bc)(int, int, int*, int*), T **pq)
 {
 	int nd = sizeof(dd)/sizeof(dd[0]);
 	int k, m, l, *d, i, j;
@@ -508,7 +522,7 @@ int clist_gen_nn(int K,  int M, T **pq)
 				d = dd[l];
 				i = k + d[X];
 				j = m + d[Y];
-				if (bc(K, M, i, j))
+				if (bc(K, M, &i, &j))
 					alist_push_uniq(a, i*M + j,  k*M + m);
 			}
 	MALLOC(1, &q);
@@ -516,6 +530,21 @@ int clist_gen_nn(int K,  int M, T **pq)
 	clist_alist_own(q, a);
 	*pq = q;
 	return CO_OK;
+}
+
+int clist_gen_nn(int K, int M, T **pq)
+{
+	return gen2(K, M, bc_nn, pq);
+}
+
+int clist_gen_pn(int K, int M, T **pq)
+{
+	return gen2(K, M, bc_pn, pq);
+}
+
+int clist_gen_pp(int K, int M, T **pq)
+{
+	return gen2(K, M, bc_pp, pq);
 }
 
 /*
@@ -591,7 +620,7 @@ int main(void)
 	int n;
 
 	n = 2;
-	clist_gen_nn(n, n, &clist);
+	clist_gen_nn(1, 4, &clist);
 
          clist_push(clist, 0, 100);
 	//clist_push(clist, 1, 101);
