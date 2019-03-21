@@ -308,14 +308,55 @@ static int ee[][3] = {
 
 static int bc_nnn(int K, int M, int N, int *k, int *m, int *n)
 {
-	return 0 <= *k && *k < K && 0 <= *m && *m < M && 0 <= *n && *n < N; 
+	return 0 <= *k && *k < K && 0 <= *m && *m < M && 0 <= *n && *n < N;
 }
 
 static int bc_pnn(int K, int M, int N, int *k, int *m, int *n)
 {
 	if (*k < 0) *k += K;
 	if (*k >= K) *k -= K;
-	return 0 <= *m && *m < M && 0 <= *n && *n < N; 
+	return 0 <= *m && *m < M && 0 <= *n && *n < N;
+}
+
+static int bc_nnp(int K, int M, int N, int *k, int *m, int *n)
+{
+	if (*n < 0) *n += N;
+	if (*n >= N) *n -= N;
+	return 0 <= *k && *k < K && 0 <= *m && *m < M;
+}
+
+static int bc_npn(int K, int M, int N, int *k, int *m, int *n)
+{
+	if (*m < 0) *m += M;
+	if (*m >= M) *m -= M;
+	return 0 <= *k && *k < K &&  0 <= *n && *n < N;
+}
+
+static int bc_ppn(int K, int M, int N, int *k, int *m, int *n)
+{
+	if (*k < 0) *k += K;
+	if (*k >= K) *k -= K;
+	if (*m < 0) *m += M;
+	if (*m >= M) *m -= M;
+	return 0 <= *n && *n < N;
+}
+
+static int bc_npp(int K, int M, int N, int *k, int *m, int *n)
+{
+	if (*m < 0) *m += M;
+	if (*m >= M) *m -= M;
+	if (*n < 0) *n += N;
+	if (*n >= N) *n -= N;
+	return 0 <= *k && *k < K;
+}
+
+static int bc_pnp(int K, int M, int N, int *k, int *m, int *n)
+{
+	if (*k < 0) *k += K;
+	if (*k >= K) *k -= K;
+	if (*n < 0) *n += N;
+	if (*n >= N) *n -= N;
+	return  0 <= *m && *m < M;
 }
 
 static int bc_ppp(int K, int M, int N, int *k, int *m, int *n)
@@ -326,7 +367,7 @@ static int bc_ppp(int K, int M, int N, int *k, int *m, int *n)
 	if (*m >= M) *m -= M;
 	if (*n < 0) *n += N;
 	if (*n >= N) *n -= N;
-	return 1; 
+	return 1;
 }
 
 static int gen3(int K,  int M,  int N, int (*bc)(int, int, int, int*, int*, int*), T **pq)
@@ -359,12 +400,37 @@ int clist_gen_nnn(int K, int M, int N, T **pq)
 	return gen3(K, M, N, bc_nnn, pq);
 }
 
-int clist_gen_ppp(int K, int M, int N, T **pq)
-{
-	return gen3(K, M, N, bc_ppp, pq);
-}
-
 int clist_gen_pnn(int K, int M, int N, T **pq)
 {
 	return gen3(K, M, N, bc_pnn, pq);
+}
+
+int clist_gen_npn(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_npn, pq);
+}
+
+int clist_gen_nnp(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_nnp, pq);
+}
+
+int clist_gen_ppn(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_ppn, pq);
+}
+
+int clist_gen_pnp(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_pnp, pq);
+}
+
+int clist_gen_npp(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_npp, pq);
+}
+
+int clist_gen_ppp(int K, int M, int N, T **pq)
+{
+	return gen3(K, M, N, bc_ppp, pq);
 }
