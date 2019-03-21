@@ -11,6 +11,6 @@ int ilist_push_uniq(T*, int);
 int ilist_len(T*);
 int ilist_head(T*, int**);
 int ilist_reset(T*);
-int illist_fwrite(FILE*, T*);
+int ilist_fwrite(FILE*, T*);
 
 #undef T
