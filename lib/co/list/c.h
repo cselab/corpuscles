@@ -1,3 +1,5 @@
+typedef struct Alist Alist;
+
 #define T Clist
 typedef struct T T;
 
