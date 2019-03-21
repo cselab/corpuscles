@@ -22,7 +22,7 @@ int illist_fwrite(FILE*, T*);
 struct T { /* size, head, tail */
 	int s;
 	int *h, *t;
-};  
+};
 enum {
 	SIZE = 28, END = ILIST_END
 };
@@ -297,6 +297,8 @@ int clist_parts(T*, int cell, int**);
 int clist_gen_n(int, T**);
 int clist_gen_p(int, T**);
 int clist_gen_nn(int, int, T**);
+int clist_gen_np(int, int, T**);
+int clist_gen_pp(int, int, T**);
 
 int clist_ini(int n, T **pq)
 {
@@ -620,14 +622,14 @@ int main(void)
 	int n;
 
 	n = 2;
-	clist_gen_nn(1, 4, &clist);
+	clist_gen_np(3, 4, &clist);
 
-         clist_push(clist, 0, 100);
+	clist_push(clist, 0, 100);
 	//clist_push(clist, 1, 101);
 	//clist_push(clist, 2, 102);
 	//clist_push(clist, 3, 103);
 	clist_fwrite(stdout, clist);
 	clist_fin(clist);
-	
+
 	return 0;
 }
