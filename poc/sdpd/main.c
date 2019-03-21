@@ -9,9 +9,12 @@
 
 #define T Cell
 typedef struct Cell Cell;
-int cell_pp_ini(const real lo[2], const real hi[2], real size, T**);
-int cell_head(const real[3],  int**);
-int cell_fin();
+int cell_pp_ini(const real lo[], const real hi[], real size, T**);
+int cell_push(T*, const real[], int);
+int cell_head(T*, const real[],  int**);
+int cell_len(T*, const real[]);
+int cell_reset(T*);
+int cell_fin(T*);
 
 int main(void)
 {
