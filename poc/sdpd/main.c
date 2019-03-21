@@ -1,9 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <real.h>
 #include <co/err.h>
 #include <co/memory.h>
 
 #include <co/list/c.h>
+
+#define T Cell
+typedef struct Cell Cell;
+int cell_pp_ini(const real lo[2], const real hi[2], real size, T**);
+int cell_head(const real[3],  int**);
+int cell_fin();
 
 int main(void)
 {
