@@ -561,7 +561,6 @@ int clist_gen_pp(int K, int M, T **pq)
 	return gen2(K, M, bc_pp, pq);
 }
 
-/*
 int main(void)
 {
 	int i;
@@ -576,72 +575,5 @@ int main(void)
 	ilist_fwrite(stdout, a);
 
 	ilist_fin(a);
-	return 0;
-}
-
-int main(void)
-{
-	int n;
-	Alist *alist;
-	int *a;
-
-	n = 4;
-	alist_ini(n, &alist);
-	alist_push(alist, 0, 1);
-	alist_push(alist, 0, 2);
-	alist_push(alist, 1, 2);
-
-	alist_fwrite(stdout, alist);
-
-	alist_fin(alist);
-
-	return 0;
-}
-
-
-int main(void)
-{
-	int n;
-	Alist *alist;
-	Clist *clist;
-
-	n = 5;
-	alist_ini(n, &alist);
-	alist_push(alist, 0, 1);
-	alist_push(alist, 0, 2);
-	alist_push(alist, 1, 2);
-	alist_push(alist, 3, 4);
-
-	clist_ini(n, &clist);
-	clist_alist(clist, alist);
-
-	clist_push(clist, 0, 100);
-	clist_push(clist, 1, 101);
-	clist_push(clist, 3, 103);
-	clist_fwrite(stdout, clist);
-
-	clist_fin(clist);
-	alist_fin(alist);
-
-	return 0;
-}
-
-*/
-
-int main(void)
-{
-	Clist *clist;
-	int n;
-
-	n = 3;
-	clist_gen_np(n, n, &clist);
-
-	clist_push(clist, 0, 100);
-	clist_push(clist, 1, 101);
-	clist_push(clist, 2, 102);
-	clist_push(clist, 3, 103);
-	clist_fwrite(stdout, clist);
-	clist_fin(clist);
-
 	return 0;
 }

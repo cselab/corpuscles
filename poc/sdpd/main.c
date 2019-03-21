@@ -298,6 +298,7 @@ int clist_gen_n(int, T**);
 int clist_gen_p(int, T**);
 int clist_gen_nn(int, int, T**);
 int clist_gen_np(int, int, T**);
+int clist_gen_pn(int, int, T**);
 int clist_gen_pp(int, int, T**);
 
 int clist_ini(int n, T **pq)
@@ -503,6 +504,12 @@ static int bc_pn(int K, int M, int *i, int *j)
 	if (*i >= K) *i -= K;
 	return  0 <= *j && *j < M;
 }
+static int bc_np(int K, int M, int *i, int *j)
+{
+	if (*j < 0) *j += M;
+	if (*j >= M) *j -= M;
+	return  0 <= *i && *i < K;
+}
 static int bc_pp(int K, int M, int *i, int *j)
 {
 	if (*i < 0) *i += K;
@@ -542,6 +549,11 @@ int clist_gen_nn(int K, int M, T **pq)
 int clist_gen_pn(int K, int M, T **pq)
 {
 	return gen2(K, M, bc_pn, pq);
+}
+
+int clist_gen_np(int K, int M, T **pq)
+{
+	return gen2(K, M, bc_np, pq);
 }
 
 int clist_gen_pp(int K, int M, T **pq)
@@ -621,13 +633,13 @@ int main(void)
 	Clist *clist;
 	int n;
 
-	n = 2;
-	clist_gen_np(3, 4, &clist);
+	n = 3;
+	clist_gen_np(n, n, &clist);
 
 	clist_push(clist, 0, 100);
-	//clist_push(clist, 1, 101);
-	//clist_push(clist, 2, 102);
-	//clist_push(clist, 3, 103);
+	clist_push(clist, 1, 101);
+	clist_push(clist, 2, 102);
+	clist_push(clist, 3, 103);
 	clist_fwrite(stdout, clist);
 	clist_fin(clist);
 
