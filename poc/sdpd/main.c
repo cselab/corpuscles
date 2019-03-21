@@ -454,7 +454,7 @@ int clist_gen_n(int k, T **pq)
 	Alist *a;
 	alist_ini(k, &a);
 	for (i = 0; i < k - 1; i++)
-		alist_push(a, i, i + 1);
+		alist_push_uniq(a, i, i + 1);
 	MALLOC(1, &q);
 	clist_ini(k, &q);
 	clist_alist_own(q, a);
@@ -469,7 +469,7 @@ int clist_gen_p(int k, T **pq)
 	Alist *a;
 	alist_ini(k, &a);
 	for (i = 0; i < k - 1; i++)
-		alist_push(a, i, i + 1);
+		alist_push_uniq(a, i, i + 1);
 	alist_push(a, 0, k - 1);
 	MALLOC(1, &q);
 	clist_ini(k, &q);
@@ -509,7 +509,7 @@ int clist_gen_nn(int K,  int M, T **pq)
 				i = k + d[X];
 				j = m + d[Y];
 				if (bc(K, M, i, j))
-					alist_push(a, i*M + j,  k*M + m);
+					alist_push_uniq(a, i*M + j,  k*M + m);
 			}
 	MALLOC(1, &q);
 	clist_ini(K*M, &q);
