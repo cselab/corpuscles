@@ -2,6 +2,7 @@
 #include <tgmath.h>
 
 #include "real.h"
+#include "co/macro.h"
 #include "co/memory.h"
 #include "co/err.h"
 #include "co/he.h"
@@ -111,7 +112,7 @@ int he_f_gompper_kroll_ini(real Kb, real C0, real Kad, real DA0D, He *he, T **pq
     return CO_OK;
 }
 
-int he_f_gompper_kroll_argv(char ***p, He *he, T **pq) {
+int he_f_gompper_kroll_argv(__UNUSED char ***p, __UNUSED He *he, __UNUSED T **pq) {
     return CO_OK;
 }
 
