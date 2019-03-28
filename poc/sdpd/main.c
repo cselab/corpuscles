@@ -135,7 +135,7 @@ int main(void)
 			k++;
 	}
 	cell2_push(cell, n, x, y);
-
+ 
 	for (i = 0; i < n; i++) {
 		cell2_parts(cell, x[i], y[i], &a);
 		for (j = 0; a[j] !=-1; j++) {
