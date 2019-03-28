@@ -15,6 +15,7 @@ area.s.o\
 argv.s.o\
 array.s.o\
 bending.s.o\
+cell2.s.o\
 da.s.o\
 ddih.s.o\
 dedg.s.o\
@@ -83,6 +84,7 @@ area.d.o\
 argv.d.o\
 array.d.o\
 bending.d.o\
+cell2.d.o\
 da.d.o\
 ddih.d.o\
 dedg.d.o\
@@ -151,6 +153,7 @@ area.l.o\
 argv.l.o\
 array.l.o\
 bending.l.o\
+cell2.l.o\
 da.l.o\
 ddih.l.o\
 dedg.l.o\
