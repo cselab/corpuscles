@@ -11,6 +11,13 @@
 
 #include <co/cell2.h>
 
+#define BEGIN \
+	for (i = 0; i < n; i++) { \
+		cell2_parts(cell, x[i], y[i], &a); \
+		while ( (j = *a++) != -1) { \
+		if (j == i) continue;
+#define END } }
+
 enum {X, Y};
 static int n;
 static int nx = 20;
@@ -57,7 +64,8 @@ body_force(int n, const real *x, __UNUSED const real *y, real *fx, __UNUSED real
 int
 main(void)
 {
-	static real *x, *y, *vx, *vy, *fx, *fy;
+	int First;
+	static real *x, *y, *vx, *vy, *fx, *fy, *rho;
 	Cell2 *cell;
 
 	int i, j, k, t, *a;
@@ -65,7 +73,7 @@ main(void)
 
 	lo[X] = -0.5; hi[X] = 0.5;
 	lo[Y] = -0.5; hi[Y] =0.5;
-	size = 0.2;
+	size = 0.05;
 	
 	n = nx * ny;
 	MALLOC(n, &x);
@@ -74,33 +82,28 @@ main(void)
 	CALLOC(n, &vy);
 	MALLOC(n, &fx);
 	MALLOC(n, &fy);
+	MALLOC(n, &rho);
 	ini(x, y);
 	cell2_pp_ini(lo, hi, size, &cell);
 
-	dt = 0.01;
+	dt = 0.01; First = 1;
 	for (t = 0; t < 100; t ++) {
 		array_zero(n, fx);
 		array_zero(n, fy);
+		array_zero(n, rho);
 		body_force(n, x, y, fx, fy);
 		cell2_wrap(cell, n, x, y);
-		if (t % 10 == 0) {
-			const real *q[] = {x, y, NULL};
-			punto_fwrite(n, q, stdout);
-			printf("\n\n");
-		}
-
 		cell2_push(cell, n, x, y);
-		for (i = 0; i < 1; i++) {
-			cell2_parts(cell, x[i], y[i], &a);
-			while ( (j = *a++) != -1) {
-				if (j == i) continue;				
-				//printf("%g %g %g %g\n", x[i], y[i], x[j] , y[j]);
-			}
-		}
+		BEGIN {
+			rho[i] += 1;
+		} END
 		euler_step(dt, n, vx, vy, x, y);
 		euler_step(dt, n, fx, fy, vx, vy);
-		MSG("vx[0] = %g %g", fx[0], dt);
-
+		if (t % 10 == 0) {
+			if (First) First = 0; else printf("\n");		
+			const real *q[] = {x, y, rho, NULL};
+			punto_fwrite(n, q, stdout);
+		}
 	}
 
 	cell2_fin(cell);
