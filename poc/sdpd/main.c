@@ -10,8 +10,8 @@
 #define T Cell
 typedef struct Cell Cell;
 int cell_pp_ini(const real lo[], const real hi[], real size, T**);
-int cell_push(T*, const real[], int);
-int cell_head(T*, const real[],  int**);
+int cell_push(T*, const real[], const real[], const real[], int);
+int cell_head(T*, const real[2],  int**);
 int cell_len(T*, const real[]);
 int cell_reset(T*);
 int cell_fin(T*);
