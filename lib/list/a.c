@@ -118,7 +118,7 @@ int alist_len(T *q, int i)
 {
 	Ilist **a;
 	a = q->a;
-	return ilist_len(q->a[i]);
+	return ilist_len(a[i]);
 }
 
 int alist_fwrite(FILE *f, T *q)
