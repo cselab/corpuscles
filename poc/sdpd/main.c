@@ -13,13 +13,12 @@ int cell2_pp_ini(const real lo[], const real hi[], real size, T**);
 int cell2_push(T*, int, const real[], const real[]);
 int cell2_parts(T*, real, real, int**);
 int cell2_len(T*, real, real);
-int cell2_reset(T*);
 int cell2_fin(T*);
 
 struct T
 {
-	int size,  ny;
-	real lo[2], hi[3];
+	int ny;
+	real lo[2], hi[3], size;
 	Clist *clist;
 };
 
@@ -35,11 +34,6 @@ int cell2_pp_ini(const real lo[2], const real hi[3], real size, T **pq)
 
 	lx = hi[X] - lo[X];
 	ly = hi[Y] - lo[Y];
-
-	if (lx < 0)
-		ERR(CO_INDEX, "lx < 0");
-	if (ly < 0)
-		ERR(CO_INDEX, "ly < 0");
 
 	nx= lx/size;
 	if (nx * size < lx) nx++;
@@ -73,15 +67,18 @@ int cell2_fin(T *q)
 static int map(T *q, real x, real y, int *i, int *j)
 {
 	enum {X, Y};
-	real *lo, *hi;
+	real *lo, *hi, size;
+	
+	size = q->size;
+
 	lo = q->lo;
 	hi = q->hi;
 	
 	x -= lo[X];
 	y -= lo[Y];
 
-	*i = x / (hi[X] - lo[X]);
-	*j = y / (hi[Y] - lo[Y]);
+	*i = x / size;
+	*j = y / size;
 	return CO_OK;
 }
 
@@ -90,6 +87,7 @@ int cell2_push(T *q, int n, const real *x, const real *y)
 	int i, j, k;
 	int ny;
 
+	clist_reset(q->clist);
 	ny = q->ny;
 	for (k = 0; k < n; k++) {
 		map(q, x[k], y[k], &i, &j);
@@ -135,10 +133,11 @@ int main(void)
 			k++;
 	}
 	cell2_push(cell, n, x, y);
- 
+	cell2_push(cell, n, x, y);
+
 	for (i = 0; i < n; i++) {
 		cell2_parts(cell, x[i], y[i], &a);
-		for (j = 0; a[j] !=-1; j++) {
+		while ( (j = *a++) != -1) {
 			if (j == i) continue;
 			printf("%d %d\n", i, j);
 		}
