@@ -10,7 +10,7 @@
 #define T Cell2
 typedef struct Cell2 Cell2;
 int cell2_pp_ini(const real lo[], const real hi[], real size, T**);
-int cell2_push(T*, const real[], const real[], int);
+int cell2_push(T*, int, const real[], const real[]);
 int cell2_head(T*, real,  real, int**);
 int cell2_len(T*, real, real);
 int cell2_reset(T*);
@@ -59,6 +59,29 @@ int cell2_pp_ini(const real lo[2], const real hi[3], real size, T **pq)
 	return CO_OK;
 }
 
+static int map(T *q, real x, real y, int *i, int *j)
+{
+	enum {X, Y};
+	real *lo, *hi;
+	lo = q->lo;
+	hi = q->hi;
+	
+	x -= lo[X];
+	y -= lo[Y];
+
+	*i = x / (hi[X] - lo[X]);
+	*j = y / (hi[Y] - lo[Y]);
+	return CO_OK;
+}
+
+int cell2_push(T *q, int n, const real *x, const real *y)
+{
+	int i;
+	for (i = 0; i < n; i++) {
+	}
+	return CO_OK;
+}
+
 int cell2_fin(T *q)
 {
 	FREE(q);
@@ -72,6 +95,7 @@ int main(void)
 	int nx, ny, n;
 	real lo[2], hi[2], size;
 	real *x, *y, x0, y0;
+	int i, j, k;
 
 	lo[X] = lo[Y] = 0;
 	hi[X] = hi[Y] = 1;
