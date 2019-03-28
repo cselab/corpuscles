@@ -8,8 +8,9 @@
 #include <co/memory.h>
 #include <co/macro.h>
 #include <co/punto.h>
-
 #include <co/cell2.h>
+
+#include <alg/rng.h>
 
 #define BEGIN \
 	for (i = 0; i < n; i++) { \
@@ -26,19 +27,23 @@ static int n;
 static int nx = 20;
 static int ny = 20;
 real lo[2], hi[2], size;
+AlgRng *rng;
 
 static int
 ini(real *x, real *y)
 {
-	real x0, y0;
+	real x0, y0, dx,a, b;
 	int i, j, k;
 	k = 0;
+	dx = (hi[X] - lo[X])/nx;
+	a = -0.1*dx;
+	b = 0.1*dx;
 	for (i = 0; i < nx; i++)
 		for (j = 0; j < ny; j++) {
 			x0 = lo[X] + (hi[X] - lo[X])*(i + 0.5)/nx;
 			y0 = lo[Y] + (hi[Y] - lo[Y])*(j + 0.5)/ny;
-			x[k] = x0;
-			y[k] = y0;
+			x[k] = x0 + alg_rng_uniform(rng, a, b);
+			y[k] = y0 + alg_rng_uniform(rng, a, b);
 			k++;
 	}
 	return CO_OK;
@@ -75,6 +80,8 @@ main(void)
 	real xi, yi, xj, yj, xr, yr, rsq;
 	real dt;
 
+	alg_rng_ini(&rng);
+
 	lo[X] = -0.5; hi[X] = 0.5;
 	lo[Y] = -0.5; hi[Y] =0.5;
 	size = 0.06;
@@ -91,7 +98,7 @@ main(void)
 	cell2_pp_ini(lo, hi, size, &cell);
 
 	dt = 0.01; First = 1;
-	for (t = 0; t < 2; t ++) {
+	for (t = 0; t < 100; t ++) {
 		array_zero(n, fx);
 		array_zero(n, fy);
 		array_zero(n, rho);
@@ -122,4 +129,5 @@ main(void)
 	FREE(fx);
 	FREE(fy);
 	FREE(rho);
+	alg_rng_fin(rng);
 }
