@@ -11,21 +11,22 @@
 typedef struct Cell2 Cell2;
 int cell2_pp_ini(const real lo[], const real hi[], real size, T**);
 int cell2_push(T*, int, const real[], const real[]);
-int cell2_head(T*, real,  real, int**);
+int cell2_parts(T*, real, real, int**);
 int cell2_len(T*, real, real);
 int cell2_reset(T*);
 int cell2_fin(T*);
 
 struct T
 {
-	int size;
+	int size,  ny;
 	real lo[2], hi[3];
+	Clist *clist;
 };
 
 int cell2_pp_ini(const real lo[2], const real hi[3], real size, T **pq)
 {
 	enum {X, Y};
-	int x, y;
+	int nx, ny;
 	T *q;
 	real lx, ly;
 	Clist *clist;
@@ -40,13 +41,13 @@ int cell2_pp_ini(const real lo[2], const real hi[3], real size, T **pq)
 	if (ly < 0)
 		ERR(CO_INDEX, "ly < 0");
 
-	x= lx/size;
-	if (x * size < lx) x++;
+	nx= lx/size;
+	if (nx * size < lx) nx++;
 	
-	y = ly/size;
-	if (y * size < ly) y++;
+	ny = ly/size;
+	if (ny * size < ly) ny++;
 
-	clist_gen_pp(x, y, &clist);
+	clist_gen_pp(nx, ny, &clist);
 
 	q->size = size;
 	q->lo[X] = lo[X];
@@ -55,7 +56,17 @@ int cell2_pp_ini(const real lo[2], const real hi[3], real size, T **pq)
 	q->hi[X] = hi[X];
 	q->hi[Y] = hi[Y];
 
+	q->ny = ny;
+	q->clist = clist;
+
 	*pq = q;
+	return CO_OK;
+}
+
+int cell2_fin(T *q)
+{
+	clist_fin(q->clist);
+	FREE(q);
 	return CO_OK;
 }
 
@@ -76,16 +87,23 @@ static int map(T *q, real x, real y, int *i, int *j)
 
 int cell2_push(T *q, int n, const real *x, const real *y)
 {
-	int i;
-	for (i = 0; i < n; i++) {
+	int i, j, k;
+	int ny;
+
+	ny = q->ny;
+	for (k = 0; k < n; k++) {
+		map(q, x[k], y[k], &i, &j);
+		clist_push(q->clist, i*ny + j, k);
 	}
 	return CO_OK;
 }
 
-int cell2_fin(T *q)
+int cell2_parts(T *q, real x, real y, int **a)
 {
-	FREE(q);
-	return CO_OK;
+	int i, j, ny;
+	ny = q->ny;
+	map(q, x, y, &i, &j);
+	return clist_parts(q->clist, i*ny + j, a);
 }
 
 int main(void)
@@ -95,7 +113,7 @@ int main(void)
 	int nx, ny, n;
 	real lo[2], hi[2], size;
 	real *x, *y, x0, y0;
-	int i, j, k;
+	int i, j, k, *a;
 
 	lo[X] = lo[Y] = 0;
 	hi[X] = hi[Y] = 1;
@@ -105,6 +123,7 @@ int main(void)
 	n = nx * ny;
 	MALLOC(n, &x);
 	MALLOC(n, &y);
+	cell2_pp_ini(lo, hi, size, &cell);
 
 	k = 0;
 	for (i = 0; i < nx; i++)
@@ -115,7 +134,15 @@ int main(void)
 			y[k] = y0;
 			k++;
 	}
+	cell2_push(cell, n, x, y);
 
-	cell2_pp_ini(lo, hi, size, &cell);
+	for (i = 0; i < n; i++) {
+		cell2_parts(cell, x[i], y[i], &a);
+		for (j = 0; a[j] !=-1; j++) {
+			if (j == i) continue;
+			printf("%d %d\n", i, j);
+		}
+	}
+
 	cell2_fin(cell);
 }
