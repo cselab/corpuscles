@@ -19,7 +19,7 @@ all: $M
 
 test: $M; atest test/*
 install:
-run: $M; co.run ./main
+run: $M; @co.run ./main
 
 .PHONY: clean test install run
 clean:; rm -f $M $(M:=.o)
