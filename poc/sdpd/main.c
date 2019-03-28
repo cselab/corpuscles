@@ -13,9 +13,12 @@
 
 #define BEGIN \
 	for (i = 0; i < n; i++) { \
-		cell2_parts(cell, x[i], y[i], &a); \
+		xi = x[i]; yi = y[i]; \
+		cell2_parts(cell, xi, yi, &a); \
 		while ( (j = *a++) != -1) { \
-		if (j == i) continue;
+		if (j == i) continue; \
+		xj = x[j]; yj = y[j]; \
+		cell2_bring(cell, xi, yi, &xj, &yj);
 #define END } }
 
 enum {X, Y};
@@ -65,15 +68,16 @@ int
 main(void)
 {
 	int First;
-	static real *x, *y, *vx, *vy, *fx, *fy, *rho;
+	real *x, *y, *vx, *vy, *fx, *fy, *rho;
 	Cell2 *cell;
 
 	int i, j, k, t, *a;
+	real xi, yi, xj, yj, xr, yr, rsq;
 	real dt;
 
 	lo[X] = -0.5; hi[X] = 0.5;
 	lo[Y] = -0.5; hi[Y] =0.5;
-	size = 0.05;
+	size = 0.06;
 	
 	n = nx * ny;
 	MALLOC(n, &x);
@@ -87,7 +91,7 @@ main(void)
 	cell2_pp_ini(lo, hi, size, &cell);
 
 	dt = 0.01; First = 1;
-	for (t = 0; t < 100; t ++) {
+	for (t = 0; t < 2; t ++) {
 		array_zero(n, fx);
 		array_zero(n, fy);
 		array_zero(n, rho);
@@ -95,6 +99,10 @@ main(void)
 		cell2_wrap(cell, n, x, y);
 		cell2_push(cell, n, x, y);
 		BEGIN {
+			xr = xi - xj;
+			yr = yi  - yj;
+			rsq = xr*xr + yr*yr;
+			if (rsq > size*size) continue;
 			rho[i] += 1;
 		} END
 		euler_step(dt, n, vx, vy, x, y);
@@ -113,4 +121,5 @@ main(void)
 	FREE(vy);
 	FREE(fx);
 	FREE(fy);
+	FREE(rho);
 }

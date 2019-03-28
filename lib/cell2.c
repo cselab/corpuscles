@@ -98,8 +98,8 @@ int wrp_np(T *q, real *x, real *y)
 
 #define BRN(a, b, l) \
 	do { \
-		if (fabs(*a - b) < fabs(*a + l - b)) *a += l; \
-		else if (fabs(*a - b) < fabs(*a - l - b)) *a -= l; \
+		if (fabs(*a - b) > fabs(*a + l - b)) *a += l; \
+		else if (fabs(*a - b) > fabs(*a - l - b)) *a -= l; \
 	} while (0)
 static
 int brn_pp(T *q, real x, real y, real *u, real *v)
@@ -244,6 +244,7 @@ int
 cell2_bring(T *q, real x, real y, real *u, real *v)
 {
 	if (q->brn == NULL)
-		q->brn(q, x, y, u, v);
-	return CO_OK;
+		return CO_OK;
+
+	return q->brn(q, x, y, u, v);
 }
