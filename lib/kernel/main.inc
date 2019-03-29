@@ -53,7 +53,7 @@ kernel_ini(int type, int dim, T **pq)
 }
 
 int
-kernal_argv(char ***p,  T **pq)
+kernel_argv(char ***p,  T **pq)
 {
 	int status;
 	char stype[999];
@@ -82,9 +82,8 @@ kernal_argv(char ***p,  T **pq)
 	else
 		ERR(CO_INDEX, "unknown kernal type: '%s'", stype);
 
-	return kernal_ini(type, dim);
+	return kernel_ini(type, dim, pq);
 }
-
 
 
 int

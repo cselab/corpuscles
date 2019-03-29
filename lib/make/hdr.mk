@@ -1,6 +1,6 @@
 H = \
-arg.h\
 co/area.h\
+co/arg.h\
 co/argv.h\
 co/array.h\
 co/bending.h\
