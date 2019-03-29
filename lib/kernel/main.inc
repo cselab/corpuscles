@@ -21,7 +21,7 @@ struct T {
 };
 
 int
-tri_kernel_ini(int type, int dim, T **pq)
+kernel_ini(int type, int dim, T **pq)
 {
 	T *q;
 	MALLOC(1, &q);
@@ -88,18 +88,19 @@ kernal_argv(char ***p,  T **pq)
 
 
 int
-tri_kernel_fin(T *q)
+kernel_fin(T *q)
 { 
 	FREE(q); 
 }
 
 real
-tri_kernel_w(T *q, real c, real x)
+kernel_w(T *q, real c, real x)
 { 
 	return q->w(c, x); 
 }
+
 real 
-tri_kernel_dw(T *q, real c, real x)
+kernel_dw(T *q, real c, real x)
 { 
 	return q->dw(c, x); 
 }
