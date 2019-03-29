@@ -73,9 +73,9 @@ kernel_argv(char ***p,  T **pq)
 	if ((status = argv_str(p, stype)) != CO_OK)
 		return status;
 
-	if (util_eq(stype, "wendland2"))
+	if (util_eq(stype, "wendland6"))
 		type = KERNEL_WENDLAND6;
-	else if (util_eq(stype, "quinland"))
+	else if (util_eq(stype, "quintic"))
 		type = KERNEL_QUINTIC;
 	else if (util_eq(stype, "yang"))
 		type = KERNEL_YANG;
