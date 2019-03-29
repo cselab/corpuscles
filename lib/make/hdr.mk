@@ -1,4 +1,5 @@
 H = \
+arg.h\
 co/area.h\
 co/argv.h\
 co/array.h\
