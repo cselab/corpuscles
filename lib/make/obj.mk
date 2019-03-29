@@ -54,6 +54,7 @@ f/wlc.s.o\
 gts.s.o\
 H.s.o\
 invariants.s.o\
+kernel.s.o\
 laplace.s.o\
 matrix.s.o\
 normal.s.o\
@@ -123,6 +124,7 @@ f/wlc.d.o\
 gts.d.o\
 H.d.o\
 invariants.d.o\
+kernel.d.o\
 laplace.d.o\
 matrix.d.o\
 normal.d.o\
@@ -192,6 +194,7 @@ f/wlc.l.o\
 gts.l.o\
 H.l.o\
 invariants.l.o\
+kernel.l.o\
 laplace.l.o\
 matrix.l.o\
 normal.l.o\

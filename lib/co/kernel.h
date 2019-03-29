@@ -1,10 +1,13 @@
-typedef struct TriKernel TriKernel;
+#define T Kernel
+typedef struct T T;
 
 enum {KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG};
 enum {KERNEL_1D, KERNEL_2D, KERNEL_3D};
 
-void tri_kernel_ini(int type, int dim, TriKernel**);
-void tri_kernel_fin(TriKernel*);
+int kernel_ini(int type, int dim, T**);
+int kernel_fin(T*);
 
-double tri_kernel_w(TriKernel*, double h, double x);
-double tri_kernel_dw(TriKernel*, double h, double x);
+real kernel_w(T*, real h, real x);
+real kernel_dw(T*, real h, real x);
+
+#undef T

@@ -47,6 +47,7 @@ co/hash.h\
 co/he.h\
 co/H.h\
 co/invariants.h\
+co/kernel.h\
 co/laplace.h\
 co/list/a.h\
 co/list/c.h\
@@ -81,5 +82,9 @@ co/volume.h\
 co/vtk.h\
 co/x.h\
 co/y.h\
-inc/def.h
+inc/def.h\
+kernel/main.h\
+kernel/quintic.h\
+kernel/wendland6.h\
+kernel/yang.h
 

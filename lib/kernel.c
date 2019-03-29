@@ -1,12 +1,14 @@
-#include <math.h>
+#include <tgmath.h>
 #include <stdio.h>
 
-#include "tri/err.h"
-#include "tri/memory.h"
-#include "tri/kernel.h"
+#include "real.h"
+
+#include "co/err.h"
+#include "co/memory.h"
+#include "co/kernel.h"
 
 #define pi (3.141592653589793)
-#include "kernel/quintic.h"
-#include "kernel/wendland6.h"
-#include "kernel/yang.h"
-#include "kernel/main.h"
+#include "kernel/quintic.inc"
+#include "kernel/wendland6.inc"
+#include "kernel/yang.inc"
+#include "kernel/main.inc"
