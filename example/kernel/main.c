@@ -61,7 +61,8 @@ main(int argc, char **argv)
 make
 gnuplot -p <<'!'
 set style data lp
-p "<./main -n 100 3 quintic" u 1:2, "" u 1:3, "<./main 2 quintic" u 1:2, "" u 1:3 
+f = "<co.run ./main -n 100 -l -3 -h 4 -c 2 3 quintic"
+p f u 1:2, "" u 1:3
 !
 
 */
