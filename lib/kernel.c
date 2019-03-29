@@ -3,8 +3,10 @@
 
 #include "real.h"
 
+#include "co/argv.h"
 #include "co/err.h"
 #include "co/memory.h"
+#include "co/util.h"
 #include "co/kernel.h"
 
 #define pi (3.141592653589793)
