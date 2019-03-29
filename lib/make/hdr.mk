@@ -82,9 +82,5 @@ co/volume.h\
 co/vtk.h\
 co/x.h\
 co/y.h\
-inc/def.h\
-kernel/main.h\
-kernel/quintic.h\
-kernel/wendland6.h\
-kernel/yang.h
+inc/def.h
 
