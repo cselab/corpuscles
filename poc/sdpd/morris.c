@@ -42,7 +42,7 @@ static AlgRng *rng;
 static Kernel *kernel;
 
 static int
-ini(real *x, real *y)
+grid(real *x, real *y)
 {
 	real x0, y0, dx,a, b;
 	int i, j, k;
@@ -59,6 +59,24 @@ ini(real *x, real *y)
 			k++;
 	}
 	return CO_OK;
+}
+
+static int
+rnd(real *x, real *y)
+{
+	int i, k;
+	for (i = k = 0; i < n; i++) {
+		x[k] = alg_rng_uniform(rng, lo[X], hi[X]);
+		y[k] = alg_rng_uniform(rng, lo[Y], hi[Y]);
+		k++;
+	}
+	return CO_OK;
+}
+
+static int
+ini(real *x, real *y)
+{
+	return rnd(x, y);
 }
 
 static int
