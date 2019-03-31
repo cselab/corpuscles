@@ -14,43 +14,55 @@
 
 #include <alg/rng.h>
 
+#define pi (3.141592653589793)
+
 #define BEGIN \
 	for (i = 0; i < n; i++) { \
 		xi = x[i]; yi = y[i]; \
 		cell2_parts(cell, xi, yi, &a); \
 		while ( (j = *a++) != -1) { \
-		if (j == i) continue; \
-		xj = x[j]; yj = y[j]; \
-		cell2_bring(cell, xi, yi, &xj, &yj); \
-		xr = xi - xj; \
-		yr = yi  - yj; \
-		rsq = xr*xr + yr*yr; \
-		if (rsq > size*size) continue; \
-		r = sqrt(rsq);
+			if (i == j) continue; \
+			xj = x[j]; yj = y[j]; \
+			cell2_bring(cell, xi, yi, &xj, &yj); \
+			xr = xi - xj; \
+			yr = yi  - yj; \
+			rsq = xr*xr + yr*yr; \
+			if (rsq > size*size) continue; \
+			r = sqrt(rsq);
 #define END } }
 
-enum {X, Y};
+enum {
+	X, Y};
 static int n;
 #define nx  (20)
 #define ny  (20)
-static const real c = 10.0;
-static const real mu = 1.0;
-static const real size = 3.0/nx;
-static const real g = 0.0;
+static const real size = 5.0/nx;
 static const real mass = 1.0/(nx*ny);
 static real lo[2], hi[2];
 static AlgRng *rng;
 static Kernel *kernel;
 
 static int
-ini(real *x, real *y)
+rnd(real *x, real *y)
+{
+	int i, k;
+	for (i = k = 0; i < n; i++) {
+		x[k] = alg_rng_uniform(rng, lo[X], hi[X]);
+		y[k] = alg_rng_uniform(rng, lo[Y], hi[Y]);
+		k++;
+	}
+	return CO_OK;
+}
+
+static int
+grid(real *x, real *y)
 {
 	real x0, y0, dx,a, b;
 	int i, j, k;
 	k = 0;
 	dx = (hi[X] - lo[X])/nx;
-	a = -0.0*dx;
-	b =   0.0*dx;
+	a = -0.1*dx;
+	b =   0.1*dx;
 	for (i = 0; i < nx; i++)
 		for (j = 0; j < ny; j++) {
 			x0 = lo[X] + (hi[X] - lo[X])*(i + 0.5)/nx;
@@ -58,109 +70,92 @@ ini(real *x, real *y)
 			x[k] = x0 + alg_rng_uniform(rng, a, b);
 			y[k] = y0 + alg_rng_uniform(rng, a, b);
 			k++;
-	}
+		}
 	return CO_OK;
 }
 
 static int
-euler_step(real dt, int n, const real *vx, const real *vy, real *x, real *y)
+ini(real *x, real *y)
 {
-	int i;
+	return rnd(x, y);
+}
+
+static int
+integ(void)
+{
+	int n, i;
+	real l, h, dx;
+	real x, y, s;
+	n = 100;
+	l = 0;
+	h = 2*size;
+	dx = (h - l)/(n - 1);
 	for (i = 0; i < n; i++) {
-		x[i] += dt*vx[i];
-		y[i] += dt*vy[i];
+		x = l + dx*i;
+		y = kernel_w(kernel, size, x);
+		s += x*y;
 	}
-	return CO_OK;
-}
-
-static int
-body_force(int n, const real *x, __UNUSED const real *y, real *fx, __UNUSED real *fy)
-{
-	int i;
-	for (i = 0; i < n; i++)
-		fx[i] += y[i] > 0 ? g : -g;
-	return CO_OK;
-}
-
-static real
-eq_state(real rho)
-{
-	return c*c*rho;
+	s *= 2*pi*dx;
+	MSG("int: %g", s);
 }
 
 int
 main(void)
 {
-	int First;
-	real *x, *y, *vx, *vy, *fx, *fy, *rho, *p;
+	real *x, *y, *rho, *color;
 	Cell2 *cell;
 
-	int i, j, k, t, *a;
-	real xi, yi, xj, yj, xr, yr, rsq, r, w, dw;
-	real dt, coeff;
+	int i, j, *a;
+	real xi, yi, xj, yj, xr, yr, rsq, r, w;
 
 	alg_rng_ini(&rng);
-	kernel_ini(KERNEL_2D, KERNEL_QUINTIC, &kernel);
+	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
 
-	lo[X] = -0.5; hi[X] = 0.5;
-	lo[Y] = -0.5; hi[Y] =0.5;
+	lo[X] = -0.5;
+	hi[X] = 0.5;
+	lo[Y] = -0.5;
+	hi[Y] =0.5;
 	n = nx * ny;
-		
+
 	MALLOC(n, &x);
 	MALLOC(n, &y);
-	CALLOC(n, &vx);
-	CALLOC(n, &vy);
-	MALLOC(n, &fx);
-	MALLOC(n, &fy);
 	MALLOC(n, &rho);
-	MALLOC(n, &p);
+	CALLOC(n, &color);
 	ini(x, y);
 	cell2_pp_ini(lo, hi, size, &cell);
+	array_zero(n, rho);
+	cell2_push(cell, n, x, y);
 
-	dt = 0.001; First = 1;
-	for (t = 0; t < 1; t ++) {
-		array_zero(n, fx);
-		array_zero(n, fy);
-		array_zero(n, rho);
-		body_force(n, x, y, fx, fy);
-		cell2_wrap(cell, n, x, y);
-		cell2_push(cell, n, x, y);
-		BEGIN {
-			w = kernel_w(kernel, size, r);
-			rho[i] += mass*w;
-		} END
-		
-		for (i = 0; i < n; i++)
-			p[i] = eq_state(rho[i]);
-
-		BEGIN {
-			dw = kernel_dw(kernel, size, r);
-			coeff = p[i]/(rho[i]*rho[i]) + p[j]/(rho[j]*rho[j]);
-			coeff *= mass*dw;
-			coeff /= r;
-			fx[i]  -= coeff * (xi - xj);
-			fy[i]  -= coeff * (yi - yj);
-		} END
-
-		euler_step(dt, n, vx, vy, x, y);
-		euler_step(dt, n, fx, fy, vx, vy);
-		if (t % 10 == 0) {
-			if (First) First = 0; else printf("\n");		
-			const real *q[] = {x, y, rho, NULL};
-			punto_fwrite(n, q, stdout);
-			MSG("rho[0] = %g", rho[0]);
-		}
+	i = 4;
+	xi = x[i];
+	yi = y[i];
+	cell2_parts(cell, xi, yi, &a);
+	while ( (j = *a++) != -1) {
+		if (i == j) continue;
+		xj = x[j];
+		yj = y[j];
+		cell2_bring(cell, xi, yi, &xj, &yj);
+		xr = xi - xj;
+		yr = yi  - yj;
+		rsq = xr*xr + yr*yr;
+		if (rsq > size*size) continue;
+		r = sqrt(rsq);
+		w = kernel_w(kernel, size, r);
+		printf("%g %g\n", xr, yr);
+		rho[i] += mass*w;
 	}
+	MSG("rho[%d]: %g", i, rho[i]);
+	MSG("size: %g", size);
+
+	//const real *q[] = {x, y, color, rho, NULL};
+	//punto_fwrite(n, q, stdout);
+
+	integ();
 
 	cell2_fin(cell);
 	FREE(x);
 	FREE(y);
-	FREE(vx);
-	FREE(vy);
-	FREE(fx);
-	FREE(fy);
 	FREE(rho);
-	FREE(p);
 	kernel_fin(kernel);
 	alg_rng_fin(rng);
 }

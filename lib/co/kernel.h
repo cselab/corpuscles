@@ -4,7 +4,7 @@ typedef struct T T;
 enum {KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG};
 enum {KERNEL_1D, KERNEL_2D, KERNEL_3D};
 
-int kernel_ini(int type, int dim, T**);
+int kernel_ini(int dim, int type, T**);
 int kernel_argv(char***, T**);
 int kernel_fin(T*);
 

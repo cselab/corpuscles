@@ -21,9 +21,20 @@ struct T {
 };
 
 int
-kernel_ini(int type, int dim, T **pq)
+kernel_ini(int dim, int type, T **pq)
 {
 	T *q;
+	switch (dim) {
+		case(KERNEL_1D): 
+		break;
+		case(KERNEL_2D): 
+		break;
+		case(KERNEL_3D): 
+		break;
+	default:
+		ERR(CO_NUM, "unknown dimenshon, possible values are KERNEL_1D, KERNEL_2D, KERNEL_3D");
+	}
+
 	MALLOC(1, &q);
 	switch (type) {
 	case (KERNEL_QUINTIC): 
@@ -36,16 +47,6 @@ kernel_ini(int type, int dim, T **pq)
 		ERR(CO_NUM, "unknown type, possible values are KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG");
 	}
 
-	switch (dim) {
-		case(KERNEL_1D): 
-		break;
-		case(KERNEL_2D): 
-		break;
-		case(KERNEL_3D): 
-		break;
-	default:
-		ERR(CO_NUM, "unknown dimenshon, possible values are KERNEL_1D, KERNEL_2D, KERNEL_3D");
-	}
 	q->dim = dim;
 	q->w = w[type][dim]; 
 	q->dw = dw[type][dim];
@@ -82,7 +83,7 @@ kernel_argv(char ***p,  T **pq)
 	else
 		ERR(CO_INDEX, "unknown kernal type: '%s'", stype);
 
-	return kernel_ini(type, dim, pq);
+	return kernel_ini(dim, type, pq);
 }
 
 
