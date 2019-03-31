@@ -118,7 +118,7 @@ main(void)
 	cell2_pp_ini(lo, hi, size, &cell);
 
 	dt = 0.001; First = 1;
-	for (t = 0; t < 100; t ++) {
+	for (t = 0; t < 1; t ++) {
 		array_zero(n, fx);
 		array_zero(n, fy);
 		array_zero(n, rho);
@@ -130,7 +130,6 @@ main(void)
 			rho[i] += mass*w;
 		} END
 		
-
 		for (i = 0; i < n; i++)
 			p[i] = eq_state(rho[i]);
 
