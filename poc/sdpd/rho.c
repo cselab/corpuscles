@@ -21,7 +21,6 @@
 		xi = x[i]; yi = y[i]; \
 		cell2_parts(cell, xi, yi, &a); \
 		while ( (j = *a++) != -1) { \
-			if (i == j) continue; \
 			xj = x[j]; yj = y[j]; \
 			cell2_bring(cell, xi, yi, &xj, &yj); \
 			xr = xi - xj; \
@@ -31,8 +30,10 @@
 			r = sqrt(rsq);
 #define END } }
 
-enum {
-	X, Y};
+enum
+{
+	X, Y
+};
 static int n;
 #define nx  (20)
 #define ny  (20)
@@ -77,26 +78,7 @@ grid(real *x, real *y)
 static int
 ini(real *x, real *y)
 {
-	return rnd(x, y);
-}
-
-static int
-integ(void)
-{
-	int n, i;
-	real l, h, dx;
-	real x, y, s;
-	n = 100;
-	l = 0;
-	h = 2*size;
-	dx = (h - l)/(n - 1);
-	for (i = 0; i < n; i++) {
-		x = l + dx*i;
-		y = kernel_w(kernel, size, x);
-		s += x*y;
-	}
-	s *= 2*pi*dx;
-	MSG("int: %g", s);
+	return grid(x, y);
 }
 
 int
@@ -105,7 +87,7 @@ main(void)
 	real *x, *y, *rho, *color;
 	Cell2 *cell;
 
-	int i, j, *a;
+	int i0, i, j, *a;
 	real xi, yi, xj, yj, xr, yr, rsq, r, w;
 
 	alg_rng_ini(&rng);
@@ -125,32 +107,20 @@ main(void)
 	cell2_pp_ini(lo, hi, size, &cell);
 	array_zero(n, rho);
 	cell2_push(cell, n, x, y);
-
-	i = 4;
-	xi = x[i];
-	yi = y[i];
 	cell2_parts(cell, xi, yi, &a);
-	while ( (j = *a++) != -1) {
-		if (i == j) continue;
-		xj = x[j];
-		yj = y[j];
-		cell2_bring(cell, xi, yi, &xj, &yj);
-		xr = xi - xj;
-		yr = yi  - yj;
-		rsq = xr*xr + yr*yr;
-		if (rsq > size*size) continue;
-		r = sqrt(rsq);
+
+	i0 = 4;
+	BEGIN {
 		w = kernel_w(kernel, size, r);
-		printf("%g %g\n", xr, yr);
 		rho[i] += mass*w;
-	}
-	MSG("rho[%d]: %g", i, rho[i]);
+		if (i == i0) color[j] = 1;
+	} END
+	color[i0] = 2;
+
+	MSG("rho[%d]: %g", i0, rho[i0]);
 	MSG("size: %g", size);
-
-	//const real *q[] = {x, y, color, rho, NULL};
-	//punto_fwrite(n, q, stdout);
-
-	integ();
+	const real *q[] = {x, y, color, rho, NULL};
+	punto_fwrite(n, q, stdout);
 
 	cell2_fin(cell);
 	FREE(x);
