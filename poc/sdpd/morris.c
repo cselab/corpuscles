@@ -19,7 +19,6 @@
 		xi = x[i]; yi = y[i]; \
 		cell2_parts(cell, xi, yi, &a); \
 		while ( (j = *a++) != -1) { \
-		if (j == i) continue; \
 		xj = x[j]; yj = y[j]; \
 		cell2_bring(cell, xi, yi, &xj, &yj); \
 		xr = xi - xj; \
@@ -35,7 +34,7 @@ static int n;
 #define ny  (20)
 static const real c = 10.0;
 static const real mu = 1.0;
-static const real size = 3.0/nx;
+static const real size = 2.0/nx;
 static const real g = 0.0;
 static const real mass = 1.0/(nx*ny);
 static real lo[2], hi[2];
@@ -49,8 +48,8 @@ ini(real *x, real *y)
 	int i, j, k;
 	k = 0;
 	dx = (hi[X] - lo[X])/nx;
-	a = -0.0*dx;
-	b =   0.0*dx;
+	a = -0.2*dx;
+	b =   0.2*dx;
 	for (i = 0; i < nx; i++)
 		for (j = 0; j < ny; j++) {
 			x0 = lo[X] + (hi[X] - lo[X])*(i + 0.5)/nx;
@@ -100,7 +99,7 @@ main(void)
 	real dt, coeff;
 
 	alg_rng_ini(&rng);
-	kernel_ini(KERNEL_2D, KERNEL_QUINTIC, &kernel);
+	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
 
 	lo[X] = -0.5; hi[X] = 0.5;
 	lo[Y] = -0.5; hi[Y] =0.5;
@@ -117,8 +116,8 @@ main(void)
 	ini(x, y);
 	cell2_pp_ini(lo, hi, size, &cell);
 
-	dt = 0.001; First = 1;
-	for (t = 0; t < 1; t ++) {
+	dt = 0.0002; First = 1;
+	for (t = 0; t < 1000; t ++) {
 		array_zero(n, fx);
 		array_zero(n, fy);
 		array_zero(n, rho);
@@ -134,12 +133,21 @@ main(void)
 			p[i] = eq_state(rho[i]);
 
 		BEGIN {
+			if (j == i) continue;
 			dw = kernel_dw(kernel, size, r);
 			coeff = p[i]/(rho[i]*rho[i]) + p[j]/(rho[j]*rho[j]);
-			coeff *= mass*dw;
-			coeff /= r;
+			coeff *= mass*dw/r;
 			fx[i]  -= coeff * (xi - xj);
 			fy[i]  -= coeff * (yi - yj);
+		} END
+
+		BEGIN {
+			if (j == i) continue;
+			dw = kernel_dw(kernel, size, r);
+			coeff = 1/(rho[i]*rho[j]);
+			coeff *= 2*mass*mu*dw/r;
+			fx[i]  += coeff * (vx[i] - vx[j]);
+			fy[i]  += coeff * (vy[i] - vy[j]);
 		} END
 
 		euler_step(dt, n, vx, vy, x, y);
