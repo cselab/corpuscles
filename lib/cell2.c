@@ -222,7 +222,12 @@ cell2_parts(T *q, real x, real y, int **a)
 	int i, j, ny;
 	ny = q->ny;
 	map(q, x, y, &i, &j);
-	return clist_parts(q->clist, i*ny + j, a);
+	if (clist_parts(q->clist, i*ny + j, a) != CO_OK) {
+		MSG("ijk: %d %d", i, j);
+		MSG("ny: %d", ny);		
+		ERR(CO_INDEX, "clist_parts failed" FMT " " FMT, x, y);
+	}
+	return CO_OK;
 }
 
 int

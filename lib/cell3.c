@@ -168,7 +168,12 @@ cell3_parts(T *q, real x, real y, real z, int **a)
 	ny = q->ny;
 	nz = q->nz;
 	map(q, x, y, z, &i, &j, &k);
-	return clist_parts(q->clist, IDX, a);
+	if ( clist_parts(q->clist, IDX, a) != CO_OK) {
+		MSG("ijk: %d %d %d", i, j, k);
+		MSG("nyz: %d %d", ny, nz);
+		ERR(CO_INDEX, "clist_parts failed" FMT " " FMT " " FMT, x, y, z);
+	}
+	return CO_OK;
 }
 
 int
