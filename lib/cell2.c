@@ -10,6 +10,7 @@
 #include "co/cell2.h"
 
 #define T Cell2
+#define FMT CO_REAL_OUT
 
 enum {
 	X, Y
@@ -206,7 +207,11 @@ cell2_push(T *q, int n, const real *x, const real *y)
 	ny = q->ny;
 	for (k = 0; k < n; k++) {
 		map(q, x[k], y[k], &i, &j);
-		clist_push(q->clist, i*ny + j, k);
+		if (clist_push(q->clist, i*ny + j, k) != CO_OK) {
+			MSG("ijk: %d %d", i, j);
+			MSG("ny: %d", ny);
+			ERR(CO_INDEX, "fail to push particle: " FMT " " FMT, x[k], y[k]);			
+		}
 	}
 	return CO_OK;
 }

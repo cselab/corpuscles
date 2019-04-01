@@ -208,7 +208,7 @@ main(void)
 	n = nx*ny*nz;
 	V = (hi[X] - lo[X])*(hi[Y] - lo[Y])*(hi[Z] - lo[Z]);
 	mass = V/n;
-	size = 2 * (hi[X] - lo[X]) / nx;
+	size = 2.5 * (hi[X] - lo[X]) / nx;
 
 	MALLOC(n, &x);
 	MALLOC(n, &y);
