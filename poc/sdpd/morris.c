@@ -36,7 +36,7 @@ static int n;
 static const real c = 10.0;
 static const real mu = 1.0;
 static const real size = 2.0/nx;
-static const real g[] = {5, 5};
+static const real g[] = {5, 0};
 static const real mass = 1.0/(nx*ny);
 static const real R = 0.2;
 static const real dt = 0.00025;
@@ -130,7 +130,7 @@ eq_state(real rho)
 	return c*c*rho;
 }
 
-static int
+int
 force(void)
 {
 	int i, j, k, t, *a;
