@@ -81,6 +81,27 @@ int wrp_ppp(T *q, real *x, real *y, real *z)
 	return CO_OK;
 }
 
+int wrp_ppn(T *q, real *x, real *y, real *z)
+{
+	real *lo, *hi;
+
+	lo = q->lo;
+	hi = q->hi;
+	WRP(x, X);
+	WRP(y, Y);
+	return CO_OK;
+}
+
+int wrp_pnn(T *q, real *x, real *y, real *z)
+{
+	real *lo, *hi;
+
+	lo = q->lo;
+	hi = q->hi;
+	WRP(x, X);
+	return CO_OK;
+}
+
 
 #define BRN(a, b, l) \
 	do { \
@@ -101,6 +122,27 @@ int brn_ppp(T *q, real x, real y, real z, real *u, real *v, real *w)
 	return CO_OK;
 }
 
+static
+int brn_ppn(T *q, real x, real y, real z, real *u, real *v, real *w)
+{
+	real lx, ly;
+
+	lx = q->hi[X] - q->lo[X];
+	ly = q->hi[Y] - q->lo[Y];
+	BRN(u, x, lx);
+	BRN(v, y, ly);
+	return CO_OK;
+}
+
+static
+int brn_pnn(T *q, real x, real y, real z, real *u, real *v, real *w)
+{
+	real lx;
+	lx = q->hi[X] - q->lo[X];
+	BRN(u, x, lx);
+	return CO_OK;
+}
+
 int
 cell3_ppp_ini(const real lo[3], const real hi[3], real size, T **pq)
 {
@@ -108,6 +150,26 @@ cell3_ppp_ini(const real lo[3], const real hi[3], real size, T **pq)
 	status = ini(lo, hi, size, clist_gen_ppp, pq);
 	(*pq)->wrp = wrp_ppp;
 	(*pq)->brn = brn_ppp;
+	return status;
+}
+
+int
+cell3_ppn_ini(const real lo[3], const real hi[3], real size, T **pq)
+{
+	int status;
+	status = ini(lo, hi, size, clist_gen_ppn, pq);
+	(*pq)->wrp = wrp_ppn;
+	(*pq)->brn = brn_ppn;
+	return status;
+}
+
+int
+cell3_pnn_ini(const real lo[3], const real hi[3], real size, T **pq)
+{
+	int status;
+	status = ini(lo, hi, size, clist_gen_pnn, pq);
+	(*pq)->wrp = wrp_pnn;
+	(*pq)->brn = brn_pnn;
 	return status;
 }
 
