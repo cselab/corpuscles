@@ -12,15 +12,15 @@
 #define T Cell3
 
 enum {
-	X, Y
+	X, Y, Z
 };
 struct T
 {
-	int ny;
+	int ny, nz;
 	real lo[3], hi[3], size;
 	Clist *clist;
-	int (*wrp)(T*q, real*, real*);
-	int (*brn)(T* q, real, real, real*, real*);
+	int (*wrp)(T*q, real*, real*, real*);
+	int (*brn)(T* q, real, real, real, real*, real*, real*);
 };
 
 static int
@@ -59,7 +59,7 @@ ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, Clist**)
 }
 
 static
-int wrp_pp(T *q, real *x, real *y)
+int wrp_ppp(T *q, real *x, real *y, real *z)
 {
 	real *lo, *hi;
 
@@ -69,32 +69,11 @@ int wrp_pp(T *q, real *x, real *y)
 	if (*x < lo[X]) *x += (hi[X] - lo[X]);
 	if (*y > hi[Y]) *y -= (hi[Y] - lo[Y]);
 	if (*y < lo[Y]) *y += (hi[Y] - lo[Y]);
+	if (*z > hi[Z]) *z -= (hi[Z] - lo[Z]);
+	if (*z < lo[Z]) *z += (hi[Z] - lo[Z]);
 	return CO_OK;
 }
 
-static
-int wrp_pn(T *q, real *x, real *y)
-{
-	real *lo, *hi;
-
-	lo = q->lo;
-	hi = q->hi;
-	if (*x > hi[X]) *x -= (hi[X] - lo[X]);
-	if (*x < lo[X]) *x += (hi[X] - lo[X]);
-	return CO_OK;
-}
-
-static
-int wrp_np(T *q, real *x, real *y)
-{
-	real *lo, *hi;
-
-	lo = q->lo;
-	hi = q->hi;
-	if (*y > hi[Y]) *y -= (hi[Y] - lo[Y]);
-	if (*y < lo[Y]) *y += (hi[Y] - lo[Y]);
-	return CO_OK;
-}
 
 #define BRN(a, b, l) \
 	do { \
@@ -102,71 +81,25 @@ int wrp_np(T *q, real *x, real *y)
 		else if (fabs(*a - b) > fabs(*a - l - b)) *a -= l; \
 	} while (0)
 static
-int brn_pp(T *q, real x, real y, real *u, real *v)
+int brn_ppp(T *q, real x, real y, real z, real *u, real *v, real *w)
 {
-	real lx, ly;
+	real lx, ly, lz;
 	lx = q->hi[X] - q->lo[X];
 	ly = q->hi[Y] - q->lo[Y];
+	lz = q->hi[Z] - q->lo[Z];
 	BRN(u, x, lx);
 	BRN(v, y, ly);
-	return CO_OK;
-}
-
-static
-int brn_pn(T *q, real x, real y, real *u, real *v)
-{
-	real lx;
-	lx = q->hi[X] - q->lo[X];
-	BRN(u, x, lx);
-	return CO_OK;
-}
-
-static
-int brn_np(T *q, real x, real y, real *u, real *v)
-{
-	real ly;
-	ly = q->hi[Y] - q->lo[Y];
-	BRN(v, y, ly);
+	BRN(w, z, lz);
 	return CO_OK;
 }
 
 int
-cell3_pp_ini(const real lo[3], const real hi[3], real size, T **pq)
+cell3_ppp_ini(const real lo[3], const real hi[3], real size, T **pq)
 {
 	int status;
 	status = ini(lo, hi, size, clist_gen_pp, pq);
-	(*pq)->wrp = wrp_pp;
-	(*pq)->brn = brn_pp;
-	return status;
-}
-
-int
-cell3_np_ini(const real lo[3], const real hi[3], real size, T **pq)
-{
-	int status;
-	status = ini(lo, hi, size, clist_gen_np, pq);
-	(*pq)->wrp = wrp_np;
-	(*pq)->brn = brn_np;
-	return status;
-}
-
-int
-cell3_pn_ini(const real lo[3], const real hi[3], real size, T **pq)
-{
-	int status;
-	status = ini(lo, hi, size, clist_gen_pn, pq);
-	(*pq)->wrp = wrp_pn;
-	(*pq)->brn = brn_pn;
-	return status;
-}
-
-int
-cell3_nn_ini(const real lo[3], const real hi[3], real size, T **pq)
-{
-	int status;
-	status = ini(lo, hi, size, clist_gen_nn, pq);
-	(*pq)->wrp = NULL;
-	(*pq)->brn = NULL;
+	(*pq)->wrp = wrp_ppp;
+	(*pq)->brn = brn_ppp;
 	return status;
 }
 
@@ -236,7 +169,7 @@ cell3_wrap(T *q, int n, real *x, real *y, real *z)
 	if (q->wrp == NULL)
 		return CO_OK;
 	for (i = 0; i < n; i++)
-		q->wrp(q, &x[i], &y[i]);
+		q->wrp(q, &x[i], &y[i], &z[i]);
 	return CO_OK;
 }
 
@@ -246,5 +179,5 @@ cell3_bring(T *q, real x, real y, real z, real *u, real *v, real *w)
 	if (q->brn == NULL)
 		return CO_OK;
 
-	return q->brn(q, x, y, u, v);
+	return q->brn(q, x, y, z, u, v, w);
 }
