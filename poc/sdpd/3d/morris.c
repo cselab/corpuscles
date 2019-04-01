@@ -15,6 +15,7 @@
 #include <alg/rng.h>
 
 #define pi (3.141592653589793)
+#define FMT CO_REAL_OUT
 
 #define BEGIN \
 	for (i = 0; i < n; i++) { \
@@ -36,9 +37,9 @@ enum
 	X, Y, Z
 };
 static int n;
-#define nx  (20)
-#define ny  (20)
-#define nz  (20)
+#define nx  (10)
+#define ny  (10)
+#define nz  (10)
 static const real c = 10.0;
 static const real mu = 1.0;
 static const real size = 2.0/nx;
@@ -150,7 +151,7 @@ force(void)
 	int i, j, *a;
 	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r, w, dw, coeff;
 
-	array_zero3(n, fx, fy, z);
+	array_zero3(n, fx, fy, fz);
 	array_zero(n, rho);
 	body_force(n, x, y, z, fx, fy, fz);
 	cell3_wrap(cell, n, x, y, z);
@@ -203,7 +204,7 @@ main(void)
 	int t;
 
 	alg_rng_ini(&rng);
-	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
+	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
 
 	n = nx*ny*nz;
 
@@ -220,16 +221,17 @@ main(void)
 	MALLOC(n, &p);
 	ini(x, y, z);
 	cell3_ppp_ini(lo, hi, size, &cell);
-	for (t = 0; t < 1000; t ++) {
+	for (t = 0; t < 20000; t++) {
+		MSG("xyz[0]: " FMT " " FMT " " FMT, x[0], y[0], z[0]);
 		force();
 		euler_step(dt,  n, vx, vy, vz, x, y, z);
-		euler_step(dt,  n, fx, fy, fz, vx, vy, vz);
+		euler_step(dt,  n, fx, fy, fz, vx, vy, vz);		
 		dump(t);
 	}
 
 	array_zero(n, vx);
 	array_zero(n, vy);
-	for (/**/; t < 20000; t ++) {
+	for (/**/; t < 20000; t++) {
 		force();
 		euler_step_fun(dt, circle, n, vx, vy, vz, x, y, z);
 		euler_step_fun(dt, circle, n, fx, fy, fz, vx, vy, vz);
