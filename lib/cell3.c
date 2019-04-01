@@ -119,7 +119,7 @@ cell3_fin(T *q)
 }
 
 static int
-map(T *q, real x, real y, int *i, int *j)
+map(T *q, real x, real y, real z, int *i, int *j, int *k)
 {
 	real *lo, *hi, size;
 
@@ -130,23 +130,26 @@ map(T *q, real x, real y, int *i, int *j)
 
 	x -= lo[X];
 	y -= lo[Y];
+	z -= lo[Z];
 
 	*i = x / size;
 	*j = y / size;
+	*k = z/ size;
 	return CO_OK;
 }
 
 int
 cell3_push(T *q, int n, const real *x, const real *y, const real *z)
 {
-	int i, j, k;
-	int ny;
+	int i, j, k, m;
+	int ny, nz;
 
 	clist_reset(q->clist);
 	ny = q->ny;
-	for (k = 0; k < n; k++) {
-		map(q, x[k], y[k], &i, &j);
-		clist_push(q->clist, i*ny + j, k);
+	nz = q->nz;
+	for (m = 0; m < n; m++) {
+		map(q, x[m], y[m], z[m], &i, &j, &k);
+		clist_push(q->clist, i*ny*nz + j*nz + k, m);
 	}
 	return CO_OK;
 }
@@ -154,19 +157,21 @@ cell3_push(T *q, int n, const real *x, const real *y, const real *z)
 int
 cell3_parts(T *q, real x, real y, real z, int **a)
 {
-	int i, j, ny;
+	int i, j, k, ny, nz;
 	ny = q->ny;
-	map(q, x, y, &i, &j);
-	return clist_parts(q->clist, i*ny + j, a);
+	nz = q->nz;
+	map(q, x, y, z, &i, &j, &k);
+	return clist_parts(q->clist, i*ny*nz + j*nz + k, a);
 }
 
 int
 cell3_len(T *q, real x, real y, real z)
 {
-	int i, j, ny;
+	int i, j, k, ny, nz;
 	ny = q->ny;
-	map(q, x, y, &i, &j);
-	return clist_len(q->clist, i*ny + j);
+	nz = q->nz;
+	map(q, x, y, z, &i, &j, &k);
+	return clist_len(q->clist, i*ny*nz + j*nz + k);
 }
 
 int
@@ -185,6 +190,5 @@ cell3_bring(T *q, real x, real y, real z, real *u, real *v, real *w)
 {
 	if (q->brn == NULL)
 		return CO_OK;
-
 	return q->brn(q, x, y, z, u, v, w);
 }
