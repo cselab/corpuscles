@@ -23,28 +23,25 @@ struct T
 	int (*brn)(T* q, real, real, real, real*, real*, real*);
 };
 
+#define SIDE(n, D) \
+	do { \
+		l = hi[D] - lo[D]; \
+		n = l / size; \
+		if (n * size < l) l++; \
+	} while (0)
 static int
 ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, int, Clist**), T **pq)
 {
 	T *q;
 	int nx, ny, nz;
-	real lx, ly, lz;
+	real l;
 	Clist *clist;
 
 	MALLOC(1, &q);
 
-	lx = hi[X] - lo[X];
-	ly = hi[Y] - lo[Y];
-	lz = hi[Z] - lo[Z];
-
-	nx= lx/size;
-	if (nx * size < lx) nx++;
-
-	ny = ly/size;
-	if (ny * size < ly) ny++;
-
-	nz = lz/size;
-	if (nz * size < lz) nz++;
+	SIDE(nx, X);
+	SIDE(ny, Y);
+	SIDE(nz, Z);
 
 	gen(nx, ny, nz, &clist);
 
@@ -65,6 +62,11 @@ ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, int, Cli
 	return CO_OK;
 }
 
+#define WRP(d, D) \
+	do { \
+		if (*d > hi[D]) *d -= (hi[D] - lo[D]); \
+		if (*d < lo[D]) *d += (hi[D] - lo[D]); \
+	} while (0)
 static
 int wrp_ppp(T *q, real *x, real *y, real *z)
 {
@@ -72,12 +74,11 @@ int wrp_ppp(T *q, real *x, real *y, real *z)
 
 	lo = q->lo;
 	hi = q->hi;
-	if (*x > hi[X]) *x -= (hi[X] - lo[X]);
-	if (*x < lo[X]) *x += (hi[X] - lo[X]);
-	if (*y > hi[Y]) *y -= (hi[Y] - lo[Y]);
-	if (*y < lo[Y]) *y += (hi[Y] - lo[Y]);
-	if (*z > hi[Z]) *z -= (hi[Z] - lo[Z]);
-	if (*z < lo[Z]) *z += (hi[Z] - lo[Z]);
+
+	WRP(x, X);
+	WRP(y, Y);
+	WRP(z, Z);
+
 	return CO_OK;
 }
 
@@ -138,6 +139,7 @@ map(T *q, real x, real y, real z, int *i, int *j, int *k)
 	return CO_OK;
 }
 
+#define IDX  i*ny*nz + j*nz + k
 int
 cell3_push(T *q, int n, const real *x, const real *y, const real *z)
 {
@@ -149,7 +151,7 @@ cell3_push(T *q, int n, const real *x, const real *y, const real *z)
 	nz = q->nz;
 	for (m = 0; m < n; m++) {
 		map(q, x[m], y[m], z[m], &i, &j, &k);
-		clist_push(q->clist, i*ny*nz + j*nz + k, m);
+		clist_push(q->clist, IDX, m);
 	}
 	return CO_OK;
 }
@@ -161,7 +163,7 @@ cell3_parts(T *q, real x, real y, real z, int **a)
 	ny = q->ny;
 	nz = q->nz;
 	map(q, x, y, z, &i, &j, &k);
-	return clist_parts(q->clist, i*ny*nz + j*nz + k, a);
+	return clist_parts(q->clist, IDX, a);
 }
 
 int
@@ -171,7 +173,7 @@ cell3_len(T *q, real x, real y, real z)
 	ny = q->ny;
 	nz = q->nz;
 	map(q, x, y, z, &i, &j, &k);
-	return clist_len(q->clist, i*ny*nz + j*nz + k);
+	return clist_len(q->clist, IDX);
 }
 
 int
