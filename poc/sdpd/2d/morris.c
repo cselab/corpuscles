@@ -236,3 +236,12 @@ main(void)
 	kernel_fin(kernel);
 	alg_rng_fin(rng);
 }
+
+
+/*
+
+make
+./morris > q
+punto -s 4 -D 2 -c -G -0.1:0.1  -z 1:2:3  q
+
+*/
