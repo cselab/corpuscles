@@ -110,7 +110,6 @@ main(void)
 	cell3_ppp_ini(lo, hi, size, &cell);
 	array_zero(n, rho);
 	cell3_push(cell, n, x, y, z);
-	cell3_parts(cell, xi, yi, xi, &a);
 
 	i0 = 6000;
 	BEGIN {

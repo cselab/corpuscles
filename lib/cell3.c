@@ -10,6 +10,7 @@
 #include "co/cell3.h"
 
 #define T Cell3
+#define FMT CO_REAL_OUT
 
 enum {
 	X, Y, Z
@@ -27,7 +28,7 @@ struct T
 	do { \
 		l = hi[D] - lo[D]; \
 		n = l / size; \
-		if (n * size < l) l++; \
+		if (n * size < l) n++; \
 	} while (0)
 static int
 ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, int, Clist**), T **pq)
@@ -151,7 +152,11 @@ cell3_push(T *q, int n, const real *x, const real *y, const real *z)
 	nz = q->nz;
 	for (m = 0; m < n; m++) {
 		map(q, x[m], y[m], z[m], &i, &j, &k);
-		clist_push(q->clist, IDX, m);
+		if (clist_push(q->clist, IDX, m) != CO_OK) {
+			MSG("ijk: %d %d %d", i, j, k);
+			MSG("nyz: %d %d", ny, nz);
+			ERR(CO_INDEX, "fail to push particle: " FMT " " FMT " " FMT, x[m], y[m], z[m]);
+		}
 	}
 	return CO_OK;
 }
