@@ -37,18 +37,17 @@ enum
 	X, Y, Z
 };
 static int n;
-#define nx  (10)
-#define ny  (10)
+#define nx  (20)
+#define ny  (20)
 #define nz  (10)
-static const real c = 10.0;
-static const real mu = 1.0;
-static const real size = 2.0/nx;
+static const real c = 10;
+static const real mu = 1;
 static const real g[3] = {1, 0, 0};
-static const real mass = 1.0/(nx*ny*nz);
 static const real R = 0.2;
 static const real dt = 0.00025;
-static real lo[3] = {-0.5, -0.5, -0.5};
-static real hi[3] = {0.5, 0.5, 0.5};
+static real lo[3] = {-1, -1, -0.5};
+static real hi[3] = {1, 1, 0.5};
+static real mass, size;
 static AlgRng *rng;
 static Kernel *kernel;
 static real *x, *y, *z, *vx, *vy, *vz, *fx, *fy, *fz, *rho, *p;
@@ -73,8 +72,8 @@ grid(real *x, real *y, real *z)
 	real x0, y0, z0, dx,a, b;
 	int i, j, k, m;
 	dx = (hi[X] - lo[X])/nx;
-	a = -0.0*dx;
-	b =   0.0*dx;
+	a = -0.2*dx;
+	b =   0.2*dx;
 	for (i = m = 0; i < nx; i++)
 		for (j = 0; j < ny; j++)
 			for (k = 0; k < nz; k++) {
@@ -92,7 +91,7 @@ grid(real *x, real *y, real *z)
 static int
 ini(real *x, real *y, real *z)
 {
-	return rnd(x, y, z);
+	return grid(x, y, z);
 }
 
 
@@ -193,7 +192,7 @@ dump(int t)
 			x, y, z, vx, vy, vz, rho, NULL
 		};
 		punto_fwrite(n, q, stdout);
-		MSG("rho[0] = %g", rho[0]);
+		MSG("rho: " FMT " " FMT " " FMT, array_min(n, rho), array_mean(n, rho), array_max(n, rho));
 	}
 	return CO_OK;
 }
@@ -201,12 +200,15 @@ dump(int t)
 int
 main(void)
 {
+	real V;
 	int t;
 
 	alg_rng_ini(&rng);
 	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
-
 	n = nx*ny*nz;
+	V = (hi[X] - lo[X])*(hi[Y] - lo[Y])*(hi[Z] - lo[Z]);
+	mass = V/n;
+	size = 2 * (hi[X] - lo[X]) / nx;
 
 	MALLOC(n, &x);
 	MALLOC(n, &y);
@@ -228,8 +230,8 @@ main(void)
 		dump(t);
 	}
 
-	array_zero(n, vx);
-	array_zero(n, vy);
+	array_zero3(n, vx, vy, vz);
+	array_zero3(n, fx, fy, fz);
 	for (/**/; t < 2000; t++) {
 		force();
 		euler_step_fun(dt, circle, n, vx, vy, vz, x, y, z);
@@ -251,6 +253,7 @@ main(void)
 	FREE(p);
 	kernel_fin(kernel);
 	alg_rng_fin(rng);
+	MSG("end");
 }
 
 

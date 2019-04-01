@@ -68,3 +68,13 @@ real array_dot(int n, const real *a, const real *b) {
     return s;
 }
 
+real 
+array_mean(int n, const real *a)
+{
+	int i;
+	real s;
+	s = 0;
+	for (i = 0; i < n; i ++)
+		s += a[i];
+	return s/n;
+}

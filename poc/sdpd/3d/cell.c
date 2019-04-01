@@ -15,6 +15,7 @@
 #include <alg/rng.h>
 
 #define pi (3.141592653589793)
+#define FMT CO_REAL_OUT
 
 #define BEGIN \
 	for (i = 0; i < n; i++) { \
@@ -36,13 +37,12 @@ enum
 	X, Y, Z
 };
 static int n;
-#define nx (20)
+#define nx (10)
 #define ny (20)
-#define nz (20)
-static const real size = 3.0/nx;
-static const real mass = 1.0/(nx*ny*nz);
-static real lo[3] = {-0.5, -0.5, -0.5};
-static real hi[3] = {0.5, 0.5, 0.5};
+#define nz (30)
+static const real lo[3] = {-0.25, -0.5, -1};
+static const real hi[3] = {0.25, 0.5, 1};
+static real mass, size;
 static AlgRng *rng;
 static Kernel *kernel;
 
@@ -65,8 +65,8 @@ grid(real *x, real *y, real *z)
 	real x0, y0, z0, dx,a, b;
 	int i, j, k, m;
 	dx = (hi[X] - lo[X])/nx;
-	a = -0.0*dx;
-	b =   0.0*dx;
+	a = -0.05*dx;
+	b =   0.05*dx;
 	for (i = m = 0; i < nx; i++)
 		for (j = 0; j < ny; j++)
 			for (k = 0; k < nz; k++) {
@@ -93,13 +93,16 @@ main(void)
 	real *x, *y, *z, *rho, *color;
 	Cell3 *cell;
 	int i0, i, j, *a;
-	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r, w;
+	real V, xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r, w;
 
 	err_set_ignore();
 
 	alg_rng_ini(&rng);
 	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
-	n = nx * ny * nz;
+	n = nx*ny*nz;
+	V = (hi[X] - lo[X])*(hi[Y] - lo[Y])*(hi[Z] - lo[Z]);
+	mass = V/n;
+	size = 2 * (hi[X] - lo[X]) / nx;
 
 	MALLOC(n, &x);
 	MALLOC(n, &y);
@@ -111,7 +114,7 @@ main(void)
 	array_zero(n, rho);
 	cell3_push(cell, n, x, y, z);
 
-	i0 = 6000;
+	i0 = 500;
 	BEGIN {
 		w = kernel_w(kernel, size, r);
 		rho[i] += mass*w;
@@ -123,6 +126,7 @@ main(void)
 	MSG("size: %g", size);
 	const real *q[] = {x, y, z, color, rho, NULL};
 	punto_fwrite(n, q, stdout);
+	fprintf(stderr, "rho: " FMT " " FMT " " FMT "\n", array_min(n, rho), array_mean(n, rho), array_max(n, rho));
 
 	cell3_fin(cell);
 	FREE(x);
@@ -132,3 +136,11 @@ main(void)
 	kernel_fin(kernel);
 	alg_rng_fin(rng);
 }
+
+/* 
+	Put
+	make
+	./cell > q
+	punto -c q
+
+*/
