@@ -24,17 +24,18 @@ struct T
 };
 
 static int
-ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, Clist**), T **pq)
+ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, int, Clist**), T **pq)
 {
-	int nx, ny;
 	T *q;
-	real lx, ly;
+	int nx, ny, nz;
+	real lx, ly, lz;
 	Clist *clist;
 
 	MALLOC(1, &q);
 
 	lx = hi[X] - lo[X];
 	ly = hi[Y] - lo[Y];
+	lz = hi[Z] - lo[Z];
 
 	nx= lx/size;
 	if (nx * size < lx) nx++;
@@ -42,16 +43,22 @@ ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, Clist**)
 	ny = ly/size;
 	if (ny * size < ly) ny++;
 
-	gen(nx, ny, &clist);
+	nz = lz/size;
+	if (nz * size < lz) nz++;
+
+	gen(nx, ny, nz, &clist);
 
 	q->size = size;
 	q->lo[X] = lo[X];
 	q->lo[Y] = lo[Y];
+	q->lo[Z] = lo[Z];
 
 	q->hi[X] = hi[X];
 	q->hi[Y] = hi[Y];
+	q->hi[Z] = hi[Z];
 
 	q->ny = ny;
+	q->nz = nz;
 	q->clist = clist;
 
 	*pq = q;
@@ -97,7 +104,7 @@ int
 cell3_ppp_ini(const real lo[3], const real hi[3], real size, T **pq)
 {
 	int status;
-	status = ini(lo, hi, size, clist_gen_pp, pq);
+	status = ini(lo, hi, size, clist_gen_ppp, pq);
 	(*pq)->wrp = wrp_ppp;
 	(*pq)->brn = brn_ppp;
 	return status;

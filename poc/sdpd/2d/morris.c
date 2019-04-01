@@ -240,8 +240,9 @@ main(void)
 
 /*
 
-make
+pkill morris
+CFLAGS=-O3 make 
 ./morris > q
-punto -s 4 -D 2 -c -G -0.1:0.1  -z 1:2:3  q
+punto -s 4 -D 2 -c -G 0.1:0  -z 1:2:3  q
 
 */
