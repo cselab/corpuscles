@@ -117,7 +117,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sys/time.h>
-#include "predicates.h"
 
 /* On some machines, the exact arithmetic routines might be defeated by the  */
 /*   use of internal extended precision floating-point registers.  Sometimes */
