@@ -91,7 +91,7 @@ grid(real *x, real *y, real *z)
 static int
 ini(real *x, real *y, real *z)
 {
-	return grid(x, y, z);
+	return rnd(x, y, z);
 }
 
 
@@ -232,7 +232,7 @@ main(void)
 
 	array_zero3(n, vx, vy, vz);
 	array_zero3(n, fx, fy, fz);
-	for (/**/; t < 2000; t++) {
+	for (/**/; t < 8000; t++) {
 		force();
 		euler_step_fun(dt, circle, n, vx, vy, vz, x, y, z);
 		euler_step_fun(dt, circle, n, fx, fy, fz, vx, vy, vz);
