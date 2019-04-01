@@ -75,11 +75,9 @@ int wrp_ppp(T *q, real *x, real *y, real *z)
 
 	lo = q->lo;
 	hi = q->hi;
-
 	WRP(x, X);
 	WRP(y, Y);
 	WRP(z, Z);
-
 	return CO_OK;
 }
 
@@ -93,6 +91,7 @@ static
 int brn_ppp(T *q, real x, real y, real z, real *u, real *v, real *w)
 {
 	real lx, ly, lz;
+
 	lx = q->hi[X] - q->lo[X];
 	ly = q->hi[Y] - q->lo[Y];
 	lz = q->hi[Z] - q->lo[Z];
@@ -109,6 +108,16 @@ cell3_ppp_ini(const real lo[3], const real hi[3], real size, T **pq)
 	status = ini(lo, hi, size, clist_gen_ppp, pq);
 	(*pq)->wrp = wrp_ppp;
 	(*pq)->brn = brn_ppp;
+	return status;
+}
+
+int
+cell3_nnn_ini(const real lo[3], const real hi[3], real size, T **pq)
+{
+	int status;
+	status = ini(lo, hi, size, clist_gen_nnn, pq);
+	(*pq)->wrp = NULL;
+	(*pq)->brn = NULL;
 	return status;
 }
 
