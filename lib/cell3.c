@@ -7,9 +7,9 @@
 #include "co/memory.h"
 
 #include "co/list/c.h"
-#include "co/cell2.h"
+#include "co/cell3.h"
 
-#define T Cell2
+#define T Cell3
 
 enum {
 	X, Y
@@ -17,14 +17,14 @@ enum {
 struct T
 {
 	int ny;
-	real lo[2], hi[2], size;
+	real lo[3], hi[3], size;
 	Clist *clist;
 	int (*wrp)(T*q, real*, real*);
 	int (*brn)(T* q, real, real, real*, real*);
 };
 
 static int
-ini(const real lo[2], const real hi[2], real size, int (*gen)(int, int, Clist**), T **pq)
+ini(const real lo[3], const real hi[3], real size, int (*gen)(int, int, Clist**), T **pq)
 {
 	int nx, ny;
 	T *q;
@@ -131,7 +131,7 @@ int brn_np(T *q, real x, real y, real *u, real *v)
 }
 
 int
-cell2_pp_ini(const real lo[2], const real hi[2], real size, T **pq)
+cell3_pp_ini(const real lo[3], const real hi[3], real size, T **pq)
 {
 	int status;
 	status = ini(lo, hi, size, clist_gen_pp, pq);
@@ -141,7 +141,7 @@ cell2_pp_ini(const real lo[2], const real hi[2], real size, T **pq)
 }
 
 int
-cell2_np_ini(const real lo[2], const real hi[2], real size, T **pq)
+cell3_np_ini(const real lo[3], const real hi[3], real size, T **pq)
 {
 	int status;
 	status = ini(lo, hi, size, clist_gen_np, pq);
@@ -151,7 +151,7 @@ cell2_np_ini(const real lo[2], const real hi[2], real size, T **pq)
 }
 
 int
-cell2_pn_ini(const real lo[2], const real hi[2], real size, T **pq)
+cell3_pn_ini(const real lo[3], const real hi[3], real size, T **pq)
 {
 	int status;
 	status = ini(lo, hi, size, clist_gen_pn, pq);
@@ -161,7 +161,7 @@ cell2_pn_ini(const real lo[2], const real hi[2], real size, T **pq)
 }
 
 int
-cell2_nn_ini(const real lo[2], const real hi[2], real size, T **pq)
+cell3_nn_ini(const real lo[3], const real hi[3], real size, T **pq)
 {
 	int status;
 	status = ini(lo, hi, size, clist_gen_nn, pq);
@@ -171,7 +171,7 @@ cell2_nn_ini(const real lo[2], const real hi[2], real size, T **pq)
 }
 
 int
-cell2_fin(T *q)
+cell3_fin(T *q)
 {
 	clist_fin(q->clist);
 	FREE(q);
@@ -197,7 +197,7 @@ map(T *q, real x, real y, int *i, int *j)
 }
 
 int
-cell2_push(T *q, int n, const real *x, const real *y)
+cell3_push(T *q, int n, const real *x, const real *y, const real *z)
 {
 	int i, j, k;
 	int ny;
@@ -212,7 +212,7 @@ cell2_push(T *q, int n, const real *x, const real *y)
 }
 
 int
-cell2_parts(T *q, real x, real y, int **a)
+cell3_parts(T *q, real x, real y, real z, int **a)
 {
 	int i, j, ny;
 	ny = q->ny;
@@ -221,7 +221,7 @@ cell2_parts(T *q, real x, real y, int **a)
 }
 
 int
-cell2_len(T *q, real x, real y)
+cell3_len(T *q, real x, real y, real z)
 {
 	int i, j, ny;
 	ny = q->ny;
@@ -230,7 +230,7 @@ cell2_len(T *q, real x, real y)
 }
 
 int
-cell2_wrap(T *q, int n, real *x, real *y)
+cell3_wrap(T *q, int n, real *x, real *y, real *z)
 {
 	int i;
 	if (q->wrp == NULL)
@@ -241,7 +241,7 @@ cell2_wrap(T *q, int n, real *x, real *y)
 }
 
 int
-cell2_bring(T *q, real x, real y, real *u, real *v)
+cell3_bring(T *q, real x, real y, real z, real *u, real *v, real *w)
 {
 	if (q->brn == NULL)
 		return CO_OK;

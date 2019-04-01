@@ -5,6 +5,7 @@ co/argv.h\
 co/array.h\
 co/bending.h\
 co/cell2.h\
+co/cell3.h\
 co/container.h\
 co/da.h\
 co/ddih.h\
