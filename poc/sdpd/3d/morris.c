@@ -43,7 +43,7 @@ static int n;
 static const real c = 10.0;
 static const real mu = 1.0;
 static const real size = 2.0/nx;
-static const real g[3] = {5, 0, 0};
+static const real g[3] = {1, 0, 0};
 static const real mass = 1.0/(nx*ny*nz);
 static const real R = 0.2;
 static const real dt = 0.00025;
@@ -221,8 +221,7 @@ main(void)
 	MALLOC(n, &p);
 	ini(x, y, z);
 	cell3_ppp_ini(lo, hi, size, &cell);
-	for (t = 0; t < 20000; t++) {
-		MSG("xyz[0]: " FMT " " FMT " " FMT, x[0], y[0], z[0]);
+	for (t = 0; t < 2000; t++) {   
 		force();
 		euler_step(dt,  n, vx, vy, vz, x, y, z);
 		euler_step(dt,  n, fx, fy, fz, vx, vy, vz);		
@@ -231,7 +230,7 @@ main(void)
 
 	array_zero(n, vx);
 	array_zero(n, vy);
-	for (/**/; t < 20000; t++) {
+	for (/**/; t < 2000; t++) {
 		force();
 		euler_step_fun(dt, circle, n, vx, vy, vz, x, y, z);
 		euler_step_fun(dt, circle, n, fx, fy, fz, vx, vy, vz);
