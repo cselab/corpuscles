@@ -16,7 +16,7 @@ $O : $H $I
 .c.d.o:; $(CC) -I$P/prec/d -Iinc/d -I. $(CFLAGS) $(CO_CFLAGS) -c -o $@ $<
 .c.l.o:; $(CC) -I$P/prec/l -Iinc/l -I. $(CFLAGS) $(CO_CFLAGS) -c -o $@ $<
 
-clean:; rm -f $O $(O_S) $(O_D) $L
+clean:; rm -f $O $(O_S) $(O_D) $(O_L) $L
 test:
 
 .PHONY: clean install test
