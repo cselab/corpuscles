@@ -24,9 +24,9 @@ main(int argc, const char **argv)
 	int m, n, i, j, k, l;
 	real lo, hi, dx, x0, y0, z0;
 
-	m  = 40;
-	lo = -3;
-	hi =  3;
+	m  = 50;
+	lo = -3.5;
+	hi =  3.5;
 	n = m*m*m;
 	MALLOC(n, &u);
 	MALLOC(n, &v);
