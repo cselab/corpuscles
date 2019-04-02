@@ -1,6 +1,6 @@
 .POSIX:
 include ../../conf.mk
-M = point
+M = grid point
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
 CO_LDFLAGS = `alg.conf --libs $(PREC)`
