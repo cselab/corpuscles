@@ -15,6 +15,7 @@ O_S = \
 area.s.o\
 argv.s.o\
 array.s.o\
+bbox.s.o\
 bending.s.o\
 cell2.s.o\
 cell3.s.o\
@@ -87,6 +88,7 @@ O_D = \
 area.d.o\
 argv.d.o\
 array.d.o\
+bbox.d.o\
 bending.d.o\
 cell2.d.o\
 cell3.d.o\
@@ -159,6 +161,7 @@ O_L = \
 area.l.o\
 argv.l.o\
 array.l.o\
+bbox.l.o\
 bending.l.o\
 cell2.l.o\
 cell3.l.o\
