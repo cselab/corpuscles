@@ -75,6 +75,7 @@ strain/3d.s.o\
 strain.s.o\
 stretch.s.o\
 sum.s.o\
+surface.s.o\
 ten.s.o\
 transform.s.o\
 tri.s.o\
@@ -148,6 +149,7 @@ strain/3d.d.o\
 strain.d.o\
 stretch.d.o\
 sum.d.o\
+surface.d.o\
 ten.d.o\
 transform.d.o\
 tri.d.o\
@@ -221,6 +223,7 @@ strain/3d.l.o\
 strain.l.o\
 stretch.l.o\
 sum.l.o\
+surface.l.o\
 ten.l.o\
 transform.l.o\
 tri.l.o\

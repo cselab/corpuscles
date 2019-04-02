@@ -54,3 +54,8 @@ bbox_hi(T *q, real **p) {
 	*p = q->hi;
 	return CO_OK;
 }
+
+real
+bbox_xhi(T *q) {
+	return q->hi[X];
+}

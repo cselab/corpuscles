@@ -8,3 +8,6 @@ int bbox_update(T*, int, const real*, const real*, const real*);
 int bbox_lo(T*, real**);
 int bbox_hi(T*, real**);
 
+real bbox_xhi(T*);
+
+#undef T

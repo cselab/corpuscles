@@ -77,6 +77,7 @@ co/strain/3d.h\
 co/strain.h\
 co/stretch.h\
 co/sum.h\
+co/surface.h\
 co/ten.h\
 co/transform.h\
 co/tri.h\

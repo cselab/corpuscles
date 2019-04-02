@@ -237,7 +237,7 @@ static int edge(int nv, const real *x, __UNUSED const real *y, char ***p, T *q) 
     return CO_OK;
 }
 
-int stretch_argv(char ***p, He *he, real *x, real *y, real *z, /**/ T **pq) {
+int stretch_argv(char ***p, He *he, real *x, real *y,  __UNUSED real *z, /**/ T **pq) {
     T *q;
     int i, nv, status;
     char name[1024];
@@ -314,8 +314,7 @@ static int rigid(int n, const int *idx, real *f) {
 
 int stretch_constrain(T *q, __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z,
                       /*io*/ real *fx, __UNUSED real *fy, __UNUSED real *fz) {
-    int i, j, n;
-    real f;
+    int n;
 
     n = q->n;
     rigid(n, q->plus, fx);

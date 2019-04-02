@@ -18,5 +18,6 @@ $O : $H $I
 
 clean:; rm -f $O $(O_S) $(O_D) $(O_L) $L
 test:
+lint:; $(MAKE) CFLAGS='-Wall -Wextra' lib$(P)_d.a
 
-.PHONY: clean install test
+.PHONY: clean install test lint

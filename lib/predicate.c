@@ -82,11 +82,12 @@ predicate_orient3d_sas(const real a[3], const real b[3], const real c[3], const 
 	/* TODO: points should be sorted */
 	real A[2], B[2], C[2], o;
 	int sign;
-
+			
 	o = predicate_orient3d(a, b, c, d);
 	if (o != 0)
 		return SIGN(o);
 	else {
+		sign = 1;
 		/* epsilon^1/8 */
 		A[X] = b[X];
 		A[Y] = b[Y];
