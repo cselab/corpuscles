@@ -198,3 +198,33 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		return sign;
 	}
 }
+
+int
+predicate_ray(real d[3], real e[3],  real a[3], real b[3], real c[3])
+{
+	int abce, abcd, adce, abde, bcde, tmp;
+	real *tmpp;
+
+	abce = predicate_orient3d_sas(a, b, c, e);
+	abcd = predicate_orient3d_sas(a, b, c, d);
+	if (abce < 0 || abcd > 0) {
+		tmpp = e;
+		e = d;
+		d = tmpp;
+		tmp = abce;
+		abce = abcd;
+		abcd = tmp;
+	}
+	if (abce < 0 || abcd > 0)
+		return 0;
+	adce = predicate_orient3d_sas(a, d, c, e);
+	if (adce < 0)
+		return 0;
+	abde = predicate_orient3d_sas(a, b, d, e);
+	if (abde < 0)
+		return 0;
+	bcde = predicate_orient3d_sas(b, c, d, e);
+	if (bcde < 0)
+		return 0;
+	return 1;
+}
