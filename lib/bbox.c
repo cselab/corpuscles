@@ -23,7 +23,9 @@ struct T {
 int
 bbox_ini(T **pq)
 {
-	MALLOC(1, pq);
+	Bbox *q;
+	MALLOC(1, &q);
+	*pq = q;
 	return CO_OK;
 }
 
