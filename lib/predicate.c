@@ -8,6 +8,9 @@ enum {
 	X, Y, Z
 };
 
+#define SIGN(x) ((x) > 0 ? 1 : -1)
+#define ORIENT1D(a,b) ((a) > (b) ? 1 : (a) < (b) ? -1 : 0)
+
 #define C3(q, Q) \
 	do { \
 		Q[X] = q[X]; \
@@ -73,8 +76,6 @@ predicate_insphere(real *a, real *b, real *c, real *d, real *e)
 	return insphere(A, B, C, D, E);
 }
 
-#define SIGN(x) ((x) > 0 ? 1 : -1)
-#define ORIENT1D(a,b) ((a) > (b) ? 1 : (a) < (b) ? -1 : 0)
 int
 predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 {
@@ -95,7 +96,7 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		C[Y] = d[Y];
 		o = predicate_orient2d(A, B, C);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon^1/4 */
 		A[X] = b[X];
@@ -106,7 +107,7 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		C[Y] = d[Z];
 		o = predicate_orient2d(A, B, C);
 		if (o != 0)
-			return - SIGN (o)*sign;
+			return - SIGN(o)*sign;
 
 		/* epsilon^1/2 */
 		A[X] = b[Y];
@@ -117,7 +118,7 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		C[Y] = d[Z];
 		o = predicate_orient2d(A, B, C);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon */
 		A[X] = a[X];
@@ -128,17 +129,17 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		C[Y] = d[Y];
 		o = predicate_orient2d(A, B, C);
 		if (o != 0)
-			return - SIGN (o)*sign;
+			return - SIGN(o)*sign;
 
 		/* epsilon^5/4 */
-		o = ORIENT1D (c[X], d[X]);
+		o = ORIENT1D(c[X], d[X]);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon^3/2 */
-		o = ORIENT1D (c[Y], d[Y]);
+		o = ORIENT1D(c[Y], d[Y]);
 		if (o != 0)
-			return - SIGN (o)*sign;
+			return - SIGN(o)*sign;
 
 		/* epsilon^2 */
 		A[X] = a[X];
@@ -149,12 +150,12 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		C[Y] = d[Z];
 		o = predicate_orient2d(A, B, C);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon^5/2 */
-		o = ORIENT1D (c[Z], d[Z]);
+		o = ORIENT1D(c[Z], d[Z]);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon^4 */
 		A[X] = a[Y];
@@ -165,7 +166,7 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		C[Y] = d[Z];
 		o = predicate_orient2d(A, B, C);
 		if (o != 0)
-			return - SIGN (o)*sign;
+			return - SIGN(o)*sign;
 
 		/* epsilon^8 */
 		A[X] = a[X];
@@ -176,22 +177,22 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 		C[Y] = d[Y];
 		o = predicate_orient2d(A, B, C);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon^33/4 */
-		o = ORIENT1D (b[X], d[X]);
+		o = ORIENT1D(b[X], d[X]);
 		if (o != 0)
-			return - SIGN (o)*sign;
+			return - SIGN(o)*sign;
 
 		/* epsilon^17/2 */
-		o = ORIENT1D (b[Y], d[Y]);
+		o = ORIENT1D(b[Y], d[Y]);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon^10 */
-		o = ORIENT1D (a[X], d[X]);
+		o = ORIENT1D(a[X], d[X]);
 		if (o != 0)
-			return SIGN (o)*sign;
+			return SIGN(o)*sign;
 
 		/* epsilon^21/2 */
 		return sign;
