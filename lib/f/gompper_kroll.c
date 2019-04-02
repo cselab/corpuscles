@@ -342,7 +342,7 @@ real he_f_gompper_kroll_energy(T *q, He *he,
 int he_f_gompper_kroll_force(T *q, He *he,
                              const real *x, const real *y, const real *z, /**/
                              real *fx, real *fy, real *fz) {
-    int nv, ne, nt, nh;
+    int nv, nt, nh;
     int i, j, k, l;
     int h, n, nn, fnf;
     int *T0, *T1, *T2;
@@ -371,7 +371,6 @@ int he_f_gompper_kroll_force(T *q, He *he,
     area = q->area;
 
     nv = q->nv;
-    ne = q->ne;
     nt = q->nt;
     nh = q->nh;
 
