@@ -7,6 +7,7 @@ list/a.o\
 list/c.o\
 list/i.o\
 memory.o\
+predicate/main.o\
 read.o\
 util.o
 
@@ -63,6 +64,7 @@ obj.s.o\
 off.s.o\
 orient.s.o\
 ply.s.o\
+predicate.s.o\
 punto.s.o\
 real.s.o\
 restore.s.o\
@@ -134,6 +136,7 @@ obj.d.o\
 off.d.o\
 orient.d.o\
 ply.d.o\
+predicate.d.o\
 punto.d.o\
 real.d.o\
 restore.d.o\
@@ -205,6 +208,7 @@ obj.l.o\
 off.l.o\
 orient.l.o\
 ply.l.o\
+predicate.l.o\
 punto.l.o\
 real.l.o\
 restore.l.o\

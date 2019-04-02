@@ -65,6 +65,7 @@ co/ply.h\
 co/prec/d/real.h\
 co/prec/l/real.h\
 co/prec/s/real.h\
+co/predicate.h\
 co/punto.h\
 co/read.h\
 co/real.h\
