@@ -117,6 +117,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sys/time.h>
+#include "main.inc"
 
 /* On some machines, the exact arithmetic routines might be defeated by the  */
 /*   use of internal extended precision floating-point registers.  Sometimes */
@@ -129,12 +130,6 @@
 
 #define INEXACT                          /* Nothing */
 /* #define INEXACT volatile */
-
-#define REAL double                      /* float or double */
-#define REALPRINT doubleprint
-#define REALRAND doublerand
-#define NARROWRAND narrowdoublerand
-#define UNIFORMRAND uniformdoublerand
 
 /* Which of the following two methods of finding the absolute values is      */
 /*   fastest is compiler-dependent.  A few compilers can inline and optimize */

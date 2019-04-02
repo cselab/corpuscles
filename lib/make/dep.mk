@@ -8,3 +8,5 @@ kernal/quintic.inc\
 kernal/wendland6.inc\
 kernel/yang.inc\
 kernal/main.inc
+
+predicate/main.o: predicate/main.inc
