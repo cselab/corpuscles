@@ -32,7 +32,7 @@ predicate_ini(void)
 }
 
 real
-predicate_orient2d(real *a, real *b, real *c)
+predicate_orient2d(const real a[2], const real b[2], const real c[2])
 {
 	REAL A[2], B[2], C[2];
 	C2(a, A);
@@ -43,7 +43,7 @@ predicate_orient2d(real *a, real *b, real *c)
 
 
 real
-predicate_orient3d(real *a, real *b, real *c, real *d)
+predicate_orient3d(const real a[3], const real b[3], const real c[3], const real d[3])
 {
 	REAL A[3], B[3], C[3], D[3];
 	C3(a, A);
@@ -54,7 +54,7 @@ predicate_orient3d(real *a, real *b, real *c, real *d)
 }
 
 real
-predicate_incircle(real *a, real *b, real *c, real *d)
+predicate_incircle(const real a[2], const real b[2], const real c[2], const real d[2])
 {
 	REAL A[2], B[2], C[2], D[2];
 	C2(a, A);
@@ -65,7 +65,7 @@ predicate_incircle(real *a, real *b, real *c, real *d)
 }
 
 real
-predicate_insphere(real *a, real *b, real *c, real *d, real *e)
+predicate_insphere(const real a[3], const real b[3], const real c[3], const real d[3], const real e[3])
 {
 	REAL A[3], B[3], C[3], D[3], E[3];
 	C3(a, A);
@@ -77,7 +77,7 @@ predicate_insphere(real *a, real *b, real *c, real *d, real *e)
 }
 
 int
-predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
+predicate_orient3d_sas(const real a[3], const real b[3], const real c[3], const real d[3])
 {
 	/* TODO: points should be sorted */
 	real A[2], B[2], C[2], o;
@@ -200,10 +200,10 @@ predicate_orient3d_sas(real a[3], real b[3], real c[3], real d[3])
 }
 
 int
-predicate_ray(real d[3], real e[3],  real a[3], real b[3], real c[3])
+predicate_ray(const real d[3], const real e[3],  const real a[3], const real b[3], const real c[3])
 {
 	int abce, abcd, adce, abde, bcde, tmp;
-	real *tmpp;
+	const real *tmpp;
 
 	abce = predicate_orient3d_sas(a, b, c, e);
 	abcd = predicate_orient3d_sas(a, b, c, d);
