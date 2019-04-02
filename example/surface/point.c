@@ -38,6 +38,7 @@ main(int argc, const char **v)
 /* 
 	Put
 	make
-	./point 0 100 0 </u/0.off 
+	./point 0 100 0 </u/0.off
+	./point 0 0 0 </u/0.off 
 
 */
