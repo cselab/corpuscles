@@ -4,6 +4,7 @@
 
 #include "real.h"
 #include "co/err.h"
+#include "co/macro.h"
 #include "co/memory.h"
 
 #include "co/list/c.h"
@@ -81,7 +82,7 @@ int wrp_ppp(T *q, real *x, real *y, real *z)
 	return CO_OK;
 }
 
-int wrp_ppn(T *q, real *x, real *y, real *z)
+int wrp_ppn(T *q, real *x, real *y, __UNUSED real *z)
 {
 	real *lo, *hi;
 
@@ -92,7 +93,7 @@ int wrp_ppn(T *q, real *x, real *y, real *z)
 	return CO_OK;
 }
 
-int wrp_pnn(T *q, real *x, real *y, real *z)
+int wrp_pnn(T *q, real *x, __UNUSED real *y, __UNUSED real *z)
 {
 	real *lo, *hi;
 
@@ -123,7 +124,7 @@ int brn_ppp(T *q, real x, real y, real z, real *u, real *v, real *w)
 }
 
 static
-int brn_ppn(T *q, real x, real y, real z, real *u, real *v, real *w)
+int brn_ppn(T *q, real x, real y, __UNUSED real z, real *u, real *v, __UNUSED real *w)
 {
 	real lx, ly;
 
@@ -135,7 +136,7 @@ int brn_ppn(T *q, real x, real y, real z, real *u, real *v, real *w)
 }
 
 static
-int brn_pnn(T *q, real x, real y, real z, real *u, real *v, real *w)
+int brn_pnn(T *q, real x, __UNUSED real y, __UNUSED real z, real *u, real *v, real *w)
 {
 	real lx;
 	lx = q->hi[X] - q->lo[X];
@@ -194,12 +195,11 @@ cell3_fin(T *q)
 static int
 map(T *q, real x, real y, real z, int *i, int *j, int *k)
 {
-	real *lo, *hi, size;
+	real *lo, size;
 
 	size = q->size;
 
 	lo = q->lo;
-	hi = q->hi;
 
 	x -= lo[X];
 	y -= lo[Y];

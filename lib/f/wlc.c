@@ -2,12 +2,15 @@
 #include <tgmath.h>
 
 #include "real.h"
-#include "co/memory.h"
+
+#include "co/dedg.h"
+#include "co/edg.h"
 #include "co/err.h"
 #include "co/he.h"
+#include "co/macro.h"
+#include "co/memory.h"
 #include "co/vec.h"
-#include "co/edg.h"
-#include "co/dedg.h"
+
 
 #include "co/f/wlc.h"
 
@@ -95,7 +98,7 @@ int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, H
     return CO_OK;
 }
 
-int he_f_wlc_argv(char ***p, He *he, T **pq) {
+int he_f_wlc_argv(__UNUSED char ***p, __UNUSED He *he, __UNUSED T **pq) {
     return CO_OK;
 }
 

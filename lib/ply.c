@@ -271,7 +271,7 @@ int ply_fwrite(T *q, FILE *f, int *b) {
 int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
     float *ver, *wscalar;
     int *wtri, *tri;
-    int i, j, k, l, m, nv, nm, nt, cnt;
+    int i, j, k, l, m, nv, nm, nt;
     int onm, n;
     real *x, *y, *z;
 

@@ -40,7 +40,7 @@ static int edge(int, const real*, const real*, char***, T*);
 static const char *IniName[] = {"plain", "cylinder", "edge"};
 static const IniFunType IniFun[] = {plain, cylinder, edge};
 
-const static real *QX;
+static const real *QX;
 static int compare(const void *vi, const void *vj) {
     int *pi, *pj, i, j;
     pi = (int*)vi; pj = (int*)vj;
@@ -103,7 +103,7 @@ static int count(real r0) {
     int n;
     const real *xx, *yy;
     int i, cnt;
-    real x, y, r, rsq;
+    real x, y, r;
     GET(x0); GET(n); GET(xx); GET(yy);
     cnt = 0;
     r0 = sq(r0);
@@ -123,7 +123,7 @@ static int select0(real r0, int *a) {
     int n;
     const real *xx, *yy;
     int i, cnt;
-    real x, y, r, rsq;
+    real x, y, r;
     GET(x0); GET(n); GET(xx); GET(yy);
     cnt = 0;
     r0 = sq(r0);

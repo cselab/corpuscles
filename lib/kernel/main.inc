@@ -51,6 +51,7 @@ kernel_ini(int dim, int type, T **pq)
 	q->w = w[type][dim]; 
 	q->dw = dw[type][dim];
 	*pq = q;
+	return CO_OK;
 }
 
 int
@@ -59,7 +60,6 @@ kernel_argv(char ***p,  T **pq)
 	int status;
 	char stype[999];
 	int dim, type;
-	real x, y;
 	if ((status = argv_int(p, &dim)) != CO_OK)
 		return status;
 
@@ -90,7 +90,8 @@ kernel_argv(char ***p,  T **pq)
 int
 kernel_fin(T *q)
 { 
-	FREE(q); 
+	FREE(q);
+	return CO_OK;
 }
 
 real
