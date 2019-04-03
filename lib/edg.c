@@ -51,7 +51,7 @@ edg_point_distance(const real a[3], const real b[3], const real p[3])
 	return sqrt(edg_point_distance2(a, b, p));
 }
 
-real
+int
 edg_point_closest(const real a[3], const real b[3], const real p[3], real q[3])
 {
 	real t, s, x, y, z;
