@@ -20,18 +20,21 @@ swap(real *a, real *b) {
 	*b = t;
 }
 static int
-less(real *a, real *b) {
+less(real *a, real *b)
+{
 	return (*a) < (*b);
 }
 static void
-sort3(real *a, real *b, real *c) {
+sort3(real *a, real *b, real *c)
+{
 	if (less(c, b)) swap(c, b);
 	if (less(b, a)) swap(b, a);
 	if (less(c, b)) swap(c, b);
 }
 
 static real
-kahan_area0(real a, real b, real c) {
+kahan_area0(real a, real b, real c)
+{
 	real s;
 	sort3(&c, &b, &a); /* make a > b > c */
 	s = (a+(b+c))*(c-(a-b))*(c+(a-b))*(a+(b-c));
@@ -41,7 +44,8 @@ kahan_area0(real a, real b, real c) {
 }
 
 static real
-kahan_area(const real r0[3], const real r1[3], const real r2[3]) {
+kahan_area(const real r0[3], const real r1[3], const real r2[3])
+{
 	real r01[3], r12[3], r20[3], a, b, c;
 	vec_minus(r0, r1, /**/ r01);
 	vec_minus(r1, r2, /**/ r12);
@@ -53,7 +57,8 @@ kahan_area(const real r0[3], const real r1[3], const real r2[3]) {
 }
 
 static real
-__UNUSED naive_area(const real a[3], const real b[3], const real c[3]) {
+__UNUSED naive_area(const real a[3], const real b[3], const real c[3])
+{
 	real u[3], v[3], n[3];
 	vec_minus(b, a, u);
 	vec_minus(c, a, v);
@@ -62,20 +67,23 @@ __UNUSED naive_area(const real a[3], const real b[3], const real c[3]) {
 }
 
 real
-tri_area(const real a[3], const real b[3], const real c[3]) {
+tri_area(const real a[3], const real b[3], const real c[3])
+{
 	return kahan_area(a, b, c);
 }
 
 /* oriented volume of tetrahedral [0, a, b, c] */
 real
-tri_volume(const real a[3], const real b[3], const real c[3]) {
+tri_volume(const real a[3], const real b[3], const real c[3])
+{
 	real n[3];
 	vec_cross(a, b,   n);
 	return vec_dot(c, n)/6;
 }
 
 int
-tri_normal(const real a[3], const real b[3], const real c[3], /**/ real e[3]) {
+tri_normal(const real a[3], const real b[3], const real c[3], /**/ real e[3])
+{
 	real u[3], v[3], n[3];
 	vec_minus(b, a,   u);
 	vec_minus(c, a,   v);
@@ -84,17 +92,21 @@ tri_normal(const real a[3], const real b[3], const real c[3], /**/ real e[3]) {
 	return CO_OK;
 }
 
+/* at `b' */
 real
-tri_angle(const real a[3], const real b[3], const real c[3]) { /* at `b' */
+tri_angle(const real a[3], const real b[3], const real c[3])
+{
 	real u[3], v[3];
 	vec_minus(a, b, u);
 	vec_minus(c, b, v);
 	return fabs(vec_angle(u, v));
 }
 
-#define NOT_ZERO(x) if ((x) == 0) ERR(CO_NUM, "should not be zero");
+#define NOT_ZERO(x) if ((x) == 0) ERR(CO_NUM, "should not be zero")
+/* at `b' */
 real
-tri_cot(const real a[3], const real b[3], const real c[3]) { /* at `b' */
+tri_cot(const real a[3], const real b[3], const real c[3])
+{
 	real x, y, u[3], v[3];
 	y = 2 * tri_area(a, b, c);
 	vec_minus(a, b, u);
@@ -105,7 +117,8 @@ tri_cot(const real a[3], const real b[3], const real c[3]) { /* at `b' */
 }
 
 int
-tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], real bc[3], real ca[3]) {
+tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], real bc[3], real ca[3])
+{
 	vec_minus(b, a,   ab);
 	vec_minus(c, b,   bc);
 	vec_minus(a, c,   ca);
@@ -113,12 +126,14 @@ tri_edg(const real a[3], const real b[3], const real c[3], /**/ real ab[3], real
 }
 
 int
-tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3]) {
+tri_center(const real a[3], const real b[3], const real c[3], /**/ real center[3])
+{
 	return vec_mean3(a, b, c, /**/ center);
 }
 
 int
-tri_off(const real a[3], const real b[3], const real c[3], FILE *f) {
+tri_off(const real a[3], const real b[3], const real c[3], FILE *f)
+{
 	int status;
 	status = fputs("OFF\n"
 	    "3 1 0\n", f);
@@ -134,7 +149,8 @@ tri_off(const real a[3], const real b[3], const real c[3], FILE *f) {
 int
 tri_vect(const real a[3], const real b[3], const real c[3],
 const real u[3], const real v[3], const real w[3],
-FILE *f) {
+FILE *f)
+{
 	int status;
 	real x[3], y[3], z[3];
 	vec_plus(a, u, x);
@@ -162,7 +178,8 @@ FILE *f) {
 int
 tri_list(const real a[3], const real b[3], const real c[3],
 const real u[3], const real v[3], const real w[3],
-FILE *f) {
+FILE *f)
+{
 	if (fputs("LIST\n", f) == EOF)
 		ERR(CO_IO, "fail to write");
 	fputs("{\n", f);
@@ -177,7 +194,8 @@ FILE *f) {
 }
 
 int
-tri_3to2(const real a[3], const real b[3], const real c[3], /**/ real *ux, real *wx, real *wy) {
+tri_3to2(const real a[3], const real b[3], const real c[3], /**/ real *ux, real *wx, real *wy)
+{
 	real u[3], v[3], n[3], ey[3], nx[3], ny[3];
 	vec_minus(b, a, /**/ u);
 	vec_minus(c, a, /**/ v);
@@ -194,7 +212,8 @@ tri_3to2(const real a[3], const real b[3], const real c[3], /**/ real *ux, real 
 }
 
 int
-tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3], real ny[3]) {
+tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3], real ny[3])
+{
 	real u[3], v[3], n[3], ey[3];
 	vec_minus(b, a, /**/ u);
 	vec_minus(c, a, /**/ v);
@@ -208,7 +227,8 @@ tri_2to3(const real a[3], const real b[3], const real c[3], /**/ real nx[3], rea
 }
 
 int
-tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/ real *al, real *be) {
+tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/ real *al, real *be)
+{
 #   define sq(x) ((x)*(x))
 #   define SET(key, val) if ((key) != NULL) *(key) = (val)
 	real px, py, qy;
@@ -228,7 +248,8 @@ tri_2d_invariants(real bx, real cx, real cy, real ux, real wx, real wy, /**/ rea
 }
 
 int
-tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *al, real *be) {
+tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *al, real *be)
+{
 	real i, jx, jy;
 	real x, yx, yy;
 
@@ -239,7 +260,8 @@ tri_3d_invariants(const real a[3], const real b[3], const real c[3], const real 
 }
 
 real
-tri_edg_area(const real a[3], const real b[3], const real c[3]) {
+tri_edg_area(const real a[3], const real b[3], const real c[3])
+{
 	real A, s;
 	s = edg_sq(a, b);
 	A = tri_area(a, b, c);
@@ -248,7 +270,8 @@ tri_edg_area(const real a[3], const real b[3], const real c[3]) {
 }
 
 real
-tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+tri_alpha(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3])
+{
 	real A, B;
 	A = tri_area(a, b, c);
 	B = tri_area(u, v, w);
@@ -261,7 +284,8 @@ real be(real b, real c, real v, real w) {
 	return -(2*sqrt(b*c-4)*sqrt(v*w-4)-b*w-c*v+8)/8;
 }
 real
-tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3]) {
+tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], const real v0[3], const real w0[3])
+{
 	real b, c, v, w;
 	b = tri_edg_area(a, b0, c0);
 	c = tri_edg_area(a, c0, b0);
@@ -271,7 +295,8 @@ tri_beta(const real a[3], const real b0[3], const real c0[3], const real u[3], c
 }
 
 real
-tri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+tri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3])
+{
 	real al;
 
 	al = tri_alpha(a, b, c, u, v, w);
@@ -279,7 +304,8 @@ tri_lim_area(real Ka, real a3, real a4, const real a[3], const real b[3], const 
 }
 
 real
-tri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+tri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3])
+{
 	real al, be;
 
 	al = tri_alpha(a, b, c, u, v, w);
@@ -289,19 +315,22 @@ tri_lim_shear(real mu, real b1, real b2, const real a[3], const real b[3], const
 
 real
 tri_lim(real Ka, real a3, real a4, real mu, real b1, real b2,
-const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3]) {
+const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3])
+{
 	return tri_lim_area(Ka, a3, a4, a, b, c, u, v, w) + tri_lim_shear(mu, b1, b2, a, b, c, u, v, w);
 }
 
 static int
-tri2lphi(const real a[3], const real b[3], const real c[3], real *l, real *lp, real *p) {
+tri2lphi(const real a[3], const real b[3], const real c[3], real *l, real *lp, real *p)
+{
 	*l = edg_abs(a, b);
 	*lp = edg_abs(a, c);
 	*p = tri_angle(c, a, b);
 	return CO_OK;
 }
 int
-tri_abc(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *a0, real *b0, real *c0) {
+tri_abc(const real a[3], const real b[3], const real c[3], const real u[3], const real v[3], const real w[3], /**/ real *a0, real *b0, real *c0)
+{
 	real l0, lp0, p0, l, lp, p;
 
 	tri2lphi(a, b, c, &l0, &lp0, &p0);
