@@ -30,7 +30,7 @@ eq(const char *a, const char *b)
 int main(__UNUSED int argc, const char **v)
 {
 	const char *op;
-	real a[3], b[3], da[3], db[3], p[3];
+	real a[3], b[3], da[3], db[3], p[3], q[3];
 	argv = v;
 	argv++;
 	if (*argv == NULL) ER("mssing OP");
@@ -60,6 +60,12 @@ int main(__UNUSED int argc, const char **v)
 		vec(b);
 		vec(p);
 		printf(FMT "\n", edg_point_distance(a, b, p));
+	} else if (eq(op, "point_closest")) {
+		vec(a);
+		vec(b);
+		vec(p);
+		edg_point_closest(a, b, p, q);
+		vec_printf(q, FMT);
 	} else
 		ER("unknown operation '%s'", op);
 	return 0;
