@@ -6,7 +6,7 @@
 BEGIN {
 	#srand(123456)
 	n = 10
-	print "-x"
+	print "set -x"
 	for (i = 0; i < n; i++) {
 		ax = r(); ay = r(); az = r()
 		bx = r(); by = r(); bz = r()
