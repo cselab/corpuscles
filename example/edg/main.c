@@ -26,6 +26,7 @@ eq(const char *a, const char *b)
 {
 	return util_eq(a, b);
 }
+
 int main(__UNUSED int argc, const char **v)
 {
 	const char *op;
