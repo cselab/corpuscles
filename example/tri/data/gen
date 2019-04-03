@@ -1,0 +1,45 @@
+#!/bin/sh
+
+: ${AWK=awk}
+
+"$AWK" '
+BEGIN {
+	n = 10
+	for (i = 0; i < n; i++) {
+		ax = r(); ay = r(); az = r()
+		bx = r(); by = r(); bz = r()
+		cx = r(); cy = r(); cz = r()
+
+		ux = bx - ax
+		uy = by - ay
+		uz = bz  - az
+
+		vx = cx - ax
+		vy = cy - ay
+		vz = cz  - az
+
+		t0 = t1 = 1/2
+		proj()
+		write()
+
+		t0 = r(); t1 = 1 - t0
+		proj()
+		write()
+
+		px = r(); py = r(); pz = r()
+		write()
+	}
+}
+
+function proj() {
+	px = ax + t0*ux + t1*vx
+	py = ay + t0*uy + t1*vy
+	pz = az + t0*uz + t1*vz
+}
+
+function write() {
+	print "./closest", ax, ay, az, bx, by, bz, cx, cy, cz, px, py, pz
+}
+
+function r() { return -1 + 2*rand() }
+'
