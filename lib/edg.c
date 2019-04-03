@@ -63,9 +63,8 @@ edg_point_closest(const real a[3], const real b[3], const real p[3], real q[3])
 		return vec_copy(b, q);
 	if (t < 0.0)
 		return vec_copy(a, q);
-	x = (1 - t)*a[X] + t*b[X] - p[X];
-	y = (1 - t)*a[Y] + t*b[Y] - p[Y];
-	z = (1 - t)*a[Z] + t*b[Z] - p[Z];
+	x = (1 - t)*a[X] + t*b[X];
+	y = (1 - t)*a[Y] + t*b[Y];
+	z = (1 - t)*a[Z] + t*b[Z];
 	return vec_ini(x, y, z, q);
 }
-
