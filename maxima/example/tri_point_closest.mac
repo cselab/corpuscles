@@ -1,0 +1,20 @@
+load("co/vec.mac") $
+load("co/edg.mac") $
+
+vec_ini(b);
+vec_ini(c);
+
+a: [0, 0, 0];
+p: [x, y, z];
+
+u: b - a;
+v: c - a;
+
+q: t1 * u + t2 * v;
+
+gradef(F(x), 1/(2*F));
+E: F(edg_sq(p, q));
+
+e: [diff(E, t1),  diff(E, t2)];
+
+s: linsolve(e, [t1, t2]);
