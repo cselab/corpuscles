@@ -4,8 +4,9 @@
 
 "$AWK" '
 BEGIN {
-	srand(123456)
+	#srand(123456)
 	n = 10
+	print "-x"
 	for (i = 0; i < n; i++) {
 		ax = r(); ay = r(); az = r()
 		bx = r(); by = r(); bz = r()
@@ -28,6 +29,15 @@ BEGIN {
 		write()
 
 		px = r(); py = r(); pz = r()
+		write()
+
+		px = bx; py = by; pz = bz
+		write()
+
+		px = cx; py = cy; pz = cz
+		write()
+		
+		px = ax; py = ay; pz = az
 		write()
 	}
 }

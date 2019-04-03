@@ -208,7 +208,7 @@ cell2_push(T *q, int n, const real *x, const real *y)
 		if (clist_push(q->clist, i*ny + j, k) != CO_OK) {
 			MSG("ijk: %d %d", i, j);
 			MSG("ny: %d", ny);
-			ERR(CO_INDEX, "fail to push particle: " FMT " " FMT, x[k], y[k]);			
+			ERR(CO_INDEX, "fail to push particle: " FMT " " FMT, x[k], y[k]);
 		}
 	}
 	return CO_OK;
@@ -222,7 +222,7 @@ cell2_parts(T *q, real x, real y, int **a)
 	map(q, x, y, &i, &j);
 	if (clist_parts(q->clist, i*ny + j, a) != CO_OK) {
 		MSG("ijk: %d %d", i, j);
-		MSG("ny: %d", ny);		
+		MSG("ny: %d", ny);
 		ERR(CO_INDEX, "clist_parts failed" FMT " " FMT, x, y);
 	}
 	return CO_OK;
