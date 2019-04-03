@@ -36,6 +36,6 @@ main(__UNUSED int argc, const char **v0)
 	fputs("{\n", stdout);
 	tri_off(a, b, c, stdout);
 	edg_vect(p, q, stdout);
-	fputs("}\n, stdout);
+	fputs("}\n", stdout);
 	return 0;
 }
