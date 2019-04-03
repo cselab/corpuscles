@@ -4,6 +4,7 @@
 
 #include <real.h>
 #include <co/err.h>
+#include <co/edg.h>
 #include <co/vec.h>
 #include <co/tri.h>
 #include <co/macro.h>
@@ -30,6 +31,11 @@ main(__UNUSED int argc, const char **v0)
 	vec(c);
 	vec(p);
 	tri_point_closest(a, b, c, p, q);
-	vec_printf(q, FMT);
+
+	fputs("LIST\n", stdout);
+	fputs("{\n", stdout);
+	tri_off(a, b, c, stdout);
+	edg_vect(p, q, stdout);
+	fputs("}\n, stdout);
 	return 0;
 }
