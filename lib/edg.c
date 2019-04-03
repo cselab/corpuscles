@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "real.h"
 #include "co/err.h"
@@ -6,14 +7,39 @@
 
 #include "co/edg.h"
 
+enum {X, Y, Z};
+
 real edg_abs(const real a[3], const real b[3]) {
-    real u[3];
-    vec_minus(b, a, u);
-    return vec_abs(u);
+	real u[3];
+	vec_minus(b, a, u);
+	return vec_abs(u);
 }
 
 real edg_sq(const real a[3], const real b[3]) {
-    real u[3];
-    vec_minus(b, a, u);
-    return vec_dot(u, u);
+	real u[3];
+	vec_minus(b, a, u);
+	return vec_dot(u, u);
+}
+
+real edg_point_distance2(const real a[3], const real b[3], const real p[3])
+{
+	real t, s, x, y, z;
+
+	s = edg_sq (a, b);
+	if (s == 0)
+		return edg_sq(p, a);
+	t = ((b[X] - a[X])*(p[X] - a[X]) + (b[Y] - a[Y])*(p[Y] - a[Y]) + (b[Z] - a[Z])*(p[Z] - a[Z]))/s;
+	if (t > 1.0)
+		return edg_sq(p, b);
+	if (t < 0.0)
+		return edg_sq(p, a);
+	x = (1 - t)*a[X] + t*b[X] - p[X];
+	y = (1 - t)*a[Y] + t*b[Y] - p[Y];
+	z = (1 - t)*a[Z] + t*b[Z] - p[Z];
+	return x*x + y*y + z*z;
+}
+
+real edg_point_distance(const real a[3], const real b[3], const real p[3])
+{
+	return sqrt(edg_point_distance2(a, b, p));
 }
