@@ -35,4 +35,4 @@ real tri_lim(real Ka, real a3, real a4, real mu, real b1, real b2, const real[3]
 
 int tri_abc(const real[3], const real[3], const real[3], const real[3], const real[3], const real[3], /**/ real*, real*, real*);
 real tri_point_distance2(const real[3], const real[3], const real[3], const real[3]);
-real tri_point_distance((const real[3], const real[3], const real[3], const real[3]);
+real tri_point_distance(const real[3], const real[3], const real[3], const real[3]);
