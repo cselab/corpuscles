@@ -1,5 +1,5 @@
 #define T Cell3
-typedef struct Cell3 Cell3;
+typedef struct T T;
 
 int cell3_ppp_ini(const real lo[3], const real hi[3], real size, T**);
 int cell3_nnn_ini(const real lo[3], const real hi[3], real size, T**);

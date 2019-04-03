@@ -55,6 +55,7 @@ co/laplace.h\
 co/list/a.h\
 co/list/c.h\
 co/list/i.h\
+co/list/tri3.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\

@@ -1,5 +1,5 @@
 #define T Cell2
-typedef struct Cell2 Cell2;
+typedef struct T T;
 int cell2_nn_ini(const real lo[2], const real hi[2], real size, T**);
 int cell2_np_ini(const real lo[2], const real hi[2], real size, T**);
 int cell2_pn_ini(const real lo[2], const real hi[2], real size, T**);

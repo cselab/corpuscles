@@ -59,6 +59,7 @@ H.s.o\
 invariants.s.o\
 kernel.s.o\
 laplace.s.o\
+list/tri3.s.o\
 matrix.s.o\
 normal.s.o\
 obj.s.o\
@@ -133,6 +134,7 @@ H.d.o\
 invariants.d.o\
 kernel.d.o\
 laplace.d.o\
+list/tri3.d.o\
 matrix.d.o\
 normal.d.o\
 obj.d.o\
@@ -207,6 +209,7 @@ H.l.o\
 invariants.l.o\
 kernel.l.o\
 laplace.l.o\
+list/tri3.l.o\
 matrix.l.o\
 normal.l.o\
 obj.l.o\
