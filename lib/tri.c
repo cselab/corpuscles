@@ -358,12 +358,9 @@ tri_point_distance2(const real a[3], const real b[3], const real c[3], const rea
 
 	vec_minus(a, b, u);
 	vec_minus(a, c, v);
-	vec_minus(p, a, q);
-
 	B = vec_dot(v, u);
 	E = vec_dot(u, u);
 	C = vec_dot(v, v);
-
 	det = B*B - E*C;
 	if (det == 0) {
 		d1 = edg_point_distance2(a, b, p);
@@ -372,24 +369,20 @@ tri_point_distance2(const real a[3], const real b[3], const real c[3], const rea
 			return d1;
 		return d2;
 	}
-
+	vec_minus(p, a, q);
 	A = vec_dot(v, q);
 	D = vec_dot(u, q);
-
 	t1 = (D*C - A*B)/det;
 	t2 = (A*E - D*B)/det;
-
 	if (t1 < 0)
 		return edg_point_distance2(b, c, p);
 	if (t2 < 0)
 		return edg_point_distance2(a, b, p);
 	if (t1 + t2 > 1)
 		return edg_point_distance2(a, c, p);
-
 	x = q[X] + t1*u[X] + t2*v[X];
 	y = q[Y] + t1*u[Y] + t2*v[Y];
 	z = q[Z] + t1*u[Z] + t2*v[Z];
-
 	return x*x + y*y + z*z;
 }
 
