@@ -4,6 +4,7 @@
 
 "$AWK" '
 BEGIN {
+	srand(123456)
 	n = 10
 	for (i = 0; i < n; i++) {
 		ax = r(); ay = r(); az = r()
