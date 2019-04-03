@@ -7,6 +7,8 @@
 
 #include "co/edg.h"
 
+#define FMT CO_REAL_OUT
+
 enum
 {
 	X, Y, Z
@@ -67,4 +69,19 @@ edg_point_closest(const real a[3], const real b[3], const real p[3], real q[3])
 	y = (1 - t)*a[Y] + t*b[Y];
 	z = (1 - t)*a[Z] + t*b[Z];
 	return vec_ini(x, y, z, q);
+}
+
+int
+edg_vect(const real a[3], const real b[3], FILE *f)
+{
+	int status;
+	status = fputs("VECT\n"
+	    "1 2 0\n"
+	    "2\n"
+	    "0\n",  f);
+	if (status == EOF)
+		ERR(CO_IO, "fail to write");
+	vec_fprintf(a, f, FMT);
+	vec_fprintf(b, f, FMT);
+	return CO_OK;
 }
