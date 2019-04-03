@@ -356,8 +356,8 @@ tri_point_distance2(const real a[3], const real b[3], const real c[3], const rea
 	real x, y, z;
 	real d1, d2;
 
-	vec_minus(a, b, u);
-	vec_minus(a, c, v);
+	vec_minus(b, a, u);
+	vec_minus(c, a, v);
 	B = vec_dot(v, u);
 	E = vec_dot(u, u);
 	C = vec_dot(v, v);
@@ -370,16 +370,16 @@ tri_point_distance2(const real a[3], const real b[3], const real c[3], const rea
 		return d2;
 	}
 	vec_minus(p, a, q);
-	A = vec_dot(v, q);
-	D = vec_dot(u, q);
+	A = vec_dot(u, q);
+	D = vec_dot(v, q);
 	t1 = (D*C - A*B)/det;
 	t2 = (A*E - D*B)/det;
 	if (t1 < 0)
-		return edg_point_distance2(b, c, p);
+		return edg_point_distance2(a, c, p);
 	if (t2 < 0)
 		return edg_point_distance2(a, b, p);
 	if (t1 + t2 > 1)
-		return edg_point_distance2(a, c, p);
+		return edg_point_distance2(b, c, p);
 	x = q[X] + t1*u[X] + t2*v[X];
 	y = q[Y] + t1*u[Y] + t2*v[Y];
 	z = q[Z] + t1*u[Z] + t2*v[Z];
@@ -401,8 +401,8 @@ tri_point_closest(const real a[3], const real b[3], const real c[3], const real 
 	real x, y, z;
 	real d1, d2;
 
-	vec_minus(a, b, u);
-	vec_minus(a, c, v);
+	vec_minus(b, a, u);
+	vec_minus(c, a, v);
 	B = vec_dot(v, u);
 	E = vec_dot(u, u);
 	C = vec_dot(v, v);
@@ -415,18 +415,18 @@ tri_point_closest(const real a[3], const real b[3], const real c[3], const real 
 		return edg_point_closest(b, c, p, ans);
 	}
 	vec_minus(p, a, q);
-	A = vec_dot(v, q);
-	D = vec_dot(u, q);
+	A = vec_dot(u, q);
+	D = vec_dot(v, q);
 	t1 = (D*C - A*B)/det;
 	t2 = (A*E - D*B)/det;
 	if (t1 < 0)
-		return edg_point_closest(b, c, p, ans);
+		return edg_point_closest(a, c, p, ans);
 	if (t2 < 0)
 		return edg_point_closest(a, b, p, ans);
 	if (t1 + t2 > 1)
-		return edg_point_closest(a, c, p, ans);
+		return edg_point_closest(b, c, p, ans);
 	x = a[X] + t1*u[X] + t2*v[X];
-	y = b[Y] + t1*u[Y] + t2*v[Y];
-	z = c[Z] + t1*u[Z] + t2*v[Z];
+	y = a[Y] + t1*u[Y] + t2*v[Y];
+	z = a[Z] + t1*u[Z] + t2*v[Z];
 	return vec_ini(x, y, z, ans);
 }

@@ -10,6 +10,7 @@
 #include <co/util.h>
 
 #define FMT_IN   CO_REAL_IN
+#define FMT CO_REAL_OUT
 static const char **argv;
 
 static void
@@ -40,6 +41,7 @@ main(__UNUSED int argc, const char **v0)
 	const char *op;
 	real a[3], b[3], c[3], n[3], ex[3], ey[3];
 	real u[3], v[3], w[3];
+	real p[3], q[3];
 	real al, be;
 	real ax, bx, by;
 	real ux, vx, vy;
@@ -198,6 +200,25 @@ main(__UNUSED int argc, const char **v0)
 		vec(w);
 		tri_abc(a, b, c, u, v, w, &a0, &b0, &c0);
 		printf("%g %g %g\n", a0, b0, c0);
+	} else if (eq(op, "point_distance")) {
+		vec(a);
+		vec(b);
+		vec(c);
+		vec(p);
+		printf(FMT "\n", tri_point_distance(a, b, c, p));
+	} else if (eq(op, "point_distance2")) {
+		vec(a);
+		vec(b);
+		vec(c);
+		vec(p);
+		printf(FMT "\n", tri_point_distance2(a, b, c, p));
+	} else if (eq(op, "point_closest")) {
+		vec(a);
+		vec(b);
+		vec(c);
+		vec(p);
+		tri_point_closest(a, b, c, p, q);
+		vec_printf(q, FMT);
 	} else
 		ER("unknown operation '%s'", op);
 	return 0;
