@@ -121,4 +121,3 @@ surface_inside_fast(T *q, real u, real v, real w)
 	}
 	return m % 2;
 }
-
