@@ -27,10 +27,10 @@ int main(__UNUSED int argc, const char **argv)
 	Bbox *bbox;
 	real *x, *y, *z, *color;
 	real *lo, *hi;
-	real size = 0.5;
+	real size = 0.1;
 	real p[3];
 	real point[3], u[3];
-	int status, nt, nv, t;
+	int status, nt, nv, t, j, *tris;
 
 	argv++;
 	vec_argv(&argv, p);
@@ -45,7 +45,7 @@ int main(__UNUSED int argc, const char **argv)
 
 	vec_ini(size, size, size, u);
 	vec_add(u, hi);
-	vec_sub(u, lo);	
+	vec_sub(u, lo);
 
 	CALLOC(nt, &color);
 
@@ -56,8 +56,12 @@ int main(__UNUSED int argc, const char **argv)
 	status = tri3list_status(list);
 	MSG("status: %d", status);
 	if (status) {
+
+		tri3list_tris(list, &tris);
+		while ( (j = *tris++) != -1)
+			color[j] = 1;
 		t = tri3list_tri(list);
-		color[t] = 1;
+		color[t] = 2;
 		tri3list_point(list, point);
 		fputs("LIST{\n", stdout);
 		edg_vect(p, point, stdout);

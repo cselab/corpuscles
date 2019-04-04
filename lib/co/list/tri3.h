@@ -9,6 +9,7 @@ int tri3list_push(T*, He*, const real*, const real*, const real*);
 int tri3list_get(T*, real, real, real);
 int tri3list_status(T*);
 int tri3list_tri(T*);
+int tri3list_tris(T*, int**);
 int tri3list_point(T*, /**/ real[3]);
 
 #undef T

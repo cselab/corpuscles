@@ -224,6 +224,13 @@ tri3list_tri(T *q)
 }
 
 int
+tri3list_tris(T *q, int **p)
+{
+	*p = q->a;
+	return CO_OK;
+}
+
+int
 tri3list_point(T *q, real point[3])
 {
 	point[X] = q->point[X];
