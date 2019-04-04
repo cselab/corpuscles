@@ -45,7 +45,7 @@ surface_fin(T *q)
 
 int
 surface_update(T *q, He *he, const real *x, const real *y, const real *z)
-{	
+{
 	int n;
 
 	q->he = he;
@@ -71,15 +71,13 @@ surface_inside(T *q, real u, real v, real w)
 
 	eps = 1e-10;
 	he = q->he;
-	x = q->x; y = q->y; z = q->z;
+	x = q->x; 
+	y = q->y; 
+	z = q->z;
 	bbox = q->bbox;
 	vec_ini(u, v, w, /**/ d);
 	zm = bbox_zhi(bbox);
 	vec_ini(u, v, max(zm, w) + eps, /**/ e);
-
-	tri2list_tris(list, p[X], p[Z], &tris);
-	while ( (j = *tris++) != -1)
-	
 	n = he_nt(he);
 	for (t = m = 0; t < n; t++) {
 		he_tri_ijk(he, t, &i, &j, &k);
@@ -88,6 +86,39 @@ surface_inside(T *q, real u, real v, real w)
 		vec_get(k, x, y, z, c);
 		m += predicate_ray(d, e,   a, b, c);
 	}
-	
 	return m % 2;
 }
+
+#define max(a, b) ( (a) > (b) ? (a) : (b) )
+int
+surface_inside_fast(T *q, real u, real v, real w)
+{
+	int t, i, j, k, m;
+	He *he;
+	Bbox *bbox;
+	const real *x, *y, *z;
+	real a[3], b[3], c[3], d[3], e[3];
+	real zm, eps;
+	int *tris;
+
+	eps = 1e-10;
+	he = q->he;
+	x = q->x; 
+	y = q->y; 
+	z = q->z;
+	bbox = q->bbox;
+	vec_ini(u, v, w, /**/ d);
+	zm = bbox_zhi(bbox);
+	vec_ini(u, v, max(zm, w) + eps, /**/ e);
+	tri2list_tris(q->list, u, v, &tris);
+	m = 0;
+	while ( (t = *tris++) != -1) {
+		he_tri_ijk(he, t, &i, &j, &k);
+		vec_get(i, x, y, z, a);
+		vec_get(j, x, y, z, b);
+		vec_get(k, x, y, z, c);
+		m += predicate_ray(d, e,   a, b, c);
+	}
+	return m % 2;
+}
+
