@@ -40,13 +40,15 @@ enum
 	X, Y, Z
 };
 static int n;
-#define nx  (20)
-#define ny  (20)
-#define nz  (10)
+#define nx  (40)
+#define ny  (40)
+#define nz  (20)
 static const real c = 10;
 static const real mu = 1;
-static const real g[3] = {
-	10, 0, 0};
+static const real g[3] =
+{
+	10, 0, 0
+};
 static const real R = 0.2;
 static const real dt = 0.00025;
 static real lo[3] = {
@@ -71,28 +73,6 @@ rnd(real *x, real *y, real *z)
 		z[k]  = alg_rng_uniform(rng, lo[Z], hi[Z]);
 		k++;
 	}
-	return CO_OK;
-}
-
-static int
-grid(real *x, real *y, real *z)
-{
-	real x0, y0, z0, dx,a, b;
-	int i, j, k, m;
-	dx = (hi[X] - lo[X])/nx;
-	a = -0.2*dx;
-	b =   0.2*dx;
-	for (i = m = 0; i < nx; i++)
-		for (j = 0; j < ny; j++)
-			for (k = 0; k < nz; k++) {
-				x0 = lo[X] + (hi[X] - lo[X])*(i + 0.5)/nx;
-				y0 = lo[Y] + (hi[Y] - lo[Y])*(j + 0.5)/ny;
-				z0 = lo[Z] + (hi[Z] - lo[Z])*(k + 0.5)/nz;
-				x[m] = x0 + alg_rng_uniform(rng, a, b);
-				y[m] = y0 + alg_rng_uniform(rng, a, b);
-				z[m] = z0 + alg_rng_uniform(rng, a, b);
-				m++;
-			}
 	return CO_OK;
 }
 
