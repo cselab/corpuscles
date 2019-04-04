@@ -24,6 +24,7 @@ struct T
 {
 	He *he;
 	const real *x, *y, *z;
+	int *tris;
 
 	int ny, nz;
 	real lo[3], hi[3], size;
@@ -179,7 +180,7 @@ closest(T *q, int m, const real p[3], real t[3])
 int
 tri3list_get(T *q, real x, real y, real z)
 {
-	int i, j, k, ny, nz, status, tri, *a;
+	int i, j, k, ny, nz, status, tri, *tris, *tt;
 	real r[3], d2, m2, *point, size;
 
 	ny = q->ny;
@@ -187,7 +188,7 @@ tri3list_get(T *q, real x, real y, real z)
 	size = q->size;
 	point = q->point;
 	map(q, x, y, z, &i, &j, &k);
-	if (clist_parts(q->clist, IDX, &a) != CO_OK) {
+	if (clist_parts(q->clist, IDX, &tris) != CO_OK) {
 		MSG("ijk: %d %d %d", i, j, k);
 		MSG("nyz: %d %d", ny, nz);
 		ERR(CO_INDEX, "clist_parts failed" FMT " " FMT " " FMT, x, y, z);
@@ -196,7 +197,8 @@ tri3list_get(T *q, real x, real y, real z)
 	status = 0;
 	tri = -1;
 	vec_ini(x, y, z, r);
-	while ( (j = *a++) != -1) {
+	tt = tris;
+	while ( (j = *tt++) != -1) {
 		d2 = distance2(q, j, r);
 		if (d2 < m2) {
 			status = 1;
@@ -207,6 +209,7 @@ tri3list_get(T *q, real x, real y, real z)
 	}
 	q->status = status;
 	q->tri = tri;
+	q->tris = tris;
 	return CO_OK;
 }
 
@@ -226,7 +229,7 @@ tri3list_tri(T *q)
 int
 tri3list_tris(T *q, int **p)
 {
-	*p = q->a;
+	*p = q->tris;
 	return CO_OK;
 }
 
