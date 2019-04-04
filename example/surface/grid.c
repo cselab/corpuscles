@@ -27,7 +27,7 @@ main(int argc, const char **argv)
 	real chi[3] = {2, 2, 2};
 	real size = 0.2;
 
-	m  = 40;
+	m  = 50;
 	lo = -1;
 	hi =  1;
 	n = m*m*m;
@@ -50,7 +50,7 @@ main(int argc, const char **argv)
 				u[l] = x0;
 				v[l] = y0;
 				w[l]= z0;
-				color[l] = surface_inside(surface, u[l], v[l], w[l]);
+				color[l] = surface_inside_fast(surface, u[l], v[l], w[l]);
 				l++;
 			}
 		}
