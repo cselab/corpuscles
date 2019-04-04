@@ -7,6 +7,8 @@
 #include "co/he.h"
 #include "co/macro.h"
 #include "co/memory.h"
+#include "co/tri.h"
+#include "co/vec.h"
 
 #include "co/list/c.h"
 #include "co/list/tri3.h"
@@ -20,9 +22,15 @@ enum {
 
 struct T
 {
+	He *he;
+	const real *x, *y, *z;
+
 	int ny, nz;
 	real lo[3], hi[3], size;
 	Clist *clist;
+	int status;
+	int tri;
+	real point[3];
 };
 
 #define SIDE(n, D) \
@@ -92,40 +100,134 @@ map(T *q, real x, real y, real z, int *i, int *j, int *k)
 	return CO_OK;
 }
 
+static int
+get3(T *q, int m, real a[3], real b[3], real c[3])
+{
+	const real *x, *y, *z;
+	He *he;
+	int i, j, k;
+
+	he = q->he;
+	x = q->x;
+	y = q->y;
+	z = q->z;
+	he_tri_ijk(he, m, &i, &j, &k);
+	vec_get(i, x, y, z, a);
+	vec_get(j, x, y, z, b);
+	vec_get(k, x, y, z, c);
+	return CO_OK;
+}
+
+static int 
+cm(T *q, int m, /**/ real *u, real *v, real *w)
+{
+	real a[3], b[3], c[3], r[3];
+	get3(q, m, a, b, c);
+	tri_center(a, b, c, r);
+	*u = r[X];
+	*v = r[Y];
+	*w = r[Z];
+	return CO_OK;
+}
+
 #define IDX  i*ny*nz + j*nz + k
 int
 tri3list_push(T *q, He *he, const real *x, const real *y, const real *z)
 {
 	int i, j, k, m;
 	int ny, nz, n;
+	real u, v, w;
+
 	clist_reset(q->clist);
 	ny = q->ny;
 	nz = q->nz;
 	n = he_nv(he);
 
+	q->he = he;
+	q->x = x;
+	q->y = y;
+	q->z = z;
+
 	for (m = 0; m < n; m++) {
-		map(q, x[m], y[m], z[m], &i, &j, &k);
+		cm(q, m, &u, &v, &w);
+		map(q, u, v, w, &i, &j, &k);
 		if (clist_push(q->clist, IDX, m) != CO_OK) {
 			MSG("ijk: %d %d %d", i, j, k);
 			MSG("nyz: %d %d", ny, nz);
-			ERR(CO_INDEX, "fail to push particle: " FMT " " FMT " " FMT, x[m], y[m], z[m]);
+			ERR(CO_INDEX, "fail to push  traingle " FMT " " FMT " " FMT, u, v, w);
 		}
 	}
 	return CO_OK;
 }
 
-int
-tri3list_parts(T *q, real x, real y, real z)
+static real
+distance2(T *q, int m, const real p[3])
 {
-	int i, j, k, ny, nz;
+	real a[3], b[3], c[3];
+	get3(q, m, a, b, c);
+	return tri_point_distance2(a, b, c, p);
+}
+
+static int
+closest(T *q, int m, const real p[3], real t[3])
+{
+	real a[3], b[3], c[3];
+	get3(q, m, a, b, c);
+	return tri_point_closest(a, b, c, p, t);
+}
+
+int
+tri3list_get(T *q, real x, real y, real z)
+{
+	int i, j, k, ny, nz, status, tri, *a;
+	real r[3], d2, m, *point, size;
+
 	ny = q->ny;
 	nz = q->nz;
+	size = q->size;
+	point = q->point;
 	map(q, x, y, z, &i, &j, &k);
-/*	if ( clist_parts(q->clist, IDX, a) != CO_OK) {
+	if (clist_parts(q->clist, IDX, &a) != CO_OK) {
 		MSG("ijk: %d %d %d", i, j, k);
 		MSG("nyz: %d %d", ny, nz);
 		ERR(CO_INDEX, "clist_parts failed" FMT " " FMT " " FMT, x, y, z);
 	}
-*/
+	m = size*size;
+	status = 0;
+	tri = -1;
+	vec_ini(x, y, z, r);
+	while ( (j = *a++) != -1) {
+		d2 = distance2(q, j, r);
+		if (d2 < m) {
+			status = 1;
+			d2 = m;
+			closest(q, m, r, point);
+			tri = j;
+		}
+	}
+	q->status = status;
+	q->tri = tri;
+	return CO_OK;
+}
+
+
+int
+tri3list_status(T *q)
+{
+	return q->status;
+}
+
+int
+tri3list_tri(T *q)
+{
+	return q->tri;
+}
+
+int
+tri3list_point(T *q, real point[3])
+{
+	point[X] = q->point[X];
+	point[Y] = q->point[Y];
+	point[Z] = q->point[Z];
 	return CO_OK;
 }
