@@ -1,12 +1,14 @@
 #include <stdio.h>
 
 #include <real.h>
+
 #include <co/array.h>
 #include <co/bbox.h>
 #include <co/edg.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/list/tri3.h>
+#include <co/macro.h>
 #include <co/memory.h>
 #include <co/vec.h>
 #include <co/off.h>
@@ -18,7 +20,7 @@ enum
 	X, Y, Z
 };
 
-int main(void)
+int main(__UNUSED int argc, const char **argv)
 {
 	He *he;
 	Tri3List *list;
@@ -26,11 +28,14 @@ int main(void)
 	real *x, *y, *z, *color;
 	real *lo, *hi;
 	real size = 0.5;
-	real p[3] = {0.05, 1.03, 0.1};
+	real p[3];
 	real point[3], u[3];
 	int status, nt, nv, t;
 
+	argv++;
+	vec_argv(&argv, p);
 	y_inif(stdin, &he, &x, &y, &z);
+
 	nt = he_nt(he);
 	nv = he_nv(he);
 	bbox_ini(&bbox);

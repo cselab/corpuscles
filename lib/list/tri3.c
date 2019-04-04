@@ -141,7 +141,7 @@ tri3list_push(T *q, He *he, const real *x, const real *y, const real *z)
 	clist_reset(q->clist);
 	ny = q->ny;
 	nz = q->nz;
-	n = he_nv(he);
+	n = he_nt(he);
 
 	q->he = he;
 	q->x = x;

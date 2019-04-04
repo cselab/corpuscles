@@ -63,6 +63,13 @@ int vec_add(const real a[3], /*io*/ real b[3]) {
     return CO_OK;
 }
 
+int vec_sub(const real a[3], /*io*/ real b[3]) {
+    b[X] -= a[X];
+    b[Y] -= a[Y];
+    b[Z] -= a[Y];
+    return CO_OK;
+}
+
 /* y += a*x */
 int vec_axpy(real a, const real x[3], /*io*/ real y[3]) {
     y[X] += a*x[X];
