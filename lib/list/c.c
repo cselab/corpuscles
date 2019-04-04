@@ -129,21 +129,36 @@ int clist_push(T *q, int cell, int part)
 int clist_len(T *q, int cell)
 {
 	Ilist **p;
+	int n;
+
 	p = q->p;
+	n = q->n;
+	if (cell >= n) ERR(CO_INDEX, "cell=%d >= n=%d", cell, n);
+	if (cell < 0) ERR(CO_INDEX, "cell=%d < 0", cell);
 	return ilist_len(p[cell]);
 }
 
 int clist_cells(T *q, int cell, int **a)
 {
 	Ilist **c;
+	int n;
+
 	c = q->c;
+	n = q->n;
+	if (cell >= n) ERR(CO_INDEX, "cell=%d >= n=%d", cell, n);
+	if (cell < 0) ERR(CO_INDEX, "cell=%d < 0", cell);
 	return ilist_head(c[cell], a);
 }
 
 int clist_parts(T *q, int cell, int **a)
 {
 	Ilist **p;
+	int n;
+
 	p = q->p;
+	n = q->n;
+	if (cell >= n) ERR(CO_INDEX, "cell=%d >= n=%d", cell, n);
+	if (cell < 0) ERR(CO_INDEX, "cell=%d < 0", cell);
 	return ilist_head(p[cell], a);
 }
 

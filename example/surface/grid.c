@@ -23,8 +23,11 @@ main(int argc, const char **argv)
 	real p[3];
 	int m, n, i, j, k, l;
 	real lo, hi, dx, x0, y0, z0;
+	real clo[3] = {-1, -1, -1};
+	real chi[3] = {1, 1, 1};
+	real size = 0.2;
 
-	m  = 30;
+	m  = 5;
 	lo = -1;
 	hi =  1;
 	n = m*m*m;
@@ -34,7 +37,7 @@ main(int argc, const char **argv)
 	CALLOC(n, &color);
 
 	y_inif(stdin, &he, &x, &y, &z);
-	surface_ini(&surface);
+	surface_ini(clo, chi, size, &surface);
 	surface_update(surface, he, x, y, z);
 
 	dx = (hi - lo)/(m - 1);
@@ -47,7 +50,7 @@ main(int argc, const char **argv)
 				u[l] = x0;
 				v[l] = y0;
 				w[l]= z0;
-				color[l] = surface_inside(surface, u[l], v[l], w[l]);
+				color[l] = surface_inside_fast(surface, u[l], v[l], w[l]);
 				l++;
 			}
 		}
@@ -66,3 +69,9 @@ main(int argc, const char **argv)
 	surface_fin(surface);
 	return 0;
 }
+
+/*
+
+vlagrind ./grid < /u/0.off > q
+
+*/

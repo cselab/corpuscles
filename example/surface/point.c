@@ -19,11 +19,14 @@ main(int argc, const char **v)
 	He *he;
 	real *x, *y, *z;
 	real p[3];
+	real lo[3] = {-3, -3, -3};
+	real hi[3] = {3, 3, 3};
+	real size = 0.25;
 
 	v++;
 	vec_argv(&v, p);
 	y_inif(stdin, &he, &x, &y, &z);
-	surface_ini(&surface);
+	surface_ini(lo, hi, size, &surface);
 	surface_update(surface, he, x, y, z);
 
 	printf("%d\n", surface_inside(surface, p[X], p[Y], p[Z]));

@@ -61,3 +61,8 @@ real
 bbox_xhi(T *q) {
 	return q->hi[X];
 }
+
+real
+bbox_zhi(T *q) {
+	return q->hi[Z];
+}
