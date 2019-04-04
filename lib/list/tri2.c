@@ -137,4 +137,3 @@ tri2list_tris(T *q, real x, real y, int **ptris)
 	*ptris = tris;
 	return CO_OK;
 }
-
