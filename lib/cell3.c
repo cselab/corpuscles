@@ -136,7 +136,7 @@ int brn_ppn(T *q, real x, real y, __UNUSED real z, real *u, real *v, __UNUSED re
 }
 
 static
-int brn_pnn(T *q, real x, __UNUSED real y, __UNUSED real z, real *u, real *v, real *w)
+int brn_pnn(T *q, real x, __UNUSED real y, __UNUSED real z, real *u, __UNUSED real *v, __UNUSED real *w)
 {
 	real lx;
 	lx = q->hi[X] - q->lo[X];
