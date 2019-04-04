@@ -8,6 +8,7 @@ int vec_plus(const real[3], const real[3], /**/ real[3]);
 int vec_minus(const real[3], const real[3], /**/ real[3]);
 
 int vec_add(const real[3], /*io*/ real[3]);
+int vec_sub(const real[3], /*io*/ real[3]);
 /* y += a*x */
 int vec_axpy(real a, const real x[3], /*io*/ real y[3]);
 /* x = -x */

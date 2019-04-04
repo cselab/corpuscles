@@ -388,7 +388,6 @@ static int gen3(int K,  int M,  int N, int (*bc)(int, int, int, int*, int*, int*
 					if (bc(K, M, N, &i, &j, &k))
 						alist_push_uniq(a, i*M*N + j*N + k,  x*M*N + y*N + z);
 				}
-	MALLOC(1, &q);
 	clist_ini(K*M*N, &q);
 	clist_alist_own(q, a);
 	*pq = q;

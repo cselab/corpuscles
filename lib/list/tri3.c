@@ -180,7 +180,7 @@ int
 tri3list_get(T *q, real x, real y, real z)
 {
 	int i, j, k, ny, nz, status, tri, *a;
-	real r[3], d2, m, *point, size;
+	real r[3], d2, m2, *point, size;
 
 	ny = q->ny;
 	nz = q->nz;
@@ -192,17 +192,17 @@ tri3list_get(T *q, real x, real y, real z)
 		MSG("nyz: %d %d", ny, nz);
 		ERR(CO_INDEX, "clist_parts failed" FMT " " FMT " " FMT, x, y, z);
 	}
-	m = size*size;
+	m2 = size*size;
 	status = 0;
 	tri = -1;
 	vec_ini(x, y, z, r);
 	while ( (j = *a++) != -1) {
 		d2 = distance2(q, j, r);
-		if (d2 < m) {
+		if (d2 < m2) {
 			status = 1;
-			d2 = m;
-			closest(q, m, r, point);
+			m2 = d2;
 			tri = j;
+			closest(q, j, r, point);
 		}
 	}
 	q->status = status;
