@@ -8,9 +8,7 @@
 #include <co/err.h>
 #include <co/memory.h>
 #include <co/macro.h>
-#include <co/punto.h>
 #include <co/kernel.h>
-#include <co/cell3.h>
 
 #include <alg/rng.h>
 
@@ -19,5 +17,10 @@ static AlgRng *rng;
 int
 main(void)
 {
+	real lo, hi;
+
+	lo = -1; hi = 1;
+
 	alg_rng_ini(&rng);
+	alg_rng_fin(rng);
 }

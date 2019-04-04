@@ -1,5 +1,5 @@
 .POSIX:
-include ../../../conf.mk
+include ../../conf.mk
 M = main
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
