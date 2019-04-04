@@ -9,7 +9,7 @@
 #include <co/memory.h>
 #include <co/macro.h>
 #include <co/punto.h>
-#include </u/co/lib/co/kernel.h>
+#include <co/kernel.h>
 #include <co/cell3.h>
 
 #include <alg/rng.h>
