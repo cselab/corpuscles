@@ -46,6 +46,17 @@ bbox_update(T *q, int n, const real *x, const real *y, const real *z)
 }
 
 int
+bbox_inside(T *q, real x, real y, real z)
+{
+#      define CM(d, D) (lo[D] < d && d < hi[D])
+	real *lo, *hi;
+
+	lo = q->lo;
+	hi = q->hi;
+	return  CM(x, X) && CM(y, Y) && CM(z, Z);
+}
+
+int
 bbox_lo(T *q, real **p) {
 	*p = q->lo;
 	return CO_OK;

@@ -107,6 +107,8 @@ surface_inside_fast(T *q, real u, real v, real w)
 	y = q->y; 
 	z = q->z;
 	bbox = q->bbox;
+	if (!bbox_inside(bbox, u, v, w)) return 0;
+
 	vec_ini(u, v, w, /**/ d);
 	zm = bbox_zhi(bbox);
 	vec_ini(u, v, max(zm, w) + eps, /**/ e);

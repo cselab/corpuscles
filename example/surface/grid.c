@@ -20,7 +20,7 @@ main(int argc, const char **argv)
 	Surface *surface;
 	He *he;
 	real *x, *y, *z, *u, *v, *w, *color;
-	real p[3];
+
 	int m, n, i, j, k, l;
 	real lo, hi, dx, x0, y0, z0;
 	real clo[3] = {-2, -2, -2};
@@ -72,6 +72,7 @@ main(int argc, const char **argv)
 
 /*
 
+make clean lint
 9 time ./grid < /u/1.off > q
 punto -c q
 
