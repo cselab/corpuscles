@@ -74,6 +74,14 @@ main(int argc, const char **argv)
 
 make clean lint
 9 time ./grid < /u/1.off > q
-punto -c q
+punto -c p
+wc -l p
+wc -l q
+
+gnuplot -p <<'!'
+plot "q" u 1:4, "p" u 1:4
+!
+
+diff p q
 
 */
