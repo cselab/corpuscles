@@ -1,0 +1,31 @@
+kill(all)$
+R: 1;
+d: 1/10;
+p0: acos(-d/R);
+assume(cos(d) < %pi);
+
+it(e):=integrate(e, 't, 0, 2*%pi);
+ip(e):=integrate(e, 'p, p0, %pi);
+ir(e, p):=integrate('r^2*sin('p)*e, 'r, -d/cos('p), R);
+
+i3(e):=it(ip(ir(e, 'p)));
+i3(1);
+
+E(r, t, p):=1;
+quad(f, x, a, b):=quad_qag(f, 'r, a, b, 3, 'epsrel = 1e-8)[1];
+F(p, t):=block([a, b, f], local(f),
+	a: -d/cos(p),
+	b: R,
+	f(r):=r^2*sin(p)*E(r, t, p),
+	quad(f, 'r, a, b));
+G(t):=block([a, b, f], local(f),
+	a: p0,
+	b: %pi,
+	f(p):=F(p, t),
+	quad(f, 'p, a, b));H;
+trace(G);
+H: block([a, b, f], local(f),
+	a: 0,
+	b: 2*%pi,
+	f(t):=G(t),
+	quad(f, 't, a, b));
