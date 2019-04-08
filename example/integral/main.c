@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <real.h>
+
+#include <co/arg.h>
+#include <co/err.h>
+#include <co/integral/sph_plane.h>
+
+#define FMT CO_REAL_OUT
+
+char *argv0;
+int
+main(int argc, char **argv)
+{
+	real r, d, volume;
+	SphPlane *integ;
+
+	r = 1.0;
+	d = 0.0;
+	sph_plane_ini(r, &integ);
+	sph_plane_volume(integ, d, &volume);
+
+	printf(FMT "\n", volume);
+	sph_plane_fin(integ);
+}

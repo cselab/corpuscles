@@ -50,6 +50,7 @@ sph_plane_fin(T *q)
 	alg_integration_fin(q->ih);
 	alg_integration_fin(q->ig);
 	FREE(q);
+	return CO_OK;
 }
 
 static real
