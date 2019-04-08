@@ -103,7 +103,7 @@ main(void)
 	alg_integration_ini(type, &qq.ih);
 	alg_integration_ini(type, &qq.ig);
 
-	alpha = 1;
+	alpha = 10;
 	qq.param = &alpha;
 
 	ans = q(&qq);
