@@ -16,7 +16,7 @@ main(int argc, char **argv)
 	SphPlane *integ;
 
 	r = 1.0;
-	d = 0.0;
+	d = 0.1;
 	sph_plane_ini(r, &integ);
 	sph_plane_volume(integ, d, &volume);
 

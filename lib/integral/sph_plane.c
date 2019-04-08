@@ -104,7 +104,7 @@ sph_plane_apply(T *q, real d, real (*E)(real, real, real, real, void*), void *pa
 
 	R = q->R;
 	if (d < 0)
-		ERR(CO_NUM, "d < 0");
+		ERR(CO_NUM, "d=" FMT "< 0", d);
 	if (d > R)
 		ERR(CO_NUM, "d=" FMT " > R=" FMT, d, R);
 	q->E = E;
