@@ -26,7 +26,7 @@ struct T
 	real R, d;
 	real p0, p, t;
 	void *param;
-	real (*E)(real, real, real, real, void*);
+	real (*E)(real, real, real, void*);
 };
 
 int
@@ -66,7 +66,7 @@ f(real r, void *v)
 	x  = r*cos(t)*sin(p);
 	y = r*sin(t)*sin(p);
 	z = r*cos(p);
-	return r*r*sin(p)*q->E(x, y, z, q->d, param);
+	return r*r*sin(p)*q->E(x, y, z, param);
 }
 
 static real
@@ -97,7 +97,7 @@ h(real tt, void *v)
 	return res;
 }
 int
-sph_plane_apply(T *q, real d, real (*E)(real, real, real, real, void*), void *param, /**/ real *res)
+sph_plane_apply(T *q, real d, real (*E)(real, real, real, void*), void *param, /**/ real *res)
 {
 	int status;
 	real R, a, b;
@@ -121,7 +121,7 @@ sph_plane_apply(T *q, real d, real (*E)(real, real, real, real, void*), void *pa
 }
 
 static real
-one(__UNUSED real x, __UNUSED real y, __UNUSED real z, __UNUSED real d, __UNUSED void *param)
+one(__UNUSED real x, __UNUSED real y, __UNUSED real z, __UNUSED void *param)
 {
 	return 1;
 }
