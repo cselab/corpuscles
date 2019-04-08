@@ -1,6 +1,6 @@
 kill(all)$
 R: 1;
-d: 1/10;
+d: 0.1;
 p0: acos(-d/R);
 assume(cos(d) < %pi);
 
