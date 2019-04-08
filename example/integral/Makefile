@@ -1,6 +1,6 @@
 .POSIX:
 include ../../conf.mk
-M = main
+M = plane plane2
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`  `alg.conf --libs $(PREC)` 
@@ -19,7 +19,7 @@ all: $M
 
 test: $M; atest test/*
 install:
-run: $M; @co.run ./main
+run: $M; @co.run ./plane
 
 .PHONY: clean test install run
 clean:; rm -f $M $(M:=.o)
