@@ -31,6 +31,7 @@ sph_plane_ini(real R, real (*E)(real x, real y, real z, real d, void*), void *pa
 
 	MALLOC(1, &q);
 	q->R = R;
+	q->E = E;
 	alg_integration_ini(TYPE, &q->ie);
 	alg_integration_ini(TYPE, &q->ih);
 	alg_integration_ini(TYPE, &q->ig);
