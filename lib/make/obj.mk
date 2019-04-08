@@ -56,6 +56,7 @@ f/volume_normal.s.o\
 f/wlc.s.o\
 gts.s.o\
 H.s.o\
+integral/sph_plane.s.o\
 invariants.s.o\
 kernel.s.o\
 laplace.s.o\
@@ -132,6 +133,7 @@ f/volume_normal.d.o\
 f/wlc.d.o\
 gts.d.o\
 H.d.o\
+integral/sph_plane.d.o\
 invariants.d.o\
 kernel.d.o\
 laplace.d.o\
@@ -208,6 +210,7 @@ f/volume_normal.l.o\
 f/wlc.l.o\
 gts.l.o\
 H.l.o\
+integral/sph_plane.l.o\
 invariants.l.o\
 kernel.l.o\
 laplace.l.o\

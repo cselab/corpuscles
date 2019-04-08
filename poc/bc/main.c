@@ -13,7 +13,9 @@
 #define PI (3.141592653589793)
 #define FMT CO_REAL_OUT
 
-struct Q
+#define T SphPlane
+
+struct T
 {
 	AlgIntegration *iq, *ih, *ig;
 	real R, d;
@@ -21,7 +23,7 @@ struct Q
 	void *param;
 	real (*E)(real, real, real, void*);
 };
-typedef struct Q Q;
+typedef struct T T;
 
 static real
 one(real r, real p, real t, void *param)
@@ -36,7 +38,7 @@ f(real r, void *v)
 {
 	void *param;
 	real p, t;
-	Q *qq;
+	T *qq;
 	qq = v;
 
 	p = qq->p;
@@ -49,7 +51,7 @@ static real
 g(real pp, void *v)
 {
 	real a, b, res;
-	Q *qq;
+	T *qq;
 
 	qq = v;
 	qq->p = pp;
@@ -63,7 +65,7 @@ static real
 h(real tt, void *v)
 {
 	real a, b, res;
-	Q *qq;
+	T *qq;
 
 	qq = v;
 	qq->t = tt;
@@ -77,21 +79,25 @@ static real
 q(void *v)
 {
 	real a, b, res;
-	Q *qq;
+	T *qq;
 
 	qq = v;
 	a = 0;
 	b = 2*PI;
 
 	alg_integration_apply(qq->iq, a, b, h, v, &res);
-	return res;	
+	return res;
 }
+
+int sph_plane_ini(real r, real (*fun)(real, real, real, void*), void *param, T**);
+int sph_plane_apply(real d);
+int sph_plane_fin(T*);
  
 int
 main(void)
 {
 	real ans, alpha;
-	Q qq;
+	T qq;
 	int type;
 
 	qq.R = 1;
