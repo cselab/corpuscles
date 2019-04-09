@@ -15,9 +15,15 @@ static Fun  dw[][3] = {
 };
 
 
+static Fun  dwr[][3] = {
+	{        NULL,  quintic_dwr2,    quintic_dwr3},
+	{wendland6_dwr1, wendland6_dwr2, wendland6_dwr3},
+	{yang_dwr1, yang_dwr2, yang_dwr3} 
+};
+
 struct T {
 	int dim;
-	Fun w, dw;
+	Fun w, dw, dwr;
 };
 
 int
@@ -50,6 +56,7 @@ kernel_ini(int dim, int type, T **pq)
 	q->dim = dim;
 	q->w = w[type][dim]; 
 	q->dw = dw[type][dim];
+	q->dwr = dwr[type][dim];
 	*pq = q;
 	return CO_OK;
 }
@@ -104,4 +111,10 @@ real
 kernel_dw(T *q, real c, real x)
 { 
 	return q->dw(c, x); 
+}
+
+real 
+kernel_dwr(T *q, real c, real x)
+{ 
+	return q->dwr(c, x); 
 }

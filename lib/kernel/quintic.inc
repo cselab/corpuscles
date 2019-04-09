@@ -42,3 +42,10 @@ static real quintic_dw3(real c, real x) {
     q = 3*fabs(x)/c;
     return 3 * quintic_3d * quintic_dw0(q) / (c*c*c*c);
 }
+
+static real quintic_dwr2(real c, real x) {
+	return quintic_dw2(c, x)/x;
+}
+static real quintic_dwr3(real c, real x) {
+	return quintic_dw3(c, x)/x;
+}
