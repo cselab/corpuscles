@@ -7,24 +7,17 @@ static Fun   w[][3] = {
 	{yang_w1,  yang_w2, yang_w3}
 };
 
-
-
-
 static Fun  dw[][3] = {
 	{        NULL,  quintic_dw2,    quintic_dw3},
 	{wendland6_dw1, wendland6_dw2, wendland6_dw3},
 	{yang_dw1, yang_dw2, yang_dw3}
 };
 
-
-
-
 static Fun  dwr[][3] = {
 	{        NULL,  quintic_dwr2,    quintic_dwr3},
 	{wendland6_dwr1, wendland6_dwr2, wendland6_dwr3},
 	{yang_dwr1, yang_dwr2, yang_dwr3}
 };
-
 
 
 struct T {
