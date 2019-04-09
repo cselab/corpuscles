@@ -52,7 +52,9 @@ fc(real r, real x, real y, real z)
 static real
 fdx(real r, real x, real y, real z)
 {
-	return -1/d*wd(r)* sq(x/r) * z;
+	real d0;
+	d0 = d < 0.1 ? 0.1 : d;
+	return wd(r)/r*(1 - z/d0);
 }
 
 static real
@@ -89,7 +91,7 @@ mc(real d0)
 		r2 = x*x + y*y + z*z;
 		if (r2 > R*R) continue;
 		r = sqrt(r2);
-		g = f(r, -x, -y, -z);
+		g = f(r, x, y, z);
 		he_sum_add(sum, g);
 	}
 	l = hi - lo;

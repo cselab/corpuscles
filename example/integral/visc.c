@@ -10,6 +10,7 @@
 #define FMT CO_REAL_OUT
 
 const real R = 1.0;
+const real eps = 0.1;
 
 static real
 sq(real x)
@@ -24,11 +25,27 @@ wc(real r)
 }
 
 static real
+wd(real r)
+{
+	return sq(1 - r/R);
+}
+
+static real
 E(real x, real y, real z, void *p)
 {
 	real r;
 	r = sqrt(sq(x) + sq(y) + sq(z));
 	return -wc(r)*z/r;
+}
+
+static real
+G(real x, real y, real z, void *p)
+{
+	real r, d, d0;
+	d = *(real*)p;
+	d0 = d/R < eps ? R*eps : d;
+	r = sqrt(sq(x) + sq(y) + sq(z));
+	return wd(r)/r*(1 - z/d0);
 }
 
 char *argv0;
@@ -45,7 +62,7 @@ main(int argc, char **argv)
 	hi = 1;
 	for (i = 0; i < n; i++) {
 		d = lo + (hi - lo)/(n - 1)*i;
-		sph_plane_apply(integ, d, E, NULL, &res);
+		sph_plane_apply(integ, d, G, &d, &res);
 		printf(FMT "\n", res);
 	}
 	sph_plane_fin(integ);
