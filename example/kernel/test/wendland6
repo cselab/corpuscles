@@ -1,0 +1,2 @@
+# nTEST: wendland6
+co.run co.run ./main -n 100 -l -3 -h 4 -c 2 3 wendland | uscale 100 > main.out.txt

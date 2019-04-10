@@ -12,6 +12,7 @@ err.mac\
 co.mac\
 off.mac\
 tri.mac\
+kernel.mac\
 loop.mac\
 punto.mac\
 ten.mac\
