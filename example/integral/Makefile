@@ -20,6 +20,7 @@ all: $M
 test: $M; atest test/*
 install:
 run: $M; @co.run ./plane
+lint:; make CFLAGS='-Wall -Wextra -O2'
 
-.PHONY: clean test install run
+.PHONY: clean test install run lint
 clean:; rm -f $M $(M:=.o)

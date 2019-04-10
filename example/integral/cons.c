@@ -6,6 +6,7 @@
 #include <co/arg.h>
 #include <co/err.h>
 #include <co/integral/sph_plane.h>
+#include <co/macro.h>
 
 #define FMT CO_REAL_OUT
 
@@ -24,16 +25,16 @@ wc(real r)
 }
 
 static real
-E(real x, real y, real z, void *p)
+E(real x, real y, real z, void __UNUSED *p)
 {
 	real r;
 	r = sqrt(sq(x) + sq(y) + sq(z));
 	return -wc(r)*z/r;
 }
 
-char *argv0;
+
 int
-main(int argc, char **argv)
+main(void)
 {
 	real d, lo, hi, res;
 	int i, n;
