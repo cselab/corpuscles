@@ -44,8 +44,8 @@ static real quintic_dw3(real c, real x) {
 }
 
 static real quintic_dwr2(real c, real x) {
-	return quintic_dw2(c, x)/x;
+	return quintic_dw2(c, x)/fabs(x);
 }
 static real quintic_dwr3(real c, real x) {
-	return quintic_dw3(c, x)/x;
+	return quintic_dw3(c, x)/fabs(x);
 }

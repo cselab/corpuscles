@@ -89,7 +89,7 @@ kernel_argv(char ***p,  T **pq)
 	else
 		ERR(CO_INDEX, "unknown kernal type: '%s'", stype);
 
-	return kernel_ini(dim, type, pq);
+	return kernel_ini(dim, type, pq); 
 }
 
 

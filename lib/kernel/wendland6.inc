@@ -22,7 +22,7 @@ static real wendland6_dw1(real c, real x) {
 	else return 0;
 }
 static real wendland6_dwr1(real c, real x) {
-	return wendland6_dw1(c, x)/x;
+	return wendland6_dw1(c, x)/fabs(x);
 }
 
 /* 2D and 3D */
@@ -55,8 +55,8 @@ static real wendland6_dw3(real c, real x) {
 	return wendland6_3d * wendland6_dw0(q) / (c*c*c*c);
 }
 static real wendland6_dwr2(real c, real x) {
-	return wendland6_dw2(c, x)/x;
+	return wendland6_dw2(c, x)/fabs(x);
 }
 static real wendland6_dwr3(real c, real x) {
-	return wendland6_dw3(c, x)/x;
+	return wendland6_dw3(c, x)/fabs(x);
 }

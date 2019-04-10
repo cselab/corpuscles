@@ -47,11 +47,11 @@ static real yang_dw3(real c, real x) {
 }
 
 static real yang_dwr1(real c, real x) {
-	return yang_dw1(c, x)/x;
+	return yang_dw1(c, x)/fabs(x);
 }
 static real yang_dwr2(real c, real x) {
-	return yang_dw2(c, x)/x;
+	return yang_dw2(c, x)/fabs(x);
 }
 static real yang_dwr3(real c, real x) {
-	return yang_dw3(c, x)/x;
+	return yang_dw3(c, x)/fabs(x);
 }
