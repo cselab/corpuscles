@@ -1,52 +1,78 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <tgmath.h>
-#include <real.h>
 
+#include <real.h>
 #include <co/arg.h>
 #include <co/err.h>
+#include <co/memory.h>
 #include <co/integral/sph_plane.h>
+
+#include <alg/spline.h>
 
 #define FMT CO_REAL_OUT
 
-const real R = 1.0;
 
-static real
-sq(real x)
-{
-	return x*x;
-}
+/*
+	r/|r| * dw = z*dwr
+	R, Fz(param, r), param
+	r, normal, point return Force
 
-static real
-wc(real r)
+*/
+
+#define T PreCons
+const int n = 100;
+const int type =  STEFFEN;
+
+typedef struct T T;
+struct T
 {
-	return 1 - r/R;
-}
+	AlgSpline *s;
+};
 
 static real
 E(real x, real y, real z, void *p)
 {
 	real r;
-	r = sqrt(sq(x) + sq(y) + sq(z));
-	return -wc(r)*z/r;
+	return r;
 }
 
-char *argv0;
+int
+pre_cons_ini(real R, real (*F)(void*, real), void *param, T  **pq)
+{
+	T *q;
+	real *x, *y, res, d;
+	int i;
+
+	MALLOC(1, &q);
+	SphPlane *integ;
+	sph_plane_ini(R, &integ);
+	MALLOC(n, &x);
+	MALLOC(n, &y);
+	alg_spline_ini(n, x, y, type, &q->s);
+	for (i = 0; i < n; i++) {
+		d = R/(n - 1)*i;
+		sph_plane_apply(integ, d, E, NULL, &res);
+		x[i] = d;
+		y[i] = res;
+	}
+	sph_plane_fin(integ);
+	FREE(x);
+	FREE(y);
+
+	*pq = q;
+	return CO_OK;
+}
+
+int
+pre_cons_fin(T *q)
+{
+	alg_spline_fin(q->s);
+	FREE(q);
+}
+
 int
 main(int argc, char **argv)
 {
-	real d, lo, hi, res;
-	int i, n;
-	SphPlane *integ;
-	sph_plane_ini(R, &integ);
 
-	n = 200;
-	lo = 0; 
-	hi = 1;
-	for (i = 0; i < n; i++) {
-		d = lo + (hi - lo)/(n - 1)*i;
-		sph_plane_apply(integ, d, E, NULL, &res);
-		printf(FMT "\n", res);
-	}
-	sph_plane_fin(integ);
 }
