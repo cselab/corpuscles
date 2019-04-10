@@ -13,45 +13,56 @@ static real yang_dw0(real q) {
 	else if (q < 2) return -3*pow(2-q,2);
 	else return 0;
 }
+static real yang_dwr0(real q) {
+	if (q < 1) return 3*(3*q-4);
+	else if (q < 2) return -3*pow(2-q,2)/q;
+	else return 0;
+}
 
 static real yang_w1(real c, real x) {
 	real q;
 	q = 2*fabs(x)/c;
-	return yang_1d * yang_w0(q) / c;
+	return yang_1d*yang_w0(q)/c;
 }
 static real yang_w2(real c, real x) {
 	real q;
 	q = 2*fabs(x)/c;
-	return yang_2d * yang_w0(q) / (c*c);
+	return yang_2d*yang_w0(q)/(c*c);
 }
 static real yang_w3(real c, real x) {
 	real q;
 	q = 2*fabs(x)/c;
-	return yang_3d * yang_w0(q) / (c*c*c);
+	return yang_3d*yang_w0(q)/(c*c*c);
 }
 
 static real yang_dw1(real c, real x) {
 	real q;
 	q = 2*fabs(x)/c;
-	return 2 * yang_2d * yang_dw0(q) / (c*c);
+	return 2*yang_2d*yang_dw0(q)/(c*c);
 }
 static real yang_dw2(real c, real x) {
 	real q;
 	q = 2*fabs(x)/c;
-	return 2 * yang_2d * yang_dw0(q) / (c*c*c);
+	return 2*yang_2d*yang_dw0(q)/(c*c*c);
 }
 static real yang_dw3(real c, real x) {
 	real q;
 	q = 2*fabs(x)/c;
-	return 2 * yang_3d * yang_dw0(q) / (c*c*c*c);
+	return 2*yang_3d*yang_dw0(q)/(c*c*c*c);
 }
 
 static real yang_dwr1(real c, real x) {
-	return yang_dw1(c, x)/fabs(x);
+	real q;
+	q = 2*fabs(x)/c;
+	return 4*yang_2d*yang_dwr0(q)/(c*c*c);
 }
 static real yang_dwr2(real c, real x) {
-	return yang_dw2(c, x)/fabs(x);
+	real q;
+	q = 2*fabs(x)/c;
+	return 4*yang_2d*yang_dwr0(q)/(c*c*c*c);
 }
 static real yang_dwr3(real c, real x) {
-	return yang_dw3(c, x)/fabs(x);
+	real q;
+	q = 2*fabs(x)/c;
+	return 4*yang_3d*yang_dwr0(q)/(c*c*c*c*c);
 }
