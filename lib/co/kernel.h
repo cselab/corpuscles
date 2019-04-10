@@ -9,6 +9,7 @@ int kernel_argv(char***, T**);
 int kernel_fin(T*);
 
 real kernel_w(T*, real h, real x);
-real kernel_dw(T*, real h, real x);
+real kernel_dw(T*, real, real);
+real kernel_dwr(T*, real, real);
 
 #undef T

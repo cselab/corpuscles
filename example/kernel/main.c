@@ -22,7 +22,7 @@ char *argv0;
 int
 main(int argc, char **argv)
 {
-	real c, l, h, x, y, dy, dx, s;
+	real c, l, h, x, y, dy, dyx, dx, s;
 	int i, n, Int1, Int2, Int3;
 	l = 0;
 	h = 1;
@@ -88,7 +88,8 @@ main(int argc, char **argv)
 			x = l + dx*i;
 			y = kernel_w(kernel, c, x);
 			dy = kernel_dw(kernel, c, x);
-			printf(FMT " " FMT " " FMT "\n", x, y, dy);
+			dyx = kernel_dwr(kernel, c, x);
+			printf(FMT " " FMT " " FMT " " FMT "\n", x, y, dy, dyx);
 		}
 	}
 
