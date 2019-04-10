@@ -54,7 +54,7 @@ int
 pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 {
 	T *q;
-	real *x, *y, res, d;
+	real *x, *y, res, volume, d;
 	int i;
 	Eparam p;
 
@@ -68,8 +68,12 @@ pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 	for (i = 0; i < n; i++) {
 		d = R/(n - 1)*i;
 		sph_plane_apply(integ, d, E, &p, &res);
+		sph_plane_volume(integ, d, &volume);
 		x[i] = d;
-		y[i] = res;
+		if (volume > eps)
+			y[i] = res/volume;
+		else
+			y[i] = 0;
 		MSG(FMT " " FMT, x[i], y[i]);
 	}
 	alg_spline_ini(n, x, y, type, &q->s);
@@ -144,20 +148,15 @@ main(void)
 	fparam.size = size;
 
 	pre_cons_ini(R, F, &fparam, &pre_cons);
-	pre_cons_fin(pre_cons);
-	
-
 	point[X] = point[Y] = point[Z] = 0;
-	r[X] = 0.02;
-	r[Y] = 0.02;
-	r[Z] = 0.02;
-	
+	r[X] = 0.2;
+	r[Y] = 0.2;
+	r[Z] = 0.2;	
 	norm[X] = 1;
 	norm[Y] = 0;
 	norm[Z] = 0;
 	pre_cons_apply(pre_cons, r, point, norm, f);
-
 	vec_printf(f, FMT);
-
+	pre_cons_fin(pre_cons);
 	kernel_fin(kernel);
 }
