@@ -10,9 +10,9 @@
 #include <co/vec.h>
 #include <co/integral/sph_plane.h>
 #include <alg/spline.h>
+#include <co/kernel.h>
 
 #define FMT CO_REAL_OUT
-
 
 /*
 	r/|r| * dw = z*dwr
@@ -22,13 +22,14 @@
 */
 
 #define T PreCons
-static const int n = 100;
+static const int n = 20;
 static const int type =  STEFFEN;
 static const real eps = 1e-8;
 
 typedef struct T T;
 struct T
 {
+	real R;
 	AlgSpline *s;
 };
 
@@ -69,11 +70,14 @@ pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 		sph_plane_apply(integ, d, E, &p, &res);
 		x[i] = d;
 		y[i] = res;
+		MSG(FMT " " FMT, x[i], y[i]);
 	}
 	alg_spline_ini(n, x, y, type, &q->s);
 	sph_plane_fin(integ);
 	FREE(x);
 	FREE(y);
+
+	q->R = R;
 	*pq = q;
 	return CO_OK;
 }
@@ -88,9 +92,14 @@ pre_cons_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 
 	vec_minus(r, point, p);
 	d = vec_project_scalar(p, n);
+	MSG("d: " FMT " " FMT, d, q->R);
 	if (d < 0)
-		d = 0;
-	f0 = alg_spline_apply(q->s, d);
+		d = 0;	
+	if (d > q->R)
+		f0 = 0;
+	else
+		f0 = alg_spline_apply(q->s, d);
+	MSG("f0: " FMT, f0);
 	vec_scalar(n, f0, f);
 	return CO_OK;
 }
@@ -103,8 +112,52 @@ pre_cons_fin(T *q)
 	return CO_OK;
 }
 
+typedef struct Fparam Fparam;
+struct Fparam
+{
+	Kernel *k;
+	real size;
+};
+
+static real
+F(real r, void *param)
+{
+	Fparam *p;
+	p = param;
+	return kernel_dwr(p->k, p->size, r);
+}
+
 int
 main(void)
 {
+	enum {X, Y, Z};
+	real size, R;
+	Kernel *kernel;
+	Fparam fparam;
+	PreCons *pre_cons;
+	real r[3], point[3], norm[3], f[3];
 
+	size = 1;
+	R = 1;
+	kernel_ini(KERNEL_3D, KERNEL_QUINTIC, &kernel);
+	fparam.k = kernel;
+	fparam.size = size;
+
+	pre_cons_ini(R, F, &fparam, &pre_cons);
+	pre_cons_fin(pre_cons);
+	
+
+	point[X] = point[Y] = point[Z] = 0;
+	r[X] = 0.02;
+	r[Y] = 0.02;
+	r[Z] = 0.02;
+	
+	norm[X] = 1;
+	norm[Y] = 0;
+	norm[Z] = 0;
+	pre_cons_apply(pre_cons, r, point, norm, f);
+
+	vec_printf(f, FMT);
+
+	kernel_fin(kernel);
 }
