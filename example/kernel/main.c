@@ -15,7 +15,7 @@ const char* me= "kernal";
 void
 usg(void)
 {
-	fprintf(stderr, "%s: -c cutoff -l low -h hi -n [number of points]\n", me);
+	fprintf(stderr, "%s: -c cutoff -l low -h hi -n [number of points]\n  [-2] [-3] [-1]", me);
 }
 
 char *argv0;
