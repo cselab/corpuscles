@@ -31,28 +31,26 @@ static real wendland6_w0(real q) { /* 2D and 3D */
 	else return 0;
 }
 static real wendland6_dw0(real q) {
-	if (q < 1) return 22*pow(q-1,7)*q*(16*pow(q,2)+7*q+1);
+	if (q < 1) return 22*pow(q-1,7)*(16*pow(q,2)+7*q+1);
 	else return 0;
 }
 static real wendland6_w2(real c, real x) {
 	real q;
 	q = fabs(x)/c;
-	return wendland6_2d * wendland6_w0(q) / (c*c);
+	return wendland6_2d * wendland6_w0(q)/(c*c);
 }
 static real wendland6_w3(real c, real x) {
 	real q;
 	q = fabs(x)/c;
-	return wendland6_3d * wendland6_w0(q) / (c*c*c);
+	return wendland6_3d * wendland6_w0(q)/(c*c*c);
 }
 static real wendland6_dw2(real c, real x) {
-	real q;
-	q = fabs(x)/c;
-	return wendland6_2d * wendland6_dw0(q) / (c*c*c);
+	x = fabs(x);
+	return wendland6_2d * wendland6_dw0(x/c)/(c*c)*x;
 }
 static real wendland6_dw3(real c, real x) {
-	real q;
-	q = fabs(x)/c;
-	return wendland6_3d * wendland6_dw0(q) / (c*c*c*c);
+	x = fabs(x);
+	return wendland6_3d * wendland6_dw0(x/c)/(c*c*c)*x;
 }
 static real wendland6_dwr2(real c, real x) {
 	return wendland6_dw2(c, x)/fabs(x);
@@ -60,3 +58,4 @@ static real wendland6_dwr2(real c, real x) {
 static real wendland6_dwr3(real c, real x) {
 	return wendland6_dw3(c, x)/fabs(x);
 }
+   
