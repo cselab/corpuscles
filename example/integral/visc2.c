@@ -21,7 +21,7 @@
 
 */
 
-#define T PreCons
+#define T PreVisc
 static const int n = 20;
 static const int type =  STEFFEN;
 static const real eps = 1e-8;
@@ -38,20 +38,24 @@ struct Eparam
 {
 	real (*F)(real, void*);
 	void *param;
+	real beta, R, d;
 };
 
 static real
 E(real x, real y, real z, void *param)
 {
-	real r;
+	real beta, R, r, d;
 	Eparam *p;
 	p = param;
+	beta = p->beta;
+	R = p->R;
 	r = sqrt(x*x + y*y + z*z);
-	return z*p->F(r, p->param);
+	d = d/R < beta ? R*beta : d;
+	return p->F(r, p->param)*(1 - z/d);
 }
 
 int
-pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
+pre_visc_ini(real R, real beta, real (*F)(real, void*), void *param, T  **pq)
 {
 	T *q;
 	real *x, *y, res, volume, d;
@@ -65,6 +69,8 @@ pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 	MALLOC(n, &y);
 	p.F = F;
 	p.param = param;
+	p.beta = beta;
+	p.R = R;
 	for (i = 0; i < n; i++) {
 		d = R/(n - 1)*i;
 		sph_plane_apply(integ, d, E, &p, &res);
@@ -87,7 +93,7 @@ pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 }
 
 int
-pre_cons_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
+pre_visc_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 {
 	real p[3], d, f0;
 
@@ -98,7 +104,7 @@ pre_cons_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 	d = vec_project_scalar(p, n);
 	MSG("d: " FMT " " FMT, d, q->R);
 	if (d < 0)
-		d = 0;	
+		d = 0;
 	if (d > q->R)
 		f0 = 0;
 	else
@@ -109,7 +115,7 @@ pre_cons_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 }
 
 int
-pre_cons_fin(T *q)
+pre_visc_fin(T *q)
 {
 	alg_spline_fin(q->s);
 	FREE(q);
@@ -134,29 +140,31 @@ F(real r, void *param)
 int
 main(void)
 {
-	enum {X, Y, Z};
-	real size, R;
+	enum {
+		X, Y, Z	};
+	real size, R, beta;
 	Kernel *kernel;
 	Fparam fparam;
-	PreCons *pre_cons;
+	PreVisc *pre_visc;
 	real r[3], point[3], norm[3], f[3];
 
 	size = 1;
 	R = 1;
+	beta = 0.1;
 	kernel_ini(KERNEL_3D, KERNEL_QUINTIC, &kernel);
 	fparam.k = kernel;
 	fparam.size = size;
 
-	pre_cons_ini(R, F, &fparam, &pre_cons);
+	pre_visc_ini(R, beta, F, &fparam, &pre_visc);
 	point[X] = point[Y] = point[Z] = 0;
 	r[X] = 0.2;
 	r[Y] = 0.2;
-	r[Z] = 0.2;	
+	r[Z] = 0.2;
 	norm[X] = 1;
 	norm[Y] = 0;
 	norm[Z] = 0;
-	pre_cons_apply(pre_cons, r, point, norm, f);
+	pre_visc_apply(pre_visc, r, point, norm, f);
 	vec_printf(f, FMT);
-	pre_cons_fin(pre_cons);
+	pre_visc_fin(pre_visc);
 	kernel_fin(kernel);
 }
