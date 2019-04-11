@@ -161,7 +161,7 @@ bc(void)
 		coeff = 2*p[i]/(rho[i]*rho[i])*mass;
 		MSG("coeff %g", coeff);
 		fx[i]  += coeff*f[X];
-		fy[i]  += coeff*f[Y];
+		fy[i]  += coeff*f[Y]; 
 		fz[i] += coeff*f[Z];
 	}
 	ETRI

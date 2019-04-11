@@ -70,6 +70,7 @@ off.s.o\
 orient.s.o\
 ply.s.o\
 pre/cons.s.o\
+pre/density.s.o\
 predicate.s.o\
 pre/visc.s.o\
 punto.s.o\
@@ -151,6 +152,7 @@ off.d.o\
 orient.d.o\
 ply.d.o\
 pre/cons.d.o\
+pre/density.d.o\
 predicate.d.o\
 pre/visc.d.o\
 punto.d.o\
@@ -232,6 +234,7 @@ off.l.o\
 orient.l.o\
 ply.l.o\
 pre/cons.l.o\
+pre/density.l.o\
 predicate.l.o\
 pre/visc.l.o\
 punto.l.o\
