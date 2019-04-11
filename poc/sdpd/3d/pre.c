@@ -40,8 +40,9 @@
 #define EPART } }
 
 #define BTRI \
+	nt = he_nt(he); \
 	for (t = 0; t < nt; t++) { \
-		gtri(t, p, n); \
+		gtri(t, p, norm); \
 		cell3_parts(cell, p[X], p[Y], p[Z], &a); \
 		while ( (i = *a++) != -1) { \
 			vec_get(i, x, y, z, r); \
@@ -54,9 +55,9 @@ enum
 	X, Y, Z
 };
 static int n;
-#define nx  (40)
-#define ny  (40)
-#define nz  (20)
+#define nx  (20)
+#define ny  (20)
+#define nz  (10)
 static const real c = 10;
 static const real mu = 1;
 static const real g[3] =
@@ -111,19 +112,6 @@ euler_step(real dt, int n, const real *vx, const real *vy, const real*vz, real *
 }
 
 static int
-euler_step_fun(real dt, int (*f)(real, real, real), int n, const real *vx, const real *vy, const real *vz, real *xx, real *yy, real *zz)
-{
-	int i;
-	for (i = 0; i < n; i++) {
-		if (color[i] = f(x[i], y[i], z[i])) continue;
-		xx[i] += dt*vx[i];
-		yy[i] += dt*vy[i];
-		zz[i] += dt*vz[i];
-	}
-	return CO_OK;
-}
-
-static int
 mesh(real x, real y, real z)
 {
 	return surface_inside_fast(surface, x, y, z);
@@ -165,15 +153,16 @@ static int
 bc(void)
 {
 	int t, nt, i, *a;
-	real p[3], r[3], n[3], f[3], coeff;
+	real p[3], r[3], norm[3], f[3], coeff;
 	real rsq;
-	nt = he_nt(he);
 	BTRI {
-		pre_cons_apply(pre_cons, r, p, n, /**/ f);
+		pre_cons_apply(pre_cons, r, p, norm, /**/ f);
+		MSG("in %d %d", i, n);
 		coeff = 2*p[i]/(rho[i]*rho[i])*mass;
-		fx[i]  -= coeff*f[X];
-		fy[i]  -= coeff*f[Y];
-		fz[i] -= coeff*f[Z];
+		MSG("coeff %g", coeff);
+		fx[i]  += coeff*f[X];
+		fy[i]  += coeff*f[Y];
+		fz[i] += coeff*f[Z];
 	}
 	ETRI
 	    return CO_OK;
@@ -214,7 +203,8 @@ force(void)
 		fz[i] += coeff * (vz[i] - vz[j]);
 	}
 	EPART
-	    return CO_OK;
+
+	return CO_OK;
 }
 
 int
@@ -238,7 +228,7 @@ int
 main(void)
 {
 	real V;
-	int t;
+	int t, i, j;
 
 	alg_rng_ini(&rng);
 	n = nx*ny*nz;
@@ -273,16 +263,26 @@ main(void)
 		euler_step(dt,  n, fx, fy, fz, vx, vy, vz);
 		dump(t);
 	}
+	for (i = j = 0; i < n; i++) {
+		if (mesh(x[i], y[i], z[i])) continue;
+		x[j] = x[i];
+		y[j] = y[i];
+		z[j] = z[i];
+		j++;
+	}
+	MSG("nj %d %d", n, j);
+	n = j;
 
 	array_zero3(n, vx, vy, vz);
 	array_zero3(n, fx, fy, fz);
+
 	for (/**/; t < 80000; t++) {
 		MSG("t %d", t);
 		force();
 		bc();
-		euler_step_fun(dt, mesh, n, vx, vy, vz, x, y, z);
+		euler_step(dt, n, vx, vy, vz, x, y, z);
 		cell3_wrap(cell, n, x, y, z);
-		euler_step_fun(dt, mesh, n, fx, fy, fz, vx, vy, vz);
+		euler_step(dt, n, fx, fy, fz, vx, vy, vz);
 		dump(t);
 	}
 
