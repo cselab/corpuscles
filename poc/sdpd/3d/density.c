@@ -119,6 +119,7 @@ gtri(int t, /**/ real p[3], real n[3])
 	vec_get(k, xm, ym, zm, c);
 	tri_center(a, b, c, p);
 	tri_normal(a, b, c, n);
+	vec_neg(n);
 	return CO_OK;
 }
 
