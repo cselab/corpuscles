@@ -5,6 +5,6 @@ typedef struct Kernel Kernal;
 int pre_visc_ini(real R, real beta, real (*)(real, void*), void*, T**);
 int pre_visc_kernel_ini(real R, real beta, Kernel*, T**);
 int pre_visc_fin(T*);
-int pre_visc_apply(T*, real r[3], real point[3], real n[3], /**/ real[3]);
+int pre_visc_apply(T*, real r[3], real point[3], real n[3], /**/ real*);
 
 #undef T

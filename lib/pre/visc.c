@@ -120,7 +120,7 @@ pre_visc_kernel_ini(real R, real beta, Kernel *kernel, T **pq)
 }
 
 int
-pre_visc_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
+pre_visc_apply(T *q, real r[3], real point[3], real n[3], /**/ real *f)
 {
 	real p[3], d, f0;
 
@@ -132,10 +132,9 @@ pre_visc_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 	if (d < 0)
 		d = 0;
 	if (d > q->R)
-		f0 = 0;
+		*f = 0;
 	else
-		f0 = alg_spline_apply(q->s, d);
-	vec_scalar(n, f0, f);
+		*f = alg_spline_apply(q->s, d);
 	return CO_OK;
 }
 
