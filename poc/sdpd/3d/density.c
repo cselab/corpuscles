@@ -43,6 +43,7 @@
 	for (i = 0; i < n; i++) { \
 		tri3list_get(tri3list, x[i], y[i], z[i]); \
 		if (!tri3list_status(tri3list)) continue; \
+		vec_get(i, x, y, z, r); \
 		t = tri3list_tri(tri3list); \
 		gtri(t, /**/ p, norm);
 #define ETRI }
@@ -53,9 +54,9 @@ enum
 };
 
 static int n;
-#define nx  (20)
-#define ny  (20)
-#define nz  (10)
+#define nx  (40)
+#define ny  (40)
+#define nz  (20)
 static real lo[3] = 
 {
 	-1.2, -1.2, -0.6
@@ -80,8 +81,8 @@ grid(real *x, real *y, real *z)
 	real x0, y0, z0, dx,a, b;
 	int i, j, k, m;
 	dx = (hi[X] - lo[X])/nx;
-	a = -0.05*dx;
-	b =   0.05*dx;
+	a = -0.2*dx;
+	b =   0.2*dx;
 	for (i = m = 0; i < nx; i++)
 		for (j = 0; j < ny; j++)
 			for (k = 0; k < nz; k++) {
@@ -119,7 +120,6 @@ gtri(int t, /**/ real p[3], real n[3])
 	vec_get(k, xm, ym, zm, c);
 	tri_center(a, b, c, p);
 	tri_normal(a, b, c, n);
-	vec_neg(n);
 	return CO_OK;
 }
 
@@ -127,10 +127,10 @@ static int
 bc(void)
 {
 	int t, i;
-	real p[3], r[3], norm[3], density;
+	real p[3], r[3], norm[3], dfraction;
 	BTRI {
-		pre_density_apply(pre_density, r, p, norm, /**/ &density);
-		MSG("%g", density);
+		pre_density_apply(pre_density, r, p, norm, /**/ &dfraction);
+		rho[i] += dfraction;
 	}
 	ETRI
 	 return CO_OK;
@@ -176,7 +176,7 @@ main(void)
 	n = nx*ny*nz;
 	V = (hi[X] - lo[X])*(hi[Y] - lo[Y])*(hi[Z] - lo[Z]);
 	mass = V/n;
-	size = 2.5 * (hi[X] - lo[X]) / nx;
+	size = 4.5 * (hi[X] - lo[X]) / nx;
 	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
 	pre_density_kernel_ini(size, kernel, &pre_density);
 	y_inif(stdin, &he, &xm, &ym, &zm);
@@ -202,7 +202,6 @@ main(void)
 		z[j] = z[i];
 		j++;
 	}
-	MSG("nj %d %d", n, j);
 	n = j;
 	density();
 	bc();

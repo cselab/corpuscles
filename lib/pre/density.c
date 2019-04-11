@@ -19,6 +19,7 @@ int alg_spline_fin(AlgSpline*);
 real alg_spline_apply(AlgSpline*, real);
 
 #define T PreDensity
+#define FMT CO_REAL_OUT
 
 static const int n = 20;
 static const int type =  STEFFEN;
@@ -51,7 +52,7 @@ int
 pre_density_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 {
 	T *q;
-	real *x, *y, res, volume, d;
+	real *x, *y, res, d;
 	int i;
 	Eparam p;
 
@@ -65,12 +66,8 @@ pre_density_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 	for (i = 0; i < n; i++) {
 		d = R/(n - 1)*i;
 		sph_plane_apply(integ, d, E, &p, &res);
-		sph_plane_volume(integ, d, &volume);
 		x[i] = d;
-		if (volume > eps)
-			y[i] = res/volume;
-		else
-			y[i] = 0;
+		y[i] = res;
 	}
 	alg_spline_ini(n, x, y, type, &q->s);
 	sph_plane_fin(integ);
@@ -107,7 +104,7 @@ pre_density_kernel_ini(real R, Kernel *kernel, T  **pq)
 }
 
 int
-pre_density_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
+pre_density_apply(T *q, real r[3], real point[3], real n[3], /**/ real *f)
 {
 	real p[3], d, f0;
 
@@ -115,14 +112,13 @@ pre_density_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 		ERR(CO_NUM, "vec_abs(n) != 1");
 
 	vec_minus(r, point, p);
-	d = vec_project_scalar(p, n);
+	d = vec_dot(p, n);
 	if (d < 0)
 		d = 0;
 	if (d > q->R)
-		f0 = 0;
+		*f = 0;
 	else
-		f0 = alg_spline_apply(q->s, d);
-	vec_scalar(n, f0, f);
+		*f = alg_spline_apply(q->s, d);
 	return CO_OK;
 }
 
