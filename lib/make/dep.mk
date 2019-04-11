@@ -9,4 +9,16 @@ kernal/wendland6.inc\
 kernel/yang.inc\
 kernal/main.inc
 
+kernal.d.o: \
+kernal/quintic.inc\
+kernal/wendland6.inc\
+kernel/yang.inc\
+kernal/main.inc
+
+kernal.l.o: \
+kernal/quintic.inc\
+kernal/wendland6.inc\
+kernel/yang.inc\
+kernal/main.inc
+
 predicate/main.o: predicate/main.inc

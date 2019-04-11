@@ -69,6 +69,7 @@ obj.s.o\
 off.s.o\
 orient.s.o\
 ply.s.o\
+pre/cons.s.o\
 predicate.s.o\
 punto.s.o\
 real.s.o\
@@ -81,6 +82,7 @@ stretch.s.o\
 sum.s.o\
 surface.s.o\
 ten.s.o\
+transform.s.o\
 transform.s.o\
 tri.s.o\
 vec.s.o\
@@ -147,6 +149,7 @@ obj.d.o\
 off.d.o\
 orient.d.o\
 ply.d.o\
+pre/cons.d.o\
 predicate.d.o\
 punto.d.o\
 real.d.o\
@@ -159,6 +162,7 @@ stretch.d.o\
 sum.d.o\
 surface.d.o\
 ten.d.o\
+transform.d.o\
 transform.d.o\
 tri.d.o\
 vec.d.o\
@@ -225,6 +229,7 @@ obj.l.o\
 off.l.o\
 orient.l.o\
 ply.l.o\
+pre/cons.l.o\
 predicate.l.o\
 punto.l.o\
 real.l.o\
@@ -237,6 +242,7 @@ stretch.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\
+transform.l.o\
 transform.l.o\
 tri.l.o\
 vec.l.o\

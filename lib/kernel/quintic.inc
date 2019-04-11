@@ -35,32 +35,32 @@ static real quintic_dwr0(real q) {
 static real quintic_w2(real c, real x) {
 	real q;
 	q = 3*fabs(x)/c;
-	return quintic_2d * quintic_w0(q) / (c*c);
+	return quintic_2d*quintic_w0(q)/(c*c);
 }
 static real quintic_w3(real c, real x) {
 	real q;
 	q = 3*fabs(x)/c;
-	return quintic_3d * quintic_w0(q) / (c*c*c);
+	return quintic_3d*quintic_w0(q)/(c*c*c);
 }
 
 static real quintic_dw2(real c, real x) {
 	real q;
 	q = 3*fabs(x)/c;
-	return 3 * quintic_2d * quintic_dw0(q) / (c*c*c);
+	return 3*quintic_2d*quintic_dw0(q)/(c*c*c);
 }
 static real quintic_dw3(real c, real x) {
 	real q;
 	q = 3*fabs(x)/c;
-	return 3 * quintic_3d * quintic_dw0(q) / (c*c*c*c);
+	return 3*quintic_3d*quintic_dw0(q)/(c*c*c*c);
 }
 
 static real quintic_dwr2(real c, real x) {
 	real q;
 	q = 3*fabs(x)/c;
-	return 9 * quintic_2d * quintic_dwr0(q) / (c*c*c*c);
+	return 9*quintic_2d*quintic_dwr0(q)/(c*c*c*c);
 }
 static real quintic_dwr3(real c, real x) {
 	real q;
 	q = 3*fabs(x)/c;
-	return 9 * quintic_3d * quintic_dwr0(q) / (c*c*c*c*c);
+	return 9*quintic_3d*quintic_dwr0(q)/(c*c*c*c*c);
 }

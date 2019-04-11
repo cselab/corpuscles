@@ -3,15 +3,16 @@
 #include <stdlib.h>
 
 #include "real.h"
-#include "co/memory.h"
+#include "co/ddih.h"
+#include "co/dih.h"
 #include "co/err.h"
 #include "co/he.h"
-#include "co/vec.h"
-#include "co/dih.h"
-#include "co/ddih.h"
-#include "co/tri.h"
-#include "co/normal.h"
 #include "co/macro.h"
+#include "co/memory.h"
+#include "co/normal.h"
+#include "co/tri.h"
+#include "co/vec.h"
+
 
 #include "co/f/meyer.h"
 
@@ -289,7 +290,7 @@ int he_f_meyer_ini(real Kb,
 #   undef S
 }
 
-int he_f_meyer_argv(char ***p, He *he, T **pq) {
+int he_f_meyer_argv(__UNUSED char ***p, __UNUSED He *he, __UNUSED T **pq) {
     return CO_OK;
 }
 

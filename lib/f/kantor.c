@@ -2,15 +2,16 @@
 #include <tgmath.h>
 
 #include "real.h"
-#include "co/memory.h"
-#include "co/macro.h"
-#include "co/err.h"
-#include "co/he.h"
-#include "co/vec.h"
-#include "co/dih.h"
 #include "co/ddih.h"
-#include "co/tri.h"
+#include "co/dih.h"
+#include "co/err.h"
 #include "co/f/kantor.h"
+#include "co/he.h"
+#include "co/macro.h"
+#include "co/memory.h"
+#include "co/tri.h"
+#include "co/vec.h"
+
 
 #define T HeFKantor
 
@@ -94,7 +95,7 @@ int he_f_kantor_ini(real Kb, real theta0, He *he, T **pq) {
     return CO_OK;
 }
 
-int he_f_kantor_argv(char ***p, He *he, T **pq) {
+int he_f_kantor_argv(__UNUSED char ***p, __UNUSED He *he, __UNUSED T **pq) {
     return CO_OK;
 }
 

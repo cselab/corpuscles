@@ -69,6 +69,7 @@ co/orient.h\
 co/ply.h\
 co/prec/d/real.h\
 co/prec/l/real.h\
+co/pre/cons.h\
 co/prec/s/real.h\
 co/predicate.h\
 co/punto.h\
