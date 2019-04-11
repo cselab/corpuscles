@@ -8,9 +8,8 @@
 
 #define FMT CO_REAL_OUT
 
-char *argv0;
 int
-main(int argc, char **argv)
+main(void)
 {
 	real r, d, volume;
 	SphPlane *integ;
