@@ -14,6 +14,9 @@
 #include <co/pre/cons.h>
 #include <co/punto.h>
 #include <co/surface.h>
+#include <co/tri.h>
+#include <co/vec.h>
+#include <co/edg.h>
 #include <co/y.h>
 
 #include <alg/rng.h>
@@ -21,7 +24,7 @@
 #define pi (3.141592653589793)
 #define FMT CO_REAL_OUT
 
-#define BEGIN \
+#define BPART \
 	for (i = 0; i < n; i++) { \
 		xi = x[i]; yi = y[i]; zi = z[i]; \
 		cell3_parts(cell, xi, yi, zi, &a); \
@@ -34,7 +37,17 @@
 			rsq = xr*xr + yr*yr + zr*zr; \
 			if (rsq > size*size) continue; \
 			r = sqrt(rsq);
-#define END } }
+#define EPART } }
+
+#define BTRI \
+	for (t = 0; t < nt; t++) { \
+		gtri(t, p, n); \
+		cell3_parts(cell, p[X], p[Y], p[Z], &a); \
+		while ( (i = *a++) != -1) { \
+			vec_get(i, x, y, z, r); \
+			rsq = edg_sq(p, r); \
+			if (rsq > size*size) continue;
+#define ETRI } }
 
 enum
 {
@@ -135,6 +148,38 @@ eq_state(real rho)
 }
 
 static int
+gtri(int t, /**/ real p[3], real n[3])
+{
+	int i, j, k;
+	real a[3], b[3], c[3];
+	he_tri_ijk(he, t, &i, &j, &k);
+	vec_get(i, x, y, z, a);
+	vec_get(j, x, y, z, b);
+	vec_get(k, x, y, z, c);
+	tri_center(a, b, c, p);
+	tri_normal(a, b, c, n);
+	return CO_OK;
+}
+
+static int
+bc(void)
+{
+	int t, nt, i, *a;
+	real p[3], r[3], n[3], f[3], coeff;
+	real rsq;
+	nt = he_nt(he);
+	BTRI {
+		pre_cons_apply(pre_cons, r, p, n, /**/ f);
+		coeff = 2*p[i]/(rho[i]*rho[i])*mass;
+		fx[i]  -= coeff*f[X];
+		fy[i]  -= coeff*f[Y];
+		fz[i] -= coeff*f[Z];
+	}
+	ETRI
+	    return CO_OK;
+}
+
+static int
 force(void)
 {
 	int i, j, *a;
@@ -144,16 +189,16 @@ force(void)
 	array_zero(n, rho);
 	body_force(n, x, y, z, fx, fy, fz);
 	cell3_push(cell, n, x, y, z);
-	BEGIN {
+	BPART {
 		w = kernel_w(kernel, size, r);
 		rho[i] += mass*w;
-	} 
-	END
+	}
+	EPART
 
 	    for (i = 0; i < n; i++)
 		p[i] = eq_state(rho[i]);
 
-	BEGIN {
+	BPART {
 		if (j == i) continue;
 		dw = kernel_dw(kernel, size, r);
 		coeff = p[i]/(rho[i]*rho[i]) + p[j]/(rho[j]*rho[j]);
@@ -167,8 +212,8 @@ force(void)
 		fx[i]  += coeff * (vx[i] - vx[j]);
 		fy[i]  += coeff * (vy[i] - vy[j]);
 		fz[i] += coeff * (vz[i] - vz[j]);
-	} 
-	END	
+	}
+	EPART
 	    return CO_OK;
 }
 
@@ -196,13 +241,12 @@ main(void)
 	int t;
 
 	alg_rng_ini(&rng);
-	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
-	pre_cons_kernel_ini(size, kernel, &pre_cons);
-
 	n = nx*ny*nz;
 	V = (hi[X] - lo[X])*(hi[Y] - lo[Y])*(hi[Z] - lo[Z]);
 	mass = V/n;
 	size = 2.5 * (hi[X] - lo[X]) / nx;
+	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
+	pre_cons_kernel_ini(size, kernel, &pre_cons);
 	y_inif(stdin, &he, &xm, &ym, &zm);
 	surface_ini(lo, hi, size/4, &surface);
 	surface_update(surface, he, xm, ym, zm);
@@ -221,7 +265,7 @@ main(void)
 	MALLOC(n, &color);
 	ini(x, y, z);
 	cell3_ppp_ini(lo, hi, size, &cell);
-	for (t = 0; t < 200; t++) {
+	for (t = 0; t < 1; t++) {
 		MSG("t %d", t);
 		force();
 		euler_step(dt,  n, vx, vy, vz, x, y, z);
@@ -235,6 +279,7 @@ main(void)
 	for (/**/; t < 80000; t++) {
 		MSG("t %d", t);
 		force();
+		bc();
 		euler_step_fun(dt, mesh, n, vx, vy, vz, x, y, z);
 		cell3_wrap(cell, n, x, y, z);
 		euler_step_fun(dt, mesh, n, fx, fy, fz, vx, vy, vz);

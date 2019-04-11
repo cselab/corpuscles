@@ -1,9 +1,9 @@
 .POSIX:
 include ../../../conf.mk
-M = cell morris mesh
+M = cell morris mesh pre
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
-CO_LDFLAGS = `alg.conf --libs $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` 
 
 LINK = $(CC)
 
@@ -19,7 +19,7 @@ all: $M
 
 test: $M; atest test/*
 install:
-run: $M; @co.run ./mesh < /u/1.off > q
+run: $M; @co.run ./pre < /u/0.off > q
 lint:; make CFLAGS='-Wall -Wextra'
 
 .PHONY: clean test install run lint run
