@@ -44,7 +44,7 @@ E(real x, real y, real z, void *param)
 	Eparam *p;
 	p = param;
 	r = sqrt(x*x + y*y + z*z);
-	return z*p->F(r, p->param);
+	return p->F(r, p->param);
 }
 
 int
