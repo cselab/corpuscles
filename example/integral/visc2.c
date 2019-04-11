@@ -92,6 +92,29 @@ pre_visc_ini(real R, real beta, real (*F)(real, void*), void *param, T  **pq)
 	return CO_OK;
 }
 
+typedef struct Fparam Fparam;
+struct Fparam
+{
+	Kernel *k;
+	real size;
+};
+static real
+F(real r, void *param)
+{
+	Fparam *p;
+	p = param;
+	return kernel_dwr(p->k, p->size, r);
+}
+
+int
+pre_visc_kernel_ini(real R, real beta, Kernel *kernel, T **pq)
+{
+	Fparam fparam;
+	fparam.k = kernel;
+	fparam.size = R;
+	return pre_visc_ini(R, beta, F, &fparam, pq);
+}
+
 int
 pre_visc_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 {
@@ -122,40 +145,20 @@ pre_visc_fin(T *q)
 	return CO_OK;
 }
 
-typedef struct Fparam Fparam;
-struct Fparam
-{
-	Kernel *k;
-	real size;
-};
-
-static real
-F(real r, void *param)
-{
-	Fparam *p;
-	p = param;
-	return kernel_dwr(p->k, p->size, r);
-}
-
 int
 main(void)
 {
 	enum {
-		X, Y, Z	};
-	real size, R, beta;
+		X, Y, Z
+	};
+	real R, beta;
 	Kernel *kernel;
-	Fparam fparam;
 	PreVisc *pre_visc;
 	real r[3], point[3], norm[3], f[3];
-
-	size = 1;
 	R = 1;
 	beta = 0.1;
 	kernel_ini(KERNEL_3D, KERNEL_QUINTIC, &kernel);
-	fparam.k = kernel;
-	fparam.size = size;
-
-	pre_visc_ini(R, beta, F, &fparam, &pre_visc);
+	pre_visc_kernel_ini(R, beta, kernel, &pre_visc);
 	point[X] = point[Y] = point[Z] = 0;
 	r[X] = 0.2;
 	r[Y] = 0.2;
