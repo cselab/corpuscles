@@ -86,6 +86,30 @@ pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 	return CO_OK;
 }
 
+typedef struct Fparam Fparam;
+struct Fparam
+{
+	Kernel *k;
+	real size;
+};
+
+static real
+F(real r, void *param)
+{
+	Fparam *p;
+	p = param;
+	return kernel_dwr(p->k, p->size, r);
+}
+
+int
+pre_cons_kernel_ini(real R, Kernel *kernel, T  **pq)
+{
+	Fparam fparam;
+	fparam.k = kernel;
+	fparam.size = R;
+	return pre_cons_ini(R, F, &fparam, pq);
+}
+
 int
 pre_cons_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 {
@@ -98,7 +122,7 @@ pre_cons_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 	d = vec_project_scalar(p, n);
 	MSG("d: " FMT " " FMT, d, q->R);
 	if (d < 0)
-		d = 0;	
+		d = 0;
 	if (d > q->R)
 		f0 = 0;
 	else
@@ -116,42 +140,24 @@ pre_cons_fin(T *q)
 	return CO_OK;
 }
 
-typedef struct Fparam Fparam;
-struct Fparam
-{
-	Kernel *k;
-	real size;
-};
-
-static real
-F(real r, void *param)
-{
-	Fparam *p;
-	p = param;
-	return kernel_dwr(p->k, p->size, r);
-}
 
 int
 main(void)
 {
-	enum {X, Y, Z};
+	enum {
+		X, Y, Z	};
 	real size, R;
 	Kernel *kernel;
-	Fparam fparam;
 	PreCons *pre_cons;
 	real r[3], point[3], norm[3], f[3];
 
-	size = 1;
 	R = 1;
 	kernel_ini(KERNEL_3D, KERNEL_QUINTIC, &kernel);
-	fparam.k = kernel;
-	fparam.size = size;
-
-	pre_cons_ini(R, F, &fparam, &pre_cons);
+	pre_cons_kernel_ini(R, kernel, &pre_cons);
 	point[X] = point[Y] = point[Z] = 0;
 	r[X] = 0.2;
 	r[Y] = 0.2;
-	r[Z] = 0.2;	
+	r[Z] = 0.2;
 	norm[X] = 1;
 	norm[Y] = 0;
 	norm[Z] = 0;
