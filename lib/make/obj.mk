@@ -85,7 +85,6 @@ sum.s.o\
 surface.s.o\
 ten.s.o\
 transform.s.o\
-transform.s.o\
 tri.s.o\
 vec.s.o\
 volume.s.o\
@@ -167,7 +166,6 @@ sum.d.o\
 surface.d.o\
 ten.d.o\
 transform.d.o\
-transform.d.o\
 tri.d.o\
 vec.d.o\
 volume.d.o\
@@ -248,7 +246,6 @@ stretch.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\
-transform.l.o\
 transform.l.o\
 tri.l.o\
 vec.l.o\

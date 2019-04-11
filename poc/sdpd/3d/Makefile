@@ -1,6 +1,6 @@
 .POSIX:
 include ../../../conf.mk
-M = cell morris mesh pre
+M = cell density morris mesh pre
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` 
@@ -19,7 +19,7 @@ all: $M
 
 test: $M; atest test/*
 install:
-run: $M; @co.run ./pre < /u/1.off > q
+run: $M; @co.run ./density < /u/1.off > q
 lint:; make CFLAGS='-Wall -Wextra'
 
 .PHONY: clean test install run lint run

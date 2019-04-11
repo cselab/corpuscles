@@ -71,6 +71,7 @@ co/prec/d/real.h\
 co/prec/l/real.h\
 co/pre/cons.h\
 co/prec/s/real.h\
+co/pre/density.h\
 co/predicate.h\
 co/pre/visc.h\
 co/punto.h\

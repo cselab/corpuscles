@@ -141,9 +141,9 @@ gtri(int t, /**/ real p[3], real n[3])
 	int i, j, k;
 	real a[3], b[3], c[3];
 	he_tri_ijk(he, t, &i, &j, &k);
-	vec_get(i, x, y, z, a);
-	vec_get(j, x, y, z, b);
-	vec_get(k, x, y, z, c);
+	vec_get(i, xm, ym, zm, a);
+	vec_get(j, xm, ym, zm, b);
+	vec_get(k, xm, ym, zm, c);
 	tri_center(a, b, c, p);
 	tri_normal(a, b, c, n);
 	return CO_OK;

@@ -6,9 +6,11 @@
 
 #include <co/array.h>
 #include <co/cell3.h>
+#include <co/edg.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/kernel.h>
+#include <co/list/tri3.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/pre/density.h>
@@ -16,14 +18,12 @@
 #include <co/surface.h>
 #include <co/tri.h>
 #include <co/vec.h>
-#include <co/edg.h>
 #include <co/y.h>
 
 #include <alg/rng.h>
 
 #define pi (3.141592653589793)
 #define FMT CO_REAL_OUT
-
 #define BPART \
 	for (i = 0; i < n; i++) { \
 		xi = x[i]; yi = y[i]; zi = z[i]; \
@@ -40,31 +40,34 @@
 #define EPART } }
 
 #define BTRI \
-	nt = he_nt(he); \
-	for (t = 0; t < nt; t++) { \
-		gtri(t, p, norm); \
-		cell3_parts(cell, p[X], p[Y], p[Z], &a); \
-		while ( (i = *a++) != -1) { \
-			vec_get(i, x, y, z, r); \
-			rsq = edg_sq(p, r); \
-			if (rsq > size*size) continue;
-#define ETRI } }
+	for (i = 0; i < n; i++) { \
+		tri3list_get(tri3list, x[i], y[i], z[i]); \
+		if (!tri3list_status(tri3list)) continue; \
+		t = tri3list_tri(tri3list); \
+		gtri(t, /**/ p, norm);
+#define ETRI }
 
 enum
 {
 	X, Y, Z
 };
+
 static int n;
 #define nx  (20)
 #define ny  (20)
 #define nz  (10)
-static real lo[3] = {
-	-1.2, -1.2, -0.6};
-static real hi[3] = {
-	1.2, 1.2, 0.6};
+static real lo[3] = 
+{
+	-1.2, -1.2, -0.6
+};
+static real hi[3] = 
+{
+	1.2, 1.2, 0.6
+};
 PreDensity *pre_density;
 static AlgRng *rng;
 static Cell3 *cell;
+static Tri3List *tri3list;
 static He *he;
 static Kernel *kernel;
 static real mass, size;
@@ -122,11 +125,11 @@ gtri(int t, /**/ real p[3], real n[3])
 static int
 bc(void)
 {
-	int t, nt, i, *a;
+	int t, i;
 	real p[3], r[3], norm[3], density;
-	real rsq;
 	BTRI {
 		pre_density_apply(pre_density, r, p, norm, /**/ &density);
+		MSG("%g", density);
 	}
 	ETRI
 	 return CO_OK;
@@ -176,8 +179,11 @@ main(void)
 	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
 	pre_density_kernel_ini(size, kernel, &pre_density);
 	y_inif(stdin, &he, &xm, &ym, &zm);
+
 	surface_ini(lo, hi, size/4, &surface);
 	surface_update(surface, he, xm, ym, zm);
+	tri3list_ini(lo, hi, size, &tri3list);
+	tri3list_push(tri3list, he, xm, ym, zm);
 
 	MALLOC(n, &x);
 	MALLOC(n, &y);
@@ -210,5 +216,6 @@ main(void)
 	kernel_fin(kernel);
 	pre_density_fin(pre_density);
 	alg_rng_fin(rng);
+	tri3list_fin(tri3list);
 	MSG("end");
 }
