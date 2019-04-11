@@ -72,6 +72,7 @@ co/prec/l/real.h\
 co/pre/cons.h\
 co/prec/s/real.h\
 co/predicate.h\
+co/pre/visc.h\
 co/punto.h\
 co/read.h\
 co/real.h\
