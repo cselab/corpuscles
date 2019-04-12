@@ -146,10 +146,10 @@ force(void)
 	}
 	EPART
 
-	for (i = 0; i < n; i++)
+	    for (i = 0; i < n; i++)
 		p[i] = eq_state(rho[i]);
 
-	
+
 	BPART {
 		if (j == i) continue;
 		dwr = kernel_dwr(kernel, size, r0);
@@ -158,17 +158,17 @@ force(void)
 		fx[i]  -= coeff * (xi - xj);
 		fy[i]  -= coeff * (yi - yj);
 		fz[i] -= coeff * (zi - zj);
-	} 
+	}
 	EPART
 
-	return CO_OK;
+	    return CO_OK;
 }
 
 static int
 force_bc(void)
 {
 	int i, j, t, *a;
-	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff, nd;
+	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff;
 	real point[3], r[3], norm[3], fd[3], dfraction;
 	array_zero3(n, fx, fy, fz);
 	array_zero(n, rho);
@@ -178,15 +178,15 @@ force_bc(void)
 		rho[i] += mass*w;
 	}
 	EPART
-	BTRI {
+	    BTRI {
 		pre_density_apply(pre_density, r, point, norm, /**/ &dfraction);
 		rho[i] += dfraction;
 	}
 	ETRI
-	
-	for (i = 0; i < n; i++)
+
+	    for (i = 0; i < n; i++)
 		p[i] = eq_state(rho[i]);
-	
+
 	BPART {
 		if (j == i) continue;
 		dwr = kernel_dwr(kernel, size, r0);
@@ -195,20 +195,19 @@ force_bc(void)
 		fx[i]  += coeff * (xi - xj);
 		fy[i]  += coeff * (yi - yj);
 		fz[i] += coeff * (zi - zj);
-	} 
+	}
 	EPART
 
-	BTRI {
+	    BTRI {
 		pre_cons_apply(pre_cons, r, point, norm, /**/ fd);
-		nd = rho[i]/mass;
-		coeff = -2*mass*p[i]/(rho[i]*rho[i])*nd;
+		coeff = -2*p[i]/rho[i];
 		fx[i] += coeff * fd[X];
 		fy[i] += coeff * fd[Y];
 		fz[i] += coeff * fd[Z];
 	}
 	ETRI
 
-	return CO_OK;
+	    return CO_OK;
 }
 
 int

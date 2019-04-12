@@ -54,9 +54,9 @@ enum
 };
 
 static int n;
-#define nx  (40)
-#define ny  (40)
-#define nz  (20)
+#define nx  (20)
+#define ny  (20)
+#define nz  (10)
 static real lo[3] = 
 {
 	-1.2, -1.2, -0.6
@@ -176,7 +176,7 @@ main(void)
 	n = nx*ny*nz;
 	V = (hi[X] - lo[X])*(hi[Y] - lo[Y])*(hi[Z] - lo[Z]);
 	mass = V/n;
-	size = 4.5 * (hi[X] - lo[X]) / nx;
+	size = 2.5 * (hi[X] - lo[X]) / nx;
 	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
 	pre_density_kernel_ini(size, kernel, &pre_density);
 	y_inif(stdin, &he, &xm, &ym, &zm);

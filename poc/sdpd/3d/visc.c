@@ -55,17 +55,17 @@ enum
 };
 
 static int n;
-#define nx  (40)
-#define ny  (40)
+#define nx  (20)
+#define ny  (20)
 #define nz  (20)
 static const real c = 10;
 static real lo[3] = 
 {
-	-1.2, -1.2, -0.6
+	-1.2, -1.2, -1.2
 };
 static real hi[3] = 
 {
-	1.2, 1.2, 0.6
+	1.2, 1.2, 1.2
 };
 PreDensity *pre_density;
 PreCons *pre_cons;
@@ -75,7 +75,7 @@ static Tri3List *tri3list;
 static He *he;
 static Kernel *kernel;
 static real mass, size;
-static real *x, *y, *z, *rho, *p, *fx, *fy, *fz, *xm ,*ym, *zm;
+static real *x, *y, *z, *rho, *p, *fx, *fy, *fz, *vx, *vy, *vz, *xm ,*ym, *zm;
 static Surface *surface;
 
 static real
@@ -110,6 +110,15 @@ static int
 ini(real *x, real *y, real *z)
 {
 	return grid(x, y, z);
+}
+
+static int
+ini_v(const real *x, const real *y, const real *z, real *vx, real *vy, real *vz)
+{
+	int i;
+	for (i = 0; i < n; i++)
+		vx[i] = vy[i] = vz[i] = 0;
+	return CO_OK;
 }
 
 static int
@@ -168,7 +177,7 @@ static int
 force_bc(void)
 {
 	int i, j, t, *a;
-	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff, nd;
+	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff;
 	real point[3], r[3], norm[3], fd[3], dfraction;
 	array_zero3(n, fx, fy, fz);
 	array_zero(n, rho);
@@ -217,7 +226,7 @@ dump(void)
 	if (First) First = 0;
 	else printf("\n");
 	const real *q[] = {
-		x, y, z, rho, fx, fy, fz, NULL
+		x, y, z, rho, fx, fy, fz, vx, vy, vz, NULL
 	};
 	punto_fwrite(n, q, stdout);
 	MSG("rho: " FMT " " FMT " " FMT, array_min(n, rho), array_mean(n, rho), array_max(n, rho));
@@ -244,7 +253,7 @@ main(void)
 	pre_cons_kernel_ini(size, kernel, &pre_cons);
 	y_inif(stdin, &he, &xm, &ym, &zm);
 
-	surface_ini(lo, hi, size/4, &surface);
+	surface_ini(lo, hi, size/2, &surface);
 	surface_update(surface, he, xm, ym, zm);
 
 	tri3list_ini(lo, hi, size, &tri3list);
@@ -253,12 +262,16 @@ main(void)
 	MALLOC(n, &x);
 	MALLOC(n, &y);
 	MALLOC(n, &z);
+	MALLOC(n, &vx);
+	MALLOC(n, &vy);
+	MALLOC(n, &vz);
 	MALLOC(n, &fx);
 	MALLOC(n, &fy);
 	MALLOC(n, &fz);
 	MALLOC(n, &rho);
 	MALLOC(n, &p);
 	ini(x, y, z);
+	ini_v(x, y, z, vx, vy, vz);
 	cell3_ppp_ini(lo, hi, size, &cell);
 	force();
 	dump();
@@ -282,6 +295,9 @@ main(void)
 	FREE(fx);
 	FREE(fy);
 	FREE(fz);
+	FREE(vx);
+	FREE(vy);
+	FREE(vz);
 	FREE(p);
 	FREE(rho);
 	kernel_fin(kernel);
