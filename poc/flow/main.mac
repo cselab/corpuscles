@@ -1,0 +1,12 @@
+u: [1, 0, 0];
+R: 0;
+rf(x, y, z):=sqrt(x^2 + y^2 + z^2);
+nf(x, y, z):= block([r: rf(x, y, z)],
+	[x/r, y/r, z/r]);
+
+v(x, y, z):=block([n, d, r],
+	n: nf(x, y, z),
+	d: u . n,
+	disp(d, n),
+	r: rf(x, y, z),
+	-3/4*R*(u + n*d)/r  -1/4*R^3*(u  - 3*n*d)/r^3 + u);
