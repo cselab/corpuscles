@@ -51,7 +51,7 @@ int
 pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 {
 	T *q;
-	real *x, *y, res, volume, d;
+	real *x, *y, res, d;
 	int i;
 	Eparam p;
 
@@ -65,12 +65,8 @@ pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 	for (i = 0; i < n; i++) {
 		d = R/(n - 1)*i;
 		sph_plane_apply(integ, d, E, &p, &res);
-		sph_plane_volume(integ, d, &volume);
 		x[i] = d;
-		if (volume > eps)
-			y[i] = res/volume;
-		else
-			y[i] = 0;
+		y[i] = res;
 	}
 	alg_spline_ini(n, x, y, type, &q->s);
 	sph_plane_fin(integ);
@@ -115,7 +111,7 @@ pre_cons_apply(T *q, real r[3], real point[3], real n[3], /**/ real f[3])
 		ERR(CO_NUM, "vec_abs(n) != 1");
 
 	vec_minus(r, point, p);
-	d = vec_project_scalar(p, n);
+	d = vec_dot(p, n);
 	if (d < 0)
 		d = 0;
 	if (d > q->R)
