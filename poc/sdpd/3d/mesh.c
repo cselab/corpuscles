@@ -109,12 +109,6 @@ euler_step_fun(real dt, int (*f)(real, real, real), int n, const real *vx, const
 }
 
 static int
-circle(real x, real y, __UNUSED real z)
-{
-	return x*x + y*y < R*R;
-}
-
-static int
 mesh(real x, real y, real z)
 {
 	return surface_inside_fast(surface, x, y, z);
