@@ -85,8 +85,8 @@ grid(real *x, real *y, real *z)
 	real x0, y0, z0, dx,a, b;
 	int i, j, k, m;
 	dx = (hi[X] - lo[X])/nx;
-	a = -0.0*dx;
-	b =   0.0*dx;
+	a = -0.1*dx;
+	b =   0.1*dx;
 	for (i = m = 0; i < nx; i++)
 		for (j = 0; j < ny; j++)
 			for (k = 0; k < nz; k++) {
@@ -205,7 +205,7 @@ force_bc(void)
 	ETRI
 
 	BPART {
-		if (j == i) continue;
+		if (j == i) continue;q
 		dwr = kernel_dwr(kernel, size, r0);
 		coeff = 1/(rho[i]*rho[j]);
 		coeff *= 2*mass*mu*dwr;
@@ -232,7 +232,6 @@ dump(void)
 {
 	int i;
 	static int First = 1;
-
 	for (i = 0; i < n; i++)
 		if (mesh(x[i], y[i], z[i])) fx[i] = fy[i] = fz[i] = 0;	
 	if (First) First = 0;

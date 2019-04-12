@@ -15,7 +15,7 @@
 typedef struct AlgSpline AlgSpline;
 enum
 {
-	LINEAR, POLYNOMIAL, CSPLINE, AKIMA, STEFFEN
+	LINEAR, POLYNOMIAL, CSPLINE, AKIMA, STEFEN
 };
 int alg_spline_ini(int n, real*, real*, int type, AlgSpline**);
 int alg_spline_fin(AlgSpline*);
