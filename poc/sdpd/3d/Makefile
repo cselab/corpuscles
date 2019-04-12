@@ -1,6 +1,6 @@
 .POSIX:
 include ../../../conf.mk
-M = cell cons density morris mesh pre
+M = cell cons density morris mesh pre visc
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` 
