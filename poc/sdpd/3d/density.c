@@ -183,6 +183,7 @@ main(void)
 
 	surface_ini(lo, hi, size/4, &surface);
 	surface_update(surface, he, xm, ym, zm);
+
 	tri3list_ini(lo, hi, size, &tri3list);
 	tri3list_push(tri3list, he, xm, ym, zm);
 
