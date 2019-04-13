@@ -1,0 +1,5 @@
+# TEST: mh
+co.m4 > main.out.txt <<'!'
+include(`mh.m4')dnl
+<[[preved]]>
+!
