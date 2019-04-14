@@ -1,0 +1,16 @@
+include ../../../conf.mk
+
+M = main
+PREC = s
+CO_CFLAGS =  `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
+
+$M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+$M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
+
+test:
+install:
+run: $M; co.run ./main < /u/0.off
+
+.PHONY: clean test install run
+clean:; rm -f $M.o $M

@@ -168,6 +168,17 @@ function he_nxt(he, h)
 	return he.nxt[h]
 }
 
+function he_flp(he, h)
+{
+	var nh
+	if (!('flp' in he))
+		throw new Error("not a he object")
+	nh = he_nh(he)
+	if (!(h in he.flp))
+		throw new Error("h = " + h + " nh = " + nh)
+	return he.flp[h]
+}
+
 function he_ver(he, h)
 {
 	var nh
@@ -212,6 +223,55 @@ function he_tri_ijk(he, t)
 	j = ver(v)
 	k = ver(w)
 	return [i, j, k]
+}
+
+function he_edg_ijkl(he, e)
+{
+	function edg(e)
+	{
+		return he_hdg_edg(he, e)
+	}
+	function nxt(h)
+	{
+		return he_nxt(he, h)
+	}
+	function ver(h)
+	{
+		return he_ver(he, h)
+	}
+	function bnd(h)
+	{
+		return he_bnd(he, h)
+	}
+	function flp(h)
+	{
+		return he_flp(he, h)
+	}
+
+	var i, j, k, l
+	var u, v, w, y
+
+	v = edg(e)
+	if (bnd(v))
+		return [-1, -1, -1, -1]
+	w = nxt(v)
+	u = nxt(w)
+	y = nxt(nxt(flp(v)))
+
+	i = ver(u)
+	j = ver(v)
+	k = ver(w)
+	l = ver(y)
+	return [i, j, k, l]
+}
+
+function he_bnd(he, h)
+{
+	var nh
+	nh = he_nh(he)
+	if (!(h in he.flp))
+		throw new Error("h = " + h + " nh = " + nh)
+	return he.flp[h] == -1
 }
 
 function rank(he, ans)
@@ -279,7 +339,7 @@ function rank2(he, ans)
 	}
 }
 
-var he, r, nv, i
+var he, r, nv, ne, i
 he = he_ini("/dev/stdin")
 nv = he_nv(he)
 
@@ -289,4 +349,5 @@ rank2(he, r)
 //for (i = 0; i < nv; i++)
 //	console.log(r[i])
 
-console.log(he_tri_ijk(he, 10))
+ne = he_ne(he)
+console.log(he_edg_ijkl(he, ne - 2))
