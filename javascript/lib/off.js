@@ -13,8 +13,8 @@ function off_uncomment(s)
 
 function off_read(f)
 {
-	var lines, NR, nr, l, a, u, nv, nt, i, j, k, t, x, y, z, ver, tri, X, Y, Z
-	var X = 0; Y = 1; Z = 2
+	var lines, NR, nr, l, a, u, nv, nt, i, j, k, t, x, y, z, ver, tri
+	var X = 0, Y = 1, Z = 2
 
 	u = off_uncomment
 	lines = require('fs').readFileSync(f, 'ascii').split('\n').filter(Boolean)
@@ -63,7 +63,7 @@ function off_read(f)
 
 function off_write(f, off)
 {
-	var ver, tri, nv, nt, ne, s, v, ver, tri, i, t
+	var nv, nt, ne, s, v, ver, tri, i, t
 	var X = 0, Y = 1, Z = 2
 	
 	if (!('ver' in off))
