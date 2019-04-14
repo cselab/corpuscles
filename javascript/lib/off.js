@@ -96,3 +96,31 @@ function off_write(f, off)
 		s.write(3 + " " + i + " " + j + " " + k + "\n")
 	}
 }
+
+function off_nv(off)
+{
+	if (!('ver' in off))
+		throw new Error("not an off object")
+	return off.ver.length
+}
+
+function off_nt(off)
+{
+	if (!('tri' in off))
+		throw new Error("not an off object")
+	return off.tri.length
+}
+
+function off_tri(off)
+{
+	if (!('tri' in off))
+		throw new Error("not an off object")
+	return off.tri
+}
+
+function off_ver(off)
+{
+	if (!('ver' in off))
+		throw new Error("not an off object")
+	return off.ver
+}
