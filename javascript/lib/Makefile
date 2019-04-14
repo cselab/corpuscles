@@ -1,5 +1,5 @@
 include ../../conf.mk
-M = off.js he.js
+M = area.js he.js off.js vec.js tri.js
 
 install: $M; co.install $M "$(PREFIX)/include"
 test:; atest test/*
