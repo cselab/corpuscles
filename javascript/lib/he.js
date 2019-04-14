@@ -15,6 +15,7 @@ function he_ver_ini(f)
 	off = off_read(f)
 	nv = off_nv(off)
 	nt = off_nt(off)
+
 	tt  = off_tri(off)
 	ver = off_ver(off)
 
