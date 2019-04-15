@@ -1,0 +1,25 @@
+include(mh.m4)dnl
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<canvas id="c" width="640" height="480"></canvas>
+	</body>
+	<script>
+"use strict"
+main()
+function main()
+{
+	const c = document.querySelector("#c")
+	const g = c.getContext("webgl")
+	if (g === null) {
+		alert("Unable to initialize WebGL")
+		return
+	}
+	g.clearColor(0.0, 0.0, 0.0, 1.0)
+	g.clear(g   .COLOR_BUFFER_BIT)
+}
+	</script>
+</html>

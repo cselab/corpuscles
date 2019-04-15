@@ -1,4 +1,4 @@
-M4 = c.m4
+M4 = co.m4
 M4FLAGS =
 .m4.html.html:
 	@echo creating $@
