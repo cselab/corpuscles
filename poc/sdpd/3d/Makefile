@@ -19,7 +19,7 @@ all: $M
 
 test: $M; atest test/*
 install:
-run: $M; @co.run ./density < /u/1.off > q
+run: $M; @co.run ./pre < /u/1.off > q
 lint:; make CFLAGS='-Wall -Wextra -O2 -g'
 
 .PHONY: clean test install run lint run

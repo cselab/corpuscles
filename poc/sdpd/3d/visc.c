@@ -205,7 +205,7 @@ force_bc(void)
 	ETRI
 
 	BPART {
-		if (j == i) continue;q
+		if (j == i) continue;
 		dwr = kernel_dwr(kernel, size, r0);
 		coeff = 1/(rho[i]*rho[j]);
 		coeff *= 2*mass*mu*dwr;
