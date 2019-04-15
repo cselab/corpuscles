@@ -1,9 +1,9 @@
 .POSIX:
 include ../../../conf.mk
-M = rho main morris solvent
+M = rho main morris solvent pre
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
-CO_LDFLAGS = `alg.conf --libs $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` 
 
 LINK = $(CC)
 
