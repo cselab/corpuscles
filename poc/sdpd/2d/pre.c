@@ -5,7 +5,7 @@
 #include <real.h>
 
 #include <co/array.h>
-#include <co/cell3.h>
+#include <co/cell2.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/kernel.h>
@@ -27,15 +27,14 @@
 #define FMT CO_REAL_OUT
 #define BPART \
 	for (i = 0; i < n; i++) { \
-		xi = x[i]; yi = y[i]; zi = z[i]; \
-		cell3_parts(cell, xi, yi, zi, &a); \
+		xi = x[i]; yi = y[i]; \
+		cell2_parts(cell, xi, yi, &a); \
 		while ( (j = *a++) != -1) { \
-			xj = x[j]; yj = y[j]; zj = z[j]; \
-			cell3_bring(cell, xi, yi, zi, &xj, &yj, &zj); \
+			xj = x[j]; yj = y[j];  \
+			cell2_bring(cell, xi, yi, &xj, &yj); \
 			xr = xi - xj; \
 			yr = yi  - yj; \
-			zr = zi - zj; \
-			rsq = xr*xr + yr*yr + zr*zr; \
+			rsq = xr*xr + yr*yr; \
 			if (rsq > size*size) continue; \
 			r0 = sqrt(rsq);
 #define EPART } }
@@ -49,20 +48,19 @@
 #define ETRI }
 enum
 {
-	X, Y, Z
+	X, Y
 };
 static int n;
-#define nx  (25)
-#define ny  (25)
-#define nz  (25)
+#define nx  (30)
+#define ny  (30)
 static const real c = 10;
 static const real mu = 1;
-static const real g[3] =
+static const real g[2] =
 {
-	1, 0, 0
+	0, 0
 };
 
-static const real dt = 0.0005;
+static const real dt = 1e-5;
 static real lo[3] =
 {
 	-1.2, -1.2, -1.2
@@ -74,12 +72,12 @@ static real hi[3] =
 PreCons *pre_cons;
 PreDensity *pre_density;
 static AlgRng *rng;
-static Cell3 *cell;
+static Cell2 *cell;
 static Tri3List *tri3list;
 static He *he;
 static Kernel *kernel;
 static real mass, size;
-static real *x, *y, *z, *vx, *vy, *vz, *fx, *fy, *fz, *rho, *p, *color, *xm ,*ym, *zm;
+static real *x, *y, *z, *vx, *vy, *fx, *fy, *rho, *p, *xm ,*ym, *zm;
 static Surface *surface;
 
 static int
@@ -89,7 +87,7 @@ rnd(real *x, real *y, real *z)
 	for (i = k = 0; i < n; i++) {
 		x[k] = alg_rng_uniform(rng, lo[X], hi[X]);
 		y[k] = alg_rng_uniform(rng, lo[Y], hi[Y]);
-		z[k]  = alg_rng_uniform(rng, lo[Z], hi[Z]);
+		z[k]  = 0;
 		k++;
 	}
 	return CO_OK;
@@ -103,13 +101,12 @@ ini(real *x, real *y, real *z)
 
 
 static int
-euler_step(real dt, int n, const real *vx, const real *vy, const real*vz, real *x, real *y, real *z)
+euler_step(real dt, int n, const real *vx, const real *vy, real *x, real *y)
 {
 	int i;
 	for (i = 0; i < n; i++) {
 		x[i] += dt*vx[i];
 		y[i] += dt*vy[i];
-		z[i] += dt*vz[i];
 	}
 	return CO_OK;
 }
@@ -121,13 +118,12 @@ mesh(real x, real y, real z)
 }
 
 static int
-body_force(int n,  __UNUSED const real *x, __UNUSED const real *y, __UNUSED const real *z, real *fx,  real *fy, real *fz)
+body_force(int n,  __UNUSED const real *x, __UNUSED const real *y, real *fx,  real *fy)
 {
 	int i;
 	for (i = 0; i < n; i++) {
 		fx[i] += g[X];
 		fy[i] += g[Y];
-		fz[i] += g[Z];
 	}
 	return CO_OK;
 }
@@ -156,10 +152,11 @@ static int
 force(void)
 {
 	int i, j, *a;
-	real r0, xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, w, dwr, coeff;
-	array_zero3(n, fx, fy, fz);
+	real r0, xi, yi, zi, xj, yj, xr, yr, rsq, w, dwr, coeff;
+	array_zero(n, fx);
+	array_zero(n, fy);
 	array_zero(n, rho);
-	cell3_push(cell, n, x, y, z);
+	cell2_push(cell, n, x, y);
 	BPART {
 		w = kernel_w(kernel, size, r0);
 		rho[i] += mass*w;
@@ -177,13 +174,11 @@ force(void)
 		coeff *= mass*dwr;
 		fx[i]  -= coeff * (xi - xj);
 		fy[i]  -= coeff * (yi - yj);
-		fz[i] -= coeff * (zi - zj);
 
 		coeff = 1/(rho[i]*rho[j]);
 		coeff *= 2*mass*mu*dwr;
 		fx[i]  += coeff * (vx[i] - vx[j]);
 		fy[i]  += coeff * (vy[i] - vy[j]);
-		fz[i] += coeff * (vz[i] - vz[j]);
 	}
 	EPART
 
@@ -197,10 +192,11 @@ force_bc(void)
 	int i, j, t, *a;
 	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff;
 	real point[3], r[3], norm[3], fd[3], dfraction;
-	array_zero3(n, fx, fy, fz);
+	array_zero(n, fx);
+	array_zero(n, fy);
 	array_zero(n, rho);
-	cell3_push(cell, n, x, y, z);
-	body_force(n, x, y, z, fx, fy, fz);
+	cell2_push(cell, n, x, y);
+	body_force(n, x, y, fx, fy);
 	BPART {
 		w = kernel_w(kernel, size, r0);
 		rho[i] += mass*w;
@@ -222,13 +218,11 @@ force_bc(void)
 		coeff *= mass*dwr;
 		fx[i]  += coeff * (xi - xj);
 		fy[i]  += coeff * (yi - yj);
-		fz[i] += coeff * (zi - zj);
 
 		coeff = 1/(rho[i]*rho[j]);
 		coeff *= 2*mass*mu*dwr;
 		fx[i]  += coeff * (vx[i] - vx[j]);
 		fy[i]  += coeff * (vy[i] - vy[j]);
-		fz[i] += coeff * (vz[i] - vz[j]);
 	}
 	EPART
 
@@ -237,7 +231,6 @@ force_bc(void)
 		coeff = -2*p[i]/rho[i];
 		fx[i] += coeff * fd[X];
 		fy[i] += coeff * fd[Y];
-		fz[i] += coeff * fd[Z];
 	}
 	ETRI
 	    return CO_OK;
@@ -247,11 +240,11 @@ int
 dump(int t)
 {
 	static int First = 1;
-	if (t % 10 == 0) {
+	if (t % 100 == 0) {
 		if (First) First = 0;
 		else printf("\n");
 		const real *q[] = {
-			x, y, z, vx, vy, vz, rho, color, NULL
+			x, y, vx, vy, rho, fx, fy, NULL
 		};
 		punto_fwrite(n, q, stdout);
 		MSG("rho: " FMT " " FMT " " FMT, array_min(n, rho), array_mean(n, rho), array_max(n, rho));
@@ -266,12 +259,13 @@ main(void)
 	real V;
 	int t, i, j;
 
+	err_set_ignore();
 	alg_rng_ini(&rng);
-	n = nx*ny*nz;
-	V = (hi[X] - lo[X])*(hi[Y] - lo[Y])*(hi[Z] - lo[Z]);
+	n = nx*ny;
+	V = (hi[X] - lo[X])*(hi[Y] - lo[Y]);
 	mass = V/n;
 	size = 2.5 * (hi[X] - lo[X]) / nx;
-	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
+	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
 	pre_cons_kernel_ini(size, kernel, &pre_cons);
 	pre_density_kernel_ini(size, kernel, &pre_density);
 	y_inif(stdin, &he, &xm, &ym, &zm);
@@ -279,27 +273,22 @@ main(void)
 	surface_update(surface, he, xm, ym, zm);
 	tri3list_ini(lo, hi, size, &tri3list);
 	tri3list_push(tri3list, he, xm, ym, zm);
-
 	MALLOC(n, &x);
 	MALLOC(n, &y);
 	MALLOC(n, &z);
 	CALLOC(n, &vx);
 	CALLOC(n, &vy);
-	CALLOC(n, &vz);
 	MALLOC(n, &fx);
 	MALLOC(n, &fy);
-	MALLOC(n, &fz);
 	MALLOC(n, &rho);
 	MALLOC(n, &p);
-	MALLOC(n, &color);
 	ini(x, y, z);
-	cell3_ppp_ini(lo, hi, size, &cell);
-	for (t = 0; t < 150; t++) {
-		MSG("t %d", t);
+	cell2_pp_ini(lo, hi, size, &cell);
+	for (t = 0; t < 15000; t++) {
 		force();
-		euler_step(dt,  n, vx, vy, vz, x, y, z);
-		cell3_wrap(cell, n, x, y, z);
-		euler_step(dt,  n, fx, fy, fz, vx, vy, vz);
+		euler_step(dt,  n, vx, vy, x, y);
+		cell2_wrap(cell, n, x, y);
+		euler_step(dt,  n, fx, fy, vx, vy);
 		dump(t);
 	}
 	for (i = j = 0; i < n; i++) {
@@ -311,33 +300,31 @@ main(void)
 	}
 	MSG("nj %d %d", n, j);
 	n = j;
-	array_zero3(n, vx, vy, vz);
-	array_zero3(n, fx, fy, fz);
+	array_zero(n, vx);
+	array_zero(n, vy);
+	array_zero(n, fx);
+	array_zero(n, fy);
 
 	for (/**/; t < 80000; t++) {
-		MSG("t %d", t);
 		force_bc();
-		euler_step(dt, n, vx, vy, vz, x, y, z);
-		cell3_wrap(cell, n, x, y, z);
-		euler_step(dt, n, fx, fy, fz, vx, vy, vz);
+		euler_step(dt, n, vx, vy, x, y);
+		cell2_wrap(cell, n, x, y);
+		euler_step(dt, n, fx, fy, vx, vy);
 		dump(t);
 	}
 
 	surface_fin(surface);
 	y_fin(he, xm, ym, zm);
-	cell3_fin(cell);
+	cell2_fin(cell);
 	FREE(x);
 	FREE(y);
 	FREE(z);
 	FREE(vx);
 	FREE(vy);
-	FREE(vz);
 	FREE(fx);
 	FREE(fy);
-	FREE(fz);
 	FREE(rho);
 	FREE(p);
-	FREE(color);
 	kernel_fin(kernel);
 	pre_cons_fin(pre_cons);
 	pre_density_fin(pre_density);

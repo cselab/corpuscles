@@ -19,8 +19,8 @@ all: $M
 
 test: $M; atest test/*
 install:
-run: $M; @co.run ./main
-lint:; make CFLAGS='-Wall -Wextra'
+run: $M; @co.run ./pre < /u/0.off > q
+lint:; make CFLAGS='-Wall -Wextra -O2 -g'
 
 .PHONY: clean test install run lint
 clean:; rm -f $M $(M:=.o)
