@@ -52,24 +52,24 @@ enum
 	X, Y, Z
 };
 static int n;
-#define nx  (20)
-#define ny  (20)
-#define nz  (10)
+#define nx  (25)
+#define ny  (25)
+#define nz  (25)
 static const real c = 10;
 static const real mu = 1;
 static const real g[3] =
 {
-	10, 0, 0
+	1, 0, 0
 };
 static const real R = 0.2;
 static const real dt = 0.00025;
 static real lo[3] =
 {
-	-1.2, -1.2, -0.6
+	-1.2, -1.2, -1.2
 };
 static real hi[3] =
 {
-	1.2, 1.2, 0.6
+	1.2, 1.2, 1.2
 };
 PreCons *pre_cons;
 PreDensity *pre_density;
@@ -232,7 +232,7 @@ force_bc(void)
 	}
 	EPART
 
-	    BTRI {
+	BTRI {
 		pre_cons_apply(pre_cons, r, point, norm, /**/ fd);
 		coeff = -2*p[i]/rho[i];
 		fx[i] += coeff * fd[X];
@@ -248,7 +248,7 @@ int
 dump(int t)
 {
 	static int First = 1;
-	if (t % 100 == 0) {
+	if (t % 10 == 0) {
 		if (First) First = 0;
 		else printf("\n");
 		const real *q[] = {
@@ -295,7 +295,7 @@ main(void)
 	MALLOC(n, &color);
 	ini(x, y, z);
 	cell3_ppp_ini(lo, hi, size, &cell);
-	for (t = 0; t < 1; t++) {
+	for (t = 0; t < 100; t++) {
 		MSG("t %d", t);
 		force();
 		euler_step(dt,  n, vx, vy, vz, x, y, z);
@@ -311,7 +311,7 @@ main(void)
 		j++;
 	}
 	MSG("nj %d %d", n, j);
-	n = j;␣
+	n = j;
 	array_zero3(n, vx, vy, vz);
 	array_zero3(n, fx, fy, fz);
 
