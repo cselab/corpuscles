@@ -83,12 +83,11 @@ static Surface *surface;
 static int
 rnd(real *x, real *y, real *z)
 {
-	int i, k;
-	for (i = k = 0; i < n; i++) {
-		x[k] = alg_rng_uniform(rng, lo[X], hi[X]);
-		y[k] = alg_rng_uniform(rng, lo[Y], hi[Y]);
-		z[k]  = 0;
-		k++;
+	int i;
+	for (i = 0; i < n; i++) {
+		x[i] = alg_rng_uniform(rng, lo[X], hi[X]);
+		y[i] = alg_rng_uniform(rng, lo[Y], hi[Y]);
+		z[i]  = 0;
 	}
 	return CO_OK;
 }
@@ -204,7 +203,7 @@ force_bc(void)
 	EPART
 	    BTRI {
 		pre_density_apply(pre_density, r, point, norm, /**/ &dfraction);
-		rho[i] += dfraction;
+		//rho[i] += dfraction;
 	}
 	ETRI
 
@@ -228,9 +227,9 @@ force_bc(void)
 
 	BTRI {
 		pre_cons_apply(pre_cons, r, point, norm, /**/ fd);
-		coeff = -2*p[i]/rho[i];
-		fx[i] += coeff * fd[X];
-		fy[i] += coeff * fd[Y];
+		//coeff = -2*p[i]/rho[i];
+		//fx[i] += coeff * fd[X];
+		//fy[i] += coeff * fd[Y];
 	}
 	ETRI
 	    return CO_OK;
@@ -246,8 +245,10 @@ dump(int t)
 		const real *q[] = {
 			x, y, vx, vy, rho, fx, fy, NULL
 		};
-		punto_fwrite(n, q, stdout);
-		MSG("rho: " FMT " " FMT " " FMT, array_min(n, rho), array_mean(n, rho), array_max(n, rho));
+		punto_fwrite(n, q, stdout);		
+		fprintf(stderr, 
+			"%08d: " FMT " " FMT " " FMT "\n",
+			t, array_min(n, rho), array_mean(n, rho), array_max(n, rho));
 	}
 	fflush(stdout);
 	return CO_OK;
@@ -264,7 +265,7 @@ main(void)
 	n = nx*ny;
 	V = (hi[X] - lo[X])*(hi[Y] - lo[Y]);
 	mass = V/n;
-	size = 2.5 * (hi[X] - lo[X]) / nx;
+	size = 2.5*(hi[X] - lo[X])/nx;
 	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
 	pre_cons_kernel_ini(size, kernel, &pre_cons);
 	pre_density_kernel_ini(size, kernel, &pre_density);
@@ -284,7 +285,7 @@ main(void)
 	MALLOC(n, &p);
 	ini(x, y, z);
 	cell2_pp_ini(lo, hi, size, &cell);
-	for (t = 0; t < 15000; t++) {
+	for (t = 0; t < 10000; t++) {
 		force();
 		euler_step(dt,  n, vx, vy, x, y);
 		cell2_wrap(cell, n, x, y);
@@ -306,7 +307,7 @@ main(void)
 	array_zero(n, fy);
 
 	for (/**/; t < 80000; t++) {
-		force_bc();
+		force();
 		euler_step(dt, n, vx, vy, x, y);
 		cell2_wrap(cell, n, x, y);
 		euler_step(dt, n, fx, fy, vx, vy);
