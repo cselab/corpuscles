@@ -20,7 +20,7 @@ main(void)
 	{
 		X, Y, Z
 	};
-	real size, R;
+	real R;
 	Kernel *kernel;
 	PreCons *pre_cons;
 	real r[3], point[3], norm[3], f[3];
