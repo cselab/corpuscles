@@ -51,16 +51,16 @@ enum
 	X, Y
 };
 static int n;
-#define nx  (30)
-#define ny  (30)
+#define nx  (32)
+#define ny  (32)
 static const real c = 10;
 static const real mu = 1;
 static const real g[2] =
 {
-	0, 0
+	10, 0
 };
 
-static const real dt = 1e-5;
+static const real dt = 1e-4;
 static real lo[3] =
 {
 	-1.2, -1.2, -1.2
@@ -165,7 +165,6 @@ force(void)
 	 for (i = 0; i < n; i++)
 		p[i] = eq_state(rho[i]);
 
-
 	BPART {
 		if (j == i) continue;
 		dwr = kernel_dwr(kernel, size, r0);
@@ -203,7 +202,7 @@ force_bc(void)
 	EPART
 	    BTRI {
 		pre_density_apply(pre_density, r, point, norm, /**/ &dfraction);
-		//rho[i] += dfraction;
+		rho[i] += dfraction;
 	}
 	ETRI
 
@@ -215,8 +214,8 @@ force_bc(void)
 		dwr = kernel_dwr(kernel, size, r0);
 		coeff = p[i]/(rho[i]*rho[i]) + p[j]/(rho[j]*rho[j]);
 		coeff *= mass*dwr;
-		fx[i]  += coeff * (xi - xj);
-		fy[i]  += coeff * (yi - yj);
+		fx[i]  -= coeff * (xi - xj);
+		fy[i]  -= coeff * (yi - yj);
 
 		coeff = 1/(rho[i]*rho[j]);
 		coeff *= 2*mass*mu*dwr;
@@ -227,9 +226,9 @@ force_bc(void)
 
 	BTRI {
 		pre_cons_apply(pre_cons, r, point, norm, /**/ fd);
-		//coeff = -2*p[i]/rho[i];
-		//fx[i] += coeff * fd[X];
-		//fy[i] += coeff * fd[Y];
+		coeff =             2*p[i]/rho[i];
+		fx[i] += coeff * fd[X];
+		fy[i] += coeff * fd[Y];
 	}
 	ETRI
 	    return CO_OK;
@@ -267,8 +266,8 @@ main(void)
 	mass = V/n;
 	size = 2.5*(hi[X] - lo[X])/nx;
 	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
-	pre_cons_kernel_ini(size, kernel, &pre_cons);
-	pre_density_kernel_ini(size, kernel, &pre_density);
+	pre_cons2_kernel_ini(size, kernel, &pre_cons);
+	pre_density2_kernel_ini(size, kernel, &pre_density);
 	y_inif(stdin, &he, &xm, &ym, &zm);
 	surface_ini(lo, hi, size, &surface);
 	surface_update(surface, he, xm, ym, zm);
@@ -285,7 +284,7 @@ main(void)
 	MALLOC(n, &p);
 	ini(x, y, z);
 	cell2_pp_ini(lo, hi, size, &cell);
-	for (t = 0; t < 10000; t++) {
+	for (t = 0; t < 1000; t++) {
 		force();
 		euler_step(dt,  n, vx, vy, x, y);
 		cell2_wrap(cell, n, x, y);
@@ -307,7 +306,7 @@ main(void)
 	array_zero(n, fy);
 
 	for (/**/; t < 80000; t++) {
-		force();
+		force_bc();
 		euler_step(dt, n, vx, vy, x, y);
 		cell2_wrap(cell, n, x, y);
 		euler_step(dt, n, fx, fy, vx, vy);
@@ -333,13 +332,3 @@ main(void)
 	tri3list_fin(tri3list);
 	MSG("end");
 }
-
-
-/*
-
-pkill morris
-CFLAGS=-O3 make
-./morris > q
-punto -c -G 0:0.3  q
-
-*/
