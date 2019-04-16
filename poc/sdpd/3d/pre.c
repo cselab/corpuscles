@@ -59,7 +59,7 @@ static const real c = 10;
 static const real mu = 1;
 static const real g[3] =
 {
-	1, 0, 0
+	10, 0, 0
 };
 
 static const real dt = 0.0005;
@@ -220,9 +220,9 @@ force_bc(void)
 		dwr = kernel_dwr(kernel, size, r0);
 		coeff = p[i]/(rho[i]*rho[i]) + p[j]/(rho[j]*rho[j]);
 		coeff *= mass*dwr;
-		fx[i]  += coeff * (xi - xj);
-		fy[i]  += coeff * (yi - yj);
-		fz[i] += coeff * (zi - zj);
+		fx[i]  -= coeff * (xi - xj);
+		fy[i]  -= coeff * (yi - yj);
+		fz[i] -= coeff * (zi - zj);
 
 		coeff = 1/(rho[i]*rho[j]);
 		coeff *= 2*mass*mu*dwr;
@@ -234,7 +234,7 @@ force_bc(void)
 
 	BTRI {
 		pre_cons_apply(pre_cons, r, point, norm, /**/ fd);
-		coeff = -2*p[i]/rho[i];
+		coeff = 2*p[i]/rho[i];
 		fx[i] += coeff * fd[X];
 		fy[i] += coeff * fd[Y];
 		fz[i] += coeff * fd[Z];
@@ -254,7 +254,8 @@ dump(int t)
 			x, y, z, vx, vy, vz, rho, color, NULL
 		};
 		punto_fwrite(n, q, stdout);
-		MSG("rho: " FMT " " FMT " " FMT, array_min(n, rho), array_mean(n, rho), array_max(n, rho));
+		MSG("d " FMT " " FMT, array_min(n, rho), array_max(n, rho));
+		MSG("v " FMT " " FMT, array_min(n, vx), array_max(n, vx));
 	}
 	fflush(stdout);
 	return CO_OK;

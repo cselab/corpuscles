@@ -53,8 +53,8 @@ enum
 	X, Y
 };
 static int n;
-#define nx  (32)
-#define ny  (32)
+#define nx  (42)
+#define ny  (42)
 static const real c = 10;
 static const real beta = 0.1;
 static const real mu = 1;

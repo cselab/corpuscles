@@ -124,7 +124,8 @@ ini_v0(real x, real y, real z, real *u, real *v, real *w)
 	dz = x*z*r2;
 	*u = -3.0/4*r*(1 + dx) - 1.0/4*r3*(1 - 3*dx) + 1;
 	*v = -3.0/4*r*dy          - 1.0/4*r3*(-3*dy);
-	*w = -3.0/4*r*dz          - 1.0/4*r3*(-3*dz);		
+	*w = -3.0/4*r*dz          - 1.0/4*r3*(-3*dz);
+	return CO_OK;		
 }
 
 static int
