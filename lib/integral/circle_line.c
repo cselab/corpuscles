@@ -22,9 +22,8 @@ enum
 
 struct T
 {
-	AlgIntegration *ie, *ih, *ig;
-	real R, d;
-	real p0, p, t;
+	AlgIntegration *ie, *ih;
+	real R, d, t;
 	void *param;
 	real (*E)(real, real, void*);
 };
@@ -38,7 +37,6 @@ circle_line_ini(real R, T **pq)
 	q->R = R;
 	alg_integration_ini(TYPE, &q->ie);
 	alg_integration_ini(TYPE, &q->ih);
-	alg_integration_ini(TYPE, &q->ig);
 	*pq = q;
 	return CO_OK;
 }
@@ -48,7 +46,6 @@ circle_line_fin(T *q)
 {
 	alg_integration_fin(q->ie);
 	alg_integration_fin(q->ih);
-	alg_integration_fin(q->ig);
 	FREE(q);
 	return CO_OK;
 }
@@ -57,43 +54,30 @@ static real
 f(real r, void *v)
 {
 	void *param;
-	real p, t, x, y, z;
+	real t, x, y;
 	T *q;
+
 	q = v;
-	p = q->p;
 	t = q->t;
 	param = q->param;
-	x  = r*cos(t)*sin(p);
-	y = r*sin(t)*sin(p);
-	z = r*cos(p);
-	return r*r*sin(p)*q->E(x, y, param);
+	x  = r*cos(t);
+	y = r*sin(t);
+	return r*q->E(x, y, param);
 }
 
 static real
-g(real pp, void *v)
+h(real t, void *v)
 {
-	real a, b, res;
+	real a, b, res, d, R;
 	T *q;
 
 	q = v;
-	q->p = pp;
-	a = -q->d/cos(q->p);
-	b = q->R;
-	alg_integration_apply(q->ig, a, b, f, v, &res);
-	return res;
-}
-
-static real
-h(real tt, void *v)
-{
-	real a, b, res;
-	T *q;
-
-	q = v;
-	q->t = tt;
-	a = q->p0;
-	b = PI;
-	alg_integration_apply(q->ih, a, b, g, v, &res);
+	R = q->R;
+	d = q->d;
+	a = d/cos(t);
+	b = R;
+	alg_integration_apply(q->ih, a, b, f, v, &res);
+	q->t = t;
 	return res;
 }
 int
@@ -110,9 +94,8 @@ circle_line_apply(T *q, real d, real (*E)(real, real, void*), void *param, /**/ 
 	q->E = E;
 	q->param = param;
 	q->d = d;
-	q->p0 = acos(-d/R);
-	a = 0;
-	b = 2*PI;
+	a = acos(d/R);
+	b = 2*PI - a;
 	status = alg_integration_apply(q->ie, a, b, h, q, res);
 	if (status != CO_OK)
 		ERR(CO_NUM, "alg_integration failed");
