@@ -69,16 +69,28 @@ f(real r, void *v)
 	return r*r*sin(p)*q->E(x, y, z, param);
 }
 
-static real
-g(real pp, void *v)
+static int
+small(real s)
 {
-	real a, b, res;
+	real eps = 1e-6;
+	if      (s >  eps) return 0;
+	else if (s < -eps) return 0;
+	else               return 1;
+}
+
+static real
+g(real p, void *v)
+{
+	real a, b, d, R, cp, res;
 	T *q;
 
 	q = v;
-	q->p = pp;
-	a = -q->d/cos(q->p);
-	b = q->R;
+	q->p = p;
+	d = q->d;
+	R = q->R;
+	cp = cos(p);
+	a = small(cp) ? 0 : -d/cp;
+	b = R;
 	alg_integration_apply(q->ig, a, b, f, v, &res);
 	return res;
 }
