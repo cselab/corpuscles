@@ -151,7 +151,7 @@ static int
 force(void)
 {
 	int i, j, *a;
-	real r0, xi, yi, zi, xj, yj, xr, yr, rsq, w, dwr, coeff;
+	real r0, xi, yi, xj, yj, xr, yr, rsq, w, dwr, coeff;
 	array_zero(n, fx);
 	array_zero(n, fy);
 	array_zero(n, rho);
@@ -189,7 +189,7 @@ static int
 force_bc(void)
 {
 	int i, j, t, *a;
-	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff;
+	real xi, yi, xj, yj, xr, yr, rsq, r0, w, dwr, coeff;
 	real point[3], r[3], norm[3], fd[3], dfraction;
 	array_zero(n, fx);
 	array_zero(n, fy);

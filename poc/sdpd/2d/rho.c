@@ -44,18 +44,6 @@ static AlgRng *rng;
 static Kernel *kernel;
 
 static int
-rnd(real *x, real *y)
-{
-	int i, k;
-	for (i = k = 0; i < n; i++) {
-		x[k] = alg_rng_uniform(rng, lo[X], hi[X]);
-		y[k] = alg_rng_uniform(rng, lo[Y], hi[Y]);
-		k++;
-	}
-	return CO_OK;
-}
-
-static int
 grid(real *x, real *y)
 {
 	real x0, y0, dx,a, b;
@@ -107,8 +95,6 @@ main(void)
 	cell2_pp_ini(lo, hi, size, &cell);
 	array_zero(n, rho);
 	cell2_push(cell, n, x, y);
-	cell2_parts(cell, xi, yi, &a);
-
 	i0 = 4;
 	BEGIN {
 		w = kernel_w(kernel, size, r);

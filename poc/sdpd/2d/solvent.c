@@ -42,26 +42,6 @@ static AlgRng *rng;
 static Kernel *kernel;
 
 static int
-grid(real *x, real *y)
-{
-	real x0, y0, dx,a, b;
-	int i, j, k;
-	k = 0;
-	dx = (hi[X] - lo[X])/nx;
-	a = -0.2*dx;
-	b =   0.2*dx;
-	for (i = 0; i < nx; i++)
-		for (j = 0; j < ny; j++) {
-			x0 = lo[X] + (hi[X] - lo[X])*(i + 0.5)/nx;
-			y0 = lo[Y] + (hi[Y] - lo[Y])*(j + 0.5)/ny;
-			x[k] = x0 + alg_rng_uniform(rng, a, b);
-			y[k] = y0 + alg_rng_uniform(rng, a, b);
-			k++;
-	}
-	return CO_OK;
-}
-
-static int
 rnd(real *x, real *y)
 {
 	int i, k;
@@ -91,7 +71,7 @@ euler_step(real dt, int n, const real *vx, const real *vy, real *x, real *y)
 }
 
 static int
-body_force(int n, const real *x, __UNUSED const real *y, real *fx, __UNUSED real *fy)
+body_force(int n, __UNUSED const real *x, __UNUSED const real *y, real *fx, __UNUSED real *fy)
 {
 	int i;
 	for (i = 0; i < n; i++)
@@ -112,7 +92,7 @@ main(void)
 	real *x, *y, *vx, *vy, *fx, *fy, *rho, *p;
 	Cell2 *cell;
 
-	int i, j, k, t, *a;
+	int i, j, t, *a;
 	real xi, yi, xj, yj, xr, yr, rsq, r, w, dw;
 	real dt, coeff;
 

@@ -61,7 +61,7 @@ euler_step(real dt, int n, const real *vx, const real *vy, real *x, real *y)
 }
 
 static int
-body_force(int n, const real *x, __UNUSED const real *y, real *fx, __UNUSED real *fy)
+body_force(int n, __UNUSED const real *x, __UNUSED const real *y, real *fx, __UNUSED real *fy)
 {
 	int i;
 	for (i = 0; i < n; i++)
@@ -76,7 +76,7 @@ main(void)
 	real *x, *y, *vx, *vy, *fx, *fy, *rho;
 	Cell2 *cell;
 
-	int i, j, k, t, *a;
+	int i, j, t, *a;
 	real xi, yi, xj, yj, xr, yr, rsq;
 	real dt;
 

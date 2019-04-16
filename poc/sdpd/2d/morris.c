@@ -46,25 +46,6 @@ static Kernel *kernel;
 static real *x, *y, *vx, *vy, *fx, *fy, *rho, *p;
 static Cell2 *cell;
 
-static int
-grid(real *x, real *y)
-{
-	real x0, y0, dx,a, b;
-	int i, j, k;
-	k = 0;
-	dx = (hi[X] - lo[X])/nx;
-	a = -0.2*dx;
-	b =   0.2*dx;
-	for (i = 0; i < nx; i++)
-		for (j = 0; j < ny; j++) {
-			x0 = lo[X] + (hi[X] - lo[X])*(i + 0.5)/nx;
-			y0 = lo[Y] + (hi[Y] - lo[Y])*(j + 0.5)/ny;
-			x[k] = x0 + alg_rng_uniform(rng, a, b);
-			y[k] = y0 + alg_rng_uniform(rng, a, b);
-			k++;
-		}
-	return CO_OK;
-}
 
 static int
 rnd(real *x, real *y)
@@ -133,7 +114,7 @@ eq_state(real rho)
 int
 force(void)
 {
-	int i, j, k, t, *a;
+	int i, j, *a;
 	real xi, yi, xj, yj, xr, yr, rsq, r, w, dw;
 	real coeff;
 
