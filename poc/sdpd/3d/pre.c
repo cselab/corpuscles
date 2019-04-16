@@ -6,6 +6,7 @@
 
 #include <co/array.h>
 #include <co/cell3.h>
+#include <co/edg.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/kernel.h>
@@ -14,12 +15,13 @@
 #include <co/memory.h>
 #include <co/pre/cons.h>
 #include <co/pre/density.h>
+#include <co/pre/visc.h>
 #include <co/punto.h>
 #include <co/surface.h>
 #include <co/tri.h>
 #include <co/vec.h>
-#include <co/edg.h>
 #include <co/y.h>
+
 
 #include <alg/rng.h>
 
@@ -57,6 +59,7 @@ static int n;
 #define nz  (25)
 static const real c = 10;
 static const real mu = 1;
+static const real beta = 0.1;
 static const real g[3] =
 {
 	10, 0, 0
@@ -73,6 +76,7 @@ static real hi[3] =
 };
 PreCons *pre_cons;
 PreDensity *pre_density;
+PreVisc *pre_visc;
 static AlgRng *rng;
 static Cell3 *cell;
 static Tri3List *tri3list;
@@ -195,7 +199,7 @@ static int
 force_bc(void)
 {
 	int i, j, t, *a;
-	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff;
+	real xi, yi, zi, xj, yj, zj, xr, yr, zr, rsq, r0, w, dwr, coeff, fv;
 	real point[3], r[3], norm[3], fd[3], dfraction;
 	array_zero3(n, fx, fy, fz);
 	array_zero(n, rho);
@@ -238,6 +242,12 @@ force_bc(void)
 		fx[i] += coeff * fd[X];
 		fy[i] += coeff * fd[Y];
 		fz[i] += coeff * fd[Z];
+
+		pre_visc_apply(pre_visc, r, point, norm, /**/ &fv);
+		coeff = 2*mu/rho[i];
+		fx[i]  += coeff*vx[i]*fv;
+		fy[i]  += coeff*vy[i]*fv;
+		fz[i]  += coeff*vz[i]*fv;
 	}
 	ETRI
 	    return CO_OK;
@@ -275,6 +285,7 @@ main(void)
 	kernel_ini(KERNEL_3D, KERNEL_YANG, &kernel);
 	pre_cons_kernel_ini(size, kernel, &pre_cons);
 	pre_density_kernel_ini(size, kernel, &pre_density);
+	pre_visc_kernel_ini(size, beta, kernel, &pre_visc);
 	y_inif(stdin, &he, &xm, &ym, &zm);
 	surface_ini(lo, hi, size, &surface);
 	surface_update(surface, he, xm, ym, zm);
@@ -342,6 +353,7 @@ main(void)
 	kernel_fin(kernel);
 	pre_cons_fin(pre_cons);
 	pre_density_fin(pre_density);
+	pre_visc_fin(pre_visc);
 	alg_rng_fin(rng);
 	tri3list_fin(tri3list);
 	MSG("end");
