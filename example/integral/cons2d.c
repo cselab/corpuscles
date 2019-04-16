@@ -8,7 +8,7 @@
 #include <co/macro.h>
 #include <co/vec.h>
 #include <co/kernel.h>
-#include <co/pre/density.h>
+#include <co/pre/cons.h>
 
 #define FMT CO_REAL_OUT
 
@@ -27,7 +27,7 @@ main(void)
 	};
 	real R;
 	Kernel *kernel;
-	PreDensity *pre_density;
+	PreCons *pre;
 	real r[3], point[3], norm[3];
 	real lo, hi, x, y;
 	int i, n;
@@ -37,7 +37,7 @@ main(void)
 	lo = 0;
 	hi = R;
 	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
-	pre_density2_kernel_ini(R, kernel, &pre_density);
+	pre_cons2_kernel_ini(R, kernel, &pre);
 	point[X] = point[Y] = point[Z] = 0;
 	r[Y] = 0;
 	r[Z] = 0;
@@ -47,9 +47,9 @@ main(void)
 	for (i = 0; i < n; i++) {
 		x = lo + (hi - lo)/(n - 1)*i;
 		r[X] = x;
-		pre_density_apply(pre_density, r, point, norm, &y);
+		pre_cons_apply(pre, r, point, norm, &y);
 		printf(FMT " " FMT "\n", x, y);
 	}
-	pre_density_fin(pre_density);
+	pre_cons_fin(pre);
 	kernel_fin(kernel);
 }
