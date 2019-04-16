@@ -83,7 +83,7 @@ h(real t, void *v)
 	q = v;
 	R = q->R;
 	d = q->d;
-	a = small(t) ? 0 : d/sin(t);
+	a = small(t) ? 0 : -d/sin(t);
 	b = R;
 	q->t = t;
 	alg_integration_apply(q->ih, a, b, f, v, &res);
@@ -93,7 +93,7 @@ int
 circle_line_apply(T *q, real d, real (*E)(real, real, void*), void *param, /**/ real *res)
 {
 	int status;
-	real R, a, b;
+	real R, as, a, b;
 
 	R = q->R;
 	if (d < 0)
@@ -103,8 +103,9 @@ circle_line_apply(T *q, real d, real (*E)(real, real, void*), void *param, /**/ 
 	q->E = E;
 	q->param = param;
 	q->d = d;
-	a = asin(d/R);
-	b = PI - asin(d/R);
+	as = asin(d/R);
+	a = PI + as;
+	b = 2*PI - as;	
 	status = alg_integration_apply(q->ie, a, b, h, q, res);
 	if (status != CO_OK)
 		ERR(CO_NUM, "alg_integration failed");
