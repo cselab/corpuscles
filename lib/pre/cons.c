@@ -5,6 +5,7 @@
 
 #include "co/err.h"
 #include "co/integral/sph_plane.h"
+#include "co/integral/circle_line.h"
 #include "co/kernel.h"
 #include "co/macro.h"
 #include "co/memory.h"
@@ -38,13 +39,23 @@ struct Eparam
 };
 
 static real
-E(real x, real y, real z, void *param)
+E3(real x, real y, real z, void *param)
 {
 	real r;
 	Eparam *p;
 	p = param;
 	r = sqrt(x*x + y*y + z*z);
 	return z*p->F(r, p->param);
+}
+
+static real
+E2(real x, real y, void *param)
+{
+	real r;
+	Eparam *p;
+	p = param;
+	r = sqrt(x*x + y*y);
+	return y*p->F(r, p->param);
 }
 
 int
@@ -64,12 +75,43 @@ pre_cons_ini(real R, real (*F)(real, void*), void *param, T  **pq)
 	p.param = param;
 	for (i = 0; i < n; i++) {
 		d = R/(n - 1)*i;
-		sph_plane_apply(integ, d, E, &p, &res);
+		sph_plane_apply(integ, d, E3, &p, &res);
 		x[i] = d;
 		y[i] = res;
 	}
 	alg_spline_ini(n, x, y, type, &q->s);
 	sph_plane_fin(integ);
+	FREE(x);
+	FREE(y);
+
+	q->R = R;
+	*pq = q;
+	return CO_OK;
+}
+
+int
+pre_cons2_ini(real R, real (*F)(real, void*), void *param, T  **pq)
+{
+	T *q;
+	real *x, *y, res, d;
+	int i;
+	Eparam p;
+
+	MALLOC(1, &q);
+	CircleLine *integ;
+	circle_line_ini(R, &integ);
+	MALLOC(n, &x);
+	MALLOC(n, &y);
+	p.F = F;
+	p.param = param;
+	for (i = 0; i < n; i++) {
+		d = R/(n - 1)*i;
+		circle_line_apply(integ, d, E2, &p, &res);
+		x[i] = d;
+		y[i] = res;
+	}
+	alg_spline_ini(n, x, y, type, &q->s);
+	circle_line_fin(integ);
 	FREE(x);
 	FREE(y);
 
@@ -100,6 +142,15 @@ pre_cons_kernel_ini(real R, Kernel *kernel, T  **pq)
 	fparam.k = kernel;
 	fparam.size = R;
 	return pre_cons_ini(R, F, &fparam, pq);
+}
+
+int
+pre_cons2_kernel_ini(real R, Kernel *kernel, T  **pq)
+{
+	Fparam fparam;
+	fparam.k = kernel;
+	fparam.size = R;
+	return pre_cons2_ini(R, F, &fparam, pq);
 }
 
 int

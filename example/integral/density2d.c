@@ -36,7 +36,7 @@ main(void)
 	R = 2;
 	lo = 0;
 	hi = R;
-	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
+	kernel_ini(KERNEL_2D, KERNEL_YAN, &kernel);
 	pre_density2_kernel_ini(R, kernel, &pre_density);
 	point[X] = point[Y] = point[Z] = 0;
 	r[Y] = 0;
