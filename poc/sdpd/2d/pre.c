@@ -255,10 +255,10 @@ dump(int t)
 		};
 		punto_fwrite(n, q, stdout);		
 		fprintf(stderr, 
-			"%08d: den: " FMT " " FMT "\n",
+			"%06d d " FMT " " FMT "\n",
 			t, array_min(n, rho), array_max(n, rho));
 		fprintf(stderr, 
-			"%08d: vec: " FMT " " FMT "\n",
+			"%06d v " FMT " " FMT "\n",
 			t, array_min(n, vx), array_max(n, vx));
 	}
 	fflush(stdout);
