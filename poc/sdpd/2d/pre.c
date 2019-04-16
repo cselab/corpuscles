@@ -6,6 +6,7 @@
 
 #include <co/array.h>
 #include <co/cell2.h>
+#include <co/edg.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/kernel.h>
@@ -14,12 +15,13 @@
 #include <co/memory.h>
 #include <co/pre/cons.h>
 #include <co/pre/density.h>
+#include <co/pre/visc.h>
 #include <co/punto.h>
 #include <co/surface.h>
 #include <co/tri.h>
 #include <co/vec.h>
-#include <co/edg.h>
 #include <co/y.h>
+
 
 #include <alg/rng.h>
 
@@ -54,6 +56,7 @@ static int n;
 #define nx  (32)
 #define ny  (32)
 static const real c = 10;
+static const real beta = 0.1;
 static const real mu = 1;
 static const real g[2] =
 {
@@ -71,6 +74,7 @@ static real hi[3] =
 };
 PreCons *pre_cons;
 PreDensity *pre_density;
+PreVisc *pre_visc;
 static AlgRng *rng;
 static Cell2 *cell;
 static Tri3List *tri3list;
@@ -189,7 +193,7 @@ force_bc(void)
 {
 	int i, j, t, *a;
 	real xi, yi, xj, yj, xr, yr, rsq, r0, w, dwr, coeff;
-	real point[3], r[3], norm[3], fd[3], dfraction;
+	real point[3], r[3], norm[3], fd[3], fv, dfraction;
 	array_zero(n, fx);
 	array_zero(n, fy);
 	array_zero(n, rho);
@@ -219,16 +223,21 @@ force_bc(void)
 
 		coeff = 1/(rho[i]*rho[j]);
 		coeff *= 2*mass*mu*dwr;
-		fx[i]  += coeff * (vx[i] - vx[j]);
-		fy[i]  += coeff * (vy[i] - vy[j]);
+		fx[i]  += coeff*(vx[i] - vx[j]);
+		fy[i]  += coeff*(vy[i] - vy[j]);
 	}
 	EPART
 
 	BTRI {
 		pre_cons_apply(pre_cons, r, point, norm, /**/ fd);
-		coeff =             2*p[i]/rho[i];
-		fx[i] += coeff * fd[X];
-		fy[i] += coeff * fd[Y];
+		coeff =  2*p[i]/rho[i];
+		fx[i] += coeff*fd[X];
+		fy[i] += coeff*fd[Y];
+
+		pre_visc_apply(pre_visc, r, point, norm, /**/ &fv);
+		coeff = 2*mu/rho[i];
+		fx[i]  += coeff*vx[i]*fv;
+		fy[i]  += coeff*vy[i]*fv;
 	}
 	ETRI
 	    return CO_OK;
@@ -246,8 +255,11 @@ dump(int t)
 		};
 		punto_fwrite(n, q, stdout);		
 		fprintf(stderr, 
-			"%08d: " FMT " " FMT " " FMT "\n",
-			t, array_min(n, rho), array_mean(n, rho), array_max(n, rho));
+			"%08d: den: " FMT " " FMT "\n",
+			t, array_min(n, rho), array_max(n, rho));
+		fprintf(stderr, 
+			"%08d: vec: " FMT " " FMT "\n",
+			t, array_min(n, vx), array_max(n, vx));
 	}
 	fflush(stdout);
 	return CO_OK;
@@ -268,6 +280,7 @@ main(void)
 	kernel_ini(KERNEL_2D, KERNEL_YANG, &kernel);
 	pre_cons2_kernel_ini(size, kernel, &pre_cons);
 	pre_density2_kernel_ini(size, kernel, &pre_density);
+	pre_visc2_kernel_ini(size, beta, kernel, &pre_visc);
 	y_inif(stdin, &he, &xm, &ym, &zm);
 	surface_ini(lo, hi, size, &surface);
 	surface_update(surface, he, xm, ym, zm);
@@ -328,6 +341,7 @@ main(void)
 	kernel_fin(kernel);
 	pre_cons_fin(pre_cons);
 	pre_density_fin(pre_density);
+	pre_visc_fin(pre_visc);
 	alg_rng_fin(rng);
 	tri3list_fin(tri3list);
 	MSG("end");
