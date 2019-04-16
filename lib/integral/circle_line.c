@@ -16,7 +16,7 @@ enum
 {
 	TYPE = GAUSS31
 };
-#define T SphPlane
+#define T CircleLine
 #define FMT CO_REAL_OUT
 #define PI (3.141592653589793)
 
@@ -26,7 +26,7 @@ struct T
 	real R, d;
 	real p0, p, t;
 	void *param;
-	real (*E)(real, real, real, void*);
+	real (*E)(real, real, void*);
 };
 
 int
@@ -66,7 +66,7 @@ f(real r, void *v)
 	x  = r*cos(t)*sin(p);
 	y = r*sin(t)*sin(p);
 	z = r*cos(p);
-	return r*r*sin(p)*q->E(x, y, z, param);
+	return r*r*sin(p)*q->E(x, y, param);
 }
 
 static real
@@ -97,7 +97,7 @@ h(real tt, void *v)
 	return res;
 }
 int
-circle_line_apply(T *q, real d, real (*E)(real, real, real, void*), void *param, /**/ real *res)
+circle_line_apply(T *q, real d, real (*E)(real, real, void*), void *param, /**/ real *res)
 {
 	int status;
 	real R, a, b;
@@ -121,14 +121,13 @@ circle_line_apply(T *q, real d, real (*E)(real, real, real, void*), void *param,
 }
 
 static real
-one(__UNUSED real x, __UNUSED real y, __UNUSED real z, __UNUSED void *param)
+one(__UNUSED real x, __UNUSED real y, __UNUSED void *param)
 {
 	return 1;
 }
 
 int
 circle_line_volume(T *q, real d, /**/ real *result)
-{
-	
+{	
 	return circle_line_apply(q, d, one, NULL, result);
 }

@@ -25,7 +25,7 @@ real alg_spline_apply(AlgSpline*, real);
 #define FMT CO_REAL_OUT
 
 static const int n = 20;
-static const int type =  STEFFEN;
+static const int type =  STEFEN;
 static const real eps = 1e-8;
 
 struct T

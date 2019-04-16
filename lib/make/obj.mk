@@ -56,6 +56,7 @@ f/volume_normal.s.o\
 f/wlc.s.o\
 gts.s.o\
 H.s.o\
+integral/circle_line.s.o\
 integral/sph_2plane.s.o\
 integral/sph_plane.s.o\
 invariants.s.o\
@@ -137,6 +138,7 @@ f/volume_normal.d.o\
 f/wlc.d.o\
 gts.d.o\
 H.d.o\
+integral/circle_line.d.o\
 integral/sph_2plane.d.o\
 integral/sph_plane.d.o\
 invariants.d.o\
@@ -218,6 +220,7 @@ f/volume_normal.l.o\
 f/wlc.l.o\
 gts.l.o\
 H.l.o\
+integral/circle_line.l.o\
 integral/sph_2plane.l.o\
 integral/sph_plane.l.o\
 invariants.l.o\
