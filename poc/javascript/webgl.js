@@ -43,10 +43,10 @@ function initBuffers(g)
 	b = g.createBuffer()
 	g.bindBuffer(g.ARRAY_BUFFER, b)
 	pos = [
-		 1.0,	1.5,
-		-1.2,	1.0,
-		 1.0, -1.0,
-		-1.0, -1.0,
+		 1.0,	1.5, 0.0,
+		-1.2,	1.0, 0.0,
+		 1.0, -1.0, 0.0,
+		-1.0, -1.0, 0.0
 	]
 	g.bufferData(g.ARRAY_BUFFER, new Float32Array(pos), g.STATIC_DRAW)
 	return { position: b }
@@ -54,6 +54,7 @@ function initBuffers(g)
 
 function getView()
 {
+	var View
 	View = matrix_create()
 	matrix_translate(View, View, [0, 0, -4])
 	return View
@@ -61,7 +62,7 @@ function getView()
 
 function getProjection(aspect)
 {
-	var fov, zNear, zFar, View
+	var fov, zNear, zFar, Projection
 	fov = 45*Math.PI/180	
 	zNear = 0.1
 	zFar = 100.0
@@ -72,32 +73,33 @@ function getProjection(aspect)
 
 function draw(g, program, info, buffers)
 {
-	var View, aspect
+	var aspect, View, Projection
+	var numComponents, type, normalize, offset, vertexCount , stride
+
+
 	aspect = g.canvas.clientWidth/g.canvas.clientHeight
 	View = getView()
-	Projecion = getProjection(aspect)
+	Projection = getProjection(aspect)
 	g.useProgram(program)
 	g.uniformMatrix4fv(info.Projection, false, Projection)
 	g.uniformMatrix4fv(info.View, false, View)				 
-	{
-		const numComponents = 2
-		const type = g.FLOAT
-		const normalize = false
-		const stride = 0
-		const offset = 0
-		g.bindBuffer(g.ARRAY_BUFFER, buffers.position)
-		g.vertexAttribPointer(
+
+	numComponents = 3
+	type = g.FLOAT
+	normalize = false
+	stride = 0
+	offset = 0
+	g.bindBuffer(g.ARRAY_BUFFER, buffers.position)
+	g.vertexAttribPointer(
 				info.Vertex,
 				numComponents,
 				type,
 				normalize,
 				stride,
 				offset)
-		g.enableVertexAttribArray(
-				info.Vertex)
-	}	
-	const offset = 0
-	const vertexCount = 4
+	g.enableVertexAttribArray(info.Vertex)
+	offset = 0
+	vertexCount = 4
 	g.drawArrays(g.TRIANGLE_STRIP, offset, vertexCount)
 }
 
