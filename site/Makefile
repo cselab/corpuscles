@@ -12,7 +12,7 @@ html: install
 all: $H
 
 .md.m4.md:; co.m4 -o $@ $<
-.md.html:; $(PANDOC) --mathjax --css=../css/mu.css --standalone --resource-path=docs --metadata pagetitle=corpuscles $< --output=$@
+.md.html:; $(PANDOC) --mathjax --css=../css/swiss.css --standalone --resource-path=docs --metadata pagetitle=corpuscles $< --output=$@
 install: $H; co.install $H ../docs/poc
 
 .SUFFIXES: .md.m4 .md .html
