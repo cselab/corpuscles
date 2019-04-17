@@ -52,74 +52,33 @@ function initBuffers(g)
 	return { position: b }
 }
 
-function matrix_perspective(out, fovy, aspect, near, far)
+function getView()
 {
-	var f, nf
-	f = 1.0 / Math.tan(fovy / 2)
-	nf = 1 / (near - far)
-	out[0] = f / aspect
-	out[1] = 0
-	out[2] = 0
-	out[3] = 0
-	out[4] = 0
-	out[5] = f
-	out[6] = 0
-	out[7] = 0
-	out[8] = 0
-	out[9] = 0
-	out[10] = (far + near) * nf
-	out[11] = -1
-	out[12] = 0
-	out[13] = 0
-	out[14] = 2 * far * near * nf
-	out[15] = 0
-	return out
+	View = matrix_create()
+	matrix_translate(View, View, [0, 0, -4])
+	return View
 }
 
-function matrix_create()
+function getProjection(aspect)
 {
-	var out
-	out = new Array(16)
-	out[0] = 1
-	out[1] = 0
-	out[2] = 0
-	out[3] = 0
-	out[4] = 0
-	out[5] = 1
-	out[6] = 0
-	out[7] = 0
-	out[8] = 0
-	out[9] = 0
-	out[10] = 1
-	out[11] = 0
-	out[12] = 0
-	out[13] = 0
-	out[14] = 0
-	out[15] = 1
-	return out
-}
-
-function matrix_translate(out, a, v) {
-	var x = v[0], y = v[1], z = v[2]
-	out[12] = a[0] * x + a[4] * y + a[8] * z + a[12]
-	out[13] = a[1] * x + a[5] * y + a[9] * z + a[13]
-	out[14] = a[2] * x + a[6] * y + a[10] * z + a[14]
-	out[15] = a[3] * x + a[7] * y + a[11] * z + a[15]
-
-	return out
-}
-
-function draw(g, program, info, buffers)
-{
-	var fov, aspect, zNear, zFar, View, Projection
-	fov = 45*Math.PI/180
-	aspect = g.canvas.clientWidth/g.canvas.clientHeight
+	var fov, zNear, zFar, View
+	fov = 45*Math.PI/180	
 	zNear = 0.1
 	zFar = 100.0
 	Projection = matrix_create()
 	matrix_perspective(Projection, fov, aspect, zNear, zFar)
-	View = matrix_create()
-	matrix_translate(View, View, [0, 0, -4])								 
+	return Projection
+}
+
+function draw(g, program, info, buffers)
+{
+	var View, aspect
+	aspect = g.canvas.clientWidth/g.canvas.clientHeight
+	View = getView()
+	Projecion = getProjection(aspect)
+	g.useProgram(program)
+	g.uniformMatrix4fv(info.Projection, false, Projection)
+	g.uniformMatrix4fv(info.View, false, View)				 
 	{
 		const numComponents = 2
 		const type = g.FLOAT
@@ -136,16 +95,7 @@ function draw(g, program, info, buffers)
 				offset)
 		g.enableVertexAttribArray(
 				info.Vertex)
-	}
-	g.useProgram(program)
-	g.uniformMatrix4fv(
-			info.Projection,
-			false,
-			Projection)
-	g.uniformMatrix4fv(
-			info.View,
-			false,
-			View)
+	}	
 	const offset = 0
 	const vertexCount = 4
 	g.drawArrays(g.TRIANGLE_STRIP, offset, vertexCount)
