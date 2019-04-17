@@ -17,6 +17,7 @@ body	{
 	text-transform:	none;
 	font-family:	Verdana, Myriad Web, Syntax, sans-serif;
 	font-size-adjust:	.58;
+	max-width: 60em;
 	}
 
 p, blockquote, ul, ol, dl, dd, li, dir, menu	{

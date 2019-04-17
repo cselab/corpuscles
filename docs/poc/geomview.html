@@ -74,7 +74,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../css/mu.css" />
+  <link rel="stylesheet" href="../css/swiss.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -113,5 +113,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>use as:</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1"><span class="ex">gmv</span> -O <span class="va">$i</span> -a app2 <span class="op">&lt;</span>PATH<span class="op">&gt;</span>/*.ply</a></code></pre></div>
+<h3 id="color-by-various-quantities">Color by various quantities</h3>
+<pre><code>x
+y
+z
+area
+bending
+al
+be</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1"><span class="ex">co.geomview</span> -p <span class="st">&#39;co.q al ../../ref.off &lt;&#39;</span> *.off</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1"><span class="ex">co.geomview</span> -p <span class="st">&#39;co.q -l 0 -h 1 al ../../ref.off &lt;&#39;</span> *.off</a></code></pre></div>
 </body>
 </html>
