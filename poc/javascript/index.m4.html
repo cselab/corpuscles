@@ -1,13 +1,18 @@
+include(mh.m4)dnl
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<title>WebGL Demo</title>
-		<link rel="stylesheet" href="webgl.css" type="text/css">
+		<style>
+			mh_include(webgl.css)
+		</style>
 	</head>
 	<body>
 		<canvas id="c" width="640" height="480"></canvas>
 	</body>
-	<script src="matrix.js"></script>
-	<script src="webgl.js"></script>
+	<script>
+	mh_include(matrix.js)
+	mh_include(webgl.js)
+	</script>
 </html>
