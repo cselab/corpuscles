@@ -99,11 +99,11 @@ main(int argc, char **argv)
 
 /*
 
+m clean
 m
 gp <<'!'
 set style data lp
-f = "<co.run ./main -n 100 -l -3 -h 4 -c 2    1 gauss"
-g = "<co.run ./main -n 100 -l -3 -h 4 -c 2    3 gauss"
-p f u 1:2, "" u 1:3,   g u 1:2, "" u 1:3
+f = "<co.run ./main -n 100 -l -5 -h 5 -c 2    1 gauss"
+p f u 1:2
 !
 */
