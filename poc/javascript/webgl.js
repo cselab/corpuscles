@@ -42,13 +42,15 @@ function iniInof(g)
 function iniPostion(g)
 {
 	var b, d
-	b = g.createBuffer()
-	g.bindBuffer(g.ARRAY_BUFFER, b)
+
 	d = [
 		 1.0,	1.5, 0.1,
 		-1.2,	1.0, -0.1,
-		 1.0, -1.0, 0.0
+		 1.0, -1.0, 0.0,
+		2.0, 3.5, 4.5
 	]
+	b = g.createBuffer()
+	g.bindBuffer(g.ARRAY_BUFFER, b)
 	g.bufferData(g.ARRAY_BUFFER, new Float32Array(d), g.STATIC_DRAW)
 	return b
 }
@@ -56,10 +58,11 @@ function iniPostion(g)
 function iniIndices(g)
 {
 	var b, d
+
+	d = [0, 1, 2, 2, 3, 0]
 	b = g.createBuffer()
-	g.bindBuffer(g.ARRAY_BUFFER, b)
-	d = [0, 1, 2]
-	g.bufferData(g.ARRAY_BUFFER, new Uint16Array(d) , g.STATIC_DRAW)
+	g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b)
+	g.bufferData(g.ELEMENT_ARRAY_BUFFER, new Uint16Array(d) , g.STATIC_DRAW)
 	return b
 }
 
@@ -85,7 +88,7 @@ function getProjection(aspect)
 function draw(g, program, info, buffers)
 {
 	var aspect, View, Projection
-	var step, type, normalize, offset, vertexCount , stride
+	var step, type, normalize, offset, step, stride, dim = 3
 
 
 	aspect = g.canvas.clientWidth/g.canvas.clientHeight
@@ -94,21 +97,17 @@ function draw(g, program, info, buffers)
 	g.useProgram(program)
 	g.uniformMatrix4fv(info.Projection, false, Projection)
 	g.uniformMatrix4fv(info.View, false, View)				 
-	g.bindBuffer(g.ARRAY_BUFFER, buffers.position)
-	g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, buffers.indices);
 
 	step = 3
 	type = g.FLOAT
 	normalize = false
 	stride = 0
 	offset = 0
-	g.vertexAttribPointer(info.Vertex, step, type, normalize, stride, offset)
+	g.vertexAttribPointer(info.Vertex, dim, type, normalize, stride, offset)
 	g.enableVertexAttribArray(info.Vertex)
 	offset = 0
-	vertexCount = 3
 	 type = g.UNSIGNED_SHORT
-	g.drawArrays(g.TRIANGLE_STRIP, offset, vertexCount)
-	g.drawElements(g.TRIANGLES, vertexCount, type, offset)
+	g.drawElements(g.TRIANGLES, step, type, offset)
 }
 
 function iniProgram(g, v, f)
