@@ -70,7 +70,7 @@ kernel_ini(int dim, int type, T **pq)
 int
 kernel_argv(char ***p,  T **pq)
 {
-	int status;
+	int status, n, i;
 	char stype[999];
 	int dim, type;
 	if ((status = argv_int(p, &dim)) != CO_OK)
