@@ -6,12 +6,14 @@ function main()
 
 	c = document.querySelector('#c')
 	g = c.getContext('webgl')
-	info = initInof(g)
-	buffers= initBuffers(g)
+	info = iniInof(g)
+	buffers = {}
+	buffers.position = iniPostion(g)
+	buffers.indices = iniIndices(g)
 	draw(g, info.program, info, buffers)
 }
 
-function initInof(g)
+function iniInof(g)
 {
 	var v, f, info, program
 
@@ -27,7 +29,7 @@ function initInof(g)
 			gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	`
-	program = initProgram(g, v, f)
+	program = iniProgram(g, v, f)
 	info = {
 		program: program,
 		Vertex: g.getAttribLocation(program, 'Vertex'),
@@ -37,18 +39,28 @@ function initInof(g)
 	return info
 }
 
-function initBuffers(g)
+function iniPostion(g)
 {
-	var b, pos
+	var b, d
 	b = g.createBuffer()
 	g.bindBuffer(g.ARRAY_BUFFER, b)
-	pos = [
-		 1.0,	1.5, 0.0,
-		-1.2,	1.0, 0.0,
+	d = [
+		 1.0,	1.5, 0.1,
+		-1.2,	1.0, -0.1,
 		 1.0, -1.0, 0.0
 	]
-	g.bufferData(g.ARRAY_BUFFER, new Float32Array(pos), g.STATIC_DRAW)
-	return { position: b }
+	g.bufferData(g.ARRAY_BUFFER, new Float32Array(d), g.STATIC_DRAW)
+	return b
+}
+
+function iniIndices(g)
+{
+	var b, d
+	b = g.createBuffer()
+	g.bindBuffer(g.ARRAY_BUFFER, b)
+	d = [0, 1, 2]
+	g.bufferData(g.ARRAY_BUFFER, new Uint16Array(d) , g.STATIC_DRAW)
+	return b
 }
 
 function getView()
@@ -102,7 +114,7 @@ function draw(g, program, info, buffers)
 	g.drawArrays(g.TRIANGLE_STRIP, offset, vertexCount)
 }
 
-function initProgram(g, v, f)
+function iniProgram(g, v, f)
 {
 	var p
 	v = loadShader(g, g.VERTEX_SHADER, v)
@@ -112,7 +124,7 @@ function initProgram(g, v, f)
 	g.attachShader(p, f)
 	g.linkProgram(p)
 	if (!g.getProgramParameter(p, g.LINK_STATUS)) {
-		alert('Unable to initialize the shader program: ' + g.getProgramInfoLog(p))
+		alert('Unable to iniialize the shader program: ' + g.getProgramInfoLog(p))
 		return null
 	}
 	return p
