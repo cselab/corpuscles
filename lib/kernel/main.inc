@@ -34,6 +34,7 @@ int
 kernel_ini(int dim, int type, T **pq)
 {
 	T *q;
+	int i, n;
 	switch (dim) {
 		case(KERNEL_1D):
 		break;
@@ -45,20 +46,16 @@ kernel_ini(int dim, int type, T **pq)
 		ERR(CO_NUM, "unknown dimenshon, possible values are KERNEL_1D, KERNEL_2D, KERNEL_3D");
 	}
 
-	MALLOC(1, &q);
-	switch (type) {
-	case (KERNEL_GAUSS):
-		break;
-	case (KERNEL_QUINTIC):
-		break;
-	case (KERNEL_WENDLAND6):
-		break;
-	case (KERNEL_YANG):
-		break;
-	default:
-		ERR(CO_NUM, "unknown type, possible values are KERNEL_GAUSS, KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG");
+	i = 0;
+	n = sizeof(Type)/sizeof(Type[0]);
+	for (;;) {
+		if (type == Type[i]) break;
+		if (i == n)
+			ERR(CO_INDEX, "unknown kernal type: '%d'", type);
+		i++;
 	}
 
+	MALLOC(1, &q);
 	q->dim = dim;
 	q->w = w[type][dim];
 	q->dw = dw[type][dim];

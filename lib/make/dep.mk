@@ -11,6 +11,4 @@ kernel/yang.inc\
 kernal/main.inc
 
 kernal.s.o kernal.d.o kernal.l.o: $KERNEL
-
-
 predicate/main.o: predicate/main.inc

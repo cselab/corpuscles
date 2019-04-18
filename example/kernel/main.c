@@ -10,7 +10,7 @@ const char* me= "kernal";
 
 #define FMT CO_REAL_OUT
 
-#define pi (3.1415926)
+#define pi (3.141592653589793)
 
 void
 usg(void)
