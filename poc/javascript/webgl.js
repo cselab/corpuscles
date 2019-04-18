@@ -45,8 +45,7 @@ function initBuffers(g)
 	pos = [
 		 1.0,	1.5, 0.0,
 		-1.2,	1.0, 0.0,
-		 1.0, -1.0, 0.0,
-		-1.0, -1.0, 0.0
+		 1.0, -1.0, 0.0
 	]
 	g.bufferData(g.ARRAY_BUFFER, new Float32Array(pos), g.STATIC_DRAW)
 	return { position: b }
@@ -99,7 +98,7 @@ function draw(g, program, info, buffers)
 				offset)
 	g.enableVertexAttribArray(info.Vertex)
 	offset = 0
-	vertexCount = 4
+	vertexCount = 3
 	g.drawArrays(g.TRIANGLE_STRIP, offset, vertexCount)
 }
 
