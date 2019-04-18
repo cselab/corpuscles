@@ -85,7 +85,7 @@ function getProjection(aspect)
 function draw(g, program, info, buffers)
 {
 	var aspect, View, Projection
-	var numComponents, type, normalize, offset, vertexCount , stride
+	var step, type, normalize, offset, vertexCount , stride
 
 
 	aspect = g.canvas.clientWidth/g.canvas.clientHeight
@@ -94,24 +94,21 @@ function draw(g, program, info, buffers)
 	g.useProgram(program)
 	g.uniformMatrix4fv(info.Projection, false, Projection)
 	g.uniformMatrix4fv(info.View, false, View)				 
+	g.bindBuffer(g.ARRAY_BUFFER, buffers.position)
+	g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, buffers.indices);
 
-	numComponents = 3
+	step = 3
 	type = g.FLOAT
 	normalize = false
 	stride = 0
 	offset = 0
-	g.bindBuffer(g.ARRAY_BUFFER, buffers.position)
-	g.vertexAttribPointer(
-				info.Vertex,
-				numComponents,
-				type,
-				normalize,
-				stride,
-				offset)
+	g.vertexAttribPointer(info.Vertex, step, type, normalize, stride, offset)
 	g.enableVertexAttribArray(info.Vertex)
 	offset = 0
 	vertexCount = 3
+	 type = g.UNSIGNED_SHORT
 	g.drawArrays(g.TRIANGLE_STRIP, offset, vertexCount)
+	g.drawElements(g.TRIANGLES, vertexCount, type, offset)
 }
 
 function iniProgram(g, v, f)
