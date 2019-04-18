@@ -1,7 +1,7 @@
 #define T Kernel
 typedef struct T T;
 
-enum {KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG};
+enum {KERNEL_GAUSS, KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG};
 enum {KERNEL_1D, KERNEL_2D, KERNEL_3D};
 
 int kernel_ini(int dim, int type, T**);

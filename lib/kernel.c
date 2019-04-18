@@ -13,4 +13,7 @@
 #include "kernel/quintic.inc"
 #include "kernel/wendland6.inc"
 #include "kernel/yang.inc"
+#include "kernel/gauss.inc"
+
 #include "kernel/main.inc"
+

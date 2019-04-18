@@ -2,23 +2,28 @@
 
 typedef real (*Fun)(real, real);
 static Fun   w[][3] = {
+	{gauss_w1, gauss_w2, gauss_w3},
 	{NULL,         quintic_w2,   quintic_w3},
 	{wendland6_w1,  wendland6_w2, wendland6_w3},
 	{yang_w1,  yang_w2, yang_w3}
 };
 
 static Fun  dw[][3] = {
+	{gauss_dw1, gauss_dw2, gauss_dw3},
 	{        NULL,  quintic_dw2,    quintic_dw3},
 	{wendland6_dw1, wendland6_dw2, wendland6_dw3},
 	{yang_dw1, yang_dw2, yang_dw3}
 };
 
 static Fun  dwr[][3] = {
+	{gauss_dwr1, gauss_dwr2, gauss_dwr3},
 	{        NULL,  quintic_dwr2,    quintic_dwr3},
 	{wendland6_dwr1, wendland6_dwr2, wendland6_dwr3},
 	{yang_dwr1, yang_dwr2, yang_dwr3}
 };
 
+static  int Type[] = {KERNEL_GAUSS, KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG};
+static  char *String[] = {"gauss", "quintic", "wendland6", "yang"};
 
 struct T {
 	int dim;
@@ -42,6 +47,8 @@ kernel_ini(int dim, int type, T **pq)
 
 	MALLOC(1, &q);
 	switch (type) {
+	case (KERNEL_GAUSS):
+		break;
 	case (KERNEL_QUINTIC):
 		break;
 	case (KERNEL_WENDLAND6):
@@ -49,7 +56,7 @@ kernel_ini(int dim, int type, T **pq)
 	case (KERNEL_YANG):
 		break;
 	default:
-		ERR(CO_NUM, "unknown type, possible values are KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG");
+		ERR(CO_NUM, "unknown type, possible values are KERNEL_GAUSS, KERNEL_QUINTIC, KERNEL_WENDLAND6, KERNEL_YANG");
 	}
 
 	q->dim = dim;
@@ -80,15 +87,17 @@ kernel_argv(char ***p,  T **pq)
 	if ((status = argv_str(p, stype)) != CO_OK)
 		return status;
 
-	if (util_eq(stype, "wendland6"))
-		type = KERNEL_WENDLAND6;
-	else if (util_eq(stype, "quintic"))
-		type = KERNEL_QUINTIC;
-	else if (util_eq(stype, "yang"))
-		type = KERNEL_YANG;
-	else
-		ERR(CO_INDEX, "unknown kernal type: '%s'", stype);
-
+	i = 0;
+	n = sizeof(Type)/sizeof(Type[0]);
+	for (;;) {
+		if (util_eq(stype, String[i])) {
+			type = Type[i];
+			break;
+		}
+		if (i == n)
+			ERR(CO_INDEX, "unknown kernal type: '%s'", stype);
+		i++;
+	}
 	return kernel_ini(dim, type, pq); 
 }
 
