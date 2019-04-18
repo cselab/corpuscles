@@ -1,2 +1,2 @@
-# cTEST: gauss2
+# nTEST: gauss2
 co.run co.run ./main -n 100 -l -3 -h 4 -c 2 2 gauss | uscale 100 > main.out.txt
