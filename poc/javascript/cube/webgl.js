@@ -82,13 +82,13 @@ var Mmatrix = gl.getUniformLocation(prog, "Mmatrix")
 
 gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer)
 var _position = gl.getAttribLocation(prog, "position")
-gl.vertexAttribPointer(_position, 3, gl.FLOAT, false,0,0)
+gl.vertexAttribPointer(_position, 3, gl.FLOAT, false, 0, 0)
 gl.enableVertexAttribArray(_position)
 
 gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer)
-var _color = gl.getAttribLocation(prog, "color")
-gl.vertexAttribPointer(_color, 3, gl.FLOAT, false,0,0) 
-gl.enableVertexAttribArray(_color)
+var color = gl.getAttribLocation(prog, "color")
+gl.vertexAttribPointer(color, 3, gl.FLOAT, false, 0, 0) 
+gl.enableVertexAttribArray(color)
 gl.useProgram(prog)
 
 function get_projection(angle, a, zMin, zMax) {
@@ -98,15 +98,11 @@ function get_projection(angle, a, zMin, zMax) {
 		0, 0.5*a/ang, 0, 0,
 		0, 0, -(zMax+zMin)/(zMax-zMin), -1,
 		0, 0, (-2*zMax*zMin)/(zMax-zMin), 0 
-			]
+	]
 }
 
 var proj_matrix = get_projection(40, c.width/c.height, 1, 100)
 var mo_matrix = [ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 ]
-var view_matrix = [ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 ]
-
-view_matrix[14] = view_matrix[14]-6
-
 
 var AMORTIZATION = 0.95
 var drag = false
@@ -136,10 +132,26 @@ function mouseMove(e)  {
 	e.preventDefault()
 }
 
+function clip(x, a, b)
+{
+	if (x < a) x = a
+	else if (x > b) x = b
+	return x
+}
+
+function wheel(e)
+{
+	z += e.deltaY
+	z = clip(z, -20, -5)
+	e.preventDefault()
+}
+
 c.addEventListener("mousedown", mouseDown, false)
 c.addEventListener("mouseup", mouseUp, false)
 c.addEventListener("mouseout", mouseUp, false)
 c.addEventListener("mousemove", mouseMove, false)
+c.addEventListener("wheel", wheel, false)
+
 
 /*=========================rotation================*/
 
@@ -173,12 +185,14 @@ function rotateY(m, angle) {
 
 /*=================== Drawing =================== */
 
-var THETA = 0,
-PHI = 0
+var THETA = 0, PHI = 0, z = -6
 var time_old = 0
 
 var animate = function(time) {
 	var dt = time-time_old
+
+	var view_matrix = [ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 ]
+	view_matrix[14]  += z
 
 	if (!drag) {
 		dX *= AMORTIZATION, dY*=AMORTIZATION
