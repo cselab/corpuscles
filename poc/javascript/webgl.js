@@ -8,7 +8,7 @@ function main()
 	g = c.getContext('webgl')
 	info = iniInfo(g)
 	buf = {}
-	buf.Position = iniPostion(g)
+	buf.Vertex = iniVertex(g)
 	buf.Color = iniColor(g)
 	iniIndices(g)
 	draw(g, info.program, info, buf)
@@ -44,7 +44,7 @@ function iniInfo(g)
 	return info
 }
 
-function iniPostion(g)
+function iniVertex(g)
 {
 	var b, d
 
@@ -52,7 +52,9 @@ function iniPostion(g)
 		 0, 0, 0,
 		 1, 0, 0,
 		 0, 1, 0,
-		0, -1, 0
+		 0, 0, 0,
+		 1, 0, 0,
+		 0, -1, 0,
 	]
 	b = g.createBuffer()
 	g.bindBuffer(g.ARRAY_BUFFER, b)
@@ -65,10 +67,12 @@ function iniColor(g)
 	var b, d
 
 	d = [
-		 0, 0, 0,
 		 0, 1, 0,
 		 0, 1, 0,
-		0, 1, 0
+		 0, 1, 0,
+		1, 0, 0,
+		1, 0, 0,
+		1, 0, 0
 	]
 	b = g.createBuffer()
 	g.bindBuffer(g.ARRAY_BUFFER, b)
@@ -80,7 +84,7 @@ function iniIndices(g)
 {
 	var b, d
 
-	d = [0, 1, 3, 1, 0, 2]
+	d = [0, 1, 2, 3, 4, 5]
 	b = g.createBuffer()
 	g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b)
 	g.bufferData(g.ELEMENT_ARRAY_BUFFER, new Uint16Array(d) , g.STATIC_DRAW)
@@ -105,6 +109,19 @@ function getProjection(aspect)
 	return Projection
 }
 
+function bind(g, b, p)
+{
+	var type, normalize, offset, stride, dim = 3
+
+	g.bindBuffer(g.ARRAY_BUFFER, b)
+	type = g.FLOAT
+	normalize = false
+	stride = 0
+	offset = 0
+	g.vertexAttribPointer(p, dim, type, normalize, stride, offset)
+	g.enableVertexAttribArray(p)
+}
+
 function draw(g, program, info, buf)
 {
 	var aspect, View, Projection
@@ -115,27 +132,12 @@ function draw(g, program, info, buf)
 	Projection = getProjection(aspect)
 	g.useProgram(program)
 	g.uniformMatrix4fv(info.Projection, false, Projection)
-	g.uniformMatrix4fv(info.View, false, View)				 
+	g.uniformMatrix4fv(info.View, false, View)
+	bind(g, buf.Vertex, info.Vertex)
+	bind(g, buf.Color, info.Color)
 
-	g.bindBuffer(g.ARRAY_BUFFER, buf.Position)
+	offset = 0
 	step = 6
-	type = g.FLOAT
-	normalize = false
-	stride = 0
-	offset = 0
-	g.vertexAttribPointer(info.Vertex, dim, type, normalize, stride, offset)
-	g.enableVertexAttribArray(info.Vertex)
-
-	g.bindBuffer(g.ARRAY_BUFFER, buf.Color)
-	step = 6
-	type = g.FLOAT
-	normalize = false
-	stride = 0
-	offset = 0
-	g.vertexAttribPointer(info.Color, dim, type, normalize, stride, offset)
-	g.enableVertexAttribArray(info.Color)
-
-	offset = 0
 	 type = g.UNSIGNED_SHORT
 	g.drawElements(g.TRIANGLES, step, type, offset)
 }
