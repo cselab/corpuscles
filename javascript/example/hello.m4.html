@@ -3,23 +3,17 @@ include(mh.m4)dnl
 <html>
 	<head>
 		<meta charset="utf-8">
+		<title>Cube</title>
 	</head>
-	<body>
-		<canvas id="c" width="640" height="480"></canvas>
+	<style>
+		body { margin : 0;}
+		canvas { width: 100%; hight: 100%; }
+	</style>
+	<body>		
 	</body>
 	<script>
-"use strict"
-main()
-function main()
-{
-	const c = document.querySelector("#c")
-	const g = c.getContext("webgl")
-	if (g === null) {
-		alert("Unable to initialize WebGL")
-		return
-	}
-	g.clearColor(0.0, 0.0, 0.0, 1.0)
-	g.clear(g   .COLOR_BUFFER_BIT)
-}
+"use strict";
+mh_include(three.js)dnl
+mh_include(cube.js)dnl
 	</script>
 </html>
