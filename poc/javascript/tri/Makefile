@@ -1,4 +1,4 @@
-S = ../..
+S = ../../..
 include $S/make/html.mk
 
 M = index.html
