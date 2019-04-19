@@ -65,7 +65,6 @@ function iniVertex(g)
 function iniColor(g)
 {
 	var b, d
-
 	d = [
 		 0, 1, 0,
 		 0, 1, 0,
