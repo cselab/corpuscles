@@ -7,10 +7,9 @@ function main()
 	c = document.querySelector('#c')
 	g = c.getContext('webgl')
 	info = iniInof(g)
-	buffers = {}
-	buffers.position = iniPostion(g)
-	buffers.indices = iniIndices(g)
-	draw(g, info.program, info, buffers)
+	iniPostion(g)
+	iniIndices(g)
+	draw(g, info.program, info)
 }
 
 function iniInof(g)
@@ -26,7 +25,7 @@ function iniInof(g)
 	`
 	f = `
 		void main() {
-			gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+			gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
 		}
 	`
 	program = iniProgram(g, v, f)
@@ -44,26 +43,24 @@ function iniPostion(g)
 	var b, d
 
 	d = [
-		 1.0,	1.5, 0.1,
-		-1.2,	1.0, -0.1,
-		 1.0, -1.0, 0.0,
-		2.0, 3.5, 4.5
+		 0, 0, 0,
+		 1, 0, 0,
+		 0, 1, 0,
+		0, -1, 0
 	]
 	b = g.createBuffer()
 	g.bindBuffer(g.ARRAY_BUFFER, b)
 	g.bufferData(g.ARRAY_BUFFER, new Float32Array(d), g.STATIC_DRAW)
-	return b
 }
 
 function iniIndices(g)
 {
 	var b, d
 
-	d = [0, 1, 2, 2, 3, 0]
+	d = [0, 1, 3, 1, 0, 2]
 	b = g.createBuffer()
 	g.bindBuffer(g.ELEMENT_ARRAY_BUFFER, b)
 	g.bufferData(g.ELEMENT_ARRAY_BUFFER, new Uint16Array(d) , g.STATIC_DRAW)
-	return b
 }
 
 function getView()
@@ -85,11 +82,10 @@ function getProjection(aspect)
 	return Projection
 }
 
-function draw(g, program, info, buffers)
+function draw(g, program, info)
 {
 	var aspect, View, Projection
 	var step, type, normalize, offset, step, stride, dim = 3
-
 
 	aspect = g.canvas.clientWidth/g.canvas.clientHeight
 	View = getView()
@@ -98,7 +94,7 @@ function draw(g, program, info, buffers)
 	g.uniformMatrix4fv(info.Projection, false, Projection)
 	g.uniformMatrix4fv(info.View, false, View)				 
 
-	step = 3
+	step = 6
 	type = g.FLOAT
 	normalize = false
 	stride = 0
