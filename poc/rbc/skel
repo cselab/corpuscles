@@ -1,0 +1,26 @@
+. co.util
+
+BEGIN
+{
+	 a  = 0.54353
+	b  = 0.121435
+	c  = -0.561365
+
+	lo = 0
+	hi = 2*pi
+	n = 20
+	d = (hi - lo)/n
+	for (i = 0; i < n; i ++) {
+		u = lo + d*i
+		x = sin(u)
+		y = F(cos(u))
+		print x, y
+	}
+}
+
+function F(q)
+{
+	return a*q + b*q^3 + c*q^5
+}
+
+'

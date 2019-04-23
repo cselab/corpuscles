@@ -9,17 +9,10 @@ include(mh.m4)dnl
 	</body>
 	<script>
 "use strict"
-main()
-function main()
-{
-	const c = document.querySelector("#c")
-	const g = c.getContext("webgl")
-	if (g === null) {
-		alert("Unable to initialize WebGL")
-		return
-	}
-	g.clearColor(0.0, 0.0, 0.0, 1.0)
-	g.clear(g   .COLOR_BUFFER_BIT)
-}
+mh_include(off.js)dnl
+var off, nv
+off = off_read("data/0.off")
+nv = off_nv(off)
+alert("nv = " + nv)
 	</script>
 </html>
