@@ -1,14 +1,17 @@
+#!/bin/sh
+
 . co.util
 
-BEGIN
-{
+"$AWK" '
+BEGIN {
+	pi = 3.1415926
 	 a  = 0.54353
 	b  = 0.121435
 	c  = -0.561365
 
 	lo = 0
 	hi = 2*pi
-	n = 20
+	n = 100
 	d = (hi - lo)/n
 	for (i = 0; i < n; i ++) {
 		u = lo + d*i
@@ -16,11 +19,16 @@ BEGIN
 		y = F(cos(u))
 		print x, y
 	}
+
+
 }
 
-function F(q)
-{
+function F(q) {
 	return a*q + b*q^3 + c*q^5
+}
+
+function dF(q) {
+	return a + 3*b*q^2 + 5*c*q^4
 }
 
 '
