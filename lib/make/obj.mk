@@ -12,6 +12,7 @@ read.o\
 util.o
 
 O_S = \
+arc.s.o\
 area.s.o\
 argv.s.o\
 array.s.o\
@@ -94,6 +95,7 @@ x.s.o\
 y.s.o
 
 O_D = \
+arc.d.o\
 area.d.o\
 argv.d.o\
 array.d.o\
@@ -176,6 +178,7 @@ x.d.o\
 y.d.o
 
 O_L = \
+arc.l.o\
 area.l.o\
 argv.l.o\
 array.l.o\
