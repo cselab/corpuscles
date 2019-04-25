@@ -17,9 +17,10 @@ all: $M
 .c:
 %: %.c
 
+lint:; make CFLAGS='-Wall -Wextra -g -O2'
 test: $M; atest test/*
 install:
 run: $M; @co.run ./main
 
-.PHONY: clean test install run
+.PHONY: clean test install run lint
 clean:; rm -f $M $(M:=.o)
