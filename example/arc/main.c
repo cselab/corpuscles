@@ -25,8 +25,12 @@ int
 arc_velocity_ini(int n, real a, real b, real (*f)(real, void*), void *p, T **pq)
 {
 	T *q;
-	
+	real *points, length;
+
 	MALLOC(1, &q);
+
+	q->length = length;
+	q->points = points;
 	*pq = q;
 	return CO_OK;
 }
@@ -54,8 +58,8 @@ main(void)
 	real a, b, r, alpha;
 
 	alg_root_ini(BRENT, &q);
-	a = -1; 
-	b =  1; 
+	a = -1;
+	b =  1;
 	alpha = 0.01;
 	alg_root_apply(q, a, b, f, &alpha, &r);
 	printf(FMT "\n", r);
