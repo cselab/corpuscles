@@ -71,4 +71,3 @@ main(void)
 	MSG("length " FMT, length);
 	arc_fin(q);
 }
-
