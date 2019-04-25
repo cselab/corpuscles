@@ -47,7 +47,8 @@
 		if (!tri3list_status(tri3list)) continue; \
 		vec_get(i, x, y, z, r); \
 		t = tri3list_tri(tri3list); \
-		gtri(t, /**/ point, norm);
+		gtri(t, /**/ norm); \
+		tri3list_point(tri3list, point);
 #define ETRI }
 enum
 {
@@ -143,7 +144,7 @@ eq_state(real rho)
 }
 
 static int
-gtri(int t, /**/ real p[3], real n[3])
+gtri(int t, /**/ real n[3])
 {
 	int i, j, k;
 	real a[3], b[3], c[3];
@@ -151,7 +152,6 @@ gtri(int t, /**/ real p[3], real n[3])
 	vec_get(i, xm, ym, zm, a);
 	vec_get(j, xm, ym, zm, b);
 	vec_get(k, xm, ym, zm, c);
-	tri_center(a, b, c, p);
 	tri_normal(a, b, c, n);
 	return CO_OK;
 }
