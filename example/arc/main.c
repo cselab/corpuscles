@@ -16,6 +16,8 @@ int arc_fin(T*);
 #undef T
 
 #define T Arc
+#define FMT CO_REAL_OUT
+
 struct T
 {
 	real *points, length;
@@ -29,6 +31,9 @@ arc_velocity_ini(int n, real a, real b, real (*f)(real, void*), void *p, T **pq)
 
 	MALLOC(1, &q);
 
+	if (n < 0) ERR(CO_NUM, "n = %d < 0", n);
+	if (b > a) ERR(CO_NUM, "b=" FMT " > a=" FMT, b, a);
+
 	q->length = length;
 	q->points = points;
 	*pq = q;
@@ -40,6 +45,19 @@ arc_fin(T *q)
 {
 	FREE(q->points);
 	FREE(q);
+	return CO_OK;
+}
+
+int
+arc_points(T *q, real **p)
+{
+	*p = q->points;
+	return CO_OK;
+}
+
+int arc_length(T *q, real *p)
+{
+	*p = q->length;
 	return CO_OK;
 }
 
