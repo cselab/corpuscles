@@ -1,28 +1,36 @@
-#include <stdio.h>
 #include <tgmath.h>
-#include <real.h>
-#include <co/memory.h>
-#include <co/err.h>
+#include <stdio.h>
 
-#include <alg/root.h>
-#include <alg/integration.h>
+#include "real.h"
+#include "co/memory.h"
+#include "co/err.h"
 
-#define FMT CO_REAL_OUT
+#include "co/arc.h"
 
-
-#define T Arc
+#define T AlgRoot
 typedef struct T T;
-int arc_xy_ini(int, real , real, real (*)(real, void*), real (*)(real, void*), void*, T**);
-int arc_velocity_ini(int, real , real, real (*)(real, void*), void*, T**);
-int arc_points(T*, real**);
-int arc_length(T*, real*);
-int arc_fin(T*);
+enum {BISECTION, FALSEPOS, BRENT};
+int alg_root_ini(int, T**);
+int alg_root_fin(T*);
+int alg_root_apply(T*, real, real, real (*)(real, void*), void*, /**/ real*);
+#undef T
+
+#define T AlgIntegration
+typedef struct T T;
+enum {QNG, GAUSS15, GAUSS21, GAUSS31, GAUSS61};
+int alg_integration_ini(int, T**);
+int alg_integration_fin(T*);
+int alg_integration_apply(T*, real, real, real (*)(real, void*), void*, /**/ real*);
 #undef T
 
 #define T Arc
 #define FMT CO_REAL_OUT
-enum {INTEGRATION = GAUSS15};
-enum {ROOT = BISECTION};
+enum {
+	INTEGRATION = GAUSS15
+};
+enum {
+	ROOT = BISECTION
+};
 
 struct T
 {
@@ -43,7 +51,7 @@ F(real x, void *v)
 {
 	Param *p;
 	real r;
-	p = v;	
+	p = v;
 	alg_integration_apply(p->integ, p->a, x, p->f, p->p, &r);
 	return r - (p->h);
 }
@@ -76,11 +84,11 @@ arc_velocity_ini(int n, real a, real b, real (*f)(real, void*), void *p, T **pq)
 	points[0] = a;
 	points[n] = b;
 	d = length/n;
-	for (i = 1; i < n - 1; i++)
+	for (i = 1; i < n; i++)
 	{
 		param.a = points[i - 1];
 		param.h = d;
-		alg_root_apply(root, points[i - 1], b, F, &param,   &points[i]);	
+		alg_root_apply(root, points[i - 1], b, F, &param,   &points[i]);
 	}
 
 	alg_root_fin(root);
@@ -99,15 +107,13 @@ struct XYParam
 	void *p;
 };
 
-
-
 static real
 XY(real t, void *v)
 {
 	XYParam *p;
 	real x0, y0;
 	p = v;
-		
+
 	x0 = p->x(t, p->p);
 	y0 = p->y(t, p->p);
 
@@ -144,39 +150,3 @@ int arc_length(T *q, real *p)
 	*p = q->length;
 	return CO_OK;
 }
-
-static real
-x(real x, void *p)
-{
-	real alpha;
-	alpha = *(real*)p;
-	return 1;
-}
-
-static real
-y(real x, void *p)
-{
-	real alpha;
-	alpha = *(real*)p;
-	return 1;
-}
-
-int
-main(void)
-{
-	Arc *q;
-	int n;
-	real alpha, a, b, length, *points;
-
-	n = 10;  
-	a = 0; b = 1;
-	alpha = 0.1;
-
-	arc_xy_ini(n, a, b, x, y, &alpha, &q);
-	arc_points(q, &points);
-	arc_length(q, &length);
-
-	MSG("length " FMT, length);
-	arc_fin(q);
-}
-

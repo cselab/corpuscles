@@ -1,6 +1,6 @@
 .POSIX:
 include ../../conf.mk
-M = main
+M = ellipse rbc
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` `co.conf --libs $(PREC)`
@@ -20,7 +20,7 @@ all: $M
 lint:; make CFLAGS='-Wall -Wextra -g -O2'
 test: $M; atest test/*
 install:
-run: $M; @co.run ./main
+run: $M; @co.run ./rbc
 
 .PHONY: clean test install run lint
 clean:; rm -f $M $(M:=.o)

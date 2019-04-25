@@ -1,4 +1,5 @@
 H = \
+co/arc.h\
 co/area.h\
 co/arg.h\
 co/argv.h\
