@@ -11,7 +11,7 @@ int skel_xy_fin(real*, real*, T*);
 
 int skel_write(T*, const real*, const real*, FILE*);
 int skel_punto_write(T*, const real*, const real*, FILE*);
-int skel_off_write(T*, const real*, const real*, FILE*);
+int skel_off_write(int, const real*, const real*, FILE*);
 int skel_nv(T*);
 int skel_ne(T*);
 int skel_bnd(T*, int);

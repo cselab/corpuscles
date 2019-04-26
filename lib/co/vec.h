@@ -52,3 +52,6 @@ int vec_printf(const real a[3], const char *fmt);
 
 int vec_argv(const char **pq[], /**/ real[3]);
 int vec_zero(/**/ real[3]);
+
+
+int vec2_get(int, const real[], const real[], /**/ real[2]);

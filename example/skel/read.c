@@ -17,6 +17,6 @@ main(void)
 	nv = skel_nv(q);
 	ne = skel_ne(q);
 	MSG("ve %d %d", nv, ne);
-	skel_off_qwrite(q, x, y, stdout);
+	skel_off_write(nv, x, y, stdout);
 	skel_xy_fin(x, y, q);
 }

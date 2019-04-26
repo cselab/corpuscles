@@ -59,6 +59,7 @@ co/laplace.h\
 co/list/a.h\
 co/list/c.h\
 co/list/i.h\
+co/list/skel.h\
 co/list/tri2.h\
 co/list/tri3.h\
 co/macro.h\

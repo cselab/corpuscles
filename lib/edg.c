@@ -85,3 +85,4 @@ edg_vect(const real a[3], const real b[3], FILE *f)
 	vec_fprintf(b, f, FMT);
 	return CO_OK;
 }
+
