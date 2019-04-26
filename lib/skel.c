@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "real.h"
 #include "co/arc.h"
@@ -6,6 +7,7 @@
 #include "co/memory.h"
 #include "co/skel.h"
 
+#define FMT CO_REAL_OUT
 #define PI (3.141592653589793)
 
 #define T Skel
@@ -102,6 +104,20 @@ skel_write(T *q, const real *x, const real *y, FILE *f)
 	for (i = 0; i < nv; i++)
 		fprintf(f, " %d", i);
 	fprintf(f, Close ? " 0\n" : "\n");
+	return CO_OK;
+}
+
+int
+skel_punto_write(T *q, const real *x, const real *y, FILE *f)
+{
+	int nv, i, status;
+	real z = 0;
+	nv = q->nv;
+	for (i = 0; i < nv; i++) {
+		status = fprintf(f, FMT " " FMT " " FMT "\n", x[i], y[i], z);
+		if (status < 0)
+			ERR(CO_IO, "fail to prin");
+	}
 	return CO_OK;
 }
 

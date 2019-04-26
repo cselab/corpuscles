@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <tgmath.h>
-
 #include <real.h>
-#include <co/arc.h>
 #include <co/err.h>
 #include <co/skel.h>
 
@@ -12,12 +10,14 @@ int
 main(void)
 {
 	Skel *q;
-	real *x, *y, length;
+	real *x, *y, length, b;
 	int nv;
 
-	nv = 8;
-	skel_circle_ini(nv, &length, &x, &y, &q);
+	b = 0.5;
+	nv = 40;
+	//skel_ellipse_ini(nv, b, &length, &x, &y, &q);
+	skel_rbc_ini(nv, &length, &x, &y, &q);
 	MSG("legnth " FMT, length);
-	skel_write(q, x, y, stdout);
+	skel_punto_write(q, x, y, stdout);
 	skel_xy_fin(x, y, q);
 }
