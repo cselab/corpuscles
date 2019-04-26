@@ -193,7 +193,7 @@ skel_ne(T *q)
 
 	Close = q->Close;
 	nv = q->nv;
-	return Close ? nv + 1 : nv;
+	return Close ? nv : nv - 1;
 }
 
 int

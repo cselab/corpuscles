@@ -59,6 +59,14 @@ vec2_copy(const real a[2], real b[2])
 }
 
 int
+vec2_add(const real a[3], /*io*/ real b[3])
+{
+	b[X] += a[X];
+	b[Y] += a[Y];
+	return CO_OK;
+}
+
+int
 vec2_sub(const real a[3], /*io*/ real b[3])
 {
 	b[X] -= a[X];

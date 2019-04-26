@@ -4,7 +4,7 @@
 
 #include <co/array.h>
 #include <co/bbox2.h>
-#include <co/edg.h>
+#include <co/edg2.h>
 #include <co/err.h>
 #include <co/skel.h>
 #include <co/list/edg2.h>
@@ -31,8 +31,9 @@ main(__UNUSED int argc, const char **argv)
 	real size = 0.1;
 	real p[2];
 	real point[2], u[2];
-	int status, ne, nv, t, j, *tris;
+	int status, ne, nv, t, j, *edgs;
 
+	err_set_ignore();
 	argv++;
 	vec2_argv(&argv, p);
 	skel_read(stdin,  &x, &y, &skel);
@@ -56,14 +57,14 @@ main(__UNUSED int argc, const char **argv)
 	status = edg2list_status(list);
 	MSG("status: %d", status);
 	if (status) {
-		edg2list_edgs(list, &tris);
-		while ( (j = *tris++) != -1)
+		edg2list_edgs(list, &edgs);
+		while ( (j = *edgs++) != -1)
 			color[j] = 1;
-		t = edg2list_tri(list);
+		t = edg2list_edg(list);
 		color[t] = 2;
 		edg2list_point(list, point);
 		fputs("LIST{\n", stdout);
-		edg_vect(p, point, stdout);
+		edg2_vect(p, point, stdout);
 		//boff_tri_fwrite(he, x, y, z, color, stdout);
 		fputs("}", stdout);
 	}
@@ -71,6 +72,6 @@ main(__UNUSED int argc, const char **argv)
 	FREE(color);
 	edg2list_fin(list);
 	bbox2_fin(bbox);
-	y_fin(he, x, y, z);
+	skel_xy_fin(x, y, skel);
 }
 

@@ -172,7 +172,6 @@ edg2list_get(T *q, real x, real y)
 	ny = q->ny;
 	size = q->size;
 	point = q->point;
-	edgs = q->edgs;
 	map(q, x, y, &i, &j);
 	if (clist_parts(q->clist, IDX, &edgs) != CO_OK) {
 		MSG("ij %d %d", i, j);
@@ -193,6 +192,8 @@ edg2list_get(T *q, real x, real y)
 			closest(q, j, r, point);
 		}
 	}
+
+	q->edgs = edgs;
 	q->status = status;
 	q->edg =edg;
 	return CO_OK;

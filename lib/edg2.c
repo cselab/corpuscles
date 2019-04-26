@@ -65,3 +65,18 @@ edg2_point_closest(const real a[2], const real b[2], const real p[2], real q[2])
 	y = (1 - t)*a[Y] + t*b[Y];
 	return vec2_ini(x, y, q);
 }
+
+int
+edg2_vect(const real a[2], const real b[2], FILE *f)
+{
+	int status;
+	status = fputs("VECT\n"
+	    "1 2 0\n"
+	    "2\n"
+	    "0\n",  f);
+	if (status == EOF)
+		ERR(CO_IO, "fail to write");
+	vec2_fprintf(a, f);
+	vec2_fprintf(b, f);
+	return CO_OK;
+}
