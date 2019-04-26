@@ -28,7 +28,7 @@ struct T
 	real lo[2], hi[2], size;
 	Clist *clist;
 	int status;
-	int edg;
+	int edg, *edgs;
 	real point[2];
 };
 
@@ -172,6 +172,7 @@ edg2list_get(T *q, real x, real y)
 	ny = q->ny;
 	size = q->size;
 	point = q->point;
+	edgs = q->edgs;
 	map(q, x, y, &i, &j);
 	if (clist_parts(q->clist, IDX, &edgs) != CO_OK) {
 		MSG("ij %d %d", i, j);
@@ -215,5 +216,12 @@ edg2list_point(T *q, real point[2])
 {
 	point[X] = q->point[X];
 	point[Y] = q->point[Y];
+	return CO_OK;
+}
+
+int
+edg2list_edgs(T *q, int **edgs)
+{
+	*edgs = q->edgs;
 	return CO_OK;
 }

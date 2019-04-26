@@ -3,7 +3,7 @@
 #include <real.h>
 
 #include <co/array.h>
-#include <co/bbox.h>
+#include <co/bbox2.h>
 #include <co/edg.h>
 #include <co/err.h>
 #include <co/skel.h>
@@ -25,7 +25,7 @@ main(__UNUSED int argc, const char **argv)
 {
 	Skel *skel;
 	Edg2List *list;
-	Bbox *bbox;
+	Bbox2 *bbox;
 	real *x, *y, *color;
 	real *lo, *hi;
 	real size = 0.1;
@@ -38,25 +38,25 @@ main(__UNUSED int argc, const char **argv)
 	skel_read(stdin,  &x, &y, &skel);
 	nv = skel_nv(skel);
 	ne = skel_ne(skel);
-	bbox_ini(&bbox);
-	bbox_update(bbox, nv, x, y, z);
-	bbox_lo(bbox, &lo);
-	bbox_hi(bbox, &hi);
+	bbox2_ini(&bbox);
+	bbox2_update(bbox, nv, x, y);
+	bbox2_lo(bbox, &lo);
+	bbox2_hi(bbox, &hi);
 
 	vec2_ini(size, size, u);
 	vec2_add(u, hi);
 	vec2_sub(u, lo);
 
-	CALLOC(nt, &color);
+	CALLOC(ne, &color);
 
 	edg2list_ini(lo, hi, size, &list);
-	edg2list_push(list, skel, x, y, z);
+	edg2list_push(list, skel, x, y);
 
-	edg2list_get(list, p[X], p[Y], p[Z]);
+	edg2list_get(list, p[X], p[Y]);
 	status = edg2list_status(list);
 	MSG("status: %d", status);
 	if (status) {
-		edg2list_tris(list, &tris);
+		edg2list_edgs(list, &tris);
 		while ( (j = *tris++) != -1)
 			color[j] = 1;
 		t = edg2list_tri(list);
@@ -70,7 +70,7 @@ main(__UNUSED int argc, const char **argv)
 
 	FREE(color);
 	edg2list_fin(list);
-	bbox_fin(bbox);
+	bbox2_fin(bbox);
 	y_fin(he, x, y, z);
 }
 

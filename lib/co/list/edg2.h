@@ -9,6 +9,7 @@ int edg2list_push(T*, Skel*, const real*, const real*);
 int edg2list_get(T*, real, real);
 int edg2list_status(T*);
 int edg2list_edg(T*);
+int edg2list_edgs(T*,  /**/ int**);
 int edg2list_point(T*, /**/ real[2]);
 
 #undef T
