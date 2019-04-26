@@ -71,24 +71,28 @@ nxt(const char *a, real *p)
 {
 	return sscanf(a, FMT, p) == 1;
 }
-int vec2_argv(const char **pq[], /**/ real a[3]) {
-    const char **q;
-    q = *pq;
-#   define NXT(d) \
-    do { \
-        if (*q == NULL) ERR(CO_IO, "not enough args");  \
-        if (!nxt(*q, &a[d]))  \
-            ERR(CO_IO, "not a number '%s", *q);  \
-        q++;  \
-    } while (0);
-    NXT(X); NXT(Y);
-#   undef NXT
-    *pq = q;
-    return CO_OK;
+int
+vec2_argv(const char **pq[], /**/ real a[3])
+{
+	const char **q;
+	q = *pq;
+#define NXT(d) \
+	do { \
+	if (*q == NULL) ERR(CO_IO, "not enough args");  \
+	if (!nxt(*q, &a[d]))  \
+		ERR(CO_IO, "not a number '%s", *q);  \
+		q++;  \
+	} while (0);
+	NXT(X); NXT(Y);
+# undef NXT
+	*pq = q;
+	return CO_OK;
 }
 
-int vec2_fprintf(const real a[2], FILE *f) {
-    if (fprintf(f, FMT " " FMT "\n", a[X], a[Y]) < 0)
-	ERR(CO_IO, "fprintf failed");
-    return CO_OK;
+int
+vec2_fprintf(const real a[2], FILE *f)
+{
+	if (fprintf(f, FMT " " FMT "\n", a[X], a[Y]) < 0)
+		ERR(CO_IO, "fprintf failed");
+	return CO_OK;
 }
