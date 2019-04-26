@@ -234,3 +234,10 @@ int vec_zero(real a[3]) {
     vec_ini(0, 0, 0, /**/ a);
     return CO_OK;
 }
+
+int vec2_get(int i, const real *x, const real *y, real a[2])
+{
+	a[X] = x[i];
+	a[Y] = y[i];
+	return CO_OK;
+}

@@ -164,13 +164,12 @@ skel_punto_write(T *q, const real *x, const real *y, FILE *f)
 }
 
 int
-skel_off_write(T *q, const real *x, const real *y, FILE *f)
+skel_off_write(int nv, const real *x, const real *y, FILE *f)
 {
-	int nv, nt, ne, i;
+	int nt, ne, i;
 	real z = 0;
 	float red = 0, green = 1, blue = 0;
-	nv = q->nv;
-	nt = nv; 
+	nt = nv;
 	ne = 0;
 	if (fputs("OFF\n", f) == EOF)
 		ERR(CO_IO, "fail to write");
