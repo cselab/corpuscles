@@ -45,11 +45,12 @@ static real F2_skalak(void *p0, __UNUSED real I1, __UNUSED real I2) {
     return -(2*Ks-Ka)/2;
 }
 
-static real F_evans(void *p0, real I1, real I2)  {
+static real F_evans(void *p0, __UNUSED real I1, __UNUSED real I2)  {
     P *p;
     real Ks, Ka, I1s, I2s;
     p = (P*)p0;
     Ka = p->Ka; Ks = p->Ks;
+    I1s = I2s = 0;
     return Ks*(sq(I1s)/2+I1s-I2s)/4 + Ka*sq(I2s)/8;
 }
 static real F1_evans(void *p0, real I1, __UNUSED real I2) {
@@ -80,7 +81,7 @@ static real F_linear(void *p0, real al, real be)  {
     return A + B;
 #   undef G
 }
-static real F1_linear(void *p0, real al, real be) {
+static real F1_linear(void *p0, real al, __UNUSED real be) {
 #   define G(s) s = p->s
     P *p;
     real Ka;
@@ -90,10 +91,10 @@ static real F1_linear(void *p0, real al, real be) {
 #   undef G
 }
 
-static real F2_linear(void *p0, real al, real be) {
+static real F2_linear(__UNUSED void *p0, __UNUSED real al, __UNUSED real be) {
 #   define G(s) s = p->s
     P *p;
-    real Ka, mu, a3, a4, b1, b2;
+    real mu;
     p = (P*)p0;
     G(mu);
     return mu;
@@ -117,9 +118,9 @@ static real F1_lim(void *p0, real al, real be) {
 #   define G(s) s = p->s
     real dA, dB;
     P *p;
-    real Ka, mu, a3, a4, b1, b2;
+    real Ka, mu, a3, a4, b1;
     p = (P*)p0;
-    G(Ka); G(mu); G(a3); G(a4); G(b1); G(b2);
+    G(Ka); G(mu); G(a3); G(a4); G(b1); 
     dA = Ka/2*(2*al + 3*a3*al*al + 4*a4*al*al*al);
     dB = mu*b1*be;
     return  dA + dB;
@@ -130,9 +131,9 @@ static real F2_lim(void *p0, real al, real be) {
 #   define G(s) s = p->s
     real dB;
     P *p;
-    real Ka, mu, a3, a4, b1, b2;
+    real mu, b1, b2;
     p = (P*)p0;
-    G(Ka); G(mu); G(a3); G(a4); G(b1); G(b2);
+    G(mu); G(b1); G(b2);
     dB = mu*(1 + 2*b2*be + al*b1);
     return  dB;
 #   undef G

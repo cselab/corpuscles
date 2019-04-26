@@ -28,6 +28,7 @@ dih.s.o\
 dnormal.s.o\
 dtri.s.o\
 dvec.s.o\
+edg2.s.o\
 edg.s.o\
 equiangulate.s.o\
 f/area.s.o\
@@ -92,6 +93,7 @@ surface.s.o\
 ten.s.o\
 transform.s.o\
 tri.s.o\
+vec2.s.o\
 vec.s.o\
 volume.s.o\
 vtk.s.o\
@@ -115,6 +117,7 @@ dih.d.o\
 dnormal.d.o\
 dtri.d.o\
 dvec.d.o\
+edg2.d.o\
 edg.d.o\
 equiangulate.d.o\
 f/area.d.o\
@@ -179,6 +182,7 @@ surface.d.o\
 ten.d.o\
 transform.d.o\
 tri.d.o\
+vec2.d.o\
 vec.d.o\
 volume.d.o\
 vtk.d.o\
@@ -202,6 +206,7 @@ dih.l.o\
 dnormal.l.o\
 dtri.l.o\
 dvec.l.o\
+edg2.l.o\
 edg.l.o\
 equiangulate.l.o\
 f/area.l.o\
@@ -266,6 +271,7 @@ surface.l.o\
 ten.l.o\
 transform.l.o\
 tri.l.o\
+vec2.l.o\
 vec.l.o\
 volume.l.o\
 vtk.l.o\

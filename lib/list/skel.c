@@ -9,7 +9,7 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/skel.h"
-#include "co/vec.h"
+#include "co/vec2.h"
 
 #define T SkelList
 #define FMT CO_REAL_OUT
@@ -166,7 +166,7 @@ int
 skel_list_get(T *q, real x, real y)
 {
 	int i, j, k, ny, status, edg, *edgs, *ee;
-	real r[3], d2, m2, *point, size;
+	real r[2], d2, m2, *point, size;
 
 	ny = q->ny;
 	size = q->size;
@@ -180,7 +180,7 @@ skel_list_get(T *q, real x, real y)
 	m2 = size*size;
 	status = 0;
 	edg = -1;
-	vec_ini(x, y, 0, r);
+	vec2_ini(x, y, r);
 	ee = edgs;
 	while ( (j = *ee++) != -1) {
 		d2 = distance2(q, j, r);

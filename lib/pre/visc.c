@@ -49,11 +49,9 @@ E3(real x, real y, real z, void *param)
 	real beta, R, r, d;
 	Eparam *p;
 	p = param;
-
+	beta = p->beta;
 	if (beta < 0 || beta > 1)
 		ERR(CO_INDEX, "invalid beta = " FMT);
-
-	beta = p->beta;
 	R = p->R;
 	r = sqrt(x*x + y*y + z*z);
 	d = d/R < beta ? R*beta : d;
@@ -178,7 +176,7 @@ pre_visc2_kernel_ini(real R, real beta, Kernel *kernel, T **pq)
 int
 pre_visc_apply(T *q, real r[3], real point[3], real n[3], /**/ real *f)
 {
-	real p[3], d, f0;
+	real p[3], d;
 
 	if (fabs(vec_abs(n) - 1) > eps)
 		ERR(CO_NUM, "vec_abs(n) != 1");

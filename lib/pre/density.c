@@ -156,7 +156,7 @@ pre_density2_kernel_ini(real R, Kernel *kernel, T  **pq)
 int
 pre_density_apply(T *q, real r[3], real point[3], real n[3], /**/ real *f)
 {
-	real p[3], d, f0;
+	real p[3], d;
 
 	if (fabs(vec_abs(n) - 1) > eps)
 		ERR(CO_NUM, "vec_abs(n) != 1");

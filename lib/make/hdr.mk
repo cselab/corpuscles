@@ -17,6 +17,7 @@ co/dih.h\
 co/dnormal.h\
 co/dtri.h\
 co/dvec.h\
+co/edg2.h\
 co/edg.h\
 co/endian.h\
 co/equiangulate.h\
@@ -93,6 +94,7 @@ co/ten.h\
 co/transform.h\
 co/tri.h\
 co/util.h\
+co/vec2.h\
 co/vec.h\
 co/volume.h\
 co/vtk.h\
