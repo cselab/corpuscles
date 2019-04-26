@@ -58,8 +58,18 @@ vec2_copy(const real a[2], real b[2])
 	return CO_OK;
 }
 
-static int nxt(const char *a, real *p) {
-    return sscanf(a, FMT, p) == 1;
+int
+vec2_sub(const real a[3], /*io*/ real b[3])
+{
+	b[X] -= a[X];
+	b[Y] -= a[Y];
+	return CO_OK;
+}
+
+static int
+nxt(const char *a, real *p)
+{
+	return sscanf(a, FMT, p) == 1;
 }
 int vec2_argv(const char **pq[], /**/ real a[3]) {
     const char **q;

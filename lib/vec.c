@@ -59,14 +59,14 @@ int vec_minus(const real a[3], const real b[3], /**/ real c[3]) {
 int vec_add(const real a[3], /*io*/ real b[3]) {
     b[X] += a[X];
     b[Y] += a[Y];
-    b[Z] += a[Y];
+    b[Z] += a[Z];
     return CO_OK;
 }
 
 int vec_sub(const real a[3], /*io*/ real b[3]) {
     b[X] -= a[X];
     b[Y] -= a[Y];
-    b[Z] -= a[Y];
+    b[Z] -= a[Z];
     return CO_OK;
 }
 
