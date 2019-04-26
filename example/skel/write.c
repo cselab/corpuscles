@@ -10,13 +10,14 @@ int
 main(void)
 {
 	Skel *q;
-	real *x, *y;
-	int nv, ne;
+	real *x, *y, length, b;
+	int nv;
 
-	skel_read(stdin, &x, &y, &q);
-	nv = skel_nv(q);
-	ne = skel_ne(q);
-	MSG("ve %d %d", nv, ne);
+	b = 0.5;
+	nv = 40;
+	//skel_ellipse_ini(nv, b, &length, &x, &y, &q);
+	skel_rbc_ini(nv, &length, &x, &y, &q);
+	MSG("legnth " FMT, length);
 	skel_write(q, x, y, stdout);
 	skel_xy_fin(x, y, q);
 }
