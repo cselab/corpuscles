@@ -6,13 +6,13 @@
 #include "co/edg2.h"
 #include "co/err.h"
 #include "co/list/c.h"
-#include "co/list/skel.h"
+#include "co/list/edg2.h"
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/skel.h"
 #include "co/vec2.h"
 
-#define T SkelList
+#define T Edg2List
 #define FMT CO_REAL_OUT
 
 enum
@@ -40,7 +40,7 @@ struct T
 	} while (0)
 
 int
-skel_list_ini(const real lo[2], const real hi[2], real size, T **pq)
+edg2list_ini(const real lo[2], const real hi[2], real size, T **pq)
 {
 	T *q;
 	int nx, ny;
@@ -69,7 +69,7 @@ skel_list_ini(const real lo[2], const real hi[2], real size, T **pq)
 }
 
 int
-skel_list_fin(T *q)
+edg2list_fin(T *q)
 {
 	clist_fin(q->clist);
 	FREE(q);
@@ -121,7 +121,7 @@ cm(T *q, int m, /**/ real *u, real *v)
 
 #define IDX  (i*ny + j)
 int
-skel_list_push(T *q, Skel *skel, const real *x, const real *y)
+edg2list_push(T *q, Skel *skel, const real *x, const real *y)
 {
 	int i, j, m;
 	int ny, n;
@@ -164,7 +164,7 @@ closest(T *q, int m, const real p[2], real t[2])
 }
 
 int
-skel_list_get(T *q, real x, real y)
+edg2list_get(T *q, real x, real y)
 {
 	int i, j, ny, status, edg, *edgs, *ee;
 	real r[2], d2, m2, *point, size;
@@ -199,19 +199,19 @@ skel_list_get(T *q, real x, real y)
 
 
 int
-skel_list_status(T *q)
+edg2list_status(T *q)
 {
 	return q->status;
 }
 
 int
-skel_list_edg(T *q)
+edg2list_edg(T *q)
 {
 	return q->edg;
 }
 
 int
-skel_list_point(T *q, real point[2])
+edg2list_point(T *q, real point[2])
 {
 	point[X] = q->point[X];
 	point[Y] = q->point[Y];
