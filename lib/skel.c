@@ -101,7 +101,6 @@ skel_read(FILE *f,  real **px, real **py, T **pq)
 	}
 	if (fscanf(f, "%d", &nv0) != 1)
 		ERR(CO_IO, "fail to read polyline");
-
 	*px = x;
 	*py = y;
 	if (nv0 == nv)
@@ -178,6 +177,7 @@ skel_off_write(int nv, const real *x, const real *y, FILE *f)
 		fprintf(f, OUT " " OUT " " OUT "\n", x[i], y[i], z);
 	for (i = 0; i < nv; i++)
 		fprintf(f, "1 %d %g %g %g\n", i, red, green, blue);
+	return CO_OK;
 }
 
 int

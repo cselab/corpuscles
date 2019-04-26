@@ -54,7 +54,7 @@ E3(real x, real y, real z, void *param)
 		ERR(CO_INDEX, "invalid beta = " FMT);
 	R = p->R;
 	r = sqrt(x*x + y*y + z*z);
-	d = d/R < beta ? R*beta : d;
+	d = r/R < beta ? R*beta : r;
 	return p->F(r, p->param)*(1 - z/d);
 }
 
@@ -64,14 +64,12 @@ E2(real x, real y, void *param)
 	real beta, R, r, d;
 	Eparam *p;
 	p = param;
-
-	if (beta < 0 || beta > 1)
-		ERR(CO_INDEX, "invalid beta = " FMT);
-
 	beta = p->beta;
+	if (beta < 0 || beta > 1)
+		ERR(CO_INDEX, "invalid beta = " FMT);	
 	R = p->R;
 	r = sqrt(x*x + y*y);
-	d = d/R < beta ? R*beta : d;
+	d = r/R < beta ? R*beta : r;
 	return p->F(r, p->param)*(1 - y/d);
 }
 
@@ -102,7 +100,6 @@ pre_visc_ini(real R, real beta, real (*F)(real, void*), void *param, T  **pq)
 	sph_plane_fin(integ);
 	FREE(x);
 	FREE(y);
-
 	q->R = R;
 	*pq = q;
 	return CO_OK;
