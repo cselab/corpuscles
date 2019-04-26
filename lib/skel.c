@@ -13,7 +13,8 @@
 #define OUT CO_REAL_OUT
 
 #define PI (3.141592653589793)
-enum {SIZE = MAX_STRING_SIZE};
+enum {
+	SIZE = MAX_STRING_SIZE};
 
 #define T Skel
 struct T
@@ -160,6 +161,24 @@ skel_punto_write(T *q, const real *x, const real *y, FILE *f)
 			ERR(CO_IO, "fail to prin");
 	}
 	return CO_OK;
+}
+
+int
+skel_off_write(T *q, const real *x, const real *y, FILE *f)
+{
+	int nv, nt, ne, i;
+	real z = 0;
+	float red = 0, green = 1, blue = 0;
+	nv = q->nv;
+	nt = nv; 
+	ne = 0;
+	if (fputs("OFF\n", f) == EOF)
+		ERR(CO_IO, "fail to write");
+	fprintf(f, "%d %d %d\n", nv, nt, ne);
+	for (i = 0; i < nv; i++)
+		fprintf(f, OUT " " OUT " " OUT "\n", x[i], y[i], z);
+	for (i = 0; i < nv; i++)
+		fprintf(f, "1 %d %g %g %g\n", i, red, green, blue);
 }
 
 int
