@@ -4,6 +4,7 @@ co/area.h\
 co/arg.h\
 co/argv.h\
 co/array.h\
+co/bbox2.h\
 co/bbox.h\
 co/bending.h\
 co/cell2.h\

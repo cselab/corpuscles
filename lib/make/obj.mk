@@ -16,6 +16,7 @@ arc.s.o\
 area.s.o\
 argv.s.o\
 array.s.o\
+bbox2.s.o\
 bbox.s.o\
 bending.s.o\
 cell2.s.o\
@@ -105,6 +106,7 @@ arc.d.o\
 area.d.o\
 argv.d.o\
 array.d.o\
+bbox2.d.o\
 bbox.d.o\
 bending.d.o\
 cell2.d.o\
@@ -194,6 +196,7 @@ arc.l.o\
 area.l.o\
 argv.l.o\
 array.l.o\
+bbox2.l.o\
 bbox.l.o\
 bending.l.o\
 cell2.l.o\
