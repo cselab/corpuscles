@@ -9,6 +9,6 @@ int skel_list_push(T*, Skel*, const real*, const real*);
 int skel_list_get(T*, real, real, real);
 int skel_list_status(T*);
 int skel_list_edg(T*);
-int skel_list_point(T*, /**/ real[3]);
+int skel_list_point(T*, /**/ real[2]);
 
 #undef T
