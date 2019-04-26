@@ -4,6 +4,7 @@ include $S/make/html.mk
 
 M = area he off vec tri hello.html
 all: $M
+hello.html: load.js
 
 run: $M; firefox hello.html
 

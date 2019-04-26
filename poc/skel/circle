@@ -1,0 +1,29 @@
+. co.util
+
+"$AWK" '
+BEGIN {
+	pi = 3.1415926
+	n = 6
+	lo = 0
+	hi = 2*pi
+
+	d = (hi - lo) / n 	
+	for (i = 0; i < n; i++) {
+		p = lo + d*i
+		x[i] = cos(p)
+		y[i] = sin(p)
+	}
+	x[n] = x[0]
+	y[n] = y[0]
+
+	print "SKEL"
+	print n, 1
+	for (i = 0; i < n; i++)
+		printf "%.16g %.16g 0\n", x[i], y[i]
+	
+	printf "%d ", m
+	for (i = 0; i < n; i++)
+		printf "%d ", i
+	printf "%d\n", 0	
+}
+'

@@ -13,21 +13,34 @@ function off_uncomment(s)
 
 function off_read(f)
 {
-	var lines, NR, nr, l, a, u, nv, nt, i, j, k, t, x, y, z, ver, tri
+	var lines
+	lines = require('fs').readFileSync(f, 'ascii').split('\n').filter(Boolean)
+	return off_read0(lines)
+}
+
+function off_string_ini(s)
+{
+	var lines
+	lines = s.split('\n')
+	return off_read0(lines)
+}
+
+function off_read0(lines)
+{
+	var NR, nr, l, a, u, nv, nt, i, j, k, t, x, y, z, ver, tri
 	var X = 0, Y = 1, Z = 2
 
 	u = off_uncomment
-	lines = require('fs').readFileSync(f, 'ascii').split('\n').filter(Boolean)
 	NR = lines.length
     	if (NR < 0)
-		throw new Error("no lines in file " + f)
+		throw new Error("no lines in file")
 	nr = 0
 	while (nr < NR && off_empty(l = u(lines[nr++]))) ;
 	if (nr == NR || l !== 'OFF')
-		throw new Error("not an off file " + f)
+		throw new Error("not an off file")
 	while (nr < NR && off_empty(l = u(lines[nr++]))) ;
 	if (nr == NR)
-		throw new Error("unexpected EOF " + f)
+		throw new Error("unexpected EOF")
 
 	a = l.split(" ")
 	if (a.length !== 3)
@@ -40,7 +53,7 @@ function off_read(f)
 	for (i = 0; i < nv; i++) {
 		while (nr < NR && off_empty(l = u(lines[nr++]))) ;
 		if (nr == NR)
-			throw new Error("unexpected EOF " + f)
+			throw new Error("unexpected EOF")
 		a = l.split(" ")
 		x = parseFloat(a[X])
 		y = parseFloat(a[Y])
@@ -50,7 +63,7 @@ function off_read(f)
 	
 	for (t = 0; t < nt; t++) {
 		if (nr == NR)
-			throw new Error("unexpected EOF, t = " + t +  "  f = "+ f)
+			throw new Error("unexpected EOF, t = " + t)
 		while (nr < NR && off_empty(l = u(lines[nr++]))) ;
 		a = l.split(" ")
 		i = parseFloat(a[1])

@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <tgmath.h>
 
 #include "real.h"
 #include "co/arc.h"
@@ -48,7 +47,7 @@ skel_circle_ini(int nv, /**/ real *length, real **px, real **py, T **pq)
 	real *x, *y;
 	real lo, hi, d, p;
 	int i;
-	
+
 	if (nv <= 1)
 		ERR(CO_INDEX, "nv=%d <= 1", nv);
 	MALLOC(nv, &x);
