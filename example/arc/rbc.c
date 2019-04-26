@@ -9,7 +9,6 @@
 #define PI (3.141592653589793)
 
 static const real A= 0.54353, B = 0.121435, C = -0.561365;
-
 static real
 F(real q)
 {
