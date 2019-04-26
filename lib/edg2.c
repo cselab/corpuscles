@@ -19,6 +19,13 @@ edg2_sq(const real a[2], const real b[2])
 }
 
 real
+edg2_abs(const real a[2], const real b[2]) {
+	real u[2];
+	vec2_minus(b, a, u);
+	return vec2_abs(u);
+}
+
+real
 edg2_point_distance2(const real a[2], const real b[2], const real p[2])
 {
 	real t, s, x, y;

@@ -3,6 +3,7 @@
 #include <tgmath.h>
 
 #include "real.h"
+#include "co/edg2.h"
 #include "co/err.h"
 #include "co/list/c.h"
 #include "co/list/skel.h"
@@ -147,25 +148,25 @@ skel_list_push(T *q, Skel *skel, const real *x, const real *y)
 }
 
 static real
-distance2(T *q, int m, const real p[3])
+distance2(T *q, int m, const real p[2])
 {
-	real a[3], b[3], c[3];
+	real a[2], b[2];
 	get2(q, m, a, b);
-	return tri_point_distance2(a, b, c, p);
+	return edg2_point_distance2(a, b, p);
 }
 
 static int
-closest(T *q, int m, const real p[3], real t[3])
+closest(T *q, int m, const real p[2], real t[2])
 {
-	real a[3], b[3], c[3];
+	real a[2], b[2];
 	get2(q, m, a, b);
-	return tri_point_closest(a, b, c, p, t);
+	return edg2_point_closest(a, b, p, t);
 }
 
 int
 skel_list_get(T *q, real x, real y)
 {
-	int i, j, k, ny, status, edg, *edgs, *ee;
+	int i, j, ny, status, edg, *edgs, *ee;
 	real r[2], d2, m2, *point, size;
 
 	ny = q->ny;
