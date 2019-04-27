@@ -3,11 +3,13 @@
 #include <tgmath.h>
 #include "real.h"
 #include "co/arc.h"
+#include "co/colormap.h"
 #include "co/err.h"
 #include "co/memory.h"
-#include "co/util.h"
-#include "inc/def.h"
 #include "co/skel.h"
+#include "co/util.h"
+#include "co/array.h"
+#include "inc/def.h"
 
 #define FMT CO_REAL_IN
 #define OUT CO_REAL_OUT
@@ -200,6 +202,40 @@ skel_edg_write(T *q, const real *x, const real *y, FILE *f)
 		fprintf(f, "2 %d %d %g %g %g\n", i, j, red, green, blue);
 	}
 	return CO_OK;
+}
+
+int
+skel_edg_lh_write(T *q, const real *x, const real *y, real lo, real hi, const real *a, FILE *f)
+{
+	int nv, nt, ne, e, i, j;
+	real z = 0;
+	float red, green, blue;
+
+	nv = skel_nv(q);
+	nt = skel_ne(q);
+	ne = 0;
+	if (fputs("OFF\n", f) == EOF)
+		ERR(CO_IO, "fail to write");
+	fprintf(f, "%d %d %d\n", nv, nt, ne);
+	for (i = 0; i < nv; i++)
+		fprintf(f, OUT " " OUT " " OUT "\n", x[i], y[i], z);
+	for (e = 0; e < nt; e++) {
+		skel_edg_ij(q, e, &i, &j);
+		colormap(a[e], lo, hi, &red, &green, &blue);
+		fprintf(f, "2 %d %d %g %g %g\n", i, j, red, green, blue);
+	}
+	return CO_OK;
+}
+
+int
+skel_edg_color_write(T *q, const real *x, const real *y,  const real *a, FILE *f)
+{
+	int ne;
+	real lo, hi;
+	ne = skel_ne(q);
+	lo = array_min(ne, a);
+	hi = array_max(ne, a);
+	skel_edg_lh_write(q, x, y, lo, hi, a, f);
 }
 
 int
