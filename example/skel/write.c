@@ -14,10 +14,10 @@ main(void)
 	int nv;
 
 	b = 0.5;
-	nv = 40;
+	nv = 15;
 	//skel_ellipse_ini(nv, b, &length, &x, &y, &q);
 	skel_rbc_ini(nv, &length, &x, &y, &q);
 	MSG("legnth " FMT, length);
-	skel_write(q, x, y, stdout);
+	skel_edg_write(q, x, y, stdout);
 	skel_xy_fin(x, y, q);
 }
