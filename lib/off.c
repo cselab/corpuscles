@@ -4,11 +4,12 @@
 
 #include "real.h"
 #include "co/array.h"
+#include "co/colormap.h"
 #include "co/endian.h"
-#include "co/memory.h"
 #include "co/err.h"
-#include "co/util.h"
 #include "co/he.h"
+#include "co/memory.h"
+#include "co/util.h"
 #include "inc/def.h"
 
 #include "co/off.h"
@@ -267,31 +268,6 @@ int boff_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *
     return CO_OK;
 }
 
-static int colormap(real v, real l, real h, /**/ float *pR, float *pG, float *pB) {
-    float R, G, B;
-    if (v < l) v = l;
-    if (v > h) v = h;
-
-    if (l != h)
-        v = 4*(v - l)/(h - l);
-    else
-        v = 0;
-
-    R = 0; G = B = 1;
-    if (v < 1)
-        G = v;
-    else if (v < 2)
-        B = 2 - v;
-    else if (v < 3) {
-        R = v - 2; B = 0;
-    } else {
-        R = 1; G = 4 - v; B = 0;
-    }
-
-    *pR = R; *pG = G; *pB = B;
-    return CO_OK;
-}
-
 int boff_lh_tri_fwrite(He *he, const real *x, const real *y, const real *z, real lo, real hi, const real *a, /**/ FILE *f) {
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
@@ -344,7 +320,7 @@ int boff_lh_ver_fwrite(He *he, const real *x, const real *y, const real *z, real
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
     float db[7];
-    float red, blue, green, alpha;
+    float red, green, blue, alpha;
 
     if (fputs("COFF BINARY\n", f) == EOF)
         ERR(CO_IO, "fail to write");

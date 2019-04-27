@@ -9,6 +9,7 @@ co/bbox.h\
 co/bending.h\
 co/cell2.h\
 co/cell3.h\
+co/colormap.h\
 co/container.h\
 co/da.h\
 co/ddih.h\
