@@ -2,8 +2,11 @@
 #include <tgmath.h>
 #include "real.h"
 #include "co/err.h"
+#include "co/vec.h"
 #include "co/vec2.h"
 #include "co/edg2.h"
+
+#define FMT CO_REAL_OUT
 
 enum
 {
@@ -69,14 +72,16 @@ edg2_point_closest(const real a[2], const real b[2], const real p[2], real q[2])
 int
 edg2_vect(const real a[2], const real b[2], FILE *f)
 {
+	real zero = 0;
 	int status;
+
 	status = fputs("VECT\n"
 	    "1 2 0\n"
 	    "2\n"
 	    "0\n",  f);
 	if (status == EOF)
 		ERR(CO_IO, "fail to write");
-	vec2_fprintf(a, f);
-	vec2_fprintf(b, f);
+	fprintf(f, FMT "  " FMT " " FMT "\n", a[X], a[Y], zero);
+	fprintf(f, FMT "  " FMT " " FMT "\n", b[X], b[Y], zero);
 	return CO_OK;
 }

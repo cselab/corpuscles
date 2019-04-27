@@ -65,7 +65,7 @@ main(__UNUSED int argc, const char **argv)
 		edg2list_point(list, point);
 		fputs("LIST{\n", stdout);
 		edg2_vect(p, point, stdout);
-		//boff_tri_fwrite(he, x, y, z, color, stdout);
+		skel_edg_color_write(skel, x, y, color, stdout);
 		fputs("}", stdout);
 	}
 
@@ -75,3 +75,6 @@ main(__UNUSED int argc, const char **argv)
 	skel_xy_fin(x, y, skel);
 }
 
+/* 
+m; ./main 0.15 -0.2 < data/rbc.skel  > q.off; co.geomview -p cat  -a /u/a q.off 
+*/

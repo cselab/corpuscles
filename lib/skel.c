@@ -205,7 +205,7 @@ skel_edg_write(T *q, const real *x, const real *y, FILE *f)
 }
 
 int
-skel_edg_lh_write(T *q, const real *x, const real *y, real lo, real hi, const real *a, FILE *f)
+skel_edg_lh_write(T *q, const real *x, const real *y, real lo, real hi, constreal *a, FILE *f)
 {
 	int nv, nt, ne, e, i, j;
 	real z = 0;
