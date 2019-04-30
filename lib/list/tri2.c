@@ -99,7 +99,7 @@ cm(He *he, const real *x, const real *y, int m, /**/ real *u, real *v)
 	return CO_OK;
 }
 
-#define IDX  i*ny + j
+#define IDX  (i*ny + j)
 int
 tri2list_push(T *q, He *he, const real *x, const real *y)
 {

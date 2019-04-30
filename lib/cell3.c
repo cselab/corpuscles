@@ -211,7 +211,7 @@ map(T *q, real x, real y, real z, int *i, int *j, int *k)
 	return CO_OK;
 }
 
-#define IDX  i*ny*nz + j*nz + k
+#define IDX  (i*ny*nz + j*nz + k)
 int
 cell3_push(T *q, int n, const real *x, const real *y, const real *z)
 {

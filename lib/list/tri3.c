@@ -131,7 +131,7 @@ cm(T *q, int m, /**/ real *u, real *v, real *w)
 	return CO_OK;
 }
 
-#define IDX  i*ny*nz + j*nz + k
+#define IDX  (i*ny*nz + j*nz + k)
 int
 tri3list_push(T *q, He *he, const real *x, const real *y, const real *z)
 {
