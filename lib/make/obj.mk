@@ -66,6 +66,7 @@ integral/sph_plane.s.o\
 invariants.s.o\
 kernel.s.o\
 laplace.s.o\
+list/edg1.s.o\
 list/edg2.s.o\
 list/tri2.s.o\
 list/tri3.s.o\
@@ -157,6 +158,7 @@ integral/sph_plane.d.o\
 invariants.d.o\
 kernel.d.o\
 laplace.d.o\
+list/edg1.d.o\
 list/edg2.d.o\
 list/tri2.d.o\
 list/tri3.d.o\
@@ -248,6 +250,7 @@ integral/sph_plane.l.o\
 invariants.l.o\
 kernel.l.o\
 laplace.l.o\
+list/edg1.l.o\
 list/edg2.l.o\
 list/tri2.l.o\
 list/tri3.l.o\

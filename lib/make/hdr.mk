@@ -61,6 +61,7 @@ co/kernel.h\
 co/laplace.h\
 co/list/a.h\
 co/list/c.h\
+co/list/edg1.h\
 co/list/edg2.h\
 co/list/i.h\
 co/list/tri2.h\
