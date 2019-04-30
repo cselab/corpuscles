@@ -82,7 +82,7 @@ predicate_orient3d_sas(const real a[3], const real b[3], const real c[3], const 
 	/* TODO: points should be sorted */
 	real A[2], B[2], C[2], o;
 	int sign;
-			
+
 	o = predicate_orient3d(a, b, c, d);
 	if (o != 0)
 		return SIGN(o);
@@ -226,6 +226,29 @@ predicate_ray(const real d[3], const real e[3],  const real a[3], const real b[3
 		return 0;
 	bcde = predicate_orient3d_sas(b, c, d, e);
 	if (bcde < 0)
+		return 0;
+	return 1;
+}
+
+int
+predicate_ray2(const real d[2], const real e[2],  const real a[2], const real b[2])
+{
+	int abe, abd, ade, bde, t;
+	const real *p;
+
+	abe = predicate_orient2d(a, b, e);
+	abd = predicate_orient2d(a, b, d);
+	if (abe < 0 || abd > 0) {
+		p = e; e = d; d = p;
+		t = abe; abe = abd; abd = t;
+	}
+	if (abe < 0 || abd > 0)
+		return 0;
+	ade = predicate_orient2d(a, d, e);
+	if (ade < 0)
+		return 0;
+	bde = predicate_orient2d(b, d, e);
+	if (bde < 0)
 		return 0;
 	return 1;
 }
