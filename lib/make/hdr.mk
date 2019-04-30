@@ -74,6 +74,7 @@ co/obj.h\
 co/off.h\
 co/orient.h\
 co/ply.h\
+co/polygon.h\
 co/prec/d/real.h\
 co/prec/l/real.h\
 co/pre/cons.h\

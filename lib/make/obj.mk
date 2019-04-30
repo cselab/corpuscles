@@ -76,6 +76,7 @@ obj.s.o\
 off.s.o\
 orient.s.o\
 ply.s.o\
+polygon.s.o\
 pre/cons.s.o\
 pre/density.s.o\
 predicate.s.o\
@@ -168,6 +169,7 @@ obj.d.o\
 off.d.o\
 orient.d.o\
 ply.d.o\
+polygon.d.o\
 pre/cons.d.o\
 pre/density.d.o\
 predicate.d.o\
@@ -260,6 +262,7 @@ obj.l.o\
 off.l.o\
 orient.l.o\
 ply.l.o\
+polygon.l.o\
 pre/cons.l.o\
 pre/density.l.o\
 predicate.l.o\
