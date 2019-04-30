@@ -1,6 +1,6 @@
 .POSIX:
 include ../../conf.mk
-M = main ray
+M = main ray ray2
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
 CO_LDFLAGS = `alg.conf --libs $(PREC)`

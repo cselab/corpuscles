@@ -233,22 +233,26 @@ predicate_ray(const real d[3], const real e[3],  const real a[3], const real b[3
 int
 predicate_ray2(const real d[2], const real e[2],  const real a[2], const real b[2])
 {
-	int abe, abd, ade, bde, t;
+	int abe, abd, ade, dbe, t;
 	const real *p;
 
 	abe = predicate_orient2d(a, b, e);
 	abd = predicate_orient2d(a, b, d);
 	if (abe < 0 || abd > 0) {
-		p = e; e = d; d = p;
-		t = abe; abe = abd; abd = t;
+		p = e;
+		e = d;
+		d = p;
+		t = abe;
+		abe = abd;
+		abd = t;
 	}
 	if (abe < 0 || abd > 0)
 		return 0;
 	ade = predicate_orient2d(a, d, e);
 	if (ade < 0)
 		return 0;
-	bde = predicate_orient2d(b, d, e);
-	if (bde < 0)
+	dbe = predicate_orient2d(d, b, e);
+	if (dbe < 0)
 		return 0;
 	return 1;
 }
