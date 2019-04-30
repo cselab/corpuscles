@@ -76,6 +76,17 @@ predicate_insphere(const real a[3], const real b[3], const real c[3], const real
 	return insphere(A, B, C, D, E);
 }
 
+static int
+predicate_orient2d_sas(const real a[2], const real b[2], const real c[2])
+{
+	real o;
+	o = predicate_orient2d(a, b, c);
+	if (o != 0)
+		return SIGN(o);
+	else
+		return 1;
+}
+
 int
 predicate_orient3d_sas(const real a[3], const real b[3], const real c[3], const real d[3])
 {
@@ -233,11 +244,11 @@ predicate_ray(const real d[3], const real e[3],  const real a[3], const real b[3
 int
 predicate_ray2(const real d[2], const real e[2],  const real a[2], const real b[2])
 {
-	int abe, abd, ade, dbe, t;
+	int abe, abd, t;
 	const real *p;
 
-	abe = predicate_orient2d(a, b, e);
-	abd = predicate_orient2d(a, b, d);
+	abe = predicate_orient2d_sas(a, b, e);
+	abd = predicate_orient2d_sas(a, b, d);
 	if (abe < 0 || abd > 0) {
 		p = e;
 		e = d;
@@ -248,11 +259,9 @@ predicate_ray2(const real d[2], const real e[2],  const real a[2], const real b[
 	}
 	if (abe < 0 || abd > 0)
 		return 0;
-	ade = predicate_orient2d(a, d, e);
-	if (ade < 0)
+	if (predicate_orient2d_sas(a, d, e) < 0)
 		return 0;
-	dbe = predicate_orient2d(d, b, e);
-	if (dbe < 0)
+	if (predicate_orient2d_sas(d, b, e) < 0)
 		return 0;
 	return 1;
 }
