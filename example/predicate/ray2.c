@@ -26,6 +26,6 @@ main(int argc, const char *v[])
 
 /*
 
-./ray2   0.5 -1  0.5 1     0 0   1 0
+./ray2   0.5 -1  0.8 1     0 0   2 0.1
 
 */
