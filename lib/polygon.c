@@ -7,7 +7,7 @@
 #include "co/memory.h"
 #include "co/predicate.h"
 #include "co/list/edg1.h"
-#include "co/vec.h"
+#include "co/vec2.h"
 
 #include "co/polygon.h"
 
@@ -65,24 +65,22 @@ polygon_inside(T *q, real u, real v)
 	Skel *skel;
 	Bbox2 *bbox;
 	const real *x, *y;
-	real a[3], b[3], c[3], d[3], e[3];
+	real a[3], b[3], d[3], e[3];
 	real ym, eps;
-
 	eps = 1e-10;
 	skel = q->skel;
 	x = q->x; 
 	y = q->y;
 	bbox = q->bbox;
-	//vec_ini(u, v, w, /**/ d);
+	vec2_ini(u, v, /**/ d);
 	ym = bbox2_yhi(bbox);
-	//vec_ini(u, v, max(ym, w) + eps, /**/ e);
+	vec2_ini(u, max(ym, v) + eps, /**/ e);
 	n = skel_ne(skel);
 	for (t = m = 0; t < n; t++) {
 		skel_edg_ij(skel, t, &i, &j);
-		//vec_get(i, x, y, z, a);
-		//vec_get(j, x, y, z, b);
-		//vec_get(k, x, y, z, c);
-		//m += predicate_ray(d, e,   a, b, c);
+		vec2_get(i, x, y, a);
+		vec2_get(j, x, y, b);
+		m += predicate_ray2(d, e,   a, b);
 	}
 	return m % 2;
 }
@@ -91,32 +89,29 @@ polygon_inside(T *q, real u, real v)
 int
 polygon_inside_fast(T *q, real u, real v)
 {
-	int t, i, j, k, m;
+	int t, i, j, m;
 	Skel *skel;
 	Bbox2 *bbox;
 	const real *x, *y;
-	real a[3], b[3], c[3], d[3], e[3];
+	real a[3], b[3], d[3], e[3];
 	real ym, eps;
 	int *edgs;
-
 	eps = 1e-10;
 	skel = q->skel;
 	x = q->x; 
 	y = q->y; 
 	bbox = q->bbox;
 	if (!bbox2_inside(bbox, u, v)) return 0;
-
-	//vec_ini(u, v, w, /**/ d);
+	vec2_ini(u, v, /**/ d);
 	ym = bbox2_yhi(bbox);
-	//vec_ini(u, v, max(ym, w) + eps, /**/ e);
+	vec2_ini(u, max(ym, v) + eps, /**/ e);
 	edg1list_edgs(q->list, u, &edgs);
 	m = 0;
 	while ( (t = *edgs++) != -1) {
 		skel_edg_ij(skel, t, &i, &j);
-		//vec_get(i, x, y, z, a);
-		//vec_get(j, x, y, z, b);
-		//vec_get(k, x, y, z, c);
-		//m += predicate_ray(d, e,   a, b, c);
+		vec2_get(i, x, y, a);
+		vec2_get(j, x, y, b);
+		m += predicate_ray2(d, e,   a, b);
 	}
 	return m % 2;
 }
