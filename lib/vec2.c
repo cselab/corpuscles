@@ -66,6 +66,30 @@ vec2_add(const real a[3], /*io*/ real b[3])
 	return CO_OK;
 }
 
+static int
+small(real s) {
+    const real eps = 1e-32;
+    if      (s >  eps) return 0;
+    else if (s < -eps) return 0;
+    else               return 1;
+}
+
+int vec2_scale(real s, real a[2]) {
+    a[X] *= s;
+    a[Y] *= s;
+    return CO_OK;
+}
+
+int
+vec2_normalize(real a[2])
+{
+	real s;
+	s = vec2_abs(a);
+	if (!small(s))
+		vec2_scale(1/s, a);
+	return CO_OK;
+}
+
 int
 vec2_sub(const real a[3], /*io*/ real b[3])
 {

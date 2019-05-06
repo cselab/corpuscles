@@ -13,6 +13,7 @@ co/colormap.h\
 co/container.h\
 co/da.h\
 co/ddih.h\
+co/dedg2.h\
 co/dedg.h\
 co/dH.h\
 co/dih.h\

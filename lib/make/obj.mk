@@ -24,6 +24,7 @@ cell3.s.o\
 colormap.s.o\
 da.s.o\
 ddih.s.o\
+dedg2.s.o\
 dedg.s.o\
 dH.s.o\
 dih.s.o\
@@ -118,6 +119,7 @@ cell3.d.o\
 colormap.d.o\
 da.d.o\
 ddih.d.o\
+dedg2.d.o\
 dedg.d.o\
 dH.d.o\
 dih.d.o\
@@ -212,6 +214,7 @@ cell3.l.o\
 colormap.l.o\
 da.l.o\
 ddih.l.o\
+dedg2.l.o\
 dedg.l.o\
 dH.l.o\
 dih.l.o\
