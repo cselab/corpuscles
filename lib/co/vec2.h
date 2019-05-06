@@ -10,6 +10,7 @@ int vec2_scale(real, real a[2]);
 int vec2_sub(const real[2], /*io*/ real[2]);
 real vec2_abs(const real[2]);
 real vec2_dot(const real[2], const real[2]);
+int vec2_scalar_append(const real[2], real, int, real*, real*);
 
 int vec2_argv(const char **pq[], /**/ real[2]);
 int vec2_fprintf(const real[2], FILE *f);

@@ -8,6 +8,7 @@
 #include "co/skel.h"
 #include "co/vec2.h"
 #include "co/edg2.h"
+#include "co/dedg2.h"
 #include "co/sum.h"
 
 #define T F2Glen
@@ -39,9 +40,15 @@ f2_glen_ini(real l, real k, Skel *skel, T **pq)
 }
 
 int
-f2_glen_argv(char ***pv, Skel *skel, T **pq)
+f2_glen_argv(char ***p, Skel *skel, T **pq)
 {
-	return CO_OK;
+	int status;
+	real x, y;
+	if ((status = argv_real(p, &x)) != CO_OK)
+		return status;
+	if ((status = argv_real(p, &y)) != CO_OK)
+		return status;
+	return f2_glen_ini(x, y, skel, pq);
 }
 
 int f2_glen_fin(T *q)
@@ -52,16 +59,13 @@ int f2_glen_fin(T *q)
 }
 
 real
-f2_glen_energy(T *q, Skel *skel, const real *x, const real *y)
+compute_len(Skel *skel, const real *x, const real *y)
 {
 	int e, i, j, n;
-	real L, k, l;
-	real a[2], b[2];
 	HeSum *sum;
+	real a[2], b[2], L;
 
 	n = skel_ne(skel);
-	l = q->l;
-	k = q->k;
 	he_sum_ini(&sum);
 	for (e = 0; e < n; i++) {
 		skel_edg_ij(skel, e, &i, &j);
@@ -71,6 +75,17 @@ f2_glen_energy(T *q, Skel *skel, const real *x, const real *y)
 	}
 	L = he_sum_get(sum);
 	he_sum_fin(sum);
+	return L;
+}
+
+real
+f2_glen_energy(T *q, Skel *skel, const real *x, const real *y)
+{
+	real L, k, l;
+
+	l = q->l;
+	k = q->k;
+	L = compute_len(skel, x, y);
 	q->L = L;
 	return k*(L - l)*(L - l)/l;
 }
@@ -78,6 +93,23 @@ f2_glen_energy(T *q, Skel *skel, const real *x, const real *y)
 int
 f2_glen_force(T *q, Skel *skel, const real *x, const real *y, real *u, real *v)
 {
+	int e, i, j, n;
+	real L, k, l, coeff;
+	real a[2], b[2], da[2], db[2];
+
+	n = skel_ne(skel);
+	l = q->l;
+	k = q->k;
+	L = compute_len(skel, x, y);
+	coeff = 2*k*(L - l)/l;
+	for (e = 0; e < n; i++) {
+		skel_edg_ij(skel, e, &i, &j);
+		vec2_get(i, x, y, a);
+		vec2_get(j, x, y, b);
+		dedg2_abs(a, b, da, db);
+		vec2_scalar_append(da, coeff, i, u, v);
+		vec2_scalar_append(db, coeff, j, u, v);
+	}
 	return CO_OK;
 }
 

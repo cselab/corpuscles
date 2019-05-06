@@ -89,6 +89,14 @@ int vec2_scale(real s, real a[2]) {
 }
 
 int
+vec2_scalar_append(const real a[2], real s, int i, real *x, real *y)
+{
+	x[i] += s*a[X];
+	y[i] += s*a[Y];
+	return CO_OK;
+}
+
+int
 vec2_normalize(real a[2])
 {
 	real s;
