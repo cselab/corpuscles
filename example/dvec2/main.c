@@ -20,20 +20,20 @@ vec(/**/ real a[2])
 
 static int eq(const char *a, const char *b) { return util_eq(a, b); }
 int main(__UNUSED int argc, const char **v) {
-    const char *op;
-    real a[2], b[2], da[2], db[2];
-    argv = v;
-    argv++;
-    if (*argv == NULL) ER("mssing OP");
+	const char *op;
+	real a[2], b[2], da[2], db[2];
+	argv = v;
+	argv++;
+	if (*argv == NULL) ER("mssing OP");
 
-    op = *argv++;
-    if (eq(op, "cross")) {
-	vec(a);
-	vec(b);
-	dvec2_cross(a, b, da, db);
-	vec2_fprintf(da, stdout);
-	vec2_fprintf(db, stdout);
-    } else
-        ER("unknown operation '%s'", op);
-    return 0;
+	op = *argv++;
+	if (eq(op, "cross")) {
+		vec(a);
+		vec(b);
+		dvec2_cross(a, b, da, db);
+		vec2_fprintf(da, stdout);
+		vec2_fprintf(db, stdout);
+	} else
+		ER("unknown operation '%s'", op);
+	return 0;
 }
