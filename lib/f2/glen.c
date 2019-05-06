@@ -16,7 +16,6 @@
 struct T
 {
 	int n;
-	real *len;
 	real l, k, L;
 };
 
@@ -24,18 +23,15 @@ int
 f2_glen_ini(real l, real k, Skel *skel, T **pq)
 {
 	T *q;
-	real *len;
 	int n;
 
 	if (l <= 0)
 		ERR(CO_NUM, "l <= 0");
 	MALLOC(1, &q);
 	n = skel_ne(skel);
-	MALLOC(n, &len);
 	q->n = n;
 	q->l = l;
 	q->k = k;
-	q->len = len;
 	*pq = q;
 	return CO_OK;
 }
@@ -54,7 +50,6 @@ f2_glen_argv(char ***p, Skel *skel, T **pq)
 
 int f2_glen_fin(T *q)
 {
-	FREE(q->len);
 	FREE(q);
 	return CO_OK;
 }
