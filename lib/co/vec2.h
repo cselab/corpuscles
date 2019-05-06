@@ -3,6 +3,7 @@ int vec2_get(int, const real[], const real[], /**/ real[2]);
 
 int vec2_add(const real[2], /*io*/ real[2]);
 int vec2_copy(const real[2], real[2]);
+real vec2_cross(const real[2], const real[3]);
 int vec2_minus(const real[2], const real[2], /**/ real[2]);
 int vec2_negative(const real[2], real[2]);
 int vec2_normalize(real[2]);

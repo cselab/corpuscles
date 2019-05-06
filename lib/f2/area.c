@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "real.h"
 #include "co/argv.h"
@@ -59,7 +60,7 @@ compute_area(Skel *skel, const real *x, const real *y)
 {
 	int e, i, j, n;
 	HeSum *sum;
-	real a[2], b[2], L;
+	real a[2], b[2], A;
 
 	n = skel_ne(skel);
 	he_sum_ini(&sum);
@@ -67,11 +68,12 @@ compute_area(Skel *skel, const real *x, const real *y)
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
-		he_sum_add(sum, edg2_abs(a, b));
+		he_sum_add(sum, vec2_cross(a, b));
 	}
-	L = he_sum_get(sum);
+	A = he_sum_get(sum)/2;
+	A = fabs(A);
 	he_sum_fin(sum);
-	return L;
+	return A;
 }
 
 real

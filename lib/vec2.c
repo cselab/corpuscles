@@ -28,6 +28,11 @@ vec2_abs(const real a[2])
 	return sqrt(vec2_dot(a, a));
 }
 
+real
+vec2_cross(const real a[2], const real b[2]) {
+	return a[X]*b[Y]-b[X]*a[Y];
+}
+
 int
 vec2_ini(real x, real y, real a[3])
 {
