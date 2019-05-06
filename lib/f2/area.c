@@ -3,13 +3,13 @@
 
 #include "real.h"
 #include "co/argv.h"
+#include "co/dvec2.h"
 #include "co/err.h"
 #include "co/f2/area.h"
 #include "co/memory.h"
 #include "co/skel.h"
-#include "co/vec2.h"
-#include "co/dvec2.h"
 #include "co/sum.h"
+#include "co/vec2.h"
 
 #define T F2Area
 
