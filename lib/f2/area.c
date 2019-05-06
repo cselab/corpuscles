@@ -8,8 +8,7 @@
 #include "co/memory.h"
 #include "co/skel.h"
 #include "co/vec2.h"
-#include "co/edg2.h"
-#include "co/dedg2.h"
+#include "co/dvec2.h"
 #include "co/sum.h"
 
 #define T F2Area
@@ -99,12 +98,12 @@ f2_area_force(T *q, Skel *skel, const real *x, const real *y, real *u, real *v)
 	a0 = q->a;
 	k = q->k;
 	A = compute_area(skel, x, y);
-	coeff = 2*k*(A - a0)/a0;
+	coeff = k*(A - a0)/a0;
 	for (e = 0; e < n; e++) {
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
-		dedg2_abs(a, b, da, db);
+		dvec2_cross(a, b, da, db);
 		vec2_scalar_append(da, coeff, i, u, v);
 		vec2_scalar_append(db, coeff, j, u, v);
 	}
