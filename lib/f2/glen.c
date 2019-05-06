@@ -35,6 +35,7 @@ f2_glen_ini(real l, real k, Skel *skel, T **pq)
 	q->n = n;
 	q->l = l;
 	q->k = k;
+	q->len = len;
 	*pq = q;
 	return CO_OK;
 }
@@ -67,7 +68,7 @@ compute_len(Skel *skel, const real *x, const real *y)
 
 	n = skel_ne(skel);
 	he_sum_ini(&sum);
-	for (e = 0; e < n; i++) {
+	for (e = 0; e < n; e++) {
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
@@ -102,7 +103,7 @@ f2_glen_force(T *q, Skel *skel, const real *x, const real *y, real *u, real *v)
 	k = q->k;
 	L = compute_len(skel, x, y);
 	coeff = 2*k*(L - l)/l;
-	for (e = 0; e < n; i++) {
+	for (e = 0; e < n; e++) {
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);

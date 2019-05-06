@@ -10,4 +10,6 @@ int f2_glen_fin(T*);
 real f2_glen_energy(T*, Skel*, const real*, const real*);
 int f2_glen_force(T*, Skel*, const real*, const real*, real*, real*);
 
+real f2_glen_len(T*);
+
 #undef T
