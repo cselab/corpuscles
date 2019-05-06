@@ -44,6 +44,14 @@ vec2_minus(const real a[2], const real b[2], /**/ real c[2])
 	return CO_OK;
 }
 
+int
+vec2_negative(const real a[2], /**/ real b[2])
+{
+	b[X] = -a[X];
+	b[Y] = -a[Y];
+	return CO_OK;
+}
+
 real
 vec2_dot(const real a[2], const real b[2])
 {
