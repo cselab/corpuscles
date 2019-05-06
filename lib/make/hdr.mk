@@ -24,6 +24,7 @@ co/edg.h\
 co/endian.h\
 co/equiangulate.h\
 co/err.h\
+co/f2/glen.h\
 co/f/area.h\
 co/f/area_sq.h\
 co/f/area_voronoi.h\

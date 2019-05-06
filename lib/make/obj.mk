@@ -33,6 +33,7 @@ dvec.s.o\
 edg2.s.o\
 edg.s.o\
 equiangulate.s.o\
+f2/glen.s.o\
 f/area.s.o\
 f/area_sq.s.o\
 f/area_voronoi.s.o\
@@ -126,6 +127,7 @@ dvec.d.o\
 edg2.d.o\
 edg.d.o\
 equiangulate.d.o\
+f2/glen.d.o\
 f/area.d.o\
 f/area_sq.d.o\
 f/area_voronoi.d.o\
@@ -219,6 +221,7 @@ dvec.l.o\
 edg2.l.o\
 edg.l.o\
 equiangulate.l.o\
+f2/glen.l.o\
 f/area.l.o\
 f/area_sq.l.o\
 f/area_voronoi.l.o\
