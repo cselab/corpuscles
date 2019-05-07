@@ -16,7 +16,7 @@
 struct T
 {
 	int n;
-	real a, k, A;
+	real k;
 };
 
 int
@@ -49,7 +49,7 @@ int f2_bend_min_fin(T *q)
 }
 
 real
-compute_bend_min(Skel *skel, const real *x, const real *y)
+compute_energy(Skel *skel, const real *x, const real *y)
 {
 	int e, i, j, n;
 	HeSum *sum;
@@ -72,27 +72,24 @@ compute_bend_min(Skel *skel, const real *x, const real *y)
 real
 f2_bend_min_energy(T *q, Skel *skel, const real *x, const real *y)
 {
-	real A, k, a;
+	real E, k;
 
-	a = q->a;
 	k = q->k;
-	A = compute_bend_min(skel, x, y);
-	q->A = A;
-	return k*(A - a)*(A - a)/a;
+	E = compute_energy(skel, x, y);
+	return k*E;
 }
 
 int
 f2_bend_min_force(T *q, Skel *skel, const real *x, const real *y, real *u, real *v)
 {
 	int e, i, j, n;
-	real A, k, a0, coeff;
+	real E, k, a0, coeff;
 	real a[2], b[2], da[2], db[2];
 
 	n = skel_ne(skel);
-	a0 = q->a;
 	k = q->k;
-	A = compute_bend_min(skel, x, y);
-	coeff = k*(A - a0)/a0;
+	E = compute_energy(skel, x, y);
+	coeff = k;
 	for (e = 0; e < n; e++) {
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);

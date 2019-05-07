@@ -21,4 +21,5 @@ int skel_ne(T*);
 int skel_bnd(T*, int);
 int skel_close(T*);
 int skel_edg_ij(T*, int, /**/  int*, int*);
+int skel_ver_ijk(T*, int, /**/  int*, int*, int*);
 #undef T

@@ -297,3 +297,26 @@ skel_edg_ij(T *q, int e, int *i, int *j)
 	}
 	return CO_OK;
 }
+
+int
+skel_ver_ijk(T *q, int v, int *i, int *j, int *k)
+{
+	int Close, nv;
+
+	Close = q->Close;
+	nv = q->nv;
+	if (v < 0) ERR(CO_INDEX, "v=%d < 0", v);
+	if (Close && v >= nv) ERR(CO_INDEX, "v=%d >= nv=%d", v, nv);
+	if (!Close && v == nv - 1) ERR(CO_INDEX, "v=%d == nv - 1=%d", v, nv - 1);
+	if (!Close && v == 0) ERR(CO_INDEX, "v=%d == 0", v);
+	*i = v - 1;
+	*j = v;
+	*k = v + 1;
+	if (Close) {
+		if (*i == -1)
+			*i = nv - 1;
+		if (*k == nv)
+			*k = 0;
+	}
+	return CO_OK;
+}
