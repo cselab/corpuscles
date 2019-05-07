@@ -22,7 +22,7 @@ static char name[1024];
 
 static real *fx, *fy, *x, *y;
 static real *gx, *gy;
-static int nv, nt;
+static int nv;
 static Skel *skel;
 static Force2 *force;
 static real delta = 1e-6;
