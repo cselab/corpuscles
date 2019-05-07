@@ -47,6 +47,7 @@ co/f/juelicher_xin.h\
 co/f/kantor.h\
 co/f/meyer.h\
 co/f/meyer_xin.h\
+co/force2.h\
 co/force.h\
 co/f/rvolume.h\
 co/f/strain.h\

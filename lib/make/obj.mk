@@ -56,6 +56,7 @@ f/juelicher_xin.s.o\
 f/kantor.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
+force2.s.o\
 force.s.o\
 f/rvolume.s.o\
 f/strain.s.o\
@@ -153,6 +154,7 @@ f/juelicher_xin.d.o\
 f/kantor.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
+force2.d.o\
 force.d.o\
 f/rvolume.d.o\
 f/strain.d.o\
@@ -250,6 +252,7 @@ f/juelicher_xin.l.o\
 f/kantor.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
+force2.l.o\
 force.l.o\
 f/rvolume.l.o\
 f/strain.l.o\

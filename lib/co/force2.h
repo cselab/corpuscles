@@ -11,6 +11,5 @@ real force2_energy(T*, Skel*, const real*, const real*);
 const char* force2_name(T*);
 void* force2_pointer(T*);
 const char* force2_list();
-int force2_narg(const char*);
 
 #undef T
