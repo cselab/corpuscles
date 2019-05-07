@@ -24,13 +24,9 @@ f2_bend_min_ini(real k, Skel *skel, T **pq)
 {
 	T *q;
 	int n;
-
-	if (a <= 0)
-		ERR(CO_NUM, "a <= 0");
 	MALLOC(1, &q);
 	n = skel_ne(skel);
 	q->n = n;
-	q->a = a;
 	q->k = k;
 	*pq = q;
 	return CO_OK;
