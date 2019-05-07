@@ -23,6 +23,15 @@ vec2_get(int i, const real *x, const real *y, real a[2])
 }
 
 real
+vec2_angle(const real a[2], const real b[2])
+{
+	real x, y;
+	x = vec2_dot(a, b);
+	y = vec2_cross(a, b);
+	retrun atan2(y, x);
+}
+
+real
 vec2_abs(const real a[2])
 {
 	return sqrt(vec2_dot(a, a));
