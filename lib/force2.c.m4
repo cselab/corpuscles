@@ -164,3 +164,34 @@ force_list()
 	}
 	return Names;
 }
+
+int
+force2_fin(T *q)
+{
+	return q->vtable->fin(q);
+}
+
+int
+force2_force(T *q, Skel *skel, const real *x, const real *y, real *fx, real *fy)
+{
+	return q->vtable->force(q, skel, x, y, fx, fy);
+}
+
+real
+force2_energy(T *q, Skel *skel, const real *x, const real *y)
+{
+	return q->vtable->energy(q, skel, x, y);
+}
+
+const char*
+force2_name(T *q)
+{
+	return q->name;
+}
+
+void*
+force2_pointer(T *q)
+{
+	return q->vtable->pointer(q);
+}
+

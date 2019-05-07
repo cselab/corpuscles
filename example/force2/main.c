@@ -13,7 +13,7 @@
 #include <co/argv.h>
 #include <co/macro.h>
 #include <co/vec.h>
-#include <co/fd.h>
+#include <co/fd2.h>
 #include <co/y.h>
 
 #define FMT_IN   CO_REAL_IN
@@ -43,7 +43,7 @@ static void main0() {
     real e, r[3], f[3];
 
     force_force(force, he, x, y, z, /**/ fx, fy, fz);
-    fd(force, he, delta, x, y, z, /**/ gx, gy, gz);
+    fd2(force, he, delta, x, y, /**/ gx, gy);
     e = force_energy(force, he, x, y, z);
 
     MSG("name: %s", force_name(force));
