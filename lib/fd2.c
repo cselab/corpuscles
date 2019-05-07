@@ -4,10 +4,11 @@
 
 #include "co/err.h"
 #include "co/fd2.h"
-#include "co/force.h"
+#include "co/force2.h"
+#include "co/skel.h"
 
 static real
-fd0(real *p, Force *f, Skel *skel, real delta, real *x, real *y)
+fd0(real *p, Force2 *f, Skel *skel, real delta, real *x, real *y)
 {
 	real t, hi, lo;
 	t = *p;
@@ -21,7 +22,7 @@ fd0(real *p, Force *f, Skel *skel, real delta, real *x, real *y)
 }
 
 int
-fd2(Force *f, Sklel *skel, real delta, real *x, real *y, real *fx, real *fy)
+fd2(Force2 *f, Skel *skel, real delta, real *x, real *y, real *fx, real *fy)
 {
 	int n, i;
 

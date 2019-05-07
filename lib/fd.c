@@ -1,11 +1,10 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "co/fd.h"
 #include "co/err.h"
-#include "co/he.h"
-
+#include "co/fd.h"
 #include "co/force.h"
+#include "co/he.h"
 
 static real fd0(real *p, Force *f, He *he, real delta, real *x, real *y, real *z) {
     real t, hi, lo;
