@@ -36,6 +36,7 @@ edg2.s.o\
 edg.s.o\
 equiangulate.s.o\
 f2/area.s.o\
+f2/bend_min.s.o\
 f2/glen.s.o\
 f/area.s.o\
 f/area_sq.s.o\
@@ -57,7 +58,6 @@ f/juelicher_xin.s.o\
 f/kantor.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
-force2.s.o\
 force2.s.o\
 force.s.o\
 f/rvolume.s.o\
@@ -136,6 +136,7 @@ edg2.d.o\
 edg.d.o\
 equiangulate.d.o\
 f2/area.d.o\
+f2/bend_min.d.o\
 f2/glen.d.o\
 f/area.d.o\
 f/area_sq.d.o\
@@ -157,7 +158,6 @@ f/juelicher_xin.d.o\
 f/kantor.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
-force2.d.o\
 force2.d.o\
 force.d.o\
 f/rvolume.d.o\
@@ -236,6 +236,7 @@ edg2.l.o\
 edg.l.o\
 equiangulate.l.o\
 f2/area.l.o\
+f2/bend_min.l.o\
 f2/glen.l.o\
 f/area.l.o\
 f/area_sq.l.o\
@@ -257,7 +258,6 @@ f/juelicher_xin.l.o\
 f/kantor.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
-force2.l.o\
 force2.l.o\
 force.l.o\
 f/rvolume.l.o\
