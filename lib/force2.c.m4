@@ -152,7 +152,7 @@ force2_argv(const char *name, char ***parg, Skel *skel, T **pq)
 
 
 const char*
-force_list()
+force2_list()
 {
 	const char *sep = "/";
 	int i, n;
