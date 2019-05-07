@@ -28,7 +28,7 @@ vec2_angle(const real a[2], const real b[2])
 	real x, y;
 	x = vec2_dot(a, b);
 	y = vec2_cross(a, b);
-	retrun atan2(y, x);
+	return atan2(y, x);
 }
 
 real
