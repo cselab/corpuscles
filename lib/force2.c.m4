@@ -1,3 +1,4 @@
+include(`co.m4')dnl
 #include <stdio.h>
 #include <string.h>
 #include "real.h"
