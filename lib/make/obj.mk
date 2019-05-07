@@ -40,6 +40,7 @@ f2/glen.s.o\
 f/area.s.o\
 f/area_sq.s.o\
 f/area_voronoi.s.o\
+fd2.s.o\
 f/darea.s.o\
 fd.s.o\
 f/dvolume.s.o\
@@ -56,6 +57,7 @@ f/juelicher_xin.s.o\
 f/kantor.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
+force2.s.o\
 force2.s.o\
 force.s.o\
 f/rvolume.s.o\
@@ -138,6 +140,7 @@ f2/glen.d.o\
 f/area.d.o\
 f/area_sq.d.o\
 f/area_voronoi.d.o\
+fd2.d.o\
 f/darea.d.o\
 fd.d.o\
 f/dvolume.d.o\
@@ -154,6 +157,7 @@ f/juelicher_xin.d.o\
 f/kantor.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
+force2.d.o\
 force2.d.o\
 force.d.o\
 f/rvolume.d.o\
@@ -236,6 +240,7 @@ f2/glen.l.o\
 f/area.l.o\
 f/area_sq.l.o\
 f/area_voronoi.l.o\
+fd2.l.o\
 f/darea.l.o\
 fd.l.o\
 f/dvolume.l.o\
@@ -252,6 +257,7 @@ f/juelicher_xin.l.o\
 f/kantor.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
+force2.l.o\
 force2.l.o\
 force.l.o\
 f/rvolume.l.o\

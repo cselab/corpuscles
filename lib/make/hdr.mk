@@ -31,6 +31,7 @@ co/f2/glen.h\
 co/f/area.h\
 co/f/area_sq.h\
 co/f/area_voronoi.h\
+co/fd2.h\
 co/f/darea.h\
 co/fd.h\
 co/f/dvolume.h\
