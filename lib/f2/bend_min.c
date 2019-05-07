@@ -4,11 +4,13 @@
 #include "real.h"
 #include "co/argv.h"
 #include "co/dvec2.h"
+#include "co/edg2.h"
 #include "co/err.h"
 #include "co/f2/bend_min.h"
 #include "co/memory.h"
 #include "co/skel.h"
 #include "co/sum.h"
+#include "co/tri2.h"
 #include "co/vec2.h"
 
 #define T F2BendMin
@@ -51,22 +53,26 @@ int f2_bend_min_fin(T *q)
 real
 compute_energy(Skel *skel, const real *x, const real *y)
 {
-	int e, i, j, n;
+	int v, i, j, k, n;
 	HeSum *sum;
-	real a[2], b[2], A;
+	real a[2], b[2], c[2], u, w, h, E;
 
-	n = skel_ne(skel);
+	n = skel_nv(skel);
 	he_sum_ini(&sum);
-	for (e = 0; e < n; e++) {
-		skel_edg_ij(skel, e, &i, &j);
+	for (v = 0; v < n; v++) {
+		if (skel_bnd(skel, v)) continue;
+		skel_ver_ijk(skel, v, &i, &j, &k);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
-		he_sum_add(sum, vec2_cross(b, a));
+		vec2_get(j, x, y, c);
+		u = edg2_abs(a, b);
+		w = edg2_abs(b, c);
+		h = tri2_angle(a, b, c)/(u + w)/4;
+		he_sum_add(sum, h*h);
 	}
-	A = he_sum_get(sum);
-	A = fabs(A);
+	E = he_sum_get(sum);
 	he_sum_fin(sum);
-	return A/2;
+	return E;
 }
 
 real
@@ -83,10 +89,10 @@ int
 f2_bend_min_force(T *q, Skel *skel, const real *x, const real *y, real *u, real *v)
 {
 	int e, i, j, n;
-	real E, k, a0, coeff;
+	real E, k, coeff;
 	real a[2], b[2], da[2], db[2];
 
-	n = skel_ne(skel);
+	n = skel_nv(skel);
 	k = q->k;
 	E = compute_energy(skel, x, y);
 	coeff = k;
