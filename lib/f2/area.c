@@ -67,12 +67,12 @@ compute_area(Skel *skel, const real *x, const real *y)
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
-		he_sum_add(sum, vec2_cross(a, b));
+		he_sum_add(sum, vec2_cross(b, a));
 	}
-	A = he_sum_get(sum)/2;
+	A = he_sum_get(sum);
 	A = fabs(A);
 	he_sum_fin(sum);
-	return A;
+	return A/2;
 }
 
 real
@@ -103,7 +103,7 @@ f2_area_force(T *q, Skel *skel, const real *x, const real *y, real *u, real *v)
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
-		dvec2_cross(a, b, da, db);
+		dvec2_cross(b, a, db, da);
 		vec2_scalar_append(da, coeff, i, u, v);
 		vec2_scalar_append(db, coeff, j, u, v);
 	}
