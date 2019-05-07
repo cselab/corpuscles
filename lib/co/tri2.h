@@ -1,0 +1,1 @@
+real tri2_angle(const real[2], const real[2], const real[2]);

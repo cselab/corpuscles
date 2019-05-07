@@ -103,6 +103,7 @@ co/sum.h\
 co/surface.h\
 co/ten.h\
 co/transform.h\
+co/tri2.h\
 co/tri.h\
 co/util.h\
 co/vec2.h\

@@ -103,6 +103,7 @@ sum.s.o\
 surface.s.o\
 ten.s.o\
 transform.s.o\
+tri2.s.o\
 tri.s.o\
 vec2.s.o\
 vec.s.o\
@@ -203,6 +204,7 @@ sum.d.o\
 surface.d.o\
 ten.d.o\
 transform.d.o\
+tri2.d.o\
 tri.d.o\
 vec2.d.o\
 vec.d.o\
@@ -303,6 +305,7 @@ sum.l.o\
 surface.l.o\
 ten.l.o\
 transform.l.o\
+tri2.l.o\
 tri.l.o\
 vec2.l.o\
 vec.l.o\
