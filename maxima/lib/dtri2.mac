@@ -1,0 +1,5 @@
+dtri2_angle(a, b, c):=block([fa, fb, fc],
+	fa: vec2_cov(a - b),
+	fc: -vec2_cov(c - b),
+	fb: -(fa + fc),
+	[fa, fb, fc]);

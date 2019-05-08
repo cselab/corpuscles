@@ -121,10 +121,22 @@ vec2_normalize(real a[2])
 }
 
 int
-vec2_sub(const real a[3], /*io*/ real b[3])
+vec2_sub(const real a[2], /*io*/ real b[2])
 {
 	b[X] -= a[X];
 	b[Y] -= a[Y];
+	return CO_OK;
+}
+
+int
+vec2_cov(const real a[2], real b[2])
+{
+	real s;
+	s = vec2_dot(a, a);
+	if (s == 0)
+		ERR(CO_NUM, "s == 0");
+	b[X] = a[Y]/s;
+	b[Y] = -a[X]/s;
 	return CO_OK;
 }
 
@@ -134,7 +146,7 @@ nxt(const char *a, real *p)
 	return sscanf(a, FMT, p) == 1;
 }
 int
-vec2_argv(const char **pq[], /**/ real a[3])
+vec2_argv(const char **pq[], /**/ real a[2])
 {
 	const char **q;
 	q = *pq;

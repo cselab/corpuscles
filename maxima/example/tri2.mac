@@ -1,11 +1,22 @@
 load("co/edg2.mac") $
 load("co/vec2.mac") $
 load("co/tri2.mac") $
+load("co/dtri2.mac") $
+
+vec2_ini(a);
+vec2_ini(b);
+vec2_ini(c);
+
+s: tri2_angle(a, b, c);
+ga: [diff(s, ax), diff(s, ay)];
+gb: [diff(s, bx), diff(s, by)];
+gc: [diff(s, cx), diff(s, cy)];
+
+[fa, fb, fc]: dtri2_angle(a, b, c);
 
 vec2_any(a);
 vec2_any(b);
 vec2_any(c);
 
-s: tri2_angle(a, b, c);
-print(s), numer
-vec2_args(a, b, c);
+[fa, fb, fc]: dtri2_angle(a, b, c);
+vec2_arg(a, b, c);

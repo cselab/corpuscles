@@ -1,3 +1,6 @@
+vec2_ini(a)::=buildq([a, x:  concat(a, 'x), y:  concat(a, 'y)],
+	a: [x, y]);
+
 vec2_dot(a, b):=block([X: 1, Y: 2],
 	a[X]*b[X] + a[Y]*b[Y]);
 
@@ -16,4 +19,10 @@ vec2_any(a)::=buildq([a, lo: gensym(), hi: gensym(), L: gensym()],
 		L: hi - lo + 1,
 		a: [lo + random(L), lo + random(L)]));
 
+vec2_norm(a):=a/vec2_abs(a);
+
 vec2_arg([L]):=printf(true, "~{~f ~}~%", flatten(L));
+
+vec2_cov(a):=block([X: 1, Y: 2, s],
+	s: vec2_dot(a, a),
+	[a[Y]/s, -a[X]/s]);

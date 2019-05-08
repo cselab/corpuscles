@@ -7,6 +7,7 @@ ddih.mac\
 dedg.mac\
 dvec.mac\
 dtri.mac\
+dtri2.mac\
 edg.mac\
 edg2.mac\
 err.mac\
