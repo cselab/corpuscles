@@ -67,6 +67,7 @@ co/integral/sph_plane.h\
 co/invariants.h\
 co/kernel.h\
 co/laplace.h\
+co/len.h\
 co/list/a.h\
 co/list/c.h\
 co/list/edg1.h\
