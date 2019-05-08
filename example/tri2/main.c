@@ -51,6 +51,11 @@ main(__UNUSED int argc, const char **v0)
 		vec(b);
 		vec(c);
 		printf(FMT "\n", tri2_angle(a, b, c));
+	} else if (eq(op, "angle_sup")) {
+		vec(a);
+		vec(b);
+		vec(c);
+		printf(FMT "\n", tri2_angle_sup(a, b, c));
 	} else
 		ER("unknown operation '%s'", op);
 	return 0;
