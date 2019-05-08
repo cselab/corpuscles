@@ -1,0 +1,7 @@
+edg2_abs(a, b):=block([u],
+	u: b - a,
+	vec2_abs(u));
+
+edg2_sq(a, b):=block([u],
+	u: b - a,
+	vec2_dot(u, u));

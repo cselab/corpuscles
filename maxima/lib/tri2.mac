@@ -1,0 +1,4 @@
+tri2_angle(a, b, c):=block([u, v],
+	u: a - b,
+	v: c - b,
+	vec2_angle(u, v));

@@ -8,15 +8,18 @@ dedg.mac\
 dvec.mac\
 dtri.mac\
 edg.mac\
+edg2.mac\
 err.mac\
 co.mac\
 off.mac\
 tri.mac\
+tri2.mac\
 kernel.mac\
 loop.mac\
 punto.mac\
 ten.mac\
 vec.mac\
+vec2.mac\
 util.mac
 
 install: $M; co.install $M $(MAXIMA_HOME)/$P

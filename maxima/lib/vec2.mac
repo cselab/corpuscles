@@ -1,0 +1,12 @@
+vec2_dot(a, b):=block([X: 1, Y: 2],
+	a[X]*b[X] + a[Y]*b[Y]);
+
+vec2_abs(a):=sqrt(vec2_dot(a, a));
+
+vec2_cross(a, b):=block([X: 1, Y: 2],
+	a[X]*b[Y] - b[X]*a[Y]);
+
+vec2_angle(a, b):=block([x, y],
+	x: vec2_dot(a, b),
+	y: vec2_cross(a, b),
+	atan2(y, x));
