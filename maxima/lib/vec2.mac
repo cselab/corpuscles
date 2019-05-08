@@ -10,3 +10,10 @@ vec2_angle(a, b):=block([x, y],
 	x: vec2_dot(a, b),
 	y: vec2_cross(a, b),
 	atan2(y, x));
+
+vec2_any(a)::=buildq([a, lo: gensym(), hi: gensym(), L: gensym()],
+	block([lo: -9, hi: 9, L],
+		L: hi - lo + 1,
+		a: [lo + random(L), lo + random(L)]));
+
+vec2_arg([L]):=printf(true, "~{~f ~}~%", flatten(L));

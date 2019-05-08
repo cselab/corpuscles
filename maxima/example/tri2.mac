@@ -1,0 +1,11 @@
+load("co/edg2.mac") $
+load("co/vec2.mac") $
+load("co/tri2.mac") $
+
+vec2_any(a);
+vec2_any(b);
+vec2_any(c);
+
+s: tri2_angle(a, b, c);
+print(s), numer
+vec2_args(a, b, c);
