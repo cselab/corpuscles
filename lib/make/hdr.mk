@@ -30,6 +30,7 @@ co/err.h\
 co/f2/area.h\
 co/f2/bend_min.h\
 co/f2/glen.h\
+co/f2/len.h\
 co/f/area.h\
 co/f/area_sq.h\
 co/f/area_voronoi.h\
