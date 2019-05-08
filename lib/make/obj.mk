@@ -29,6 +29,7 @@ dedg.s.o\
 dH.s.o\
 dih.s.o\
 dnormal.s.o\
+dtri2.s.o\
 dtri.s.o\
 dvec2.s.o\
 dvec.s.o\
@@ -130,6 +131,7 @@ dedg.d.o\
 dH.d.o\
 dih.d.o\
 dnormal.d.o\
+dtri2.d.o\
 dtri.d.o\
 dvec2.d.o\
 dvec.d.o\
@@ -231,6 +233,7 @@ dedg.l.o\
 dH.l.o\
 dih.l.o\
 dnormal.l.o\
+dtri2.l.o\
 dtri.l.o\
 dvec2.l.o\
 dvec.l.o\

@@ -59,6 +59,22 @@ vec2_minus(const real a[2], const real b[2], /**/ real c[2])
 }
 
 int
+vec2_plus(const real a[2], const real b[2], /**/ real c[2])
+{
+	c[X] = a[X] + b[X];
+	c[Y] = a[Y] + b[Y];
+	return CO_OK;
+}
+
+int
+vec2_neg(real a[2])
+{
+	a[X] = -a[X];
+	a[Y] = -a[Y];
+	return CO_OK;
+}
+
+int
 vec2_negative(const real a[2], /**/ real b[2])
 {
 	b[X] = -a[X];

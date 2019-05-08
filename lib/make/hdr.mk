@@ -18,6 +18,7 @@ co/dedg.h\
 co/dH.h\
 co/dih.h\
 co/dnormal.h\
+co/dtri2.h\
 co/dtri.h\
 co/dvec2.h\
 co/dvec.h\

@@ -1,0 +1,1 @@
+int dtri2_angle(const real a[2], const real b[2], const real c[2], real da[2], real db[2], real dc[2]);
