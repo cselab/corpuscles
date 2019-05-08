@@ -17,7 +17,7 @@ static int angle0(const real a[3], const real b[3], const real n[3], /**/ real d
     vec_minus(b, a,  v);
     vec_cross(n, v, nv);
     v0 = vec_dot(v, v);
-    if (v0 == 0) ERR(CO_NUM, "s = v0");
+    if (v0 == 0) ERR(CO_NUM, "v0 == 0");
     vec_scalar(nv, 1/v0,  da);
     return CO_OK;
 }
