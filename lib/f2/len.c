@@ -74,7 +74,7 @@ int f2_len_fin(T *q)
 }
 
 real
-f2_len_energy(T *q, __UNUSED Skel *skel0, const real *x, const real *y)
+f2_len_energy(T *q, Skel *skel0, const real *x, const real *y)
 {
 	real Ka, a3, a4, a[2], b[2], a0[2], b0[2];
 	real *x0, *y0;
@@ -89,8 +89,10 @@ f2_len_energy(T *q, __UNUSED Skel *skel0, const real *x, const real *y)
 	skel = q->skel;
 	x0 = q->x;
 	y0 = q->y;
-
 	n = skel_ne(skel);
+	if (n != skel_ne(skel0))
+		ERR(CO_INDEX, "n=%d != skel_ne(skel0)=%d", n, skel_ne(skel0));
+
 	he_sum_ini(&sum);
 	for (e = 0; e < n; e++) {
 		skel_edg_ij(skel, e, &i, &j);
@@ -107,25 +109,33 @@ f2_len_energy(T *q, __UNUSED Skel *skel0, const real *x, const real *y)
 }
 
 int
-f2_len_force(T *q, Skel *skel, const real *x, const real *y, real *u, real *v)
+f2_len_force(T *q, Skel *skel0, const real *x, const real *y, real *u, real *v)
 {
-	int e, i, j, n;
-	real L, k, l, coeff;
-	real a[2], b[2], da[2], db[2];
-	/*
+	real Ka, a3, a4, a[2], b[2], a0[2], b0[2], da[2], db[2];
+	real *x0, *y0;
+	real E, E0;
+	Skel *skel;
+	int n, e, i, j;
+
+	Ka = q->Ka;
+	a3 = q->a3;
+	a4 = q->a4;
+	skel = q->skel;
+	x0 = q->x;
+	y0 = q->y;
 	n = skel_ne(skel);
-	l = q->l;
-	k = q->k;
-	L = compute_len(skel, x, y);
-	coeff = 2*k*(L - l)/l;
+	if (n != skel_ne(skel0))
+		ERR(CO_INDEX, "n=%d != skel_ne(skel0)=%d", n, skel_ne(skel0));
+
 	for (e = 0; e < n; e++) {
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
-		dedg2_abs(a, b, da, db);
-		vec2_scalar_append(da, coeff, i, u, v);
-		vec2_scalar_append(db, coeff, j, u, v);
-	} */
+		vec2_get(i, x0, y0, a0);
+		vec2_get(j, x0, y0, b0);			
+		dedg2_strain(Ka, a3, a4, a0, b0, a, b, da, db);
+		vec2_append(da, i, u, v);
+		vec2_append(db, j, u, v);
+	}
 	return CO_OK;
 }
-

@@ -1,5 +1,5 @@
 include(`co.m4')dnl
-h_define(`List', `area, glen, bend_min')dnl
+h_define(`List', `area, glen, bend_min, len')dnl
 h_define(`foreach', `h_foreach(`n', `List', `$1')')dnl
 h_define(`f2cap', `h_translit(`'capitalize(h_translit($1, `_', ` ')), ` ', `')')dnl
 h_define(`f2type', `F2`'f2cap($1)')dnl
