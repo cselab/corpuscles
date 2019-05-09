@@ -28,6 +28,25 @@ edg2_abs(const real a[2], const real b[2]) {
 	return vec2_abs(u);
 }
 
+#define NOT_ZERO(x) if ((x) == 0) ERR(CO_NUM, "should not be zero")
+real
+edg2_alpha(const real a[2], const real b[2], const real u[2], const real v[2])
+{
+	real A, B;
+	A = edg2_abs(a, b);
+	B = edg2_abs(u, v);
+	NOT_ZERO(A);
+	return B/A - 1;
+}
+
+real
+edg2_strain(real Ka, real a3, real a4, const real a[2], const real b[2], const real u[2], const real v[2])
+{
+	real al;
+	al = edg2_alpha(a, b, u, v);
+	return Ka/2*(al*al + a3*al*al*al + a4*al*al*al*al);
+}
+
 real
 edg2_point_distance2(const real a[2], const real b[2], const real p[2])
 {

@@ -235,7 +235,7 @@ skel_edg_color_write(T *q, const real *x, const real *y,  const real *a, FILE *f
 	ne = skel_ne(q);
 	lo = array_min(ne, a);
 	hi = array_max(ne, a);
-	skel_edg_lh_write(q, x, y, lo, hi, a, f);
+	return skel_edg_lh_write(q, x, y, lo, hi, a, f);
 }
 
 int

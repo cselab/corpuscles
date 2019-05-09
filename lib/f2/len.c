@@ -11,29 +11,34 @@
 #include "co/edg2.h"
 #include "co/dedg2.h"
 #include "co/sum.h"
+#include "inc/def.h"
 
 #define T F2Len
 
 struct T
 {
-	int n;
 	real Ka, a3, a4;
+	real *x, *y;
+	Skel *skel;
 };
 
 int
 f2_len_ini(FILE *f, real Ka, real a3, real a4, T **pq)
 {
-	/*T *q;
-	int n;
+	T *q;
+	Skel *skel;
+	real *x, *y;
 
-	if (l <= 0)
-		ERR(CO_NUM, "l <= 0");
 	MALLOC(1, &q);
-	n = skel_ne(skel);
-	q->n = n;
-	q->l = l;
-	q->k = k;
-	*pq = q; */
+	if (skel_read(f, &x, &y, &skel) != CO_OK)
+		ERR(CO_IO, "fail to open skel file");
+	q->Ka = Ka;
+	q->a3 = a3;
+	q->a4 = a4;
+	q->x = x;
+	q->y = y;
+	q->skel = skel;
+	*pq = q;	
 	return CO_OK;
 }
 
@@ -41,29 +46,49 @@ int
 f2_len_argv(char ***p, __UNUSED Skel *skel, T **pq)
 {
 	int status;
+	char file[MAX_STRING_SIZE];
 	FILE *f;
 	real Ka, a3, a4;
+
+	if ((status = argv_str(p, file)) != CO_OK)
+		return status;
+	if ((f = fopen(file, "r")) == NULL)
+		ERR(CO_IO, "fail to open '%s'", file);
 	if ((status = argv_real(p, &Ka)) != CO_OK)
 		return status;
 	if ((status = argv_real(p, &a3)) != CO_OK)
 		return status;
 	if ((status = argv_real(p, &a4)) != CO_OK)
 		return status;
-	return f2_len_ini(f, Ka, a3, a4, pq);
+	status = f2_len_ini(f, Ka, a3, a4, pq);
+	if (fclose(f) != 0)
+		ERR(CO_IO, "fail to close '%s'", file);
+	return status;
 }
 
 int f2_len_fin(T *q)
 {
+	skel_xy_fin(q->x, q->y, q->skel);
 	FREE(q);
 	return CO_OK;
 }
 
 real
-compute_len(Skel *skel, const real *x, const real *y)
+f2_len_energy(T *q, __UNUSED Skel *skel0, const real *x, const real *y)
 {
-	int e, i, j, n;
+	real Ka, a3, a4, a[2], b[2], a0[2], b0[2];
+	real *x0, *y0;
+	real E, E0;
+	Skel *skel;
 	HeSum *sum;
-	real a[2], b[2], L;
+	int n, e, i, j;
+
+	Ka = q->Ka;
+	a3 = q->a3;
+	a4 = q->a4;
+	skel = q->skel;
+	x0 = q->x;
+	y0 = q->y;
 
 	n = skel_ne(skel);
 	he_sum_ini(&sum);
@@ -71,24 +96,14 @@ compute_len(Skel *skel, const real *x, const real *y)
 		skel_edg_ij(skel, e, &i, &j);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
-		he_sum_add(sum, edg2_abs(a, b));
+		vec2_get(i, x0, y0, a0);
+		vec2_get(j, x0, y0, b0);		
+		E0 = edg2_strain(Ka, a3, a4, a0, b0, a, b);
+		he_sum_add(sum, E0);
 	}
-	L = he_sum_get(sum);
+	E = he_sum_get(sum);
 	he_sum_fin(sum);
-	return L;
-}
-
-real
-f2_len_energy(T *q, Skel *skel, const real *x, const real *y)
-{
-	real L, k, l;
-
-	/* l = q->l;
-	k = q->k;
-	L = compute_len(skel, x, y);
-	q->L = L;
-	return k*(L - l)*(L - l)/l; */
-	return 0;
+	return E;
 }
 
 int
