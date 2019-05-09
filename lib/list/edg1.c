@@ -100,7 +100,7 @@ edg1list_push(T *q, Skel *skel, const real *x)
 int
 edg1list_edgs(T *q, real x, int **pedgs)
 {
-	int i, j, n, *edgs;
+	int i, n, *edgs;
 	n = q->n;
 	map(q, x, &i);
 	if (clist_parts(q->clist, i, &edgs) != CO_OK) {
