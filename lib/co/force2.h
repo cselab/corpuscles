@@ -8,6 +8,7 @@ int force2_fin(T*);
 int force2_force(T*, Skel*, const real*, const real*, /**/ real*, real*);
 real force2_energy(T*, Skel*, const real*, const real*);
 
+int force2_good(const char*);
 const char* force2_name(T*);
 void* force2_pointer(T*);
 const char* force2_list();

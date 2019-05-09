@@ -189,6 +189,17 @@ force2_name(T *q)
 	return q->name;
 }
 
+int
+force2_good(const char *name)
+{
+	int i, n;
+	n = sizeof(Name)/sizeof(Name[0]);
+	for (i = 0; i < n; i++)
+		if (util_eq(name, Name[i]))
+			return 1;
+	return 0;
+}
+
 void*
 force2_pointer(T *q)
 {
