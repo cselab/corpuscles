@@ -1,6 +1,6 @@
 .POSIX:
 include ../../conf.mk
-M = read write sph
+M =read relax sph write
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` `co.conf --libs $(PREC)`
