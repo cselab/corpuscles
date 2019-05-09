@@ -42,9 +42,9 @@ edg2_alpha(const real a[2], const real b[2], const real u[2], const real v[2])
 real
 edg2_strain(real Ka, real a3, real a4, const real a[2], const real b[2], const real u[2], const real v[2])
 {
-	real al;
-	al = edg2_alpha(a, b, u, v);
-	return Ka/2*(al*al + a3*al*al*al + a4*al*al*al*al);
+	real l;
+	l = edg2_alpha(a, b, u, v);
+	return Ka/2*(l*l + a3*l*l*l + a4*l*l*l*l);
 }
 
 real
