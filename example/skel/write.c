@@ -12,9 +12,9 @@ main(void)
 	Skel *q;
 	real *x, *y, length;
 	int nv;
-	nv = 15;
+	nv = 100;
 	skel_rbc_ini(nv, &length, &x, &y, &q);
-	MSG("legnth " FMT, length);
-	skel_edg_color_write(q, x, y, x, stdout);	
+	MSG("len " FMT, length);
+	skel_write(q, x, y, stdout);	
 	skel_xy_fin(x, y, q);
 }

@@ -13,8 +13,10 @@
 #define FMT CO_REAL_OUT
 
 static
-Force2 *Force[3] = {
-	NULL};
+Force2 *Force[99] = 
+{
+	NULL
+};
 
 static int
 fargv(char ***p, Skel *skel)
@@ -81,7 +83,7 @@ main(__UNUSED int argc, char **argv)
 	real *x, *y, *vx, *vy, *fx, *fy;
 	char file[9999];
 	FILE *f;
-	int n, i, j, nstep = 10000;
+	int n, i, j, nstep = 100000;
 	real dt = 1e-3;
 
 	argv++;
@@ -100,10 +102,11 @@ main(__UNUSED int argc, char **argv)
 		array_zero(n, fx);
 		array_zero(n, fy);
 		force(skel, x, y, fx, fy);
-		euler_step(dt, n, vx, vy, x, y);
-		euler_step(-dt, n, fx, fy, vx, vy);
+		//euler_step(dt, n, vx, vy, x, y);
+		//euler_step(-dt, n, fx, fy, vx, vy);
+		euler_step(-dt, n, fx, fy, x, y);
 
-		if (i % 100 == 0) {
+		if (i % 1000 == 0) {
 			sprintf(file, "%05d.skel", j++);
 			f = fopen(file, "w");
 			skel_write(skel, x, y, f);
@@ -117,3 +120,13 @@ main(__UNUSED int argc, char **argv)
 	fin();
 	skel_xy_fin(x, y, skel);
 }
+
+/*
+
+git clean -fdxq
+m
+A=0.8835572001943658
+./relax len data/100.skel 1 0 0    area $A 1     bend_min 1e-3 < data/100.skel; echo end
+co.geomview -a /u/a -p cat *.skel
+
+*/

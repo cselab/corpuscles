@@ -12,6 +12,7 @@
 #include "co/vec2.h"
 
 #define T F2Area
+#define FMT CO_REAL_OUT
 
 struct T
 {
