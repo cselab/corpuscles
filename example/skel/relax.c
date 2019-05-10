@@ -4,6 +4,7 @@
 #include <co/area2.h>
 #include <co/array.h>
 #include <co/err.h>
+#include <co/len.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/skel.h>
@@ -88,6 +89,7 @@ main(__UNUSED int argc, char **argv)
 	fargv(&argv, skel);
 	n = skel_nv(skel);
 	MSG("area " FMT, area2(skel, x, y));
+	MSG("len " FMT, len(skel, x, y));
 
 	CALLOC(n, &vx);
 	CALLOC(n, &vy);

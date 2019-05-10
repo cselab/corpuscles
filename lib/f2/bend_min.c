@@ -102,9 +102,10 @@ int
 f2_bend_min_force(T *q, Skel *skel, const real *x, const real *y, real *fx, real *fy)
 {
 	int v, i, j, k, n;
-	real a[2], b[2], c[2], da[2], db[2], dc[2], u, w, h, E;
+	real a[2], b[2], c[2], da[2], db[2], dc[2], u, w, h, k0;
 	real p, coeff;
 	n = skel_nv(skel);
+	k0 = q->k;
 	for (v = 0; v < n; v++) {
 		if (skel_bnd(skel, v)) continue;
 		skel_ver_ijk(skel, v, &i, &j, &k);
@@ -119,13 +120,13 @@ f2_bend_min_force(T *q, Skel *skel, const real *x, const real *y, real *fx, real
 		h = p/(u + w);				
 		if (dtri2_angle_sup(a, b, c, da, db, dc) != CO_OK)
 			ERR(CO_NUM, "dtri2_angle_sup failed for ijk: %d %d %d", i, j, k);
-		coeff = 2*k*h/(u + w);
+		coeff = 2*k0*h/(u + w);
 		vec2_scalar_append(da, coeff, i, fx, fy);
 		vec2_scalar_append(db, coeff, j, fx, fy);
 		vec2_scalar_append(dc, coeff, k, fx, fy);
 		
 		dedg2_abs(a, b, da, db);
-		coeff = -2*k*h*p/sq(u + w);
+		coeff = -2*k0*h*p/sq(u + w);
 		vec2_scalar_append(da, coeff, i, fx, fy);
 		vec2_scalar_append(db, coeff, j, fx, fy);
 		
