@@ -119,13 +119,13 @@ f2_bend_min_force(T *q, Skel *skel, const real *x, const real *y, real *fx, real
 		h = p/(u + w);				
 		if (dtri2_angle_sup(a, b, c, da, db, dc) != CO_OK)
 			ERR(CO_NUM, "dtri2_angle_sup failed for ijk: %d %d %d", i, j, k);
-		coeff = 2*h/(u + w);
+		coeff = 2*k*h/(u + w);
 		vec2_scalar_append(da, coeff, i, fx, fy);
 		vec2_scalar_append(db, coeff, j, fx, fy);
 		vec2_scalar_append(dc, coeff, k, fx, fy);
 		
 		dedg2_abs(a, b, da, db);
-		coeff = -2*h*p/sq(u + w);
+		coeff = -2*k*h*p/sq(u + w);
 		vec2_scalar_append(da, coeff, i, fx, fy);
 		vec2_scalar_append(db, coeff, j, fx, fy);
 		

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <tgmath.h>
 #include <real.h>
+#include <co/area2.h>
 #include <co/array.h>
 #include <co/err.h>
 #include <co/macro.h>
@@ -86,6 +87,7 @@ main(__UNUSED int argc, char **argv)
 	skel_read(stdin, &x, &y, &skel);
 	fargv(&argv, skel);
 	n = skel_nv(skel);
+	MSG("area " FMT, area2(skel, x, y));
 
 	CALLOC(n, &vx);
 	CALLOC(n, &vy);
@@ -106,7 +108,6 @@ main(__UNUSED int argc, char **argv)
 			fclose(f);
 		}
 	}
-
 	FREE(vx);
 	FREE(vy);
 	FREE(fx);
