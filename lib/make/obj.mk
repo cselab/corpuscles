@@ -8,6 +8,7 @@ list/c.o\
 list/i.o\
 memory.o\
 ode/2.o\
+ode/2v.o\
 predicate/main.o\
 read.o\
 util.o
@@ -107,6 +108,7 @@ stretch.s.o\
 sum.s.o\
 surface.s.o\
 ten.s.o\
+transform.s.o\
 transform.s.o\
 tri2.s.o\
 tri.s.o\
@@ -213,6 +215,7 @@ sum.d.o\
 surface.d.o\
 ten.d.o\
 transform.d.o\
+transform.d.o\
 tri2.d.o\
 tri.d.o\
 vec2.d.o\
@@ -317,6 +320,7 @@ stretch.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\
+transform.l.o\
 transform.l.o\
 tri2.l.o\
 tri.l.o\

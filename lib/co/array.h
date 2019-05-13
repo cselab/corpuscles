@@ -4,6 +4,7 @@ real array_dot(int, const real[], const real[]);
 real array_mean(int, const real[]);
 
 int array_zero(int, real[]);
+int array_one(int, real[]);
 int array_zero3(int, real[], real[], real[]);
 
 int array_axpy(int, real, const real[], /**/ real[]);

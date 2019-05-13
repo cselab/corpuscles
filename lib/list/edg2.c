@@ -192,7 +192,6 @@ edg2list_get(T *q, real x, real y)
 			closest(q, j, r, point);
 		}
 	}
-
 	q->edgs = edgs;
 	q->status = status;
 	q->edg =edg;
