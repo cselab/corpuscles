@@ -7,6 +7,7 @@ list/a.o\
 list/c.o\
 list/i.o\
 memory.o\
+ode/2.o\
 predicate/main.o\
 read.o\
 util.o

@@ -82,6 +82,7 @@ co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/obj.h\
+co/ode/2.h\
 co/off.h\
 co/orient.h\
 co/ply.h\
