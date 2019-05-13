@@ -94,7 +94,7 @@ main(__UNUSED int argc, char **argv)
 	char file[9999];
 	FILE *s;
 	int j, n;
-	real dt = 0.1, tend = 1000;
+	real dt = 1, tend = 1000;
 	Ode2 *ode;
 	Param p;
 
@@ -115,7 +115,7 @@ main(__UNUSED int argc, char **argv)
 		sprintf(file, "%05d.skel", j++);
 		s = fopen(file, "w");
 		skel_write(skel, x, y, s);
-		MSG(FMT " " FMT " " FMT, time, tend,  y[0]);
+		MSG(FMT " " FMT, time, y[0]);
 		fclose(s);
 	}
 
@@ -134,4 +134,6 @@ L=4.926052821288913
 ./2 glen $L 1    len data/circle.skel 1 0.1 0    area $A 1     bend_min 5e-3 < data/circle.skel; echo end
 co.geomview -a /u/a -p cat *00.skel
 Kill git
+cd /u/alg ; push hub
+
 */
