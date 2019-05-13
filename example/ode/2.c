@@ -94,7 +94,7 @@ main(__UNUSED int argc, char **argv)
 	char file[9999];
 	FILE *s;
 	int j, n;
-	real dt = 0.1, tend = 10;
+	real dt = 0.1, tend = 1000;
 	Ode2 *ode;
 	Param p;
 
@@ -105,7 +105,7 @@ main(__UNUSED int argc, char **argv)
 	MSG("area " FMT, area2(skel, x, y));
 	MSG("len " FMT, len(skel, x, y));
 	p.skel = skel;
-	ode2_ini(RKF45, n, dt, F, &p, &ode);
+	ode2_ini(RKCK, n, dt, F, &p, &ode);
 
 	j = 0;
 	real t, time = 0;
@@ -115,7 +115,7 @@ main(__UNUSED int argc, char **argv)
 		sprintf(file, "%05d.skel", j++);
 		s = fopen(file, "w");
 		skel_write(skel, x, y, s);
-		MSG(FMT " " FMT " " FMT, time,tend,  y[0]);
+		MSG(FMT " " FMT " " FMT, time, tend,  y[0]);
 		fclose(s);
 	}
 
@@ -129,8 +129,9 @@ main(__UNUSED int argc, char **argv)
 Put
 git clean -fdxq
 m lint
-A=0.8835572001943658
-valgrind ./2 len data/100.skel 1 0 0    area $A 1     bend_min 1e-3 < data/100.skel; echo end
-co.geomview -a /u/a -p cat *.skel
+A=0.8
+L=4.926052821288913
+./2 glen $L 1    len data/circle.skel 1 0.1 0    area $A 1     bend_min 5e-3 < data/circle.skel; echo end
+co.geomview -a /u/a -p cat *00.skel
 Kill git
 */
