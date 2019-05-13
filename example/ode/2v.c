@@ -135,7 +135,7 @@ git clean -fdxq
 m lint
 A=0.65
 L=4.926052821288913
-./2v glen $L 1    len data/rbc.skel 1 0.1 0    area $A 1     bend_min 5e-3 < data/rbc.skel; echo end
+./2v glen $L 1    len data/100.skel 1 0.1 0    area $A 1     bend_min 5e-3 < data/100.skel; echo end
 sh /u/bin/co.geomview -a /u/a -p cat *.skel
 Kill git
 win
