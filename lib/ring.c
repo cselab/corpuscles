@@ -12,13 +12,7 @@
 #include "co/tri.h"
 #include "co/vec.h"
 #include "inc/def.h"
-
-/* #include <alg/pinv.h> */
-typedef struct AlgPinv AlgPinv;
-int alg_pinv_ini(int dim, AlgPinv**);
-int alg_pinv_fin(AlgPinv*);
-int alg_pinv_apply(AlgPinv*, real*, /**/ real*);
-/**/
+#include <alg/pinv.h>
 
 #define T Ring
 #define N (RANK_MAX + 1)

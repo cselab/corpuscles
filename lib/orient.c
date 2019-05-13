@@ -8,13 +8,10 @@
 #include "co/vec.h"
 #include "co/sum.h"
 #include "co/ten.h"
-
 #include "co/orient.h"
+#include <alg/eig.h>
 
 #define T Orient
-
-/* TODO: from alg */
-int alg_eig_vectors(const real data[6], /**/ real e0[9]);
 
 struct T {
     int n;

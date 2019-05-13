@@ -10,23 +10,14 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/vec.h"
-
 #include "co/pre/visc.h"
-
-typedef struct AlgSpline AlgSpline;
-enum
-{
-	LINEAR, POLYNOMIAL, CSPLINE, AKIMA, STEFEN
-};
-int alg_spline_ini(int n, real*, real*, int type, AlgSpline**);
-int alg_spline_fin(AlgSpline*);
-real alg_spline_apply(AlgSpline*, real);
+#include <alg/spline.h>
 
 #define T PreVisc
 #define FMT CO_REAL_OUT
 
 static const int n = 20;
-static const int type =  STEFEN;
+static const int type =  STEFFEN;
 static const real eps = 1e-8;
 
 struct T

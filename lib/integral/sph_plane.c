@@ -5,12 +5,7 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/integral/sph_plane.h"
-
-typedef struct AlgIntegration AlgIntegration;
-enum {QNG, GAUSS15, GAUSS21, GAUSS31, GAUSS61};
-int alg_integration_ini(int, AlgIntegration**);
-int alg_integration_fin(AlgIntegration*);
-int alg_integration_apply(AlgIntegration*, real, real, real (*)(real, void*), void*, /**/ real*);
+#include <alg/integration.h>
 
 enum
 {

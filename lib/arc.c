@@ -4,24 +4,10 @@
 #include "real.h"
 #include "co/memory.h"
 #include "co/err.h"
-
 #include "co/arc.h"
 
-#define T AlgRoot
-typedef struct T T;
-enum {BISECTION, FALSEPOS, BRENT};
-int alg_root_ini(int, T**);
-int alg_root_fin(T*);
-int alg_root_apply(T*, real, real, real (*)(real, void*), void*, /**/ real*);
-#undef T
-
-#define T AlgIntegration
-typedef struct T T;
-enum {QNG, GAUSS15, GAUSS21, GAUSS31, GAUSS61};
-int alg_integration_ini(int, T**);
-int alg_integration_fin(T*);
-int alg_integration_apply(T*, real, real, real (*)(real, void*), void*, /**/ real*);
-#undef T
+#include <alg/root.h>
+#include <alg/integration.h>
 
 #define T Arc
 #define FMT CO_REAL_OUT
