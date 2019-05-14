@@ -27,6 +27,15 @@ int array_zero(int n, real a[]) {
     return CO_OK;
 }
 
+int array_one(int n, real a[]) {
+    int i;
+    if (n < 0)
+        ERR(CO_INDEX, "n=%d < 0", n);
+    for (i = 0; i < n; i++)
+        a[i] = 1;
+    return CO_OK;
+}
+
 int array_zero3(int n, real a[], real b[], real c[]) {
     if (n < 0)
         ERR(CO_INDEX, "n=%d < 0", n);
