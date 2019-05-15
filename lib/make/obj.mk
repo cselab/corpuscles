@@ -31,6 +31,7 @@ dedg2.s.o\
 dedg.s.o\
 dH.s.o\
 dih.s.o\
+dlen.s.o\
 dnormal.s.o\
 dtri2.s.o\
 dtri.s.o\
@@ -109,7 +110,6 @@ sum.s.o\
 surface.s.o\
 ten.s.o\
 transform.s.o\
-transform.s.o\
 tri2.s.o\
 tri.s.o\
 vec2.s.o\
@@ -137,6 +137,7 @@ dedg2.d.o\
 dedg.d.o\
 dH.d.o\
 dih.d.o\
+dlen.d.o\
 dnormal.d.o\
 dtri2.d.o\
 dtri.d.o\
@@ -215,7 +216,6 @@ sum.d.o\
 surface.d.o\
 ten.d.o\
 transform.d.o\
-transform.d.o\
 tri2.d.o\
 tri.d.o\
 vec2.d.o\
@@ -243,6 +243,7 @@ dedg2.l.o\
 dedg.l.o\
 dH.l.o\
 dih.l.o\
+dlen.l.o\
 dnormal.l.o\
 dtri2.l.o\
 dtri.l.o\
@@ -320,7 +321,6 @@ stretch.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\
-transform.l.o\
 transform.l.o\
 tri2.l.o\
 tri.l.o\

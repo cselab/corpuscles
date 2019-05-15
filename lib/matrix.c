@@ -21,6 +21,25 @@ int matrix_zero(int M, int N, real *a) {
     return CO_OK;
 }
 
+int matrix_set(int M, int N, int m, int n, real s, real *a)
+{
+	if (m >= M)
+		ERR(CO_INDEX, "m=%d >= M=%d", m, N);
+	if (n >= N)
+		ERR(CO_INDEX, "n=%d >= N=%d", n, N);
+	a[N*m + n] = s;
+	return CO_OK;
+}
+
+real matrix_get(int M, int N, int m, int n, real *a)
+{
+	if (m >= M)
+		ERR(CO_INDEX, "m=%d >= M=%d", m, N);
+	if (n >= N)
+		ERR(CO_INDEX, "n=%d >= N=%d", n, N);
+	return a[N*m + n];
+}
+
 int matrix_mult_nn(int M, int N, int K, const real *a, const real *b, /**/ real *c) {
     int m, n, k;
     matrix_zero(M, K, c);
@@ -114,7 +133,7 @@ int matrix_fread(FILE *f, int *pM, int *pN, real **pa) {
     return CO_OK;
 }
 
-int matrix_free(real *a) { FREE(a); return CO_OK; }
+int matrix_fin(real *a) { FREE(a); return CO_OK; }
 
 int matrix_ini(int M, int N, real **p) {
     if (M < 0) ERR(CO_INDEX, "M=%d < 0", M);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <tgmath.h>
 #include <real.h>
+#include <co/dlen.h>
 #include <co/err.h>
 #include <co/memory.h>
 #include <co/matrix.h>
@@ -11,30 +12,41 @@
 int
 main(void)
 {
-	Skel *q;
+	Skel *skel;
 	real *x, *y, *vx, *vy, *ux, *uy;
-	real *Ax, *Ay, *sigma;
+	real *sigma;
 	real *kx, *ky;
 	real *Oxx, *Oxy, *Oyy;
+	real*Ax, *Ay;
 
 	int n;
-	skel_read(stdin, &x, &y, &q);
-	n = skel_nv(q);
+	skel_read(stdin, &x, &y, &skel);
+	n = skel_nv(skel);
 	
 	MALLOC2(n, &vx, &vy);
 	MALLOC2(n, &ux, &uy);
-	MALLOC2(n, &Ax, &Ay);
 	MALLOC(n, &sigma);
 	MALLOC2(n, &kx, &ky);
-	MALLOC3(n, &Oxx, &Oxy, &Oyy);
+	matrix_ini(n, n, &Oxx);
+	matrix_ini(n, n, &Oxy);
+	matrix_ini(n, n, &Oyy);
+	matrix_ini(n, n, &Ax);
+	matrix_ini(n, n, &Ay);
+
+	dlen_ver(skel, x, y, /**/ Ax, Ay);
+	matrix_fwrite(n, n, Ax, stdout);
+	matrix_fwrite(n, n, Ay, stdout);
 
 	FREE2(vx, vy);
 	FREE2(ux, uy);
-	FREE2(Ax, Ay);
 	FREE(sigma);
 	FREE2(kx, ky);
-	FREE3(Oxx, Oxy, Oyy);
+	matrix_fin(Oxx);
+	matrix_fin(Oxy);
+	matrix_fin(Oyy);
+	matrix_fin(Ax);
+	matrix_fin(Ay);
 
 	MSG("n %d", n);
-	skel_xy_fin(x, y, q);
+	skel_xy_fin(x, y, skel);
 }
