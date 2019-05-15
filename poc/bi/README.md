@@ -8,3 +8,4 @@ A_{al,be,j} v_{be, j} = 0
 3. Build O: R
 4. Compute v: O, K, v0(r)
 5. Compute A * v
+

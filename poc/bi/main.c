@@ -4,8 +4,9 @@
 #include <co/array.h>
 #include <co/dlen.h>
 #include <co/err.h>
-#include <co/memory.h>
 #include <co/matrix.h>
+#include <co/memory.h>
+#include <co/oseen2.h>
 #include <co/skel.h>
 
 #define FMT CO_REAL_OUT
@@ -30,7 +31,7 @@ main(void)
 	CALLOC2(n, &kx, &ky);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
-	matrix_ini(n, n, &Oyy);
+	matrix_ini(n, n, &Oyy)
 	matrix_ini(n, n, &Ax);
 	matrix_ini(n, n, &Ay);
 
