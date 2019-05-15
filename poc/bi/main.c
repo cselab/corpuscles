@@ -23,11 +23,11 @@ main(void)
 	int n;
 	skel_read(stdin, &x, &y, &skel);
 	n = skel_nv(skel);
-	
+
 	MALLOC2(n, &vx, &vy);
 	MALLOC2(n, &ux, &uy);
 	MALLOC(n, &sigma);
-	MALLOC2(n, &kx, &ky);
+	CALLOC2(n, &kx, &ky);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
 	matrix_ini(n, n, &Oyy);
@@ -36,6 +36,10 @@ main(void)
 
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
 	array_one(n, sigma);
+	matrix_array_append_n(n, n, Ax, sigma, kx);
+	matrix_array_append_n(n, n, Ay, sigma, ky);
+
+	matrix_fwrite(n, 1, ky, stdout);
 
 	FREE2(vx, vy);
 	FREE2(ux, uy);
