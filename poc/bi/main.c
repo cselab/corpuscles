@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <tgmath.h>
 #include <real.h>
+#include <co/array.h>
 #include <co/dlen.h>
 #include <co/err.h>
 #include <co/memory.h>
@@ -34,8 +35,7 @@ main(void)
 	matrix_ini(n, n, &Ay);
 
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
-	matrix_fwrite(n, n, Ax, stdout);
-	matrix_fwrite(n, n, Ay, stdout);
+	array_one(n, sigma);
 
 	FREE2(vx, vy);
 	FREE2(ux, uy);

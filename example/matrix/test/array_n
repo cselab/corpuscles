@@ -1,0 +1,2 @@
+# TEST: array_n
+cat data/a  data/ba | co.run ./main array_n > main.out.txt

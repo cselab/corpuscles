@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "real.h"
+#include "co/array.h"
 #include "co/err.h"
 #include "co/memory.h"
 #include "co/matrix.h"
@@ -13,6 +14,11 @@
         for (k = 0; k < K; k++)                 \
             for (n = 0; n < N; n++) {
 #define END }
+
+#define ABEGIN \
+    for (m = 0; m < M; m++) \
+            for (n = 0; n < N; n++) {
+#define AEND }
 
 int matrix_zero(int M, int N, real *a) {
     int i;
@@ -74,6 +80,24 @@ int matrix_mult_tt(int M, int N, int K, const real *a, const real *b, /**/ real 
         c[K*m + k] += a[M*n + m] * b[N*k + n];
     } END;
     return CO_OK;
+}
+
+int matrix_array_n(int M, int N, const real *a, const real *b, /**/ real *c) {
+	int m, n;
+	array_zero(M, c);
+	ABEGIN {
+		c[m] += a[N*m + n] * b[n];	
+	} AEND;
+	return CO_OK;
+}
+
+int matrix_array_t(int M, int N, const real *a, const real *b, /**/ real *c) {
+	int m, n;
+	array_zero(M, c);
+	ABEGIN {
+		c[m] += a[M*n + m] * b[n];	
+	} AEND;
+	return CO_OK;
 }
 
 int matrix_transpose(int M, int N, real *a) {
