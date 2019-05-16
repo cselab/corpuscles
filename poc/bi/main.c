@@ -19,7 +19,7 @@ main(void)
 	real *sigma;
 	real *kx, *ky;
 	real *Oxx, *Oxy, *Oyy;
-	real*Ax, *Ay, *res;
+	real*Ax, *Ay, *res, *ser, *A;
 	real xx, xy, yy;
 	int n, i, j;
 
@@ -30,12 +30,13 @@ main(void)
 	CALLOC2(n, &ux, &uy);
 	MALLOC(n, &sigma);
 	CALLOC2(n, &kx, &ky);
-	CALLOC(n, &res);
+	CALLOC2(n, &res, &ser);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
 	matrix_ini(n, n, &Oyy);
 	matrix_ini(n, n, &Ax);
 	matrix_ini(n, n, &Ay);
+	matrix_ini(n, n, &A);
 
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
 	array_one(n, sigma);
@@ -57,7 +58,25 @@ main(void)
 			yy = matrix_get(n, n, i, j, Ay);
 			res[i] += xx*vx[j] + yy*vy[j];
 		}
-	matrix_fwrite(n, 1, res, stdout);
+
+	matrix_zero(n, n, A);
+	int al, be, ga, de;
+	real ax, ay, bx, by;
+	for (al = 0; al < n; al++)
+		for (de = 0; de < n; de++)
+			for (ga = 0; ga < n; ga++)
+				for (be = 0; be < n; be++) {
+		ax = matrix_get(n, n, al, be, Ax);
+		ay = matrix_get(n, n, al, be, Ay);
+		xx = matrix_get(n, n, be, ga, Oxx);
+		xy = matrix_get(n, n, be, ga, Oxy);
+		yy = matrix_get(n, n, be, ga, Oyy);
+		bx = matrix_get(n, n, de, ga, Ax);
+		by = matrix_get(n, n, de, ga, Ay);
+		matrix_set(n, n, al, de, xx*ax*bx + xy*ax*by + xy*ay*bx + yy*ay*by, A);
+	}
+
+	matrix_fwrite(n, n, res, stdout);
 
 	FREE2(vx, vy);
 	FREE2(ux, uy);
@@ -69,6 +88,8 @@ main(void)
 	matrix_fin(Ax);
 	matrix_fin(Ay);
 	FREE(res);
+	FREE(ser);
+	FREE(A);
 
 	MSG("n %d", n);
 	skel_xy_fin(x, y, skel);
