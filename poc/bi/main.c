@@ -19,11 +19,12 @@ main(void)
 	real *sigma;
 	real *kx, *ky;
 	real *Oxx, *Oxy, *Oyy;
+	real *OAx, *OAy;
 	real*Ax, *Ay, *res, *ser, *A;
 	real xx, xy, yy;
 	int n, i, j;
 	int al, be, ga, de;
-	real ax, ay, bx, by, t;
+	real ax, ay, t;
 
 	skel_read(stdin, &x, &y, &skel);
 	n = skel_nv(skel);
@@ -38,16 +39,15 @@ main(void)
 	matrix_ini(n, n, &Oyy);
 	matrix_ini(n, n, &Ax);
 	matrix_ini(n, n, &Ay);
+	matrix_ini(n, n, &OAx);
+	matrix_ini(n, n, &OAy);
 	matrix_ini(n, n, &A);
 
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
 	array_one(n, sigma);
 	oseen2(skel, x, y, Oxx, Oxy, Oyy);
-
-	//matrix_one(n, n, Ax);
-	//matrix_zero(n, n, Ay);
 	matrix_array_append_t(n, n, Ax, sigma, kx);
-	matrix_array_append_t(n, n, Ay, sigma, ky);	
+	matrix_array_append_t(n, n, Ay, sigma, ky);
 	for (be = 0; be < n; be++) {
 		for (ga = 0; ga < n; ga ++) {
 			xx = matrix_get(n, n, be, ga, Oxx);
@@ -65,24 +65,33 @@ main(void)
 		}
 
 	matrix_zero(n, n, A);
+	matrix_zero(n, n, OAx);
+	matrix_zero(n, n, OAy);
 	for (al = 0; al < n; al++)
-		for (de = 0; de < n; de++)
-			for (ga = 0; ga < n; ga++)
-				for (be = 0; be < n; be++) {
-		ax = matrix_get(n, n, al, be, Ax);
-		ay = matrix_get(n, n, al, be, Ay);
+		for (ga = 0; ga < n; ga++)
+			for (be = 0; be < n; be++) {
 		xx = matrix_get(n, n, be, ga, Oxx);
 		xy = matrix_get(n, n, be, ga, Oxy);
 		yy = matrix_get(n, n, be, ga, Oyy);
-		bx = matrix_get(n, n, de, ga, Ax);
-		by = matrix_get(n, n, de, ga, Ay);
-		t = xx*ax*bx + xy*ax*by + xy*ay*bx + yy*ay*by;
+		ax = matrix_get(n, n, al, be, Ax);
+		ay = matrix_get(n, n, al, be, Ay);
+		matrix_add(n, n, al, ga, xx*ax + xy*ay, OAx);
+		matrix_add(n, n, al ,ga, xy*ax + yy*ay, OAy);
+	}
+	for (al = 0; al < n; al++)
+		for (de = 0; de < n; de++)
+			for (ga = 0; ga < n; ga++) {
+		xx = matrix_get(n, n, al, ga, OAx);
+		yy = matrix_get(n, n, al, ga, OAy);
+		ax = matrix_get(n, n, de, ga, Ax);
+		ay = matrix_get(n, n, de, ga, Ay);
+		t = xx*ax + yy*ay;
 		matrix_add(n, n, al, de, t, A);
 	}
 
 	matrix_array_n(n, n, A, sigma, ser);
 	MSG(FMT " " FMT, ser[n - 1], res[n - 1]);
-	//matrix_fwrite(n, 1, ser, stdout);
+	matrix_fwrite(n, 1, ser, stdout);
 	//matrix_fwrite(n, 1, res, stdout);
 
 	FREE2(vx, vy);
@@ -94,6 +103,8 @@ main(void)
 	matrix_fin(Oyy);
 	matrix_fin(Ax);
 	matrix_fin(Ay);
+	matrix_fin(OAx);
+	matrix_fin(OAy);
 	FREE(res);
 	FREE(ser);
 	FREE(A);
