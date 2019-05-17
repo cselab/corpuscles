@@ -20,7 +20,7 @@ main(void)
 	real gamma;
 	Skel *skel;
 	real *x, *y, *vx, *vy, *ux, *uy, *fx, *fy;
-	real *sigma, *rhs, *sol;
+	real *sigma, *rhs;
 	real *kx, *ky;
 	real *Oxx, *Oxy, *Oyy;
 	real *OAx, *OAy;
@@ -37,7 +37,6 @@ main(void)
 	MALLOC2(n, &ux, &uy);
 	MALLOC2(n, &fx, &fy);
 	MALLOC(n, &sigma);
-	MALLOC(n, &sol);
 	CALLOC(n, &rhs);
 	MALLOC2(n, &kx, &ky);
 	CALLOC2(n, &res, &ser);
@@ -131,7 +130,7 @@ main(void)
 
 	MSG(FMT " " FMT, ser[0],  res[0]);
 	MSG(FMT " " FMT, ser[n - 1],  res[n - 1]);	
-	matrix_fwrite(n, 1, sol, stdout);
+	matrix_fwrite(n, 1, sigma, stdout);
 	//matrix_fwrite(n, 1, res, stdout);
 
 	lin_solve_fin(linsolve);
@@ -139,7 +138,6 @@ main(void)
 	FREE2(ux, uy);
 	FREE2(fx, fy);
 	FREE(sigma);
-	FREE(sol);
 	FREE(rhs);
 	FREE2(kx, ky);
 	matrix_fin(Oxx);
