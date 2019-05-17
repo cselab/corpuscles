@@ -54,7 +54,7 @@ int matrix_add(int M, int N, int m, int n, real s, real *a)
 	return CO_OK;
 }
 
-real matrix_get(int M, int N, int m, int n, real *a)
+real matrix_get(int M, int N, int m, int n, const real *a)
 {
 	if (m >= M)
 		ERR(CO_INDEX, "m=%d >= M=%d", m, N);

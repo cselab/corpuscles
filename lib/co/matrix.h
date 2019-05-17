@@ -2,7 +2,7 @@ int matrix_zero(int, int, real*);
 int matrix_one(int, int, real*);
 int matrix_set(int M, int N, int m, int n, real, real*);
 int matrix_add(int M, int N, int m, int n, real, real*);
-real matrix_get(int M, int N, int m, int n, real*);
+real matrix_get(int M, int N, int m, int n, const real*);
 int matrix_mult_nn(int, int, int, const real*, const real*, /**/ real*);
 int matrix_mult_nt(int, int, int, const real*, const real*, /**/ real*);
 int matrix_mult_tn(int, int, int, const real*, const real*, /**/ real*);
