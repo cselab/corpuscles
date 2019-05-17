@@ -22,6 +22,8 @@ main(void)
 	real*Ax, *Ay, *res, *ser, *A;
 	real xx, xy, yy;
 	int n, i, j;
+	int al, be, ga, de;
+	real ax, ay, bx, by, t;
 
 	skel_read(stdin, &x, &y, &skel);
 	n = skel_nv(skel);
@@ -40,16 +42,19 @@ main(void)
 
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
 	array_one(n, sigma);
-	matrix_array_append_n(n, n, Ax, sigma, kx);
-	matrix_array_append_n(n, n, Ay, sigma, ky);
 	oseen2(skel, x, y, Oxx, Oxy, Oyy);
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j ++) {
-			xx = matrix_get(n, n, i, j, Oxx);
-			xy = matrix_get(n, n, i, j, Oxy);
-			yy = matrix_get(n, n, i, j, Oyy);
-			vx[i] += xx*kx[j] + xy*ky[j];
-			vy[i] += xy*kx[j] + yy*ky[j];
+
+	//matrix_one(n, n, Ax);
+	//matrix_zero(n, n, Ay);
+	matrix_array_append_t(n, n, Ax, sigma, kx);
+	matrix_array_append_t(n, n, Ay, sigma, ky);	
+	for (be = 0; be < n; be++) {
+		for (ga = 0; ga < n; ga ++) {
+			xx = matrix_get(n, n, be, ga, Oxx);
+			xy = matrix_get(n, n, be, ga, Oxy);
+			yy = matrix_get(n, n, be, ga, Oyy);
+			vx[be] += xx*kx[ga] + xy*ky[ga];
+			vy[be] += xy*kx[ga] + yy*ky[ga];
 		}
 	}
 	for (i = 0; i < n; i++)
@@ -60,8 +65,6 @@ main(void)
 		}
 
 	matrix_zero(n, n, A);
-	int al, be, ga, de;
-	real ax, ay, bx, by;
 	for (al = 0; al < n; al++)
 		for (de = 0; de < n; de++)
 			for (ga = 0; ga < n; ga++)
@@ -73,10 +76,14 @@ main(void)
 		yy = matrix_get(n, n, be, ga, Oyy);
 		bx = matrix_get(n, n, de, ga, Ax);
 		by = matrix_get(n, n, de, ga, Ay);
-		matrix_set(n, n, al, de, xx*ax*bx + xy*ax*by + xy*ay*bx + yy*ay*by, A);
+		t = xx*ax*bx + xy*ax*by + xy*ay*bx + yy*ay*by;
+		matrix_add(n, n, al, de, t, A);
 	}
 
-	matrix_fwrite(n, n, res, stdout);
+	matrix_array_n(n, n, A, sigma, ser);
+	MSG(FMT " " FMT, ser[n - 1], res[n - 1]);
+	//matrix_fwrite(n, 1, ser, stdout);
+	//matrix_fwrite(n, 1, res, stdout);
 
 	FREE2(vx, vy);
 	FREE2(ux, uy);

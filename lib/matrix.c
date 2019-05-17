@@ -27,6 +27,13 @@ int matrix_zero(int M, int N, real *a) {
     return CO_OK;
 }
 
+int matrix_one(int M, int N, real *a) {
+    int i;
+    for (i = 0; i < N*M; i++)
+        a[i] = 1;
+    return CO_OK;
+}
+
 int matrix_set(int M, int N, int m, int n, real s, real *a)
 {
 	if (m >= M)
@@ -34,6 +41,16 @@ int matrix_set(int M, int N, int m, int n, real s, real *a)
 	if (n >= N)
 		ERR(CO_INDEX, "n=%d >= N=%d", n, N);
 	a[N*m + n] = s;
+	return CO_OK;
+}
+
+int matrix_add(int M, int N, int m, int n, real s, real *a)
+{
+	if (m >= M)
+		ERR(CO_INDEX, "m=%d >= M=%d", m, N);
+	if (n >= N)
+		ERR(CO_INDEX, "n=%d >= N=%d", n, N);
+	a[N*m + n] += s;
 	return CO_OK;
 }
 
