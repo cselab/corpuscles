@@ -35,7 +35,7 @@ main(void)
 	MALLOC2(n, &fx, &fy);
 	MALLOC(n, &sigma);
 	CALLOC(n, &rhs);
-	CALLOC2(n, &kx, &ky);
+	MALLOC2(n, &kx, &ky);
 	CALLOC2(n, &res, &ser);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
@@ -59,6 +59,11 @@ main(void)
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
 	array_one(n, sigma);
 	oseen2(skel, x, y, Oxx, Oxy, Oyy);
+
+	for (i = 0; i < n; i++) {
+		kx[i] += fx[i];
+		ky[i] += fy[i];
+	}
 	matrix_array_append_t(n, n, Ax, sigma, kx);
 	matrix_array_append_t(n, n, Ay, sigma, ky);
 	for (be = 0; be < n; be++) {
@@ -109,7 +114,7 @@ main(void)
 		yy = matrix_get(n, n, al, be, OAy);
 		ax = matrix_get(n, n, al, be, Ax);
 		ay = matrix_get(n, n, al, be, Ay);
-		t = ax * ux[be] + ay * uy[be];
+		t = ax*ux[be] + ay*uy[be]   + xx*fx[be] + yy*fy[be];
 		rhs[al] += t;
 	}
 
