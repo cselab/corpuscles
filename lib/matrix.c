@@ -133,6 +133,22 @@ int matrix_array_append_t(int M, int N, const real *a, const real *b, /*io*/ rea
 	return CO_OK;
 }
 
+int matrix_array_substr_n(int M, int N, const real *a, const real *b, /*io*/ real *c) {
+	int m, n;
+	ABEGIN {
+		c[m] -= a[N*m + n] * b[n];	
+	} AEND;
+	return CO_OK;
+}
+
+int matrix_array_substr_t(int M, int N, const real *a, const real *b, /*io*/ real *c) {
+	int m, n;
+	ABEGIN {
+		c[m] -= a[M*n + m] * b[n];	
+	} AEND;
+	return CO_OK;
+}
+
 int matrix_transpose(int M, int N, real *a) {
     int s, n, i, K;
     real tmp;

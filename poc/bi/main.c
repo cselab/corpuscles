@@ -9,15 +9,18 @@
 #include <co/oseen2.h>
 #include <co/skel.h>
 
+#include <alg/linsolve.h>
+
 #define FMT CO_REAL_OUT
 
 int
 main(void)
 {
+	LinSolve *linsolve;
 	real gamma;
 	Skel *skel;
 	real *x, *y, *vx, *vy, *ux, *uy, *fx, *fy;
-	real *sigma, *rhs;
+	real *sigma, *rhs, *sol;
 	real *kx, *ky;
 	real *Oxx, *Oxy, *Oyy;
 	real *OAx, *OAy;
@@ -34,6 +37,7 @@ main(void)
 	MALLOC2(n, &ux, &uy);
 	MALLOC2(n, &fx, &fy);
 	MALLOC(n, &sigma);
+	MALLOC(n, &sol);
 	CALLOC(n, &rhs);
 	MALLOC2(n, &kx, &ky);
 	CALLOC2(n, &res, &ser);
@@ -45,6 +49,8 @@ main(void)
 	matrix_ini(n, n, &OAx);
 	matrix_ini(n, n, &OAy);
 	matrix_ini(n, n, &A);
+
+	lin_solve_ini(n, &linsolve);
 
 	gamma = 1;
 	for (i = 0; i < n; i++) {
@@ -64,26 +70,6 @@ main(void)
 		kx[i] += fx[i];
 		ky[i] += fy[i];
 	}
-	matrix_array_append_t(n, n, Ax, sigma, kx);
-	matrix_array_append_t(n, n, Ay, sigma, ky);
-	for (be = 0; be < n; be++) {
-		for (ga = 0; ga < n; ga ++) {
-			xx = matrix_get(n, n, be, ga, Oxx);
-			xy = matrix_get(n, n, be, ga, Oxy);
-			yy = matrix_get(n, n, be, ga, Oyy);
-			vx[be] += xx*kx[ga] + xy*ky[ga];
-			vy[be] += xy*kx[ga] + yy*ky[ga];
-		}
-		vx[be] += ux[be];
-		vy[be] += uy[be];
-	}
-	for (i = 0; i < n; i++)
-		for (j = 0; j < n; j++) {
-			xx = matrix_get(n, n, i, j, Ax);
-			yy = matrix_get(n, n, i, j, Ay);
-			res[i] += xx*vx[j] + yy*vy[j];
-		}
-
 	matrix_zero(n, n, A);
 	matrix_zero(n, n, OAx);
 	matrix_zero(n, n, OAy);
@@ -117,20 +103,43 @@ main(void)
 		t = ax*ux[be] + ay*uy[be]   + xx*fx[be] + yy*fy[be];
 		rhs[al] += t;
 	}
+	lin_solve_apply(linsolve, A, rhs, sigma);
+
+	matrix_array_substr_t(n, n, Ax, sigma, kx);
+	matrix_array_substr_t(n, n, Ay, sigma, ky);
+	for (be = 0; be < n; be++) {
+		for (ga = 0; ga < n; ga ++) {
+			xx = matrix_get(n, n, be, ga, Oxx);
+			xy = matrix_get(n, n, be, ga, Oxy);
+			yy = matrix_get(n, n, be, ga, Oyy);
+			vx[be] += xx*kx[ga] + xy*ky[ga];
+			vy[be] += xy*kx[ga] + yy*ky[ga];
+		}
+		vx[be] += ux[be];
+		vy[be] += uy[be];
+	}
+	for (i = 0; i < n; i++)
+		for (j = 0; j < n; j++) {
+			xx = matrix_get(n, n, i, j, Ax);
+			yy = matrix_get(n, n, i, j, Ay);
+			res[i] += xx*vx[j] + yy*vy[j];
+		}
 
 	matrix_array_n(n, n, A, sigma, ser);
 	for (i = 0; i < n; i++)
-		ser[i] += rhs[i];
+		ser[i] -= rhs[i];
 
 	MSG(FMT " " FMT, ser[0],  res[0]);
 	MSG(FMT " " FMT, ser[n - 1],  res[n - 1]);	
-	matrix_fwrite(n, 1, ser, stdout);
+	matrix_fwrite(n, 1, sol, stdout);
 	//matrix_fwrite(n, 1, res, stdout);
 
+	lin_solve_fin(linsolve);
 	FREE2(vx, vy);
 	FREE2(ux, uy);
 	FREE2(fx, fy);
 	FREE(sigma);
+	FREE(sol);
 	FREE(rhs);
 	FREE2(kx, ky);
 	matrix_fin(Oxx);

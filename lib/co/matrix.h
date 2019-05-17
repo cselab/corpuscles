@@ -11,6 +11,8 @@ int matrix_array_n(int, int, const  real*, const real*, /**/ real*);
 int matrix_array_t(int, int, const  real*, const real*, /**/ real*);
 int matrix_array_append_n(int, int, const  real*, const real*, /**/ real*);
 int matrix_array_append_t(int, int, const  real*, const real*, /**/ real*);
+int matrix_array_substr_n(int, int, const  real*, const real*, /**/ real*);
+int matrix_array_substr_t(int, int, const  real*, const real*, /**/ real*);
 int matrix_transpose(int, int, /*io*/ real*);
 
 int matrix_fwrite(int, int, const real*, FILE*);
