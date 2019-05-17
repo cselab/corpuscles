@@ -143,7 +143,5 @@ main(void)
 	FREE(res);
 	FREE(ser);
 	FREE(A);
-
-	MSG("n %d", n);
 	skel_xy_fin(x, y, skel);
 }
