@@ -8,7 +8,7 @@
 #include "co/vec2.h"
 #include "co/matrix.h"
 
-static const real r0 = 1.0;
+static const real r0 = 0.1;
 
 static int
 oseen(const real a[2], const real b[2], real *xx, real *xy, real *yy)

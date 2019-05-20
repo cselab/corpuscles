@@ -20,6 +20,8 @@ Force2 *Force[99] =
 {
 	NULL
 };
+static Skel *skel;
+static real gamma = 1, mu = 100, dt = 5e-7;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -72,16 +74,13 @@ int
 main(__UNUSED int argc, char **argv)
 {
 	LinSolve *linsolve;
-	real gamma;
-	Skel *skel;
-	real *x, *y, *vx, *vy, *ux, *uy, *fx, *fy;
+	real *x, *y, *vx, *vy, *fx, *fy;
 	real *sigma, *rhs;
-	real *kx, *ky;
 	real *Oxx, *Oxy, *Oyy;
 	real *OAx, *OAy;
 	real*Ax, *Ay, *res, *ser, *A;
 	real xx, xy, yy;
-	int n, i;
+	int n, i, j;
 	int al, be, ga, de;
 	real ax, ay, t;
 
@@ -91,11 +90,9 @@ main(__UNUSED int argc, char **argv)
 	n = skel_nv(skel);
 
 	CALLOC2(n, &vx, &vy);
-	MALLOC2(n, &ux, &uy);
 	CALLOC2(n, &fx, &fy);
 	MALLOC(n, &sigma);
 	CALLOC(n, &rhs);
-	CALLOC2(n, &kx, &ky);
 	CALLOC2(n, &res, &ser);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
@@ -105,56 +102,76 @@ main(__UNUSED int argc, char **argv)
 	matrix_ini(n, n, &OAx);
 	matrix_ini(n, n, &OAy);
 	matrix_ini(n, n, &A);
-
 	lin_solve_ini(n, &linsolve);
 
-	gamma = 1;
-	for (i = 0; i < n; i++) {
-		ux[i] = gamma*y[i];
-		uy[i] = 0;
-	}
-	force(skel, x, y, fx, fy);
-
-	dlen_ver(skel, x, y, /**/ Ax, Ay);
-	oseen2(skel, x, y, Oxx, Oxy, Oyy);
-	for (i = 0; i < n; i++) {
-		kx[i] += fx[i];
-		ky[i] += fy[i];
-	}
-	matrix_zero(n, n, A);
-	matrix_zero(n, n, OAx);
-	matrix_zero(n, n, OAy);
-	for (al = 0; al < n; al++)
-		for (ga = 0; ga < n; ga++)
+	for (j = 0; j < 10000; j++) {
+		for (i = 0; i < n; i++) {
+			vx[i] = gamma*y[i];
+			vy[i] = 0;
+		}
+		force(skel, x, y, fx, fy);
+		dlen_ver(skel, x, y, /**/ Ax, Ay);
+		oseen2(skel, x, y, Oxx, Oxy, Oyy);
+		matrix_zero(n, n, A);
+		matrix_zero(n, n, OAx);
+		matrix_zero(n, n, OAy);
+		for (al = 0; al < n; al++)
+			for (ga = 0; ga < n; ga++)
+				for (be = 0; be < n; be++) {
+					xx = matrix_get(n, n, be, ga, Oxx)/mu;
+					xy = matrix_get(n, n, be, ga, Oxy)/mu;
+					yy = matrix_get(n, n, be, ga, Oyy)/mu;
+					ax = matrix_get(n, n, al, be, Ax);
+					ay = matrix_get(n, n, al, be, Ay);
+					matrix_add(n, n, al, ga, xx*ax + xy*ay, OAx);
+					matrix_add(n, n, al ,ga, xy*ax + yy*ay, OAy);
+				}
+		for (al = 0; al < n; al++)
+			for (de = 0; de < n; de++)
+				for (ga = 0; ga < n; ga++) {
+					xx = matrix_get(n, n, al, ga, OAx);
+					yy = matrix_get(n, n, al, ga, OAy);
+					ax = matrix_get(n, n, de, ga, Ax);
+					ay = matrix_get(n, n, de, ga, Ay);
+					t = xx*ax + yy*ay;
+					matrix_add(n, n, al, de, t, A);
+				}
+		for (al = 0; al < n; al++)
 			for (be = 0; be < n; be++) {
-				xx = matrix_get(n, n, be, ga, Oxx);
-				xy = matrix_get(n, n, be, ga, Oxy);
-				yy = matrix_get(n, n, be, ga, Oyy);
+				xx = matrix_get(n, n, al, be, OAx);
+				yy = matrix_get(n, n, al, be, OAy);
 				ax = matrix_get(n, n, al, be, Ax);
 				ay = matrix_get(n, n, al, be, Ay);
-				matrix_add(n, n, al, ga, xx*ax + xy*ay, OAx);
-				matrix_add(n, n, al ,ga, xy*ax + yy*ay, OAy);
+				t = ax*vx[be] + ay*vy[be]   + xx*fx[be] + yy*fy[be];
+				rhs[al] += t;
 			}
-	for (al = 0; al < n; al++)
-		for (de = 0; de < n; de++)
+		lin_solve_apply(linsolve, A, rhs, sigma);
+		matrix_array_substr_t(n, n, Ax, sigma, fx);
+		matrix_array_substr_t(n, n, Ay, sigma, fy);
+		for (be = 0; be < n; be++)
 			for (ga = 0; ga < n; ga++) {
-				xx = matrix_get(n, n, al, ga, OAx);
-				yy = matrix_get(n, n, al, ga, OAy);
-				ax = matrix_get(n, n, de, ga, Ax);
-				ay = matrix_get(n, n, de, ga, Ay);
-				t = xx*ax + yy*ay;
-				matrix_add(n, n, al, de, t, A);
+				xx = matrix_get(n, n, be, ga, Oxx)/mu;
+				xy = matrix_get(n, n, be, ga, Oxy)/mu;
+				yy = matrix_get(n, n, be, ga, Oyy)/mu;
+				vx[be] += xx*fx[ga] + xy*fy[ga];
+				vy[be] += xy*fx[ga] + yy*fy[ga];
 			}
-	for (al = 0; al < n; al++)
-		for (be = 0; be < n; be++) {
-			xx = matrix_get(n, n, al, be, OAx);
-			yy = matrix_get(n, n, al, be, OAy);
-			ax = matrix_get(n, n, al, be, Ax);
-			ay = matrix_get(n, n, al, be, Ay);
-			t = ax*ux[be] + ay*uy[be]   + xx*fx[be] + yy*fy[be];
-			rhs[al] += t;
+
+		FILE *f;
+		char file[9999];
+		for (i = 0; i < n; i++) {
+			x[i] += dt*vx[i];
+			y[i] += dt*vy[i];
 		}
-	lin_solve_apply(linsolve, A, rhs, sigma);
+		if (j % 100 == 0) {
+			MSG("x[0] " FMT, x[0]);
+			sprintf(file, "%05d.skel", j);
+			f = fopen(file, "w");
+			skel_write(skel, x, y, f);
+			fclose(f);
+		}
+	}
+
 
 	MSG(FMT " " FMT, sigma[0],  sigma[n - 1]);
 	//matrix_fwrite(n, 1, sigma, stdout);
@@ -162,11 +179,9 @@ main(__UNUSED int argc, char **argv)
 
 	lin_solve_fin(linsolve);
 	FREE2(vx, vy);
-	FREE2(ux, uy);
 	FREE2(fx, fy);
 	FREE(sigma);
 	FREE(rhs);
-	FREE2(kx, ky);
 	matrix_fin(Oxx);
 	matrix_fin(Oxy);
 	matrix_fin(Oyy);
@@ -183,9 +198,14 @@ main(__UNUSED int argc, char **argv)
 
 /*
 
+Put
+git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
-valgrind ./2 area $A 1     bend_min 1e-3 < $f > q
-gu
+./2 area $A 1     bend_min 1e-3 < $f
+
+co.geomview -p cat *.skel
+
+Kill git
 */
