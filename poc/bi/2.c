@@ -104,11 +104,13 @@ main(__UNUSED int argc, char **argv)
 	matrix_ini(n, n, &A);
 	lin_solve_ini(n, &linsolve);
 
-	for (j = 0; j < 10000; j++) {
+	for (j = 0; j < 1000; j++) {
 		for (i = 0; i < n; i++) {
 			vx[i] = gamma*y[i];
 			vy[i] = 0;
 		}
+		array_zero(n, fx);
+		array_zero(n, fy);
 		force(skel, x, y, fx, fy);
 		dlen_ver(skel, x, y, /**/ Ax, Ay);
 		oseen2(skel, x, y, Oxx, Oxy, Oyy);
@@ -153,8 +155,8 @@ main(__UNUSED int argc, char **argv)
 				xx = matrix_get(n, n, be, ga, Oxx)/mu;
 				xy = matrix_get(n, n, be, ga, Oxy)/mu;
 				yy = matrix_get(n, n, be, ga, Oyy)/mu;
-				vx[be] += xx*fx[ga] + xy*fy[ga];
-				vy[be] += xy*fx[ga] + yy*fy[ga];
+				//vx[be] += xx*fx[ga] + xy*fy[ga];
+				//vy[be] += xy*fx[ga] + yy*fy[ga];
 			}
 
 		FILE *f;
@@ -203,7 +205,7 @@ git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
-./2 area $A 1     bend_min 1e-3 < $f
+./2 area $A 1     bend_min 1e- 3 < $f
 
 co.geomview -p cat *.skel
 

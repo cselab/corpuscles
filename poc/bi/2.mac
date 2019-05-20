@@ -1,0 +1,15 @@
+assume(e > 0);
+assume(r>0);
+
+s: sqrt(r^2 + e^2);
+x: log(s + e);
+y: e*(s + 2*e);
+z: (s + e) * s;
+A:  x - y/z;
+
+u: s + 2*e;
+v: (s + e)^2*s;
+B: u/v;
+
+A0: subst(r = 0, A);
+B0: subst(r = 0, B);
