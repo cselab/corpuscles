@@ -85,15 +85,17 @@ main(__UNUSED int argc, char **argv)
 	int al, be, ga, de;
 	real ax, ay, t;
 
+	argv++;
 	skel_read(stdin, &x, &y, &skel);
+	fargv(&argv, skel);
 	n = skel_nv(skel);
 
 	CALLOC2(n, &vx, &vy);
 	MALLOC2(n, &ux, &uy);
-	MALLOC2(n, &fx, &fy);
+	CALLOC2(n, &fx, &fy);
 	MALLOC(n, &sigma);
 	CALLOC(n, &rhs);
-	MALLOC2(n, &kx, &ky);
+	CALLOC2(n, &kx, &ky);
 	CALLOC2(n, &res, &ser);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
@@ -111,10 +113,7 @@ main(__UNUSED int argc, char **argv)
 		ux[i] = gamma*y[i];
 		uy[i] = 0;
 	}
-	for (i = 0; i < n; i++) {
-		fx[i] = y[i];
-		fy[i] = x[i];
-	}
+	force(skel, x, y, fx, fy);
 
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
 	array_one(n, sigma);
@@ -130,33 +129,33 @@ main(__UNUSED int argc, char **argv)
 	for (al = 0; al < n; al++)
 		for (ga = 0; ga < n; ga++)
 			for (be = 0; be < n; be++) {
-		xx = matrix_get(n, n, be, ga, Oxx);
-		xy = matrix_get(n, n, be, ga, Oxy);
-		yy = matrix_get(n, n, be, ga, Oyy);
-		ax = matrix_get(n, n, al, be, Ax);
-		ay = matrix_get(n, n, al, be, Ay);
-		matrix_add(n, n, al, ga, xx*ax + xy*ay, OAx);
-		matrix_add(n, n, al ,ga, xy*ax + yy*ay, OAy);
-	}
+				xx = matrix_get(n, n, be, ga, Oxx);
+				xy = matrix_get(n, n, be, ga, Oxy);
+				yy = matrix_get(n, n, be, ga, Oyy);
+				ax = matrix_get(n, n, al, be, Ax);
+				ay = matrix_get(n, n, al, be, Ay);
+				matrix_add(n, n, al, ga, xx*ax + xy*ay, OAx);
+				matrix_add(n, n, al ,ga, xy*ax + yy*ay, OAy);
+			}
 	for (al = 0; al < n; al++)
 		for (de = 0; de < n; de++)
 			for (ga = 0; ga < n; ga++) {
-		xx = matrix_get(n, n, al, ga, OAx);
-		yy = matrix_get(n, n, al, ga, OAy);
-		ax = matrix_get(n, n, de, ga, Ax);
-		ay = matrix_get(n, n, de, ga, Ay);
-		t = xx*ax + yy*ay;
-		matrix_add(n, n, al, de, t, A);
-	}
+				xx = matrix_get(n, n, al, ga, OAx);
+				yy = matrix_get(n, n, al, ga, OAy);
+				ax = matrix_get(n, n, de, ga, Ax);
+				ay = matrix_get(n, n, de, ga, Ay);
+				t = xx*ax + yy*ay;
+				matrix_add(n, n, al, de, t, A);
+			}
 	for (al = 0; al < n; al++)
 		for (be = 0; be < n; be++) {
-		xx = matrix_get(n, n, al, be, OAx);
-		yy = matrix_get(n, n, al, be, OAy);
-		ax = matrix_get(n, n, al, be, Ax);
-		ay = matrix_get(n, n, al, be, Ay);
-		t = ax*ux[be] + ay*uy[be]   + xx*fx[be] + yy*fy[be];
-		rhs[al] += t;
-	}
+			xx = matrix_get(n, n, al, be, OAx);
+			yy = matrix_get(n, n, al, be, OAy);
+			ax = matrix_get(n, n, al, be, Ax);
+			ay = matrix_get(n, n, al, be, Ay);
+			t = ax*ux[be] + ay*uy[be]   + xx*fx[be] + yy*fy[be];
+			rhs[al] += t;
+		}
 	lin_solve_apply(linsolve, A, rhs, sigma);
 
 	matrix_array_substr_t(n, n, Ax, sigma, kx);
@@ -205,5 +204,15 @@ main(__UNUSED int argc, char **argv)
 	FREE(res);
 	FREE(ser);
 	FREE(A);
+	fin();
 	skel_xy_fin(x, y, skel);
 }
+
+/*
+
+m clean lint
+A=0.8835572001943658
+f=data/rbc.skel
+valgrind '--track-origins=yes' ./main len $f 1 0 0    area $A 1     bend_min 1e-3 < $f > q
+
+*/
