@@ -4,6 +4,8 @@
 #include <co/array.h>
 #include <co/dlen.h>
 #include <co/err.h>
+#include <co/force2.h>
+#include <co/macro.h>
 #include <co/matrix.h>
 #include <co/memory.h>
 #include <co/oseen2.h>
@@ -13,8 +15,61 @@
 
 #define FMT CO_REAL_OUT
 
+static
+Force2 *Force[99] =
+{
+	NULL
+};
+
+static int
+fargv(char ***p, Skel *skel)
+{
+	char *name, **v;
+	int i;
+
+	i = 0;
+	v = *p;
+	while (1) {
+		if (v[0] == NULL) break;
+		name = v[0];
+		v++;
+		MSG("%s", name);
+		if (!force2_good(name)) break;
+		force2_argv(name, &v, skel, &Force[i]);
+		i++;
+	}
+
+	*p = v;
+	return CO_OK;
+}
+
+static int
+force(Skel *skel, const real *x, const real *y, real *fx, real *fy)
+{
+	int i;
+	i = 0;
+	while (Force[i]) {
+		force2_force(Force[i], skel, x, y, fx, fy);
+		i++;
+	}
+	return CO_OK;
+}
+
+
+static int
+fin(void)
+{
+	int i;
+	i = 0;
+	while (Force[i]) {
+		force2_fin(Force[i]);
+		i++;
+	}
+	return CO_OK;
+}
+
 int
-main(void)
+main(__UNUSED int argc, char **argv)
 {
 	LinSolve *linsolve;
 	real gamma;
@@ -129,7 +184,7 @@ main(void)
 		ser[i] -= rhs[i];
 
 	MSG(FMT " " FMT, ser[0],  res[0]);
-	MSG(FMT " " FMT, ser[n - 1],  res[n - 1]);	
+	MSG(FMT " " FMT, ser[n - 1],  res[n - 1]);
 	matrix_fwrite(n, 1, sigma, stdout);
 	//matrix_fwrite(n, 1, res, stdout);
 
