@@ -21,7 +21,7 @@ Force2 *Force[99] =
 	NULL
 };
 static Skel *skel;
-static real gamma = 1, mu = 100, dt = 5e-7;
+static real gamma = 1, mu = 1, dt = 5e-4;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -104,7 +104,7 @@ main(__UNUSED int argc, char **argv)
 	matrix_ini(n, n, &A);
 	lin_solve_ini(n, &linsolve);
 
-	for (j = 0; j < 1000; j++) {
+	for (j = 0; j < 10000; j++) {
 		for (i = 0; i < n; i++) {
 			vx[i] = gamma*y[i];
 			vy[i] = 0;
@@ -165,7 +165,7 @@ main(__UNUSED int argc, char **argv)
 			x[i] += dt*vx[i];
 			y[i] += dt*vy[i];
 		}
-		if (j % 100 == 0) {
+		if (j % 1000 == 0) {
 			MSG("x[0] " FMT, x[0]);
 			sprintf(file, "%05d.skel", j);
 			f = fopen(file, "w");
@@ -205,9 +205,10 @@ git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
-./2 area $A 1     bend_min 1e- 3 < $f
+./2 area $A 1e12   bend_min 1e- 3 < $f
 
 co.geomview -p cat *.skel
 
 Kill git
+
 */

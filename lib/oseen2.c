@@ -8,7 +8,7 @@
 #include "co/vec2.h"
 #include "co/matrix.h"
 
-static const real r0 = 1;
+static const real e = 0.01;
 
 static int
 oseen(const real a[2], const real b[2], real *xx, real *xy, real *yy)
@@ -21,10 +21,22 @@ oseen(const real a[2], const real b[2], real *xx, real *xy, real *yy)
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
 	r2 = r*r;
-	l = log(r/r0);
+	l = log(r);
 	*xx = -l + d[X]*d[X]/r2;
 	*xy = d[X]*d[Y]/r2;
 	*yy = -l + d[Y]*d[Y]/r2;
+	return CO_OK;
+}
+
+static int
+oseen0(real *xx, real *xy, real *yy)
+{
+	enum {X, Y};
+	real l;
+	l = log(2*e) - 3/2;
+	*xx = l;
+	*xy = 0;
+	*yy = l;
 	return CO_OK;
 }
 
@@ -37,6 +49,7 @@ oseen2(Skel *skel, const real *x, const real *y, real *xx, real *xy, real *yy)
 
 	for (i = 0; i < n; i++) {
 		vec2_get(i, x, y, a);
+		oseen0(&oxx, &oxy, &oyy);
 		matrix_set(n, n, i, i, 0, xx);
 		matrix_set(n, n, i, i, 0, xy);
 		matrix_set(n, n, i, i, 0, yy);
