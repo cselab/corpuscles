@@ -10,6 +10,7 @@
 #include <co/memory.h>
 #include <co/oseen2.h>
 #include <co/skel.h>
+#include <co/punto.h>
 
 #include <alg/linsolve.h>
 
@@ -111,7 +112,7 @@ main(__UNUSED int argc, char **argv)
 		}
 		array_zero(n, fx);
 		array_zero(n, fy);
-		force(skel, x, y, fx, fy);
+		//force(skel, x, y, fx, fy);
 		dlen_ver(skel, x, y, /**/ Ax, Ay);
 		oseen2(skel, x, y, Oxx, Oxy, Oyy);
 		matrix_zero(n, n, A);
@@ -171,9 +172,12 @@ main(__UNUSED int argc, char **argv)
 			f = fopen(file, "w");
 			skel_write(skel, x, y, f);
 			fclose(f);
+			const real *q[] = {x, y, vx, vy, sigma, fx, fy, NULL};
+			punto_fwrite(n, q, stdout);
+			printf("\n");
+			break;
 		}
 	}
-
 
 	MSG(FMT " " FMT, sigma[0],  sigma[n - 1]);
 	//matrix_fwrite(n, 1, sigma, stdout);
