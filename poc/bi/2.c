@@ -21,7 +21,7 @@ Force2 *Force[99] =
 	NULL
 };
 static Skel *skel;
-static real gamma = 1, mu = 1, dt = 5e-4;
+static real gamma = 1, mu = 1, dt = 5e-9;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -145,18 +145,18 @@ main(__UNUSED int argc, char **argv)
 				ax = matrix_get(n, n, al, be, Ax);
 				ay = matrix_get(n, n, al, be, Ay);
 				t = ax*vx[be] + ay*vy[be]   + xx*fx[be] + yy*fy[be];
-				rhs[al] += t;
+				rhs[al] -= t;
 			}
 		lin_solve_apply(linsolve, A, rhs, sigma);
-		matrix_array_substr_t(n, n, Ax, sigma, fx);
-		matrix_array_substr_t(n, n, Ay, sigma, fy);
+		matrix_array_append_t(n, n, Ax, sigma, fx);
+		matrix_array_append_t(n, n, Ay, sigma, fy);
 		for (be = 0; be < n; be++)
 			for (ga = 0; ga < n; ga++) {
 				xx = matrix_get(n, n, be, ga, Oxx)/mu;
 				xy = matrix_get(n, n, be, ga, Oxy)/mu;
 				yy = matrix_get(n, n, be, ga, Oyy)/mu;
-				//vx[be] += xx*fx[ga] + xy*fy[ga];
-				//vy[be] += xy*fx[ga] + yy*fy[ga];
+				vx[be] -= xx*fx[ga] + xy*fy[ga];
+				vy[be] -= xy*fx[ga] + yy*fy[ga];
 			}
 
 		FILE *f;
@@ -205,7 +205,7 @@ git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
-./2 area $A 1e12   bend_min 1e- 3 < $f
+./2 area $A 1   bend_min 1e- 3 < $f
 
 co.geomview -p cat *.skel
 
