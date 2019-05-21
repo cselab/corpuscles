@@ -112,7 +112,7 @@ main(__UNUSED int argc, char **argv)
 		}
 		array_zero(n, fx);
 		array_zero(n, fy);
-		//force(skel, x, y, fx, fy);
+		force(skel, x, y, fx, fy);
 		dlen_ver(skel, x, y, /**/ Ax, Ay);
 		oseen2(skel, x, y, Oxx, Oxy, Oyy);
 		matrix_zero(n, n, A);
@@ -176,7 +176,6 @@ main(__UNUSED int argc, char **argv)
 			const real *q[] = {x, y, vx, vy, sigma, fx, fy, NULL};
 			punto_fwrite(n, q, stdout);
 			printf("\n");
-			break;
 		}
 	}
 
