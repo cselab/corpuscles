@@ -22,7 +22,7 @@ Force2 *Force[99] =
 	NULL
 };
 static Skel *skel;
-static real gamma = 1, mu = 1, dt = 5e-9;
+static real gamma = 1, mu = 1, dt = 5e-6;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -147,7 +147,7 @@ main(__UNUSED int argc, char **argv)
 				ax = matrix_get(n, n, al, be, Ax);
 				ay = matrix_get(n, n, al, be, Ay);
 				t = ax*vx[be] + ay*vy[be]   + xx*fx[be] + yy*fy[be];
-				rhs[al] += t;
+				rhs[al] -= t;
 			}
 		lin_solve_apply(linsolve, A, rhs, sigma);
 		matrix_array_append_t(n, n, Ax, sigma, fx);
