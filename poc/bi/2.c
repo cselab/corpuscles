@@ -78,7 +78,7 @@ main(__UNUSED int argc, char **argv)
 	real *x, *y, *vx, *vy, *fx, *fy;
 	real *sigma, *rhs;
 	real *Oxx, *Oxy, *Oyy;
-	real *OAx, *OAy;
+	real *AOx, *AOy;
 	real*Ax, *Ay, *res, *ser, *A;
 	real xx, xy, yy;
 	int n, i, j;
@@ -93,15 +93,15 @@ main(__UNUSED int argc, char **argv)
 	CALLOC2(n, &vx, &vy);
 	CALLOC2(n, &fx, &fy);
 	MALLOC(n, &sigma);
-	CALLOC(n, &rhs);
+	MALLOC(n, &rhs);
 	CALLOC2(n, &res, &ser);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
 	matrix_ini(n, n, &Oyy);
 	matrix_ini(n, n, &Ax);
 	matrix_ini(n, n, &Ay);
-	matrix_ini(n, n, &OAx);
-	matrix_ini(n, n, &OAy);
+	matrix_ini(n, n, &AOx);
+	matrix_ini(n, n, &AOy);
 	matrix_ini(n, n, &A);
 	lin_solve_ini(n, &linsolve);
 
@@ -116,24 +116,25 @@ main(__UNUSED int argc, char **argv)
 		dlen_ver(skel, x, y, /**/ Ax, Ay);
 		oseen2(skel, x, y, Oxx, Oxy, Oyy);
 		matrix_zero(n, n, A);
-		matrix_zero(n, n, OAx);
-		matrix_zero(n, n, OAy);
+		array_zero(n, rhs);
+		matrix_zero(n, n, AOx);
+		matrix_zero(n, n, AOy);
 		for (al = 0; al < n; al++)
 			for (ga = 0; ga < n; ga++)
 				for (be = 0; be < n; be++) {
+					ax = matrix_get(n, n, al, be, Ax);
+					ay = matrix_get(n, n, al, be, Ay);
 					xx = matrix_get(n, n, be, ga, Oxx)/mu;
 					xy = matrix_get(n, n, be, ga, Oxy)/mu;
 					yy = matrix_get(n, n, be, ga, Oyy)/mu;
-					ax = matrix_get(n, n, al, be, Ax);
-					ay = matrix_get(n, n, al, be, Ay);
-					matrix_add(n, n, al, ga, xx*ax + xy*ay, OAx);
-					matrix_add(n, n, al ,ga, xy*ax + yy*ay, OAy);
+					matrix_add(n, n, al, ga, xx*ax + xy*ay, AOx);
+					matrix_add(n, n, al ,ga, xy*ax + yy*ay, AOy);
 				}
 		for (al = 0; al < n; al++)
 			for (de = 0; de < n; de++)
 				for (ga = 0; ga < n; ga++) {
-					xx = matrix_get(n, n, al, ga, OAx);
-					yy = matrix_get(n, n, al, ga, OAy);
+					xx = matrix_get(n, n, al, ga, AOx);
+					yy = matrix_get(n, n, al, ga, AOy);
 					ax = matrix_get(n, n, de, ga, Ax);
 					ay = matrix_get(n, n, de, ga, Ay);
 					t = xx*ax + yy*ay;
@@ -141,12 +142,12 @@ main(__UNUSED int argc, char **argv)
 				}
 		for (al = 0; al < n; al++)
 			for (be = 0; be < n; be++) {
-				xx = matrix_get(n, n, al, be, OAx);
-				yy = matrix_get(n, n, al, be, OAy);
+				xx = matrix_get(n, n, al, be, AOx);
+				yy = matrix_get(n, n, al, be, AOy);
 				ax = matrix_get(n, n, al, be, Ax);
 				ay = matrix_get(n, n, al, be, Ay);
 				t = ax*vx[be] + ay*vy[be]   + xx*fx[be] + yy*fy[be];
-				rhs[al] -= t;
+				rhs[al] += t;
 			}
 		lin_solve_apply(linsolve, A, rhs, sigma);
 		matrix_array_append_t(n, n, Ax, sigma, fx);
@@ -193,8 +194,8 @@ main(__UNUSED int argc, char **argv)
 	matrix_fin(Oyy);
 	matrix_fin(Ax);
 	matrix_fin(Ay);
-	matrix_fin(OAx);
-	matrix_fin(OAy);
+	matrix_fin(AOx);
+	matrix_fin(AOy);
 	FREE(res);
 	FREE(ser);
 	FREE(A);

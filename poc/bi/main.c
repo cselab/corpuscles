@@ -78,7 +78,7 @@ main(__UNUSED int argc, char **argv)
 	real *sigma, *rhs;
 	real *kx, *ky;
 	real *Oxx, *Oxy, *Oyy;
-	real *OAx, *OAy;
+	real *AOx, *AOy;
 	real*Ax, *Ay, *res, *ser, *A;
 	real xx, xy, yy;
 	int n, i, j;
@@ -102,8 +102,8 @@ main(__UNUSED int argc, char **argv)
 	matrix_ini(n, n, &Oyy);
 	matrix_ini(n, n, &Ax);
 	matrix_ini(n, n, &Ay);
-	matrix_ini(n, n, &OAx);
-	matrix_ini(n, n, &OAy);
+	matrix_ini(n, n, &AOx);
+	matrix_ini(n, n, &AOy);
 	matrix_ini(n, n, &A);
 
 	lin_solve_ini(n, &linsolve);
@@ -124,8 +124,8 @@ main(__UNUSED int argc, char **argv)
 		ky[i] += fy[i];
 	}
 	matrix_zero(n, n, A);
-	matrix_zero(n, n, OAx);
-	matrix_zero(n, n, OAy);
+	matrix_zero(n, n, AOx);
+	matrix_zero(n, n, AOy);
 	for (al = 0; al < n; al++)
 		for (ga = 0; ga < n; ga++)
 			for (be = 0; be < n; be++) {
@@ -134,14 +134,14 @@ main(__UNUSED int argc, char **argv)
 				yy = matrix_get(n, n, be, ga, Oyy);
 				ax = matrix_get(n, n, al, be, Ax);
 				ay = matrix_get(n, n, al, be, Ay);
-				matrix_add(n, n, al, ga, xx*ax + xy*ay, OAx);
-				matrix_add(n, n, al ,ga, xy*ax + yy*ay, OAy);
+				matrix_add(n, n, al, ga, xx*ax + xy*ay, AOx);
+				matrix_add(n, n, al ,ga, xy*ax + yy*ay, AOy);
 			}
 	for (al = 0; al < n; al++)
 		for (de = 0; de < n; de++)
 			for (ga = 0; ga < n; ga++) {
-				xx = matrix_get(n, n, al, ga, OAx);
-				yy = matrix_get(n, n, al, ga, OAy);
+				xx = matrix_get(n, n, al, ga, AOx);
+				yy = matrix_get(n, n, al, ga, AOy);
 				ax = matrix_get(n, n, de, ga, Ax);
 				ay = matrix_get(n, n, de, ga, Ay);
 				t = xx*ax + yy*ay;
@@ -149,8 +149,8 @@ main(__UNUSED int argc, char **argv)
 			}
 	for (al = 0; al < n; al++)
 		for (be = 0; be < n; be++) {
-			xx = matrix_get(n, n, al, be, OAx);
-			yy = matrix_get(n, n, al, be, OAy);
+			xx = matrix_get(n, n, al, be, AOx);
+			yy = matrix_get(n, n, al, be, AOy);
 			ax = matrix_get(n, n, al, be, Ax);
 			ay = matrix_get(n, n, al, be, Ay);
 			t = ax*ux[be] + ay*uy[be]   + xx*fx[be] + yy*fy[be];
@@ -199,8 +199,8 @@ main(__UNUSED int argc, char **argv)
 	matrix_fin(Oyy);
 	matrix_fin(Ax);
 	matrix_fin(Ay);
-	matrix_fin(OAx);
-	matrix_fin(OAy);
+	matrix_fin(AOx);
+	matrix_fin(AOy);
 	FREE(res);
 	FREE(ser);
 	FREE(A);
