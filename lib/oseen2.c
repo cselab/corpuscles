@@ -18,7 +18,10 @@ struct T
 static int
 oseen(real e, const real a[2], const real b[2], real *xx, real *xy, real *yy)
 {
-	enum {X, Y};
+	enum
+	{
+		X, Y
+	};
 	real d[2], r, r2,l;
 
 	vec2_minus(a, b, d);
@@ -47,7 +50,7 @@ oseen0(real e, real *xx, real *xy, real *yy)
 int
 oseen2_ini(real e, T **pq)
 {
-	T *q;	
+	T *q;
 	MALLOC(1, &q);
 	q->e = e;
 	*pq = q;
@@ -87,6 +90,6 @@ oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *ox
 	s = 1/(4*pi);
 	matrix_scale(n, n, s, oxx);
 	matrix_scale(n, n, s, oxy);
-	matrix_scale(n, n, s, oyy);		
+	matrix_scale(n, n, s, oyy);
 	return CO_OK;
 }
