@@ -3,7 +3,7 @@
 #include <real.h>
 #include <co/array.h>
 #include <co/err.h>
-#include <co/oseen2.h>
+#include <co/oseen3.h>
 #include <co/skel.h>
 #include <co/memory.h>
 #include <co/matrix.h>
@@ -14,7 +14,7 @@ int
 main(void)
 {
 	Skel *skel;
-	Oseen2 *oseen;
+	Oseen3 *oseen;
 	real *x, *y;
 	real *S, *Oxx, *Oxy, *Oyy;
 	real xx, xy, yy, s, e;

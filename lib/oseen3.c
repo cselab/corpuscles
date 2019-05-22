@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include "real.h"
 #include "co/err.h"
+#include "co/he.h"
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
 #include "co/oseen3.h"
-#include "co/skel.h"
 #include "co/vec.h"
 
 #define T Oseen3
@@ -72,13 +72,13 @@ oseen3_fin(T *q)
 }
 
 int
-oseen3_apply(T *q, Skel *skel, const real *x, const real *y, const real *z,
+oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	int n, i, j;
 	real e, s, a[3], b[3], xx, xy, xz, yy, yz, zz;
 
-	n = skel_nv(skel);
+	n = he_nv(he);
 	e = q->e;
 	for (i = 0; i < n; i++) {
 		vec_get(i, x, y, z, a);
