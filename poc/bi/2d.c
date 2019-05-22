@@ -20,7 +20,7 @@ Force2 *Force[99] =
 	NULL
 };
 static Skel *skel;
-static real gamma = 0.1, mu = 0.1, dt = 2e-6;
+static real gamma = 0, mu = 0.1, dt = 2e-5;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -141,13 +141,15 @@ main(__UNUSED int argc, char **argv)
 /*
 
 Put
+
 git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
-./2 area $A 1   bend_min 1e- 3 < $f
+./2  len $f 1 0 0 area $A 1   bend_min 1e-3 < $f > q
 
 co.geomview -p cat *.skel
+punto q
 
 Kill git
 
