@@ -155,10 +155,9 @@ git clean -fdxq
 m clean lint
 f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-./3d garea $A 1 volume $V 1 strain $f lim 0.01 0.01 0 0 0 0  juelicher_xin 0.001 0 0 0 < $f > q
+./3d garea $A 1 volume $V 1 strain $f lim 0.01 0.01 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f > q
 co.geomview -f 38 *.off
 
 Kill git
 
 */
-        
