@@ -9,6 +9,7 @@
 #include "co/vec2.h"
 
 #define T Oseen2
+static const real pi = 3.141592653589793115997964;
 struct T
 {
 	real e;
@@ -61,27 +62,31 @@ oseen2_fin(T *q)
 }
 
 int
-oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *xx, real *xy, real *yy)
+oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *oxy, real *oyy)
 {
 	int n, i, j;
-	real e, a[2], b[2], oxx,oxy, oyy;
+	real e, s, a[2], b[2], xx, xy, yy;
 	n = skel_nv(skel);
 	e = q->e;
 
 	for (i = 0; i < n; i++) {
 		vec2_get(i, x, y, a);
-		oseen0(e, &oxx, &oxy, &oyy);
-		matrix_set(n, n, i, i, oxx, xx);
-		matrix_set(n, n, i, i, oxy, xy);
-		matrix_set(n, n, i, i, oyy, yy);
+		oseen0(e, &xx, &xy, &yy);
+		matrix_set(n, n, i, i, xx, oxx);
+		matrix_set(n, n, i, i, xy, oxy);
+		matrix_set(n, n, i, i, yy, oyy);
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
 			vec2_get(j, x, y, b);
-			oseen(e, a, b, &oxx, &oxy, &oyy);
-			matrix_set(n, n, i, j, oxx, xx);
-			matrix_set(n, n, i, j, oxy, xy);
-			matrix_set(n, n, i, j, oyy, yy);
+			oseen(e, a, b, &xx, &xy, &yy);
+			matrix_set(n, n, i, j, xx, oxx);
+			matrix_set(n, n, i, j, xy, oxy);
+			matrix_set(n, n, i, j, yy, oyy);
 		}
-	}			
+	}
+	s = 1/(4*pi);
+	matrix_scale(n, n, s, oxx);
+	matrix_scale(n, n, s, oxy);
+	matrix_scale(n, n, s, oyy);		
 	return CO_OK;
 }

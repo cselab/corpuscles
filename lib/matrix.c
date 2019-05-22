@@ -9,9 +9,9 @@
 #define OUT CO_REAL_OUT
 #define IN  CO_REAL_IN
 
-#define BEGIN                                   \
-    for (m = 0; m < M; m++)                     \
-        for (k = 0; k < K; k++)                 \
+#define BEGIN \
+    for (m = 0; m < M; m++) \
+        for (k = 0; k < K; k++) \
             for (n = 0; n < N; n++) {
 #define END }
 
@@ -31,6 +31,13 @@ int matrix_one(int M, int N, real *a) {
     int i;
     for (i = 0; i < N*M; i++)
         a[i] = 1;
+    return CO_OK;
+}
+
+int matrix_scale(int M, int N, real s, real *a) {
+    int i;
+    for (i = 0; i < N*M; i++)
+        a[i] *= s;
     return CO_OK;
 }
 
