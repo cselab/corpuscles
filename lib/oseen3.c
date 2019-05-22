@@ -5,11 +5,11 @@
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
-#include "co/oseen2.h"
+#include "co/oseen3.h"
 #include "co/skel.h"
 #include "co/vec2.h"
 
-#define T Oseen2
+#define T Oseen3
 static const real pi = 3.141592653589793115997964;
 struct T
 {
@@ -49,7 +49,7 @@ oseen0(real e, real *xx, real *xy, real *yy)
 }
 
 int
-oseen2_ini(real e, T **pq)
+oseen3_ini(real e, T **pq)
 {
 	T *q;
 	MALLOC(1, &q);
@@ -59,20 +59,21 @@ oseen2_ini(real e, T **pq)
 }
 
 int
-oseen2_fin(T *q)
+oseen3_fin(T *q)
 {
 	FREE(q);
 	return CO_OK;
 }
 
 int
-oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *oxy, real *oyy)
+oseen3_apply(T *q, Skel *skel, const real *x, const real *y, const real *z,
+	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	int n, i, j;
 	real e, s, a[2], b[2], xx, xy, yy;
+
 	n = skel_nv(skel);
 	e = q->e;
-
 	for (i = 0; i < n; i++) {
 		vec2_get(i, x, y, a);
 		oseen0(e, &xx, &xy, &yy);

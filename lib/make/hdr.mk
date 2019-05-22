@@ -88,6 +88,7 @@ co/ode/2v.h\
 co/off.h\
 co/orient.h\
 co/oseen2.h\
+co/oseen3.h\
 co/ply.h\
 co/polygon.h\
 co/prec/d/real.h\
