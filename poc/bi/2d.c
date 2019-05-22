@@ -21,7 +21,8 @@ Force2 *Force[99] =
 	NULL
 };
 static Skel *skel;
-static real gamma = 1, mu = 1, dt = 1e-5;
+static Oseen2 *oseen;
+static real gamma = 1, mu = 1, dt = 2e-5;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -75,7 +76,7 @@ main(__UNUSED int argc, char **argv)
 {
 	real *x, *y, *vx, *vy, *fx, *fy;
 	real *Oxx, *Oxy, *Oyy;
-	real xx, xy, yy;
+	real xx, xy, yy, e;
 	int n, i, j, k;
 	int be, ga;
 
@@ -83,15 +84,15 @@ main(__UNUSED int argc, char **argv)
 	skel_read(stdin, &x, &y, &skel);
 	fargv(&argv, skel);
 	n = skel_nv(skel);
-
+	e = 0.01;
+	oseen2_ini(e, &oseen);
 	MSG("len " FMT, len(skel, x, y));
 	CALLOC2(n, &vx, &vy);
 	CALLOC2(n, &fx, &fy);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
 	matrix_ini(n, n, &Oyy);
-
-	for (k = j = 0; j < 1000000; j++) {
+	for (k = j = 0; j < 10000000; j++) {
 		for (i = 0; i < n; i++) {
 			vx[i] = gamma*y[i];
 			vy[i] = 0;
@@ -99,7 +100,7 @@ main(__UNUSED int argc, char **argv)
 		array_zero(n, fx);
 		array_zero(n, fy);
 		force(skel, x, y, fx, fy);
-		oseen2(skel, x, y, Oxx, Oxy, Oyy);
+		oseen2_apply(oseen, skel, x, y, Oxx, Oxy, Oyy);
 		for (ga = 0; ga < n; ga++)
 			for (be = 0; be < n; be++) {
 				xx = matrix_get(n, n, be, ga, Oxx)/mu;
@@ -115,26 +116,26 @@ main(__UNUSED int argc, char **argv)
 			x[i] += dt*vx[i];
 			y[i] += dt*vy[i];
 		}
-		if (j % 1000 == 0) {
+		if (j % 10000 == 0) {
 			MSG("x[0] " FMT, x[0]);
 			sprintf(file, "%05d.off", k++);
 			f = fopen(file, "w");
 			skel_off_write(n, x, y, f);
 			fclose(f);
 			const real *q[] = 
-			{
+			{           
 				x, y, vx, vy, fx, fy, NULL
 			};
 			punto_fwrite(n, q, stdout);
 			printf("\n");
 		}
 	}
-
 	FREE2(vx, vy);
 	FREE2(fx, fy);
 	matrix_fin(Oxx);
 	matrix_fin(Oxy);
 	matrix_fin(Oyy);
+	oseen2_fin(oseen);
 	fin();
 	skel_xy_fin(x, y, skel);
 }
@@ -148,12 +149,13 @@ m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
 #./2d  len $f 1 0 0    bend_min 1e-3 < $f > q
-./2d len $f 100 0.01 0.01 area $A 1     bend_min 1e-3 < $f > q
+./2d len $f 50 0.05 0.05 area $A 50     bend_min 0.5 < $f > q
 
-co.geomview -f 35 -O -a /u/a *0.off
-co.ffmpeg -o p.mp4 *.ppm
-cp p.mp4 /tmp/
-
+co.geomview -f 38 -a /u/a *.off
+punto -D 2 q
+mpv p.mp4
+           
 Kill git
 
 */
+        

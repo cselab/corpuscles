@@ -74,6 +74,7 @@ main(__UNUSED int argc, char **argv)
 	LinSolve *linsolve;
 	real gamma;
 	Skel *skel;
+	Oseen2 *oseen;
 	real *x, *y, *vx, *vy, *ux, *uy, *fx, *fy;
 	real *sigma, *rhs;
 	real *kx, *ky;
@@ -83,12 +84,14 @@ main(__UNUSED int argc, char **argv)
 	real xx, xy, yy;
 	int n, i, j;
 	int al, be, ga, de;
-	real ax, ay, t;
+	real ax, ay, t, e;
 
 	argv++;
 	skel_read(stdin, &x, &y, &skel);
 	fargv(&argv, skel);
 	n = skel_nv(skel);
+	e = 0.01;
+	oseen2_ini(e, &oseen);
 
 	CALLOC2(n, &vx, &vy);
 	MALLOC2(n, &ux, &uy);
@@ -117,7 +120,7 @@ main(__UNUSED int argc, char **argv)
 
 	dlen_ver(skel, x, y, /**/ Ax, Ay);
 	array_one(n, sigma);
-	oseen2(skel, x, y, Oxx, Oxy, Oyy);
+	oseen2_apply(oseen, skel, x, y, Oxx, Oxy, Oyy);
 
 	for (i = 0; i < n; i++) {
 		kx[i] += fx[i];
@@ -205,6 +208,7 @@ main(__UNUSED int argc, char **argv)
 	FREE(ser);
 	FREE(A);
 	fin();
+	oseen2_fin(oseen);
 	skel_xy_fin(x, y, skel);
 }
 

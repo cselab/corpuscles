@@ -2,16 +2,20 @@
 #include <stdio.h>
 #include "real.h"
 #include "co/err.h"
-
-#include "co/skel.h"
-#include "co/oseen2.h"
-#include "co/vec2.h"
 #include "co/matrix.h"
+#include "co/memory.h"
+#include "co/oseen2.h"
+#include "co/skel.h"
+#include "co/vec2.h"
 
-static const real e = 0.01;
+#define T Oseen2
+struct T
+{
+	real e;
+};
 
 static int
-oseen(const real a[2], const real b[2], real *xx, real *xy, real *yy)
+oseen(real e, const real a[2], const real b[2], real *xx, real *xy, real *yy)
 {
 	enum {X, Y};
 	real d[2], r, r2,l;
@@ -29,7 +33,7 @@ oseen(const real a[2], const real b[2], real *xx, real *xy, real *yy)
 }
 
 static int
-oseen0(real *xx, real *xy, real *yy)
+oseen0(real e, real *xx, real *xy, real *yy)
 {
 	real l;
 	l = log(2*e) - 3/2;
@@ -40,22 +44,40 @@ oseen0(real *xx, real *xy, real *yy)
 }
 
 int
-oseen2(Skel *skel, const real *x, const real *y, real *xx, real *xy, real *yy)
+oseen2_ini(real e, T **pq)
+{
+	T *q;	
+	MALLOC(1, &q);
+	q->e = e;
+	*pq = q;
+	return CO_OK;
+}
+
+int
+oseen2_fin(T *q)
+{
+	FREE(q);
+	return CO_OK;
+}
+
+int
+oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *xx, real *xy, real *yy)
 {
 	int n, i, j;
-	real a[2], b[2], oxx,oxy, oyy;
+	real e, a[2], b[2], oxx,oxy, oyy;
 	n = skel_nv(skel);
+	e = q->e;
 
 	for (i = 0; i < n; i++) {
 		vec2_get(i, x, y, a);
-		oseen0(&oxx, &oxy, &oyy);
+		oseen0(e, &oxx, &oxy, &oyy);
 		matrix_set(n, n, i, i, oxx, xx);
 		matrix_set(n, n, i, i, oxy, xy);
 		matrix_set(n, n, i, i, oyy, yy);
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
 			vec2_get(j, x, y, b);
-			oseen(a, b, &oxx, &oxy, &oyy);
+			oseen(e, a, b, &oxx, &oxy, &oyy);
 			matrix_set(n, n, i, j, oxx, xx);
 			matrix_set(n, n, i, j, oxy, xy);
 			matrix_set(n, n, i, j, oyy, yy);

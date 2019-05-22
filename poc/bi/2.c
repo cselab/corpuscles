@@ -22,6 +22,7 @@ Force2 *Force[99] =
 	NULL
 };
 static Skel *skel;
+static Oseen2 *oseen;
 static real gamma = 1, mu = 1, dt = 5e-6;
 
 static int
@@ -83,12 +84,14 @@ main(__UNUSED int argc, char **argv)
 	real xx, xy, yy;
 	int n, i, j;
 	int al, be, ga, de;
-	real ax, ay, t;
+	real ax, ay, t, e;
 
 	argv++;
 	skel_read(stdin, &x, &y, &skel);
 	fargv(&argv, skel);
 	n = skel_nv(skel);
+	e = 0.01;
+	oseen2_ini(e, &oseen);
 
 	CALLOC2(n, &vx, &vy);
 	CALLOC2(n, &fx, &fy);
@@ -114,7 +117,7 @@ main(__UNUSED int argc, char **argv)
 		array_zero(n, fy);
 		force(skel, x, y, fx, fy);
 		dlen_ver(skel, x, y, /**/ Ax, Ay);
-		oseen2(skel, x, y, Oxx, Oxy, Oyy);
+		oseen2_apply(oseen, skel, x, y, Oxx, Oxy, Oyy);
 		matrix_zero(n, n, A);
 		array_zero(n, rhs);
 		matrix_zero(n, n, AOx);
@@ -198,6 +201,7 @@ main(__UNUSED int argc, char **argv)
 	FREE(res);
 	FREE(ser);
 	FREE(A);
+	oseen2_fin(oseen);
 	fin();
 	skel_xy_fin(x, y, skel);
 }
