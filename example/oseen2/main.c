@@ -14,9 +14,10 @@ int
 main(void)
 {
 	Skel *skel;
+	Oseen2 *oseen;
 	real *x, *y;
 	real *S, *Oxx, *Oxy, *Oyy;
-	real xx, xy, yy, s;
+	real xx, xy, yy, s, e;
 	int n, i, j;
 
 	skel_read(stdin, &x, &y, &skel);
@@ -26,7 +27,9 @@ main(void)
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
 	matrix_ini(n, n, &Oyy);
-	oseen2(skel, x, y, Oxx, Oxy, Oyy);
+	e = 0.01;
+	oseen2_ini(e, &oseen);
+	oseen2_apply(oseen, skel, x, y, Oxx, Oxy, Oyy);
 
 	for (i = 0; i < n; i++)
 		for (j = 0;j < n; j++) {
@@ -48,5 +51,6 @@ main(void)
 	matrix_fin(Oxx);
 	matrix_fin(Oxy);
 	matrix_fin(Oyy);
+	oseen2_fin(oseen);
 	skel_xy_fin(x, y, skel);
 }
