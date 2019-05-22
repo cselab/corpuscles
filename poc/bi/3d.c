@@ -12,6 +12,8 @@
 #include <co/oseen3.h>
 #include <co/he.h>
 #include <co/punto.h>
+#include <co/y.h>
+#include <co/off.h>
 
 #define FMT CO_REAL_OUT
 
@@ -22,7 +24,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gamma = 1, mu = 1, dt = 2e-5;
+static real gamma = 1, mu = 1, dt = 2e-4;
 
 static int
 fargv(char ***p, He *he)
@@ -47,12 +49,12 @@ fargv(char ***p, He *he)
 }
 
 static int
-force(He *he, const real *x, const real *y, real *fx, real *fy)
+force(He *he, const real *x, const real *y, const real *z, real *fx, real *fy, real *fz)
 {
 	int i;
 	i = 0;
 	while (Fo[i]) {
-		force_force(Fo[i], he, x, y, fx, fy);
+		force_force(Fo[i], he, x, y, z, fx, fy, fz);
 		i++;
 	}
 	return CO_OK;
@@ -74,54 +76,56 @@ fin(void)
 int
 main(__UNUSED int argc, char **argv)
 {
-	real *x, *y, *vx, *vy, *fx, *fy;
-	real *Oxx, *Oxy, *Oyy;
-	real xx, xy, yy, e;
+	real *x, *y, *z, *vx, *vy, *vz, *fx, *fy, *fz;
+	real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
+	real xx, xy, xz, yy, yz, zz, e;
 	int n, i, j, k;
 	int be, ga;
 
 	argv++;
-	he_read(stdin, &x, &y, &he);
+	y_inif(stdin, &he, &x, &y, &z);
 	fargv(&argv, he);
 	n = he_nv(he);
 	e = 0.01;
 	oseen3_ini(e, &oseen);
-	MSG("len " FMT, len(he, x, y));
-	CALLOC2(n, &vx, &vy);
-	CALLOC2(n, &fx, &fy);
+	CALLOC3(n, &vx, &vy, &vz);
+	CALLOC3(n, &fx, &fy, &fz);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
+	matrix_ini(n, n, &Oxz);
 	matrix_ini(n, n, &Oyy);
+	matrix_ini(n, n, &Oyz);
+	matrix_ini(n, n, &Ozz);
 	for (k = j = 0; j < 10000000; j++) {
 		for (i = 0; i < n; i++) {
-			vx[i] = gamma*y[i];
-			vy[i] = 0;
+			vz[i] = gamma*y[i];
+			vx[i] = vy[i] = 0;
 		}
-		array_zero(n, fx);
-		array_zero(n, fy);
-		force(he, x, y, fx, fy);
-		oseen3_apply(oseen, he, x, y, Oxx, Oxy, Oyy);
+		array_zero3(n, fx, fy, fz);
+		force(he, x, y, z, fx, fy, fz);
+		oseen3_apply(oseen, he, x, y, y, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 		for (ga = 0; ga < n; ga++)
 			for (be = 0; be < n; be++) {
 				xx = matrix_get(n, n, be, ga, Oxx)/mu;
 				xy = matrix_get(n, n, be, ga, Oxy)/mu;
+				xz = matrix_get(n, n, be, ga, Oxz)/mu;
 				yy = matrix_get(n, n, be, ga, Oyy)/mu;
-				vx[be] -= xx*fx[ga] + xy*fy[ga];
-				vy[be] -= xy*fx[ga] + yy*fy[ga];
+				yz = matrix_get(n, n, be, ga, Oyz)/mu;
+				zz = matrix_get(n, n, be, ga, Ozz)/mu;
+				vx[be] -= xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
+				vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
+				vz[be] -=  xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
 			}          
-
-		FILE *f;
 		char file[9999];
 		for (i = 0; i < n; i++) {
 			x[i] += dt*vx[i];
 			y[i] += dt*vy[i];
+			z[i] += dt*vz[i];
 		}
-		if (j % 10000 == 0) {
+		if (j % 1000 == 0) {
 			MSG("x[0] " FMT, x[0]);
 			sprintf(file, "%05d.off", k++);
-			f = fopen(file, "w");
-			he_off_write(n, x, y, f);
-			fclose(f);
+			off_he_xyz_write(he, x, y, z, file);
 			const real *q[] = 
 			{           
 				x, y, vx, vy, fx, fy, NULL
@@ -130,14 +134,17 @@ main(__UNUSED int argc, char **argv)
 			printf("\n");
 		}
 	}
-	FREE2(vx, vy);
-	FREE2(fx, fy);
+	FREE3(vx, vy, vz);
+	FREE3(fx, fy, fz);
 	matrix_fin(Oxx);
 	matrix_fin(Oxy);
+	matrix_fin(Oxz);
 	matrix_fin(Oyy);
+	matrix_fin(Oyz);
+	matrix_fin(Ozz);
 	oseen3_fin(oseen);
 	fin();
-	he_xy_fin(x, y, he);
+	y_fin(he, x, y, z);
 }
 
 /*
@@ -146,15 +153,11 @@ Put
 
 git clean -fdxq
 m clean lint
-A=0.8835572001943658
-f=data/rbc.he
-#./2d  len $f 1 0 0    bend_min 1e-3 < $f > q
-./2d len $f 50 0.05 0.05 area $A 50     bend_min 0.5 < $f > q
+f=/u/.co/rbc/laplace/0.off
+A=8.66899 V=1.53405
+./3d garea $A 1 volume $V 1 strain $f lim 0.01 0.01 0 0 0 0  juelicher_xin 0.001 0 0 0 < $f > q
+co.geomview -f 38 *.off
 
-co.geomview -f 38 -a /u/a *.off
-punto -D 2 q
-mpv p.mp4
-           
 Kill git
 
 */

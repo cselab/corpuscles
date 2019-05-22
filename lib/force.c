@@ -131,7 +131,7 @@ const char *force_list()
 }
 
 int
-force2_good(const char *name)
+force_good(const char *name)
 {
 	int i, n;
 	n = sizeof(Name)/sizeof(Name[0]);
