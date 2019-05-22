@@ -1,0 +1,2 @@
+# TEST: scale
+cat data/a  | co.run ./main scale > main.out.txt

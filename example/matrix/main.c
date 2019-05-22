@@ -17,7 +17,7 @@ int main(__UNUSED int argc, const char **v0)
 {
 	const char *op;
 	int M, N, M0, N0, K;
-	real *a, *b, c[999];
+	real *a, *b, c[999], s = 10;
 
 	argv = v0;
 	argv++;
@@ -67,6 +67,10 @@ int main(__UNUSED int argc, const char **v0)
 		matrix_array_n(M, N, a, b, c);
 		matrix_fwrite(M, 1, c, stdout);
 		matrix_fin(a);
+	} else if (eq(op, "scale")) {
+		matrix_fread(stdin, &M,  &N, &a);
+		matrix_scale(M, N, s, a);
+		matrix_fwrite(M, N, a, stdout);
 	} else
 		ER("unknown operation '%s'", op);
 }
