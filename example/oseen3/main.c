@@ -3,54 +3,61 @@
 #include <real.h>
 #include <co/array.h>
 #include <co/err.h>
-#include <co/oseen3.h>
-#include <co/skel.h>
-#include <co/memory.h>
+#include <co/he.h>
 #include <co/matrix.h>
+#include <co/memory.h>
+#include <co/oseen3.h>
+#include <co/y.h>
 
 #define FMT CO_REAL_OUT
 
 int
 main(void)
 {
-	Skel *skel;
+	He *he;
 	Oseen3 *oseen;
-	real *x, *y;
-	real *S, *Oxx, *Oxy, *Oyy;
-	real xx, xy, yy, s, e;
-	int n, i, j;
+	real *x, *y, *z;
+	real *S, *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
+	real xx, xy, xz, yy, yz, zz, s, e;
+	int n, nt, i, j, k, t;
 
-	skel_read(stdin, &x, &y, &skel);
-	n = skel_nv(skel);
+	y_inif(stdin, &he, &x, &y, &z);
+	n = he_nv(he);
+	nt = he_nt(he);
 
 	matrix_ini(n , n, &S);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
+	matrix_ini(n, n, &Oxz);
 	matrix_ini(n, n, &Oyy);
+	matrix_ini(n, n, &Oyz);
+	matrix_ini(n, n, &Ozz);
 	e = 0.01;
-	oseen2_ini(e, &oseen);
-	oseen2_apply(oseen, skel, x, y, Oxx, Oxy, Oyy);
+	oseen3_ini(e, &oseen);
+	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 
 	for (i = 0; i < n; i++)
 		for (j = 0;j < n; j++) {
 		xx = matrix_get(n, n, i, j, Oxx);
-		xy = matrix_get(n, n, i, j, Oxy);
 		yy = matrix_get(n, n, i, j, Oyy);
-		s = xx*yy - xy*xy;
+		zz = matrix_get(n, n, i, j, Ozz);
+		s = xx + yy + zz;
 		matrix_set(n, n, i, j, s, S);
 	}
 	
-	for (i = 0; i < n; i++) {
-		j = i + 1;
-		if (j >= n)
-			j -= n;
+	for (t = 0; t < nt; t++) {
+		he_tri_ijk(he, t, &i, &j, &k);
 		printf(FMT "\n", matrix_get(n, n, i, j, S));
+		printf(FMT "\n", matrix_get(n, n, i, k, S));
 	}
 	//matrix_fwrite(n, n, S, stdout);
 	matrix_fin(S);
 	matrix_fin(Oxx);
 	matrix_fin(Oxy);
+	matrix_fin(Oxz);
 	matrix_fin(Oyy);
-	oseen2_fin(oseen);
-	skel_xy_fin(x, y, skel);
+	matrix_fin(Oyz);
+	matrix_fin(Ozz);
+	oseen3_fin(oseen);
+	y_fin(he, x, y, z);
 }
