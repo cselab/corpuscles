@@ -8,7 +8,7 @@
 #include "co/vec2.h"
 #include "co/matrix.h"
 
-static const real e = 0.06;
+static const real e = 0.01;
 
 static int
 oseen(const real a[2], const real b[2], real *xx, real *xy, real *yy)
@@ -33,9 +33,9 @@ oseen0(real *xx, real *xy, real *yy)
 {
 	real l;
 	l = log(2*e) - 3/2;
-	*xx = l;
+	*xx = -l;
 	*xy = 0;
-	*yy = l;
+	*yy = -l;
 	return CO_OK;
 }
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <tgmath.h>
+
 #include <real.h>
 #include <co/array.h>
 #include <co/len.h>
@@ -20,7 +21,7 @@ Force2 *Force[99] =
 	NULL
 };
 static Skel *skel;
-static real gamma = 0, mu = 0.1, dt = 2e-5;
+static real gamma = 1, mu = 1, dt = 1e-5;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -75,7 +76,7 @@ main(__UNUSED int argc, char **argv)
 	real *x, *y, *vx, *vy, *fx, *fy;
 	real *Oxx, *Oxy, *Oyy;
 	real xx, xy, yy;
-	int n, i, j;
+	int n, i, j, k;
 	int be, ga;
 
 	argv++;
@@ -90,7 +91,7 @@ main(__UNUSED int argc, char **argv)
 	matrix_ini(n, n, &Oxy);
 	matrix_ini(n, n, &Oyy);
 
-	for (j = 0; j < 1000000; j++) {
+	for (k = j = 0; j < 1000000; j++) {
 		for (i = 0; i < n; i++) {
 			vx[i] = gamma*y[i];
 			vy[i] = 0;
@@ -104,9 +105,9 @@ main(__UNUSED int argc, char **argv)
 				xx = matrix_get(n, n, be, ga, Oxx)/mu;
 				xy = matrix_get(n, n, be, ga, Oxy)/mu;
 				yy = matrix_get(n, n, be, ga, Oyy)/mu;
-				vx[be] += xx*fx[ga] + xy*fy[ga];
-				vy[be] += xy*fx[ga] + yy*fy[ga];
-			}
+				vx[be] -= xx*fx[ga] + xy*fy[ga];
+				vy[be] -= xy*fx[ga] + yy*fy[ga];
+			}          
 
 		FILE *f;
 		char file[9999];
@@ -116,9 +117,9 @@ main(__UNUSED int argc, char **argv)
 		}
 		if (j % 1000 == 0) {
 			MSG("x[0] " FMT, x[0]);
-			sprintf(file, "%05d.skel", j);
+			sprintf(file, "%05d.off", k++);
 			f = fopen(file, "w");
-			skel_write(skel, x, y, f);
+			skel_off_write(n, x, y, f);
 			fclose(f);
 			const real *q[] = 
 			{
@@ -146,10 +147,12 @@ git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
-./2  len $f 1 0 0 area $A 1   bend_min 1e-3 < $f > q
+#./2d  len $f 1 0 0    bend_min 1e-3 < $f > q
+./2d len $f 100 0.01 0.01 area $A 1     bend_min 1e-3 < $f > q
 
-co.geomview -p cat *.skel
-punto q
+co.geomview -f 35 -O -a /u/a *0.off
+co.ffmpeg -o p.mp4 *.ppm
+cp p.mp4 /tmp/
 
 Kill git
 
