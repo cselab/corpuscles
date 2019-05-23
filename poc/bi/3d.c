@@ -24,7 +24,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gamma = 1, mu = 1, dt = 2e-4;
+static real gamma = 1, mu = 1, dt = 2e-5;
 
 static int
 fargv(char ***p, He *he)
@@ -152,10 +152,10 @@ main(__UNUSED int argc, char **argv)
 Put
 
 git clean -fdxq
-m clean lint
+m lint
 f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-./3d garea $A 1 volume $V 1 strain $f lim 0.01 0.01 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f > q
+./3d garea $A 10 volume $V 10 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f > q
 co.geomview -f 38 *.off
 
 Kill git
