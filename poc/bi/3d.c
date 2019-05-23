@@ -168,11 +168,11 @@ git clean -fdxq
 m lint
 #f=/u/.co/sph/icosa/Nt20.off
 #A=9.57454 V=2.53615
-f=/u/.co/rbc/laplace/0.off
+f=/u/.co/rbc/laplace/1.off
 A=8.66899 V=1.53405
-./3d garea $A 10 volume $V 10 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
+./3d garea $A 10 volume $V 10 strain $f lim 0.01 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
 
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 23.5861 *[50].off
+co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 23.5861 *.off
 
 
 Kill git
