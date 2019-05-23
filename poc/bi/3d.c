@@ -24,7 +24,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gamma = 1, mu = 1, dt = 2e-5;
+static real gamma = 0, mu = 1, dt = 2e-5;
 
 static int
 fargv(char ***p, He *he)
