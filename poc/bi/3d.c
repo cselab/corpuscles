@@ -78,17 +78,17 @@ fin(void)
 }
 
 static int
-F(real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
+F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
 {
 	int i, ga, be;
 	real xx, xy, xz, yy, yz, zz;
 	for (i = 0; i < n; i++) {
-		vx[i] = gamma*y[i];
+		vx[i] = gamma*z[i];
 		vy[i] = vz[i] = 0;
-	}	
+	}
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
-	oseen3_apply(oseen, he, x, y, y, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 	for (ga = 0; ga < n; ga++)
 		for (be = 0; be < n; be++) {
 			xx = matrix_get(n, n, be, ga, Oxx)/mu;
@@ -120,13 +120,14 @@ main(__UNUSED int argc, char **argv)
 	char file[999];
 	Ode3 *ode;
 
+	err_set_ignore();
 	argv++;
 	y_inif(stdin, &he, &x, &y, &z);
 	fargv(&argv, he);
 	n = he_nv(he);
-	e = 0.01;
+	e = 0.025;
 	oseen3_ini(e, &oseen);
-	ode3_ini(RKF45, n, dt/10, F, NULL, &ode);
+	ode3_ini(RK4, n, dt/10, F, NULL, &ode);
 
 	CALLOC3(n, &vx, &vy, &vz);
 	CALLOC3(n, &fx, &fy, &fz);
@@ -165,10 +166,12 @@ Put
 
 git clean -fdxq
 m lint
+#f=/u/.co/sph/icosa/Nt20.off
+#A=9.57454 V=2.53615
 f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-#./3d garea $A 10 volume $V 10 strain $f lim 10 10 0 0 0 0  juelicher_xin 1 0 0 0 < $f
-./3d garea $A 10 < $f
+./3d garea $A 10 volume $V 10 strain $f lim 0.1 0.1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
+
 co.geomview -f 30 *.off
 
 Kill git

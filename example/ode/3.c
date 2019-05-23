@@ -129,7 +129,7 @@ f=/u/.co/rbc/laplace/0.off
 A=8.66899 # V=1.53405
 V=6.0
 ./3 garea $A 10 volume $V 10 juelicher_xin 0.1 0 0 0 < $f
-co.geomview -f 38 *.off
+co.geomview -r 90 0 0 -f 38 *.off
 Kill git
 
 */

@@ -92,7 +92,8 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
 			vec_get(j, x, y, z, b);
-			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+			if (oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
+				ERR(CO_INDEX, "ij %d %d", i, j);
 			matrix_set(n, n, i, j, xx, oxx);
 			matrix_set(n, n, i, j, xy, oxy);
 			matrix_set(n, n, i, j, xz, oxz);
