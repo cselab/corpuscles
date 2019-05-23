@@ -3,7 +3,6 @@
 #include <alg/ode.h>
 #include <co/array.h>
 #include <co/err.h>
-#include <co/force2.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/ode/3.h>

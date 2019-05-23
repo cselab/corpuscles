@@ -10,6 +10,7 @@ memory.o\
 ode/2.o\
 ode/2v.o\
 ode/3.o\
+ode/3v.o\
 predicate/main.o\
 read.o\
 util.o

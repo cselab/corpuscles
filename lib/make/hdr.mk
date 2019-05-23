@@ -86,6 +86,7 @@ co/obj.h\
 co/ode/2.h\
 co/ode/2v.h\
 co/ode/3.h\
+co/ode/3v.h\
 co/off.h\
 co/orient.h\
 co/oseen2.h\
