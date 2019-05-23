@@ -25,7 +25,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gamma = 0, mu = 1, dt = 1e-5, tend = 10;
+static real gamma = 1, mu = 1, dt = 1e-2, tend = 100;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static int n;
@@ -78,16 +78,14 @@ fin(void)
 }
 
 static int
-F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
+F(real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
 {
 	int i, ga, be;
 	real xx, xy, xz, yy, yz, zz;
-	force(he, x, y, z, fx, fy, fz);
-
 	for (i = 0; i < n; i++) {
-		vz[i] = gamma*y[i];
-		vx[i] = vy[i] = 0;
-	}
+		vx[i] = gamma*y[i];
+		vy[i] = vz[i] = 0;
+	}	
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, y, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
@@ -103,6 +101,12 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 			vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
 			vz[be] -=  xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
 		}
+	for (i = 0; i < n; i++) {
+		vx[i] = -vx[i];
+		vy[i] = -vy[i];
+		vz[i] = -vz[i];
+	}
+	//MSG("t " FMT, t);
 	return CO_OK;
 }
 
@@ -122,7 +126,7 @@ main(__UNUSED int argc, char **argv)
 	n = he_nv(he);
 	e = 0.01;
 	oseen3_ini(e, &oseen);
-	ode3_ini(RKCK, n, dt/10, F, NULL, &ode);
+	ode3_ini(RKF45, n, dt/10, F, NULL, &ode);
 
 	CALLOC3(n, &vx, &vy, &vz);
 	CALLOC3(n, &fx, &fy, &fz);
@@ -163,8 +167,9 @@ git clean -fdxq
 m lint
 f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-./3d garea $A 1 volume $V 1 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f > q
-co.geomview -f 38 *.off
+#./3d garea $A 10 volume $V 10 strain $f lim 10 10 0 0 0 0  juelicher_xin 1 0 0 0 < $f
+./3d garea $A 10 < $f
+co.geomview -f 30 *.off
 
 Kill git
 
