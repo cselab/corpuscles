@@ -13,13 +13,10 @@ static real select0(real ref, real cur) {
     enum {UNSET, YES, NO};
     static int f = UNSET;
     if (f == UNSET) {
-        if (getenv("AREA")) {
-            MSG("area: current");
+        if (getenv("AREA"))
             f = YES;
-        } else {
-            MSG("area: reference");
+       else
             f = NO;
-        }
     }
     return f == YES ? cur : ref;
 }

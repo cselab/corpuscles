@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <tgmath.h>
-
 #include <real.h>
+#include <alg/ode.h>
 #include <co/array.h>
 #include <co/len.h>
 #include <co/err.h>
@@ -9,6 +9,7 @@
 #include <co/macro.h>
 #include <co/matrix.h>
 #include <co/memory.h>
+#include <co/ode/3.h>
 #include <co/oseen3.h>
 #include <co/he.h>
 #include <co/punto.h>
@@ -24,7 +25,10 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gamma = 0, mu = 1, dt = 2e-5;
+static real gamma = 0, mu = 1, dt = 1e-5, tend = 10;
+static real *fx, *fy, *fz;
+static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
+static int n;
 
 static int
 fargv(char ***p, He *he)
@@ -73,14 +77,44 @@ fin(void)
 	return CO_OK;
 }
 
+static int
+F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
+{
+	int i, ga, be;
+	real xx, xy, xz, yy, yz, zz;
+	force(he, x, y, z, fx, fy, fz);
+
+	for (i = 0; i < n; i++) {
+		vz[i] = gamma*y[i];
+		vx[i] = vy[i] = 0;
+	}
+	array_zero3(n, fx, fy, fz);
+	force(he, x, y, z, fx, fy, fz);
+	oseen3_apply(oseen, he, x, y, y, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+	for (ga = 0; ga < n; ga++)
+		for (be = 0; be < n; be++) {
+			xx = matrix_get(n, n, be, ga, Oxx)/mu;
+			xy = matrix_get(n, n, be, ga, Oxy)/mu;
+			xz = matrix_get(n, n, be, ga, Oxz)/mu;
+			yy = matrix_get(n, n, be, ga, Oyy)/mu;
+			yz = matrix_get(n, n, be, ga, Oyz)/mu;
+			zz = matrix_get(n, n, be, ga, Ozz)/mu;
+			vx[be] -= xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
+			vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
+			vz[be] -=  xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
+		}
+	return CO_OK;
+}
+
 int
 main(__UNUSED int argc, char **argv)
 {
-	real *x, *y, *z, *vx, *vy, *vz, *fx, *fy, *fz;
-	real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
-	real xx, xy, xz, yy, yz, zz, e;
-	int n, i, j, k;
-	int be, ga;
+	real *x, *y, *z, *vx, *vy, *vz;
+	real e;
+	int k;
+	real t, time;
+	char file[999];
+	Ode3 *ode;
 
 	argv++;
 	y_inif(stdin, &he, &x, &y, &z);
@@ -88,6 +122,8 @@ main(__UNUSED int argc, char **argv)
 	n = he_nv(he);
 	e = 0.01;
 	oseen3_ini(e, &oseen);
+	ode3_ini(RKCK, n, dt/10, F, NULL, &ode);
+
 	CALLOC3(n, &vx, &vy, &vz);
 	CALLOC3(n, &fx, &fy, &fz);
 	matrix_ini(n, n, &Oxx);
@@ -96,43 +132,14 @@ main(__UNUSED int argc, char **argv)
 	matrix_ini(n, n, &Oyy);
 	matrix_ini(n, n, &Oyz);
 	matrix_ini(n, n, &Ozz);
-	for (k = j = 0; j < 10000000; j++) {
-		for (i = 0; i < n; i++) {
-			vz[i] = gamma*y[i];
-			vx[i] = vy[i] = 0;
-		}
-		array_zero3(n, fx, fy, fz);
-		force(he, x, y, z, fx, fy, fz);
-		oseen3_apply(oseen, he, x, y, y, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-		for (ga = 0; ga < n; ga++)
-			for (be = 0; be < n; be++) {
-				xx = matrix_get(n, n, be, ga, Oxx)/mu;
-				xy = matrix_get(n, n, be, ga, Oxy)/mu;
-				xz = matrix_get(n, n, be, ga, Oxz)/mu;
-				yy = matrix_get(n, n, be, ga, Oyy)/mu;
-				yz = matrix_get(n, n, be, ga, Oyz)/mu;
-				zz = matrix_get(n, n, be, ga, Ozz)/mu;
-				vx[be] -= xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
-				vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
-				vz[be] -=  xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
-			}          
-		char file[9999];
-		for (i = 0; i < n; i++) {
-			x[i] += dt*vx[i];
-			y[i] += dt*vy[i];
-			z[i] += dt*vz[i];
-		}
-		if (j % 1000 == 0) {
-			MSG("x[0] " FMT, x[0]);
-			sprintf(file, "%05d.off", k++);
-			off_he_xyz_write(he, x, y, z, file);
-			const real *q[] = 
-			{           
-				x, y, vx, vy, fx, fy, NULL
-			};
-			punto_fwrite(n, q, stdout);
-			printf("\n");
-		}
+	k = 0;
+	t = time = 0;
+	while (time < tend) {
+		t = time + dt;
+		ode3_apply(ode, &time, t, x, y, z);
+		MSG("x[0] " FMT, x[0]);
+		sprintf(file, "%05d.off", k++);
+		off_he_xyz_write(he, x, y, z, file);
 	}
 	FREE3(vx, vy, vz);
 	FREE3(fx, fy, fz);
@@ -143,6 +150,7 @@ main(__UNUSED int argc, char **argv)
 	matrix_fin(Oyz);
 	matrix_fin(Ozz);
 	oseen3_fin(oseen);
+	ode3_fin(ode);
 	fin();
 	y_fin(he, x, y, z);
 }
@@ -155,7 +163,7 @@ git clean -fdxq
 m lint
 f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-./3d garea $A 10 volume $V 10 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f > q
+./3d garea $A 1 volume $V 1 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f > q
 co.geomview -f 38 *.off
 
 Kill git

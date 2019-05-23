@@ -67,16 +67,6 @@ fin(void)
 	return CO_OK;
 }
 
-static int
-euler_step(real dt, int n, const real *vx, const real *vy, real *x, real *y)
-{
-	int i;
-	for (i = 0; i < n; i++) {
-		x[i] += dt*vx[i];
-		y[i] += dt*vy[i];
-	}
-	return CO_OK;
-}
 
 typedef struct Param Param;
 struct Param
