@@ -170,9 +170,9 @@ m lint
 #A=9.57454 V=2.53615
 f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-./3d garea $A 10 volume $V 10 strain $f lim 0.1 0.1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
+./3d garea $A 10 volume $V 10 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
 
-co.geomview -f 30 *.off
+co.geomview -f 30 *0.off
 
 Kill git
 
