@@ -44,6 +44,7 @@ edg.s.o\
 equiangulate.s.o\
 f2/area.s.o\
 f2/bend_min.s.o\
+f2/bend_sc.s.o\
 f2/glen.s.o\
 f2/len.s.o\
 f/area.s.o\
@@ -152,6 +153,7 @@ edg.d.o\
 equiangulate.d.o\
 f2/area.d.o\
 f2/bend_min.d.o\
+f2/bend_sc.d.o\
 f2/glen.d.o\
 f2/len.d.o\
 f/area.d.o\
@@ -260,6 +262,7 @@ edg.l.o\
 equiangulate.l.o\
 f2/area.l.o\
 f2/bend_min.l.o\
+f2/bend_sc.l.o\
 f2/glen.l.o\
 f2/len.l.o\
 f/area.l.o\
