@@ -23,7 +23,7 @@ Force2 *Force[99] =
 };
 static Skel *skel;
 static Oseen2 *oseen;
-static real gdot = 1, mu = 1, dt = 2e-5, tend = 1;
+static real gdot = 1, mu = 1, dt = 0.1, tend = 10;
 static real *fx, *fy;
 static real *Oxx, *Oxy, *Oyy;
 static int n;
@@ -134,8 +134,6 @@ main(__UNUSED int argc, char **argv)
 		ode2_apply(ode, &time, t, x, y);
 		MSG("x[0] " FMT, x[0]);
 		sprintf(file, "%05d.off", k++);
-		MSG("x[0] " FMT, x[0]);
-		sprintf(file, "%05d.off", k++);
 		f = fopen(file, "w");
 		skel_off_write(n, x, y, f);
 		fclose(f);
@@ -155,7 +153,7 @@ main(__UNUSED int argc, char **argv)
 
 Put
 
-#git clean -fdxq
+git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/rbc.skel
