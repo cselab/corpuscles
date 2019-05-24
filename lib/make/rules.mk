@@ -2,7 +2,7 @@
 
 install: lib hdr
 lib: $L; co.install $L $(PREFIX)/lib
-hdr: $H; co.install $H $(PREFIX)/hdr
+hdr: $H; co.install $H $(PREFIX)/include
 
 lib$(P)_s.a: $O $(O_S); ar r $@ $O $(O_S) && ranlib $@
 lib$(P)_d.a: $O $(O_D); ar r $@ $O $(O_D) && ranlib $@
@@ -20,4 +20,4 @@ clean:; rm -f $O $(O_S) $(O_D) $(O_L) $L
 test:
 lint:; $(MAKE) CFLAGS='-Wall -Wextra -O2' lib$(P)_d.a
 
-.PHONY: clean install test lint
+.PHONY: clean install test lint lib hdr
