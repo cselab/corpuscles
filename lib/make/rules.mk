@@ -1,8 +1,8 @@
 .SUFFIXES: .c.m4 .h.m4 .s.o .d.o .l.o
 
-install: $L $H
-	co.install $L $(PREFIX)/lib
-	co.install $H $(PREFIX)/include
+install: lib hdr
+lib: $L; co.install $L $(PREFIX)/lib
+hdr: $H; co.install $H $(PREFIX)/hdr
 
 lib$(P)_s.a: $O $(O_S); ar r $@ $O $(O_S) && ranlib $@
 lib$(P)_d.a: $O $(O_D); ar r $@ $O $(O_D) && ranlib $@
