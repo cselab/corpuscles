@@ -46,7 +46,7 @@ else
 
     for i in `seq 0 9`;
     do
-	v=$(echo $i  | awk '{print (0.5+$i*0.05)}')
+	v=$(echo $i | awk '{print (0.5+$i*0.05)}')
 	echo $v
     done
     
