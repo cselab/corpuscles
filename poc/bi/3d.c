@@ -25,7 +25,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gamdot = 1, mu = 1, dt = 1e-2, tend = 100;
+static real gdot = 1, mu = 1, dt = 1e-2, tend = 100;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static int n;
@@ -83,7 +83,7 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	int i, ga, be;
 	real xx, xy, xz, yy, yz, zz;
 	for (i = 0; i < n; i++) {
-		vx[i] = gamdot*z[i];
+		vx[i] = gdot*z[i];
 		vy[i] = vz[i] = 0;
 	}
 	array_zero3(n, fx, fy, fz);
@@ -113,7 +113,7 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 int
 main(__UNUSED int argc, char **argv)
 {
-	real *x, *y, *z, *vx, *vy, *vz;
+	real *x, *y, *z;
 	real e;
 	int k;
 	real t, time;
@@ -128,8 +128,6 @@ main(__UNUSED int argc, char **argv)
 	e = 0.025;
 	oseen3_ini(e, &oseen);
 	ode3_ini(RK4, n, dt/10, F, NULL, &ode);
-
-	CALLOC3(n, &vx, &vy, &vz);
 	CALLOC3(n, &fx, &fy, &fz);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
@@ -146,7 +144,6 @@ main(__UNUSED int argc, char **argv)
 		sprintf(file, "%05d.off", k++);
 		off_he_xyz_write(he, x, y, z, file);
 	}
-	FREE3(vx, vy, vz);
 	FREE3(fx, fy, fz);
 	matrix_fin(Oxx);
 	matrix_fin(Oxy);
@@ -168,12 +165,11 @@ git clean -fdxq
 m lint
 #f=/u/.co/sph/icosa/Nt20.off
 #A=9.57454 V=2.53615
-f=/u/.co/rbc/laplace/1.off
+f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-./3d garea $A 10 volume $V 10 strain $f lim 0.01 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
+./3d garea $A 100 volume $V 100 strain $f lim 100 100 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f
 
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 23.5861 *.off
-
+co.geomview  -O -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *0.off
 
 Kill git
 

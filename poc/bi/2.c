@@ -23,7 +23,7 @@ Force2 *Force[99] =
 };
 static Skel *skel;
 static Oseen2 *oseen;
-static real gamma = 1, mu = 1, dt = 5e-6;
+static real gdot = 1, mu = 1, dt = 5e-6;
 
 static int
 fargv(char ***p, Skel *skel)
@@ -110,7 +110,7 @@ main(__UNUSED int argc, char **argv)
 
 	for (j = 0; j < 10000; j++) {
 		for (i = 0; i < n; i++) {
-			vx[i] = gamma*y[i];
+			vx[i] = gdot*y[i];
 			vy[i] = 0;
 		}
 		array_zero(n, fx);

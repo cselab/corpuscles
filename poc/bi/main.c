@@ -72,7 +72,7 @@ int
 main(__UNUSED int argc, char **argv)
 {
 	LinSolve *linsolve;
-	real gamma;
+	real gdot;
 	Skel *skel;
 	Oseen2 *oseen;
 	real *x, *y, *vx, *vy, *ux, *uy, *fx, *fy;
@@ -111,9 +111,9 @@ main(__UNUSED int argc, char **argv)
 
 	lin_solve_ini(n, &linsolve);
 
-	gamma = 1;
+	gdot = 1;
 	for (i = 0; i < n; i++) {
-		ux[i] = gamma*y[i];
+		ux[i] = gdot*y[i];
 		uy[i] = 0;
 	}
 	force(skel, x, y, fx, fy);
