@@ -25,7 +25,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gamma = 1, mu = 1, dt = 1e-2, tend = 100;
+static real gamdot = 1, mu = 1, dt = 1e-2, tend = 100;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static int n;
@@ -83,7 +83,7 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	int i, ga, be;
 	real xx, xy, xz, yy, yz, zz;
 	for (i = 0; i < n; i++) {
-		vx[i] = gamma*z[i];
+		vx[i] = gamdot*z[i];
 		vy[i] = vz[i] = 0;
 	}
 	array_zero3(n, fx, fy, fz);
