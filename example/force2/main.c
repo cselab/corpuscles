@@ -44,7 +44,7 @@ main0()
 	int i;
 	real e, r[3], f[3];
 
-	force2_force(force, skel, x, y, /**/ fx, fy);
+	force2_force(force, skel, x, y,pull**/ fx, fy);
 	fd2(force, skel, delta, x, y, /**/ gx, gy);
 	e = force2_energy(force, skel, x, y);
 
@@ -89,3 +89,12 @@ main(int __UNUSED argc, char *argv[])
 	skel_xy_fin(x, y, skel);
 }
 
+/*
+
+m
+./main bend_sc 2 3 < data/rbc.skel > q
+gp <<'!'
+plot "q" u 3:5, x
+!
+
+*/

@@ -54,7 +54,7 @@ int f2_bend_min_fin(T *q)
 	return CO_OK;
 }
 
-real
+static real
 compute_energy(Skel *skel, const real *x, const real *y)
 {
 	int v, i, j, k, n;
