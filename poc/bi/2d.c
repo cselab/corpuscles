@@ -23,7 +23,7 @@ Force2 *Force[99] =
 };
 static Skel *skel;
 static Oseen2 *oseen;
-static real gdot = 1, mu = 1, dt = 0.1, tend = 100;
+static real gdot = 1, mu = 1, dt = 0.05, tend = 100;
 static real *fx, *fy;
 static real *Oxx, *Oxy, *Oyy;
 static int n;
@@ -156,11 +156,10 @@ Put
 git clean -fdxq
 m clean lint
 A=0.8835572001943658
-f=data/rbc.skel
-./2d len $f 50 0.05 0.05 area $A 50     bend_min 0.5 < $f
+f=data/100.skel
+./2d len $f 50 0.05 0.05 bend_sc 0.1 10 < $f
 
 co.geomview -f 38 -a /u/a *.off
-
            
 Kill git
 
