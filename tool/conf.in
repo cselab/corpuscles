@@ -33,6 +33,6 @@ case "$p" in
     *) err "unknown precision '$p'; possible values are s, d, l" ;;
 esac
 
-e PKG_CONFIG_PATH="$PREFIX/share/pkgconfig:$PREFIX/lib/pkgconifg:$PKG_CONFIG_PATH"
+e PKG_CONFIG_PATH="$PREFIX/share/pkgconfig:$PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
 e export PKG_CONFIG_PATH
 e "$PKG_CONFIG" "$a" co_$p
