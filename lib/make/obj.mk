@@ -120,6 +120,7 @@ tri.s.o\
 vec2.s.o\
 vec.s.o\
 volume.s.o\
+vtk2.s.o\
 vtk.s.o\
 x.s.o\
 y.s.o
@@ -229,6 +230,7 @@ tri.d.o\
 vec2.d.o\
 vec.d.o\
 volume.d.o\
+vtk2.d.o\
 vtk.d.o\
 x.d.o\
 y.d.o
@@ -338,6 +340,7 @@ tri.l.o\
 vec2.l.o\
 vec.l.o\
 volume.l.o\
+vtk2.l.o\
 vtk.l.o\
 x.l.o\
 y.l.o

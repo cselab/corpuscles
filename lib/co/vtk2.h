@@ -1,6 +1,6 @@
 #define T Vtk2
 typedef struct T T;
-vtk2_ini(int n, const real lo[2], const real hi[2], const int[2], T**);
-vtk2_fin(T**);
-vtk2_fwrite(const *real[], const *char[], FILE*);
+int vtk2_ini(const real lo[2], const real hi[2], const int[2], T**);
+int vtk2_fin(T*);
+int vtk2_fwrite(const real *field[], const char *name[], FILE*);
 #undef T
