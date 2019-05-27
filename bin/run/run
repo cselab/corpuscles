@@ -42,6 +42,8 @@ else
     then
         if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
+	env2lmod
+	module load gsl
 	e $BSUB $CO_ARG "$@"
     else
 	e "$@"
