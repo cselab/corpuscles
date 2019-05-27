@@ -44,6 +44,7 @@ else
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
 	env2lmod
 	module load gsl
+	if test $? -ne 0; then err 'fail to load module gsl'; fi
 	e $BSUB $CO_ARG "$@"
     else
 	e "$@"
