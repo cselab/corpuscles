@@ -117,8 +117,8 @@ F(__UNUSED real t, const real *x, const real *y, real *vx,  real *vy, __UNUSED v
 static void
 get_pressure(void)
 {
-	int i, j;
-	real sx, sy, r[2];
+	int i, j, k;
+	real sx, sy, r[2], u[2];
 	
 	sx = (hi[X] - lo[X])/(size[X] - 1);
 	sy = (hi[Y] - lo[Y])/(size[Y] - 1);
@@ -127,7 +127,11 @@ get_pressure(void)
 		for (j = 0; j < size[Y]; j++) {
 			r[X] = lo[X] + sx*i;
 			r[Y] = lo[Y] + sy*j;
-			pressure[j*size[X] + i] = oseen2_pressure(oseen, skel, x, y, fx, fy, r);
+			k = j*size[X] + i;
+			pressure[k] = oseen2_pressure(oseen, skel, x, y, fx, fy, r);
+			oseen2_velocity(oseen, skel, x, y, fx, fy, r, u);
+			ux[k] = u[X];
+			uy[k] = u[Y];
 	}
 }
 
@@ -168,11 +172,10 @@ main(__UNUSED int argc, char **argv)
 		f = fopen(file, "w");
 		skel_off_write(n, x, y, f);
 		fclose(f);
-
 		get_pressure();
 		sprintf(file, "%05d.vtk", k);
 		f = fopen(file, "w");
-		vtk2_fwrite1(vtk, pressure, "pressure", f);
+		vtk2_fwrite1(vtk, vx, "pressure", f);
 		fclose(f);
 		k++;
 	}
