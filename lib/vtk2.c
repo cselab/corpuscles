@@ -127,6 +127,7 @@ int
 vtk2_ascii_ini(const real lo[2], const real hi[2], const int n[2], T **pq)
 {
 	T *q;
+
 	ini(lo, hi, n, &q);
 	q->fwrite = fwrite_ascii;
 	*pq = q;
@@ -145,4 +146,12 @@ int
 vtk2_fwrite(T *q, const real *field[], const char *name[], FILE *f)
 {
 	return q->fwrite(q, field, name, f);
+}
+
+int
+vtk2_fwrite1(T *q, real *fi, char *na, FILE *f)
+{
+	const real *field[] = {fi, NULL};
+	const char *name[] = {na, NULL};
+	return vtk2_fwrite(q, field, name, f);
 }

@@ -43,10 +43,17 @@ vec2_cross(const real a[2], const real b[2]) {
 }
 
 int
-vec2_ini(real x, real y, real a[3])
+vec2_ini(real x, real y, real a[2])
 {
 	a[X] = x;
 	a[Y] = y;
+	return CO_OK;
+}
+
+int
+vec2_zero(real a[2])
+{
+	a[X] = a[Y] = 0;
 	return CO_OK;
 }
 
@@ -101,6 +108,14 @@ vec2_add(const real a[3], /*io*/ real b[3])
 {
 	b[X] += a[X];
 	b[Y] += a[Y];
+	return CO_OK;
+}
+
+int
+vec2_scalar_add(const real a[3], real s, /*io*/ real b[3])
+{
+	b[X] += s*a[X];
+	b[Y] += s*a[Y];
 	return CO_OK;
 }
 

@@ -97,15 +97,14 @@ oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *ox
 }
 
 real
-oseen2_pressure(T *q, Skel *skel, const real *x, const real *y, const real *fx, const real *fy, real u, real v)
+oseen2_pressure(T *q, Skel *skel, const real *x, const real *y, const real *fx, const real *fy, const real r[2])
 {
 	int n, i;
-	real p, s, r[2], a[2], f[2], d[2];
+	real p, s, a[2], f[2], d[2];
 	HeSum *sum;
 
 	n = skel_nv(skel);
 	he_sum_ini(&sum);
-	vec2_ini(u, v, r);
 	for (i = 0; i < n; i++) {
 		vec2_get(i, x, y, a);
 		vec2_get(i, fx, fy, f);
@@ -116,4 +115,27 @@ oseen2_pressure(T *q, Skel *skel, const real *x, const real *y, const real *fx, 
 	he_sum_fin(sum);
 	s = 1/(2*pi);
 	return s*p;
+}
+
+int
+oseen2_velocity(T *q, Skel *skel, const real *x, const real *y, const real *fx, const real *fy, const real r[2], real u[2])
+{
+	int n, i;
+	real s, rk, rk2, l, a[2], f[2], d[2];
+	
+	n = skel_nv(skel);
+	vec2_zero(u);
+	for (i = 0; i < n; i++) {
+		vec2_get(i, x, y, a);
+		vec2_get(i, fx, fy, f);
+		vec2_minus(r, a, d);
+		rk = vec2_abs(d);
+		rk2 = rk*rk;
+		l = log(rk);
+		vec2_scalar_add(f, -l, u);
+		vec2_scalar_add(d, vec2_dot(f, d)/rk2, u);
+	}
+	s = 1/(4*pi);
+	vec2_scale(s, u);
+	return CO_OK;;
 }

@@ -13,8 +13,13 @@
 #include <co/oseen2.h>
 #include <co/skel.h>
 #include <co/punto.h>
+#include <co/vtk2.h>
 
 #define FMT CO_REAL_OUT
+enum
+{
+	X, Y
+};
 
 static
 Force2 *Force[99] =
@@ -24,7 +29,11 @@ Force2 *Force[99] =
 static Skel *skel;
 static Oseen2 *oseen;
 static real gdot = 1, mu = 1, dt = 0.05, tend = 100;
-static real *fx, *fy;
+static real lo[2] = {-2, -2};
+static real hi[2] = {2, 2};
+static int size[2] = {80, 80};
+
+static real *x, *y, *fx, *fy, *pressure, *ux, *uy;
 static real *Oxx, *Oxy, *Oyy;
 static int n;
 
@@ -54,6 +63,9 @@ static int
 force(Skel *skel, const real *x, const real *y, real *fx, real *fy)
 {
 	int i;
+
+	array_zero(n, fx);
+	array_zero(n, fy);
 	i = 0;
 	while (Force[i]) {
 		force2_force(Force[i], skel, x, y, fx, fy);
@@ -84,8 +96,6 @@ F(__UNUSED real t, const real *x, const real *y, real *vx,  real *vy, __UNUSED v
 		vx[i] = gdot*y[i];
 		vy[i] = 0;
 	}
-	array_zero(n, fx);
-	array_zero(n, fy);
 	force(skel, x, y, fx, fy);
 	oseen2_apply(oseen, skel, x, y, Oxx, Oxy, Oyy);
 	for (ga = 0; ga < n; ga++)
@@ -104,21 +114,42 @@ F(__UNUSED real t, const real *x, const real *y, real *vx,  real *vy, __UNUSED v
 	return CO_OK;
 }
 
+static void
+get_pressure(void)
+{
+	int i, j;
+	real sx, sy, r[2];
+	
+	sx = (hi[X] - lo[X])/(size[X] - 1);
+	sy = (hi[Y] - lo[Y])/(size[Y] - 1);
+	force(skel, x, y, fx, fy);
+	for (i = 0; i < size[X]; i++)
+		for (j = 0; j < size[Y]; j++) {
+			r[X] = lo[X] + sx*i;
+			r[Y] = lo[Y] + sy*j;
+			pressure[j*size[X] + i] = oseen2_pressure(oseen, skel, x, y, fx, fy, r);
+	}
+}
+
 int
 main(__UNUSED int argc, char **argv)
 {
-	real *x, *y, *vx, *vy;
+	real *vx, *vy;
 	real e, t, time;
 	int k;
 	Ode2 *ode;
 	char file[999];
 	FILE *f;
+	Vtk2 *vtk;
 
 	argv++;
 	skel_read(stdin, &x, &y, &skel);
 	fargv(&argv, skel);
 	n = skel_nv(skel);
 	e = 0.01;
+	MALLOC(size[X]*size[Y], &pressure);
+	MALLOC2(size[X]*size[Y], &ux, &uy);
+	vtk2_ascii_ini(lo, hi, size, &vtk);
 	oseen2_ini(e, &oseen);
 	ode2_ini(RK4, n, dt/10, F, NULL, &ode);
 	MSG("len " FMT, len(skel, x, y));
@@ -133,18 +164,28 @@ main(__UNUSED int argc, char **argv)
 		t = time + dt;
 		ode2_apply(ode, &time, t, x, y);
 		MSG("x[0] " FMT, x[0]);
-		sprintf(file, "%05d.off", k++);
+		sprintf(file, "%05d.off", k);
 		f = fopen(file, "w");
 		skel_off_write(n, x, y, f);
 		fclose(f);
+
+		get_pressure();
+		sprintf(file, "%05d.vtk", k);
+		f = fopen(file, "w");
+		vtk2_fwrite1(vtk, pressure, "pressure", f);
+		fclose(f);
+		k++;
 	}
 	FREE2(vx, vy);
 	FREE2(fx, fy);
+	FREE(pressure);
+	FREE2(ux, uy);
 	matrix_fin(Oxx);
 	matrix_fin(Oxy);
 	matrix_fin(Oyy);
 	oseen2_fin(oseen);
 	ode2_fin(ode);
+	vtk2_fin(vtk);
 	fin();
 	skel_xy_fin(x, y, skel);
 }
@@ -164,4 +205,4 @@ co.geomview -f 38 -a /u/a *0.off
 Kill git
 
 */
-        
+ 
