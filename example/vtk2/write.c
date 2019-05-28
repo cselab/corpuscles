@@ -15,19 +15,33 @@ enum
 int
 main(void)
 {
-	int n;
-	real *f;
+	int n, i, j, k;
+	real *f, *g;
 	Vtk2 *q;
-	real lo[] = {1, 2}, hi[2] = {3, 4};
-	int size[] = {20, 20};
+	real lo[] = {
+		1, 2}, hi[2] = {
+			5, 4		};
+		int size[] = {
+			40, 20		};
 
-	n = size[X]*size[Y];
-	CALLOC(n, &f);
+		n = size[X]*size[Y];
+		CALLOC(n, &f);
+		CALLOC(n, &g);
 
-	const real *ff[] = {f, NULL};
-	const char *nn[] = {"f", NULL};
-	vtk2_ini(lo, hi, size, &q);
-	vtk2_fwrite(q, ff, nn, stdout);
-	vtk2_fin(q);
-	FREE(f);
-}
+		for (i = 0; i < size[X]; i++)
+			for (j = 0; j < size[Y]; j++) {
+				k = j*size[X] + i;
+				f[k] = i;
+				g[k] = j;
+			}
+
+		const real *ff[] = {
+			f, g, NULL		};
+		const char *nn[] = {
+			"f", "g", NULL		};
+		vtk2_ini(lo, hi, size, &q);
+		vtk2_fwrite(q, ff, nn, stdout);
+		vtk2_fin(q);
+		FREE(f);
+		FREE(g);
+	}

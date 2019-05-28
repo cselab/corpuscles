@@ -75,9 +75,10 @@ vtk2_fwrite(T *q, const real *field[], const char *name[], FILE *f)
 	fprintf(f, "SPACING " FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);	
 	N = n[X]*n[Y];
 	if (field[0] != NULL)
-		fprintf(f, "POINT_DATA %d", N);
+		fprintf(f, "POINT_DATA %d\n", N);
 	for (i = 0; field[i] != NULL; i++) {
 		fprintf(f, "SCALARS %s double 1\n", name[i]);
+		fputs("LOOKUP_TABLE default\n", f);
 		for (j = 0; j < N; j++)
 			fprintf(f, FMT "\n", field[i][j]);
 	}
