@@ -26,7 +26,7 @@ main(void)
 	CALLOC(n, &g);
 
 	for (i = 0; i < size[X]; i++)
-		for (j = 0; j < size[Y]; j++) {
+		for (j = 0; j < size[Y]; j++) { 
 			k = j*size[X] + i;
 			f[k] = i;
 			g[k] = j;
@@ -34,7 +34,7 @@ main(void)
 
 	const real *ff[] = {f, g, NULL};
 	const char *nn[] = {"f", "g", NULL};
-	vtk2_ascii_ini(lo, hi, size, &q);
+	vtk2_ini(lo, hi, size, &q);
 	vtk2_fwrite(q, ff, nn, stdout);
 	vtk2_fin(q);
 	FREE(f);

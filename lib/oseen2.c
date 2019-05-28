@@ -8,6 +8,7 @@
 #include "co/oseen2.h"
 #include "co/skel.h"
 #include "co/vec2.h"
+#include "co/sum.h"
 
 #define T Oseen2
 static const real pi = 3.141592653589793115997964;
@@ -93,4 +94,26 @@ oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *ox
 	matrix_scale(n, n, s, oxy);
 	matrix_scale(n, n, s, oyy);
 	return CO_OK;
+}
+
+real
+oseen2_pressure(T *q, Skel *skel, const real *x, const real *y, const real *fx, const real *fy, real u, real v)
+{
+	int n, i;
+	real p, s, r[2], a[2], f[2], d[2];
+	HeSum *sum;
+
+	n = skel_nv(skel);
+	he_sum_ini(&sum);
+	vec2_ini(u, v, r);
+	for (i = 0; i < n; i++) {
+		vec2_get(i, x, y, a);
+		vec2_get(i, fx, fy, f);
+		vec2_minus(r, a, d);
+		he_sum_add(sum, vec2_dot(f, d)/vec2_dot(d, d));
+	}
+	p = he_sum_get(sum);
+	he_sum_fin(sum);
+	s = 1/(2*pi);
+	return s*p;
 }
