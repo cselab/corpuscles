@@ -5,6 +5,7 @@
 #include "co/vtk2.h"
 
 #define T Vtk2
+#define FMT CO_REAL_OUT
 
 enum
 {
@@ -56,7 +57,22 @@ vtk2_fin(T *q)
 }
 
 int
-vtk2_fwrite(const real *field[], const char *name[], FILE *f)
+vtk2_fwrite(T *q, const real *field[], const char *name[], FILE *f)
 {
+	real *origin, *spacing;
+	int *n;
+
+	origin = q->origin;
+	spacing = q->spacing;
+	n = q->n;
+	if (fputs("# vtk DataFile Version 2.0\n", f) == EOF)
+		ERR(CO_IO, "fail to vtk data");
+	fputs("field data\n", f);
+	fputs("ASCII\n", f);
+	fputs("DATASET STRUCTURED_POINTS\n", f);
+	fprintf(f, "%d %d %d\n", n[X], n[Y], 1);
+	fprintf(f, FMT " " FMT " 0\n", origin[X], origin[Y]);
+	fprintf(f, FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);
 	return CO_OK;
 }
+  
