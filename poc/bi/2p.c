@@ -201,9 +201,10 @@ git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/100.skel
-./2p len $f 50 0.05 0.05 bend_sc 0.01 40 < $f
+valgrind ./2p len $f 50 0.05 0.05 bend_sc 0.01 40 < $f
 
 co.geomview -f 38 -a /u/a *0.off
+vi.visit -o *.vtk
            
 Kill git
 
