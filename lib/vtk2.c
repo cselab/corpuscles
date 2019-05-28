@@ -60,7 +60,7 @@ int
 vtk2_fwrite(T *q, const real *field[], const char *name[], FILE *f)
 {
 	real *origin, *spacing;
-	int *n;
+	int *n, N, i, j;
 
 	origin = q->origin;
 	spacing = q->spacing;
@@ -72,7 +72,14 @@ vtk2_fwrite(T *q, const real *field[], const char *name[], FILE *f)
 	fputs("DATASET STRUCTURED_POINTS\n", f);
 	fprintf(f, "DIMENSIONS %d %d %d\n", n[X], n[Y], 1);
 	fprintf(f, "ORIGIN " FMT " " FMT " 0\n", origin[X], origin[Y]);
-	fprintf(f, "SPACING " FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);
+	fprintf(f, "SPACING " FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);	
+	N = n[X]*n[Y];
+	if (field[0] != NULL)
+		fprintf(f, "POINT_DATA %d", N);
+	for (i = 0; field[i] != NULL; i++) {
+		fprintf(f, "SCALARS %s double 1\n", name[i]);
+		for (j = 0; j < N; j++)
+			fprintf(f, FMT "\n", field[i][j]);
+	}
 	return CO_OK;
 }
-  
