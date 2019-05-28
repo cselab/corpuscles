@@ -3,6 +3,7 @@
 #include "co/err.h"
 #include "co/memory.h"
 #include "co/vtk2.h"
+#include "co/endian.h"
 
 #define T Vtk2
 #define FMT CO_REAL_OUT
@@ -16,7 +17,7 @@ struct T
 {
 	real origin[2], spacing[2];
 	int n[2];
-	double *f;
+	double *d;
 	int (*fwrite)(T*, const real *field[], const char *name[], FILE*);
 };
 
@@ -36,7 +37,7 @@ fwrite_ascii(T *q, const real *field[], const char *name[], FILE *f)
 	fputs("DATASET STRUCTURED_POINTS\n", f);
 	fprintf(f, "DIMENSIONS %d %d %d\n", n[X], n[Y], 1);
 	fprintf(f, "ORIGIN " FMT " " FMT " 0\n", origin[X], origin[Y]);
-	fprintf(f, "SPACING " FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);	
+	fprintf(f, "SPACING " FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);
 	N = n[X]*n[Y];
 	if (field[0] != NULL)
 		fprintf(f, "POINT_DATA %d\n", N);
@@ -49,12 +50,45 @@ fwrite_ascii(T *q, const real *field[], const char *name[], FILE *f)
 	return CO_OK;
 }
 
-int
-vtk2_ini(const real lo[2], const real hi[2], const int n[2], T **pq)
+static int
+fwrite_bin(T *q, const real *field[], const char *name[], FILE *f)
+{
+	real *origin, *spacing;
+	int *n, N, i, j;
+	double *d;
+
+	origin = q->origin;
+	spacing = q->spacing;
+	n = q->n;
+	d = q->d;
+	if (fputs("# vtk DataFile Version 2.0\n", f) == EOF)
+		ERR(CO_IO, "fail to vtk data");
+	fputs("fields\n", f);
+	fputs("BINARY\n", f);
+	fputs("DATASET STRUCTURED_POINTS\n", f);
+	fprintf(f, "DIMENSIONS %d %d %d\n", n[X], n[Y], 1);
+	fprintf(f, "ORIGIN " FMT " " FMT " 0\n", origin[X], origin[Y]);
+	fprintf(f, "SPACING " FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);
+	N = n[X]*n[Y];
+	if (field[0] != NULL)
+		fprintf(f, "POINT_DATA %d\n", N);
+	for (i = 0; field[i] != NULL; i++) {
+		fprintf(f, "SCALARS %s double 1\n", name[i]);
+		fputs("LOOKUP_TABLE default\n", f);
+		for (j = 0; j < N; j++)
+			d[j] = field[i][j];
+		big_endian_dbl(N, d);
+		fwrite(d, sizeof(d[0]), N, f);
+	}
+	return CO_OK;
+}
+
+static int
+ini(const real lo[2], const real hi[2], const int n[2], T **pq)
 {
 	T *q;
 	int N;
-	double *f;
+	double *d;
 
 	if (n[X] <= 1)
 		ERR(CO_INDEX, "n[X]=%d <= 1", n[X]);
@@ -65,15 +99,35 @@ vtk2_ini(const real lo[2], const real hi[2], const int n[2], T **pq)
 	if (lo[Y] >= hi[Y])
 		ERR(CO_INDEX, "lo[Y] >= hi[Y]");
 	N = n[X]*n[Y];
-	MALLOC(1, &q);	
-	MALLOC(N, &f);
+	MALLOC(1, &q);
+	MALLOC(N, &d);
 	q->origin[X] = lo[X];
 	q->origin[Y] = lo[Y];
 	q->spacing[X] = (hi[X] - lo[X])/(n[X] - 1);
 	q->spacing[Y] = (hi[Y] - lo[Y])/(n[Y] - 1);
 	q->n[X] = n[X];
 	q->n[Y] = n[Y];
-	q->f = f;
+	q->d = d;
+
+	*pq = q;
+	return CO_OK;
+}
+
+int
+vtk2_ini(const real lo[2], const real hi[2], const int n[2], T **pq)
+{
+	T *q;
+	ini(lo, hi, n, &q);
+	q->fwrite = fwrite_bin;
+	*pq = q;
+	return CO_OK;
+}
+
+int
+vtk2_ascii_ini(const real lo[2], const real hi[2], const int n[2], T **pq)
+{
+	T *q;
+	ini(lo, hi, n, &q);
 	q->fwrite = fwrite_ascii;
 	*pq = q;
 	return CO_OK;
@@ -82,7 +136,7 @@ vtk2_ini(const real lo[2], const real hi[2], const int n[2], T **pq)
 int
 vtk2_fin(T *q)
 {
-	FREE(q->f);
+	FREE(q->d);
 	FREE(q);
 	return CO_OK;
 }
