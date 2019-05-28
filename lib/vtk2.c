@@ -67,12 +67,12 @@ vtk2_fwrite(T *q, const real *field[], const char *name[], FILE *f)
 	n = q->n;
 	if (fputs("# vtk DataFile Version 2.0\n", f) == EOF)
 		ERR(CO_IO, "fail to vtk data");
-	fputs("field data\n", f);
+	fputs("fields\n", f);
 	fputs("ASCII\n", f);
 	fputs("DATASET STRUCTURED_POINTS\n", f);
-	fprintf(f, "%d %d %d\n", n[X], n[Y], 1);
-	fprintf(f, FMT " " FMT " 0\n", origin[X], origin[Y]);
-	fprintf(f, FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);
+	fprintf(f, "DIMENSIONS %d %d %d\n", n[X], n[Y], 1);
+	fprintf(f, "ORIGIN " FMT " " FMT " 0\n", origin[X], origin[Y]);
+	fprintf(f, "SPACING " FMT " " FMT " 0.0\n", spacing[X], spacing[Y]);
 	return CO_OK;
 }
   
