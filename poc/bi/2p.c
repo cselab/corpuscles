@@ -29,9 +29,9 @@ Force2 *Force[99] =
 static Skel *skel;
 static Oseen2 *oseen;
 static real gdot = 1, mu = 1, dt = 0.05, tend = 100;
-static real lo[2] = {-2, -2};
-static real hi[2] = {2, 2};
-static int size[2] = {80, 80};
+static real lo[2] = {-2, -0.5};
+static real hi[2] = {2, 0.5};
+static int size[2] = {320, 80};
 
 static real *x, *y, *fx, *fy, *pressure, *ux, *uy;
 static real *Oxx, *Oxy, *Oyy;
@@ -129,8 +129,8 @@ get_pressure(void)
 			r[Y] = lo[Y] + sy*j;
 			k = j*size[X] + i;
 			pressure[k] = oseen2_pressure(oseen, skel, x, y, fx, fy, r);
-			oseen2_velocity(oseen, skel, x, y, fx, fy, r, u);
-			ux[k] = u[X];
+			oseen2_velocity(oseen, skel, mu, x, y, fx, fy, r, u);
+			ux[k] = u[X] + gdot*r[Y];
 			uy[k] = u[Y];
 	}
 }
@@ -153,7 +153,7 @@ main(__UNUSED int argc, char **argv)
 	e = 0.01;
 	MALLOC(size[X]*size[Y], &pressure);
 	MALLOC2(size[X]*size[Y], &ux, &uy);
-	vtk2_ascii_ini(lo, hi, size, &vtk);
+	vtk2_ini(lo, hi, size, &vtk);
 	oseen2_ini(e, &oseen);
 	ode2_ini(RK4, n, dt/10, F, NULL, &ode);
 	MSG("len " FMT, len(skel, x, y));
@@ -175,7 +175,7 @@ main(__UNUSED int argc, char **argv)
 		get_pressure();
 		sprintf(file, "%05d.vtk", k);
 		f = fopen(file, "w");
-		vtk2_fwrite1(vtk, pressure, "pressure", f);
+		vtk2_fwrite2(vtk, ux, uy, "ux", "uy", f);
 		fclose(f);
 		k++;
 	}
@@ -198,7 +198,6 @@ main(__UNUSED int argc, char **argv)
 Put
 
 git clean -fdxq
-
 m clean lint
 A=0.8835572001943658
 f=data/100.skel
@@ -207,7 +206,7 @@ f=data/100.skel
 co.geomview -f 38 -a /u/a *0.off
 vi.visit -o *.vtk
            
-Kill git
+Kill git 
 
 */
  

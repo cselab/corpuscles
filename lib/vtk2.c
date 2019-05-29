@@ -149,9 +149,25 @@ vtk2_fwrite(T *q, const real *field[], const char *name[], FILE *f)
 }
 
 int
-vtk2_fwrite1(T *q, real *fi, char *na, FILE *f)
+vtk2_fwrite1(T *q, const real *fi, const char *na, FILE *f)
 {
 	const real *field[] = {fi, NULL};
 	const char *name[] = {na, NULL};
+	return vtk2_fwrite(q, field, name, f);
+}
+
+int
+vtk2_fwrite2(T *q, const real *a, const real *b, const char *x, const char *y, FILE *f)
+{
+	const real *field[] = {a, b, NULL};
+	const char *name[] = {x, y, NULL};
+	return vtk2_fwrite(q, field, name, f);
+}
+
+int
+vtk2_fwrite3(T *q, const real *a, const real *b, const real *c, const char *x, const char *y, const char *z, FILE *f)
+{
+	const real *field[] = {a, b, c, NULL};
+	const char *name[] = {x, y, z, NULL};
 	return vtk2_fwrite(q, field, name, f);
 }

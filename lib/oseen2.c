@@ -118,7 +118,7 @@ oseen2_pressure(T *q, Skel *skel, const real *x, const real *y, const real *fx, 
 }
 
 int
-oseen2_velocity(T *q, Skel *skel, const real *x, const real *y, const real *fx, const real *fy, const real r[2], real u[2])
+oseen2_velocity(T *q, Skel *skel, real mu,const real *x, const real *y, const real *fx, const real *fy, const real r[2], real u[2])
 {
 	int n, i;
 	real s, rk, rk2, l, a[2], f[2], d[2];
@@ -135,7 +135,7 @@ oseen2_velocity(T *q, Skel *skel, const real *x, const real *y, const real *fx, 
 		vec2_scalar_add(f, -l, u);
 		vec2_scalar_add(d, vec2_dot(f, d)/rk2, u);
 	}
-	s = 1/(4*pi);
+	s = 1/(4*pi*mu);
 	vec2_scale(s, u);
 	return CO_OK;;
 }
