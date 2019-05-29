@@ -175,7 +175,7 @@ main(__UNUSED int argc, char **argv)
 		get_pressure();
 		sprintf(file, "%05d.vtk", k);
 		f = fopen(file, "w");
-		vtk2_fwrite2(vtk, ux, uy, "ux", "uy", f);
+		vtk2_fwrite3(vtk, ux, uy, pressure, "ux", "uy", "pressure", f);
 		fclose(f);
 		k++;
 	}
@@ -201,7 +201,7 @@ git clean -fdxq
 m clean lint
 A=0.8835572001943658
 f=data/100.skel
-./2p len $f 50 0.05 0.05 bend_sc 0.01 40 < $f
+./2p len $f 50 0.05 0.05 bend_sc 0.01 0 < $f
 
 co.geomview -f 38 -a /u/a *0.off
 vi.visit -o *.vtk
