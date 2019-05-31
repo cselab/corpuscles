@@ -183,6 +183,30 @@ skel_off_write(int nv, const real *x, const real *y, FILE *f)
 }
 
 int
+skel_vtk_write(T *q, const real *x, const real *y, FILE *f)
+{
+	int nv,  ne, e, i, j;
+	real z = 0;
+
+	nv = skel_nv(q);
+	ne = skel_ne(q);
+	if (fputs("# vtk DataFile Version 2.0\n", f) == EOF)
+		ERR(CO_IO, "fail to write");
+	fputs("skel file\n", f);
+	fputs("ASCII\n", f);
+	fputs("DATASET POLYDATA\n", f);
+	fprintf(f, "POINTS %d double\n", nv);
+	for (i = 0; i < nv; i++)
+		fprintf(f, OUT " " OUT " " OUT "\n", x[i], y[i], z);
+	fprintf(f, "POLYGONS %d %d\n", ne, (2 + 1)*ne);
+	for (e = 0; e < ne; e++) {
+		skel_edg_ij(q, e, &i, &j);
+		fprintf(f, "2 %d %d\n", i, j);
+	}
+	return CO_OK;
+}
+
+int
 skel_edg_write(T *q, const real *x, const real *y, FILE *f)
 {
 	int nv, nt, ne, e, i, j;

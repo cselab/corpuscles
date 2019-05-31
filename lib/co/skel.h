@@ -13,6 +13,7 @@ int skel_write(T*, const real*, const real*, FILE*);
 int skel_punto_write(T*, const real*, const real*, FILE*);
 int skel_off_write(int, const real*, const real*, FILE*);
 int skel_edg_write(T*, const real*, const real*, FILE*);
+int skel_vtk_write(T*, const real*, const real*, FILE*);
 int skel_edg_lh_write(T*, const real*, const real*, real lo, real hi, const real*, FILE*);
 int skel_edg_color_write(T*, const real*, const real *,  const real*, FILE*);
 
