@@ -12,10 +12,10 @@
 #define T Arc
 #define FMT CO_REAL_OUT
 enum {
-	INTEGRATION = GAUSS15
+	INTEGRATION = GAUSS61
 };
 enum {
-	ROOT = BISECTION
+	ROOT = BRENT
 };
 
 struct T
