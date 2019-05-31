@@ -17,6 +17,8 @@ dt=0.01
 end=100000
 freq=500
 
+export CO_ARG="-W 20:00"
+
 if test $# -ne 0
 then
 
