@@ -3,12 +3,12 @@
 #include <tgmath.h>
 #include "real.h"
 #include "co/arc.h"
+#include "co/array.h"
 #include "co/colormap.h"
 #include "co/err.h"
 #include "co/memory.h"
 #include "co/skel.h"
 #include "co/util.h"
-#include "co/array.h"
 #include "inc/def.h"
 
 #define FMT CO_REAL_IN
