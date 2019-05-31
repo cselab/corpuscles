@@ -12,8 +12,6 @@ main(void)
 	Skel *q;
 	real *x, *y, length;
 	int nv;
-
-	err_set_ignore();
 	nv = 100;
 	skel_rbc_ini(nv, &length, &x, &y, &q);
 	MSG("len " FMT, length);
