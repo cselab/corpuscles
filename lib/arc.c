@@ -50,7 +50,7 @@ arc_velocity_ini(int n, real a, real b, real (*f)(real, void*), void *p, T **pq)
 	AlgIntegration *integ;
 	AlgRoot *root;
 	Param param;
-	int i;
+	int i, status;
 
 	if (n < 0) ERR(CO_NUM, "n = %d < 0", n);
 	if (b < a) ERR(CO_NUM, "b=" FMT " < a=" FMT, b, a);
@@ -58,7 +58,9 @@ arc_velocity_ini(int n, real a, real b, real (*f)(real, void*), void *p, T **pq)
 	MALLOC(1, &q);
 	MALLOC(n + 1, &points);
 	alg_integration_ini(INTEGRATION, &integ);
-	alg_root_ini(ROOT, &root);
+	status = alg_root_ini(ROOT, &root);
+	if (status != CO_OK)
+		ERR(CO_INDEX, "alg_root_inim failed");
 
 	alg_integration_apply(integ, a, b, f, p, &length);
 	if (length < 0) ERR(CO_NUM, "length < 0");
@@ -74,9 +76,10 @@ arc_velocity_ini(int n, real a, real b, real (*f)(real, void*), void *p, T **pq)
 	{
 		param.a = points[i - 1];
 		param.h = d;
-		alg_root_apply(root, points[i - 1], b, F, &param,   &points[i]);
+		status = alg_root_apply(root, points[i - 1], b, F, &param,   &points[i]);
+		if (status != CO_OK)
+			ERR(CO_INDEX, "alg_root_apply failed: %d %d", i, n);
 	}
-
 	alg_root_fin(root);
 	alg_integration_fin(integ);
 	q->length = length;

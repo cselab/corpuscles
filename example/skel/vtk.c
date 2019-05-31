@@ -10,8 +10,8 @@ main(void)
 	Skel *q;
 	real *x, *y, length;
 	int nv;
-	nv = 20 ;
-	skel_circle_ini(nv, &length, &x, &y, &q);
+	nv = 20;
+	skel_rbc_ini(nv, &length, &x, &y, &q);
 	skel_vtk_write(q, x, y, stdout);
 	skel_xy_fin(x, y, q);
 }
