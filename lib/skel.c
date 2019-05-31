@@ -183,6 +183,24 @@ skel_off_write(int nv, const real *x, const real *y, FILE *f)
 }
 
 int
+skel_vtk_write(int nv, const real *x, const real *y, FILE *f)
+{
+	int nt, ne, i;
+	real z = 0;
+	float red = 0, green = 1, blue = 0;
+	nt = nv;
+	ne = 0;
+	if (fputs("OFF\n", f) == EOF)
+		ERR(CO_IO, "fail to write");
+	fprintf(f, "%d %d %d\n", nv, nt, ne);
+	for (i = 0; i < nv; i++)
+		fprintf(f, OUT " " OUT " " OUT "\n", x[i], y[i], z);
+	for (i = 0; i < nv; i++)
+		fprintf(f, "1 %d %g %g %g\n", i, red, green, blue);
+	return CO_OK;
+}
+
+int
 skel_edg_write(T *q, const real *x, const real *y, FILE *f)
 {
 	int nv, nt, ne, e, i, j;
