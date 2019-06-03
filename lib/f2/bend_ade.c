@@ -58,15 +58,13 @@ int f2_bend_ade_fin(T *q)
 	return CO_OK;
 }
 
-real
-f2_bend_ade_energy(T *q, Skel *skel, const real *x, const real *y)
+static real
+compute_p(Skel *skel, const real *x, const real *y)
 {
 	int v, i, j, k, n;
 	HeSum *sum;
-	real a[2], b[2], c[2], u, w, p, P, L, D, E, k0, DA0D;
+	real a[2], b[2], c[2], p, P;
 
-	k0 = q->k;
-	DA0D = q->DA0D;
 	n = skel_nv(skel);
 	he_sum_ini(&sum);
 	for (v = 0; v < n; v++) {
@@ -79,54 +77,47 @@ f2_bend_ade_energy(T *q, Skel *skel, const real *x, const real *y)
 		he_sum_add(sum, p);
 	}
 	P = he_sum_get(sum);
-	he_sum_fin(sum);
-	L = len(skel, x, y);
-	D = (P- DA0D)/L;
-	E = pi*k*L*D*D/2;
-	return E;
+	he_sum_fin(sum);	
+	return P;
 }
 
-static real
-sq(real x)
+real
+f2_bend_ade_energy(T *q, Skel *skel, const real *x, const real *y)
 {
-	return x*x;
+	real L, D, E, k, DA0D, P;
+
+	k = q->k;
+	DA0D = q->DA0D;
+	P = compute_p(skel, x, y);
+	L = len(skel, x, y);
+	D = (P - DA0D)/L;
+	E = pi*k*L*D*D/2;
+	return P*P;
 }
 
 int
 f2_bend_ade_force(T *q, Skel *skel, const real *x, const real *y, real *fx, real *fy)
 {
 	int v, i, j, k, n;
-	real a[2], b[2], c[2], da[2], db[2], dc[2], u, w, h, k0;
-	real p, coeff;
+	real a[2], b[2], c[2], da[2], db[2], dc[2], u, w, k0, P;
+	real coeff;
 	n = skel_nv(skel);
 	k0 = q->k;
+
+	P = compute_p(skel, x, y);
+	MSG("P " FMT, P);
 	for (v = 0; v < n; v++) {
 		if (skel_bnd(skel, v)) continue;
 		skel_ver_ijk(skel, v, &i, &j, &k);
 		vec2_get(i, x, y, a);
 		vec2_get(j, x, y, b);
 		vec2_get(k, x, y, c);
-		u = edg2_abs(a, b);
-		w = edg2_abs(b, c);
-		p = tri2_angle_sup(a, b, c);
-		if (u + w == 0)
-			ERR(CO_NUM, "u + w == 0");
-		h = p/(u + w);	
 		if (dtri2_angle_sup(a, b, c, da, db, dc) != CO_OK)
 			ERR(CO_NUM, "dtri2_angle_sup failed for ijk: %d %d %d", i, j, k);
-		coeff = 2*k0*h/(u + w);
+		coeff = 1;
 		vec2_scalar_append(da, coeff, i, fx, fy);
 		vec2_scalar_append(db, coeff, j, fx, fy);
 		vec2_scalar_append(dc, coeff, k, fx, fy);
-		
-		dedg2_abs(a, b, da, db);
-		coeff = -2*k0*h*p/sq(u + w);
-		vec2_scalar_append(da, coeff, i, fx, fy);
-		vec2_scalar_append(db, coeff, j, fx, fy);
-		
-		dedg2_abs(c, b, dc, db);
-		vec2_scalar_append(dc, coeff, k, fx, fy);
-		vec2_scalar_append(db, coeff, j, fx, fy);
 	}
 	return CO_OK;
 }
