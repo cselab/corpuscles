@@ -9,12 +9,12 @@ done
 
 v=0.52
 echo "orient v="$v
-orient < ../init/init_v${v}_Da1${Da1}.off > init_${v}_Da1${Da1}.off
+orient < ../init/init_v${v}_Da1${Da1}.off > init_v${v}_Da1${Da1}.off
 
 v=0.642
 echo "orient v="$v
-orient < ../init/init_v${v}_Da1${Da1}.off > init_${v}_Da1${Da1}.off
+orient < ../init/init_v${v}_Da1${Da1}.off > init_v${v}_Da1${Da1}.off
 
 v=0.98
 echo "orient v="$v
-orient < ../init/init_v${v}_Da1${Da1}.off > init_${v}_Da1${Da1}.off
+orient < ../init/init_v${v}_Da1${Da1}.off > init_v${v}_Da1${Da1}.off
