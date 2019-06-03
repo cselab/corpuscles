@@ -10,5 +10,4 @@ int cell2_len(T*, real, real);
 int cell2_wrap(T*, int, /**/ real*, real*);
 int cell2_bring(T*, real, real, /**/ real*, real*);
 int cell2_fin(T*);
-
 #undef T
