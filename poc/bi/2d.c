@@ -2,17 +2,19 @@
 #include <tgmath.h>
 #include <real.h>
 #include <alg/ode.h>
+#include <co/argv.h>
+#include <co/area2.h>
 #include <co/array.h>
-#include <co/len.h>
 #include <co/err.h>
 #include <co/force2.h>
+#include <co/len.h>
 #include <co/macro.h>
 #include <co/matrix.h>
 #include <co/memory.h>
 #include <co/ode/2.h>
 #include <co/oseen2.h>
-#include <co/skel.h>
 #include <co/punto.h>
+#include <co/skel.h>
 
 #define FMT CO_REAL_OUT
 
@@ -23,7 +25,7 @@ Force2 *Force[99] =
 };
 static Skel *skel;
 static Oseen2 *oseen;
-static real gdot = 1, mu = 1, dt = 0.05, tend = 100;
+static real gdot , mu = 1, dt = 0.5, tend = 10000;
 static real *fx, *fy;
 static real *Oxx, *Oxy, *Oyy;
 static int n;
@@ -115,6 +117,7 @@ main(__UNUSED int argc, char **argv)
 	FILE *f;
 
 	argv++;
+	argv_real(&argv, &gdot);
 	skel_read(stdin, &x, &y, &skel);
 	fargv(&argv, skel);
 	n = skel_nv(skel);
@@ -122,6 +125,7 @@ main(__UNUSED int argc, char **argv)
 	oseen2_ini(e, &oseen);
 	ode2_ini(RK4, n, dt/10, F, NULL, &ode);
 	MSG("len " FMT, len(skel, x, y));
+	MSG("area " FMT, area2(skel, x, y));
 	CALLOC2(n, &vx, &vy);
 	CALLOC2(n, &fx, &fy);
 	matrix_ini(n, n, &Oxx);
@@ -132,7 +136,7 @@ main(__UNUSED int argc, char **argv)
 	while (time < tend) {
 		t = time + dt;
 		ode2_apply(ode, &time, t, x, y);
-		MSG("x[0] " FMT, x[0]);
+		MSG("area/len " FMT " " FMT, area2(skel, x, y), len(skel, x, y));
 		sprintf(file, "%05d.off", k++);
 		f = fopen(file, "w");
 		skel_off_write(n, x, y, f);
@@ -155,13 +159,15 @@ Put
 
 git clean -fdxq
 m clean lint
-A=0.8835572001943658
-f=data/100.skel
-./2d len $f 50 0.05 0.05 bend_sc 0.01 40 < $f
+gdot=0.02
+#A=0.8835572001943658
+A=1.3
+L=4.926052821288913
+f=data/rbc.skel
+./2d $gdot glen $L 100 len $f 1 0 0 area $A 100  bend_sc 0.1 3 < $f
 
 co.geomview -f 38 -a /u/a *0.off
            
 Kill git
 
 */
-        
