@@ -160,12 +160,13 @@ Put
 git clean -fdxq
 m clean lint
 gdot=0.1
-A=0.8835572001943658
+#A=0.8835572001943658
+A=1.3
 L=4.926052821288913
 f=data/rbc.skel
-./2d $gdot glen $L 100 len $f 1 0 0 area $A 100  bend_sc 0.1 -2 < $f
+./2d $gdot glen $L 100 len $f 1 0 0 area $A 100  bend_sc 0.1 3 < $f
 
-co.geomview -f 38 -a /u/a *.off
+co.geomview -f 38 -a /u/a *00.off
            
 Kill git
 

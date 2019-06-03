@@ -30,6 +30,7 @@ co/endian.h\
 co/equiangulate.h\
 co/err.h\
 co/f2/area.h\
+co/f2/bend_ade.h\
 co/f2/bend_min.h\
 co/f2/bend_sc.h\
 co/f2/glen.h\

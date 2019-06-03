@@ -1,4 +1,4 @@
-#define T F2BendSc
+#define T F2BendAde
 typedef struct Skel Skel;
 typedef struct T T;
 int f2_bend_ade_ini(real k, real H0, Skel*, T**);
