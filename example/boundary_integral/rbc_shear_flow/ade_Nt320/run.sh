@@ -65,7 +65,7 @@ then
     
     cd v${v}_Da${Da1}_g${gamdot}_dt${dt}
     
-    ../../main garea $A $Kga volume $V $Kv area $a $Ka juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $mua $mub $a3 $a4 $b1 $b2 $gamdot $eta $dt $end $freq < $in_file
+    co.run ../../main garea $A $Kga volume $V $Kv area $a $Ka juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $mua $mub $a3 $a4 $b1 $b2 $gamdot $eta $dt $end $freq '<' $in_file
    
     
 else
