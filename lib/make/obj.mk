@@ -44,12 +44,7 @@ edg.s.o\
 edg2.s.o\
 eigen.s.o\
 equiangulate.s.o\
-f2/area.s.o\
-f2/bend_ade.s.o\
-f2/bend_min.s.o\
-f2/bend_sc.s.o\
-f2/glen.s.o\
-f2/len.s.o\
+f/area.s.o\
 f/area_sq.s.o\
 f/area_voronoi.s.o\
 f/darea.s.o\
@@ -72,6 +67,7 @@ f/volume.s.o\
 f/volume_normal.s.o\
 f/wlc.s.o\
 f2/area.s.o\
+f2/bend_ade.s.o\
 f2/bend_min.s.o\
 f2/bend_sc.s.o\
 f2/glen.s.o\
@@ -160,12 +156,7 @@ edg.d.o\
 edg2.d.o\
 eigen.d.o\
 equiangulate.d.o\
-f2/area.d.o\
-f2/bend_ade.d.o\
-f2/bend_min.d.o\
-f2/bend_sc.d.o\
-f2/glen.d.o\
-f2/len.d.o\
+f/area.d.o\
 f/area_sq.d.o\
 f/area_voronoi.d.o\
 f/darea.d.o\
@@ -188,6 +179,7 @@ f/volume.d.o\
 f/volume_normal.d.o\
 f/wlc.d.o\
 f2/area.d.o\
+f2/bend_ade.d.o\
 f2/bend_min.d.o\
 f2/bend_sc.d.o\
 f2/glen.d.o\
@@ -276,12 +268,7 @@ edg.l.o\
 edg2.l.o\
 eigen.l.o\
 equiangulate.l.o\
-f2/area.l.o\
-f2/bend_ade.l.o\
-f2/bend_min.l.o\
-f2/bend_sc.l.o\
-f2/glen.l.o\
-f2/len.l.o\
+f/area.l.o\
 f/area_sq.l.o\
 f/area_voronoi.l.o\
 f/darea.l.o\
@@ -304,6 +291,7 @@ f/volume.l.o\
 f/volume_normal.l.o\
 f/wlc.l.o\
 f2/area.l.o\
+f2/bend_ade.l.o\
 f2/bend_min.l.o\
 f2/bend_sc.l.o\
 f2/glen.l.o\

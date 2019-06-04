@@ -89,8 +89,7 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		matrix_set(n, n, i, i, yy, oyy);
 		matrix_set(n, n, i, i, yz, oyz);
 		matrix_set(n, n, i, i, zz, ozz);
-		for (j = 0; j < n; j++) {
-			if (i == j) continue;
+		for (j = i+1; j < n; j++) {
 			vec_get(j, x, y, z, b);
 			if (oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
 				ERR(CO_INDEX, "ij %d %d", i, j);
@@ -100,6 +99,13 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 			matrix_set(n, n, i, j, yy, oyy);
 			matrix_set(n, n, i, j, yz, oyz);
 			matrix_set(n, n, i, j, zz, ozz);
+
+			matrix_set(n, n, j, i, xx, oxx);
+			matrix_set(n, n, j, i, xy, oxy);
+			matrix_set(n, n, j, i, xz, oxz);
+			matrix_set(n, n, j, i, yy, oyy);
+			matrix_set(n, n, j, i, yz, oyz);
+			matrix_set(n, n, j, i, zz, ozz);
 		}
 	}
 	s = 1/(8*pi);
