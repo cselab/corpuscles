@@ -16,7 +16,8 @@
 struct T {
     int n;
     real *volume;
-    real v0, K;
+    real V0, K;
+    real V;
 };
 
 static real sum(int n, real *volume) {
@@ -26,7 +27,7 @@ static real sum(int n, real *volume) {
     for (t = 0; t < n; t++) v += volume[t];
     return v;
 }
-int he_f_volume_ini(real v0, real K, He *he, T **pq) {
+int he_f_volume_ini(real V0, real K, He *he, T **pq) {
     T *q;
     int n;
     MALLOC(1, &q);
@@ -35,7 +36,7 @@ int he_f_volume_ini(real v0, real K, He *he, T **pq) {
     MALLOC(n, &q->volume);
 
     q->n = n;
-    q->v0 = v0;
+    q->V0 = V0;
     q->K = K;
 
     *pq = q;
@@ -57,8 +58,8 @@ int he_f_volume_fin(T *q) {
     return CO_OK;
 }
 
-int he_f_volume_set_v(T *q, real v0) {
-    q->v0 = v0;
+int he_f_volume_set_v(T *q, real V0) {
+    q->V0 = V0;
     return CO_OK;
 }
 
@@ -94,13 +95,13 @@ static void compute_volume(He *he, const real *x, const real *y, const real *z, 
     }
 }
 
-static void compute_force(real v0, real K, real v,
+static void compute_force(real V0, real K, real v,
                           He *he, const real *x, const real *y, const real *z, /**/
                           real *fx, real *fy, real *fz) {
     int n, t, i, j, k;
     real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
     n = he_nt(he);
-    coeff = 2*K/v0*(v - v0);
+    coeff = 2*K/V0*(v - V0);
     for (t = 0; t < n; t++) {
         get_ijk(t, he, /**/ &i, &j, &k);
         vec_get(i, x, y, z, /**/ a);
@@ -117,26 +118,27 @@ int he_f_volume_force(T *q, He *he,
                       const real *x, const real *y, const real *z, /**/
                       real *fx, real *fy, real *fz) {
     int n;
-    real *volume, v0, K, v;
+    real *volume, V0, K, v;
     n = q->n;
     volume = q->volume;
     K  = q->K;
-    v0 = q->v0;
+    V0 = q->V0;
     if (he_nt(he) != n)
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
     compute_volume(he, x, y, z, /**/ volume);
     v = sum(n, volume);
-    compute_force(v0, K, v, he, x, y, z, /**/ fx, fy, fz);
+    q->V=v;
+    compute_force(V0, K, v, he, x, y, z, /**/ fx, fy, fz);
     return CO_OK;
 }
 
 real he_f_volume_energy(T *q, He *he,
                       const real *x, const real *y, const real *z) {
     int n;
-    real *volume, v0, v, K;
+    real *volume, V0, v, K;
     n = q->n;
     volume = q->volume;
-    v0 = q->v0;
+    V0 = q->V0;
     K  = q->K;
 
     if (he_nt(he) != n)
@@ -144,6 +146,14 @@ real he_f_volume_energy(T *q, He *he,
 
     compute_volume(he, x, y, z, /**/ volume);
     v = sum(n, volume);
+    q->V=v;
+    return K/V0*(v - V0)*(v - V0);
+}
 
-    return K/v0*(v - v0)*(v - v0);
+real he_f_volume_V0(T *q) {
+  return q->V0;
+}
+
+real he_f_volume_V(T *q) {
+  return q->V;
 }

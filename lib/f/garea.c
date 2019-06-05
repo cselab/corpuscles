@@ -16,9 +16,10 @@
 #define T HeFGarea
 
 struct T {
-    int n;
-    real *area;
-    real A0, K;
+  int n;
+  real *area;
+  real A0, K;
+  real A;
 };
 
 int he_f_garea_ini(real A0, real K, He *he, T **pq) {
@@ -31,6 +32,7 @@ int he_f_garea_ini(real A0, real K, He *he, T **pq) {
     q->n = n;
     q->A0 = A0;
     q->K = K;
+    q->A = A0;
 
     *pq = q;
     return CO_OK;
@@ -76,6 +78,7 @@ static void get(int t, He *he,
 static void compute_area(He *he, const real *x, const real *y, const real *z, /**/ real *area) {
     real a[3], b[3], c[3];
     int n, t;
+    
     n = he_nt(he);
     for (t = 0; t < n; t++) {
         get(t, he, x, y, z, /**/ a, b, c);
@@ -118,6 +121,7 @@ int he_f_garea_force(T *q, He *he,
 
     compute_area(he, x, y, z, /**/ area);
     A = he_sum_array(n, area);
+    q->A = A;
     compute_force(K, A0, A,   he, x, y, z, /**/ fx, fy, fz);
 
     return CO_OK;
@@ -137,5 +141,13 @@ real he_f_garea_energy(T *q, He *he,
 
     compute_area(he, x, y, z, /**/ area);    
     A = he_sum_array(n, area);
+    q->A = A;
     return K/A0*(A - A0)*(A - A0);
+}
+
+real he_f_garea_A0(T *q){
+  return q->A0;
+}
+real he_f_garea_A(T *q){
+  return q->A;
 }

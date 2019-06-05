@@ -10,6 +10,7 @@ int he_f_volume_fin(T*);
 int he_f_volume_set_v(T*, real); /* set v0 */
 int he_f_volume_force(T*, He*, const real*, const real*, const real*, /**/ real*, real*, real*);
 real he_f_volume_energy(T*, He*, const real*, const real*, const real*);
+real he_f_volume_V0(T*);
+real he_f_volume_V(T*);
 int he_f_volume_v(T*, /**/ real  **v);
-
 #undef T
