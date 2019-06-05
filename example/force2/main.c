@@ -92,9 +92,9 @@ main(int __UNUSED argc, char *argv[])
 /*
 
 m clean; m
-valgrind '--track-origins='yes ./main bend_ade 2 3 < data/rbc.skel > q
+./main bend_ade 2 3 < data/rbc.skel  > q
 gp <<'!'
-plot "q" u 3:5
+plot "q" u 3:5, "" u 4:6, x
 !
 
 */
