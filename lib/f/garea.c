@@ -29,10 +29,10 @@ int he_f_garea_ini(real A0, real K, He *he, T **pq) {
     n = he_nt(he);
     MALLOC(n, &q->area);
 
-    q->n = n;
+    q->n  = n;
     q->A0 = A0;
-    q->K = K;
-    q->A = A0;
+    q->K  = K;
+    q->A  = A0;
 
     *pq = q;
     return CO_OK;
