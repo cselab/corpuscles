@@ -8,8 +8,9 @@ v=0.642
 R=1
 
 Nt=1280
-Kga=5000
-Kv=5000
+Kc=20000
+Kga=$Kc
+Kv=$Kc
 
 Kb=1.0
 C0=0.0
@@ -24,14 +25,14 @@ a4=8
 b1=0.7
 b2=0.75
 
-gamdot=0.1
+gamdot=0.001
 eta=645.928652122
 rho=1.0
-dt=0.01
+dt=0.1
 start=0
-end=200000
-freq_out=100
-freq_stat=10
+end=300000
+freq_out=200
+freq_stat=50
 
 export CO_ARG="-W 24:00"
      
@@ -62,13 +63,13 @@ then
     DA0=$(echo $Kb, $C0, $Kad, $Da0, $D, $pi, $A | awk '{print $4*$7}')
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
 
-    if [ ! -d v${v}_Da${Da1}_g${gamdot}_dt${dt} ]; then
+    if [ ! -d Da${Da1}_g${gamdot}_dt${dt}_Kc${Kc} ]; then
 	
-	mkdir v${v}_Da${Da1}_g${gamdot}_dt${dt}
+	mkdir Da${Da1}_g${gamdot}_dt${dt}_Kc${Kc}
 	
     fi
     
-    cd v${v}_Da${Da1}_g${gamdot}_dt${dt}
+    cd Da${Da1}_g${gamdot}_dt${dt}_Kc${Kc}
     
     co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $gamdot $eta $dt $start $end $freq_out $freq_stat '<' $in_file
    
@@ -87,8 +88,8 @@ else
     Da1=0.143
     bash run.sh $Da1
 
-    Da1=1.717
-    bash run.sh $Da1
+    #Da1=1.717
+    #bash run.sh $Da1
 
     Da1=1.788
     bash run.sh $Da1
