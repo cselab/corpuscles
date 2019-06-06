@@ -25,10 +25,8 @@ a4=8
 b1=0.7
 b2=0.75
 
-gamdot=0.001
 eta=645.928652122
 rho=1.0
-dt=0.1
 start=0
 end=300000
 freq_out=200
@@ -40,7 +38,9 @@ if test $# -ne 0
 then
 
     Da1="$1"
-
+    gamdot="$2"
+    dt="$3"
+    
     Re=$(echo $gamdot $R $rho $eta | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
     
@@ -76,26 +76,29 @@ then
     
 else
 
+    gamdot=0.001
+    dt=0.1
+
     Da1=-0.858
-    bash run.sh $Da1
+    bash run.sh $Da1 $gamdot $dt
 
     Da1=-0.358
-    bash run.sh $Da1
+    bash run.sh $Da1 $gamdot $dt
 
     Da1=0.072
-    bash run.sh $Da1
+    bash run.sh $Da1 $gamdot $dt
 
     Da1=0.143
-    bash run.sh $Da1
+    bash run.sh $Da1 $gamdot $dt
 
     #Da1=1.717
-    #bash run.sh $Da1
+    #bash run.sh $Da1 $gamdot $dt
 
     Da1=1.788
-    bash run.sh $Da1
+    bash run.sh $Da1 $gamdot $dt
 
     Da1=2.003
-    bash run.sh $Da1
+    bash run.sh $Da1 $gamdot $dt
     
 fi
     
