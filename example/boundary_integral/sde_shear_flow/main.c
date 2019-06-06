@@ -34,7 +34,7 @@ Force *Fo[20] =
 static He *he;
 static Oseen3 *oseen;
 static real gamdot, eta, dt;
-static int end, freq, freq_stat;
+static int start, end, freq_out, freq_stat;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static int n;
@@ -44,7 +44,7 @@ static void usg(void) {
   fprintf(stderr, "juelicher_xin Kb C0 Kad DA0D \n");
   fprintf(stderr, "strain ref_file lim mua mub a3 a4 b1 b2 \n");
   fprintf(stderr, "gamdot, eta, dt \n");
-  fprintf(stderr, "end, freq, freq_stat \n");
+  fprintf(stderr, "start, end, freq_out, freq_stat \n");
   fprintf(stderr, "< OFF input file \n");
   
   //exit(0);
@@ -93,11 +93,14 @@ fargv(char ***p, He *he)
 	MSG("dt:         %s", v[0]);
 	scl(v, &dt);
 	v++;
+	MSG("start:      %s", v[0]);
+	num(v, &start);
+	v++;
 	MSG("end:        %s", v[0]);
 	num(v, &end);
 	v++;
-	MSG("freq:       %s", v[0]);
-	num(v, &freq);
+	MSG("freq_out:   %s", v[0]);
+	num(v, &freq_out);
 	v++;
 	MSG("freq_stat:  %s", v[0]);
 	num(v, &freq_stat);
@@ -173,7 +176,9 @@ main(__UNUSED int argc, char **argv)
 {
 	real *x, *y, *z, *vx, *vy, *vz;
 	real e;
-	char file[999];
+	char file_out[999];
+	char file_stat[99]="stat.dat";
+	FILE *fm;
 	Ode3 *ode;
 	real t, time;
 	int s, i;
@@ -199,8 +204,15 @@ main(__UNUSED int argc, char **argv)
 	matrix_ini(n, n, &Oyy);
 	matrix_ini(n, n, &Oyz);
 	matrix_ini(n, n, &Ozz);
-	t = time = 0;
-	s = 0;
+	
+	t = time = start*dt;
+	s = start;
+
+	if ( (fm = fopen(file_stat, "w") ) == NULL) {
+	  ER("Failed to open '%s'", file_stat);
+	}
+	fputs("#dt s t A/A0 V/V0 v ega ev eb ebl ebn es\n", fm);
+	fclose(fm);
 
 	i = 0;
 	while (Fo[i]) {
@@ -221,9 +233,9 @@ main(__UNUSED int argc, char **argv)
 	
 	while ( 1 ) {
 	  
-	  if ( s % freq == 0 ) {
-	    sprintf(file, "%07d.off", s);
-	    off_he_xyz_write(he, x, y, z, file);
+	  if ( s % freq_out == 0 ) {
+	    sprintf(file_out, "%07d.off", s);
+	    off_he_xyz_write(he, x, y, z, file_out);
 	  }
 	  
 	  if ( s % freq_stat == 0 ) {
@@ -269,8 +281,13 @@ main(__UNUSED int argc, char **argv)
 	    v = reduced_volume(A, V);
 	    MSG("dt s t = %f %i %f", dt, s, t);
 	    MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
-	    MSG("ega, ev, eb, ebl, ebn, es = %f %f %f %f %f %f", ega, ev, eb, ebl, ebn, es);
-	    
+	    MSG("ega ev eb ebl ebn es = %f %f %f %f %f %f", ega, ev, eb, ebl, ebn, es);
+	    if ( (fm = fopen(file_stat, "a") ) == NULL) {
+	      ER("Failed to open '%s'", file_stat);
+	    }
+	    fprintf(fm, "%f %i %f% f %f %f %f %f %f %f %f %f\n", dt, s, t, A/A0, V/V0, v, ega, ev, eb, ebl, ebn, es);
+	    fclose(fm);
+
 	  }
 	  
 	  
@@ -282,7 +299,7 @@ main(__UNUSED int argc, char **argv)
 	  ode3_apply(ode, &time, t, x, y, z);	  
 	  
 	}
-	
+
 	FREE3(vx, vy, vz);
 	FREE3(fx, fy, fz);
 	matrix_fin(Oxx);
