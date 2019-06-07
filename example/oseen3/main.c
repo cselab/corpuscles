@@ -21,6 +21,7 @@ main(void)
 	real xx, xy, xz, yy, yz, zz, s, e;
 	int n, nt, i, j, k, t;
 
+	err_set_ignore();
 	y_inif(stdin, &he, &x, &y, &z);
 	n = he_nv(he);
 	nt = he_nt(he);
