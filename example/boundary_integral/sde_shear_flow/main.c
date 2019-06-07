@@ -279,9 +279,13 @@ main(__UNUSED int argc, char **argv)
 	    }
 
 	    v = reduced_volume(A, V);
-	    MSG("dt s t = %f %i %f", dt, s, t);
-	    MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
-	    MSG("ega ev eb ebl ebn es = %f %f %f %f %f %f", ega, ev, eb, ebl, ebn, es);
+
+	    if ( s / 10 % freq_stat == 0 ) {
+	      MSG("dt s t = %f %i %f", dt, s, t);
+	      MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
+	      MSG("ega ev eb ebl ebn es = %f %f %f %f %f %f", ega, ev, eb, ebl, ebn, es);
+	    }
+	    
 	    if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	      ER("Failed to open '%s'", file_stat);
 	    }
