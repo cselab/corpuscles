@@ -11,6 +11,7 @@ ode/2.o\
 ode/2v.o\
 ode/3.o\
 ode/3v.o\
+omp.o\
 predicate/main.o\
 read.o\
 util.o

@@ -91,6 +91,7 @@ co/ode/2v.h\
 co/ode/3.h\
 co/ode/3v.h\
 co/off.h\
+co/omp.h\
 co/orient.h\
 co/oseen2.h\
 co/oseen3.h\
