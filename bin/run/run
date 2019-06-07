@@ -12,6 +12,7 @@ prog=co.run
 usg () {
     msg "$prog 'prog' [args ...]"
     msg 'environment variable CO_ARG is  used as an argument to bsub'
+    msg 'NT is used as openmp number of threads'
     msg 'CO_HOST if set is used as a host nickname'
     exit
 }
