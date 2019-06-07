@@ -25,7 +25,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, dt = 1e-1, tend = 100;
+static real gdot = 1, mu = 1, dt = 1e-2, tend = 100;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static int n;
@@ -81,10 +81,8 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 {
 	int i, ga, be;
 	real xx, xy, xz, yy, yz, zz;
-	for (i = 0; i < n; i++) {
-		vx[i] = gdot*z[i];
-		vy[i] = vz[i] = 0;
-	}
+
+	array_zero3(n, vx, vy, vz);
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
@@ -100,6 +98,8 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 			vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
 			vz[be] -= xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
 		}
+	for (i = 0; i < n; i++)
+		vx[i] += gdot*z[i];
 	for (i = 0; i < n; i++) {
 		vx[i] = -vx[i];
 		vy[i] = -vy[i];
@@ -164,9 +164,9 @@ f=/u/.co/sph/icosa/Nt20.off
 A=9.57454 V=2.53615
 #f=/u/.co/rbc/laplace/0.off
 #A=8.66899 V=1.53405
-./3d garea $A 1e8 volume $V 1e8 strain $f lim 10 10 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f
+./3d garea $A 1000 volume $V 1000 strain $f lim 10 10 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f
 
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *0.off
+co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *00.off
 
 Kill git
 

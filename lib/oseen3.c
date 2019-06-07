@@ -97,6 +97,7 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		SET(i, i, zz, ozz);
 		for (j = i + 1; j < n; j++) {
 			vec_get(j, x, y, z, b);
+			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, xx, oxx);
 			SET(i, j, xy, oxy);
 			SET(i, j, xz, oxz);
