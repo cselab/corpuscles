@@ -38,8 +38,9 @@ then
     fi
     
     cd v${v}_g${gamdot}_dt${dt}
-    
-    ../../main garea $A $Kga volume $V $Kv area $a $Ka juelicher_xin $Kb 0 0 0 $gamdot $eta $dt $end $freq < $in_file
+    echo $in_file 
+    cat $in_file
+    co.run ../../main garea $A $Kga volume $V $Kv area $a $Ka juelicher_xin $Kb 0 0 0 $gamdot $eta $dt $end $freq '<' $in_file
    
     
 else
