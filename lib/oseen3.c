@@ -79,12 +79,13 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	int n, i;
-	real e, s, a[3], b[3], xx, xy, xz, yy, yz, zz;
+	real e, s;
 
 	n = he_nv(he);
 	e = q->e;
 #pragma omp parallel for
 	for (i = 0; i < n; i++) {
+		real a[3], b[3], xx, xy, xz, yy, yz, zz;
 		int j;
 		vec_get(i, x, y, z, a);
 		oseen0(e, &xx, &xy, &xz, &yy, &yz, &zz);
