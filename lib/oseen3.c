@@ -1,8 +1,6 @@
 #include <tgmath.h>
 #include <stdio.h>
-#ifdef _OPENMP
 #include <omp.h>
-#endif
 #include "real.h"
 #include "co/err.h"
 #include "co/he.h"
@@ -95,8 +93,6 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		matrix_set(n, n, i, i, zz, ozz);
 		for (j = i+1; j < n; j++) {
 			vec_get(j, x, y, z, b);
-			if (oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
-				ERR(CO_INDEX, "ij %d %d", i, j);
 			matrix_set(n, n, i, j, xx, oxx);
 			matrix_set(n, n, i, j, xy, oxy);
 			matrix_set(n, n, i, j, xz, oxz);
