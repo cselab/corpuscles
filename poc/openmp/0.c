@@ -4,9 +4,11 @@
 int
 main()
 {
-	int i;
+	int i, t, n;
+	n = 100;
 #pragma omp parallel for
-	for (i = 0; i < 3; i++) {
-		printf("hello world\n");
+	for (i = 0; i < n; i++) {
+		t = omp_get_thread_num();
+		printf("tid %d\n", t);
 	}
 }
