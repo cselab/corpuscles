@@ -18,7 +18,7 @@ main(void)
 	Oseen3 *oseen;
 	real *x, *y, *z;
 	real *S, *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
-	real xx, xy, xz, yy, yz, zz, s, e;
+	real xx, yy, zz, s, e;
 	int n, nt, i, j, k, t;
 
 	err_set_ignore();
