@@ -1,5 +1,5 @@
 .POSIX:
-include ../../conf.mk
+#include ../../conf.mk
 M = 0
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`

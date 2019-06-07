@@ -1,7 +1,12 @@
 #include <stdio.h>
+#include <omp.h>
 
 int
 main()
 {
-	printf("hello world\n");
+	int i;
+#pragma omp parallel for
+	for (i = 0; i < 3; i++) {
+		printf("hello world\n");
+	}
 }
