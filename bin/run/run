@@ -7,6 +7,7 @@ prog=co.run
 : ${GDB_EXEC=gdb}
 : ${CO_ARG=}
 : ${BSUB=bsub}
+: ${NT=1}
 
 usg () {
     msg "$prog 'prog' [args ...]"
@@ -43,7 +44,8 @@ else
         if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
 	if test $? -ne 0; then err 'fail to load module gsl'; fi
-	e $BSUB $CO_ARG "$@"
+	e export OMP_NUM_THREADS=$NT
+	e $BSUB -n $NT $CO_ARG "$@"
     else
 	e "$@"
     fi
