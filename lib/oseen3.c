@@ -1,5 +1,8 @@
 #include <tgmath.h>
 #include <stdio.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 #include "real.h"
 #include "co/err.h"
 #include "co/he.h"
@@ -80,6 +83,7 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
 	n = he_nv(he);
 	e = q->e;
+#pragma omp parallel for
 	for (i = 0; i < n; i++) {
 		vec_get(i, x, y, z, a);
 		oseen0(e, &xx, &xy, &xz, &yy, &yz, &zz);

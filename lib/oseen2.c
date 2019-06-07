@@ -1,5 +1,8 @@
 #include <tgmath.h>
 #include <stdio.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 #include "real.h"
 #include "co/err.h"
 #include "co/macro.h"
@@ -73,7 +76,7 @@ oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *ox
 	real e, s, a[2], b[2], xx, xy, yy;
 	n = skel_nv(skel);
 	e = q->e;
-
+#pragma omp parallel for
 	for (i = 0; i < n; i++) {
 		vec2_get(i, x, y, a);
 		oseen0(e, &xx, &xy, &yy);
