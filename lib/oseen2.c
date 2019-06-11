@@ -73,12 +73,13 @@ int
 oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *oxy, real *oyy)
 {
 	int n, i;
-	real e, s, a[2], b[2], xx, xy, yy;
+	real e, s;
 	n = skel_nv(skel);
 	e = q->e;
 #pragma omp parallel for
 	for (i = 0; i < n; i++) {
 		int j;
+		real a[2], b[2], xx, xy, yy;
 		vec2_get(i, x, y, a);
 		oseen0(e, &xx, &xy, &yy);
 		matrix_set(n, n, i, i, xx, oxx);
