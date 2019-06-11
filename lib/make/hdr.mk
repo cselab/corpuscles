@@ -109,6 +109,7 @@ co/read.h\
 co/real.h\
 co/restore.h\
 co/ring.h\
+co/segment.h\
 co/skel.h\
 co/strain/2d.h\
 co/strain/3d.h\
