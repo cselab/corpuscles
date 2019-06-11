@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <tgmath.h>
+#include <omp.h>
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
@@ -148,9 +149,9 @@ fin(void)
 static int
 F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
 {
-	int i, ga, be;
-	real xx, xy, xz, yy, yz, zz;
-	real tx, ty, tz;
+	int i, ga;
+	
+#pragma omp parallel for
 	for (i = 0; i < nv; i++) {
 		vx[i] = gamdot*z[i];
 		vy[i] = vz[i] = 0;
@@ -158,38 +159,38 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	array_zero3(nv, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-	for (ga = 0; ga < nv; ga++)
-		for (be = ga; be < nv; be++) {
-			xx = matrix_get(nv, nv, ga, be, Oxx)/eta;
-			xy = matrix_get(nv, nv, ga, be, Oxy)/eta;
-			xz = matrix_get(nv, nv, ga, be, Oxz)/eta;
-			yy = matrix_get(nv, nv, ga, be, Oyy)/eta;
-			yz = matrix_get(nv, nv, ga, be, Oyz)/eta;
-			zz = matrix_get(nv, nv, ga, be, Ozz)/eta;
-			tx = xx*fx[be] + xy*fy[be] + xz*fz[be];
-			ty = xy*fx[be] + yy*fy[be] + yz*fz[be];
-			tz = xz*fx[be] + yz*fy[be] + zz*fz[be];
+#pragma omp parallel for
+	for (ga = 0; ga < nv; ga++) {
 
-			vx[ga] -= tx;
-			vy[ga] -= ty;
-			vz[ga] -= tz;
-			
-			if ( be != ga ) {
-			  tx = xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
-			  ty = xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
-			  tz = xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
-			  
-			  vx[be] -= tx;
-			  vy[be] -= ty;
-			  vz[be] -= tz;
-			  
-			}
-
-		}
+	  int be;
+	  real xx, xy, xz, yy, yz, zz;
+	  real tx, ty, tz;
+	  
+	  for (be = 0; be < nv; be++) {
+	    
+	    xx = matrix_get(nv, nv, ga, be, Oxx)/eta;
+	    xy = matrix_get(nv, nv, ga, be, Oxy)/eta;
+	    xz = matrix_get(nv, nv, ga, be, Oxz)/eta;
+	    yy = matrix_get(nv, nv, ga, be, Oyy)/eta;
+	    yz = matrix_get(nv, nv, ga, be, Oyz)/eta;
+	    zz = matrix_get(nv, nv, ga, be, Ozz)/eta;
+	    tx = xx*fx[be] + xy*fy[be] + xz*fz[be];
+	    ty = xy*fx[be] + yy*fy[be] + yz*fz[be];
+	    tz = xz*fx[be] + yz*fy[be] + zz*fz[be];
+	    
+	    vx[ga] -= tx;
+	    vy[ga] -= ty;
+	    vz[ga] -= tz;    
+	    
+	  }
+	  
+	}
+	
+#pragma omp parallel for
 	for (i = 0; i < nv; i++) {
-		vx[i] = -vx[i];
-		vy[i] = -vy[i];
-		vz[i] = -vz[i];
+	  vx[i] = -vx[i];
+	  vy[i] = -vy[i];
+	  vz[i] = -vz[i];
 	}
 	return CO_OK;
 }
