@@ -38,7 +38,7 @@ static real rho, eta, gamdot, dt;
 static int start, end, freq_out, freq_stat;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
-static int n;
+static int nv, nt;
 
 static void usg(void) {
   fprintf(stderr, "%s garea A Kga area a Ka volume V Kv \n", me);
@@ -150,26 +150,43 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 {
 	int i, ga, be;
 	real xx, xy, xz, yy, yz, zz;
-	for (i = 0; i < n; i++) {
+	real tx, ty, tz;
+	for (i = 0; i < nv; i++) {
 		vx[i] = gamdot*z[i];
 		vy[i] = vz[i] = 0;
 	}
-	array_zero3(n, fx, fy, fz);
+	array_zero3(nv, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-	for (ga = 0; ga < n; ga++)
-		for (be = 0; be < n; be++) {
-			xx = matrix_get(n, n, be, ga, Oxx)/eta;
-			xy = matrix_get(n, n, be, ga, Oxy)/eta;
-			xz = matrix_get(n, n, be, ga, Oxz)/eta;
-			yy = matrix_get(n, n, be, ga, Oyy)/eta;
-			yz = matrix_get(n, n, be, ga, Oyz)/eta;
-			zz = matrix_get(n, n, be, ga, Ozz)/eta;
-			vx[be] -= xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
-			vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
-			vz[be] -= xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
+	for (ga = 0; ga < nv; ga++)
+		for (be = ga; be < nv; be++) {
+			xx = matrix_get(nv, nv, ga, be, Oxx)/eta;
+			xy = matrix_get(nv, nv, ga, be, Oxy)/eta;
+			xz = matrix_get(nv, nv, ga, be, Oxz)/eta;
+			yy = matrix_get(nv, nv, ga, be, Oyy)/eta;
+			yz = matrix_get(nv, nv, ga, be, Oyz)/eta;
+			zz = matrix_get(nv, nv, ga, be, Ozz)/eta;
+			tx = xx*fx[be] + xy*fy[be] + xz*fz[be];
+			ty = xy*fx[be] + yy*fy[be] + yz*fz[be];
+			tz = xz*fx[be] + yz*fy[be] + zz*fz[be];
+
+			vx[ga] -= tx;
+			vy[ga] -= ty;
+			vz[ga] -= tz;
+			
+			if ( be != ga ) {
+			  tx = xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
+			  ty = xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
+			  tz = xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
+			  
+			  vx[be] -= tx;
+			  vy[be] -= ty;
+			  vz[be] -= tz;
+			  
+			}
+
 		}
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < nv; i++) {
 		vx[i] = -vx[i];
 		vy[i] = -vy[i];
 		vz[i] = -vz[i];
@@ -185,7 +202,6 @@ int
 main(__UNUSED int argc, char **argv)
 {
 	real *x, *y, *z, *vx, *vy, *vz;
-	real reg;
 	char file_out[999];
 	char file_stat[99]="stat.dat";
 	FILE *fm;
@@ -196,28 +212,16 @@ main(__UNUSED int argc, char **argv)
 	char name[99];
 	real A0, V0, v0;
 	real A, V, v;
+	real a, e, reg;
 	real M, m;
 	
 	err_set_ignore();
 	argv++;
 	y_inif(stdin, &he, &x, &y, &z);
 	fargv(&argv, he);
-	n = he_nv(he);
-	reg = 0.025;
-	oseen3_ini(reg, &oseen);
-	ode3_ini(RK4, n, dt, F, NULL, &ode);
 
-	CALLOC3(n, &vx, &vy, &vz);
-	CALLOC3(n, &fx, &fy, &fz);
-	matrix_ini(n, n, &Oxx);
-	matrix_ini(n, n, &Oxy);
-	matrix_ini(n, n, &Oxz);
-	matrix_ini(n, n, &Oyy);
-	matrix_ini(n, n, &Oyz);
-	matrix_ini(n, n, &Ozz);
-	
-	t = time = start*dt;
-	s = start;
+	nv = he_nv(he);
+	nt = he_nt(he);
 
 	if ( (fm = fopen(file_stat, "w") ) == NULL) {
 	  ER("Failed to open '%s'", file_stat);
@@ -239,14 +243,35 @@ main(__UNUSED int argc, char **argv)
 	  i++;
 	}
 
-	M = rho*A0*D*2;
-	m = M/n;
-
-	MSG("R D rho eta gamdot dt M m = %f %f %f %f %f %f %f %f", R, D, rho, eta, gamdot, dt, M, m);
-	
 	v0 = reduced_volume(A0, V0);
 	MSG("A0 V0 v0 = %f %f %f", A0, V0, v0);
+
+	MSG("R D rho eta gamdot = %f %f %f %f %f", R, D, rho, eta, gamdot);
 	
+	M = rho*A0*D*2;
+	m = M/nv;
+	a = A0/nt;
+	e = 2*sqrt(a)/sqrt(sqrt(3.0));
+	reg = 0.1*e;
+
+	MSG("Nv Nt = %i %i", nv, nt);
+	MSG("M m a e reg dt = %f %f %f %f %f %f", M, m, a, e, reg, dt);
+	
+	
+	oseen3_ini(reg, &oseen);
+	ode3_ini(RK4, nv, dt, F, NULL, &ode);
+
+	CALLOC3(nv, &vx, &vy, &vz);
+	CALLOC3(nv, &fx, &fy, &fz);
+	matrix_ini(nv, nv, &Oxx);
+	matrix_ini(nv, nv, &Oxy);
+	matrix_ini(nv, nv, &Oxz);
+	matrix_ini(nv, nv, &Oyy);
+	matrix_ini(nv, nv, &Oyz);
+	matrix_ini(nv, nv, &Ozz);
+	
+	t = time = start*dt;
+	s = start;
 	
 	while ( 1 ) {
 	  
@@ -319,7 +344,7 @@ main(__UNUSED int argc, char **argv)
 
 	  if ( s > end ) break;
 
-	  ode3_apply(ode, &time, t, x, y, z);	  
+	  ode3_apply(ode, &time, t, x, y, z);
 	  
 	}
 
