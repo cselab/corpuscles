@@ -72,40 +72,45 @@ oseen3_fin(T *q)
 	return CO_OK;
 }
 
+#define SET(i, j, s, a) matrix_set(n, n, i, j, s, a)
+
 int
 oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
-	int n, i, j;
-	real e, s, a[3], b[3], xx, xy, xz, yy, yz, zz;
+	int n, i;
+	real e, s;
 
 	n = he_nv(he);
 	e = q->e;
 #pragma omp parallel for
 	for (i = 0; i < n; i++) {
+		real a[3], b[3], xx, xy, xz, yy, yz, zz;
+		int j;
 		vec_get(i, x, y, z, a);
 		oseen0(e, &xx, &xy, &xz, &yy, &yz, &zz);
-		matrix_set(n, n, i, i, xx, oxx);
-		matrix_set(n, n, i, i, xy, oxy);
-		matrix_set(n, n, i, i, xz, oxz);
-		matrix_set(n, n, i, i, yy, oyy);
-		matrix_set(n, n, i, i, yz, oyz);
-		matrix_set(n, n, i, i, zz, ozz);
-		for (j = i+1; j < n; j++) {
+		SET(i, i, xx, oxx);
+		SET(i, i, xy, oxy);
+		SET(i, i, xz, oxz);
+		SET(i, i, yy, oyy);
+		SET(i, i, yz, oyz);
+		SET(i, i, zz, ozz);
+		for (j = i + 1; j < n; j++) {
 			vec_get(j, x, y, z, b);
-			matrix_set(n, n, i, j, xx, oxx);
-			matrix_set(n, n, i, j, xy, oxy);
-			matrix_set(n, n, i, j, xz, oxz);
-			matrix_set(n, n, i, j, yy, oyy);
-			matrix_set(n, n, i, j, yz, oyz);
-			matrix_set(n, n, i, j, zz, ozz);
+			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+			SET(i, j, xx, oxx);
+			SET(i, j, xy, oxy);
+			SET(i, j, xz, oxz);
+			SET(i, j, yy, oyy);
+			SET(i, j, yz, oyz);
+			SET(i, j, zz, ozz);
 
-			matrix_set(n, n, j, i, xx, oxx);
-			matrix_set(n, n, j, i, xy, oxy);
-			matrix_set(n, n, j, i, xz, oxz);
-			matrix_set(n, n, j, i, yy, oyy);
-			matrix_set(n, n, j, i, yz, oyz);
-			matrix_set(n, n, j, i, zz, ozz);
+			SET(j, i, xx, oxx);
+			SET(j, i, xy, oxy);
+			SET(j, i, xz, oxz);
+			SET(j, i, yy, oyy);
+			SET(j, i, yz, oyz);
+			SET(j, i, zz, ozz);
 		}
 	}
 	s = 1/(8*pi);
