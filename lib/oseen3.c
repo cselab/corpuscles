@@ -7,6 +7,7 @@
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
+#include "co/normal.h"
 #include "co/oseen3.h"
 #include "co/vec.h"
 
@@ -15,6 +16,7 @@ static const real pi = 3.141592653589793115997964;
 struct T
 {
 	real e;
+	real *nx, *ny, *nz;
 };
 
 static int
@@ -61,6 +63,24 @@ oseen3_ini(real e, T **pq)
 
 	MALLOC(1, &q);
 	q->e = e;
+	*pq = q;
+	return CO_OK;
+}
+
+int
+oseen3_he_ini(He *he, real e, T **pq)
+{
+	T *q;
+	real *nx, *ny, *nz;
+	int n;
+	
+	MALLOC(1, &q);
+	n = he_nv(he);
+	MALLOC3(n, &nx, &ny, &nz);
+	q->e = e;
+	q->nx = nx;
+	q->ny = ny;
+	q->nz = nz;
 	*pq = q;
 	return CO_OK;
 }
@@ -120,5 +140,13 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	matrix_scale(n, n, s, oyy);
 	matrix_scale(n, n, s, oyz);
 	matrix_scale(n, n, s, ozz);
+	return CO_OK;
+}
+
+int
+oseeen3_stresslet(T *q, He *he, const real*x, const real *y, const real *z,
+	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
+{
+	
 	return CO_OK;
 }
