@@ -101,6 +101,13 @@ oseen2_apply(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *ox
 	return CO_OK;
 }
 
+int
+oseen2_stresslet(T *q, Skel *skel, const real *x, const real *y, real *oxx, real *oxy, real *oyy)
+{
+	
+	return CO_OK;
+}
+
 real
 oseen2_pressure(T *q, Skel *skel, const real *x, const real *y, const real *fx, const real *fy, const real r[2])
 {
