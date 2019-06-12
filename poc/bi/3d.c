@@ -104,11 +104,6 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	}
 	for (i = 0; i < n; i++)
 		vx[i] += gdot*z[i];
-	for (i = 0; i < n; i++) {
-		vx[i] = -vx[i];
-		vy[i] = -vy[i];
-		vz[i] = -vz[i];
-	}
 	return CO_OK;
 }
 
