@@ -80,9 +80,14 @@ F(__UNUSED real t, const real *x, const real *y, real *fx,  real *fy, void *p0)
 {
 	Param *p;
 	Skel *skel;
+	int nv;
+
 	p = p0;
 	skel = p->skel;
+	n = skel_nv(skel);
 	force(skel, x, y, fx, fy);
+	array_negative(n, fx);
+	array_negative(n, fy);
 	return CO_OK;
 }
 
