@@ -92,6 +92,7 @@ else
     gamdot=0.0071961916509
     bash run_da.sh $Da1 $gamdot $dt
 
+    dt=0.01
     gamdot=0.0143923833018
     bash run_da.sh $Da1 $gamdot $dt
 
@@ -101,6 +102,7 @@ else
     gamdot=0.071961916509
     bash run_da.sh $Da1 $gamdot $dt
 
+    dt=0.001
     gamdot=0.143923833018
     bash run_da.sh $Da1 $gamdot $dt
 
@@ -109,7 +111,8 @@ else
 
     gamdot=0.71961916509
     bash run_da.sh $Da1 $gamdot $dt
-
+    
+    dt=0.0001
     gamdot=1.43923833018
     bash run_da.sh $Da1 $gamdot $dt
 
