@@ -189,7 +189,7 @@ oseeen3_stresslet(T *q, He *he, const real*x, const real *y, const real *z,
 		real a[3], b[3], xx, xy, xz, yy, yz, zz;
 		int j;
 		vec_get(i, x, y, z, a);
-		for (j = i + 1; j < n; j++) {
+		for (j = 0; j < n; j++) {
 			vec_get(j, x, y, z, b);
 			stresslet(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
 		}
@@ -201,7 +201,5 @@ oseeen3_stresslet(T *q, He *he, const real*x, const real *y, const real *z,
 	matrix_scale(n, n, s, oyy);
 	matrix_scale(n, n, s, oyz);
 	matrix_scale(n, n, s, ozz);
-	return CO_OK;
-
 	return CO_OK;
 }
