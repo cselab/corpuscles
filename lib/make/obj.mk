@@ -11,6 +11,7 @@ ode/2.o\
 ode/2v.o\
 ode/3.o\
 ode/3v.o\
+omp.o\
 predicate/main.o\
 read.o\
 util.o
@@ -106,6 +107,7 @@ punto.s.o\
 real.s.o\
 restore.s.o\
 ring.s.o\
+segement.s.o\
 skel.s.o\
 skel/ellipse.s.o\
 skel/rbc.s.o\
@@ -218,6 +220,7 @@ punto.d.o\
 real.d.o\
 restore.d.o\
 ring.d.o\
+segement.d.o\
 skel.d.o\
 skel/ellipse.d.o\
 skel/rbc.d.o\
@@ -330,6 +333,7 @@ punto.l.o\
 real.l.o\
 restore.l.o\
 ring.l.o\
+segement.l.o\
 skel.l.o\
 skel/ellipse.l.o\
 skel/rbc.l.o\

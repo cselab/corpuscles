@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <tgmath.h>
+#include <omp.h>
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
@@ -47,7 +48,6 @@ fargv(char ***p, He *he)
 		force_argv(name, &v, he, &Fo[i]);
 		i++;
 	}
-
 	*p = v;
 	return CO_OK;
 }
@@ -80,17 +80,17 @@ fin(void)
 static int
 F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
 {
-	int i, ga, be;
-	real xx, xy, xz, yy, yz, zz;
-	for (i = 0; i < n; i++) {
-		vx[i] = gdot*z[i];
-		vy[i] = vz[i] = 0;
-	}
+	int i, be;
+
+	array_zero3(n, vx, vy, vz);
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-	for (ga = 0; ga < n; ga++)
-		for (be = 0; be < n; be++) {
+#pragma omp parallel for
+	for (be = 0; be < n; be++) {
+		int ga;
+		real xx, xy, xz, yy, yz, zz;
+		for (ga = 0; ga < n; ga++) {
 			xx = matrix_get(n, n, be, ga, Oxx)/mu;
 			xy = matrix_get(n, n, be, ga, Oxy)/mu;
 			xz = matrix_get(n, n, be, ga, Oxz)/mu;
@@ -99,14 +99,16 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 			zz = matrix_get(n, n, be, ga, Ozz)/mu;
 			vx[be] -= xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
 			vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
-			vz[be] -=  xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
+			vz[be] -= xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
 		}
+	}
+	for (i = 0; i < n; i++)
+		vx[i] += gdot*z[i];
 	for (i = 0; i < n; i++) {
 		vx[i] = -vx[i];
 		vy[i] = -vy[i];
 		vz[i] = -vz[i];
 	}
-	//MSG("t " FMT, t);
 	return CO_OK;
 }
 
@@ -125,7 +127,7 @@ main(__UNUSED int argc, char **argv)
 	y_inif(stdin, &he, &x, &y, &z);
 	fargv(&argv, he);
 	n = he_nv(he);
-	e = 0.025;
+	e = 0.01;
 	oseen3_ini(e, &oseen);
 	ode3_ini(RK4, n, dt/10, F, NULL, &ode);
 	CALLOC3(n, &fx, &fy, &fz);
@@ -140,9 +142,9 @@ main(__UNUSED int argc, char **argv)
 	while (time < tend) {
 		t = time + dt;
 		ode3_apply(ode, &time, t, x, y, z);
-		MSG("x[0] " FMT, x[0]);
 		sprintf(file, "%05d.off", k++);
 		off_he_xyz_write(he, x, y, z, file);
+		MSG("%s", file);
 	}
 	FREE3(fx, fy, fz);
 	matrix_fin(Oxx);
@@ -162,14 +164,14 @@ main(__UNUSED int argc, char **argv)
 Put
 
 git clean -fdxq
-m lint
+m
 #f=/u/.co/sph/icosa/Nt20.off
 #A=9.57454 V=2.53615
 f=/u/.co/rbc/laplace/0.off
 A=8.66899 V=1.53405
-./3d garea $A 100 volume $V 100 strain $f lim 100 100 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f
+./3d garea $A 1000 volume $V 1000 strain $f lim 10 10 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f
 
-co.geomview  -O -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *0.off
+co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *.off
 
 Kill git
 

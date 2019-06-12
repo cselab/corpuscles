@@ -91,6 +91,7 @@ co/ode/2v.h\
 co/ode/3.h\
 co/ode/3v.h\
 co/off.h\
+co/omp.h\
 co/orient.h\
 co/oseen2.h\
 co/oseen3.h\
@@ -108,6 +109,7 @@ co/read.h\
 co/real.h\
 co/restore.h\
 co/ring.h\
+co/segment.h\
 co/skel.h\
 co/strain/2d.h\
 co/strain/3d.h\

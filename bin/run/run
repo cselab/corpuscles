@@ -7,10 +7,12 @@ prog=co.run
 : ${GDB_EXEC=gdb}
 : ${CO_ARG=}
 : ${BSUB=bsub}
+: ${NT=1}
 
 usg () {
     msg "$prog 'prog' [args ...]"
     msg 'environment variable CO_ARG is  used as an argument to bsub'
+    msg 'NT is used as openmp number of threads'
     msg 'CO_HOST if set is used as a host nickname'
     exit
 }
@@ -43,8 +45,10 @@ else
         if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
 	if test $? -ne 0; then err 'fail to load module gsl'; fi
-	e $BSUB $CO_ARG "$@"
+	e export OMP_NUM_THREADS=$NT
+	e $BSUB -n $NT $CO_ARG "$@"
     else
+    	e export OMP_NUM_THREADS=$NT
 	e "$@"
     fi
 fi

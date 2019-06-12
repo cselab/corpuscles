@@ -83,11 +83,6 @@ int orient_apply(T *q, /**/ real *x, real *y, real *z) {
     for (i = 0; i < n; i++)
         mult(v, /**/ &x[i], &y[i], &z[i]);
     
-    MSG("Eigenvectors sorted in ascending order of eigenvalues:");
-    MSG("vec[0,1,2]=[%f, %f, %f]", v[0], v[3], v[6]);
-    MSG("vec[0,1,2]=[%f, %f, %f]", v[1], v[4], v[7]);
-    MSG("vec[0,1,2]=[%f, %f, %f]", v[2], v[5], v[8]);
-
     return CO_OK;
 
 }

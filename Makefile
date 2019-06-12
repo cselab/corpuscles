@@ -7,13 +7,14 @@ pkgconfig\
 bin/m4\
 m4/lib\
 lib\
+bin/eng\
 bin/ffmpeg\
 bin/geomview\
-bin/maxima\
 bin/host\
+bin/maxima\
+bin/msh\
 bin/path\
 bin/q\
-bin/msh\
 bin/run\
 bin/shake\
 bin/vtk\
