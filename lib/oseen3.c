@@ -73,7 +73,7 @@ oseen3_he_ini(He *he, real e, T **pq)
 	T *q;
 	real *nx, *ny, *nz;
 	int n;
-	
+
 	MALLOC(1, &q);
 	n = he_nv(he);
 	MALLOC3(n, &nx, &ny, &nz);
@@ -89,6 +89,7 @@ int
 oseen3_fin(T *q)
 {
 	FREE(q);
+	//FREE3(q->nx, q->ny, q->nz);
 	return CO_OK;
 }
 
@@ -147,6 +148,25 @@ int
 oseeen3_stresslet(T *q, He *he, const real*x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
-	
+	real *nx, *ny, *nz;
+	int status, n, i;
+
+	nx = q->nx;
+	ny = q->ny;
+	nz = q->nz;
+	status = normal_mwa(he, x, y, z, nx, ny, nz);
+	if (status != CO_OK)
+		ERR(CO_NUM, "normal_mwa failed");
+
+	n = he_nv(he);
+	for (i = 0; i < n; i++) {
+		real a[3], b[3];
+		int j;
+		vec_get(i, x, y, z, a);
+		for (j = i + 1; j < n; j++) {
+			vec_get(j, x, y, z, b);
+		}
+	}
+
 	return CO_OK;
 }
