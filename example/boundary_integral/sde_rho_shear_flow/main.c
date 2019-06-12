@@ -86,22 +86,16 @@ fargv(char ***p, He *he)
 		i++;
 	}
 
-	//MSG("R:          %s", v[0]);
 	scl(v, &R);
 	v++;
-	//MSG("D:          %s", v[0]);
 	scl(v, &D);
 	v++;
-	//MSG("rho:        %s", v[0]);
 	scl(v, &rho);
 	v++;
-	//MSG("eta:        %s", v[0]);
 	scl(v, &eta);
 	v++;
-	//MSG("gamdot:     %s", v[0]);
 	scl(v, &gamdot);
 	v++;
-	//MSG("dt:         %s", v[0]);
 	scl(v, &dt);
 	v++;
 	//MSG("start:      %s", v[0]);
@@ -205,6 +199,7 @@ main(__UNUSED int argc, char **argv)
 	real *x, *y, *z, *vx, *vy, *vz;
 	char file_out[999];
 	char file_stat[99]="stat.dat";
+	char file_msg[99]="msg.out";
 	FILE *fm;
 	Ode3 *ode;
 	real t, time;
@@ -245,9 +240,6 @@ main(__UNUSED int argc, char **argv)
 	}
 
 	v0 = reduced_volume(A0, V0);
-	MSG("A0 V0 v0 = %f %f %f", A0, V0, v0);
-
-	MSG("R D rho eta gamdot = %f %f %f %f %f", R, D, rho, eta, gamdot);
 	
 	M = rho*A0*D*2;
 	m = M/nv;
@@ -255,9 +247,15 @@ main(__UNUSED int argc, char **argv)
 	e = 2*sqrt(a)/sqrt(sqrt(3.0));
 	reg = 0.1*e;
 
-	MSG("Nv Nt = %i %i", nv, nt);
-	MSG("M m a e reg dt = %f %f %f %f %f %f", M, m, a, e, reg, dt);
+	if ( (fm = fopen(file_msg, "w") ) == NULL) {
+	  ER("Failed to open '%s'", file_msg);
+	}
 	
+	fprintf(fm, "A0 V0 v0 = %f %f %f\n", A0, V0, v0);
+	fprintf(fm, "R D rho eta gamdot = %f %f %f %f %f\n", R, D, rho, eta, gamdot);
+	fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
+	fprintf(fm, "M m a e reg dt = %f %f %f %f %f %f\n", M, m, a, e, reg, dt);
+	fclose(fm);
 	
 	oseen3_ini(reg, &oseen);
 	ode3_ini(RK4, nv, dt, F, NULL, &ode);
