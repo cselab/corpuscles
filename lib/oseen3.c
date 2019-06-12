@@ -145,28 +145,40 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 }
 
 static int
-stresslet(__UNUSED real e, const real a[3], const real b[3],
+stresslet(__UNUSED real e, const real a[3], const real n[3], const real b[3],
 	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
 	enum
 	{
 		X, Y, Z
 	};
-	real d[3], r, r3,l;
+	real d[3], r, r5, p, l;
 
 	vec_minus(a, b, d);
 	r = vec_abs(d);
+	p = vec_dot(d, n);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
-	r3 = r*r*r;
-	l = 1/r;
-	*xx = l + d[X]*d[X]/r3;
-	*yy = l + d[Y]*d[Y]/r3;
-	*zz = l + d[Z]*d[Z]/r3;
+	r5= r*r*r*r*r;
+	l = p/r5;
+	*xx = d[X]*d[X]*l;
+	*xy = d[X]*d[Y]*l;
+	*xz = d[X]*d[Z]*l;
+	*yy = d[Y]*d[Y]*l;
+	*yz = d[Y]*d[Z]*l;
+	*zz = d[Z]*d[Z]*l;
+	return CO_OK;
+}
 
-	*xy = d[X]*d[Y]/r3;
-	*xz = d[X]*d[Z]/r3;
-	*yz = d[Y]*d[Z]/r3;
+static int
+stresslet0(real e, const real a[3], const real n[3],
+	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
+{
+	real l;
+
+	l = 2/e;
+	*xx = *yy = *zz = l;
+	*xy = *xz = *yz = 0;
 	return CO_OK;
 }
 
@@ -186,15 +198,29 @@ oseeen3_stresslet(T *q, He *he, const real*x, const real *y, const real *z,
 		ERR(CO_NUM, "normal_mwa failed");
 	n = he_nv(he);
 	for (i = 0; i < n; i++) {
-		real a[3], b[3], xx, xy, xz, yy, yz, zz;
+		real a[3], b[3], u[3], xx, xy, xz, yy, yz, zz;
 		int j;
 		vec_get(i, x, y, z, a);
+		vec_get(i, nx, ny, nz, u);
+		stresslet0(e, a, u, &xx, &xy, &xz, &yy, &yz, &zz);
+		SET(i, i, xx, oxx);
+		SET(i, i, xy, oxy);
+		SET(i, i, xz, oxz);
+		SET(i, i, yy, oyy);
+		SET(i, i, yz, oyz);
+		SET(i, i, zz, ozz);
 		for (j = 0; j < n; j++) {
 			vec_get(j, x, y, z, b);
-			stresslet(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+			stresslet(e, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
+			SET(i, j, xx, oxx);
+			SET(i, j, xy, oxy);
+			SET(i, j, xz, oxz);
+			SET(i, j, yy, oyy);
+			SET(i, j, yz, oyz);
+			SET(i, j, zz, ozz);			
 		}
 	}
-	s = 1/(8*pi);
+	s = -6/(8*pi);
 	matrix_scale(n, n, s, oxx);
 	matrix_scale(n, n, s, oxy);
 	matrix_scale(n, n, s, oxz);
