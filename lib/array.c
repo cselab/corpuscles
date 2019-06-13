@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <tgmath.h>
 #include "real.h"
 #include "co/err.h"
 #include "co/array.h"
@@ -134,6 +135,19 @@ array_mean(int n, const real *a)
 	for (i = 0; i < n; i ++)
 		s += a[i];
 	return s/n;
+}
+
+real
+array_l2(int n, const real *a, const real *b)
+{
+	int i;
+	real s, d;
+	s = 0;
+	for (i = 0; i < n; i++) {
+		d = a[i] - b[i];
+		s += d*d;
+	}
+	return sqrt(s/n);
 }
 
 int

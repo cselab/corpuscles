@@ -2,6 +2,7 @@ real array_min(int, const real[]);
 real array_max(int, const real[]);
 real array_dot(int, const real[], const real[]);
 real array_mean(int, const real[]);
+real array_l2(int, const real[], const real[]);
 int array_zero(int, real[]);
 int array_one(int, real[]);
 int array_zero3(int, real[], real[], real[]);
