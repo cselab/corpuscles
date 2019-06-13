@@ -173,7 +173,7 @@ main(__UNUSED int argc, char **argv)
 	fargv(&argv, he);
 	n = he_nv(he);
 	e = 0.025;
-	oseen3_ini(e, &oseen);
+	oseen3_ini(he, e, &oseen);
 	ode3_ini(RK4, n, dt, F, NULL, &ode);
 
 	CALLOC3(n, &vx, &vy, &vz);

@@ -123,7 +123,7 @@ main(__UNUSED int argc, char **argv)
 	fargv(&argv, he);
 	n = he_nv(he);
 	e = 0.01;
-	oseen3_ini(e, &oseen);
+	oseen3_ini(e, he, &oseen);
 	ode3_ini(RK4, n, dt/10, F, NULL, &ode);
 	CALLOC3(n, &fx, &fy, &fz);
 	matrix_ini(n, n, &Oxx);

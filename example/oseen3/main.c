@@ -34,7 +34,7 @@ main(void)
 	matrix_ini(n, n, &Oyz);
 	matrix_ini(n, n, &Ozz);
 	e = 0.01;
-	oseen3_ini(e, &oseen);
+	oseen3_ini(he, e, &oseen);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 
 	for (i = 0; i < n; i++)

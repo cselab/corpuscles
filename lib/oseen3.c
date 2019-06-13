@@ -46,29 +46,16 @@ oseen(__UNUSED real e, const real a[3], const real b[3],
 }
 
 static int
-oseen0(real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
+oseen0(__UNUSED real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
-	real l;
-
-	l = 2/e;
-	*xx = *yy = *zz = l;
-	*xy = *xz = *yz = 0;
+	*xx = *yy = *zz = *xy = *xz = *yz = 0;
 	return CO_OK;
 }
 
-int
-oseen3_ini(real e, T **pq)
-{
-	T *q;
 
-	MALLOC(1, &q);
-	q->e = e;
-	*pq = q;
-	return CO_OK;
-}
 
 int
-oseen3_he_ini(He *he, real e, T **pq)
+oseen3_ini(He *he, real e, T **pq)
 {
 	T *q;
 	real *nx, *ny, *nz;
@@ -89,7 +76,7 @@ int
 oseen3_fin(T *q)
 {
 	FREE(q);
-	//FREE3(q->nx, q->ny, q->nz);
+	FREE3(q->nx, q->ny, q->nz);
 	return CO_OK;
 }
 
@@ -197,6 +184,7 @@ oseeen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	if (status != CO_OK)
 		ERR(CO_NUM, "normal_mwa failed");
 	n = he_nv(he);
+#pragma omp parallel for
 	for (i = 0; i < n; i++) {
 		real a[3], b[3], u[3], xx, xy, xz, yy, yz, zz;
 		int j;
