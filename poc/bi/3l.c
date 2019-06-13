@@ -26,8 +26,9 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, dt = 1e-2, tend = 1000;
+static real gdot = 1, mu = 1, la = 10, dt = 0.1, tend = 100;
 static real *fx, *fy, *fz;
+static real *ux, *uy, *uz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static real *Kxx, *Kxy, *Kxz, *Kyy, *Kyz, *Kzz;
 static int n;
@@ -80,8 +81,9 @@ fin(void)
 	return CO_OK;
 }
 
+#define GET(K) matrix_get(n, n, j, i, (K))
 static int
-vector_tensor(int n, const real *x, const real *y, const real *z,
+vector_tensor(int n, real s, const real *x, const real *y, const real *z,
 	real *Txx, real *Txy, real *Txz, real *Tyy, real *Tyz, real *Tzz,
 	real *u, real *v, real *w)
 {
@@ -89,17 +91,20 @@ vector_tensor(int n, const real *x, const real *y, const real *z,
 #pragma omp parallel for
 	for (i = 0; i < n; i++) {
 		int j;
-		real xx, xy, xz, yy, yz, zz;
+		real xx, xy, xz, yy, yz, zz, du, dv, dw;
 		for (j = 0; j < n; j++) {
-			xx = matrix_get(n, n, j, i, Txx);
-			xy = matrix_get(n, n, j, i, Txy);
-			xz = matrix_get(n, n, j, i, Txz);
-			yy = matrix_get(n, n, j, i, Tyy);
-			yz = matrix_get(n, n, j, i, Tyz);
-			zz = matrix_get(n, n, j, i, Tzz);
-			u[i] -= xx*x[j] + xy*y[j] + xz*z[j];
-			v[i] -= xy*x[j] + yy*y[j] + yz*z[j];
-			w[i] -= xz*x[j] + yz*y[j] + zz*z[j];
+			xx = GET(Txx);
+			xy = GET(Txy);
+			xz = GET(Txz);
+			yy = GET(Tyy);
+			yz = GET(Tyz);
+			zz = GET(Tzz);
+			du = xx*x[j] + xy*y[j] + xz*z[j];
+			dv = xy*x[j] + yy*y[j] + yz*z[j];
+			dw = xz*x[j] + yz*y[j] + zz*z[j];
+			u[i] += s*du;
+			v[i] += s*dv;
+			w[i] += s*dw;
 		}
 	}
 	return CO_OK;
@@ -108,16 +113,30 @@ vector_tensor(int n, const real *x, const real *y, const real *z,
 static int
 F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
 {
-	int i, be;
+	int i, k;
+	real al, be;
 
-	array_zero3(n, vx, vy, vz);
+	al = -2/(mu*(1 + la));
+	be =  2*(1 - la)/(1 + la) / 40;
+
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 	oseen3_stresslet(oseen, he, x, y, z, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
-	vector_tensor(n, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
-	for (i = 0; i < n; i++)
-		vx[i] += gdot*z[i];
+
+	array_zero3(n, ux, uy, uz);
+	for (i = 0; i < n; i++) ux[i] += gdot*z[i];
+
+	for (k = 0; ; k++) {
+		array_zero3(n, vx, vy, vz);
+		for (i = 0; i < n; i++) vx[i] += gdot*z[i];
+		vector_tensor(n, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
+		vector_tensor(n, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, vx, vy, vz);
+		//MSG("%03d " FMT " " FMT " " FMT, k, array_l2(n, vx, ux), array_l2(n, vy, uy), array_l2(n, vz, uz));
+		if (k == 100)
+			break;
+		array_copy3(n, vx, vy, vz, ux, uy, uz);
+	}
 	return CO_OK;
 }
 
@@ -164,7 +183,8 @@ main(__UNUSED int argc, char **argv)
 	MSG("e " FMT, e);
 	oseen3_ini(he, e, &oseen);
 	ode3_ini(RKF45, n, dt/10, F, NULL, &ode);
-	CALLOC3(n, &fx, &fy, &fz);
+	MALLOC3(n, &fx, &fy, &fz);
+	MALLOC3(n, &ux, &uy, &uz);
 	tensor_ini(n, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
 	tensor_ini(n, &Kxx, &Kxy, &Kxz, &Kyy, &Kyz, &Kzz);
 	k = 0;
@@ -177,6 +197,7 @@ main(__UNUSED int argc, char **argv)
 		MSG("%s", file);
 	}
 	FREE3(fx, fy, fz);
+	FREE3(ux, uy, uz);
 	tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 	tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
 	oseen3_fin(oseen);
@@ -191,11 +212,13 @@ Put
 
 git clean -fdxq
 m
-f=/u/.co/sph/icosa/Nt20.off A=9.57454 V=2.53615
+f=/u/.co/sph/icosa/Nt320.off A=12.3299 V=4.0470
+#f=/u/.co/sph/icosa/Nt80.off A=11.6659 V=3.65871
+#f=/u/.co/sph/icosa/Nt20.off A=9.57454 V=2.53615
 #f=/u/.co/rbc/laplace/0.off A=8.66899 V=1.53405
-./3d garea $A 1e4 volume $V 1e4 strain $f lim 1 1 0.1 0.1 0 0  juelicher_xin 0.001 0 0 0 < $f
+./3l garea $A 1e2 volume $V 1e2 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
 
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *0.off
+co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *.off
 
 Kill git
 

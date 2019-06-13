@@ -30,6 +30,7 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 if test $# -eq 0
 then err "'prog' is missing"; fi
 
+e export OMP_NUM_THREADS=$NT
 if test ! -z "${VAL+x}"
 then
     e "$VALGRIND" "$VAL" "$@"
@@ -45,10 +46,8 @@ else
         if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
 	for i; do shift; set -- "$@" "`quote "$i"`"; done
 	if test $? -ne 0; then err 'fail to load module gsl'; fi
-	e export OMP_NUM_THREADS=$NT
 	e $BSUB -n $NT $CO_ARG "$@"
     else
-    	e export OMP_NUM_THREADS=$NT
 	e "$@"
     fi
 fi

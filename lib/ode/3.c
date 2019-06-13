@@ -44,9 +44,9 @@ F(__UNUSED real t, const real *r, real *f, void *q0)
 	array_copy(n, r + 2*n, z);
 	if (q->fun(t, x, y, z, fx, fy, fz, p) != CO_OK)
 		ERR(CO_NUM, "q->fun failed");
-	array_negative(n, fx, f);
-	array_negative(n, fy, f + n);
-	array_negative(n, fz, f + 2*n);
+	array_copy(n, fx, f);
+	array_copy(n, fy, f + n);
+	array_copy(n, fz, f + 2*n);
 	return CO_OK;
 }
 

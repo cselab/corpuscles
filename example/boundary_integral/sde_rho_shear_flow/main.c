@@ -179,13 +179,13 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	  }
 	  
 	}
+
 	
-#pragma omp parallel for
-	for (i = 0; i < nv; i++) {
+	/*for (i = 0; i < nv; i++) {
 	  vx[i] = -vx[i];
 	  vy[i] = -vy[i];
 	  vz[i] = -vz[i];
-	}
+	  }*/
 	return CO_OK;
 }
 
@@ -257,7 +257,7 @@ main(__UNUSED int argc, char **argv)
 	fprintf(fm, "M m a e reg dt = %f %f %f %f %f %f\n", M, m, a, e, reg, dt);
 	fclose(fm);
 	
-	oseen3_ini(reg, &oseen);
+	oseen3_ini(he, reg, &oseen);
 	ode3_ini(RK4, nv, dt, F, NULL, &ode);
 
 	CALLOC3(nv, &vx, &vy, &vz);

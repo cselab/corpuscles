@@ -5,7 +5,6 @@ int
 main()
 {
 	int n;
-
-	n = 100;
+	n = 4;
 	omp_test(n);
 }
