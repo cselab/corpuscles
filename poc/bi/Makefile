@@ -1,6 +1,6 @@
 .POSIX:
 include ../../conf.mk
-M = 2 2d 2p 3d main
+M = 2 2d 2p 3d 3l main
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` `co.conf --libs $(PREC)`
