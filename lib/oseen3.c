@@ -48,11 +48,13 @@ oseen(__UNUSED real e, const real a[3], const real b[3],
 static int
 oseen0(__UNUSED real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
-	*xx = *yy = *zz = *xy = *xz = *yz = 0;
+	real l;
+
+	l = 2/e;
+	*xx = *yy = *zz = l;
+	*xy = *xz = *yz = 0;
 	return CO_OK;
 }
-
-
 
 int
 oseen3_ini(He *he, real e, T **pq)
@@ -158,14 +160,10 @@ stresslet(__UNUSED real e, const real a[3], const real n[3], const real b[3],
 }
 
 static int
-stresslet0(real e, const real a[3], const real n[3],
+stresslet0(__UNUSED real e, const real a[3], const real n[3],
 	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
-	real l;
-
-	l = 2/e;
-	*xx = *yy = *zz = l;
-	*xy = *xz = *yz = 0;
+	*xx = *yy = *zz = *xy = *xz = *yz = 0;
 	return CO_OK;
 }
 

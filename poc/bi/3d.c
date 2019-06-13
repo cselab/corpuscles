@@ -4,18 +4,18 @@
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
-#include <co/len.h>
 #include <co/err.h>
 #include <co/force.h>
+#include <co/he.h>
 #include <co/macro.h>
 #include <co/matrix.h>
 #include <co/memory.h>
+#include <co/segment.h>
 #include <co/ode/3.h>
+#include <co/off.h>
 #include <co/oseen3.h>
-#include <co/he.h>
 #include <co/punto.h>
 #include <co/y.h>
-#include <co/off.h>
 
 #define FMT CO_REAL_OUT
 
@@ -26,7 +26,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, dt = 1e-2, tend = 100;
+static real gdot = 1, mu = 1, dt = 1e-3, tend = 100;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static int n;
@@ -55,10 +55,12 @@ fargv(char ***p, He *he)
 static int
 force(He *he, const real *x, const real *y, const real *z, real *fx, real *fy, real *fz)
 {
-	int i;
+	int status, i;
 	i = 0;
 	while (Fo[i]) {
-		force_force(Fo[i], he, x, y, z, fx, fy, fz);
+		status = force_force(Fo[i], he, x, y, z, fx, fy, fz);
+		if (status != CO_OK)
+			ER("force %s failed", force_name(Fo[i]));
 		i++;
 	}
 	return CO_OK;
@@ -122,9 +124,10 @@ main(__UNUSED int argc, char **argv)
 	y_inif(stdin, &he, &x, &y, &z);
 	fargv(&argv, he);
 	n = he_nv(he);
-	e = 0.01;
-	oseen3_ini(e, he, &oseen);
-	ode3_ini(RK4, n, dt/10, F, NULL, &ode);
+	e = segment_average(he, x, y, y)/5;
+	MSG("e " FMT, e);
+	oseen3_ini(he, e, &oseen);
+	ode3_ini(RKF45, n, dt/10, F, NULL, &ode);
 	CALLOC3(n, &fx, &fy, &fz);
 	matrix_ini(n, n, &Oxx);
 	matrix_ini(n, n, &Oxy);
@@ -160,13 +163,11 @@ Put
 
 git clean -fdxq
 m
-#f=/u/.co/sph/icosa/Nt20.off
-#A=9.57454 V=2.53615
-f=/u/.co/rbc/laplace/0.off
-A=8.66899 V=1.53405
-./3d garea $A 1000 volume $V 1000 strain $f lim 10 10 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f
+f=/u/.co/sph/icosa/Nt20.off A=9.57454 V=2.53615
+#f=/u/.co/rbc/laplace/0.off A=8.66899 V=1.53405
+co.run ./3d garea $A 1e4 volume $V 1e4 strain $f lim 1 1 0.1 0.1 0 0  juelicher_xin 0.001 0 0 0 '<' $f
 
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *.off
+co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *0.off
 
 Kill git
 
