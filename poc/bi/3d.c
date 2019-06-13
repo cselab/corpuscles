@@ -29,6 +29,7 @@ static Oseen3 *oseen;
 static real gdot = 1, mu = 1, dt = 1e-3, tend = 100;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
+static real *Kxx, *Kxy, *Kxz, *Kyy, *Kyz, *Kzz;
 static int n;
 
 static int
@@ -88,6 +89,7 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+	oseen3_stresslet(oseen, he, x, y, z, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
 #pragma omp parallel for
 	for (be = 0; be < n; be++) {
 		int ga;
@@ -106,6 +108,30 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	}
 	for (i = 0; i < n; i++)
 		vx[i] += gdot*z[i];
+	return CO_OK;
+}
+
+static int
+tensor_ini(int n, real **xx, real **xy, real **xz, real **yy, real **yz, real **zz)
+{
+	matrix_ini(n, n, xx);
+	matrix_ini(n, n, xy);
+	matrix_ini(n, n, xz);
+	matrix_ini(n, n, yy);
+	matrix_ini(n, n, yz);
+	matrix_ini(n, n, zz);
+	return CO_OK;
+}
+
+static int
+tensor_fin(real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
+{
+	matrix_fin(xx);
+	matrix_fin(xy);
+	matrix_fin(xz);
+	matrix_fin(yy);
+	matrix_fin(yz);
+	matrix_fin(zz);
 	return CO_OK;
 }
 
@@ -129,12 +155,8 @@ main(__UNUSED int argc, char **argv)
 	oseen3_ini(he, e, &oseen);
 	ode3_ini(RKF45, n, dt/10, F, NULL, &ode);
 	CALLOC3(n, &fx, &fy, &fz);
-	matrix_ini(n, n, &Oxx);
-	matrix_ini(n, n, &Oxy);
-	matrix_ini(n, n, &Oxz);
-	matrix_ini(n, n, &Oyy);
-	matrix_ini(n, n, &Oyz);
-	matrix_ini(n, n, &Ozz);
+	tensor_ini(n, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
+	tensor_ini(n, &Kxx, &Kxy, &Kxz, &Kyy, &Kyz, &Kzz);
 	k = 0;
 	t = time = 0;
 	while (time < tend) {
@@ -145,12 +167,8 @@ main(__UNUSED int argc, char **argv)
 		MSG("%s", file);
 	}
 	FREE3(fx, fy, fz);
-	matrix_fin(Oxx);
-	matrix_fin(Oxy);
-	matrix_fin(Oxz);
-	matrix_fin(Oyy);
-	matrix_fin(Oyz);
-	matrix_fin(Ozz);
+	tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+	tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
 	oseen3_fin(oseen);
 	ode3_fin(ode);
 	fin();
@@ -165,9 +183,9 @@ git clean -fdxq
 m
 f=/u/.co/sph/icosa/Nt20.off A=9.57454 V=2.53615
 #f=/u/.co/rbc/laplace/0.off A=8.66899 V=1.53405
-co.run ./3d garea $A 1e4 volume $V 1e4 strain $f lim 1 1 0.1 0.1 0 0  juelicher_xin 0.001 0 0 0 '<' $f
+valgrind ./3d garea $A 1e4 volume $V 1e4 strain $f lim 1 1 0.1 0.1 0 0  juelicher_xin 0.001 0 0 0 < $f
 
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *0.off
+co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *00.off
 
 Kill git
 

@@ -168,7 +168,7 @@ stresslet0(__UNUSED real e, const real a[3], const real n[3],
 }
 
 int
-oseeen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
+oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	real *nx, *ny, *nz, s, e;
@@ -196,6 +196,7 @@ oseeen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		SET(i, i, yz, oyz);
 		SET(i, i, zz, ozz);
 		for (j = 0; j < n; j++) {
+			if (i == j) continue;
 			vec_get(j, x, y, z, b);
 			stresslet(e, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, xx, oxx);
