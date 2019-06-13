@@ -26,7 +26,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, dt = 1e-3, tend = 100;
+static real gdot = 1, mu = 1, dt = 1e-2, tend = 1000;
 static real *fx, *fy, *fz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static real *Kxx, *Kxy, *Kxz, *Kyy, *Kyz, *Kzz;
@@ -95,12 +95,12 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 		int ga;
 		real xx, xy, xz, yy, yz, zz;
 		for (ga = 0; ga < n; ga++) {
-			xx = matrix_get(n, n, be, ga, Oxx)/mu;
-			xy = matrix_get(n, n, be, ga, Oxy)/mu;
-			xz = matrix_get(n, n, be, ga, Oxz)/mu;
-			yy = matrix_get(n, n, be, ga, Oyy)/mu;
-			yz = matrix_get(n, n, be, ga, Oyz)/mu;
-			zz = matrix_get(n, n, be, ga, Ozz)/mu;
+			xx = matrix_get(n, n, ga, be, Oxx)/mu;
+			xy = matrix_get(n, n, ga, be, Oxy)/mu;
+			xz = matrix_get(n, n, ga, be, Oxz)/mu;
+			yy = matrix_get(n, n, ga, be, Oyy)/mu;
+			yz = matrix_get(n, n, ga, be, Oyz)/mu;
+			zz = matrix_get(n, n, ga, be, Ozz)/mu;
 			vx[be] -= xx*fx[ga] + xy*fy[ga] + xz*fz[ga];
 			vy[be] -= xy*fx[ga] + yy*fy[ga] + yz*fz[ga];
 			vz[be] -= xz*fx[ga] + yz*fy[ga] + zz*fz[ga];
@@ -183,9 +183,9 @@ git clean -fdxq
 m
 f=/u/.co/sph/icosa/Nt20.off A=9.57454 V=2.53615
 #f=/u/.co/rbc/laplace/0.off A=8.66899 V=1.53405
-valgrind ./3d garea $A 1e4 volume $V 1e4 strain $f lim 1 1 0.1 0.1 0 0  juelicher_xin 0.001 0 0 0 < $f
+./3d garea $A 1e4 volume $V 1e4 strain $f lim 1 1 0.1 0.1 0 0  juelicher_xin 0.001 0 0 0 < $f
 
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *00.off
+co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *0.off
 
 Kill git
 
