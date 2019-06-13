@@ -98,10 +98,6 @@ F(__UNUSED real t, const real *x, const real *y, real *vx,  real *vy, __UNUSED v
 			vx[be] -= xx*fx[ga] + xy*fy[ga];
 			vy[be] -= xy*fx[ga] + yy*fy[ga];
 		}
-	for (i = 0; i < n; i++) {
-		vx[i] = -vx[i];
-		vy[i] = -vy[i];
-	}
 	//MSG("t " FMT, t);
 	return CO_OK;
 }
@@ -166,7 +162,7 @@ L=4.926052821288913
 f=data/rbc.skel
 ./2d $gdot glen $L 100 len $f 1 0 0 area $A 100  bend_sc 0.1 3 < $f
 
-co.geomview -f 38 -a /u/a *0.off
+co.geomview -f 38 -a /u/a *.off
            
 Kill git
 
