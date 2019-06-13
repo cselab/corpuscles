@@ -183,7 +183,7 @@ stresslet0(real e, const real a[3], const real n[3],
 }
 
 int
-oseeen3_stresslet(T *q, He *he, const real*x, const real *y, const real *z,
+oseeen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	real *nx, *ny, *nz, s, e;
