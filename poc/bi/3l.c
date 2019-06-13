@@ -213,7 +213,6 @@ Put
 
 ./run
 co.geomview   -r 55.8221 -0.28266 0.693395 -f 28 *0.off
-
-Kill git
+Kill run
 
 */
