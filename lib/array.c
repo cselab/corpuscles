@@ -1,6 +1,9 @@
+#include <stdio.h>
 #include "real.h"
 #include "co/err.h"
 #include "co/array.h"
+
+#define OUT CO_REAL_OUT
 
 real array_min(int n, const real a[]) {
     int i;
@@ -18,7 +21,9 @@ real array_max(int n, const real a[]) {
     return x;
 }
 
-int array_zero(int n, real a[]) {
+int 
+array_zero(int n, real a[])
+{
     int i;
     if (n < 0)
         ERR(CO_INDEX, "n=%d < 0", n);
@@ -117,5 +122,17 @@ array_scale3(int n, real s, real *x, real *y, real *z)
 	array_scale(n, s, x);
 	array_scale(n, s, y);
 	array_scale(n, s, z);
+	return CO_OK;
+}
+
+int
+array_fwrite(FILE *f, int n, const real *a)
+{
+	int i, status;
+	for (i = 0; i < n; i++) {
+		status = fprintf(f, OUT "\n", a[i]);
+		if (status < 0)
+			ERR(CO_IO, "fprintf failed");
+	}
 	return CO_OK;
 }
