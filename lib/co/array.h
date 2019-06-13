@@ -10,3 +10,5 @@ int array_axpy3(int, real, const real[], const real[], const real[], /**/ real[]
 int array_copy(int, const real[], real[]);
 int array_negative(int, const real[], real[]);
 int array_neg(int, real[]);
+int array_scale(int, real, real[]);
+int array_scale3(int, real, real[], real[], real[]);

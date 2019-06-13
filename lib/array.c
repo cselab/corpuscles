@@ -101,3 +101,21 @@ array_mean(int n, const real *a)
 		s += a[i];
 	return s/n;
 }
+
+int
+array_scale(int n, real s, real *a)
+{
+	int i;
+	for (i = 0; i < n; i++)
+		a[i] *= s;
+	return CO_OK;
+}
+
+int
+array_scale3(int n, real s, real *x, real *y, real *z)
+{
+	array_scale(n, s, x);
+	array_scale(n, s, y);
+	array_scale(n, s, z);
+	return CO_OK;
+}
