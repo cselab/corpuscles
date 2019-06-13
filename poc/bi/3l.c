@@ -26,7 +26,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, la = 0.01, dt = 0.1, tend = 100;
+static real gdot = 1, mu = 1, la = 10, dt = 0.1, tend = 100;
 static real *fx, *fy, *fz;
 static real *ux, *uy, *uz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
