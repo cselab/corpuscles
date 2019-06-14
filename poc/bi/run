@@ -3,7 +3,7 @@
 git clean -fdxq
 m
 #f=/u/.co/sph/icosa/Nt320.off A=12.3299 V=4.0470
-f=/u/.co/sph/icosa/Nt80.off A=11.6659 V=2.65871
+f=/u/.co/sph/icosa/Nt80.off A=11.6659 V=3.1
 #f=/u/.co/sph/icosa/Nt20.off A=9.57454 V=2.53615
 #f=/u/.co/rbc/laplace/0.off A=8.66899 V=1.53405
 ./3l garea $A 10 volume $V 10 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.01 0 0 0 < $f
