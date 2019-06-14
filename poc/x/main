@@ -1,0 +1,18 @@
+#!/bin/sh
+
+. co.util
+prog=co.x
+
+r=
+for i
+do
+	case "$i" in
+		*.off) r="$i"; break
+	esac
+done
+if test -z "$r"
+then err "no off file among arguments"
+fi
+
+c="co.xcolor $r"
+co.geomview -p "$c" "$@"
