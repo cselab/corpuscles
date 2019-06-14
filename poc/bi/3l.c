@@ -26,7 +26,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, la = 10, dt = 0.1, tend = 100;
+static real gdot = 1, mu = 1, la = 0.01, dt = 0.01, tend = 100;
 static real *fx, *fy, *fz;
 static real *ux, *uy, *uz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
@@ -81,7 +81,7 @@ fin(void)
 	return CO_OK;
 }
 
-#define GET(K) matrix_get(n, n, j, i, (K))
+#define GET(K) matrix_get(n, n, i, j, (K))
 static int
 vector_tensor(int n, real s, const real *x, const real *y, const real *z,
 	real *Txx, real *Txy, real *Txz, real *Tyy, real *Tyz, real *Tzz,
@@ -117,7 +117,7 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	real al, be;
 
 	al = -2/(mu*(1 + la));
-	be =  2*(1 - la)/(1 + la) / 40;
+	be =  2*(1 - la)/(1 + la);
 
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
@@ -131,10 +131,11 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 		array_zero3(n, vx, vy, vz);
 		for (i = 0; i < n; i++) vx[i] += gdot*z[i];
 		vector_tensor(n, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
-		vector_tensor(n, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, vx, vy, vz);
-		//MSG("%03d " FMT " " FMT " " FMT, k, array_l2(n, vx, ux), array_l2(n, vy, uy), array_l2(n, vz, uz));
-		if (k == 100)
+		vector_tensor(n, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, vx, vy, vz);		
+		if (k == 20) {
+			//MSG(FMT " " FMT " " FMT " " FMT, t, array_l2(n, vx, ux), array_l2(n, vy, uy), array_l2(n, vz, uz));
 			break;
+		}
 		array_copy3(n, vx, vy, vz, ux, uy, uz);
 	}
 	return CO_OK;
@@ -179,7 +180,7 @@ main(__UNUSED int argc, char **argv)
 	y_inif(stdin, &he, &x, &y, &z);
 	fargv(&argv, he);
 	n = he_nv(he);
-	e = segment_average(he, x, y, y)/5;
+	e = segment_average(he, x, y, y)/10;
 	MSG("e " FMT, e);
 	oseen3_ini(he, e, &oseen);
 	ode3_ini(RKF45, n, dt/10, F, NULL, &ode);
@@ -210,16 +211,8 @@ main(__UNUSED int argc, char **argv)
 
 Put
 
-git clean -fdxq
-m
-f=/u/.co/sph/icosa/Nt320.off A=12.3299 V=4.0470
-#f=/u/.co/sph/icosa/Nt80.off A=11.6659 V=3.65871
-#f=/u/.co/sph/icosa/Nt20.off A=9.57454 V=2.53615
-#f=/u/.co/rbc/laplace/0.off A=8.66899 V=1.53405
-./3l garea $A 1e2 volume $V 1e2 strain $f lim 1 1 0 0 0 0  juelicher_xin 0.1 0 0 0 < $f
-
-co.geomview  -t -0.0208784 0.0709866 4.07545e-09 -r 55.8221 -0.28266 0.693395 -f 28 *.off
-
-Kill git
+./run
+co.geomview   -r 55.8221 -0.28266 0.693395 -f 28 *0.off
+Kill run
 
 */
