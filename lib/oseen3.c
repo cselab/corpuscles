@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <omp.h>
 #include "real.h"
+#include "co/area.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/macro.h"
@@ -16,7 +17,7 @@ static const real pi = 3.141592653589793115997964;
 struct T
 {
 	real e;
-	real *nx, *ny, *nz;
+	real *nx, *ny, *nz, *area;
 };
 
 static int
@@ -60,16 +61,18 @@ int
 oseen3_ini(He *he, real e, T **pq)
 {
 	T *q;
-	real *nx, *ny, *nz;
+	real *nx, *ny, *nz, *area;
 	int n;
 
 	MALLOC(1, &q);
 	n = he_nv(he);
 	MALLOC3(n, &nx, &ny, &nz);
+	MALLOC(n, &area);
 	q->e = e;
 	q->nx = nx;
 	q->ny = ny;
 	q->nz = nz;
+	q->area = area;
 	*pq = q;
 	return CO_OK;
 }
@@ -79,6 +82,7 @@ oseen3_fin(T *q)
 {
 	FREE(q);
 	FREE3(q->nx, q->ny, q->nz);
+	FREE(q->area);
 	return CO_OK;
 }
 
@@ -160,7 +164,7 @@ stresslet(__UNUSED real e, const real a[3], const real n[3], const real b[3],
 }
 
 static int
-stresslet0(__UNUSED real e, const real a[3], const real n[3],
+stresslet0(__UNUSED real e, __UNUSED const real a[3], __UNUSED const real n[3],
 	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
 	*xx = *yy = *zz = *xy = *xz = *yz = 0;
@@ -171,16 +175,20 @@ int
 oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
-	real *nx, *ny, *nz, s, e;
+	real *nx, *ny, *nz, *area, A, s, e;
 	int status, n, i;
 
 	e = q->e;
 	nx = q->nx;
 	ny = q->ny;
 	nz = q->nz;
+	area = q->area;
 	status = normal_mwa(he, x, y, z, nx, ny, nz);
 	if (status != CO_OK)
 		ERR(CO_NUM, "normal_mwa failed");
+	status = he_area_ver(he, x, y, z, area);
+	if (status != CO_OK)
+		ERR(CO_NUM, "area_ver failed");
 	n = he_nv(he);
 #pragma omp parallel for
 	for (i = 0; i < n; i++) {
@@ -188,23 +196,24 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		int j;
 		vec_get(i, x, y, z, a);
 		vec_get(i, nx, ny, nz, u);
+		A = area[i];
 		stresslet0(e, a, u, &xx, &xy, &xz, &yy, &yz, &zz);
-		SET(i, i, xx, oxx);
-		SET(i, i, xy, oxy);
-		SET(i, i, xz, oxz);
-		SET(i, i, yy, oyy);
-		SET(i, i, yz, oyz);
-		SET(i, i, zz, ozz);
+		SET(i, i, A*xx, oxx);
+		SET(i, i, A*xy, oxy);
+		SET(i, i, A*xz, oxz);
+		SET(i, i, A*yy, oyy);
+		SET(i, i, A*yz, oyz);
+		SET(i, i, A*zz, ozz);
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
 			vec_get(j, x, y, z, b);
 			stresslet(e, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
-			SET(i, j, xx, oxx);
-			SET(i, j, xy, oxy);
-			SET(i, j, xz, oxz);
-			SET(i, j, yy, oyy);
-			SET(i, j, yz, oyz);
-			SET(i, j, zz, ozz);			
+			SET(i, j, A*xx, oxx);
+			SET(i, j, A*xy, oxy);
+			SET(i, j, A*xz, oxz);
+			SET(i, j, A*yy, oyy);
+			SET(i, j, A*yz, oyz);
+			SET(i, j, A*zz, ozz);			
 		}
 	}
 	s = -6/(8*pi);
