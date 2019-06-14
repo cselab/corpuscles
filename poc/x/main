@@ -3,6 +3,9 @@
 . co.util
 prog=co.x
 
+lo="$1"; shift
+hi="$1"; shift
+
 r=
 for i
 do
@@ -14,5 +17,4 @@ if test -z "$r"
 then err "no off file among arguments"
 fi
 
-c="co.xcolor $r 0 1"
-co.geomview -p "$c" "$@"
+co.geomview -p  "co.xcolor $r $lo $hi" "$@"
