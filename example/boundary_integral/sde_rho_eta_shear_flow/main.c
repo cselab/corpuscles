@@ -24,7 +24,7 @@
 static const char *me = "sde_rho_eta_shear_flow";
 static const real pi  = 3.141592653589793115997964;
 static const real tol = 0.01;
-static const int iter_max=10;
+static const int iter_max=50;
   
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
@@ -194,6 +194,7 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   int i, k;
   real al, be;
   real dx, dy, dz, d;
+  real ddx, ddy, ddz, dd;
   
   al = -2/(eta*(1 + lambda));
   be = 2*(1 - lambda)/(1 + lambda);
@@ -220,27 +221,23 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       
       vector_tensor(nv, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, wx, wy, wz);
       
-      dx=array_l2(nv, wx, ux);
-      dy=array_l2(nv, wy, uy);
-      dz=array_l2(nv, wz, uz);
-      d=dx*dx+dy*dy+dz*dz;
-      d=sqrt(d);
-    
-      if ( d < tol ) {
-
-	if ( k == iter_max ) {
-	  
-	  MSG("t dx dy dz d k = %f %f %f %f %f %i", t, dx, dy, dz, d, k);
-	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
-	    ER("Failed to open '%s'", file_msg);
-	  }
-	  
-	  fprintf(fm, "t dx dy dz d k = %f %f %f %f %f %i\n", t, dx, dy, dz, d, k);
-	  fclose(fm);
-	  
-	  }
-	  
+      d=array_msq_3d(nv, ux, uy, uz);
+      
+      dd=array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
+      
+      	
+      MSG("t d dd d/dd k = %f %f %f %f %i", t, d, dd, d/dd, k);
+      if ( (fm = fopen(file_msg, "a") ) == NULL) {
+	ER("Failed to open '%s'", file_msg);
+      }
+      
+      fprintf(fm, "t d dd d/dd k = %f %f %f %f %i\n", t, d, dd, d/dd, k);
+      fclose(fm);
+      
+      if ( d/dd < tol || k == iter_max ) {
+	
 	break;
+	
       }
       
       array_copy3(nv, wx, wy, wz, ux, uy, uz);
