@@ -26,7 +26,7 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, la = 0.01, dt = 0.01, tend = 100;
+static real gdot = 1, mu = 1, la = 5, dt = 0.001, tend = 100;
 static real *fx, *fy, *fz;
 static real *ux, *uy, *uz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
@@ -117,7 +117,7 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 	real al, be;
 
 	al = -2/(mu*(1 + la));
-	be =  2*(1 - la)/(1 + la);
+	be = 2*(1 - la)/(1 + la);
 
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
@@ -132,7 +132,7 @@ F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real 
 		for (i = 0; i < n; i++) vx[i] += gdot*z[i];
 		vector_tensor(n, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
 		vector_tensor(n, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, vx, vy, vz);		
-		if (k == 20) {
+		if (k == 5) {
 			//MSG(FMT " " FMT " " FMT " " FMT, t, array_l2(n, vx, ux), array_l2(n, vy, uy), array_l2(n, vz, uz));
 			break;
 		}
@@ -212,7 +212,7 @@ main(__UNUSED int argc, char **argv)
 Put
 
 ./run
-co.geomview   -r 55.8221 -0.28266 0.693395 -f 28 *0.off
+co.x -r 55.8221 -0.28266 0.693395 -f 28 *.off
 Kill run
 
 */

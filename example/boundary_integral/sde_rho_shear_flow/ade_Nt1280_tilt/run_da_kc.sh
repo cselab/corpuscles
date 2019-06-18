@@ -44,6 +44,9 @@ then
     dt="$3"
     Kc="$4"
     
+    Kga=$Kc
+    Kv=$Kc
+    
     Re=$(echo $gamdot $R $rho $eta | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
     

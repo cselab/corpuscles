@@ -43,6 +43,8 @@ then
     gamdot="$2"
     dt="$3"
     Kc="$4"
+    Kga=$Kc
+    Kv=$Kc
     
     Re=$(echo $gamdot $R $rho $eta | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
@@ -84,8 +86,8 @@ else
     Da1=0.143
 
     dt=0.001
-    Kc=40000
     
+    Kc=40000
     gamdot=0.287847666036
     bash run_da_kc.sh $Da1 $gamdot $dt $Kc
 
