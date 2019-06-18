@@ -43,7 +43,7 @@ then
     Da1="$1"
     gamdot="$2"
     dt="$3"
-    Kv="$4"
+    Kc="$4"
     
     Kga=$Kc
     Kv=$Kc
