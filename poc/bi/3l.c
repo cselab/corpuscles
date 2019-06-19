@@ -3,6 +3,7 @@
 #include <omp.h>
 #include <real.h>
 #include <alg/ode.h>
+#include <co/argv.h>
 #include <co/array.h>
 #include <co/err.h>
 #include <co/force.h>
@@ -26,9 +27,9 @@ Force *Fo[99] =
 };
 static He *he;
 static Oseen3 *oseen;
-static real gdot = 1, mu = 1, la = 5, dt = 0.001, tend = 100;
+static real gdot = 1, mu = 1, dt = 0.001, tend = 0.01, la;
 static real *fx, *fy, *fz;
-static real *ux, *uy, *uz;
+static real *ux, *uy, *uz, *wx, *wy, *wz;
 static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
 static real *Kxx, *Kxy, *Kxz, *Kyy, *Kyz, *Kzz;
 static int n;
@@ -114,26 +115,28 @@ static int
 F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0)
 {
 	int i, k;
-	real al, be;
+	real al, be, ga, tol;
 
 	al = -2/(mu*(1 + la));
 	be = 2*(1 - la)/(1 + la);
+	ga = 2/(1 + la);
+	tol = 1e-2;
 
 	array_zero3(n, fx, fy, fz);
 	force(he, x, y, z, fx, fy, fz);
 	oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 	oseen3_stresslet(oseen, he, x, y, z, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
 
-	array_zero3(n, ux, uy, uz);
-	for (i = 0; i < n; i++) ux[i] += gdot*z[i];
-
+	array_zero3(n, wx, wy, wz);
+	for (i = 0; i < n; i++) wx[i] += ga*gdot*z[i];
+	vector_tensor(n, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
+	array_copy3(n, wx, wy, wz, ux, uy, uz);
+	
 	for (k = 0; ; k++) {
-		array_zero3(n, vx, vy, vz);
-		for (i = 0; i < n; i++) vx[i] += gdot*z[i];
-		vector_tensor(n, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
-		vector_tensor(n, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, vx, vy, vz);		
-		if (k == 5) {
-			//MSG(FMT " " FMT " " FMT " " FMT, t, array_l2(n, vx, ux), array_l2(n, vy, uy), array_l2(n, vz, uz));
+		array_copy3(n, wx, wy, wz, vx, vy, vz);	
+		vector_tensor(n, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, vx, vy, vz);
+		if (array_diff3(n, ux, uy, uz, vx, vy, vz) < tol) {
+			//MSG("k %d", k);
 			break;
 		}
 		array_copy3(n, vx, vy, vz, ux, uy, uz);
@@ -177,6 +180,8 @@ main(__UNUSED int argc, char **argv)
 
 	err_set_ignore();
 	argv++;
+	argv_real(&argv, &la);
+	MSG("la " FMT, la);
 	y_inif(stdin, &he, &x, &y, &z);
 	fargv(&argv, he);
 	n = he_nv(he);
@@ -186,6 +191,7 @@ main(__UNUSED int argc, char **argv)
 	ode3_ini(RKF45, n, dt/10, F, NULL, &ode);
 	MALLOC3(n, &fx, &fy, &fz);
 	MALLOC3(n, &ux, &uy, &uz);
+	MALLOC3(n, &wx, &wy, &wz);
 	tensor_ini(n, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
 	tensor_ini(n, &Kxx, &Kxy, &Kxz, &Kyy, &Kyz, &Kzz);
 	k = 0;
@@ -199,6 +205,7 @@ main(__UNUSED int argc, char **argv)
 	}
 	FREE3(fx, fy, fz);
 	FREE3(ux, uy, uz);
+	FREE3(wx, wy, wz);
 	tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 	tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
 	oseen3_fin(oseen);
@@ -212,7 +219,7 @@ main(__UNUSED int argc, char **argv)
 Put
 
 ./run
-co.x -r 55.8221 -0.28266 0.693395 -f 28 *.off
+co.x -r 55.8221 -0.28266 0.693395 -f 28 *0.off
 Kill run
 
 */
