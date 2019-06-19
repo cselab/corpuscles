@@ -188,6 +188,7 @@ array_l2_3d(int n, const real *a1, const real *a2, const real *b1, const real *b
 	return sqrt(s/n/3.0);
 }
 
+real
 array_norm(int n, const real *a)
 {
 	int i;
