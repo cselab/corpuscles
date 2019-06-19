@@ -38,17 +38,6 @@ array_zero(int n, real a[])
 }
 
 int
-array_one(int n, real a[])
-{
-	int i;
-	if (n < 0)
-		ERR(CO_INDEX, "n=%d < 0", n);
-	for (i = 0; i < n; i++)
-		a[i] = 1;
-	return CO_OK;
-}
-
-int
 array_zero3(int n, real a[], real b[], real c[])
 {
 	if (n < 0)
@@ -56,6 +45,17 @@ array_zero3(int n, real a[], real b[], real c[])
 	array_zero(n, a);
 	array_zero(n, b);
 	array_zero(n, c);
+	return CO_OK;
+}
+
+int
+array_one(int n, real a[])
+{
+	int i;
+	if (n < 0)
+		ERR(CO_INDEX, "n=%d < 0", n);
+	for (i = 0; i < n; i++)
+		a[i] = 1;
 	return CO_OK;
 }
 
@@ -138,6 +138,27 @@ array_mean(int n, const real *a)
 }
 
 real
+array_msq(int n, const real *a)
+{
+	int i;
+	real s;
+	s = 0;
+	for (i = 0; i < n; i ++)
+		s += a[i]*a[i];
+	return sqrt(s/n);
+}
+real
+array_msq_3d(int n, const real *a, const real *b, const real *c)
+{
+	int i;
+	real s;
+	s = 0;
+	for (i = 0; i < n; i ++)
+	  s += a[i]*a[i]+b[i]*b[i]+c[i]*c[i];
+	return sqrt(s/n/3.0);
+}
+
+real
 array_l2(int n, const real *a, const real *b)
 {
 	int i;
@@ -148,6 +169,23 @@ array_l2(int n, const real *a, const real *b)
 		s += d*d;
 	}
 	return sqrt(s/n);
+}
+
+real
+array_l2_3d(int n, const real *a1, const real *a2, const real *b1, const real *b2, const real *c1, const real *c2)
+{
+	int i;
+	real s, d;
+	s = 0;
+	for (i = 0; i < n; i++) {
+		d = a1[i] - a2[i];
+		s += d*d;
+		d = b1[i] - b2[i];
+		s += d*d;
+		d = c1[i] - c2[i];
+		s += d*d;		
+	}
+	return sqrt(s/n/3.0);
 }
 
 real
