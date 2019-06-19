@@ -38,17 +38,6 @@ array_zero(int n, real a[])
 }
 
 int
-array_one(int n, real a[])
-{
-	int i;
-	if (n < 0)
-		ERR(CO_INDEX, "n=%d < 0", n);
-	for (i = 0; i < n; i++)
-		a[i] = 1;
-	return CO_OK;
-}
-
-int
 array_zero3(int n, real a[], real b[], real c[])
 {
 	if (n < 0)
@@ -56,6 +45,17 @@ array_zero3(int n, real a[], real b[], real c[])
 	array_zero(n, a);
 	array_zero(n, b);
 	array_zero(n, c);
+	return CO_OK;
+}
+
+int
+array_one(int n, real a[])
+{
+	int i;
+	if (n < 0)
+		ERR(CO_INDEX, "n=%d < 0", n);
+	for (i = 0; i < n; i++)
+		a[i] = 1;
 	return CO_OK;
 }
 
@@ -188,6 +188,63 @@ array_l2_3d(int n, const real *a1, const real *a2, const real *b1, const real *b
 	return sqrt(s/n/3.0);
 }
 
+array_norm(int n, const real *a)
+{
+	int i;
+	real s;
+	s = 0;
+	for (i = 0; i < n; i++)
+		s += a[i]*a[i];
+	return sqrt(s/n);
+}
+
+real
+array_diff(int n, const real *a, const real *b)
+{
+	int i;
+	real s, d, p;
+	s = 0;
+	for (i = 0; i < n; i++) {
+		d = a[i] - b[i];
+		s += d*d;
+	}
+	s = sqrt(s/n);
+	p = array_norm(n, a);
+	return p == 0 ? s : s/p;
+}
+
+
+real
+array_norm3(int n, const real *x, const real *y, const real *z)
+{
+	int i;
+	real s;
+	s = 0;
+	for (i = 0; i < n; i++)
+		s += x[i]*x[i] + y[i]*y[i] + z[i]*z[i];
+	return sqrt(s/n);
+}
+
+static real
+sq(real x)
+{
+	return x*x;
+}
+real
+array_diff3(int n, const real *x, const real *y, const real *z, const real *u, const real *v, const real *w)
+{
+	int i;
+	real s, p;
+	s = 0;
+	for (i = 0; i < n; i++) {
+		s += sq(x[i] - u[i]);
+		s += sq(y[i] - v[i]);
+		s += sq(z[i] - w[i]);
+	}
+	s = sqrt(s/n);
+	p = array_norm3(n, x, y, z);
+	return p == 0 ? s : s/p;
+}
 int
 array_scale(int n, real s, real *a)
 {
