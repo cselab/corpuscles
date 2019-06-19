@@ -24,7 +24,7 @@
 static const char *me = "sde_rho_eta_shear_flow";
 static const real pi  = 3.141592653589793115997964;
 static const real tol = 0.01;
-static const int iter_max=10;
+static const int iter_max=20;
   
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
@@ -192,19 +192,20 @@ static int vector_tensor(int n, real s, const real *x, const real *y, const real
 static int F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0) {
   
   int i, k;
-  real al, be;
+  real coef, al, be;
   real dx, dy, dz, d;
-  
-  al = -2/(eta*(1 + lambda));
-  be = 2*(1 - lambda)/(1 + lambda);
-  
-	
+  real ddx, ddy, ddz, dd, ratio;
+
+  coef= 2/(1+lambda);
+  al  = -2/(eta*(1 + lambda));
+  be  = 2*(1 - lambda)/(1 + lambda);
+  	
   array_zero3(nv, fx, fy, fz);
   force(he, x, y, z, fx, fy, fz);
   oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
   
   array_zero3(nv, vx, vy, vz);
-  for (i = 0; i < nv; i++) vx[i] += gamdot*z[i];
+  for (i = 0; i < nv; i++) vx[i] += coef*gamdot*z[i];
   vector_tensor(nv, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
 
   //inner and outer viscosity has obvious contrast
@@ -212,7 +213,8 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
     
     oseen3_stresslet(oseen, he, x, y, z, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
     
-    array_copy3(nv, vx, vy, vz, ux, uy, uz);
+    array_zero3(nv, ux, uy, uz);
+    for (i = 0; i < nv; i++) ux[i] += coef*gamdot*z[i];
     
     for (k = 1; k<=iter_max; k++) {
       
@@ -220,27 +222,24 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       
       vector_tensor(nv, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, wx, wy, wz);
       
-      dx=array_l2(nv, wx, ux);
-      dy=array_l2(nv, wy, uy);
-      dz=array_l2(nv, wz, uz);
-      d=dx*dx+dy*dy+dz*dz;
-      d=sqrt(d);
-    
-      if ( d < tol ) {
+      d=array_msq_3d(nv, ux, uy, uz);
+      dd=array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
+      ratio = dd/d;
+      	
+      if ( ratio < tol ) {
 
-	if ( k == iter_max ) {
-	  
-	  MSG("t dx dy dz d k = %f %f %f %f %f %i", t, dx, dy, dz, d, k);
+	if  ( k == iter_max ) {
+	  MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
 	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
 	    ER("Failed to open '%s'", file_msg);
 	  }
 	  
-	  fprintf(fm, "t dx dy dz d k = %f %f %f %f %f %i\n", t, dx, dy, dz, d, k);
+	  fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
 	  fclose(fm);
-	  
-	  }
-	  
+	}
+	
 	break;
+	
       }
       
       array_copy3(nv, wx, wy, wz, ux, uy, uz);
