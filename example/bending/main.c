@@ -4,14 +4,15 @@
 #include <string.h>
 
 #include <real.h>
+#include <co/area.h>
 #include <co/bending.h>
-#include <co/punto.h>
-#include <co/he.h>
-#include <co/off.h>
-#include <co/memory.h>
 #include <co/err.h>
-#include <co/util.h>
+#include <co/he.h>
 #include <co/macro.h>
+#include <co/memory.h>
+#include <co/off.h>
+#include <co/punto.h>
+#include <co/util.h>
 #include <co/vec.h>
 
 #define FMT_IN   CO_REAL_IN
@@ -19,7 +20,7 @@
 static const char **argv;
 static char name[4048];
 
-static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng;
+static real *fx, *fy, *fz, *fm, *xx, *yy, *zz, *rr, *eng, *area;
 static int nv, nt;
 static He *he;
 static Bending *bending;
@@ -69,6 +70,7 @@ static void main0() {
     bending_force(bending, he, xx, yy, zz, /**/ fx, fy, fz);
     e = bending_energy(bending, he, xx, yy, zz);
     bending_energy_ver(bending, /**/ &eng);
+    he_area_ver(he, xx, yy, zz, /**/ area);
 
     MSG("energy: %g", e);
     MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
@@ -82,8 +84,8 @@ static void main0() {
         fm[i] = vec_abs(f);
     }
 
-    char *key = "r x y z fm fx fy fz eng";
-    const real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, NULL};
+    char *key = "r x y z fm fx fy fz eng area";
+    const real *queue[] = {rr, xx, yy, zz, fm, fx, fy, fz, eng, area, NULL};
     puts(key);
     punto_fwrite(nv, queue, stdout);
     bending_fin(bending);
@@ -104,14 +106,14 @@ int main(int __UNUSED argc, const char *v[]) {
     he_tri_ini(nv, nt, tri, &he);
 
     MALLOC(nv, &xx); MALLOC(nv, &yy); MALLOC(nv, &zz);
-    MALLOC(nv, &rr); MALLOC(nv, &fm);
+    MALLOC(nv, &rr); MALLOC(nv, &fm); MALLOC(nv, &area);
     CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
 
     off_xyz(off, xx, yy, zz);
     main0();
 
     FREE(xx); FREE(yy); FREE(zz);
-    FREE(rr); FREE(fm);
+    FREE(rr); FREE(fm); FREE(area);
     FREE(fx); FREE(fy); FREE(fz);
 
     off_fin(off);
