@@ -20,6 +20,7 @@
 #include "co/f/juelicher_xin.h"
 #include "co/f/edg_sq.h"
 #include "co/f/harmonic.h"
+#include "co/f/wlc.h"
 #include "co/f/harmonic_ref.h"
 #include "co/f/area_voronoi.h"
 #include "co/f/garea_voronoi.h"
@@ -42,6 +43,7 @@ static int force_rvolume_argv(char***, He*, T**);
 static int force_juelicher_xin_argv(char***, He*, T**);
 static int force_edg_sq_argv(char***, He*, T**);
 static int force_harmonic_argv(char***, He*, T**);
+static int force_wlc_argv(char***, He*, T**);
 static int force_harmonic_ref_argv(char***, He*, T**);
 static int force_area_voronoi_argv(char***, He*, T**);
 static int force_garea_voronoi_argv(char***, He*, T**);
@@ -69,6 +71,7 @@ static const char *Name[] = {
     "juelicher_xin",
     "edg_sq",
     "harmonic",
+    "wlc",
     "harmonic_ref",
     "area_voronoi",
     "garea_voronoi",
@@ -88,6 +91,7 @@ static const TypeArgv Argv[] = {
     force_juelicher_xin_argv,
     force_edg_sq_argv,
     force_harmonic_argv,
+    force_wlc_argv,
     force_harmonic_ref_argv,
     force_area_voronoi_argv,
     force_garea_voronoi_argv,
@@ -560,6 +564,49 @@ int force_harmonic_argv(char ***p, He *he, /**/ T **pq)
     q->force.vtable = &harmonic_vtable;
     *pq = &q->force;
     return he_f_harmonic_argv(p, he, &q->local);
+}
+typedef struct Wlc Wlc;
+struct Wlc {
+    T force;
+    HeFWlc *local;
+};
+static int wlc_fin(T *q)
+{
+    int status;
+    Wlc *b = CONTAINER_OF(q, Wlc, force);
+    status = he_f_wlc_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int wlc_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Wlc *b = CONTAINER_OF(q, Wlc, force);
+    return he_f_wlc_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real wlc_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Wlc *b = CONTAINER_OF(q, Wlc, force);
+    return he_f_wlc_energy(b->local, he, x, y, z);
+}
+static void* wlc_pointer(T *q)
+{
+    Wlc *b = CONTAINER_OF(q, Wlc, force);
+    return b->local;
+}
+static Vtable wlc_vtable = {
+    wlc_fin,
+    wlc_force,
+    wlc_energy,
+    wlc_pointer,
+};
+int force_wlc_argv(char ***p, He *he, /**/ T **pq)
+{
+    Wlc *q;
+    MALLOC(1, &q);
+    q->force.vtable = &wlc_vtable;
+    *pq = &q->force;
+    return he_f_wlc_argv(p, he, &q->local);
 }
 typedef struct Harmonic_ref Harmonic_ref;
 struct Harmonic_ref {

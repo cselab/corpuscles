@@ -5,6 +5,12 @@
 #include <co/he.h>
 #include <co/vec.h>
 #include <co/off.h>
+#include <co/force.h>
+#include <co/array.h>
+#include <co/memory.h>
+#include <co/err.h>
+#include <co/equiangulate.h>
+#include <co/macro.h>
 
 static double a = 0.54353, b = 0.121435, c = -0.561365;
 static double pi = 3.141592653589793;
@@ -51,7 +57,7 @@ min(double x, double y, double *px, double *py)
 
     lo = 0;
     hi = pi / 2;
-    n = 1000;
+    n = 100;
     h = (hi - lo) / (n - 1);
 
     NegX = NegY = 0;
@@ -105,22 +111,65 @@ min3(const double r[3], /**/ double s[3])
     return 0;
 }
 
-int
-main()
+static int
+project(int n, double *x, double *y, double *z)
 {
-    enum { X, Y, Z };
-    double *x, *y, *z, r[3], s[3];
-    He *he;
-    int i, nv;
+    int i;
+    double r[3], s[3];
 
-    y_inif(stdin, &he, &x, &y, &z);
-
-    nv = he_nv(he);
-    for (i = 0; i < nv; i++) {
+    for (i = 0; i < n; i++) {
 	vec_get(i, x, y, z, r);
 	min3(r, s);
 	vec_set(s, i, x, y, z);
     }
+    return 0;
+}
+
+static int
+project_avg(double f, int n, double *x, double *y, double *z)
+{
+    int i;
+    double r[3], s[3], u[3];
+
+    for (i = 0; i < n; i++) {
+	vec_get(i, x, y, z, r);
+	min3(r, s);
+	vec_linear_combination(f, s, 1 - f, r, u);
+	vec_set(u, i, x, y, z);
+    }
+    return 0;
+}
+
+int
+main(int argc, char **argv)
+{
+    USED(argc);
+    enum { X, Y, Z };
+    double *x, *y, *z, *fx, *fy, *fz;
+    He *he;
+    Force *force;
+    int i, nv, ne;
+    double dt;
+    y_inif(stdin, &he, &x, &y, &z);
+    nv = he_nv(he);
+    ne = he_ne(he);
+    MALLOC3(nv, &fx, &fy, &fz);
+
+    argv++;
+    force_argv("wlc", &argv, he, &force);
+    dt = 0.1;
+    for (i = 0; i < 1000; i++) {
+	array_zero3(nv, fx, fy, fz);
+	force_force(force, he, x, y, z, fx, fy, fz);
+	array_axpy3(nv, -dt, fx, fy, fz, x, y, z);
+	if (i % 100 == 0) {
+	    project_avg(0.1, nv, x, y, z);	    
+	    MSG("eng: %g", force_energy(force, he, x, y, z) / ne * 100);
+	}
+    }
+    project(nv, x, y, z);
     off_he_xyz_fwrite(he, x, y, z, stdout);
     y_fin(he, x, y, z);
+    force_fin(force);
+    FREE3(fx, fy, fz);
 }
