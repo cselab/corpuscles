@@ -10,6 +10,7 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/vec.h"
+#include "co/argv.h"
 
 
 #include "co/f/wlc.h"
@@ -99,7 +100,13 @@ int he_f_wlc_ini(real x0, real K, const real *x, const real *y, const real *z, H
 }
 
 int he_f_wlc_argv(__UNUSED char ***p, __UNUSED He *he, __UNUSED T **pq) {
-    return CO_OK;
+    int status;
+    real x, y;
+    if ((status = argv_real(p, &x)) != CO_OK)
+        return status;
+    if ((status = argv_real(p, &y)) != CO_OK)
+        return status;
+    return he_f_wlc_ini(x, y, he, pq);
 }
 
 int he_f_wlc_fin(T *q) {

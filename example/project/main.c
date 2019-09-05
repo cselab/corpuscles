@@ -156,7 +156,7 @@ main(int argc, char **argv)
     MALLOC3(nv, &fx, &fy, &fz);
 
     argv++;
-    force_argv("wlc", &argv, he, &force);
+    force_argv("harmonic", &argv, he, &force);
     dt = 0.1;
     for (i = 0; i < 1000; i++) {
 	array_zero3(nv, fx, fy, fz);
