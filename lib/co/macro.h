@@ -3,3 +3,5 @@
 #else
   #define __UNUSED
 #endif
+
+#define	USED(x)		if(x);else{}

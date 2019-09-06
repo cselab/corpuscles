@@ -162,7 +162,6 @@ stresslet(__UNUSED real e, const real a[3], const real n[3], const real b[3],
 	*zz = d[Z]*d[Z]*l;
 	return CO_OK;
 }
-
 static int
 stresslet0(__UNUSED real e, __UNUSED const real a[3], __UNUSED const real n[3],
 	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
@@ -170,7 +169,6 @@ stresslet0(__UNUSED real e, __UNUSED const real a[3], __UNUSED const real n[3],
 	*xx = *yy = *zz = *xy = *xz = *yz = 0;
 	return CO_OK;
 }
-
 int
 oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
@@ -223,5 +221,12 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	matrix_scale(n, n, s, oyy);
 	matrix_scale(n, n, s, oyz);
 	matrix_scale(n, n, s, ozz);
+	return CO_OK;
+}
+
+int
+oseen3_velocity(T *q, He *He, real mu, const real *x, const real *y, const real *z,
+	const real *fx, const real *fy, const real *fz, const real r[3], real v[3])
+{
 	return CO_OK;
 }

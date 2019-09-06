@@ -70,6 +70,14 @@ he_f_harmonic_force
 he_f_harmonic_energy
 he_f_harmonic_argv
 
+#include "co/f/wlc.h"
+wlc
+HeFWlc
+he_f_wlc_fin
+he_f_wlc_force
+he_f_wlc_energy
+he_f_wlc_argv
+
 #include "co/f/harmonic_ref.h"
 harmonic_ref
 HeFHarmonicRef

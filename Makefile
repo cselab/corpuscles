@@ -18,6 +18,7 @@ bin/q\
 bin/run\
 bin/shake\
 bin/vtk\
+bin/xcolor\
 data\
 example/area/tri\
 example/area/voronoi\
