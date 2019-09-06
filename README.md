@@ -41,7 +41,8 @@ Adjust `conf.mk` if you want to change defaults
 
 ```makefile
 CC = c99
-CFLAGS = -O2 -g
+CFLAGS = -O2 -g -fopenmp
+LDFLAGS = -fopenmp
 PREFIX = $(HOME)
 DATAPATH = $(HOME)/.co
 MAXIMA_HOME = $(HOME)/.maxima
