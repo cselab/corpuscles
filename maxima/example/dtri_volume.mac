@@ -1,0 +1,15 @@
+load("co/tri.mac") $
+load("co/vec.mac") $
+load("co/ten.mac") $
+load("co/dtri.mac") $
+
+vec_any(a) $
+vec_any(b) $
+vec_any(c) $
+
+tri_volume(a, b, c);
+[da, db, dc]: dtri_volume(a, b, c);
+
+da + db + dc;
+
+vec_arg(a, b, c);

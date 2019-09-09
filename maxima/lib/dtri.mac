@@ -34,6 +34,18 @@ dtri_area(a, b, c):=block([n, ab, bc, ca, da, db, dc],
   dc: vec_cross(n, ab),
   [da, db, dc]);
 
+%dvolume(a, b, c):=block([n, area],
+  n: tri_normal(a, b, c),
+  area: tri_area(a, b, c),
+  area/3*n);
+
+dtri_volume(a, b, c):=block([z, da, db, dc],
+  z: vec_zero(),
+  dc: %dvolume(z, a, b),
+  da: %dvolume(z, b, c),
+  db: %dvolume(z, c, a),
+  [da, db, dc]);
+
 dtri_edg_area(a, b, c):=block([A, s, Aa, Ab, Ac, sa, sb, da, db, dc],
   A: tri_area(a, b, c),
   s: edg_sq(a, b),
