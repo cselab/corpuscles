@@ -1,4 +1,4 @@
-var loader, camera, scene, renderer
+var loader, camera, scene, renderer, params, gui
 
 if (THREE.WEBGL.isWebGLAvailable()) {
 	loader = new THREE.FileLoader()
@@ -11,13 +11,14 @@ if (THREE.WEBGL.isWebGLAvailable()) {
 function load(d)
 {
         var X = 0, Y = 1, Z = 2
+        var XX = 0, XY = 1, XZ = 2,
+            YX = 4, YY = 5, YZ = 6,
+            ZX = 8, ZY = 9, ZZ = 10
         var nt, nv, t, tt, i, j, k, off, ver, pos, v
         var x, y, z, ve, t
         var geometry, material, mesh
         var controls
-        var XX = 0, XY = 1, XZ = 2,
-            YX = 4, YY = 5, YZ = 6,
-            ZX = 8, ZY = 9, ZZ = 10
+        var fov, aspect, near, far
 
         off = off_string_ini(d)
         nt = off_nt(off)
@@ -62,19 +63,28 @@ function load(d)
         geometry.addAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
 
         scene = new THREE.Scene()
-        material = new THREE.MeshBasicMaterial({color: 0x00ffff, wireframe: true})
+        material = new THREE.MeshBasicMaterial({color: 0xffffff, wireframe: true})
 
         mesh = new THREE.Mesh(geometry, material)
         scene.add(mesh)
         renderer = new THREE.WebGLRenderer()
         renderer.setSize(window.innerWidth, window.innerHeight)
         document.body.appendChild(renderer.domElement)
-
-        camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10)
-        camera.position.z = 3
         controls = new THREE.OrbitControls(camera, renderer.domElement)
         controls.update()
-        renderer.render(scene, camera)
+
+        fov = 30
+        aspect = window.innerWidth / window.innerHeight
+        near = 0.1
+        far = 100
+        camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+        camera.position.z = 3
+
+        gui = new dat.GUI()
+	params = { file : '0'}
+        gui.add(params, 'file', [ '0', '1', '2' ] )
+        gui.open()
+
         animate()
 }
 
