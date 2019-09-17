@@ -1,4 +1,5 @@
 var loader
+var camera, scene, renderer
 loader = new THREE.FileLoader()
 loader.load('data/rbc.off', load, progress, err)
 
@@ -7,8 +8,8 @@ function load(d)
         var X = 0, Y = 1, Z = 2
         var nt, nv, t, tt, i, j, k, off, ver, pos, v
         var x, y, z, ve, t
-        var geometry, scene, material, mesh
-        var camera, scene, renderer
+        var geometry, material, mesh
+        var controls
         var XX = 0, XY = 1, XZ = 2,
             YX = 4, YY = 5, YZ = 6,
             ZX = 8, ZY = 9, ZZ = 10
@@ -56,8 +57,7 @@ function load(d)
         geometry.addAttribute( 'position', new THREE.Float32BufferAttribute(pos, 3) )
 
         scene = new THREE.Scene()
-        material = new THREE.MeshBasicMaterial({color: 0x00ffff})
-        material.wireframe = true
+        material = new THREE.MeshBasicMaterial({color: 0x00ffff, wireframe: true})
 
         mesh = new THREE.Mesh(geometry, material)
         scene.add(mesh)
@@ -67,8 +67,18 @@ function load(d)
 
         camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10 )
         camera.position.z = 3
+        controls = new THREE.OrbitControls(camera, renderer.domElement)
+        controls.update()
+        renderer.render(scene, camera)
+        animate()
+}
+
+function animate()
+{
+	requestAnimationFrame(animate)
         renderer.render(scene, camera)
 }
+
 
 function progress(xhr)
 {
