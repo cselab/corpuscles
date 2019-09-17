@@ -1,6 +1,6 @@
 var loader, camera, scene, renderer
 
-if (THREE.WEBGL.isWebGLAvailable() ) {
+if (THREE.WEBGL.isWebGLAvailable()) {
 	loader = new THREE.FileLoader()
 	loader.load('data/rbc.off', load, progress, err)
 } else {
@@ -59,7 +59,7 @@ function load(d)
         }
 
         geometry = new THREE.BufferGeometry()
-        geometry.addAttribute( 'position', new THREE.Float32BufferAttribute(pos, 3) )
+        geometry.addAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
 
         scene = new THREE.Scene()
         material = new THREE.MeshBasicMaterial({color: 0x00ffff, wireframe: true})
@@ -67,10 +67,10 @@ function load(d)
         mesh = new THREE.Mesh(geometry, material)
         scene.add(mesh)
         renderer = new THREE.WebGLRenderer()
-        renderer.setSize(window.innerWidth, window.innerHeight )
-        document.body.appendChild( renderer.domElement )
+        renderer.setSize(window.innerWidth, window.innerHeight)
+        document.body.appendChild(renderer.domElement)
 
-        camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10 )
+        camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10)
         camera.position.z = 3
         controls = new THREE.OrbitControls(camera, renderer.domElement)
         controls.update()
