@@ -1,6 +1,10 @@
 var loader, camera, scene, renderer, params, gui
 
 if (THREE.WEBGL.isWebGLAvailable()) {
+        gui = new dat.GUI()
+	params = { file : '0'}
+        gui.add(params, 'file', [ '0', '1', '2' ] )
+        gui.open()
 	loader = new THREE.FileLoader()
 	loader.load('data/rbc.off', load, progress, err)
 } else {
@@ -70,8 +74,6 @@ function load(d)
         renderer = new THREE.WebGLRenderer()
         renderer.setSize(window.innerWidth, window.innerHeight)
         document.body.appendChild(renderer.domElement)
-        controls = new THREE.OrbitControls(camera, renderer.domElement)
-        controls.update()
 
         fov = 30
         aspect = window.innerWidth / window.innerHeight
@@ -80,10 +82,8 @@ function load(d)
         camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
         camera.position.z = 3
 
-        gui = new dat.GUI()
-	params = { file : '0'}
-        gui.add(params, 'file', [ '0', '1', '2' ] )
-        gui.open()
+        controls = new THREE.OrbitControls(camera, renderer.domElement)
+        controls.update()
 
         animate()
 }
@@ -92,6 +92,7 @@ function animate()
 {
 	requestAnimationFrame(animate)
         renderer.render(scene, camera)
+        console.log(params.file)
 }
 
 
