@@ -28,9 +28,9 @@ function load(d)
             x = ve[X]
             y = ve[Y]
             z = ve[Z]
-            ve[X] = t[XX]*x + t[YX]*y + t[ZX]*z
-            ve[Y] = t[XY]*x + t[YY]*y + t[ZY]*z
-            ve[Z] = t[XZ]*x + t[YZ]*y + t[ZZ]*z
+            ve[X] = x*t[XX] + y*t[YX] + z*t[ZX]
+            ve[Y] = x*t[XY] + y*t[YY] + z*t[ZY]
+            ve[Z] = x*t[XZ] + y*t[YZ] + z*t[ZZ]
         }
 
         pos = Array(9*nt)
