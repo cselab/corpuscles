@@ -1,6 +1,6 @@
 var loader
 loader = new THREE.FileLoader()
-loader.load('data/0.off ', load, progress, err)
+loader.load('data/rbc.off', load, progress, err)
 
 function load(d)
 {
@@ -38,7 +38,7 @@ function load(d)
 	geometry.addAttribute( 'position', new THREE.Float32BufferAttribute(pos, 3) )
 
 	scene = new THREE.Scene()
-	material = new THREE.MeshBasicMaterial({color: 0x00ff00})
+	material = new THREE.MeshBasicMaterial({color: 0x00ffff})
 	mesh = new THREE.Mesh(geometry, material)
 	scene.add(mesh)
 	renderer = new THREE.WebGLRenderer( { antialias: true } )
@@ -48,7 +48,6 @@ function load(d)
 	camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10 )
 	camera.position.z = 5
 	renderer.render( scene, camera )
-	
 }
 
 function progress(xhr)
