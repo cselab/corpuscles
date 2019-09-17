@@ -1,7 +1,12 @@
-var loader
-var camera, scene, renderer
-loader = new THREE.FileLoader()
-loader.load('data/rbc.off', load, progress, err)
+var loader, camera, scene, renderer
+
+if (THREE.WEBGL.isWebGLAvailable() ) {
+	loader = new THREE.FileLoader()
+	loader.load('data/rbc.off', load, progress, err)
+} else {
+	var warning = THREE.WEBGL.getWebGLErrorMessage()
+        document.body.appendChild(warning)
+}
 
 function load(d)
 {
@@ -61,7 +66,7 @@ function load(d)
 
         mesh = new THREE.Mesh(geometry, material)
         scene.add(mesh)
-        renderer = new THREE.WebGLRenderer( { antialias: true } )
+        renderer = new THREE.WebGLRenderer()
         renderer.setSize(window.innerWidth, window.innerHeight )
         document.body.appendChild( renderer.domElement )
 
