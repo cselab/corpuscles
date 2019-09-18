@@ -25,7 +25,7 @@ main() {
 	    i = he_tri(he, i);
 	    j = he_tri(he, j);
 	    k = he_tri(he, k);
-	    printf("%d %d %d\n", i, j, k);
+	    printf("%d %d %d\n", k, i, j);
 	}
 	y_fin(he, x, y, z);
 	return CO_OK;
