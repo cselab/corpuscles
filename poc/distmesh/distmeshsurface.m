@@ -60,8 +60,8 @@ while 1
     bars=[t(:,[1,2]);t(:,[1,3]);t(:,[2,3])];         % Interior bars duplicated
     bars=unique(sort(bars,2),'rows');                % Bars as node pairs
     % 5. Graphical output of the current mesh
-    clf,patch('faces',t,'vertices',p,'facecol',[.8,.9,1],'edgecol','k');
-    axis equal;axis off;view(3);cameramenu;drawnow
+    #clf,patch('faces',t,'vertices',p,'facecol',[.8,.9,1],'edgecol','k');
+    #axis equal;axis off;view(3);cameramenu;drawnow
   end
 
   % 6. Move mesh points based on bar lengths L and forces F
@@ -82,6 +82,7 @@ while 1
   dgrad2=dgradx.^2+dgrady.^2+dgradz.^2;
   p=p-[d.*dgradx./dgrad2,d.*dgrady./dgrad2,d.*dgradz./dgrad2];  % Project back to boundary
 
-  % 8. Termination criterion: All nodes move less than dptol (scaled)
-  if max(sqrt(sum((p-p0).^2,2))/h0)<dptol, break; end
+   % 8. Termination criterion: All nodes move less than dptol (scaled)
+  tol = max(sqrt(sum((p-p0).^2,2))/h0);
+  if tol<dptol, break; end
 end
