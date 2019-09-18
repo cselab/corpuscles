@@ -3,13 +3,10 @@ function err = off_write(f, p, t)
   nt = size(t, 1);
   fprintf(f, 'OFF\n');
   fprintf(f, '%d %d 0\n', nv, nt);
-
   for i = 1:nv
     fprintf(f, '%.16g %.16g %.16g\n', p(i, :));
   end
-
   for i = 1:nt
     fprintf(f, '3 %d %d %d\n', t(i, :) - 1);
   end
-
 end
