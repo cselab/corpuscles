@@ -1,6 +1,6 @@
 .POSIX:
 include ../../../conf.mk
-M = t2t
+M = t2t t2n
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`
