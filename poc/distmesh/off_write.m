@@ -6,10 +6,10 @@ function err = off_write(f, p, t)
 
   for i = 1:nv
     fprintf(f, '%.16g %.16g %.16g\n', p(i, :));
-  endfor
+  end
 
   for i = 1:nt
     fprintf(f, '3 %d %d %d\n', t(i, :) - 1);
-  endfor
+  end
 
-endfunction
+end
