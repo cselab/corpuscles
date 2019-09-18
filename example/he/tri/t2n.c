@@ -5,6 +5,19 @@
 #include <co/y.h>
 #include <co/he.h>
 
+static int
+count(He *he, int i)
+{
+    int t, j, cnt;
+    t = he_tri(he, i);
+    j = he_hdg_tri(he, t);
+
+    for (cnt = 0; i != j; cnt++)
+	i = he_nxt(he, i);
+
+    return cnt;
+}
+
 int
 main() {
 	He      *he;
@@ -22,9 +35,9 @@ main() {
 	    j = he_flp(he, j);
 	    k = he_flp(he, k);
 
-	    i = he_tri(he, i);
-	    j = he_tri(he, j);
-	    k = he_tri(he, k);
+	    i = count(he, i);
+	    j = count(he, j);
+	    k = count(he, k);
 	    printf("%d %d %d\n", k, i, j);
 	}
 	y_fin(he, x, y, z);
