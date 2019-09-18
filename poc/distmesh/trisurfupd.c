@@ -1,5 +1,3 @@
-// Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
-
 #include "mex.h"
 #include <string.h>
 #include <math.h>
@@ -68,7 +66,7 @@ void tupdate(double *p,int *t,int *t2t,char *t2n,
           int newt[2][3]={t[0+3*t1],t[1+3*t1],t[2+3*t1],
                           t[0+3*t2],t[1+3*t2],t[2+3*t2]};
           
-          // Swap edge
+          /* Swap edge */
           newt[0][tix12]=newt[1][n2];
           newt[1][tix22]=newt[0][n1];
           
@@ -88,11 +86,11 @@ void tupdate(double *p,int *t,int *t2t,char *t2n,
               int nbt;
               char nbn;
               
-              // Insert new triangles
+              /* Insert new triangles */
               memcpy(t+3*t1,newt[0],3*sizeof(int));
               memcpy(t+3*t2,newt[1],3*sizeof(int));
               
-              // Update t2t and t2n
+              /* Update t2t and t2n */
               nbt=t2t[tix21+3*t2];
               nbn=t2n[tix21+3*t2];
               t2t[n1+3*t1]=nbt;
@@ -137,3 +135,5 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
   tupdate(p,t,t2t,t2n,np,nt);
 }
+
+/* Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details. */
