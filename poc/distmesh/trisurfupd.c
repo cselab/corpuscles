@@ -49,8 +49,10 @@ static double triqual3(double *p1,double *p2,double *p3)
 static void tupdate(double *p,int *t,int *t2t,char *t2n,
 		    int np,int nt)
 {
-  for (int t1=0; t1<nt; t1++)
-    for (char n1=0; n1<3; n1++) {
+  int t1;
+  char n1;
+  for (t1=0; t1<nt; t1++)
+    for (n1=0; n1<3; n1++) {
       int t2=t2t[n1+3*t1];
       if (t2>=0) {
         double q1=triqual3(&p[3*t[0+3*t1]],&p[3*t[1+3*t1]],&p[3*t[2+3*t1]]);
