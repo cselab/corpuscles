@@ -11,9 +11,11 @@ count(He *he, int i)
     int t, j, cnt;
     t = he_tri(he, i);
     j = he_hdg_tri(he, t);
+    j = he_nxt(he, j);
+    j = he_nxt(he, j);
 
     for (cnt = 0; i != j; cnt++)
-	i = he_nxt(he, i);
+	j = he_nxt(he, j);
 
     return cnt;
 }
