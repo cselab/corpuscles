@@ -1,0 +1,17 @@
+include ../../../conf.mk
+
+M = main
+PREC = d
+CO_CFLAGS =  `alg.conf --cflags $(PREC)`
+CO_LDFLAGS =  `alg.conf --libs $(PREC)` \
+              `co.conf --libs $(PREC)` \
+              `alg.conf --libs $(PREC)`
+
+$M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+$M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
+
+test: $M; atest test/*
+install:
+
+.PHONY: clean test install
+clean:; rm -f $M.o $M
