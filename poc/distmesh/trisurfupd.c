@@ -12,10 +12,10 @@ void cross(double *v1, double *v2, double *n) {
   n[2]=v1[0]*v2[1]-v1[1]*v2[0];
 }
 
-const char mod3x1[3]={1,2,0};
-const char mod3x2[3]={2,0,1};
+static const char mod3x1[3]={1,2,0};
+static const char mod3x2[3]={2,0,1};
 
-double triarea(double *p1,double *p2,double *p3)
+static double triarea(double *p1,double *p2,double *p3)
 {
   double d12x=p2[0]-p1[0];
   double d12y=p2[1]-p1[1];
@@ -24,7 +24,7 @@ double triarea(double *p1,double *p2,double *p3)
   return (d12x*d13y-d12y*d13x)/2.0;
 }
 
-void trinormal3(double *p1,double *p2,double *p3,double *n)
+static void trinormal3(double *p1,double *p2,double *p3,double *n)
 {
   double d12[3]={ p2[0]-p1[0], p2[1]-p1[1], p2[2]-p1[2] };
   double d13[3]={ p3[0]-p1[0], p3[1]-p1[1], p3[2]-p1[2] };
@@ -34,7 +34,7 @@ void trinormal3(double *p1,double *p2,double *p3,double *n)
   n[0]/=nnorm; n[1]/=nnorm; n[2]/=nnorm;
 }
 
-double triqual3(double *p1,double *p2,double *p3)
+static double triqual3(double *p1,double *p2,double *p3)
 {
   double n[3];
   double d12[3]={ p2[0]-p1[0], p2[1]-p1[1], p2[2]-p1[2] };
@@ -46,8 +46,8 @@ double triqual3(double *p1,double *p2,double *p3)
   return 6.928203230275509*vol/den;
 }
 
-void tupdate(double *p,int *t,int *t2t,char *t2n,
-             int np,int nt)
+static void tupdate(double *p,int *t,int *t2t,char *t2n,
+		    int np,int nt)
 {
   for (int t1=0; t1<nt; t1++)
     for (char n1=0; n1<3; n1++) {
