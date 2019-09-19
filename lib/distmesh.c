@@ -45,5 +45,24 @@ distmesh_t2n(He *he, /**/ int *out)
 int
 distmesh_t2t(He *he, /**/ int *out)
 {
+    int nt, t, i, j, k;
+    nt = he_nt(he);
+    for (t = 0; t < nt; t++) {
+	i = he_hdg_tri(he, t);
+	j = he_nxt(he, i);
+	k = he_nxt(he, j);
+
+	i = he_flp(he, i);
+	j = he_flp(he, j);
+	k = he_flp(he, k);
+
+	i = he_tri(he, i);
+	j = he_tri(he, j);
+	k = he_tri(he, k);
+
+	*out++ = k; /* to much matlab distmesh order */
+	*out++ = i;
+	*out++ = j;
+    }
     return CO_OK;
 }
