@@ -232,7 +232,7 @@ off_xyz_tri_fwrite(int nv, const real *xyz, int nt, const int *tri, FILE *f)
 	i = *tri++;
 	j = *tri++;
 	k = *tri++;
-	fprintf(f, "%d %d %d\n", i, j, k);
+	fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
     return CO_OK;
 }

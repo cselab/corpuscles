@@ -45,7 +45,7 @@ static real triqual3(const real *p1, const real *p2, const real *p3)
   return 6.928203230275509*vol/den;
 }
 
-static void tupdate(const real *p,int *t,int *t2t, int *t2n, int nt)
+static void tupdate(const real *p, int *t,int *t2t, int *t2n, int nt)
 {
   int t1;
   int n1;
@@ -151,7 +151,10 @@ int main()
     distmesh_t2t(he, t2t);
     distmesh_t2n(he, t2n);
 
-    tupdate(p, tri , t2t, t2n, nt);
+    tupdate(p, tri, t2t, t2n, nt);
+    for (i = 0; i < 3*nt; i++)
+	if (tri[i] != tri0[i])
+	    MSG("tri[%d]=%d != tri0[%d]=%d", i, tri[i], i, tri0[i]);
     
     off_xyz_tri_fwrite(nv, p, nt, tri, stdout);
 
