@@ -7,31 +7,23 @@
 #include <co/err.h>
 #include <co/he.h>
 #include <co/memory.h>
+#include <co/off.h>
 #include <co/y.h>
 
 static real min(real x, real y) { return x < y ? x : y; }
 static real sqr(real x) { return x*x; }
-static real length(real *x) { return sqrt(sqr(x[0])+sqr(x[1])+sqr(x[2])); }
-static real dot(real *x, real *y) { return x[0]*y[0]+x[1]*y[1]+x[2]*y[2]; }
-void cross(real *v1, real *v2, real *n) {
+static real length(const real *x) { return sqrt(sqr(x[0])+sqr(x[1])+sqr(x[2])); }
+static real dot(const real *x, const real *y) { return x[0]*y[0]+x[1]*y[1]+x[2]*y[2]; }
+void cross(const real *v1, const real *v2, real *n) {
   n[0]=v1[1]*v2[2]-v1[2]*v2[1];
   n[1]=v1[2]*v2[0]-v1[0]*v2[2];
   n[2]=v1[0]*v2[1]-v1[1]*v2[0];
 }
 
-static const char mod3x1[3]={1,2,0};
-static const char mod3x2[3]={2,0,1};
+static const int mod3x1[3]={1,2,0};
+static const int mod3x2[3]={2,0,1};
 
-static real triarea(real *p1,real *p2,real *p3)
-{
-  real d12x=p2[0]-p1[0];
-  real d12y=p2[1]-p1[1];
-  real d13x=p3[0]-p1[0];
-  real d13y=p3[1]-p1[1];
-  return (d12x*d13y-d12y*d13x)/2.0;
-}
-
-static void trinormal3(real *p1,real *p2,real *p3,real *n)
+static void trinormal3(const real *p1, const real *p2, const real *p3,real *n)
 {
   real d12[3]={ p2[0]-p1[0], p2[1]-p1[1], p2[2]-p1[2] };
   real d13[3]={ p3[0]-p1[0], p3[1]-p1[1], p3[2]-p1[2] };
@@ -41,7 +33,7 @@ static void trinormal3(real *p1,real *p2,real *p3,real *n)
   n[0]/=nnorm; n[1]/=nnorm; n[2]/=nnorm;
 }
 
-static real triqual3(real *p1,real *p2,real *p3)
+static real triqual3(const real *p1, const real *p2, const real *p3)
 {
   real n[3];
   real d12[3]={ p2[0]-p1[0], p2[1]-p1[1], p2[2]-p1[2] };
@@ -53,11 +45,10 @@ static real triqual3(real *p1,real *p2,real *p3)
   return 6.928203230275509*vol/den;
 }
 
-static void tupdate(real *p,int *t,int *t2t,char *t2n,
-		    int np,int nt)
+static void tupdate(const real *p,int *t,int *t2t, int *t2n, int nt)
 {
   int t1;
-  char n1;
+  int n1;
   for (t1=0; t1<nt; t1++)
     for (n1=0; n1<3; n1++) {
       int t2=t2t[n1+3*t1];
@@ -66,11 +57,11 @@ static void tupdate(real *p,int *t,int *t2t,char *t2n,
         real q2=triqual3(&p[3*t[0+3*t2]],&p[3*t[1+3*t2]],&p[3*t[2+3*t2]]);
         real minqold=min(q1,q2);
         if (minqold<0.9) {
-          char n2=t2n[n1+3*t1];
-          char tix11=mod3x1[n1];
-          char tix12=mod3x2[n1];
-          char tix21=mod3x1[n2];
-          char tix22=mod3x2[n2];
+          int n2=t2n[n1+3*t1];
+          int tix11=mod3x1[n1];
+          int tix12=mod3x2[n1];
+          int tix21=mod3x1[n2];
+          int tix22=mod3x2[n2];
           
           int newt[2][3]={t[0+3*t1],t[1+3*t1],t[2+3*t1],
                           t[0+3*t2],t[1+3*t2],t[2+3*t2]};
@@ -93,7 +84,7 @@ static void tupdate(real *p,int *t,int *t2t,char *t2n,
             flip=dot(normal1,normal2)>0 && dot(normal3,normal4)>0;
             if (flip) {
               int nbt;
-              char nbn;
+              int nbn;
               
               /* Insert new triangles */
               memcpy(t+3*t1,newt[0],3*sizeof(int));
@@ -133,14 +124,40 @@ static void tupdate(real *p,int *t,int *t2t,char *t2n,
 int main()
 {
     He      *he;
-    real *x, *y, *z;
-    int i, j, k, m, t, nt;
-    int *t2t;
+    real *x, *y, *z, *p;
+    int i, j, k, m, t, nt, nv;
+    int *t2t, *t2n, *tri, *tri0;
     y_inif(stdin, &he, &x, &y, &z);
     nt = he_nt(he);
-    MALLOC(3*nt, &t2t);
+    nv = he_nv(he);
+    MALLOC2(3*nt, &t2t, &t2n);
+    MALLOC2(3*nt, &tri, &tri0);
+    MALLOC(3*nv, &p);
+    for (m = i = 0; i < nv; i++) {
+	p[m++] = x[i];
+	p[m++] = y[i];
+	p[m++] = z[i];	
+    }
+    for (m = t = 0; t < nt; t++) {
+	he_tri_ijk(he, t, &i, &j, &k);
+	tri[m++] = i;
+	tri[m++] = j;
+	tri[m++] = k;
+    }
 
-    FREE(t2t);
+    for (i = 0; i < 3*nt; i++)
+	tri0[i] = tri[i];
+
+    distmesh_t2t(he, t2t);
+    distmesh_t2n(he, t2n);
+
+    tupdate(p, tri , t2t, t2n, nt);
+    
+    off_xyz_tri_fwrite(nv, p, nt, tri, stdout);
+
+    FREE2(t2t, t2n);
+    FREE2(tri, tri0);
+    FREE(p);
     y_fin(he, x, y, z);
     return CO_OK;
 }
