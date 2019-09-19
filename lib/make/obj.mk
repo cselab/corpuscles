@@ -34,6 +34,7 @@ dedg2.s.o\
 dedg.s.o\
 dH.s.o\
 dih.s.o\
+distmesh.s.o\
 dlen.s.o\
 dnormal.s.o\
 dtri2.s.o\
@@ -147,6 +148,7 @@ dedg2.d.o\
 dedg.d.o\
 dH.d.o\
 dih.d.o\
+distmesh.d.o\
 dlen.d.o\
 dnormal.d.o\
 dtri2.d.o\
@@ -260,6 +262,7 @@ dedg2.l.o\
 dedg.l.o\
 dH.l.o\
 dih.l.o\
+distmesh.l.o\
 dlen.l.o\
 dnormal.l.o\
 dtri2.l.o\

@@ -18,6 +18,7 @@ co/dedg2.h\
 co/dedg.h\
 co/dH.h\
 co/dih.h\
+co/distmesh.h\
 co/dlen.h\
 co/dnormal.h\
 co/dtri2.h\
