@@ -113,7 +113,6 @@ f2_len_force(T *q, Skel *skel0, const real *x, const real *y, real *u, real *v)
 {
 	real Ka, a3, a4, a[2], b[2], a0[2], b0[2], da[2], db[2];
 	real *x0, *y0;
-	real E, E0;
 	Skel *skel;
 	int n, e, i, j;
 
