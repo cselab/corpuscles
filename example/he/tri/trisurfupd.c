@@ -76,28 +76,28 @@ triqual3(const real * p1, const real * p2, const real * p3)
 static void
 tupdate(const real * p, int nt, int *t, int *t2t, int *t2n)
 {
-	int t1;
-	int n1;
+    int t1, n1, n2, t2, tix11, tix12, tix21, tix22, flip, nbt, nbn;
+    real q1, q2, q3, q4, minqold, minqnew;
 
 	for (t1 = 0; t1 < nt; t1++)
 		for (n1 = 0; n1 < 3; n1++) {
 			int t2 = t2t[n1 + 3 * t1];
 
 			if (t2 >= 0) {
-				real q1 =
+				q1 =
 					triqual3(&p[3 * t[0 + 3 * t1]], &p[3 * t[1 + 3 * t1]],
 							 &p[3 * t[2 + 3 * t1]]);
-				real q2 =
+				q2 =
 					triqual3(&p[3 * t[0 + 3 * t2]], &p[3 * t[1 + 3 * t2]],
 							 &p[3 * t[2 + 3 * t2]]);
-				real minqold = min(q1, q2);
+				minqold = min(q1, q2);
 
 				if (minqold < 0.9) {
-					int n2 = t2n[n1 + 3 * t1];
-					int tix11 = mod3x1[n1];
-					int tix12 = mod3x2[n1];
-					int tix21 = mod3x1[n2];
-					int tix22 = mod3x2[n2];
+					n2 = t2n[n1 + 3 * t1];
+					tix11 = mod3x1[n1];
+					tix12 = mod3x2[n1];
+					tix21 = mod3x1[n2];
+					tix22 = mod3x2[n2];
 
 					int newt[2][3] =
 						{ t[0 + 3 * t1], t[1 + 3 * t1], t[2 + 3 * t1],
@@ -108,16 +108,15 @@ tupdate(const real * p, int nt, int *t, int *t2t, int *t2n)
 					newt[0][tix12] = newt[1][n2];
 					newt[1][tix22] = newt[0][n1];
 
-					real q3 =
+					q3 =
 						triqual3(&p[3 * newt[0][0]], &p[3 * newt[0][1]],
 								 &p[3 * newt[0][2]]);
-					real q4 =
+					q4 =
 						triqual3(&p[3 * newt[1][0]], &p[3 * newt[1][1]],
 								 &p[3 * newt[1][2]]);
-					real minqnew = min(q3, q4);
+					minqnew = min(q3, q4);
 
 					if (minqnew > minqold + .025) {
-						int flip;
 						real normal1[3], normal2[3], normal3[3],
 							normal4[3];
 						trinormal3(&p[3 * t[0 + 3 * t1]],
@@ -133,9 +132,6 @@ tupdate(const real * p, int nt, int *t, int *t2t, int *t2n)
 						flip = dot(normal1, normal2) > 0
 							&& dot(normal3, normal4) > 0;
 						if (flip) {
-							int nbt;
-							int nbn;
-
 							/* Insert new triangles */
 							memcpy(t + 3 * t1, newt[0], 3 * sizeof(int));
 							memcpy(t + 3 * t2, newt[1], 3 * sizeof(int));
