@@ -74,7 +74,7 @@ triqual3(const real * p1, const real * p2, const real * p3)
 }
 
 static void
-tupdate(const real * p, int *t, int *t2t, int *t2n, int nt)
+tupdate(const real * p, int nt, int *t, int *t2t, int *t2n)
 {
 	int t1;
 	int n1;
@@ -203,7 +203,7 @@ main()
 	distmesh_t2t(he, t2t);
 	distmesh_t2n(he, t2n);
 
-	tupdate(p, tri, t2t, t2n, nt);
+	tupdate(p, nt, tri, t2t, t2n);
 	for (i = 0; i < 3 * nt; i++)
 		if (tri[i] != tri0[i])
 			MSG("tri[%d]=%d != tri0[%d]=%d", i, tri[i], i, tri0[i]);
