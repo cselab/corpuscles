@@ -40,15 +40,16 @@ int vec_norm(const real[3], /**/ real[3]);
 int vec_mean3(const real[3], const real[3], const real[3], /**/ real[3]);
 
 /* `c' = project `a' on `b' */
-int vec_project(const real a[3], const real b[3], /**/ real[3]);
-real vec_project_scalar(const real a[3], const real b[3]);
+int vec_project(const real[3], const real[3], /**/ real[3]);
+real vec_project_scalar(const real[3], const real[3]);
 
 /* `c' = reject`a' on `b' */
-int vec_reject(const real a[3], const real b[3], /**/ real[3]);
-real vec_reject_scalar(const real a[3], const real b[3]);
+int vec_reject(const real[3], const real[3], /**/ real[3]);
+real vec_reject_scalar(const real[3], const real[3]);
 
-int vec_fprintf(const real a[3], FILE *f, const char *fmt);
-int vec_printf(const real a[3], const char *fmt);
+int vec_fprintf(const real[3], FILE*, const char *fmt);
+int vec_fprintf0(const real[3], FILE*, const char *fmt);
+int vec_printf(const real[3], const char *fmt);
 
 int vec_argv(const char **pq[], /**/ real[3]);
 int vec_zero(/**/ real[3]);

@@ -211,6 +211,16 @@ int vec_fprintf(const real a[3], FILE *f, const char *fmt0) {
     return r < 0 ? CO_IO : CO_OK;
 }
 
+int vec_fprintf0(const real a[3], FILE *f, const char *fmt0) {
+    char fmt[SIZE];
+    int r;
+    r = snprintf(fmt, SIZE, "%s %s %s", fmt0, fmt0, fmt0);
+    if (r < 0)
+        ERR(CO_IO, "snprintf failed for fmt0='%s'", fmt0);
+    r = fprintf(f, fmt, a[X], a[Y], a[Z]);
+    return r < 0 ? CO_IO : CO_OK;
+}
+
 static int nxt(const char *a, real *p) {
     return sscanf(a, FMT_IN, p) == 1;
 }
