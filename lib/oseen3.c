@@ -6,11 +6,12 @@
 #include "co/err.h"
 #include "co/he.h"
 #include "co/macro.h"
-#include "co/matrix.h"
 #include "co/memory.h"
 #include "co/normal.h"
 #include "co/oseen3.h"
 #include "co/vec.h"
+#include "co/i/vec.h"
+#include "co/i/matrix.h"
 
 #define T Oseen3
 static const real pi = 3.141592653589793115997964;
@@ -31,7 +32,7 @@ oseen(__UNUSED real e, const real a[3], const real b[3],
 	real d[3], r, r3,l;
 
 	vec_minus(a, b, d);
-	r = vec_abs(d);
+	r = i_vec_abs(d);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
 	r3 = r*r*r;
@@ -86,7 +87,7 @@ oseen3_fin(T *q)
 	return CO_OK;
 }
 
-#define SET(i, j, s, a) matrix_set(n, n, i, j, s, a)
+#define SET(i, j, s, a) i_matrix_set(n, n, i, j, s, a)
 
 int
 oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
@@ -128,12 +129,12 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		}
 	}
 	s = 1/(8*pi);
-	matrix_scale(n, n, s, oxx);
-	matrix_scale(n, n, s, oxy);
-	matrix_scale(n, n, s, oxz);
-	matrix_scale(n, n, s, oyy);
-	matrix_scale(n, n, s, oyz);
-	matrix_scale(n, n, s, ozz);
+	i_matrix_scale(n, n, s, oxx);
+	i_matrix_scale(n, n, s, oxy);
+	i_matrix_scale(n, n, s, oxz);
+	i_matrix_scale(n, n, s, oyy);
+	i_matrix_scale(n, n, s, oyz);
+	i_matrix_scale(n, n, s, ozz);
 	return CO_OK;
 }
 
@@ -148,8 +149,8 @@ stresslet(__UNUSED real e, const real a[3], const real n[3], const real b[3],
 	real d[3], r, r5, p, l;
 
 	vec_minus(a, b, d);
-	r = vec_abs(d);
-	p = vec_dot(d, n);
+	r = i_vec_abs(d);
+	p = i_vec_dot(d, n);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
 	r5= r*r*r*r*r;
@@ -215,12 +216,12 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		}
 	}
 	s = -6/(8*pi);
-	matrix_scale(n, n, s, oxx);
-	matrix_scale(n, n, s, oxy);
-	matrix_scale(n, n, s, oxz);
-	matrix_scale(n, n, s, oyy);
-	matrix_scale(n, n, s, oyz);
-	matrix_scale(n, n, s, ozz);
+	i_matrix_scale(n, n, s, oxx);
+	i_matrix_scale(n, n, s, oxy);
+	i_matrix_scale(n, n, s, oxz);
+	i_matrix_scale(n, n, s, oyy);
+	i_matrix_scale(n, n, s, oyz);
+	i_matrix_scale(n, n, s, ozz);
 	return CO_OK;
 }
 
