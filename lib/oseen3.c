@@ -9,7 +9,6 @@
 #include "co/memory.h"
 #include "co/normal.h"
 #include "co/oseen3.h"
-#include "co/vec.h"
 #include "co/i/vec.h"
 #include "co/i/matrix.h"
 
@@ -102,7 +101,7 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	for (i = 0; i < n; i++) {
 		real a[3], b[3], xx, xy, xz, yy, yz, zz;
 		int j;
-		vec_get(i, x, y, z, a);
+		i_vec_get(i, x, y, z, a);
 		oseen0(e, &xx, &xy, &xz, &yy, &yz, &zz);
 		SET(i, i, xx, oxx);
 		SET(i, i, xy, oxy);
@@ -111,7 +110,7 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		SET(i, i, yz, oyz);
 		SET(i, i, zz, ozz);
 		for (j = i + 1; j < n; j++) {
-			vec_get(j, x, y, z, b);
+			i_vec_get(j, x, y, z, b);
 			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, xx, oxx);
 			SET(i, j, xy, oxy);
@@ -193,8 +192,8 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	for (i = 0; i < n; i++) {
 		real a[3], b[3], u[3], xx, xy, xz, yy, yz, zz;
 		int j;
-		vec_get(i, x, y, z, a);
-		vec_get(i, nx, ny, nz, u);
+		i_vec_get(i, x, y, z, a);
+		i_vec_get(i, nx, ny, nz, u);
 		A = area[i];
 		stresslet0(e, a, u, &xx, &xy, &xz, &yy, &yz, &zz);
 		SET(i, i, A*xx, oxx);
@@ -205,7 +204,7 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		SET(i, i, A*zz, ozz);
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
-			vec_get(j, x, y, z, b);
+			i_vec_get(j, x, y, z, b);
 			stresslet(e, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, A*xx, oxx);
 			SET(i, j, A*xy, oxy);
