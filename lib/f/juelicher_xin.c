@@ -6,6 +6,7 @@
 #include "co/err.h"
 #include "co/he.h"
 #include "co/vec.h"
+#include "co/i/vec.h"
 #include "co/dih.h"
 #include "co/ddih.h"
 #include "co/dedg.h"
@@ -162,9 +163,9 @@ static int get_ijk(int t, He *he, /**/ int *pi, int *pj, int *pk) {
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
-    vec_get(k, x, y, z, /**/ c);
+    i_vec_get(i, x, y, z, /**/ a);
+    i_vec_get(j, x, y, z, /**/ b);
+    i_vec_get(k, x, y, z, /**/ c);
     return CO_OK;
 }
 static int get2(int h, He *he, const real *x, const real *y, const real *z,
