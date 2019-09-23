@@ -1,6 +1,6 @@
 .POSIX:
 include ../../conf.mk
-M = main normal
+M = main normal H
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = \

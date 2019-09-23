@@ -363,6 +363,7 @@ int ring_wgrad(T *q, int n, const real *xyz, const real *C, /**/ real **p) {
         vec_linear_combination(C1[j], gu, C2[j], gv, /**/ w);
         wgrad[i++] = w[X];
         wgrad[i++] = w[Y];
+
         wgrad[i++] = w[Z];
     }
     matrix_transpose(n + 1, 3, wgrad);
@@ -387,5 +388,20 @@ ring_H(int n, const real *xyz, const real *C)
     buv = ring_buv(n, xyz, C);
     bvv = ring_bvv(n, xyz, C);
     g = guu*gvv - guv*guv;
-    return (buu*gvv - 2*buv*guv + bvv*guu)/g;
+    return (buu*gvv - 2*buv*guv + bvv*guu)/(2*g);
+}
+
+real
+ring_K(int n, const real *xyz, const real *C)
+{
+    real buu, buv, bvv;
+    real guu, guv, gvv, g;
+    guu = ring_guu(n, xyz, C);
+    guv = ring_guv(n, xyz, C);
+    gvv = ring_gvv(n, xyz, C);
+    buu = ring_buu(n, xyz, C);
+    buv = ring_buv(n, xyz, C);
+    bvv = ring_bvv(n, xyz, C);
+    g = guu*gvv - guv*guv;
+    return (buu*bvv - buv*buv)/g;
 }
