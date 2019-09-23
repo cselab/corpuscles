@@ -72,6 +72,7 @@ co/integral/circle_line.h\
 co/integral/sph_2plane.h\
 co/integral/sph_plane.h\
 co/invariants.h\
+co/i/vec.h\
 co/kernel.h\
 co/laplace.h\
 co/len.h\
