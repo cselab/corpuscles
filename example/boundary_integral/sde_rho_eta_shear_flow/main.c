@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <tgmath.h>
 #include <omp.h>
@@ -9,6 +10,7 @@
 #include <co/err.h>
 #include <co/force.h>
 #include <co/macro.h>
+#include <co/i/matrix.h>
 #include <co/matrix.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
@@ -162,7 +164,7 @@ static int tensor_fin(real *xx, real *xy, real *xz, real *yy, real *yz, real *zz
   return CO_OK;
 }
 
-#define GET(K) matrix_get(n, n, i, j, (K))
+#define GET(K) i_matrix_get(n, n, i, j, (K))
 static int vector_tensor(int n, real s, const real *x, const real *y, const real *z,
 			 real *Txx, real *Txy, real *Txz, real *Tyy, real *Tyz, real *Tzz,
 			 real *u, real *v, real *w) {
