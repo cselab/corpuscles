@@ -8,7 +8,7 @@ i_vec_dot(const real a[3], const real b[3])
 static real
 i_vec_abs(const real a[3])
 {
-    return sqrt(vec_dot(a, a));
+    return sqrt(i_vec_dot(a, a));
 }
 
 static int
