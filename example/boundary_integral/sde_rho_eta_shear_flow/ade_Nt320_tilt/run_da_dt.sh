@@ -37,7 +37,7 @@ freq_stat=50
 
 #number of threads
 NT=1
-export CO_ARG="-W 48:00"
+export CO_ARG="-W 72:00"
      
 if test $# -ne 0
 then
