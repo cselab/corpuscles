@@ -242,6 +242,31 @@ int ring_xvv(int n, const real *xyz, const real *C, /**/ real x[3]) {
     return CO_OK;
 }
 
+real
+ring_guu(int n, const real *xyz, const real *C)
+{
+    real x[3];
+    ring_xu(n, xyz, C, /**/ x);
+    return vec_dot(x, x);
+}
+
+real
+ring_guv(int n, const real *xyz, const real *C)
+{
+    real u[3], v[3];
+    ring_xu(n, xyz, C, /**/ u);
+    ring_xv(n, xyz, C, /**/ v);    
+    return vec_dot(u, v);
+}
+
+real
+ring_gvv(int n, const real *xyz, const real *C)
+{
+    real x[3];
+    ring_xv(n, xyz, C, /**/ x);
+    return vec_dot(x, x);
+}
+
 int ring_gcov(int n, const real *xyz, const real *C, /**/ real g[3]) {
     enum {UU, UV, VV};
     real xu[3], xv[3];
@@ -272,6 +297,33 @@ int ring_gcnt(int n, const real *xyz, const real *C, /**/ real ginv[3]) {
     ginv[UV] = -g[UV]/g0;
     ginv[VV] =  g[UU]/g0;
     return CO_OK;
+}
+
+real
+ring_buu(int n, const real *xyz, const real *C)
+{
+    real x[3], norm[3];;
+    ring_xuu(n, xyz, C, /**/ x);
+    ring_normal(n, xyz, C, norm);
+    return vec_dot(x, norm);
+}
+
+real
+ring_buv(int n, const real *xyz, const real *C)
+{
+    real x[3], norm[3];;
+    ring_xuv(n, xyz, C, /**/ x);
+    ring_normal(n, xyz, C, norm);
+    return vec_dot(x, norm);
+}
+
+real
+ring_bvv(int n, const real *xyz, const real *C)
+{
+    real x[3], norm[3];;
+    ring_xvv(n, xyz, C, /**/ x);
+    ring_normal(n, xyz, C, norm);
+    return vec_dot(x, norm);
 }
 
 int ring_normal(int n, const real *xyz, const real *C, /**/ real u[3]) {
@@ -311,6 +363,7 @@ int ring_wgrad(T *q, int n, const real *xyz, const real *C, /**/ real **p) {
         vec_linear_combination(C1[j], gu, C2[j], gv, /**/ w);
         wgrad[i++] = w[X];
         wgrad[i++] = w[Y];
+
         wgrad[i++] = w[Z];
     }
     matrix_transpose(n + 1, 3, wgrad);
@@ -321,4 +374,34 @@ int ring_wgrad(T *q, int n, const real *xyz, const real *C, /**/ real **p) {
 
 real ring_grad(int n, const real *wgrad,  const real *scalar) {
     return array_dot(n, wgrad, scalar);
+}
+
+real
+ring_H(int n, const real *xyz, const real *C)
+{
+    real buu, buv, bvv;
+    real guu, guv, gvv, g;
+    guu = ring_guu(n, xyz, C);
+    guv = ring_guv(n, xyz, C);
+    gvv = ring_gvv(n, xyz, C);
+    buu = ring_buu(n, xyz, C);
+    buv = ring_buv(n, xyz, C);
+    bvv = ring_bvv(n, xyz, C);
+    g = guu*gvv - guv*guv;
+    return (buu*gvv - 2*buv*guv + bvv*guu)/(2*g);
+}
+
+real
+ring_K(int n, const real *xyz, const real *C)
+{
+    real buu, buv, bvv;
+    real guu, guv, gvv, g;
+    guu = ring_guu(n, xyz, C);
+    guv = ring_guv(n, xyz, C);
+    gvv = ring_gvv(n, xyz, C);
+    buu = ring_buu(n, xyz, C);
+    buv = ring_buv(n, xyz, C);
+    bvv = ring_bvv(n, xyz, C);
+    g = guu*gvv - guv*guv;
+    return (buu*bvv - buv*buv)/g;
 }

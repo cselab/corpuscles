@@ -157,13 +157,13 @@ main(int argc, char **argv)
 
     argv++;
     force_argv("harmonic", &argv, he, &force);
-    dt = 0.0001;
-    for (i = 0; i < 100000; i++) {
+    dt = 0.01;
+    for (i = 0; i < 1000; i++) {
 	array_zero3(nv, fx, fy, fz);
 	force_force(force, he, x, y, z, fx, fy, fz);
 	array_axpy3(nv, -dt, fx, fy, fz, x, y, z);
+	project(nv, x, y, z);
 	if (i % 100 == 0) {
-	    project_avg(0.01, nv, x, y, z);
 	    MSG("eng: %g", force_energy(force, he, x, y, z) / ne * 100);
 	}
     }
