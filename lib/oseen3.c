@@ -31,7 +31,7 @@ oseen(__UNUSED real e, const real a[3], const real b[3],
 	};
 	real d[3], r, r3,l;
 
-	vec_minus(a, b, d);
+	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
@@ -148,7 +148,7 @@ stresslet(__UNUSED real e, const real a[3], const real n[3], const real b[3],
 	};
 	real d[3], r, r5, p, l;
 
-	vec_minus(a, b, d);
+	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
 	p = i_vec_dot(d, n);
 	if (r == 0)
