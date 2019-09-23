@@ -68,6 +68,7 @@ co/gts.h\
 co/hash.h\
 co/he.h\
 co/H.h\
+co/i/matrix.h\
 co/integral/circle_line.h\
 co/integral/sph_2plane.h\
 co/integral/sph_plane.h\
