@@ -1,4 +1,4 @@
-CC = c99
+CC = gcc
 CFLAGS = -O2 -g -fopenmp
 LDFLAGS = -fopenmp
 PREFIX = $(HOME)
