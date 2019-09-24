@@ -1,3 +1,4 @@
+typedef struct He He;
 static int
 i_area_ver(He *he, const real *x, const real *y, const real *z, /**/ real *area)
 {

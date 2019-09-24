@@ -2,15 +2,16 @@
 #include <stdio.h>
 #include <omp.h>
 #include "real.h"
-#include "co/area.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/normal.h"
 #include "co/oseen3.h"
-#include "co/i/vec.h"
 #include "co/i/matrix.h"
+#include "co/i/vec.h"
+#include "co/i/tri.h"
+#include "co/i/area.h"
 
 #define T Oseen3
 static const real pi = 3.141592653589793115997964;
@@ -184,7 +185,7 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	status = normal_mwa(he, x, y, z, nx, ny, nz);
 	if (status != CO_OK)
 		ERR(CO_NUM, "normal_mwa failed");
-	status = he_area_ver(he, x, y, z, area);
+	status = i_area_ver(he, x, y, z, area);
 	if (status != CO_OK)
 		ERR(CO_NUM, "area_ver failed");
 	n = he_nv(he);
