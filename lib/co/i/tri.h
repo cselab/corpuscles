@@ -1,9 +1,10 @@
-static int
+static real
 i_tri_area(const real a[3], const real b[3], const real c[3])
 {
     enum {X, Y, Z};
     real bx, by, bz;
     real cx, cy, cz;
+    real x, y, z;
 
     bx = b[X] - a[X];
     by = b[Y] - a[Y];
@@ -14,5 +15,5 @@ i_tri_area(const real a[3], const real b[3], const real c[3])
     x = by*cz-bz*cy;
     y = bz*cx-bx*cz;
     z = bx*cy-by*cx;
-    return sqrt(x*x + y*y + z*z);
+    return sqrt(x*x + y*y + z*z)/2;
 }
