@@ -1,9 +1,13 @@
 #include <stdio.h>
+#include <tgmath.h>
 
 #include <real.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/area.h>
+#include <co/i/vec.h>
+#include <co/i/tri.h>
+#include <co/i/area.h>
 #include <co/memory.h>
 #include <co/punto.h>
 #include <co/y.h>
@@ -21,7 +25,7 @@ int main() {
     MALLOC(n, &area);
 
     A = he_area(he, x, y, z);
-    he_area_ver(he, x, y, z, /**/ area);
+    i_area_ver(he, x, y, z, /**/ area);
 
     MSG("area: " CO_REAL_OUT, A);
 
