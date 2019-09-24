@@ -17,11 +17,11 @@ int main() {
 
     y_inif(stdin, &he, &x, &y, &z);
 
-    n = he_nt(he);
+    n = he_nv(he);
     MALLOC(n, &area);
 
     A = he_area(he, x, y, z);
-    he_area_tri(he, x, y, z, /**/ area);
+    he_area_ver(he, x, y, z, /**/ area);
 
     MSG("area: " CO_REAL_OUT, A);
 

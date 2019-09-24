@@ -1,2 +1,5 @@
 # TEST: area
 ./tri < /u/.co/rbc/laplace/0.off > area.out.txt
+
+# TEST: ver
+./ver < /u/.co/rbc/laplace/0.off > area.out.txt
