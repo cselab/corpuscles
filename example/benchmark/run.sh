@@ -4,9 +4,9 @@ make main
 
 la=5
 start=0
-end=10
+end=15
 freq=1000
-#valgrind --tool=callgrind --quiet \
+valgrind --tool=callgrind --quiet \
 ./main \
        garea 12.5663706144 1000000 \
        volume 2.6892 1000000 \
