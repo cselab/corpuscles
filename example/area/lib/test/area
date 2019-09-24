@@ -1,0 +1,2 @@
+# TEST: area
+./main < /u/.co/rbc/laplace/0.off > area.out.txt
