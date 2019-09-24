@@ -173,6 +173,8 @@ static int vector_tensor(int n, real s, const real *x, const real *y, const real
   for (i = 0; i < n; i++) {
     int j;
     real xx, xy, xz, yy, yz, zz, du, dv, dw;
+    real a, b, c;
+    a = b = c = 0;
     for (j = 0; j < n; j++) {
       xx = GET(Txx);
       xy = GET(Txy);
@@ -183,10 +185,13 @@ static int vector_tensor(int n, real s, const real *x, const real *y, const real
       du = xx*x[j] + xy*y[j] + xz*z[j];
       dv = xy*x[j] + yy*y[j] + yz*z[j];
       dw = xz*x[j] + yz*y[j] + zz*z[j];
-      u[i] += s*du;
-      v[i] += s*dv;
-      w[i] += s*dw;
+      a += du;
+      b += dv;
+      c += dw;
     }
+    u[i] += s*a;
+    v[i] += s*b;
+    w[i] += s*c;
   }
   return CO_OK;
 }
