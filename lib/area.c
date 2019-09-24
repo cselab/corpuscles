@@ -4,7 +4,7 @@
 #include "real.h"
 #include "co/err.h"
 #include "co/he.h"
-#include "co/vec.h"
+#include "co/i/vec.h"
 #include "co/tri.h"
 #include "co/sum.h"
 
@@ -17,9 +17,9 @@ static void get(int t, He *he,
     int i, j, k;
     h = he_hdg_tri(he, t);
     he_ijk(he, h, &i, &j, &k);
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
-    vec_get(k, x, y, z, /**/ c);
+    i_vec_get(i, x, y, z, /**/ a);
+    i_vec_get(j, x, y, z, /**/ b);
+    i_vec_get(k, x, y, z, /**/ c);
 }
 
 real he_area(He *he, const real *x, const real *y, const real *z) {
@@ -44,9 +44,9 @@ real he_area(He *he, const real *x, const real *y, const real *z) {
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
-    vec_get(i, x, y, z, /**/ a);
-    vec_get(j, x, y, z, /**/ b);
-    vec_get(k, x, y, z, /**/ c);
+    i_vec_get(i, x, y, z, /**/ a);
+    i_vec_get(j, x, y, z, /**/ b);
+    i_vec_get(k, x, y, z, /**/ c);
     return CO_OK;
 }
 static void zero(int n, real *a) {
