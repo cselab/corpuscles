@@ -10,6 +10,8 @@
 
 #include "co/normal.h"
 
+static real pi = 3.141592653589793115997964;
+
 static int get3(const real *x, const real *y, const real *z,
                 int i, int j, int k,  /**/
                 real a[3], real b[3], real c[3]) {
@@ -34,7 +36,7 @@ int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
         get3(x, y, z, i, j, k, a, b, c);
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
-        theta_c = tri_angle(b, c, a);
+	theta_c = pi - theta_a - theta_b;
         tri_normal(a, b, c, u);
         vec_scalar_append(u, theta_a, i, nx, ny, nz);
         vec_scalar_append(u, theta_b, j, nx, ny, nz);
