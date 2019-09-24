@@ -19,6 +19,14 @@ i_vec_get(int i, const real x[], const real y[], const real z[], /**/ real a[3])
 }
 
 static int
+i_vec_get3(int i, int j, int k, const real x[], const real y[], const real z[], /**/ real a[3], real b[3], real c[3]) {
+    i_vec_get(i, x, y, z, /**/ a);
+    i_vec_get(j, x, y, z, /**/ b);
+    i_vec_get(k, x, y, z, /**/ c);
+    return CO_OK;
+}
+
+static int
 i_vec_minus(const real a[3], const real b[3], /**/ real c[3]) {
     enum {X, Y, Z};
     c[X] = a[X] - b[X];
