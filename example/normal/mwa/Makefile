@@ -8,7 +8,7 @@ CO_LDFLAGS = `co.conf --libs $(PREC)`
 $M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
 
-test: $M
+test: $M; atest test/*
 install:
 
 .PHONY: clean test install

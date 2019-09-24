@@ -1,0 +1,2 @@
+# TEST: normal
+./main < `co.path`/rbc/laplace/0.off > normal.out.txt
