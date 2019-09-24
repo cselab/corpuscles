@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -O2 -g -fopenmp
-LDFLAGS = -fopenmp
+CFLAGS = -Ofast  -g
+LDFLAGS =
 PREFIX = $(HOME)
 DATAPATH = $(HOME)/.co
 MAXIMA_HOME = $(HOME)/.maxima
