@@ -1,4 +1,4 @@
-# sTEST: area
+# TEST: area
 ./tri < `co.path`/rbc/laplace/0.off > area.out.txt
 
 # TEST: ver
