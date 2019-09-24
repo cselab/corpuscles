@@ -6,7 +6,8 @@
 #include "co/err.h"
 #include "co/he.h"
 #include "co/vec.h"
-#include "co/tri.h"
+#include "co/i/vec.h"
+#include "co/i/tri.h"
 
 #include "co/normal.h"
 
@@ -34,10 +35,10 @@ int normal_mwa(He *he, const real *x, const real *y, const real *z, /**/
     for ( t = 0; t < nt; t++ ) {
         he_tri_ijk(he, t, &i, &j, &k);
         get3(x, y, z, i, j, k, a, b, c);
-        theta_a = tri_angle(c, a, b);
-        theta_b = tri_angle(a, b, c);
+        theta_a = i_tri_angle(c, a, b);
+        theta_b = i_tri_angle(a, b, c);
 	theta_c = pi - theta_a - theta_b;
-        tri_normal(a, b, c, u);
+        i_tri_normal(a, b, c, u);
         vec_scalar_append(u, theta_a, i, nx, ny, nz);
         vec_scalar_append(u, theta_b, j, nx, ny, nz);
         vec_scalar_append(u, theta_c, k, nx, ny, nz);
