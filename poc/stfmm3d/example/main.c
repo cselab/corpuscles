@@ -12,7 +12,7 @@ main()
     int iprec, ifsingle, ifdouble, ifvel, ifgrad, nparts;
 
     iprec = 3; /* < 0.5e-9 */
-    nparts = 4;
+    nparts = 1;
     source = malloc(3*nparts*sizeof(*source));
     sigma_sl = malloc(3*nparts*sizeof(*sigma_sl));
     vel = malloc(3*nparts*sizeof(*sigma_sl));
