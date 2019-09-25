@@ -14,7 +14,7 @@ libstfmm3d.a: $O; ar r $@ $O && ranlib $@
 
 $M: $O; $(LINK) $O $(LDFLAGS)
 .f.o:; $(FC) $(FCFLAGS) $< -c
-.f90.o:; $(FC) -std=f95 $(FCFLAGS) $< -c
+.f90.o:; $(FC) $(FCFLAGS) $< -c
 .c.o:; $(CC) $(CFLAGS) $< -c
 
 .SUFFIXES: .o .f .f90 .c
