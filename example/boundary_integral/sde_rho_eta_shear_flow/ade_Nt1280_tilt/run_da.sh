@@ -29,7 +29,7 @@ rho=1.0
 eta=645.928652122
 lambda=0.1754385964912281
 start=0
-end=1000000
+end=5000000
 freq_out=200
 freq_stat=50
 
@@ -74,6 +74,8 @@ then
     echo "gam="$gam
     lam=$(printf "%.4f" $lambda)
     echo "lam="$lam
+    echo "dt="$dt
+
     if [ ! -d Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc} ]; then
 	
 	mkdir Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}
