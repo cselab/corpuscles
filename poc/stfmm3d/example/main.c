@@ -36,11 +36,13 @@ main()
 	sigma_sl[j++] = 2 * (i + 1);
 	sigma_sl[j++] = 3 * (i + 1);
     }
-
     stfmm3_dpartself(&ier, iprec, nparts, source,
 		     ifsingle, sigma_sl, ifdouble, sigma_dl, sigma_dv,
 		     ifvel, vel, pre, ifgrad, grad);
-
+    if (ier != 0) {
+	fprintf(stderr, "%s:%d: alloc fails (ier = %d)\n", __FILE__, __LINE__, ier);
+	exit(1);
+    }
     for (i = j = 0; i < nparts; i++) {
 	printf("%g ", vel[j++]);
 	printf("%g ", vel[j++]);

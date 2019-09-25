@@ -77,7 +77,8 @@ fmm3_single(T *q,
 		     ifvel, vel, pre, ifgrad, grad);
 
     if (ier != 0)
-	ERR(CO_MEMORY, "stfmm3_dpartself fail to allocate");
+	ERR(CO_MEMORY, "stfmm3 fail to allocate (ier = %d, n = %d)",
+	    ier, n);
 
     for (i = j = 0; i < n; i++) {
 	vx[i] += vel[j++];

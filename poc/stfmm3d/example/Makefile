@@ -1,7 +1,9 @@
 .POSIX:
-M = main
-CO_CFLAGS = -I../lib
-CO_LDFLAGS = -L../lib -lstfmm3d -lgfortran -lm
+include ../../../conf.mk
+PREC = d
+M = main single
+CO_CFLAGS = -I../lib `co.conf --cflags $(PREC)`
+CO_LDFLAGS = -L../lib -lstfmm3d `co.conf --libs $(PREC)` -lgfortran -lm 
 LINK = $(CC)
 
 all: $M

@@ -1,5 +1,4 @@
 .POSIX:
-.POSIX:
 include ../../../conf.mk
 PREC = d
 FC = gfortran
