@@ -1,12 +1,16 @@
 .POSIX:
-CC = c99
+.POSIX:
+include ../../../conf.mk
+PREC = d
 FC = gfortran
 LINK = $(CC)
 FCFLAGS = -g -O2
 CFLAGS = -g -O2
 LDFLAGS = -lgfortran -lm
+CO_CFLAGS = `co.conf --cflags $(PREC)`
 
 O = \
+fmm3.o\
 main.o\
 d3tstrcr.o\
 l3dterms.o\
@@ -28,7 +32,7 @@ libstfmm3d.a: $O; ar r $@ $O && ranlib $@
 $M: $O; $(LINK) $O $(LDFLAGS)
 .f.o:; $(FC) $(FCFLAGS) $< -c
 .f90.o:; $(FC) $(FCFLAGS) $< -c
-.c.o:; $(CC) $(CFLAGS) $< -c
+.c.o:; $(CC) $(CO_CFLAGS) $(CFLAGS) $< -c
 
 .SUFFIXES: .o .f .f90 .c
 
