@@ -18,7 +18,7 @@ main()
     CALLOC3(n, &fx, &fy, &fz);
     CALLOC3(n, &vx, &vy, &vz);
 
-    fmm3_ini(n = 1, &q);
+    fmm3_ini(n, &q);
     fmm3_single(q, x, y, z, fx, fy, fz, vx, vy, vz);
 
     y_fin(he, x, y, z);
