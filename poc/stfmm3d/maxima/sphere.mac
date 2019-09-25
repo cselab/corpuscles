@@ -1,8 +1,28 @@
+load("dimension.mac")$
 
 rr(vr, vp, vt):= - p + 2*mu*diff(vr, r);
-pp(vr, vp, vt):= - p + 2*mu*(1/(r*sin(t)) * diff(vp, p) + diff(vr, r) + diff(vt, t)*cot(t)/r);
+pp(vr, vp, vt):= - p + 2*mu*(1/(r*sin(t))*diff(vp, p) * diff(vp, p) + vr/r + vt*cot(t)/r);
 tt(vr, vp, vt):= - p + 2*mu*(1/r*diff(vt, t) + vr/r);
-rp(vr, vp, vt):= mu * (1/r + diff(vr, t) + diff(vt, r) - vt/r);
+rp(vr, vp, vt):= mu * (1/r*diff(vr, t) + diff(vt, r) - vt/r);
 tp(vr, vp, vt):= mu * (1/(r*sin(t)) * diff(vt, p) + 1/r*diff(vp, t) - vp*cot(t)/r);
 pr(vr, vp, vt):= mu * (diff(vp, r) + 1/(r*sin(t)) * diff(vr, p) - vp/r);
 
+depends([vr, vp, vt], [r, p, t]);
+
+Force: Mass * Velocity / Time;
+Velocity: Length / Time;
+put('vr, Velocity, 'dimension) $
+put('vp, Velocity, 'dimension) $
+put('vt, Velocity, 'dimension) $
+qput(r, Length, dimension) $
+qput(t, 1, dimension) $
+put('p, Force/Length^2, 'dimension);
+put('mu, Mass/Length^3 * Length * Velocity, 'dimension);
+
+dimension(rr(vr, vp, vt));
+
+expand(pp(vr, vp, vt))[1];
+
+dimension(%);
+
+dimension(mu*diff(vp, p)/r/sin(t));
