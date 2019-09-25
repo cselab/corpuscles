@@ -6,7 +6,8 @@ LINK = $(CC)
 
 all: $M
 .o:
-	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS)
+	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+
 
 .c.o:
 	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c
