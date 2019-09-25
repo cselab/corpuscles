@@ -3,8 +3,8 @@ include ../../../conf.mk
 PREC = d
 FC = gfortran
 LINK = $(CC)
-FCFLAGS = -g -O2
-CFLAGS = -g -O2
+FCFLAGS = -g -Og
+CFLAGS = -g -Og
 LDFLAGS = -lgfortran -lm
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 
