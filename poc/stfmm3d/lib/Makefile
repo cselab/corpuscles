@@ -6,18 +6,18 @@ FCFLAGS = -g -O2
 CFLAGS = -g -O2
 LDFLAGS = -lgfortran -lm
 
-M = main
 O = \
-stfmm3dpart.f
+main.o\
+stfmm3dpart.o
 
-all: $M
-main.o: sz.h
+libstfmm3d.a: $O; ar r $@ $O && ranlib $@
 
-$M: $O; $(LINK) $O $(LDFLAGS) -o $@
-.f.o:; $(FC) $(FCFLAGS) $< -c -o $@
-.c.o:; $(CC) $(CFLAGS) $< -c -o $@
+$M: $O; $(LINK) $O $(LDFLAGS)
+.f.o:; $(FC) $(FCFLAGS) $< -c
+.f90.o:; $(FC) -std=f95 $(FCFLAGS) $< -c
+.c.o:; $(CC) $(CFLAGS) $< -c
 
-.SUFFIXES: .o .f .c
+.SUFFIXES: .o .f .f90 .c
 
 lint:; $(MAKE) FCFLAGS='-Wall -Wextra -O2 -g'
 
