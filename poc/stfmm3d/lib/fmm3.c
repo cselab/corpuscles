@@ -45,6 +45,8 @@ fmm3_single(T *q,
 {
     int n, i, j;
     double *source, *sigma_sl, *vel, *pre;
+    int ier, iprec, ifsingle, ifdouble, ifvel, ifgrad;
+    double *sigma_dl, *sigma_dv, *grad;
 
     n = q->n;
     source = q->source;
@@ -62,6 +64,25 @@ fmm3_single(T *q,
 	sigma_sl[j++] = fx[i];
 	sigma_sl[j++] = fy[i];
 	sigma_sl[j++] = fz[i];
+    }
+
+    iprec = 3; /* < 0.5e-9 */
+    ifsingle = 1;
+    ifdouble = 0;
+    sigma_dl = sigma_dv = grad = NULL;
+    ifvel = 1;
+    ifgrad = 0;
+    stfmm3_dpartself(&ier, iprec, n, source,
+		     ifsingle, sigma_sl, ifdouble, sigma_dl, sigma_dv,
+		     ifvel, vel, pre, ifgrad, grad);
+
+    if (ier != 0)
+	ERR(CO_MEMORY, "stfmm3_dpartself fail to allocate");
+
+    for (i = j = 0; i < n; i++) {
+	vx[i] += vel[j++];
+	vy[i] += vel[j++];
+	vz[i] += vel[j++];
     }
 
     return CO_OK;
