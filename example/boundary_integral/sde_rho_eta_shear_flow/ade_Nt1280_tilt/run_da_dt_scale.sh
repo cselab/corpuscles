@@ -32,7 +32,7 @@ lambda=5.0
 labmda=1.0
 start=0
 end=5000000
-freq_out=200
+freq_out=1000
 freq_stat=50
 
 scale=5

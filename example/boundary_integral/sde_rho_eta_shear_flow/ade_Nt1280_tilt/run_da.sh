@@ -30,7 +30,7 @@ eta=645.928652122
 lambda=0.1754385964912281
 start=0
 end=5000000
-freq_out=200
+freq_out=1000
 freq_stat=50
 
 #number of threads
