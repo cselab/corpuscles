@@ -20,7 +20,6 @@ subroutine stfmm3_dpartself(&
        ifpot,pot,pre,ifgrad,grad)
 end subroutine stfmm3_dpartself
 
-
 subroutine stfmm3_dparttarg(&
      ier,iprec,nparts,source,&
      ifsingle,sigma_sl,ifdouble,sigma_dl,sigma_dv,&
