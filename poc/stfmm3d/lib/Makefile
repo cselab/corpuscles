@@ -36,7 +36,7 @@ $M: $O; $(LINK) $O $(LDFLAGS)
 
 .SUFFIXES: .o .f .f90 .c
 
-lint:; $(MAKE) FCFLAGS='-Wall -Wextra -O2 -g'
+lint:; $(MAKE) FCFLAGS='-Wall -Wextra -Og -g' CFLAGS='-Wall -Wextra -Og -g'
 
 .PHONY: clean lint
 clean:; rm -f -- $O $M
