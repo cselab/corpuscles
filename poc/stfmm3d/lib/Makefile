@@ -8,7 +8,20 @@ LDFLAGS = -lgfortran -lm
 
 O = \
 main.o\
-stfmm3dpart.o
+d3tstrcr.o\
+l3dterms.o\
+l3dtrans.o\
+laprouts3d.o\
+legeexps.o\
+lfmm3drouts.o\
+lfmm3dparthess.o\
+lfmm3dparthess_tf.o\
+prini.o\
+rotviarecur3.o\
+st3green.o\
+st3routs.o\
+stfmm3dpart.o\
+yrecursion.o\
 
 libstfmm3d.a: $O; ar r $@ $O && ranlib $@
 
