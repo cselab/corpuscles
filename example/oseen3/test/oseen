@@ -1,0 +1,2 @@
+# TEST: oseen
+./main < `co.path`/rbc/laplace/0.off > oseen.out.txt

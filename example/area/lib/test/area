@@ -1,5 +1,5 @@
 # TEST: area
-./tri < /u/.co/rbc/laplace/0.off > area.out.txt
+./tri < `co.path`/rbc/laplace/0.off > area.out.txt
 
 # TEST: ver
-./ver < /u/.co/rbc/laplace/0.off > area.out.txt
+./ver < `co.path`/rbc/laplace/0.off > area.out.txt

@@ -1,0 +1,8 @@
+load("co/vec.mac") $
+load("co/edg.mac") $
+load("co/tri.mac") $
+load("co/dih.mac") $
+load("co/ddih.mac") $
+
+vec_ini(a); vec_ini(b); vec_ini(c); vec_ini(d);
+[da, db, dc, dd]: ddih_angle_sup(a, b, c, d);

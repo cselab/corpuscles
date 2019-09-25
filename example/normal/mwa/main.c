@@ -11,7 +11,7 @@
 
 int main() {
     He *he;
-    int n;
+    int n, i;
     real *x, *y, *z;
     real *nx, *ny, *nz;
     real sx, sy, sz;
@@ -19,7 +19,9 @@ int main() {
     y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     MALLOC(n, &nx); MALLOC(n, &ny); MALLOC(n, &nz);
-    normal_mwa(he, x, y, z, /**/ nx, ny, nz);
+
+    for (i = 0; i < 100; i++)
+	normal_mwa(he, x, y, z, /**/ nx, ny, nz);
 
     const real *queue[] = {x, y, z, nx, ny, nz, NULL};
     puts("x y z nx ny nz");
