@@ -1,6 +1,6 @@
 .POSIX:
 M = main
-CO_CFLAGS = 
+CO_CFLAGS = -I../lib
 CO_LDFLAGS = -L../lib -lstfmm3d -lgfortran -lm
 LINK = $(CC)
 

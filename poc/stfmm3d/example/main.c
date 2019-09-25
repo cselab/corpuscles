@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-void stfmm3_dpartself(int *ier, int iprec, int nparts, const double *source,
-		      int ifsingle, const double *sigma_sl,
-		      int ifdouble, const double *sigma_dl, double *sigma_dv,
-		      int ifvel, double *vel, double *pre, int ifgrad, double *grad);
+#include <stfmm3.h>
 
 int
 main()
@@ -24,7 +20,7 @@ main()
 
     ifsingle = 1;
     ifdouble = 0;
-    sigma_dl = sigma_dv = NULL;
+    sigma_dl = sigma_dv = grad = NULL;
     ifvel = 1;
     ifgrad = 0;
 
