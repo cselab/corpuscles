@@ -1074,7 +1074,7 @@ c
 c       ... evaluate interactions with the nearest neighbours
 c
         itype=1
-        call d3tgetl(ier,ibox,itype,list,nlist,wlists)
+        call d3tgetl(jer,ibox,itype,list,nlist,wlists)
         if (ifprint .eq. 1) call prinf('list1=*',list,nlist)
 c
 c       ... for all pairs in list #1, 
@@ -1082,7 +1082,7 @@ c       evaluate the potentials and fields directly
 c    
             do 6203 ilist=1,nlist
                jbox=list(ilist)
-               call d3tgetb(ier,jbox,box1,center1,corners1,wlists)
+               call d3tgetb(jer,jbox,box1,center1,corners1,wlists)
 c
 c       ... prune all sourceless boxes
 c
