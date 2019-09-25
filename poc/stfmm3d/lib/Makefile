@@ -1,7 +1,6 @@
 .POSIX:
 include ../../../conf.mk
 PREC = d
-FC = gfortran
 LINK = $(CC)
 FCFLAGS = -g -Og
 CFLAGS = -g -Og
