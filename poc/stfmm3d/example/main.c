@@ -17,12 +17,13 @@ main()
     sigma_sl = malloc(3*nparts*sizeof(*sigma_sl));
     vel = malloc(3*nparts*sizeof(*sigma_sl));
     pre = malloc(3*nparts*sizeof(*sigma_sl));
+    grad = malloc(3*3*nparts*sizeof(*sigma_sl));
 
     ifsingle = 1;
     ifdouble = 0;
-    sigma_dl = sigma_dv = grad = NULL;
+    sigma_dl = sigma_dv = NULL;
     ifvel = 1;
-    ifgrad = 0;
+    ifgrad = 1;
 
     for (i = j = 0; i < nparts; i++) {
 	source[j++] = 1 * (i + 1);
@@ -50,4 +51,5 @@ main()
     free(sigma_sl);
     free(vel);
     free(pre);
+    free(grad);
 }
