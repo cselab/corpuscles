@@ -47,6 +47,9 @@ main()
 	printf("%g\n", vel[j++]);
     }
 
+    for (i = 0; i < nparts; i++)
+	printf("%g\n", pre[i]);
+
     free(source);
     free(sigma_sl);
     free(vel);
