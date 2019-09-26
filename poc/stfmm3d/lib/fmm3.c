@@ -69,7 +69,7 @@ fmm3_single(T *q,
 	sigma_sl[j++] = fy[i];
 	sigma_sl[j++] = fz[i];
     }
-    iprec = 3; /* < 0.5e-9 */
+    iprec = 0; /* < 0.5e-2 */
     ifsingle = 1;
     ifdouble = 0;
     sigma_dl = sigma_dv = grad = NULL;
@@ -122,7 +122,7 @@ fmm3_double(T *q,
 	sigma_dv[j++] = ny[i];
 	sigma_dv[j++] = nz[i];
     }
-    iprec = 3; /* < 0.5e-9 */
+    iprec = 0; /* < 0.5e-2 */
     ifsingle = 0;
     ifdouble = 1;
     grad = NULL;

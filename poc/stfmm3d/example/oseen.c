@@ -33,7 +33,7 @@ static int tensor_fin(real *xx, real *xy, real *xz, real *yy, real *yz, real *zz
 int
 main()
 {
-    int i, n;
+    int i, j, n;
     FMM3 *q;
     real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *wx, *wy, *wz;
     static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
@@ -41,7 +41,7 @@ main()
     He *he;
     Oseen3 *oseen;
 
-    reg = 0.1;
+    reg = 1e42;
     y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     oseen3_ini(he, reg, &oseen);
@@ -51,7 +51,6 @@ main()
     CALLOC3(n, &vx, &vy, &vz);
     CALLOC3(n, &wx, &wy, &wz);    
     fmm3_ini(n, &q);
-    oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 
     for (i = 0; i < n; i++) {
 	fx[i] = x[i]*x[i];
@@ -59,6 +58,7 @@ main()
 	fz[i] = z[i];
     }
 
+    oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
     oseen3_vector_tensor(n, 1.0, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
     fmm3_single(q, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
 
