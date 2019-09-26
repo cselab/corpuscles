@@ -5,6 +5,7 @@
 #include <co/memory.h>
 #include <co/oseen3.h>
 #include <co/matrix.h>
+#include <co/normal.h>
 #include <co/y.h>
 #include <fmm3.h>
 
@@ -33,47 +34,50 @@ static int tensor_fin(real *xx, real *xy, real *xz, real *yy, real *yz, real *zz
 int
 main()
 {
-    int i, j, n;
+    int i, n;
     FMM3 *q;
-    real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *wx, *wy, *wz;
+    real *x, *y, *z, *ux, *uy, *uz, *nx, *ny, *nz, *vx, *vy, *vz, *wx, *wy, *wz;
+    Oseen3 *oseen;
     real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
     real reg;
     He *he;
-    Oseen3 *oseen;
 
     reg = 1e42;
     y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
     oseen3_ini(he, reg, &oseen);
-
-    tensor_ini(n, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
-    MALLOC3(n, &fx, &fy, &fz);
+    MALLOC3(n, &ux, &uy, &uz);
+    MALLOC3(n, &nx, &ny, &nz);
     CALLOC3(n, &vx, &vy, &vz);
-    CALLOC3(n, &wx, &wy, &wz);    
+    CALLOC3(n, &wx, &wy, &wz);
+    tensor_ini(n, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
+
     fmm3_ini(n, &q);
+    normal_mwa(he, x, y, z, nx, ny, nz);
 
     for (i = 0; i < n; i++) {
-	fx[i] = x[i]*x[i];
-	fy[i] = y[i];
-	fz[i] = z[i];
+	ux[i] = 1;
+	uy[i] = 1;
+	uz[i] = 1;
     }
 
-    oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-    oseen3_vector_tensor(n, 1.0, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
-    fmm3_single(q, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
+    oseen3_stresslet(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+    oseen3_vector_tensor(n, 1.0, ux, uy, uz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
+    fmm3_double(q, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
 
     for (i = 0; i < n; i++) {
 	printf(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
 	printf(" ");
 	printf(FMT " " FMT " " FMT, wx[i], wy[i], wz[i]);
 	printf("\n");
-    }
+    }    
 
-    oseen3_fin(oseen);
     y_fin(he, x, y, z);
-    FREE3(fx, fy, fz);
-    FREE3(vx, vy, vz);
+    oseen3_fin(oseen);
     FREE3(wx, wy, wz);
-    tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+    FREE3(vx, vy, vz);
+    FREE3(ux, uy, uz);
+    FREE3(nx, ny, nz);
+    tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);    
     fmm3_fin(q);
 }

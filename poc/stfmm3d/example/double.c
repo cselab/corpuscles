@@ -14,7 +14,7 @@ main()
 {
     int i, n;
     FMM3 *q;
-    double *x, *y, *z, *ux, *uy, *uz, *nx, *ny, *nz, *vx, *vy, *vz;
+    real *x, *y, *z, *ux, *uy, *uz, *nx, *ny, *nz, *vx, *vy, *vz;
 
     He *he;
     y_inif(stdin, &he, &x, &y, &z);
