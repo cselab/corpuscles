@@ -81,9 +81,9 @@ oseen3_ini(He *he, real e, T **pq)
 int
 oseen3_fin(T *q)
 {
-	FREE(q);
 	FREE3(q->nx, q->ny, q->nz);
 	FREE(q->area);
+	FREE(q);
 	return CO_OK;
 }
 
