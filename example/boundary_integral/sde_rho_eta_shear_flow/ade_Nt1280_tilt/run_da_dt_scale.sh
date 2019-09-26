@@ -27,18 +27,18 @@ b2=0.75
 
 rho=1.0
 eta=645.928652122
-lambda=0.1754385964912281
+#lambda=0.1754385964912281
+#labmda=1.0
 lambda=5.0
-labmda=1.0
 start=0
-end=5000000
+end=9000000
 freq_out=1000
-freq_stat=50
+freq_stat=100
 
-scale=5
+scale=2
 #number of threads
 NT=1
-export CO_ARG="-W 48:00"
+export CO_ARG="-W 72:00"
      
 if test $# -ne 0
 then
