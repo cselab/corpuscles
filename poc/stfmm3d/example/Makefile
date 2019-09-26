@@ -1,7 +1,11 @@
 .POSIX:
 include ../../../conf.mk
 PREC = d
-M = main single
+M = \
+main\
+single\
+double\
+
 CFLAGS = -Og -g
 CO_CFLAGS = -I../lib `co.conf --cflags $(PREC)`
 CO_LDFLAGS = -L../lib -lstfmm3d `co.conf --libs $(PREC)` -lgfortran -lm 
