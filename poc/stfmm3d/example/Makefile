@@ -5,6 +5,7 @@ M = \
 main\
 single\
 double\
+oseen\
 
 CO_CFLAGS = -I../lib `co.conf --cflags $(PREC)`
 CO_LDFLAGS = -L../lib -lstfmm3d `co.conf --libs $(PREC)` -lgfortran -lm 
