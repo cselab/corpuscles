@@ -327,6 +327,7 @@ c
         if( ifgrad .eq. 1 ) then
         do i=1,3
         do j=1,3
+        grad(i,j,k)=0.0d0
         hessmatr(i,j,k) = 0.0d0
         enddo
         enddo
@@ -347,6 +348,7 @@ c
         if( ifgradtarg .eq. 1 ) then
         do i=1,3
         do j=1,3
+        gradtarg(i,j,k) = 0.0d0
         hessmatrtarg(i,j,k) = 0.0d0
         enddo
         enddo
@@ -1613,6 +1615,253 @@ c
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(i,j,pot0,pre0,grad0)
         do j=1,ntarget
+        do i=1,nsource
+        if (ifsingle .eq. 1 ) then
+        call green3sup_eval(source(1,i),
+     $     sigma_sl(1,i),
+     $     target(1,j),pot0,pre0,ifgradtarg,grad0)
+        if (ifpottarg .eq. 1) then
+        pottarg(1,j)=pottarg(1,j)+pot0(1)
+        pottarg(2,j)=pottarg(2,j)+pot0(2)
+        pottarg(3,j)=pottarg(3,j)+pot0(3)
+        pretarg(j)=pretarg(j)+pre0
+        endif
+        if (ifgradtarg .eq. 1) then
+        gradtarg(1,1,j)=gradtarg(1,1,j)+grad0(1,1)
+        gradtarg(2,1,j)=gradtarg(2,1,j)+grad0(2,1)
+        gradtarg(3,1,j)=gradtarg(3,1,j)+grad0(3,1)
+        gradtarg(1,2,j)=gradtarg(1,2,j)+grad0(1,2)
+        gradtarg(2,2,j)=gradtarg(2,2,j)+grad0(2,2)
+        gradtarg(3,2,j)=gradtarg(3,2,j)+grad0(3,2)
+        gradtarg(1,3,j)=gradtarg(1,3,j)+grad0(1,3)
+        gradtarg(2,3,j)=gradtarg(2,3,j)+grad0(2,3)
+        gradtarg(3,3,j)=gradtarg(3,3,j)+grad0(3,3)
+        endif
+        endif
+c
+        if (ifdouble .ge. 1) then
+        call green3stp_arb_eval(ifdouble,source(1,i),
+     $     sigma_dl(1,i),sigma_dv(1,i),
+     $     target(1,j),pot0,pre0,ifgradtarg,grad0)
+        if (ifpottarg .eq. 1) then
+        pottarg(1,j)=pottarg(1,j)+pot0(1)
+        pottarg(2,j)=pottarg(2,j)+pot0(2)
+        pottarg(3,j)=pottarg(3,j)+pot0(3)
+        pretarg(j)=pretarg(j)+pre0
+        endif
+        if (ifgradtarg .eq. 1) then
+        gradtarg(1,1,j)=gradtarg(1,1,j)+grad0(1,1)
+        gradtarg(2,1,j)=gradtarg(2,1,j)+grad0(2,1)
+        gradtarg(3,1,j)=gradtarg(3,1,j)+grad0(3,1)
+        gradtarg(1,2,j)=gradtarg(1,2,j)+grad0(1,2)
+        gradtarg(2,2,j)=gradtarg(2,2,j)+grad0(2,2)
+        gradtarg(3,2,j)=gradtarg(3,2,j)+grad0(3,2)
+        gradtarg(1,3,j)=gradtarg(1,3,j)+grad0(1,3)
+        gradtarg(2,3,j)=gradtarg(2,3,j)+grad0(2,3)
+        gradtarg(3,3,j)=gradtarg(3,3,j)+grad0(3,3)
+        endif
+        endif
+        enddo
+        enddo
+C$OMP END PARALLEL DO
+c
+        endif
+c
+        return
+        end
+c
+c
+c
+c
+c
+        subroutine st3dpartdirecttime(ms,
+     $     nsource,source,
+     $     ifsingle,sigma_sl,ifdouble,sigma_dl,sigma_dv,
+     $     ifpot,pot,pre,ifgrad,grad,mt,ntarget,
+     $     target,ifpottarg,pottarg,pretarg,
+     $     ifgradtarg,gradtarg)
+        implicit real *8 (a-h,o-z)
+c
+c
+c     Stokes interactions in R^3: evaluate all pairwise particle
+c     interactions (excluding self interactions) and interactions with
+c     targets using the direct O(N^2) algorithm.
+c
+c     \delta u = \grad p, div u = 0, mu = 1.
+c
+c     Free space Stokes Green's functions:
+c
+c       ifsingle=1, stokeslet, f = sigma_sl
+c       u_i = 1/2 [\delta_ij 1/r + r_i r_j / r^3] f_j
+c       p = [r_j / r^3] f_j
+c
+c       ifdouble=1, double layer stresslet (type 1), g = sigma_dl, n = sigma_dv
+c       u_i = [3 r_i r_j r_k / r^5] n_k g_j
+c       p = 2 [-n_j g_j / r^3 + 3 r_k n_k r_j g_j / r^5 ]
+c
+c       ifdouble=2, symmetric stresslet (type 2), g = sigma_dl, n = sigma_dv
+c       u_i = [-r_i /r^3] n_j g_j + [3 r_i r_j r_k / r^5] n_k g_j
+c       p = 2 [-n_j g_j / r^3 + 3 r_k n_k r_j g_j / r^5 ]
+c
+c       ifdouble=3, rotlet, g = sigma_dl, n = sigma_dv
+c       u_i = [r_j n_j /r^3] g_i - [r_j g_j/ r^3] n_i
+c       p = 0
+c
+c       ifdouble=4, doublet = symmetric stresslet (type 2) + rotlet, 
+c                   g = sigma_dl, n = sigma_dv
+c       u_i = [-r_i /r^3] n_j g_j + [3 r_i r_j r_k / r^5] n_k g_j 
+c             + [r_j n_j /r^3] g_i - [r_j g_j/ r^3] n_i
+c       p = 2 [-n_j g_j / r^3 + 3 r_k n_k r_j g_j / r^5 ]
+c
+c     without the (1/4 pi) scaling.
+c
+c
+c
+c       INPUT:
+c
+c       nsource - number of sources
+c       source(3,nsource) - source locations
+c       ifsingle - single layer computation flag  
+c       sigma_sl(3,nsource) - vector strength of nth charge (single layer)
+c       ifdouble - double layer computation flag  
+c       sigma_dl(3,nsource) - vector strength of nth dipole (double layer)
+c       sigma_dv(3,nsource) - orientation of nth dipole (double layer)
+c       ntarget - number of targets
+c       target(3,ntarget) - evaluation target points
+c       ifpot - velocity/pressure computation flag
+c       ifgrad - grad computation flag
+c       ifpottarg - target velocity/pressure computation flag
+c       ifgradtarg - target grad computation flag
+c
+c       OUTPUT:
+c
+c       pot(3,nsource) - velocity at source locations
+c       pre(nsource) - pressure at source locations
+c       grad(3,3,nsource) - grad at source locations
+c       pottarg(3,ntarget) - velocity at target locations
+c       pretarg(ntarget) - pressure at target locations
+c       gradtarg(3,3,ntarget) - grad at target locations
+c
+        real *8 source(3,1)
+        real *8 sigma_sl(3,1),sigma_dl(3,1),sigma_dv(3,1)
+        real *8 target(3,1)
+c
+        real *8 pot(3,1),pre(1),grad(3,3,1)
+        real *8 pottarg(3,1),pretarg(1),gradtarg(3,3,1)
+c
+        real *8 pot0(3),grad0(3,3)
+c
+c
+        do i=1,nsource
+        if( ifpot .eq. 1) then
+           pot(1,i)=0
+           pot(2,i)=0
+           pot(3,i)=0
+           pre(i)=0
+        endif
+        if( ifgrad .eq. 1) then
+           grad(1,1,i)=0
+           grad(2,1,i)=0
+           grad(3,1,i)=0
+           grad(1,2,i)=0
+           grad(2,2,i)=0
+           grad(3,2,i)=0
+           grad(1,3,i)=0
+           grad(2,3,i)=0
+           grad(3,3,i)=0
+        endif
+        enddo
+c       
+        do i=1,ntarget
+        if( ifpottarg .eq. 1) then
+           pottarg(1,i)=0
+           pottarg(2,i)=0
+           pottarg(3,i)=0
+           pretarg(i)=0
+        endif
+        if( ifgradtarg .eq. 1) then
+           gradtarg(1,1,i)=0
+           gradtarg(2,1,i)=0
+           gradtarg(3,1,i)=0
+           gradtarg(1,2,i)=0
+           gradtarg(2,2,i)=0
+           gradtarg(3,2,i)=0
+           gradtarg(1,3,i)=0
+           gradtarg(2,3,i)=0
+           gradtarg(3,3,i)=0
+        endif
+        enddo
+c
+c       ... sources
+c
+        if( ifpot .eq. 1 .or. ifgrad .eq. 1 ) then
+c
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,pot0,pre0,grad0)
+        do 6550 j=1,ms
+        do 6540 i=1,nsource
+        if( i .eq. j ) goto 6540
+
+        if (ifsingle .eq. 1 ) then
+        call green3sup_eval(source(1,i),
+     $     sigma_sl(1,i),
+     $     source(1,j),pot0,pre0,ifgrad,grad0)
+        if (ifpot .eq. 1) then
+        pot(1,j)=pot(1,j)+pot0(1)
+        pot(2,j)=pot(2,j)+pot0(2)
+        pot(3,j)=pot(3,j)+pot0(3)
+        pre(j)=pre(j)+pre0
+        endif
+        if (ifgrad .eq. 1) then
+        grad(1,1,j)=grad(1,1,j)+grad0(1,1)
+        grad(2,1,j)=grad(2,1,j)+grad0(2,1)
+        grad(3,1,j)=grad(3,1,j)+grad0(3,1)
+        grad(1,2,j)=grad(1,2,j)+grad0(1,2)
+        grad(2,2,j)=grad(2,2,j)+grad0(2,2)
+        grad(3,2,j)=grad(3,2,j)+grad0(3,2)
+        grad(1,3,j)=grad(1,3,j)+grad0(1,3)
+        grad(2,3,j)=grad(2,3,j)+grad0(2,3)
+        grad(3,3,j)=grad(3,3,j)+grad0(3,3)
+        endif
+        endif
+
+        if (ifdouble .ge. 1) then
+        call green3stp_arb_eval(ifdouble,source(1,i),
+     $     sigma_dl(1,i),sigma_dv(1,i),
+     $     source(1,j),pot0,pre0,ifgrad,grad0)
+        if (ifpot .eq. 1) then
+        pot(1,j)=pot(1,j)+pot0(1)
+        pot(2,j)=pot(2,j)+pot0(2)
+        pot(3,j)=pot(3,j)+pot0(3)
+        pre(j)=pre(j)+pre0
+        endif
+        if (ifgrad .eq. 1) then
+        grad(1,1,j)=grad(1,1,j)+grad0(1,1)
+        grad(2,1,j)=grad(2,1,j)+grad0(2,1)
+        grad(3,1,j)=grad(3,1,j)+grad0(3,1)
+        grad(1,2,j)=grad(1,2,j)+grad0(1,2)
+        grad(2,2,j)=grad(2,2,j)+grad0(2,2)
+        grad(3,2,j)=grad(3,2,j)+grad0(3,2)
+        grad(1,3,j)=grad(1,3,j)+grad0(1,3)
+        grad(2,3,j)=grad(2,3,j)+grad0(2,3)
+        grad(3,3,j)=grad(3,3,j)+grad0(3,3)
+        endif
+        endif
+c
+ 6540   continue
+ 6550   continue
+c
+C$OMP END PARALLEL DO
+c
+        endif
+c
+c       ... targets
+c
+        if( ifpottarg .eq. 1 .or. ifgradtarg .eq. 1 ) then
+c       
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,pot0,pre0,grad0)
+        do j=1,mt
         do i=1,nsource
         if (ifsingle .eq. 1 ) then
         call green3sup_eval(source(1,i),

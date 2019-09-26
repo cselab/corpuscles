@@ -14,7 +14,6 @@ static real vec[3*3];
 static He *he;
 static Eigen *eigen;
 
-
 int main() {
 
   //Euler angles, see wikipedia

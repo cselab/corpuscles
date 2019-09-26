@@ -13,21 +13,42 @@ cc License along with this program;
 cc if not, see <http://www.gnu.org/licenses/>.
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
-c    $Date: 2012-02-19 15:58:32 -0500 (Sun, 19 Feb 2012) $
-c    $Revision: 2721 $
+c    $Date: 2012-02-29 16:00:41 -0500 (Wed, 29 Feb 2012) $
+c    $Revision: 2743 $
 c
 c     This file contains the main FMM routines and some related
 c     subroutines for evaluating Laplace potentials, fields, and
-c     hessians due to point charges and dipoles.  (FORTRAN 90 VERSION)
+c     hessians due to point charges,dipoles, and quadrupoles.  
+c     (FORTRAN 90 VERSION)
 c
-c     FAR FIELD CONTRIBUTION ONLY.
+c     pot = charge / r + 
+c           dipstr*  (dipvec(1)*U_x + dipvec(2)*U_y + dipvec(3)*U_z) +
+c           quadstr* (quadvec(1)*V_xx + quadvec(2)*V_yy + quadvec(3)*V_zz+
+c                     quadvec(4)*V_xy + quadvec(5)*V_xz + quadvec(6)*V_yz)
 c
-c     lfmm3dparthesstf - Laplace FMM in R^3: evaluate all pairwise particle
+c     fld = -grad(pot)
+c     hess = (potxx,potyy,potzz,potxy,potxz,potyz)
+c
+c     U_x = dx/r^3, U_y = dy/r^3, U_z = dz/r^3
+c
+c     V_xx = (-1/r^3 + 3*dx**2/r^5)
+c     V_xy = 3*dx*dy/r^5
+c     V_xz = 3*dx*dz/r^5
+c     V_yy = (-1/r^3 + 3*dy**2/r^5)
+c     V_yz = 3*dy*dz/r^5
+c     V_zz = (-1/r^3 + 3*dz**2/r^5)
+c
+c
+c     lfmm3dpartquadself - Laplace FMM in R^3: evaluate all pairwise particle
 c         interactions (ignoring self-interaction)
 c
-c     lfmm3dparthesstftarg - Laplace FMM in R^3: evaluate all pairwise
+c     lfmm3dpartquadtarg - Laplace FMM in R^3: evaluate all pairwise
 c         particle interactions (ignoring self-interaction) +
 c         interactions with targets
+c
+c     l3dpartquaddirect - Laplace interactions in R^3: evaluate all
+c         pairwise particle interactions (ignoring self-interaction) +
+c         interactions with targets via direct O(N^2) algorithm
 c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
@@ -38,16 +59,18 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 c
 c
-        subroutine lfmm3dparthesstf(ier,iprec,nsource,source,
+        subroutine lfmm3dpartquadself(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess)
         implicit real *8 (a-h,o-z)
 c
 c       Laplace FMM in R^3: this subroutine evaluates the harmonic
 c       potential, field, and hessian due to a collection due to a
-c       collection of point charges and dipoles (all pairwise particle
-c       interactions, ignoring self-interaction).  We use (1/r) for the
-c       Green's function, without the (1/4 pi)
+c       collection of point charges, dipoles and quadrupoles.
+c       (all pairwise particle interactions, ignoring self-interaction).  
+c
+c       We use (1/r) for the Green's function, without the (1/4 pi)
 c       scaling. Self-interactions are not included.
 c   
 c       The main FMM routine permits both evaluation at sources
@@ -63,6 +86,8 @@ c
         complex *16 charge(1)
         complex *16 dipstr(1)
         dimension dipvec(3,1)
+        complex *16 quadstr(1)
+        dimension quadvec(6,1)
         complex *16 ima
         complex *16 pot(1)
         complex *16 fld(3,1)
@@ -81,8 +106,9 @@ c
         iffldtarg=0
         ifhesstarg=0
 c
-        call lfmm3dparthesstftarg(ier,iprec,nsource,source,
+        call lfmm3dpartquadtarg(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     ntarget,target,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -94,8 +120,9 @@ c
 c
 c
 c
-        subroutine lfmm3dparthesstftarg(ier,iprec,nsource,source,
+        subroutine lfmm3dpartquadtarg(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     ntarget,target,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -136,6 +163,11 @@ c                  ifdipole = 1   =>  include dipole contribution
 c                                     otherwise do not
 c       dipstr: complex *16 (nsource): dipole strengths
 c       dipvec: real *8 (3,nsource): dipole orientation vectors. 
+c       ifquad:  quadrupole computation flag
+c                  ifquad = 1   =>  include quadrupole contribution
+c                                     otherwise do not
+c       quadstr: complex *16 (nsource): quadrupole strengths
+c       quadvec: real *8 (6,nsource): quadrupole orientation vectors. 
 c
 c       ifpot:  potential flag (1=compute potential, otherwise no)
 c       iffld:  field flag (1=compute field, otherwise no)
@@ -165,35 +197,13 @@ c       pottarg: complex *16 (ntarget): potential at target locations
 c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations 
 c       hesstarg: complex *16 (6,ntarget): hessian at target locations
 c
-cf2py   intent(out) ier
-cf2py   intent(in) iprec
-cf2py   intent(in) nsource
-cf2py   intent(in) source
-cf2py   intent(in) ifcharge,charge
-cf2py   check(!ifcharge || (shape(charge,0) == nsource))  charge
-cf2py   depend(nsource)  charge
-cf2py   intent(in) ifdipole,dipvec,dipstr
-cf2py   check(!ifdipole || (shape(dipstr,0) == nsource))  dipstr
-cf2py   depend(nsource)  dipstr
-cf2py   intent(in) ifpot,iffld,ifhess
-cf2py   intent(out) pot,fld,hess
-cf2py   intent(in) ifpottarg, iffldtarg, ifhesstarg
-cf2py   intent(in) target
-cf2py   intent(in) ntarget
-cf2py   check((!ifpottarg && !iffldtarg && !ifhesstarg) || (shape(target,0)==3 && shape(target,1) == ntarget))  target
-cf2py   check((!ifpottarg) || (shape(pottarg,0)==ntarget))  pottarg
-cf2py   check((!iffldtarg) || (shape(fldtarg,0)==3 && shape(fldtarg,1) == ntarget))  fldtarg
-cf2py   check((!ifhesstarg) || (shape(hesstarg,0)==6 && shape(hesstarg,1) == ntarget))  hesstarg
-c
-c       (F2PY workaround: *targ must be input because f2py
-c       refuses to allocate zero-size output arrays.)
-c
-cf2py   intent(in,out) pottarg,fldtarg, hesstarg
 c
         dimension source(3,nsource)
         complex *16 charge(nsource)
         complex *16 dipstr(nsource)
         dimension dipvec(3,nsource)
+        complex *16 quadstr(nsource)
+        dimension quadvec(6,nsource)
         complex *16 ima
         complex *16 pot(nsource)
         complex *16 fld(3,nsource)
@@ -298,7 +308,7 @@ c     keeping track of total memory used.
 c
         lused7=1
         do i = 0,nlev
-        scale(i) = 1.0d0
+        scale(i) = 1.0d0*1
         enddo
 c       
         if (ifprint .ge. 1) call prin2('scale=*',scale,nlev+1)
@@ -311,6 +321,8 @@ c     itargetsort is pointer for sorted target locations
 c     ichargesort is pointer for sorted charge densities
 c     idipvecsort is pointer for sorted dipole orientation vectors
 c     idipstrsort is pointer for sorted dipole densities
+c     iquadvecsort is pointer for sorted quadrupole orientation vectors
+c     iquadstrsort is pointer for sorted quadrupole densities
 c       
         isourcesort = lused7 + 5
         lsourcesort = 3*nsource
@@ -327,7 +339,16 @@ c
           ldipstr = 2
         endif
         idipstrsort = idipvecsort + ldipvec
-        lused7 = idipstrsort + ldipstr
+        iquadvecsort = idipstrsort + ldipstr
+        if (ifquad.eq.1) then
+          lquadvec = 6*nsource
+          lquadstr = 2*nsource
+        else
+          lquadvec = 6
+          lquadstr = 2
+        endif
+        iquadstrsort = iquadvecsort + lquadvec
+        lused7 = iquadstrsort + lquadstr
 c
 c
 c       ... allocate the potential and field arrays
@@ -417,9 +438,13 @@ c
 c     reorder sources, targets so that each box holds
 c     contiguous list of source/target numbers.
 c
-        call l3dreorder(nsource,source,ifcharge,charge,wlists(iisource),
+        call l3dreorder_quad
+     $     (nsource,source,ifcharge,charge,wlists(iisource),
      $     ifdipole,dipstr,dipvec,
-     1     w(isourcesort),w(ichargesort),w(idipvecsort),w(idipstrsort)) 
+     $     ifquad,quadstr,quadvec,
+     1     w(isourcesort),w(ichargesort),
+     $     w(idipvecsort),w(idipstrsort),
+     $     w(iquadvecsort),w(iquadstrsort))
 c       
         call l3dreordertarg(ntarget,target,wlists(iitarget),
      $     w(itargetsort))
@@ -471,13 +496,14 @@ c     be evaluated. Setting both to 1 means that both will be
 c     computed (which is the normal scenario).
 c
         ifevalfar=1
-        ifevalloc=0
+        ifevalloc=1
 c
-        call lfmm3dparthesstftargmain(ier,iprec,
+        call lfmm3dpartquadtargmain(ier,iprec,
      $     ifevalfar,ifevalloc,
      $     nsource,w(isourcesort),w(iisource),
      $     ifcharge,w(ichargesort),
      $     ifdipole,w(idipstrsort),w(idipvecsort),
+     $     ifquad,w(iquadstrsort),w(iquadvecsort),
      $     ifpot,w(ipot),iffld,w(ifld),ifhess,w(ihess),
      $     ntarget,w(itargetsort),w(iitarget),
      $     ifpottarg,w(ipottarg),iffldtarg,w(ifldtarg),
@@ -519,11 +545,12 @@ c
 c
 c
 c
-        subroutine lfmm3dparthesstftargmain(ier,iprec,
+        subroutine lfmm3dpartquadtargmain(ier,iprec,
      $     ifevalfar,ifevalloc,
      $     nsource,sourcesort,isource,
      $     ifcharge,chargesort,
      $     ifdipole,dipstrsort,dipvecsort,
+     $     ifquad,quadstrsort,quadvecsort,
      $     ifpot,pot,iffld,fld,ifhess,hess,ntarget,
      $     targetsort,itarget,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg,
@@ -535,6 +562,8 @@ c
         complex *16 chargesort(1)
         complex *16 dipstrsort(1)
         dimension dipvecsort(3,1)
+        complex *16 quadstrsort(1)
+        dimension quadvecsort(6,1)
         complex *16 ima
         complex *16 pot(1)
         complex *16 fld(3,1)
@@ -724,6 +753,16 @@ c
      2         rmlexp(iaddr(1,ibox)),wlege,nlege)
             
             endif
+c
+            if (ifquad .eq. 1 ) then
+
+            call l3dformmp_qp_add_trunc(ier,scale(level),
+     $         sourcesort(1,box(14)),
+     1         quadstrsort(box(14)),quadvecsort(1,box(14)),
+     $         npts,center0,nterms(level),
+     2         rmlexp(iaddr(1,ibox)),wlege,nlege)
+            
+            endif
          endif
 c
  1200    continue
@@ -806,12 +845,24 @@ c
 
                endif
 c
+               if( ifquad .eq. 1 ) then
+
+               call l3dformta_qp_add_trunc(ier,scale(level1),
+     1            sourcesort(1,box(14)),quadstrsort(box(14)),
+     2            quadvecsort(1,box(14)),npts,center1,
+     3            nterms(level1),
+     $            rmlexp(iaddr(2,jbox)),wlege,nlege)
+
+               endif
+c
             else
 
-            call lfmm3dparthess_direct(box,box1,sourcesort,
+            call lfmm3dpartquad_direct(box,box1,sourcesort,
      $         ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
-     $         ifpot,pot,iffld,fld,
-     $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg)
+     $         ifquad,quadstrsort,quadvecsort,
+     $         ifpot,pot,iffld,fld,ifhess,hess,
+     $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
+     $         ifhesstarg,hesstarg)
 
             endif
          enddo
@@ -895,6 +946,11 @@ c     $               rmlexp(iaddr(1,ibox)),nterms(level),
 c     $               sourcesort(1,j),
 c     $               ptemp,iffld,ftemp,ifhess,htemp,
 c     $               ier)
+c                  call l3dmpevalhessd(scale(level),center0,
+c     $               rmlexp(iaddr(1,ibox)),nterms(level),
+c     $               sourcesort(1,j),
+c     $               ptemp,iffld,ftemp,ifhess,htemp,
+c     $               scarray_mpole)
                   call l3dmpevalhessd_trunc(scale(level),center0,
      $               rmlexp(iaddr(1,ibox)),nterms(level),
      $               sourcesort(1,j),
@@ -929,6 +985,11 @@ c     $               rmlexp(iaddr(1,ibox)),nterms(level),
 c     $               targetsort(1,j),
 c     $               ptemp,iffldtarg,ftemp,ifhesstarg,htemp,
 c     $               ier)
+c                  call l3dmpevalhessd(scale(level),center0,
+c     $               rmlexp(iaddr(1,ibox)),nterms(level),
+c     $               targetsort(1,j),
+c     $            ptemp,iffldtarg,ftemp,ifhesstarg,htemp,
+c     $            scarray_mpole)
                   call l3dmpevalhessd_trunc(scale(level),center0,
      $               rmlexp(iaddr(1,ibox)),nterms(level),
      $               targetsort(1,j),
@@ -958,8 +1019,9 @@ c     $               ier)
                enddo
             else
             
-            call lfmm3dparthess_direct(box,box1,sourcesort,
+            call lfmm3dpartquad_direct(box,box1,sourcesort,
      $         ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
+     $         ifquad,quadstrsort,quadvecsort,
      $         ifpot,pot,iffld,fld,ifhess,hess,
      $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
      $         ifhesstarg,hesstarg)
@@ -1139,8 +1201,9 @@ c
 c
 c       ... evaluate self interactions
 c
-        call lfmm3dparthess_direct_self(box,sourcesort,
+        call lfmm3dpartquad_direct_self(box,sourcesort,
      $     ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
+     $     ifquad,quadstrsort,quadvecsort,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -1165,8 +1228,9 @@ c       ... prune all sourceless boxes
 c
          if( box1(15) .eq. 0 ) goto 6203
 c
-            call lfmm3dparthess_direct(box1,box,sourcesort,
+            call lfmm3dpartquad_direct(box1,box,sourcesort,
      $         ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
+     $         ifquad,quadstrsort,quadvecsort,
      $         ifpot,pot,iffld,fld,ifhess,hess,
      $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
      $         ifhesstarg,hesstarg)
@@ -1196,6 +1260,850 @@ c
         call prinf('ntarget=*',ntarget,1)
         endif
 c       
+        return
+        end
+c
+c
+c
+c
+c
+        subroutine lfmm3dpartquad_direct_self(box,
+     $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
+     $     ifpot,pot,iffld,fld,ifhess,hess,
+     $     target,ifpottarg,pottarg,iffldtarg,fldtarg,
+     $     ifhesstarg,hesstarg)
+        implicit real *8 (a-h,o-z)
+c
+        integer box(20),box1(20)
+c
+        dimension source(3,1),dipvec(3,1),quadvec(6,1)
+        complex *16 charge(1),dipstr(1),quadstr(1)
+        dimension target(3,1)
+c
+        complex *16 pot(1),fld(3,1),hess(6,1)
+        complex *16 pottarg(1),fldtarg(3,1),hesstarg(6,1)
+        complex *16 ptemp,ftemp(3),htemp(6)
+c
+        if( ifpot .eq. 1 .or. iffld .eq. 1 ) then
+ccC$OMP PARALLEL DO DEFAULT(SHARED)
+ccC$OMP$PRIVATE(i,j,ptemp,ftemp,htemp) 
+ccC$OMP$SCHEDULE(DYNAMIC)
+cccC$OMP$NUM_THREADS(4) 
+        do 6160 j=box(14),box(14)+box(15)-1
+        do 6150 i=box(14),box(14)+box(15)-1
+            if (i .eq. j) goto 6150
+            if (ifcharge .eq. 1 ) then
+            call lpotfld3dhess(iffld,ifhess,source(1,i),charge(i),
+     1           source(1,j),ptemp,ftemp,htemp)
+            if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+            if (iffld .eq. 1) then
+               fld(1,j)=fld(1,j)+ftemp(1)
+               fld(2,j)=fld(2,j)+ftemp(2)
+               fld(3,j)=fld(3,j)+ftemp(3)
+            endif
+            if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+            endif
+            endif
+            if (ifdipole .eq. 1) then
+               call lpotfld3dhess_dp(iffld,ifhess,source(1,i),
+     $              dipstr(i),dipvec(1,i),
+     $              source(1,j),ptemp,ftemp,htemp)
+               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+               if (iffld .eq. 1) then
+                  fld(1,j)=fld(1,j)+ftemp(1)
+                  fld(2,j)=fld(2,j)+ftemp(2)
+                  fld(3,j)=fld(3,j)+ftemp(3)
+               endif
+               if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+               endif
+            endif
+            if (ifquad .eq. 1) then
+               call lpotfld3dhess_qp(iffld,ifhess,source(1,i),
+     $              quadstr(i),quadvec(1,i),
+     $              source(1,j),ptemp,ftemp,htemp)
+               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+               if (iffld .eq. 1) then
+                  fld(1,j)=fld(1,j)+ftemp(1)
+                  fld(2,j)=fld(2,j)+ftemp(2)
+                  fld(3,j)=fld(3,j)+ftemp(3)
+               endif
+               if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+               endif
+            endif
+ 6150   continue
+ 6160   continue
+cccC$OMP END PARALLEL DO
+        endif
+
+        if( ifpottarg .eq. 1 .or. iffldtarg .eq. 1 ) then
+cccC$OMP PARALLEL DO DEFAULT(SHARED)
+cccC$OMP$PRIVATE(i,j,ptemp,ftemp,htemp) 
+cccC$OMP$SCHEDULE(DYNAMIC)
+cccC$OMP$NUM_THREADS(4) 
+        do j=box(16),box(16)+box(17)-1
+        do i=box(14),box(14)+box(15)-1
+            if (ifcharge .eq. 1 ) then
+            call lpotfld3dhess(iffldtarg,ifhesstarg,
+     $           source(1,i),charge(i),
+     1           target(1,j),ptemp,ftemp,htemp)
+            if (ifpottarg .eq. 1) pottarg(j)=pottarg(j)+ptemp
+            if (iffldtarg .eq. 1) then
+               fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+               fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+               fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+            endif
+            if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+            endif
+            endif
+            if (ifdipole .eq. 1) then
+               call lpotfld3dhess_dp(iffldtarg,ifhesstarg,
+     $              source(1,i),dipstr(i),dipvec(1,i),
+     $              target(1,j),ptemp,ftemp,htemp)
+               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
+               if (iffldtarg .eq. 1) then
+                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+               endif
+               if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+               endif
+            endif
+            if (ifquad .eq. 1) then
+               call lpotfld3dhess_qp(iffldtarg,ifhesstarg,
+     $              source(1,i),quadstr(i),quadvec(1,i),
+     $              target(1,j),ptemp,ftemp,htemp)
+               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
+               if (iffldtarg .eq. 1) then
+                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+               endif
+               if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+               endif
+            endif
+        enddo
+        enddo
+cccC$OMP END PARALLEL DO
+        endif
+
+        return
+        end
+c
+c
+c
+c
+c
+        subroutine lfmm3dpartquad_direct(box,box1,
+     $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
+     $     ifpot,pot,iffld,fld,ifhess,hess,
+     $     target,ifpottarg,pottarg,iffldtarg,fldtarg,
+     $     ifhesstarg,hesstarg)
+        implicit real *8 (a-h,o-z)
+c
+        integer box(20),box1(20)
+c
+        dimension source(3,1),dipvec(3,1),quadvec(6,1)
+        complex *16 charge(1),dipstr(1),quadstr(1)
+        dimension target(3,1)
+c
+        complex *16 pot(1),fld(3,1),hess(6,1)
+        complex *16 pottarg(1),fldtarg(3,1),hesstarg(6,1)
+        complex *16 ptemp,ftemp(3),htemp(6)
+c
+        if( ifpot .eq. 1 .or. iffld .eq. 1 ) then
+        do j=box1(14),box1(14)+box1(15)-1
+        if (ifcharge .eq. 1 ) then
+        call lpotfld3dallhess
+     $     (iffld,ifhess,source(1,box(14)),charge(box(14)),
+     1     box(15),source(1,j),ptemp,ftemp,htemp)
+        if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+        if (iffld .eq. 1) then
+        fld(1,j)=fld(1,j)+ftemp(1)
+        fld(2,j)=fld(2,j)+ftemp(2)
+        fld(3,j)=fld(3,j)+ftemp(3)
+        endif
+        if (ifhess .eq. 1) then
+           hess(1,j)=hess(1,j)+htemp(1)
+           hess(2,j)=hess(2,j)+htemp(2)
+           hess(3,j)=hess(3,j)+htemp(3)
+           hess(4,j)=hess(4,j)+htemp(4)
+           hess(5,j)=hess(5,j)+htemp(5)
+           hess(6,j)=hess(6,j)+htemp(6)
+        endif
+        endif
+c
+        if (ifdipole .eq. 1) then
+        call lpotfld3dallhess_dp(iffld,ifhess,source(1,box(14)),
+     $     dipstr(box(14)),dipvec(1,box(14)),
+     $     box(15),source(1,j),ptemp,ftemp,htemp)
+        if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+        if (iffld .eq. 1) then
+        fld(1,j)=fld(1,j)+ftemp(1)
+        fld(2,j)=fld(2,j)+ftemp(2)
+        fld(3,j)=fld(3,j)+ftemp(3)
+        endif
+        if (ifhess .eq. 1) then
+           hess(1,j)=hess(1,j)+htemp(1)
+           hess(2,j)=hess(2,j)+htemp(2)
+           hess(3,j)=hess(3,j)+htemp(3)
+           hess(4,j)=hess(4,j)+htemp(4)
+           hess(5,j)=hess(5,j)+htemp(5)
+           hess(6,j)=hess(6,j)+htemp(6)
+        endif
+        endif
+c
+        if (ifquad .eq. 1) then
+        call lpotfld3dallhess_qp(iffld,ifhess,source(1,box(14)),
+     $     quadstr(box(14)),quadvec(1,box(14)),
+     $     box(15),source(1,j),ptemp,ftemp,htemp)
+        if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+        if (iffld .eq. 1) then
+        fld(1,j)=fld(1,j)+ftemp(1)
+        fld(2,j)=fld(2,j)+ftemp(2)
+        fld(3,j)=fld(3,j)+ftemp(3)
+        endif
+        if (ifhess .eq. 1) then
+           hess(1,j)=hess(1,j)+htemp(1)
+           hess(2,j)=hess(2,j)+htemp(2)
+           hess(3,j)=hess(3,j)+htemp(3)
+           hess(4,j)=hess(4,j)+htemp(4)
+           hess(5,j)=hess(5,j)+htemp(5)
+           hess(6,j)=hess(6,j)+htemp(6)
+        endif
+        endif
+c
+        enddo
+        endif
+c
+        if( ifpottarg .eq. 1 .or. iffldtarg .eq. 1 ) then
+        do j=box1(16),box1(16)+box1(17)-1
+        if (ifcharge .eq. 1 ) then
+        call lpotfld3dallhess
+     $     (iffldtarg,ifhesstarg,source(1,box(14)),charge(box(14)),
+     1     box(15),target(1,j),ptemp,ftemp,htemp)
+        if (ifpottarg .eq. 1) pottarg(j)=pottarg(j)+ptemp
+        if (iffldtarg .eq. 1) then
+        fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+        fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+        fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+        endif
+        if (ifhesstarg .eq. 1) then
+        hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+        hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+        hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+        hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+        hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+        hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+        endif
+        endif
+c
+        if (ifdipole .eq. 1) then
+        call lpotfld3dallhess_dp(iffldtarg,ifhesstarg,
+     $     source(1,box(14)),
+     $     dipstr(box(14)),dipvec(1,box(14)),
+     $     box(15),target(1,j),ptemp,ftemp,htemp)
+        if (ifpottarg .eq. 1) pottarg(j)=pottarg(j)+ptemp
+        if (iffldtarg .eq. 1) then
+        fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+        fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+        fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+        endif
+        if (ifhesstarg .eq. 1) then
+        hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+        hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+        hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+        hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+        hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+        hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+        endif
+        endif
+c
+        if (ifquad .eq. 1) then
+        call lpotfld3dallhess_qp(iffldtarg,ifhesstarg,
+     $     source(1,box(14)),
+     $     quadstr(box(14)),quadvec(1,box(14)),
+     $     box(15),target(1,j),ptemp,ftemp,htemp)
+        if (ifpottarg .eq. 1) pottarg(j)=pottarg(j)+ptemp
+        if (iffldtarg .eq. 1) then
+        fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+        fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+        fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+        endif
+        if (ifhesstarg .eq. 1) then
+        hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+        hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+        hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+        hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+        hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+        hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+        endif
+        endif
+c
+        enddo
+        endif
+c       
+        return
+        end
+c
+c
+c
+c
+c
+        subroutine l3dpartquaddirect(nsource,
+     $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
+     $     ifpot,pot,iffld,fld,ifhess,hess,ntarget,
+     $     target,ifpottarg,pottarg,iffldtarg,fldtarg,
+     $     ifhesstarg,hesstarg)
+        implicit real *8 (a-h,o-z)
+c
+c       Laplace interactions in R^3: evaluate all pairwise particle
+c       interactions (ignoring self-interaction) 
+c       and interactions with targets via direct O(N^2) algorithm.
+c
+c       We use (1/r) for the Green's function,
+c       without the (1/4 pi) scaling.  Self-interactions are not-included.
+c   
+c       INPUT PARAMETERS:
+c
+c       nsource: integer:  number of sources
+c       source: real *8 (3,nsource):  source locations
+c       ifcharge:  charge computation flag
+c                  ifcharge = 1   =>  include charge contribution
+c                                     otherwise do not
+c       charge: complex *16 (nsource): charge strengths
+c       ifdipole:  dipole computation flag
+c                  ifdipole = 1   =>  include dipole contribution
+c                                     otherwise do not
+c       dipstr: complex *16 (nsource): dipole strengths
+c       dipvec: real *8 (3,nsource): dipole orientation vectors. 
+c       ifquad:  quadrupole computation flag
+c                  ifquad = 1   =>  include quadrupole contribution
+c                                     otherwise do not
+c       quadstr: complex *16 (nsource): quadrupole strengths
+c       quadvec: real *8 (6,nsource): quadrupole orientation vectors. 
+c
+c       ifpot:  potential flag (1=compute potential, otherwise no)
+c       iffld:  field flag (1=compute field, otherwise no)
+c       ifhess:  hessian flag (1=compute hessian, otherwise no)
+c       ntarget: integer:  number of targets
+c       target: real *8 (3,ntarget):  target locations
+c       ifpottarg:  target potential flag 
+c                   (1=compute potential, otherwise no)
+c       iffldtarg:  target field flag 
+c                   (1=compute field, otherwise no)
+c       ihesstarg:  target hessian flag 
+c                   (1=compute hessian, otherwise no)
+c
+c       OUTPUT PARAMETERS:
+c
+c       pot: complex *16 (nsource): potential at source locations
+c       fld: complex *16 (3,nsource): field (-gradient) at source locations
+c       hess: complex *16 (6,nsource): hessian at triangle centroids 
+c       pottarg: complex *16 (ntarget): potential at target locations 
+c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations 
+c       hesstarg: complex *16 (6,ntarget): hessian at target locations
+c
+c
+        dimension source(3,1),dipvec(3,1),quadvec(6,1)
+        complex *16 charge(1),dipstr(1),quadstr(1)
+        dimension target(3,1)
+c
+        complex *16 pot(1),fld(3,1),hess(6,1)
+        complex *16 pottarg(1),fldtarg(3,1),hesstarg(6,1)
+        complex *16 ptemp,ftemp(3),htemp(6)
+c
+c
+        do i=1,nsource
+        if( ifpot .eq. 1) pot(i)=0
+        if( iffld .eq. 1) then
+           fld(1,i)=0
+           fld(2,i)=0
+           fld(3,i)=0
+        endif
+        if( ifhess .eq. 1) then
+           hess(1,i)=0
+           hess(2,i)=0
+           hess(3,i)=0
+           hess(4,i)=0
+           hess(5,i)=0
+           hess(6,i)=0
+        endif
+        enddo
+c       
+        do i=1,ntarget
+        if( ifpottarg .eq. 1) pottarg(i)=0
+        if( iffldtarg .eq. 1) then
+           fldtarg(1,i)=0
+           fldtarg(2,i)=0
+           fldtarg(3,i)=0
+        endif
+        if( ifhesstarg .eq. 1) then
+           hesstarg(1,i)=0
+           hesstarg(2,i)=0
+           hesstarg(3,i)=0
+           hesstarg(4,i)=0
+           hesstarg(5,i)=0
+           hesstarg(6,i)=0
+        endif
+        enddo
+c
+        if( ifpot .eq. 1 .or. iffld .eq. 1 ) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,ptemp,ftemp,htemp) 
+        do 6160 j=1,nsource
+        do 6150 i=1,nsource
+            if (i .eq. j) goto 6150
+            if (ifcharge .eq. 1 ) then
+            call lpotfld3dhess(iffld,ifhess,source(1,i),charge(i),
+     1           source(1,j),ptemp,ftemp,htemp)
+            if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+            if (iffld .eq. 1) then
+               fld(1,j)=fld(1,j)+ftemp(1)
+               fld(2,j)=fld(2,j)+ftemp(2)
+               fld(3,j)=fld(3,j)+ftemp(3)
+            endif
+            if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+            endif
+            endif
+            if (ifdipole .eq. 1) then
+               call lpotfld3dhess_dp(iffld,ifhess,source(1,i),
+     $              dipstr(i),dipvec(1,i),
+     $              source(1,j),ptemp,ftemp,htemp)
+               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+               if (iffld .eq. 1) then
+                  fld(1,j)=fld(1,j)+ftemp(1)
+                  fld(2,j)=fld(2,j)+ftemp(2)
+                  fld(3,j)=fld(3,j)+ftemp(3)
+               endif
+               if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+               endif
+            endif
+            if (ifquad .eq. 1) then
+               call lpotfld3dhess_qp(iffld,ifhess,source(1,i),
+     $              quadstr(i),quadvec(1,i),
+     $              source(1,j),ptemp,ftemp,htemp)
+               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+               if (iffld .eq. 1) then
+                  fld(1,j)=fld(1,j)+ftemp(1)
+                  fld(2,j)=fld(2,j)+ftemp(2)
+                  fld(3,j)=fld(3,j)+ftemp(3)
+               endif
+               if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+               endif
+            endif
+ 6150   continue
+ 6160   continue
+C$OMP END PARALLEL DO
+        endif
+
+        if( ifpottarg .eq. 1 .or. iffldtarg .eq. 1 ) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,ptemp,ftemp,htemp) 
+        do j=1,ntarget
+        do i=1,nsource
+            if (ifcharge .eq. 1 ) then
+            call lpotfld3dhess(iffldtarg,ifhesstarg,
+     $           source(1,i),charge(i),
+     1           target(1,j),ptemp,ftemp,htemp)
+            if (ifpottarg .eq. 1) pottarg(j)=pottarg(j)+ptemp
+            if (iffldtarg .eq. 1) then
+               fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+               fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+               fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+            endif
+            if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+            endif
+            endif
+            if (ifdipole .eq. 1) then
+               call lpotfld3dhess_dp(iffldtarg,ifhesstarg,
+     $              source(1,i),dipstr(i),dipvec(1,i),
+     $              target(1,j),ptemp,ftemp,htemp)
+               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
+               if (iffldtarg .eq. 1) then
+                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+               endif
+               if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+               endif
+            endif
+            if (ifquad .eq. 1) then
+               call lpotfld3dhess_qp(iffldtarg,ifhesstarg,
+     $              source(1,i),quadstr(i),quadvec(1,i),
+     $              target(1,j),ptemp,ftemp,htemp)
+               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
+               if (iffldtarg .eq. 1) then
+                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+               endif
+               if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+               endif
+            endif
+        enddo
+        enddo
+C$OMP END PARALLEL DO
+        endif
+c
+        return
+        end
+c
+c
+c
+c
+c
+        subroutine l3dpartquaddirecttime(ms,nsource,
+     $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
+     $     ifpot,pot,iffld,fld,ifhess,hess,mt,ntarget,
+     $     target,ifpottarg,pottarg,iffldtarg,fldtarg,
+     $     ifhesstarg,hesstarg)
+        implicit real *8 (a-h,o-z)
+c
+c       Laplace interactions in R^3: evaluate all pairwise particle
+c       interactions (ignoring self-interaction) 
+c       and interactions with targets via direct O(N^2) algorithm.
+c
+c       We use (1/r) for the Green's function,
+c       without the (1/4 pi) scaling.  Self-interactions are not-included.
+c   
+c       INPUT PARAMETERS:
+c
+c       nsource: integer:  number of sources
+c       source: real *8 (3,nsource):  source locations
+c       ifcharge:  charge computation flag
+c                  ifcharge = 1   =>  include charge contribution
+c                                     otherwise do not
+c       charge: complex *16 (nsource): charge strengths
+c       ifdipole:  dipole computation flag
+c                  ifdipole = 1   =>  include dipole contribution
+c                                     otherwise do not
+c       dipstr: complex *16 (nsource): dipole strengths
+c       dipvec: real *8 (3,nsource): dipole orientation vectors. 
+c       ifquad:  quadrupole computation flag
+c                  ifquad = 1   =>  include quadrupole contribution
+c                                     otherwise do not
+c       quadstr: complex *16 (nsource): quadrupole strengths
+c       quadvec: real *8 (6,nsource): quadrupole orientation vectors. 
+c
+c       ifpot:  potential flag (1=compute potential, otherwise no)
+c       iffld:  field flag (1=compute field, otherwise no)
+c       ifhess:  hessian flag (1=compute hessian, otherwise no)
+c       ntarget: integer:  number of targets
+c       target: real *8 (3,ntarget):  target locations
+c       ifpottarg:  target potential flag 
+c                   (1=compute potential, otherwise no)
+c       iffldtarg:  target field flag 
+c                   (1=compute field, otherwise no)
+c       ihesstarg:  target hessian flag 
+c                   (1=compute hessian, otherwise no)
+c
+c       OUTPUT PARAMETERS:
+c
+c       pot: complex *16 (nsource): potential at source locations
+c       fld: complex *16 (3,nsource): field (-gradient) at source locations
+c       hess: complex *16 (6,nsource): hessian at triangle centroids 
+c       pottarg: complex *16 (ntarget): potential at target locations 
+c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations 
+c       hesstarg: complex *16 (6,ntarget): hessian at target locations
+c
+c
+        dimension source(3,1),dipvec(3,1),quadvec(6,1)
+        complex *16 charge(1),dipstr(1),quadstr(1)
+        dimension target(3,1)
+c
+        complex *16 pot(1),fld(3,1),hess(6,1)
+        complex *16 pottarg(1),fldtarg(3,1),hesstarg(6,1)
+        complex *16 ptemp,ftemp(3),htemp(6)
+c
+c
+        do i=1,nsource
+        if( ifpot .eq. 1) pot(i)=0
+        if( iffld .eq. 1) then
+           fld(1,i)=0
+           fld(2,i)=0
+           fld(3,i)=0
+        endif
+        if( ifhess .eq. 1) then
+           hess(1,i)=0
+           hess(2,i)=0
+           hess(3,i)=0
+           hess(4,i)=0
+           hess(5,i)=0
+           hess(6,i)=0
+        endif
+        enddo
+c       
+        do i=1,ntarget
+        if( ifpottarg .eq. 1) pottarg(i)=0
+        if( iffldtarg .eq. 1) then
+           fldtarg(1,i)=0
+           fldtarg(2,i)=0
+           fldtarg(3,i)=0
+        endif
+        if( ifhesstarg .eq. 1) then
+           hesstarg(1,i)=0
+           hesstarg(2,i)=0
+           hesstarg(3,i)=0
+           hesstarg(4,i)=0
+           hesstarg(5,i)=0
+           hesstarg(6,i)=0
+        endif
+        enddo
+c
+        if( ifpot .eq. 1 .or. iffld .eq. 1 ) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,ptemp,ftemp,htemp) 
+        do 6160 j=1,ms
+        do 6150 i=1,nsource
+            if (i .eq. j) goto 6150
+            if (ifcharge .eq. 1 ) then
+            call lpotfld3dhess(iffld,ifhess,source(1,i),charge(i),
+     1           source(1,j),ptemp,ftemp,htemp)
+            if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+            if (iffld .eq. 1) then
+               fld(1,j)=fld(1,j)+ftemp(1)
+               fld(2,j)=fld(2,j)+ftemp(2)
+               fld(3,j)=fld(3,j)+ftemp(3)
+            endif
+            if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+            endif
+            endif
+            if (ifdipole .eq. 1) then
+               call lpotfld3dhess_dp(iffld,ifhess,source(1,i),
+     $              dipstr(i),dipvec(1,i),
+     $              source(1,j),ptemp,ftemp,htemp)
+               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+               if (iffld .eq. 1) then
+                  fld(1,j)=fld(1,j)+ftemp(1)
+                  fld(2,j)=fld(2,j)+ftemp(2)
+                  fld(3,j)=fld(3,j)+ftemp(3)
+               endif
+               if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+               endif
+            endif
+            if (ifquad .eq. 1) then
+               call lpotfld3dhess_qp(iffld,ifhess,source(1,i),
+     $              quadstr(i),quadvec(1,i),
+     $              source(1,j),ptemp,ftemp,htemp)
+               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
+               if (iffld .eq. 1) then
+                  fld(1,j)=fld(1,j)+ftemp(1)
+                  fld(2,j)=fld(2,j)+ftemp(2)
+                  fld(3,j)=fld(3,j)+ftemp(3)
+               endif
+               if (ifhess .eq. 1) then
+               hess(1,j)=hess(1,j)+htemp(1)
+               hess(2,j)=hess(2,j)+htemp(2)
+               hess(3,j)=hess(3,j)+htemp(3)
+               hess(4,j)=hess(4,j)+htemp(4)
+               hess(5,j)=hess(5,j)+htemp(5)
+               hess(6,j)=hess(6,j)+htemp(6)
+               endif
+            endif
+ 6150   continue
+ 6160   continue
+C$OMP END PARALLEL DO
+        endif
+
+        if( ifpottarg .eq. 1 .or. iffldtarg .eq. 1 ) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,ptemp,ftemp,htemp) 
+        do j=1,mt
+        do i=1,nsource
+            if (ifcharge .eq. 1 ) then
+            call lpotfld3dhess(iffldtarg,ifhesstarg,
+     $           source(1,i),charge(i),
+     1           target(1,j),ptemp,ftemp,htemp)
+            if (ifpottarg .eq. 1) pottarg(j)=pottarg(j)+ptemp
+            if (iffldtarg .eq. 1) then
+               fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+               fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+               fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+            endif
+            if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+            endif
+            endif
+            if (ifdipole .eq. 1) then
+               call lpotfld3dhess_dp(iffldtarg,ifhesstarg,
+     $              source(1,i),dipstr(i),dipvec(1,i),
+     $              target(1,j),ptemp,ftemp,htemp)
+               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
+               if (iffldtarg .eq. 1) then
+                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+               endif
+               if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+               endif
+            endif
+            if (ifquad .eq. 1) then
+               call lpotfld3dhess_qp(iffldtarg,ifhesstarg,
+     $              source(1,i),quadstr(i),quadvec(1,i),
+     $              target(1,j),ptemp,ftemp,htemp)
+               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
+               if (iffldtarg .eq. 1) then
+                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+               endif
+               if (ifhesstarg .eq. 1) then
+               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
+               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
+               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
+               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
+               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
+               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
+               endif
+            endif
+        enddo
+        enddo
+C$OMP END PARALLEL DO
+        endif
+c
+        return
+        end
+c
+c
+c
+c
+c
+        subroutine l3dreorder_quad(nsource,source,
+     $     ifcharge,charge,isource,ifdipole,dipstr,dipvec,
+     $     ifquad,quadstr,quadvec,
+     $     sourcesort,chargesort,
+     $     dipvecsort,dipstrsort,quadvecsort,quadstrsort) 
+        implicit real *8 (a-h,o-z)
+        dimension source(3,1),sourcesort(3,1),isource(1)
+        dimension dipvec(3,1),dipvecsort(3,1)
+        dimension quadvec(6,1),quadvecsort(6,1)
+        complex *16 charge(1),chargesort(1)
+        complex *16 dipstr(1),dipstrsort(1)
+        complex *16 quadstr(1),quadstrsort(1)
+c       
+ccc        call prinf('nsource=*',nsource,1)
+        do i = 1,nsource
+        sourcesort(1,i) = source(1,isource(i))
+        sourcesort(2,i) = source(2,isource(i))
+        sourcesort(3,i) = source(3,isource(i))
+        if( ifcharge .eq. 1 ) then
+        chargesort(i) = charge(isource(i))
+        endif
+        if (ifdipole .eq. 1) then
+        dipstrsort(i) = dipstr(isource(i))
+        dipvecsort(1,i) = dipvec(1,isource(i))
+        dipvecsort(2,i) = dipvec(2,isource(i))
+        dipvecsort(3,i) = dipvec(3,isource(i))
+        endif
+        if (ifquad .eq. 1) then
+        quadstrsort(i) = quadstr(isource(i))
+        quadvecsort(1,i) = quadvec(1,isource(i))
+        quadvecsort(2,i) = quadvec(2,isource(i))
+        quadvecsort(3,i) = quadvec(3,isource(i))
+        quadvecsort(4,i) = quadvec(4,isource(i))
+        quadvecsort(5,i) = quadvec(5,isource(i))
+        quadvecsort(6,i) = quadvec(6,isource(i))
+        endif
+        enddo
         return
         end
 c

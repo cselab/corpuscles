@@ -1,0 +1,30 @@
+load("dimension.mac")$
+
+rr(vr, vp, vt, p):= - p + 2*mu*diff(vr, r)$
+pp(vr, vp, vt, p):= - p + 2*mu*(1/(r*sin(th))*diff(vp, ph) + vr/r + vt*cot(th)/r)$
+tt(vr, vp, vt, p):= - p + 2*mu*(1/r*diff(vt, th) + vr/r)$
+rp(vr, vp, vt, p):= mu * (1/r*diff(vr, th) + diff(vt, r) - vt/r)$
+tp(vr, vp, vt, p):= mu * (1/(r*sin(th)) * diff(vt, phy) + 1/r*diff(vp, th) - vp*cot(th)/r)$
+pr(vr, vp, vt, p):= mu * (diff(vp, r) + 1/(r*sin(th)) * diff(vr, ph) - vp/r)$
+cont(vr, vp, vt):= 1/r^2*diff(r^2*vr, r) + 1/(r*sin(th))*diff(vt*sin(th), th)
++ 1/(r*sin(th))*diff(vp, th)$
+grad(f):= [diff(f, r), diff(f, th)/r, 1/(r*sin(th))*diff(f, ph)]$
+
+Velocity: Length / Time$
+Force: Mass * Velocity / Time$
+put('vr, Velocity, 'dimension) $
+put('vp, Velocity, 'dimension) $
+put('vt, Velocity, 'dimension) $
+qput(r, Length, dimension) $
+qput(th, 1, dimension) $
+qput(ph, 1, dimension) $
+put('p, Force/Length^2, 'dimension)$
+put('mu, Mass/Length^3 * Length * Velocity, 'dimension)$
+
+depends(['vr, 'vp, 'vt, 'p, 'f], [r, ph, th])$
+put('u, Velocity, dimension)$
+put('R, Length, dimension)$
+vr: u*cos(th)*(1 - 3*R/(2*r) + R^3/(2*r^3)) $
+vt: -u*sin(th)*(1 - 3*R/(4*r) - R^3/(4*r^3)) $
+cont(vr, 0, vt);
+grad(f);

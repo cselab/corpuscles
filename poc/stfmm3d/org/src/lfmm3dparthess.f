@@ -1,4 +1,4 @@
-cc Copyright (C) 2009-2012: Leslie Greengard and Zydrunas Gimbutas
+cc Copyright (C) 2009-2010: Leslie Greengard and Zydrunas Gimbutas
 cc Contact: greengard@cims.nyu.edu
 cc 
 cc This program is free software; you can redistribute it and/or modify 
@@ -13,40 +13,21 @@ cc License along with this program;
 cc if not, see <http://www.gnu.org/licenses/>.
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
-c    $Date: 2012-02-29 16:00:41 -0500 (Wed, 29 Feb 2012) $
-c    $Revision: 2743 $
+c    $Date: 2010-07-05 22:24:41 -0400 (Mon, 05 Jul 2010) $
+c    $Revision: 1057 $
 c
 c     This file contains the main FMM routines and some related
 c     subroutines for evaluating Laplace potentials, fields, and
-c     hessians due to point charges,dipoles, and quadrupoles.  
-c     (FORTRAN 90 VERSION)
+c     hessians due to point charges and dipoles.  (FORTRAN 90 VERSION)
 c
-c     pot = charge / r + 
-c           dipstr*  (dipvec(1)*U_x + dipvec(2)*U_y + dipvec(3)*U_z) +
-c           quadstr* (quadvec(1)*V_xx + quadvec(2)*V_yy + quadvec(3)*V_zz+
-c                     quadvec(4)*V_xy + quadvec(5)*V_xz + quadvec(6)*V_yz)
-c
-c     fld = -grad(pot)
-c     hess = (potxx,potyy,potzz,potxy,potxz,potyz)
-c
-c     U_x = dx/r^3, U_y = dy/r^3, U_z = dz/r^3
-c
-c     V_xx = (-1/r^3 + 3*dx**2/r^5)
-c     V_xy = 3*dx*dy/r^5
-c     V_xz = 3*dx*dz/r^5
-c     V_yy = (-1/r^3 + 3*dy**2/r^5)
-c     V_yz = 3*dy*dz/r^5
-c     V_zz = (-1/r^3 + 3*dz**2/r^5)
-c
-c
-c     lfmm3dpartquadself - Laplace FMM in R^3: evaluate all pairwise particle
+c     lfmm3dparthess - Laplace FMM in R^3: evaluate all pairwise particle
 c         interactions (ignoring self-interaction)
 c
-c     lfmm3dpartquadtarg - Laplace FMM in R^3: evaluate all pairwise
+c     lfmm3dparthesstarg - Laplace FMM in R^3: evaluate all pairwise
 c         particle interactions (ignoring self-interaction) +
 c         interactions with targets
 c
-c     l3dpartquaddirect - Laplace interactions in R^3: evaluate all
+c     l3dparthessdirecttarg - Laplace interactions in R^3: evaluate all
 c         pairwise particle interactions (ignoring self-interaction) +
 c         interactions with targets via direct O(N^2) algorithm
 c
@@ -59,18 +40,17 @@ ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 c
 c
-        subroutine lfmm3dpartquadself(ier,iprec,nsource,source,
+C$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        subroutine lfmm3dparthess(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess)
-        implicit real *8 (a-h,o-z)
+C$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 c
 c       Laplace FMM in R^3: this subroutine evaluates the harmonic
 c       potential, field, and hessian due to a collection due to a
-c       collection of point charges, dipoles and quadrupoles.
-c       (all pairwise particle interactions, ignoring self-interaction).  
-c
-c       We use (1/r) for the Green's function, without the (1/4 pi)
+c       collection of point charges and dipoles (all pairwise particle
+c       interactions, ignoring self-interaction).  We use (1/r) for the
+c       Green's function, without the (1/4 pi)
 c       scaling. Self-interactions are not included.
 c   
 c       The main FMM routine permits both evaluation at sources
@@ -82,12 +62,11 @@ c
 c       See below for explanation of calling sequence arguments.
 c  
 c
+        implicit real *8 (a-h,o-z)
         dimension source(3,1)
         complex *16 charge(1)
         complex *16 dipstr(1)
         dimension dipvec(3,1)
-        complex *16 quadstr(1)
-        dimension quadvec(6,1)
         complex *16 ima
         complex *16 pot(1)
         complex *16 fld(3,1)
@@ -106,9 +85,8 @@ c
         iffldtarg=0
         ifhesstarg=0
 c
-        call lfmm3dpartquadtarg(ier,iprec,nsource,source,
+        call lfmm3dparthesstarg(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     ntarget,target,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -120,13 +98,13 @@ c
 c
 c
 c
-        subroutine lfmm3dpartquadtarg(ier,iprec,nsource,source,
+C$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+        subroutine lfmm3dparthesstarg(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     ntarget,target,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
-        implicit real *8 (a-h,o-z)
+C$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 c       
 c       
 c       Laplace FMM in R^3: evaluate all pairwise particle
@@ -152,34 +130,32 @@ c                  3 => tolerance =.5d-9
 c                  4 => tolerance =.5d-12
 c                  5 => tolerance =.5d-15
 c
-c       nsource: integer:  number of sources
-c       source: real *8 (3,nsource):  source locations
-c       ifcharge:  charge computation flag
-c                  ifcharge = 1   =>  include charge contribution
+c       nsource          : number of sources                           (integer)
+c       source(3,nsource): source locations 			       (real *8)
+c       ifcharge         : charge computation flag                     (integer)
+c                          ifcharge = 1 => include charge contribution
 c                                     otherwise do not
-c       charge: complex *16 (nsource): charge strengths
-c       ifdipole:  dipole computation flag
-c                  ifdipole = 1   =>  include dipole contribution
+c       charge(nsource)  : charge strengths                        (complex *16)
+c       ifdipole         : dipole computation flag                     (integer)
+c                          ifdipole = 1 =>  include dipole contribution
 c                                     otherwise do not
-c       dipstr: complex *16 (nsource): dipole strengths
-c       dipvec: real *8 (3,nsource): dipole orientation vectors. 
-c       ifquad:  quadrupole computation flag
-c                  ifquad = 1   =>  include quadrupole contribution
-c                                     otherwise do not
-c       quadstr: complex *16 (nsource): quadrupole strengths
-c       quadvec: real *8 (6,nsource): quadrupole orientation vectors. 
+c       dipstr(nsource)  : dipole strengths                        (complex *16)
+c       dipvec(3,nsource): dipole orientation vectors                  (real *8)
 c
-c       ifpot:  potential flag (1=compute potential, otherwise no)
-c       iffld:  field flag (1=compute field, otherwise no)
-c       ifhess:  hessian flag (1=compute hessian, otherwise no)
-c       ntarget: integer:  number of targets
-c       target: real *8 (3,ntarget):  target locations
-c       ifpottarg:  target potential flag 
-c                   (1=compute potential, otherwise no)
-c       iffldtarg:  target field flag 
-c                   (1=compute field, otherwise no)
-c       ihesstarg:  target hessian flag 
-c                   (1=compute hessian, otherwise no)
+c       ifpot            : potential flag                              (integer)
+c                          (1=compute potential, otherwise no)
+c       iffld            : field flag                                  (integer)
+c                          (1=compute field, otherwise no)
+c       ifhess           : hessian flag                                (integer)
+c                          (1=compute hessian, otherwise no)
+c       ntarget          : number of targets                           (integer)
+c       target(3,ntarget): target locations                            (real *8)
+c       ifpottarg        : target potential flag                       (integer)
+c                          (1=compute potential, otherwise no)
+c       iffldtarg        : target field flag                           (integer)
+c                          (1=compute field, otherwise no)
+c       ihesstarg        : target hessian flag                         (integer)
+c                          (1=compute hessian, otherwise no)
 c
 c       OUTPUT PARAMETERS:
 c
@@ -190,20 +166,49 @@ c                ier=8     =>  cannot allocate bulk FMM  workspace
 c                ier=16    =>  cannot allocate mpole expansion
 c                              workspace in FMM
 c
-c       pot: complex *16 (nsource): potential at source locations
-c       fld: complex *16 (3,nsource): field (-gradient) at source locations
-c       hess: complex *16 (6,nsource): hessian at triangle centroids 
-c       pottarg: complex *16 (ntarget): potential at target locations 
-c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations 
-c       hesstarg: complex *16 (6,ntarget): hessian at target locations
+c       pot(nsource)       : potential at source locations         (complex *16)
+c       fld(3,nsource)     : field (-gradient) at source locations (complex *16)
+c       hess(6,nsource)    : hessian at triangle centroids         (complex *16)
+c                            1 = xx-derivative, 2 = yy-derivative
+c                            3 = zz-derivative, 4 = xy-derivative
+c                            5 = xz-derivative, 6 = yz-derivative
+c       pottarg(ntarget)   : potential at target locations         (complex *16)
+c       fldtarg(3,ntarget) : field (-gradient) at target locations (complex *16)
+c       hesstarg(6,ntarget): hessian at target locations           (complex *16)
+c                            1 = xx-derivative, 2 = yy-derivative
+c                            3 = zz-derivative, 4 = xy-derivative
+c                            5 = xz-derivative, 6 = yz-derivative
 c
+cf2py   intent(out) ier
+cf2py   intent(in) iprec
+cf2py   intent(in) nsource
+cf2py   intent(in) source
+cf2py   intent(in) ifcharge,charge
+cf2py   check(!ifcharge || (shape(charge,0) == nsource))  charge
+cf2py   depend(nsource)  charge
+cf2py   intent(in) ifdipole,dipvec,dipstr
+cf2py   check(!ifdipole || (shape(dipstr,0) == nsource))  dipstr
+cf2py   depend(nsource)  dipstr
+cf2py   intent(in) ifpot,iffld,ifhess
+cf2py   intent(out) pot,fld,hess
+cf2py   intent(in) ifpottarg, iffldtarg, ifhesstarg
+cf2py   intent(in) target
+cf2py   intent(in) ntarget
+cf2py   check((!ifpottarg && !iffldtarg && !ifhesstarg) || (shape(target,0)==3 && shape(target,1) == ntarget))  target
+cf2py   check((!ifpottarg) || (shape(pottarg,0)==ntarget))  pottarg
+cf2py   check((!iffldtarg) || (shape(fldtarg,0)==3 && shape(fldtarg,1) == ntarget))  fldtarg
+cf2py   check((!ifhesstarg) || (shape(hesstarg,0)==6 && shape(hesstarg,1) == ntarget))  hesstarg
 c
+c       (F2PY workaround: *targ must be input because f2py
+c       refuses to allocate zero-size output arrays.)
+c
+cf2py   intent(in,out) pottarg,fldtarg, hesstarg
+c
+        implicit real *8 (a-h,o-z)
         dimension source(3,nsource)
         complex *16 charge(nsource)
         complex *16 dipstr(nsource)
         dimension dipvec(3,nsource)
-        complex *16 quadstr(nsource)
-        dimension quadvec(6,nsource)
         complex *16 ima
         complex *16 pot(nsource)
         complex *16 fld(3,nsource)
@@ -308,7 +313,7 @@ c     keeping track of total memory used.
 c
         lused7=1
         do i = 0,nlev
-        scale(i) = 1.0d0*1
+        scale(i) = 1.0d0
         enddo
 c       
         if (ifprint .ge. 1) call prin2('scale=*',scale,nlev+1)
@@ -321,8 +326,6 @@ c     itargetsort is pointer for sorted target locations
 c     ichargesort is pointer for sorted charge densities
 c     idipvecsort is pointer for sorted dipole orientation vectors
 c     idipstrsort is pointer for sorted dipole densities
-c     iquadvecsort is pointer for sorted quadrupole orientation vectors
-c     iquadstrsort is pointer for sorted quadrupole densities
 c       
         isourcesort = lused7 + 5
         lsourcesort = 3*nsource
@@ -339,16 +342,7 @@ c
           ldipstr = 2
         endif
         idipstrsort = idipvecsort + ldipvec
-        iquadvecsort = idipstrsort + ldipstr
-        if (ifquad.eq.1) then
-          lquadvec = 6*nsource
-          lquadstr = 2*nsource
-        else
-          lquadvec = 6
-          lquadstr = 2
-        endif
-        iquadstrsort = iquadvecsort + lquadvec
-        lused7 = iquadstrsort + lquadstr
+        lused7 = idipstrsort + ldipstr
 c
 c
 c       ... allocate the potential and field arrays
@@ -405,13 +399,6 @@ c
            if (nterms(i).gt. nmax .and. i.ge. 2) nmax = nterms(i)
         enddo
 c
-        nquad=2*nmax        
-c       
-        ixnodes = lused7 
-        iwts = ixnodes + nquad
-        lused7 = iwts + nquad
-c
-c
         if(ifprint.eq.1) call prinf('nterms=*',nterms,nlev+1)
         if(ifprint.eq.1) call prinf('nmax=*',nmax,1)
 c       
@@ -438,13 +425,9 @@ c
 c     reorder sources, targets so that each box holds
 c     contiguous list of source/target numbers.
 c
-        call l3dreorder_quad
-     $     (nsource,source,ifcharge,charge,wlists(iisource),
+        call l3dreorder(nsource,source,ifcharge,charge,wlists(iisource),
      $     ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
-     1     w(isourcesort),w(ichargesort),
-     $     w(idipvecsort),w(idipstrsort),
-     $     w(iquadvecsort),w(iquadstrsort))
+     1     w(isourcesort),w(ichargesort),w(idipvecsort),w(idipstrsort)) 
 c       
         call l3dreordertarg(ntarget,target,wlists(iitarget),
      $     w(itargetsort))
@@ -457,12 +440,6 @@ c
           call prinf('nboxes=*',nboxes,1)
           call prinf('lused7=*',lused7,1)
         endif
-c
-        ifinit=1
-        call legewhts(nquad,w(ixnodes),w(iwts),ifinit)
-c
-ccc        call prin2('xnodes=*',xnodes,nquad)
-ccc        call prin2('wts=*',wts,nquad)
 c
 c     allocate memory need by multipole, local expansions at all
 c     levels
@@ -498,18 +475,16 @@ c
         ifevalfar=1
         ifevalloc=1
 c
-        call lfmm3dpartquadtargmain(ier,iprec,
+        call lfmm3dparthesstargmain(ier,iprec,
      $     ifevalfar,ifevalloc,
      $     nsource,w(isourcesort),w(iisource),
      $     ifcharge,w(ichargesort),
      $     ifdipole,w(idipstrsort),w(idipvecsort),
-     $     ifquad,w(iquadstrsort),w(iquadvecsort),
      $     ifpot,w(ipot),iffld,w(ifld),ifhess,w(ihess),
      $     ntarget,w(itargetsort),w(iitarget),
      $     ifpottarg,w(ipottarg),iffldtarg,w(ifldtarg),
      $     ifhesstarg,w(ihesstarg),
      $     epsfmm,w(iiaddr),wrmlexp(irmlexp),w(imptemp),lmptemp,
-     $     w(ixnodes),w(iwts),nquad,
      $     nboxes,laddr,nlev,scale,bsize,nterms,
      $     wlists(iwlists),lwlists)
 c
@@ -545,16 +520,15 @@ c
 c
 c
 c
-        subroutine lfmm3dpartquadtargmain(ier,iprec,
+        subroutine lfmm3dparthesstargmain(ier,iprec,
      $     ifevalfar,ifevalloc,
      $     nsource,sourcesort,isource,
      $     ifcharge,chargesort,
      $     ifdipole,dipstrsort,dipvecsort,
-     $     ifquad,quadstrsort,quadvecsort,
      $     ifpot,pot,iffld,fld,ifhess,hess,ntarget,
      $     targetsort,itarget,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg,
-     $     epsfmm,iaddr,rmlexp,mptemp,lmptemp,xnodes,wts,nquad,
+     $     epsfmm,iaddr,rmlexp,mptemp,lmptemp,
      $     nboxes,laddr,nlev,scale,bsize,nterms,
      $     wlists,lwlists)
         implicit real *8 (a-h,o-z)
@@ -562,8 +536,6 @@ c
         complex *16 chargesort(1)
         complex *16 dipstrsort(1)
         dimension dipvecsort(3,1)
-        complex *16 quadstrsort(1)
-        dimension quadvecsort(6,1)
         complex *16 ima
         complex *16 pot(1)
         complex *16 fld(3,1)
@@ -576,7 +548,6 @@ c
         dimension iaddr(2,nboxes)
         real *8 rmlexp(1)
         complex *16 mptemp(lmptemp)
-        dimension xnodes(nquad),wts(nquad)
         dimension timeinfo(10)
         dimension center(3)
         dimension laddr(2,200)
@@ -652,7 +623,6 @@ c
 c
         if( ifevalfar .eq. 0 ) goto 8000
 c       
-c
 c       ... initialize Legendre function evaluation routines
 c
         nlege=100
@@ -683,8 +653,10 @@ c
         t1=second()
 C$        t1=omp_get_wtime()
 c
-c       ... step 1, locate all charges, assign them to boxes, and
+c-----------------------------------------------------------------------
+c       Step 1: locate all charges, assign them to boxes, and
 c       form multipole expansions
+c-----------------------------------------------------------------------
 c
 ccc        do 1200 ibox=1,nboxes
         do 1300 ilev=3,nlev+1
@@ -753,16 +725,6 @@ c
      2         rmlexp(iaddr(1,ibox)),wlege,nlege)
             
             endif
-c
-            if (ifquad .eq. 1 ) then
-
-            call l3dformmp_qp_add_trunc(ier,scale(level),
-     $         sourcesort(1,box(14)),
-     1         quadstrsort(box(14)),quadvecsort(1,box(14)),
-     $         npts,center0,nterms(level),
-     2         rmlexp(iaddr(1,ibox)),wlege,nlege)
-            
-            endif
          endif
 c
  1200    continue
@@ -778,9 +740,13 @@ c
         t1=second()
 C$        t1=omp_get_wtime()
 c
-c       ... step 2, adaptive part, form local expansions, 
-c           or evaluate the potentials and fields directly
-c 
+c-----------------------------------------------------------------------
+c       Step 2: In the adaptive FMM, a large leaf node may need to interact
+c       with separated boxes at finer levels. This is called <list 3> in the
+c       FMM. One takes individual sources in the large leaf node and 
+c       maps them to loca expansions in the target boxes.
+c-----------------------------------------------------------------------
+c
          do 3251 ibox=1,nboxes
 c
          call d3tgetb(ier,ibox,box,center0,corners0,wlists)
@@ -820,6 +786,10 @@ c
             if( box1(15) .lt. (nterms(level1)+1)**2/4 .and.
      $          box(15) .lt. (nterms(level1)+1)**2/4 ) ifdirect3 = 1
 c
+c           for future optimization - here, we just form the local
+c           expansion, regardless of the number of targets in the 
+c           target box.
+c
             ifdirect3 = 0
 c
             if( ifdirect3 .eq. 0 ) then
@@ -845,24 +815,12 @@ c
 
                endif
 c
-               if( ifquad .eq. 1 ) then
-
-               call l3dformta_qp_add_trunc(ier,scale(level1),
-     1            sourcesort(1,box(14)),quadstrsort(box(14)),
-     2            quadvecsort(1,box(14)),npts,center1,
-     3            nterms(level1),
-     $            rmlexp(iaddr(2,jbox)),wlege,nlege)
-
-               endif
-c
             else
 
-            call lfmm3dpartquad_direct(box,box1,sourcesort,
+            call lfmm3dparthess_direct(box,box1,sourcesort,
      $         ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
-     $         ifquad,quadstrsort,quadvecsort,
-     $         ifpot,pot,iffld,fld,ifhess,hess,
-     $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
-     $         ifhesstarg,hesstarg)
+     $         ifpot,pot,iffld,fld,
+     $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg)
 
             endif
          enddo
@@ -875,6 +833,14 @@ C$        t2=omp_get_wtime()
 ccc        call prin2('time=*',t2-t1,1)
          timeinfo(2)=t2-t1
 c
+c-----------------------------------------------------------------------
+c       Steps 3,4,5 are carried out by the routine lfmm3d_list2.
+c       Step 3 is the merging of multipole expansions at every level.
+c       Step 4 is the mapping of multipole expansions to local expansions
+c              using <list 2>.
+c       Step 5 is the recursive mapping of local expansions from parent to 
+c              child.
+c-----------------------------------------------------------------------
 c
         if(ifprint .ge. 1)
      $      call prinf('=== STEPS 3,4,5 ====*',i,0)
@@ -896,8 +862,13 @@ c
         t1=second()
 C$        t1=omp_get_wtime()
 c
-c       ... step 6, adaptive part, evaluate multipole expansions, 
-c           or evaluate the potentials and fields directly
+c-----------------------------------------------------------------------
+c       Step 6: In the adaptive FMM, a small leaf node may need to interact
+c       with separated boxes at coarser levels. This is the dual of 
+c       Step 2 and is called <list 4> in the FMM. 
+c       The multipole expansion for the small leaf node is evaluated directly
+c       at targets in the large target node.
+c-----------------------------------------------------------------------
 c
          do 3252 ibox=1,nboxes
          call d3tgetb(ier,ibox,box,center0,corners0,wlists)
@@ -931,10 +902,14 @@ cccC$OMP$NUM_THREADS(4)
 c
             level=box(1)
 c
-            ifdirect4 = 0
+c              ifdirect4 = 0
 c
-            if (box1(15) .lt. (nterms(level)+1)**2/4 .and.
-     $         box(15) .lt. (nterms(level)+1)**2/4 ) ifdirect4 = 1
+c              if (box1(15) .lt. (nterms(level)+1)**2/4 .and.
+c       $         box(15) .lt. (nterms(level)+1)**2/4 ) ifdirect4 = 1
+c
+c           for future optimization - here, we just evaluate the 
+c           multipole expansion, regardless of the number of sources
+c           in the source box.
 c
             ifdirect4 = 0
 c
@@ -946,11 +921,6 @@ c     $               rmlexp(iaddr(1,ibox)),nterms(level),
 c     $               sourcesort(1,j),
 c     $               ptemp,iffld,ftemp,ifhess,htemp,
 c     $               ier)
-c                  call l3dmpevalhessd(scale(level),center0,
-c     $               rmlexp(iaddr(1,ibox)),nterms(level),
-c     $               sourcesort(1,j),
-c     $               ptemp,iffld,ftemp,ifhess,htemp,
-c     $               scarray_mpole)
                   call l3dmpevalhessd_trunc(scale(level),center0,
      $               rmlexp(iaddr(1,ibox)),nterms(level),
      $               sourcesort(1,j),
@@ -985,11 +955,6 @@ c     $               rmlexp(iaddr(1,ibox)),nterms(level),
 c     $               targetsort(1,j),
 c     $               ptemp,iffldtarg,ftemp,ifhesstarg,htemp,
 c     $               ier)
-c                  call l3dmpevalhessd(scale(level),center0,
-c     $               rmlexp(iaddr(1,ibox)),nterms(level),
-c     $               targetsort(1,j),
-c     $            ptemp,iffldtarg,ftemp,ifhesstarg,htemp,
-c     $            scarray_mpole)
                   call l3dmpevalhessd_trunc(scale(level),center0,
      $               rmlexp(iaddr(1,ibox)),nterms(level),
      $               targetsort(1,j),
@@ -1019,9 +984,8 @@ c     $            scarray_mpole)
                enddo
             else
             
-            call lfmm3dpartquad_direct(box,box1,sourcesort,
+            call lfmm3dparthess_direct(box,box1,sourcesort,
      $         ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
-     $         ifquad,quadstrsort,quadvecsort,
      $         ifpot,pot,iffld,fld,ifhess,hess,
      $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
      $         ifhesstarg,hesstarg)
@@ -1038,7 +1002,11 @@ ccc     call prin2('time=*',t2-t1,1)
 c
         allocate( scarray_local(0:100000) )
         call l3dtaevalhessdini(nterms(0),scarray_local)
-
+c
+c-----------------------------------------------------------------------
+c       Step 7: Evaluate the local expansions for all relevant sources/targets.
+c-----------------------------------------------------------------------
+c
         if(ifprint .ge. 1)
      $     call prinf('=== STEP 7 (eval lo) ====*',i,0)
         t1=second()
@@ -1169,7 +1137,9 @@ c
         t1=second()
 C$        t1=omp_get_wtime()
 c
-c       ... step 8, evaluate direct interactions 
+c-----------------------------------------------------------------------
+c       Step 8: Evaluate direct interactions locally
+c-----------------------------------------------------------------------
 c
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,box,center0,corners0,nkids,list,nlist,npts)
@@ -1201,9 +1171,8 @@ c
 c
 c       ... evaluate self interactions
 c
-        call lfmm3dpartquad_direct_self(box,sourcesort,
+        call lfmm3dparthess_direct_self(box,sourcesort,
      $     ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
-     $     ifquad,quadstrsort,quadvecsort,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -1228,9 +1197,8 @@ c       ... prune all sourceless boxes
 c
          if( box1(15) .eq. 0 ) goto 6203
 c
-            call lfmm3dpartquad_direct(box1,box,sourcesort,
+            call lfmm3dparthess_direct(box1,box,sourcesort,
      $         ifcharge,chargesort,ifdipole,dipstrsort,dipvecsort,
-     $         ifquad,quadstrsort,quadvecsort,
      $         ifpot,pot,iffld,fld,ifhess,hess,
      $         targetsort,ifpottarg,pottarg,iffldtarg,fldtarg,
      $         ifhesstarg,hesstarg)
@@ -1267,9 +1235,8 @@ c
 c
 c
 c
-        subroutine lfmm3dpartquad_direct_self(box,
+        subroutine lfmm3dparthess_direct_self(box,
      $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     target,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -1277,8 +1244,8 @@ c
 c
         integer box(20),box1(20)
 c
-        dimension source(3,1),dipvec(3,1),quadvec(6,1)
-        complex *16 charge(1),dipstr(1),quadstr(1)
+        dimension source(3,1),dipvec(3,1)
+        complex *16 charge(1),dipstr(1)
         dimension target(3,1)
 c
         complex *16 pot(1),fld(3,1),hess(6,1)
@@ -1314,25 +1281,6 @@ cccC$OMP$NUM_THREADS(4)
             if (ifdipole .eq. 1) then
                call lpotfld3dhess_dp(iffld,ifhess,source(1,i),
      $              dipstr(i),dipvec(1,i),
-     $              source(1,j),ptemp,ftemp,htemp)
-               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
-               if (iffld .eq. 1) then
-                  fld(1,j)=fld(1,j)+ftemp(1)
-                  fld(2,j)=fld(2,j)+ftemp(2)
-                  fld(3,j)=fld(3,j)+ftemp(3)
-               endif
-               if (ifhess .eq. 1) then
-               hess(1,j)=hess(1,j)+htemp(1)
-               hess(2,j)=hess(2,j)+htemp(2)
-               hess(3,j)=hess(3,j)+htemp(3)
-               hess(4,j)=hess(4,j)+htemp(4)
-               hess(5,j)=hess(5,j)+htemp(5)
-               hess(6,j)=hess(6,j)+htemp(6)
-               endif
-            endif
-            if (ifquad .eq. 1) then
-               call lpotfld3dhess_qp(iffld,ifhess,source(1,i),
-     $              quadstr(i),quadvec(1,i),
      $              source(1,j),ptemp,ftemp,htemp)
                if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
                if (iffld .eq. 1) then
@@ -1399,25 +1347,6 @@ cccC$OMP$NUM_THREADS(4)
                hesstarg(6,j)=hesstarg(6,j)+htemp(6)
                endif
             endif
-            if (ifquad .eq. 1) then
-               call lpotfld3dhess_qp(iffldtarg,ifhesstarg,
-     $              source(1,i),quadstr(i),quadvec(1,i),
-     $              target(1,j),ptemp,ftemp,htemp)
-               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
-               if (iffldtarg .eq. 1) then
-                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
-                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
-                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
-               endif
-               if (ifhesstarg .eq. 1) then
-               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
-               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
-               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
-               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
-               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
-               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
-               endif
-            endif
         enddo
         enddo
 cccC$OMP END PARALLEL DO
@@ -1430,9 +1359,8 @@ c
 c
 c
 c
-        subroutine lfmm3dpartquad_direct(box,box1,
+        subroutine lfmm3dparthess_direct(box,box1,
      $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess,
      $     target,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -1440,8 +1368,8 @@ c
 c
         integer box(20),box1(20)
 c
-        dimension source(3,1),dipvec(3,1),quadvec(6,1)
-        complex *16 charge(1),dipstr(1),quadstr(1)
+        dimension source(3,1),dipvec(3,1)
+        complex *16 charge(1),dipstr(1)
         dimension target(3,1)
 c
         complex *16 pot(1),fld(3,1),hess(6,1)
@@ -1469,7 +1397,6 @@ c
            hess(6,j)=hess(6,j)+htemp(6)
         endif
         endif
-c
         if (ifdipole .eq. 1) then
         call lpotfld3dallhess_dp(iffld,ifhess,source(1,box(14)),
      $     dipstr(box(14)),dipvec(1,box(14)),
@@ -1489,27 +1416,6 @@ c
            hess(6,j)=hess(6,j)+htemp(6)
         endif
         endif
-c
-        if (ifquad .eq. 1) then
-        call lpotfld3dallhess_qp(iffld,ifhess,source(1,box(14)),
-     $     quadstr(box(14)),quadvec(1,box(14)),
-     $     box(15),source(1,j),ptemp,ftemp,htemp)
-        if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
-        if (iffld .eq. 1) then
-        fld(1,j)=fld(1,j)+ftemp(1)
-        fld(2,j)=fld(2,j)+ftemp(2)
-        fld(3,j)=fld(3,j)+ftemp(3)
-        endif
-        if (ifhess .eq. 1) then
-           hess(1,j)=hess(1,j)+htemp(1)
-           hess(2,j)=hess(2,j)+htemp(2)
-           hess(3,j)=hess(3,j)+htemp(3)
-           hess(4,j)=hess(4,j)+htemp(4)
-           hess(5,j)=hess(5,j)+htemp(5)
-           hess(6,j)=hess(6,j)+htemp(6)
-        endif
-        endif
-c
         enddo
         endif
 c
@@ -1555,28 +1461,6 @@ c
         hesstarg(6,j)=hesstarg(6,j)+htemp(6)
         endif
         endif
-c
-        if (ifquad .eq. 1) then
-        call lpotfld3dallhess_qp(iffldtarg,ifhesstarg,
-     $     source(1,box(14)),
-     $     quadstr(box(14)),quadvec(1,box(14)),
-     $     box(15),target(1,j),ptemp,ftemp,htemp)
-        if (ifpottarg .eq. 1) pottarg(j)=pottarg(j)+ptemp
-        if (iffldtarg .eq. 1) then
-        fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
-        fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
-        fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
-        endif
-        if (ifhesstarg .eq. 1) then
-        hesstarg(1,j)=hesstarg(1,j)+htemp(1)
-        hesstarg(2,j)=hesstarg(2,j)+htemp(2)
-        hesstarg(3,j)=hesstarg(3,j)+htemp(3)
-        hesstarg(4,j)=hesstarg(4,j)+htemp(4)
-        hesstarg(5,j)=hesstarg(5,j)+htemp(5)
-        hesstarg(6,j)=hesstarg(6,j)+htemp(6)
-        endif
-        endif
-c
         enddo
         endif
 c       
@@ -1587,9 +1471,8 @@ c
 c
 c
 c
-        subroutine l3dpartquaddirect(nsource,
+        subroutine l3dparthessdirecttarg(nsource,
      $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
      $     ifpot,pot,iffld,fld,ifhess,hess,ntarget,
      $     target,ifpottarg,pottarg,iffldtarg,fldtarg,
      $     ifhesstarg,hesstarg)
@@ -1615,11 +1498,6 @@ c                  ifdipole = 1   =>  include dipole contribution
 c                                     otherwise do not
 c       dipstr: complex *16 (nsource): dipole strengths
 c       dipvec: real *8 (3,nsource): dipole orientation vectors. 
-c       ifquad:  quadrupole computation flag
-c                  ifquad = 1   =>  include quadrupole contribution
-c                                     otherwise do not
-c       quadstr: complex *16 (nsource): quadrupole strengths
-c       quadvec: real *8 (6,nsource): quadrupole orientation vectors. 
 c
 c       ifpot:  potential flag (1=compute potential, otherwise no)
 c       iffld:  field flag (1=compute field, otherwise no)
@@ -1643,8 +1521,8 @@ c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations
 c       hesstarg: complex *16 (6,ntarget): hessian at target locations
 c
 c
-        dimension source(3,1),dipvec(3,1),quadvec(6,1)
-        complex *16 charge(1),dipstr(1),quadstr(1)
+        dimension source(3,1),dipvec(3,1)
+        complex *16 charge(1),dipstr(1)
         dimension target(3,1)
 c
         complex *16 pot(1),fld(3,1),hess(6,1)
@@ -1729,25 +1607,6 @@ C$OMP$PRIVATE(i,j,ptemp,ftemp,htemp)
                hess(6,j)=hess(6,j)+htemp(6)
                endif
             endif
-            if (ifquad .eq. 1) then
-               call lpotfld3dhess_qp(iffld,ifhess,source(1,i),
-     $              quadstr(i),quadvec(1,i),
-     $              source(1,j),ptemp,ftemp,htemp)
-               if (ifpot .eq. 1) pot(j)=pot(j)+ptemp
-               if (iffld .eq. 1) then
-                  fld(1,j)=fld(1,j)+ftemp(1)
-                  fld(2,j)=fld(2,j)+ftemp(2)
-                  fld(3,j)=fld(3,j)+ftemp(3)
-               endif
-               if (ifhess .eq. 1) then
-               hess(1,j)=hess(1,j)+htemp(1)
-               hess(2,j)=hess(2,j)+htemp(2)
-               hess(3,j)=hess(3,j)+htemp(3)
-               hess(4,j)=hess(4,j)+htemp(4)
-               hess(5,j)=hess(5,j)+htemp(5)
-               hess(6,j)=hess(6,j)+htemp(6)
-               endif
-            endif
  6150   continue
  6160   continue
 C$OMP END PARALLEL DO
@@ -1796,74 +1655,11 @@ C$OMP$PRIVATE(i,j,ptemp,ftemp,htemp)
                hesstarg(6,j)=hesstarg(6,j)+htemp(6)
                endif
             endif
-            if (ifquad .eq. 1) then
-               call lpotfld3dhess_qp(iffldtarg,ifhesstarg,
-     $              source(1,i),quadstr(i),quadvec(1,i),
-     $              target(1,j),ptemp,ftemp,htemp)
-               if (ifpottarg .eq. 1 ) pottarg(j)=pottarg(j)+ptemp
-               if (iffldtarg .eq. 1) then
-                  fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
-                  fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
-                  fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
-               endif
-               if (ifhesstarg .eq. 1) then
-               hesstarg(1,j)=hesstarg(1,j)+htemp(1)
-               hesstarg(2,j)=hesstarg(2,j)+htemp(2)
-               hesstarg(3,j)=hesstarg(3,j)+htemp(3)
-               hesstarg(4,j)=hesstarg(4,j)+htemp(4)
-               hesstarg(5,j)=hesstarg(5,j)+htemp(5)
-               hesstarg(6,j)=hesstarg(6,j)+htemp(6)
-               endif
-            endif
         enddo
         enddo
 C$OMP END PARALLEL DO
         endif
 c
-        return
-        end
-c
-c
-c
-c
-c
-        subroutine l3dreorder_quad(nsource,source,
-     $     ifcharge,charge,isource,ifdipole,dipstr,dipvec,
-     $     ifquad,quadstr,quadvec,
-     $     sourcesort,chargesort,
-     $     dipvecsort,dipstrsort,quadvecsort,quadstrsort) 
-        implicit real *8 (a-h,o-z)
-        dimension source(3,1),sourcesort(3,1),isource(1)
-        dimension dipvec(3,1),dipvecsort(3,1)
-        dimension quadvec(6,1),quadvecsort(6,1)
-        complex *16 charge(1),chargesort(1)
-        complex *16 dipstr(1),dipstrsort(1)
-        complex *16 quadstr(1),quadstrsort(1)
-c       
-ccc        call prinf('nsource=*',nsource,1)
-        do i = 1,nsource
-        sourcesort(1,i) = source(1,isource(i))
-        sourcesort(2,i) = source(2,isource(i))
-        sourcesort(3,i) = source(3,isource(i))
-        if( ifcharge .eq. 1 ) then
-        chargesort(i) = charge(isource(i))
-        endif
-        if (ifdipole .eq. 1) then
-        dipstrsort(i) = dipstr(isource(i))
-        dipvecsort(1,i) = dipvec(1,isource(i))
-        dipvecsort(2,i) = dipvec(2,isource(i))
-        dipvecsort(3,i) = dipvec(3,isource(i))
-        endif
-        if (ifquad .eq. 1) then
-        quadstrsort(i) = quadstr(isource(i))
-        quadvecsort(1,i) = quadvec(1,isource(i))
-        quadvecsort(2,i) = quadvec(2,isource(i))
-        quadvecsort(3,i) = quadvec(3,isource(i))
-        quadvecsort(4,i) = quadvec(4,isource(i))
-        quadvecsort(5,i) = quadvec(5,isource(i))
-        quadvecsort(6,i) = quadvec(6,isource(i))
-        endif
-        enddo
         return
         end
 c

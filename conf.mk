@@ -1,4 +1,5 @@
 CC = gcc
+FC = gfortran
 CFLAGS = -Ofast  -g
 LDFLAGS =
 PREFIX = $(HOME)

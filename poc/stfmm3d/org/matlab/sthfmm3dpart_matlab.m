@@ -112,7 +112,7 @@ function [U]=sthfmm3dpart_matlab(iprec,itype,nsource,source,ifsingle,sigma_sl,if
 %
 
 
-if( nargin == 8 ) 
+if( nargin == 9 ) 
   ifpot = 1;
   ifgrad = 1;
   ntarget = 0;
@@ -121,14 +121,14 @@ if( nargin == 8 )
   ifgradtarg = 0;
 end
 
-if( nargin == 10 ) 
+if( nargin == 11 ) 
   ntarget = 0;
   target = zeros(3,ntarget);
   ifpottarg = 0;
   ifgradtarg = 0;
 end
 
-if( nargin == 12 ) 
+if( nargin == 13 ) 
   ifpottarg = 1;
   ifgradtarg = 1;
 end

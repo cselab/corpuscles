@@ -258,7 +258,8 @@ C$        t1=omp_get_wtime()
      $     ifsingle,SIGMA_SL,ifdouble,SIGMA_DL,SIGMA_DV,
      $     ifpot,pot,pre,ifgrad,grad,
      $     ntarget,target,ifpottarg,POTtarg,PREtarg,
-     $     ifgradtarg,GRADtarg)
+     $       ifgradtarg,GRADtarg)
+        print *, 'ier = ', ier
         t2=second()
 C$        t2=omp_get_wtime()
         call prini(6,13)
