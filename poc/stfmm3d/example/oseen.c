@@ -3,6 +3,7 @@
 #include <co/err.h>
 #include <co/he.h>
 #include <co/memory.h>
+#include <co/oseen3.h>
 #include <co/matrix.h>
 #include <co/y.h>
 #include <fmm3.h>
@@ -34,15 +35,23 @@ main()
 {
     int i, n;
     FMM3 *q;
-    double *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz;
-
+    real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *wx, *wy, *wz;
+    static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
+    real reg;
     He *he;
+    Oseen3 *oseen;
+
+    reg = 0.1;
     y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
+    oseen3_ini(he, reg, &oseen);
+
+    tensor_ini(n, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
     MALLOC3(n, &fx, &fy, &fz);
     CALLOC3(n, &vx, &vy, &vz);
-
+    CALLOC3(n, &wx, &wy, &wz);    
     fmm3_ini(n, &q);
+    oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 
     for (i = 0; i < n; i++) {
 	fx[i] = x[i]*x[i];
@@ -50,13 +59,21 @@ main()
 	fz[i] = z[i];
     }
 
+    oseen3_vector_tensor(n, 1.0, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
     fmm3_single(q, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
 
-    for (i = 0; i < 2; i++)
-	MSG(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
+    for (i = 0; i < n; i++) {
+	printf(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
+	printf(" ");
+	printf(FMT " " FMT " " FMT, wx[i], wy[i], wz[i]);
+	printf("\n");
+    }
 
+    oseen3_fin(oseen);
     y_fin(he, x, y, z);
     FREE3(fx, fy, fz);
     FREE3(vx, vy, vz);
+    FREE3(wx, wy, wz);
+    tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
     fmm3_fin(q);
 }
