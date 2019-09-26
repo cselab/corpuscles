@@ -39,6 +39,7 @@ fmm3_fin(T *q)
     FREE(q->sigma_dv);
     FREE(q->vel);
     FREE(q->pre);
+    FREE(q);
     return CO_OK;
 }
 
