@@ -114,7 +114,6 @@ static int fargv(char ***p, He *he)
   v++;
   num(v, &freq_out);
   v++;
-  //MSG("freq_stat:  %s", v[0]);
   num(v, &freq_stat);
   v++;
   
@@ -406,7 +405,7 @@ int main(__UNUSED int argc, char **argv) {
 
 	  if ( s > end ) break;
 
-	  ode3_apply(ode, &time, t, x, y, z);
+	  ode3_apply_fixed(ode, &time, t, x, y, z);
 	  
 	}
 
