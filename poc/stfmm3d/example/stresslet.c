@@ -6,6 +6,7 @@
 #include <co/oseen3.h>
 #include <co/matrix.h>
 #include <co/normal.h>
+#include <co/area.h>
 #include <co/y.h>
 #include <fmm3.h>
 
@@ -37,6 +38,7 @@ main()
     int i, n;
     FMM3 *q;
     real *x, *y, *z, *ux, *uy, *uz, *nx, *ny, *nz, *vx, *vy, *vz, *wx, *wy, *wz;
+    real *area;
     Oseen3 *oseen;
     real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
     real reg;
@@ -50,17 +52,17 @@ main()
     MALLOC3(n, &nx, &ny, &nz);
     CALLOC3(n, &vx, &vy, &vz);
     CALLOC3(n, &wx, &wy, &wz);
+    MALLOC(n, &area);
     tensor_ini(n, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
 
     fmm3_ini(n, &q);
     normal_mwa(he, x, y, z, nx, ny, nz);
-
+    he_area_ver(he, x, y, z, area);
     for (i = 0; i < n; i++) {
 	ux[i] = 1;
 	uy[i] = 1;
 	uz[i] = 1;
     }
-
     oseen3_stresslet(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
     oseen3_vector_tensor(n, 1.0, ux, uy, uz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
     fmm3_double(q, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
@@ -78,6 +80,7 @@ main()
     FREE3(vx, vy, vz);
     FREE3(ux, uy, uz);
     FREE3(nx, ny, nz);
+    FREE(area);
     tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);    
     fmm3_fin(q);
 }

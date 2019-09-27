@@ -265,6 +265,27 @@ array_scale3(int n, real s, real *x, real *y, real *z)
 }
 
 int
+array_multiply(int n, const real *a, real *x)
+{
+    int i;
+    for (i = 0; i < n; i++)
+	x[i] *= a[i];
+    return CO_OK;
+}
+
+int
+array_multiply3(int n, const real *a, real *x, real *y, real *z)
+{
+    int i;
+    for (i = 0; i < n; i++) {
+	x[i] *= a[i];
+	y[i] *= a[i];
+	z[i] *= a[i];
+    }
+    return CO_OK;
+}
+
+int
 array_fwrite(FILE *f, int n, const real *a)
 {
 	int i, status;
