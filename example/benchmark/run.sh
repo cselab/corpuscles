@@ -7,7 +7,7 @@ start=0
 end=1000
 freq=100
 #dt=0.00002
-dt=0.00001
+dt=0.000005
 #VAL='--tool=callgrind --quiet' \
 co.run ./main \
        garea 12.5663706144 1000000 \
