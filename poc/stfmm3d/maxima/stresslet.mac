@@ -1,6 +1,11 @@
 load("stringproc")$
+load("co/util.mac")$
 load("co/off.mac")$
+load("co/he.mac")$
 
+/* file: "/u/.co/rbc/laplace/0.off"; */
 file: "../example/data/2tri.off"$
-[x, y, z, tt]: off_read(file)
+
+debugmode(true);
+he: he(file) $
 
