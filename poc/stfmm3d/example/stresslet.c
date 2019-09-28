@@ -68,7 +68,6 @@ main()
     oseen3_vector_tensor(n, 1.0, ux, uy, uz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
     array_multiply3(n, area, ux, uy, uz);
     fmm3_double(q, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
-
     for (i = 0; i < n; i++) {
 	printf(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
 	printf(" ");
@@ -76,6 +75,7 @@ main()
 	printf("\n");
     }
     MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
+    MSG(FMT " " FMT " " FMT, wx[0], wy[0], wz[0]);
 
     y_fin(he, x, y, z);
     oseen3_fin(oseen);
@@ -84,6 +84,6 @@ main()
     FREE3(ux, uy, uz);
     FREE3(nx, ny, nz);
     FREE(area);
-    tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);    
+    tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
     fmm3_fin(q);
 }
