@@ -4,7 +4,7 @@ make main
 
 la=5
 start=0
-end=10000
+end=10000000
 freq=1000
 dt=0.00002
 #dt=0.000005
