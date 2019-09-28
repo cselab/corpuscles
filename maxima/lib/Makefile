@@ -2,6 +2,7 @@ S = ../..
 include $S/conf.mk
 
 M = \
+area.mac\
 ddih.mac\
 dedg.mac\
 dih.mac\

@@ -5,13 +5,14 @@ load("co/he.mac")$
 load("co/loop.mac")$
 load("co/vec.mac")$
 load("co/tri.mac")$
-load("co/normal.mac");
+load("co/normal.mac") $
+load("co/area.mac") $
 
-/* file: "/u/.co/rbc/laplace/0.off"; */
+/* file: "/u/0.off"$ */
 file: "../example/data/2tri.off"$
 he: he(file) $
-
-n: normal_mwa(he);
+n: normal_mwa(he) $
+area: area_ver(he) $
 
 loop_ver2(he,
   print([i, j]));
