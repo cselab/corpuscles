@@ -24,16 +24,21 @@ main()
     CALLOC3(n, &vx, &vy, &vz);
 
     fmm3_ini(n, &q);
-    normal_mwa(he, x, y, z, nx, ny, nz);
+    //normal_mwa(he, x, y, z, nx, ny, nz);
 
     for (i = 0; i < n; i++) {
 	ux[i] = 1;
-	uy[i] = 1;
-	uz[i] = 1;
+	uy[i] = 0;
+	uz[i] = 0;
+    }
+    for (i = 0; i < n; i++) {
+	nx[i] = 1;
+	ny[i] = 0;
+	nz[i] = 0;
     }
     fmm3_double(q, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
 
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < n; i++)
 	MSG(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
 
     y_fin(he, x, y, z);

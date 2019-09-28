@@ -1,3 +1,3 @@
-# TEST: edg_sq
+# nTEST: edg_sq
 i=`co.path`/rbc/laplace/0.off
 co.run ./main edg_sq 1 2 < $i | uscale 1e6 > main.out.txt
