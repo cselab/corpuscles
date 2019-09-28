@@ -3,7 +3,7 @@ load("lapack") $
 
 load("co/off.mac")$
 load("co/util.mac")$
-load("co/co.mac")$
+load("co/he.mac")$
 load("co/edg.mac")$
 load("co/vec.mac")$
 load("co/tri.mac")$

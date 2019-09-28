@@ -1,12 +1,6 @@
 load("stringproc")$
-
 load("co/off.mac")$
-load("co/util.mac")$
-load("co/co.mac")$
-load("co/loop.mac")$
-load("co/vec.mac")$
-load("co/tri.mac")$
-load("co/dih.mac")$
 
 file: "../example/data/2tri.off"$
-he: he(file) $
+[x, y, z, tt]: off_read(file)
+

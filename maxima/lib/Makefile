@@ -11,7 +11,7 @@ dtri2.mac\
 edg.mac\
 edg2.mac\
 err.mac\
-co.mac\
+he.mac\
 off.mac\
 tri.mac\
 tri2.mac\
