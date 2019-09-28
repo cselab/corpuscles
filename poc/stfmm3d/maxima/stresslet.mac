@@ -2,10 +2,13 @@ load("stringproc")$
 load("co/util.mac")$
 load("co/off.mac")$
 load("co/he.mac")$
+load("co/loop.mac")$
+load("co/vec.mac")$
+load("co/tri.mac")$
+load("co/normal.mac");
 
 /* file: "/u/.co/rbc/laplace/0.off"; */
 file: "../example/data/2tri.off"$
-
-debugmode(true);
 he: he(file) $
 
+n: normal_mwa(he);
