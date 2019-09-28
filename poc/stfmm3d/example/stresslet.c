@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <real.h>
+#include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/memory.h>
@@ -60,11 +61,12 @@ main()
     he_area_ver(he, x, y, z, area);
     for (i = 0; i < n; i++) {
 	ux[i] = 1;
-	uy[i] = 1;
-	uz[i] = 1;
+	uy[i] = 0;
+	uz[i] = 0;
     }
     oseen3_stresslet(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
     oseen3_vector_tensor(n, 1.0, ux, uy, uz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, wx, wy, wz);
+    array_multiply3(n, area, ux, uy, uz);
     fmm3_double(q, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
 
     for (i = 0; i < n; i++) {
