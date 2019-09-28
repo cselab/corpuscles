@@ -12,3 +12,6 @@ file: "../example/data/2tri.off"$
 he: he(file) $
 
 n: normal_mwa(he);
+
+loop_ver2(he,
+  print([i, j]));

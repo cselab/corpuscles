@@ -83,6 +83,20 @@ loop_ver(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nv: gensym(),
       a: [x[i], y[i], z[i]],
       block(splice(L)))));
 
+loop_ver2(he, [L])::=buildq([x: gensym(), y: gensym(), z: gensym(), nv: gensym(), L],
+  block([nv, x, y, z],
+    nv: he_nv(he),
+    x: he_x(he), y: he_y(he), z: he_z(he),
+    for i: 0 thru nv - 1 do
+    for j: 0 thru nv - 1 do
+    if i#j then
+    block([h, g, a, b],
+      h: he_hdg_ver(he, i),
+      g: he_hdg_ver(he, j),
+      a: [x[i], y[i], z[i]],
+      b: [x[j], y[j], z[j]],
+      block(splice(L)))));
+
 loop_ring(he, i0, [L])::=buildq([he: ev(he), i0: ev(i0), L, h: gensym(), h0: gensym(), n: gensym(), f: gensym(),
     x: gensym(), y: gensym(), z: gensym(), ans: gensym()],
   block([h, h0, n, f, i, j, k, s],
