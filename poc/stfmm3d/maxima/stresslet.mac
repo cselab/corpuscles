@@ -12,13 +12,12 @@ load("co/area.mac") $
 file: "../example/data/2tri.off"$
 he: he(file) $
 
-n: normal_mwa(he) $
 area: area_ver(he) $
 nv: he_nv(he) $
+n: normal_mwa(he) $
 valloc(nv, v, u);
 loop_ver(he,
-  n[i]: [1, 0 ,0],
-  u[i]: [1, 0, 0]);
+  u[i]: area[i]*[1, 0, 0]);
 T(x, i, j, k):= block([r: vec_abs(x)],
     3*x[i]*x[j]*x[k]/r^5);
 loop_ver2(he,

@@ -75,7 +75,7 @@ main()
 	printf(FMT " " FMT " " FMT, wx[i], wy[i], wz[i]);
 	printf("\n");
     }
-    MSG(FMT " " FMT " " FMT, wx[0], wy[0], wz[0]);
+    MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
 
     y_fin(he, x, y, z);
     oseen3_fin(oseen);
