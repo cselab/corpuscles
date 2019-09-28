@@ -205,7 +205,9 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		SET(i, i, A*zz, ozz);
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
+			i_vec_get(j, nx, ny, nz, u);
 			i_vec_get(j, x, y, z, b);
+			A = area[j];
 			stresslet(e, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, A*xx, oxx);
 			SET(i, j, A*xy, oxy);
@@ -215,7 +217,7 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 			SET(i, j, A*zz, ozz);
 		}
 	}
-	s = -6/(8*pi);
+	s = 6/(8*pi);
 	i_matrix_scale(n, n, s, oxx);
 	i_matrix_scale(n, n, s, oxy);
 	i_matrix_scale(n, n, s, oxz);
