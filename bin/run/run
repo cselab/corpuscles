@@ -31,14 +31,7 @@ if test $# -eq 0
 then err "'prog' is missing"; fi
 
 e export OMP_NUM_THREADS=$NT
-for i
-do shift
-   case "$i" in
-       '>'|'<') i="$i" ;;
-       *) i="`quote "$i"`"
-   esac
-   set -- "$@" "$i"
-done
+for i do shift; set -- "$@" "`quote "$i"`"; done
 
 if test ! -z "${VAL+x}"
 then
