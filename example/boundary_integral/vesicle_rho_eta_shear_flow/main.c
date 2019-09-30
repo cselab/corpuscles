@@ -230,7 +230,7 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       if ( ratio < tol ) {
 
 	if  ( k == iter_max ) {
-	  MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
+	  //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
 	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
 	    ER("Failed to open '%s'", file_msg);
 	  }
@@ -378,11 +378,11 @@ int main(__UNUSED int argc, char **argv) {
       
       v = reduced_volume(A, V);
       
-      if ( s / 10 % freq_stat == 0 ) {
+      /*if ( s / 10 % freq_stat == 0 ) {
 	MSG("dt s t = %f %i %f", dt, s, t);
 	MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
 	MSG("et ega ev eb ebl ebn = %f %f %f %f %f %f", et, ega, ev, eb, ebl, ebn);
-      }
+	}*/
       
       if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_stat);

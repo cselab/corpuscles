@@ -52,12 +52,12 @@ char file_msg[99]="msg.out";
 FILE *fm;
 
 static void usg(void) {
-  fprintf(stderr, "%s garea A Kga area a Ka volume V Kv \n", me);
-  fprintf(stderr, "juelicher_xin Kb C0 Kad DA0D \n");
-  fprintf(stderr, "strain ref_file lim mua mub a3 a4 b1 b2 \n");
-  fprintf(stderr, "gamdot, eta, lamda, dt \n");
-  fprintf(stderr, "start, end, freq_out, freq_stat \n");
-  fprintf(stderr, "< OFF input file \n");
+  fprintf(stderr, "%s garea A Kga area a Ka volume V Kv\n", me);
+  fprintf(stderr, "juelicher_xin Kb C0 Kad DA0D\n");
+  fprintf(stderr, "strain ref_file lim mua mub a3 a4 b1 b2\n");
+  fprintf(stderr, "R D rho eta lamda gamdot dt\n");
+  fprintf(stderr, "start end freq_out freq_stat\n");
+  fprintf(stderr, "< OFF input file\n");
 }
 
 static int num(char **v, /**/ int *p) {
@@ -231,7 +231,7 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       if ( ratio < tol ) {
 
 	if  ( k == iter_max ) {
-	  MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
+	  //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
 	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
 	    ER("Failed to open '%s'", file_msg);
 	  }
@@ -377,41 +377,41 @@ int main(__UNUSED int argc, char **argv) {
 	}
 	
 	i++;
-	    }
+      }
 
       v = reduced_volume(A, V);
       
-      if ( s / 10 % freq_stat == 0 ) {
+      /*if ( s / 10 % freq_stat == 0 ) {
 	MSG("dt s t = %f %i %f", dt, s, t);
 	MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
 	MSG("et ega ev eb ebl ebn es = %f %f %f %f %f %f %f", et, ega, ev, eb, ebl, ebn, es);
-      }
+	}*/
       
       if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_stat);
       }
-      fprintf(fm, "%f %i %f% f %f %f %f %f %f %f %f %f %f\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn, es);
+      fprintf(fm, "%f %i %f %f %f %f %f %f %f %f %f %f %f\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn, es);
       fclose(fm);
-
-	  }
-	  
-	  
-	  s ++;
-	  t = time + dt;
-
-	  if ( s > end ) break;
-
-	  ode3_apply(ode, &time, t, x, y, z);
-	  
-	}
-
-	FREE3(ux, uy, uz);
-	FREE3(wx, wy, wz);
-	FREE3(fx, fy, fz);
-	tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-	tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
-	oseen3_fin(oseen);
-	ode3_fin(ode);
-	fin();
-	y_fin(he, x, y, z);
+      
+    }
+    
+    
+    s ++;
+    t = time + dt;
+    
+    if ( s > end ) break;
+    
+    ode3_apply(ode, &time, t, x, y, z);
+    
+  }
+  
+  FREE3(ux, uy, uz);
+  FREE3(wx, wy, wz);
+  FREE3(fx, fy, fz);
+  tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+  tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
+  oseen3_fin(oseen);
+  ode3_fin(ode);
+  fin();
+  y_fin(he, x, y, z);
 }
