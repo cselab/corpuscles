@@ -35,7 +35,7 @@ end=5000000
 freq_out=200
 freq_stat=50
 
-scale=5
+scale=10
 #number of threads
 NT=1
 export CO_ARG="-W 48:00"
@@ -87,7 +87,7 @@ then
     
     cd Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}
     
-    co.run ../../mainf garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
+    co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
    
     
 else
