@@ -34,10 +34,10 @@ e export OMP_NUM_THREADS=$NT
 for i
 do shift
    case "$i" in
-       >|<) i="$i" ;;
+       '>'|'<') i="$i" ;;
        *) i="`quote "$i"`"
-       set -- "$@" "$i"
    esac
+   set -- "$@" "$i"
 done
 
 if test ! -z "${VAL+x}"
