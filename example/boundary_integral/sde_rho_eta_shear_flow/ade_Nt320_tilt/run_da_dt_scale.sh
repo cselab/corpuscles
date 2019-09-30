@@ -31,9 +31,9 @@ lambda=0.1754385964912281
 lambda=5.0
 labmda=1.0
 start=0
-end=5000000
-freq_out=200
-freq_stat=50
+end=9000000
+freq_out=1000
+freq_stat=200
 
 scale=10
 #number of threads
