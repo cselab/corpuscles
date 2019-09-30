@@ -3,12 +3,12 @@
 make main
 
 #gamdot=645.928652122
-gamdot=322.964326061
+gamdot=161.4821630305
 lambda=5
 start=0
 end=10000000
 freq=1000
-dt=0.00002
+dt=0.0001
 #dt=0.000005
 #VAL='--tool=callgrind --quiet' \
 co.run ./main \
