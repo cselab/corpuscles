@@ -405,7 +405,8 @@ int main(__UNUSED int argc, char **argv) {
 
 	  if ( s > end ) break;
 
-	  ode3_apply(ode, &time, t, x, y, z);
+	  if (ode3_apply(ode, &time, t, x, y, z) != CO_OK)
+	      ER("ode step failed");
 	  
 	}
 
