@@ -14,7 +14,8 @@ if test "${CO_HOST}" = -
 then
     case `hostname` in
 	eu-*) echo euler ;;
-	*) echo falcon
+        falcon.ethz.ch|panda.ethz.ch) echo falcon ;;
+        *) echo local ;;
     esac
 else printf '%s\n' "${CO_HOST}"
 fi
