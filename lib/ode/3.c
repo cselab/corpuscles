@@ -98,7 +98,9 @@ ode3_fin(T *q)
 	return CO_OK;
 }
 
-int ode3_apply(T *q, real *time, real t, real *x, real *y, real *z)
+static int
+apply(T *q, real *time, real t, real *x, real *y, real *z,
+      int (*step)(Ode*, real*, real, real*))
 {
 	int n;
 	real *r;
@@ -110,10 +112,22 @@ int ode3_apply(T *q, real *time, real t, real *x, real *y, real *z)
 	array_copy(n, x, r);
 	array_copy(n, y, r + n);
 	array_copy(n, z, r + 2*n);
-	if (ode_apply(ode, time, t, r) != CO_OK)
+	if (step(ode, time, t, r) != CO_OK)
 		ERR(CO_NUM, "ode_apply failed");
 	array_copy(n, r, x);
 	array_copy(n, r + n, y);
 	array_copy(n, r + 2*n, z);
 	return CO_OK;
+}
+
+int
+ode3_apply(T *q, real *time, real t, real *x, real *y, real *z)
+{
+    return apply(q, time, t, x, y, z, ode_apply);
+}
+
+int
+ode3_apply_fixed(T *q, real *time, real t, real *x, real *y, real *z)
+{
+    return apply(q, time, t, x, y, z, ode_apply_fixed);
 }

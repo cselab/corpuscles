@@ -26,5 +26,6 @@ put('u, Velocity, dimension)$
 put('R, Length, dimension)$
 vr: u*cos(th)*(1 - 3*R/(2*r) + R^3/(2*r^3)) $
 vt: -u*sin(th)*(1 - 3*R/(4*r) - R^3/(4*r^3)) $
+
 cont(vr, 0, vt);
 grad(f);

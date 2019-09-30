@@ -35,7 +35,7 @@ int main(int argc, char **a)
 	real *x, *y, *z, *c;
 	real *u, *v, *w;
 	He *p, *q;
-	int n;
+	int i, n;
 	real min, max, d;
 	real lo, hi;
 
@@ -69,7 +69,7 @@ int main(int argc, char **a)
 	min=1000.0;
 	max=-1000.0;
 	
-	for (int i=0;i<n;i++){
+	for (i=0;i<n;i++){
 	  if (u[i] < min ){
 	    min=u[i]; }
 	  else if ( u[i]> max ) {
@@ -77,7 +77,7 @@ int main(int argc, char **a)
 	  }
 	}
 	d=max-min;
-	for (int i=0;i<n;i++){
+	for (i=0;i<n;i++){
 	  c[i]=(u[i]-min)/d;
 	}
 

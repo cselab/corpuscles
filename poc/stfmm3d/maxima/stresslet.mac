@@ -1,0 +1,39 @@
+load("stringproc")$
+load("co/util.mac")$
+load("co/off.mac")$
+load("co/he.mac")$
+load("co/loop.mac")$
+load("co/ten.mac")$
+load("co/vec.mac")$
+load("co/tri.mac")$
+load("co/normal.mac") $
+load("co/area.mac") $
+
+/* file: "/u/0.off"$ */
+file: "../example/data/2tri.off"$
+he: he(file) $
+
+area: area_ver(he) $
+nv: he_nv(he) $
+n: normal_mwa(he) $
+valloc(nv, v, u);
+talloc(nv, O);
+
+loop_ver(he,
+  u[i]: [1, 0, 0]);
+T(x, i, j, k):= block([r: vec_abs(x)],
+    3*x[i]*x[j]*x[k]/r^5);
+loop_ver2(he,
+  for ii thru 3 do
+  for jj thru 3 do
+  for kk thru 3 do
+  v[i][ii] += T(a - b, ii, jj, kk) * area[j]*n[j][kk] * u[j][jj]);
+
+loop_ver2(he, [numer: true],
+  for ii thru 3 do
+  for jj thru 3 do
+  for kk thru 3 do
+  O[i][ii,jj] += 6/(8*%pi)*T(a - b, ii, jj, kk) * area[i]*n[i][kk]);
+
+O[nv-1][1][1], numer;
+

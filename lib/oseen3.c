@@ -81,9 +81,9 @@ oseen3_ini(He *he, real e, T **pq)
 int
 oseen3_fin(T *q)
 {
-	FREE(q);
 	FREE3(q->nx, q->ny, q->nz);
 	FREE(q->area);
+	FREE(q);
 	return CO_OK;
 }
 
@@ -205,17 +205,19 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		SET(i, i, A*zz, ozz);
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
+			i_vec_get(j, nx, ny, nz, u);
 			i_vec_get(j, x, y, z, b);
+			A = area[j];
 			stresslet(e, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, A*xx, oxx);
 			SET(i, j, A*xy, oxy);
 			SET(i, j, A*xz, oxz);
 			SET(i, j, A*yy, oyy);
 			SET(i, j, A*yz, oyz);
-			SET(i, j, A*zz, ozz);			
+			SET(i, j, A*zz, ozz);
 		}
 	}
-	s = -6/(8*pi);
+	s = 6/(8*pi);
 	i_matrix_scale(n, n, s, oxx);
 	i_matrix_scale(n, n, s, oxy);
 	i_matrix_scale(n, n, s, oxz);
@@ -230,4 +232,40 @@ oseen3_velocity(T *q, He *He, real mu, const real *x, const real *y, const real 
 	const real *fx, const real *fy, const real *fz, const real r[3], real v[3])
 {
 	return CO_OK;
+}
+
+
+int
+oseen3_vector_tensor(int n, real s, const real *x, const real *y, const real *z,
+		     real *Txx, real *Txy, real *Txz, real *Tyy, real *Tyz, real *Tzz,
+		     real *u, real *v, real *w)
+{
+    int i;
+#define GET(K) i_matrix_get(n, n, i, j, (K))
+#pragma omp parallel for
+    for (i = 0; i < n; i++) {
+	int j;
+	real xx, xy, xz, yy, yz, zz, du, dv, dw;
+	real a, b, c;
+	a = b = c = 0;
+	for (j = 0; j < n; j++) {
+	    xx = GET(Txx);
+	    xy = GET(Txy);
+	    xz = GET(Txz);
+	    yy = GET(Tyy);
+	    yz = GET(Tyz);
+	    zz = GET(Tzz);
+	    du = xx*x[j] + xy*y[j] + xz*z[j];
+	    dv = xy*x[j] + yy*y[j] + yz*z[j];
+	    dw = xz*x[j] + yz*y[j] + zz*z[j];
+	    a += du;
+	    b += dv;
+	    c += dw;
+	}
+	u[i] += s*a;
+	v[i] += s*b;
+	w[i] += s*c;
+    }
+    return CO_OK;
+#undef GET
 }

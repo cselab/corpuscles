@@ -2,26 +2,28 @@ S = ../..
 include $S/conf.mk
 
 M = \
-dih.mac\
+area.mac\
 ddih.mac\
 dedg.mac\
-dvec.mac\
-dtri.mac\
+dih.mac\
 dtri2.mac\
-edg.mac\
+dtri.mac\
+dvec.mac\
 edg2.mac\
+edg.mac\
 err.mac\
-co.mac\
-off.mac\
-tri.mac\
-tri2.mac\
+he.mac\
 kernel.mac\
 loop.mac\
+normal.mac\
+off.mac\
 punto.mac\
 ten.mac\
-vec.mac\
+tri2.mac\
+tri.mac\
+util.mac\
 vec2.mac\
-util.mac
+vec.mac\
 
 install: $M; co.install $M $(MAXIMA_HOME)/$P
 clean:

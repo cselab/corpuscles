@@ -2,8 +2,6 @@
 include ../../../conf.mk
 PREC = d
 LINK = $(CC)
-FCFLAGS = -g -Og
-CFLAGS = -g -Og
 LDFLAGS = -lgfortran -lm
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 
@@ -13,6 +11,7 @@ main.o\
 d3tstrcr.o\
 l3dterms.o\
 l3dtrans.o\
+d3mtreeplot.o\
 laprouts3d.o\
 legeexps.o\
 lfmm3drouts.o\

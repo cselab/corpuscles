@@ -18,6 +18,7 @@
 #include <co/y.h>
 
 #define FMT_IN   CO_REAL_IN
+#define FMT_OUT  CO_REAL_OUT
 
 static const char **argv;
 
@@ -49,10 +50,9 @@ static void main0() {
     he_area_ver(he, x, y, z, /**/ area);
 
     MSG("name: %s", force_name(force));
-    MSG("energy: %g", e);
-    MSG("f0: %g %g %g", fx[0], fy[0], fz[0]);
-    MSG("g0: %g %g %g", gx[0], gy[0], gz[0]);
-
+    MSG("energy: " FMT_OUT, e);
+    MSG("f0: " FMT_OUT " " FMT_OUT " " FMT_OUT, fx[0], fy[0], fz[0]);
+    MSG("f0: " FMT_OUT " " FMT_OUT " " FMT_OUT, gx[0], gy[0], gz[0]);
     for (i = 0; i < nv; i++) {
         vec_get(i, x, y, z, /**/ r);
         vec_get(i, fx, fy, fz, /**/ f);
