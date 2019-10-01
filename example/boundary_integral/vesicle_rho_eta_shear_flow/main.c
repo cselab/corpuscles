@@ -54,7 +54,7 @@ FILE *fm;
 
 static void usg(void) {
     fprintf(stderr, "%s garea A Kga area a Ka volume V Kv\n", me);
-    fprintf(stderr, "%juelicher_xin Kb C0 Kad DA0D\n");
+    fprintf(stderr, "juelicher_xin Kb C0 Kad DA0D\n");
     fprintf(stderr, "R D rho eta lamda gamdot dt\n");
     fprintf(stderr, "start end freq_out freq_stat\n");
     fprintf(stderr, "< OFF input file \n");
