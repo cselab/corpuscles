@@ -202,7 +202,7 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   real dx, dy, dz, d;
   real ddx, ddy, ddz, dd, ratio;
 
-  coef= 2/(1+lambda);
+  coef = 2/(1 + lambda);
   al  = -2/(eta*(1 + lambda));
   be  = 2*(1 - lambda)/(1 + lambda);
   	
