@@ -187,7 +187,7 @@ stresslet(real e, const real a[3], const real n[3], const real b[3],
 	*yy += (2*d[Y]*n[Y] + p)*l3;
 	*zz += (2*d[Z]*n[Z] + p)*l3;
 
-	*xy += (d[X]*n[Y] + d[Y]*n[X])*l3;	
+	*xy += (d[X]*n[Y] + d[Y]*n[X])*l3;
 	*yz += (d[Y]*n[Z] + d[Z]*n[Y])*l3;
 	*xz += (d[X]*n[Z] + d[Z]*n[X])*l3;
 
@@ -299,3 +299,14 @@ oseen3_vector_tensor(int n, real s, const real *x, const real *y, const real *z,
     return CO_OK;
 #undef GET
 }
+
+/*
+
+Cortez, R., Fauci, L., & Medovikov, A. (2005). The method of
+regularized Stokeslets in three dimensions: analysis, validation, and
+application to helical swimming. Physics of Fluids, 17(3), 031504.
+doi:10.1063/1.1830486
+
+(10b)-(10c)
+
+*/
