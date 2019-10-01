@@ -55,7 +55,7 @@ oseen(real e, const real a[3], const real b[3],
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
 	r32 = pow32(sq(r) + sq(e));
-	l = (sq(r*r) + 2*sq(e*e))/r32;
+	l = (sq(r) + 2*sq(e))/r32;
 	*xx = l + d[X]*d[X]/r32;
 	*yy = l + d[Y]*d[Y]/r32;
 	*zz = l + d[Z]*d[Z]/r32;
@@ -67,7 +67,7 @@ oseen(real e, const real a[3], const real b[3],
 }
 
 static int
-oseen0(__UNUSED real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
+oseen0(real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
 	real l;
 
