@@ -21,34 +21,53 @@ struct T
 	real *nx, *ny, *nz, *area;
 };
 
+/* x^(3/2) */
+static double
+pow32(double x)
+{
+    return sqrt(x*x*x);
+}
+
+static double
+pow52(double x)
+{
+    return sqrt(x*x*x*x*x);
+}
+
+static double
+sq(double x)
+{
+    return x*x;
+}
+
 static int
-oseen(__UNUSED real e, const real a[3], const real b[3],
-	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
+oseen(real e, const real a[3], const real b[3],
+      real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
 	enum
 	{
 		X, Y, Z
 	};
-	real d[3], r, r3,l;
+	real d[3], r, r32, l;
 
 	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
-	r3 = r*r*r;
-	l = 1/r;
-	*xx = l + d[X]*d[X]/r3;
-	*yy = l + d[Y]*d[Y]/r3;
-	*zz = l + d[Z]*d[Z]/r3;
+	r32 = pow32(sq(r) + sq(e));
+	l = (sq(r) + 2*sq(e))/r32;
+	*xx = l + d[X]*d[X]/r32;
+	*yy = l + d[Y]*d[Y]/r32;
+	*zz = l + d[Z]*d[Z]/r32;
 
-	*xy = d[X]*d[Y]/r3;
-	*xz = d[X]*d[Z]/r3;
-	*yz = d[Y]*d[Z]/r3;
+	*xy = d[X]*d[Y]/r32;
+	*xz = d[X]*d[Z]/r32;
+	*yz = d[Y]*d[Z]/r32;
 	return CO_OK;
 }
 
 static int
-oseen0(__UNUSED real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
+oseen0(real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
 	real l;
 
@@ -139,28 +158,39 @@ oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
 }
 
 static int
-stresslet(__UNUSED real e, const real a[3], const real n[3], const real b[3],
+stresslet(real e, const real a[3], const real n[3], const real b[3],
 	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
 	enum
 	{
 		X, Y, Z
 	};
-	real d[3], r, r5, p, l;
+	real d[3], r, r52, p, l3, l6;
 
 	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
 	p = i_vec_dot(d, n);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
-	r5= r*r*r*r*r;
-	l = p/r5;
-	*xx = d[X]*d[X]*l;
-	*xy = d[X]*d[Y]*l;
-	*xz = d[X]*d[Z]*l;
-	*yy = d[Y]*d[Y]*l;
-	*yz = d[Y]*d[Z]*l;
-	*zz = d[Z]*d[Z]*l;
+	r52= pow52(sq(r) + sq(e));
+	l6 = 6*p/r52;
+	l3 = 3*sq(e)/r52;
+
+	*xx = d[X]*d[X]*l6;
+	*xy = d[X]*d[Y]*l6;
+	*xz = d[X]*d[Z]*l6;
+	*yy = d[Y]*d[Y]*l6;
+	*yz = d[Y]*d[Z]*l6;
+	*zz = d[Z]*d[Z]*l6;
+
+	*xx += (2*d[X]*n[X] + p)*l3;
+	*yy += (2*d[Y]*n[Y] + p)*l3;
+	*zz += (2*d[Z]*n[Z] + p)*l3;
+
+	*xy += (d[X]*n[Y] + d[Y]*n[X])*l3;
+	*yz += (d[Y]*n[Z] + d[Z]*n[Y])*l3;
+	*xz += (d[X]*n[Z] + d[Z]*n[X])*l3;
+
 	return CO_OK;
 }
 static int
@@ -217,7 +247,7 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 			SET(i, j, A*zz, ozz);
 		}
 	}
-	s = 3/(4*pi);
+	s = 1/(8*pi);
 	i_matrix_scale(n, n, s, oxx);
 	i_matrix_scale(n, n, s, oxy);
 	i_matrix_scale(n, n, s, oxz);
@@ -269,3 +299,14 @@ oseen3_vector_tensor(int n, real s, const real *x, const real *y, const real *z,
     return CO_OK;
 #undef GET
 }
+
+/*
+
+Cortez, R., Fauci, L., & Medovikov, A. (2005). The method of
+regularized Stokeslets in three dimensions: analysis, validation, and
+application to helical swimming. Physics of Fluids, 17(3), 031504.
+doi:10.1063/1.1830486
+
+(10b)-(10c)
+
+*/
