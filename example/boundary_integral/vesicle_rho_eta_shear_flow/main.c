@@ -302,8 +302,8 @@ int main(__UNUSED int argc, char **argv) {
   m   = M/nv;
   a   = A0/nt;
   e   = 2*sqrt(a)/sqrt(sqrt(3.0));
-  //reg = 0.1*e;
-  reg = 0.5*e;
+  reg = 0.1*e;
+  //reg = 0.5*e;
   
   if ( (fm = fopen(file_msg, "w") ) == NULL) {
     ER("Failed to open '%s'", file_msg);
