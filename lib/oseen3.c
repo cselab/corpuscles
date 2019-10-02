@@ -217,7 +217,7 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 			SET(i, j, A*zz, ozz);
 		}
 	}
-	s = 6/(8*pi);
+	s = 3/(4*pi);
 	i_matrix_scale(n, n, s, oxx);
 	i_matrix_scale(n, n, s, oxy);
 	i_matrix_scale(n, n, s, oxz);

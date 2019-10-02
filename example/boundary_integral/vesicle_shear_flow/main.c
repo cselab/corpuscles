@@ -17,19 +17,13 @@
 #include <co/off.h>
 #include <co/equiangulate.h>
 
-static const char *me = "shear_flow/vesicle";
-
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
 
-static
-Force *Fo[99] =
-{
-	NULL
-};
+static const char *me = "shear_flow/vesicle";
+static Force *Fo[99] = {NULL};
 static He *he;
 static Oseen3 *oseen;
-//static real gamdot = 1, eta = 1, dt = 1e-2, tend = 100;
 static real gamdot, eta, dt;
 static int end, freq;
 static real *fx, *fy, *fz;

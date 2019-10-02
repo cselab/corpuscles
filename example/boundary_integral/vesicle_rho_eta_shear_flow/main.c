@@ -24,17 +24,15 @@
 #include <co/f/juelicher_xin.h>
 #include <co/equiangulate.h>
 
-static const char *me = "vesicle_rho_eta_shear_flow";
-static const real pi  = 3.141592653589793115997964;
-static const real tol = 0.01;
-static const int iter_max=20;
-
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
 
-static Force *Fo[20] = {
-  NULL
-};
+static const char *me = "vesicle_rho_eta_shear_flow";
+static const real pi  = 3.141592653589793115997964;
+static const real tol = 0.01;
+static const int iter_max=100;
+
+static Force *Fo[20] = {NULL};
 static He *he;
 static Oseen3 *oseen;
 static real R, D;
@@ -197,8 +195,8 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   real dx, dy, dz, d;
   real ddx, ddy, ddz, dd, ratio;
 
-  coef= 2/(1+lambda);
-  al  = -2/(eta*(1 + lambda));
+  coef= 2.0/(1.0+lambda);
+  al  = -2/(eta*(1.0+lambda));
   be  = 2*(1 - lambda)/(1 + lambda);
   	
   array_zero3(nv, fx, fy, fz);
@@ -228,16 +226,6 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       ratio = dd/d;
       	
       if ( ratio < tol ) {
-
-	if  ( k == iter_max ) {
-	  //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
-	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
-	    ER("Failed to open '%s'", file_msg);
-	  }
-	  
-	  fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
-	  fclose(fm);
-	}
 	
 	break;
 	
@@ -246,9 +234,19 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       array_copy3(nv, wx, wy, wz, ux, uy, uz);
     }
     
+    if  ( k == iter_max ) {
+      //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
+      if ( (fm = fopen(file_msg, "a") ) == NULL) {
+	ER("Failed to open '%s'", file_msg);
+      }
+      
+      fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
+      fclose(fm);
+    }
+    
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
     
-  }
+  }// if inner and outer viscosity has obvious contrast
   
   return CO_OK;
 }
@@ -281,13 +279,13 @@ int main(__UNUSED int argc, char **argv) {
   if ( (fm = fopen(file_stat, "w") ) == NULL) {
     ER("Failed to open '%s'", file_stat);
   }
+  
   fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn\n", fm);
   fclose(fm);
   
   
   i = 0;
   while (Fo[i]) {
-    
     strcpy(name, force_name(Fo[i]));
     
     if ( strcmp(name, "garea") == 0 ) {
@@ -299,13 +297,13 @@ int main(__UNUSED int argc, char **argv) {
     i++;
   }
   
-  v0 = reduced_volume(A0, V0);
-  
-  M = rho*A0*D*2;
-  m = M/nv;
-  a = A0/nt;
-  e = 2*sqrt(a)/sqrt(sqrt(3.0));
-  reg = 0.1*e;
+  v0  = reduced_volume(A0, V0);  
+  M   = rho*A0*D*2;
+  m   = M/nv;
+  a   = A0/nt;
+  e   = 2*sqrt(a)/sqrt(sqrt(3.0));
+  //reg = 0.1*e;
+  reg = 0.5*e;
   
   if ( (fm = fopen(file_msg, "w") ) == NULL) {
     ER("Failed to open '%s'", file_msg);
@@ -330,7 +328,6 @@ int main(__UNUSED int argc, char **argv) {
   t = time = start*dt;
   s = start;
   
-
   while ( 1 ) {
     
     if ( s % freq_out == 0 ) {
