@@ -6,8 +6,8 @@ gdot=0.1
 lambda=5
 start=0
 end=10000000
-freq=5000
-dt=0.001
+freq=500
+dt=0.01
 eta=645.928652122
 rho=1
 D=0.000898798148042
@@ -20,4 +20,4 @@ co.run ./main \
        juelicher_xin 1 0 0 0 \
        1 $D $rho $eta $lambda $gdot $dt \
        $start $end $freq 200 \
-       '<' init/0.9.off
+       '<' init/0.off
