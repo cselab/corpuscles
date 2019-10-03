@@ -27,9 +27,9 @@ b2=0.75
 
 rho=1.0
 eta=645.928652122
-lambda=0.1754385964912281
-lambda=5.0
-labmda=1.0
+#lambda=0.1754385964912281
+#lambda=1.0
+lambda=2.0
 start=0
 end=9000000
 freq_out=1000
@@ -82,16 +82,16 @@ then
     echo "gam="$gam
     lam=$(printf "%.4f" $lambda)
     echo "lam="$lam
-    dt=$(printf "%.6f" $dt)
+    ddt=$(printf "%.6f" $dt)
     echo "dt="$dt
     
-    if [ ! -d Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc} ]; then
+    if [ ! -d Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc} ]; then
 	
-	mkdir Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}
+	mkdir Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc}
 	
     fi
     
-    cd Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}
+    cd Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc}
     
     co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
    
@@ -103,63 +103,63 @@ else
     gamdot=0.00143923833018
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=20000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
-
+    bash run.sh $Da1 $gamdot $dt $Kc
+    
     gamdot=0.00287847666036
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=20000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.0071961916509
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=20000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.0143923833018
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=20000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.0287847666036
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=20000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.071961916509
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=20000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.143923833018
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=20000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.287847666036
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=40000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.71961916509
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     echo "dt="$dt
     Kc=100000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
     
     gamdot=1.43923833018
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=200000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=2.87847666036
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=500000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=7.1961916509
     dt=$(echo $gamdot0 $dt0 $gamdot $scale | awk '{print $1*$2/$3*$4}')
     Kc=1000000
-    bash run_da_dt_scale.sh $Da1 $gamdot $dt $Kc
+    bash run.sh $Da1 $gamdot $dt $Kc
 
 fi
     
