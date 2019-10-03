@@ -73,7 +73,7 @@ moment(int n, const real * xx, const real * yy, const real * zz,
         m[XZ] += -x * z;
         m[YY] += x * x + z * z;
         m[YZ] += -y * z;
-        universalindentgui m[ZZ] += x * x + y * y;
+        m[ZZ] += x * x + y * y;
     }
     return (CO_OK);
 }
