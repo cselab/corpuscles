@@ -20,6 +20,14 @@ int vec_get(int i, const real x[], const real y[], const real z[], /**/ real a[3
     return CO_OK;
 }
 
+int
+vec_get3(int i, int j, int k, const real x[], const real y[], const real z[], /**/ real a[3], real b[3], real c[3]) {
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    return CO_OK;
+}
+
 int vec_set(const real a[3], int i, /**/ real x[], real y[], real z[]) {
     x[i] = a[X]; y[i] = a[Y]; z[i] = a[Z];
     return CO_OK;

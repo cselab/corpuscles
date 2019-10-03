@@ -24,7 +24,7 @@ int main() {
   y_inif(stdin, &he, &x, &y, &z);
   nv = he_nv(he);
   eigen_ini(he, &eigen);
-  eigen_vector(eigen, x, y, z, &vec[0]);
+  eigen_vector_surface(eigen, he, x, y, z, &vec[0]);
   eigen_fin(eigen);
 
   t=1-vec[6]*vec[6];
