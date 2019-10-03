@@ -31,7 +31,6 @@ if test $# -eq 0
 then err "'prog' is missing"; fi
 
 e export OMP_NUM_THREADS=$NT
-for i do shift; set -- "$@" "`quote "$i"`"; done
 
 if test ! -z "${VAL+x}"
 then
@@ -46,6 +45,7 @@ else
     case "$host" in
         euler)
             if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
+            for i do shift; set -- "$@" "`quote "$i"`"; done
             e $BSUB -n $NT $CO_ARG "$@"
             ;;
         falcon)
