@@ -172,7 +172,7 @@ stresslet(real e, const real a[3], const real n[3], const real b[3],
 	p = i_vec_dot(d, n);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
-	r52= pow52(sq(r) + sq(e));
+	r52 = pow52(sq(r) + sq(e));
 	l6 = 6*p/r52;
 	l3 = 3*sq(e)/r52;
 
