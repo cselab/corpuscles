@@ -94,11 +94,11 @@ else
 
     Da1=0.143
     
-    #gamdot=0.00143923833018
-    #dt=0.01
-    #dt=$(echo $dt $scale | awk '{print $1*$2}')
-    #Kc=20000
-    #bash run.sh $Da1 $gamdot $dt $Kc
+    gamdot=0.00143923833018
+    dt=0.01
+    dt=$(echo $dt $scale | awk '{print $1*$2}')
+    Kc=20000
+    bash run.sh $Da1 $gamdot $dt $Kc
 
     gamdot=0.00287847666036
     dt=0.005
