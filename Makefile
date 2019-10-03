@@ -7,6 +7,7 @@ pkgconfig\
 bin/m4\
 m4/lib\
 lib\
+bin/eigenvector\
 bin/eng\
 bin/ffmpeg\
 bin/geomview\
