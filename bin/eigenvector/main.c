@@ -24,8 +24,6 @@ int main() {
   eigen_fin(eigen);
 
   printf("%g %g %g\n", vec[0], vec[3], vec[6]);
-  //printf("%f %f %f\n", vec[1], vec[4], vec[7]);
-  //printf("%f %f %f\n", vec[2], vec[5], vec[8]);
 
   y_fin(he, x, y, z);
   return 0;
