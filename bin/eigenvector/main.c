@@ -23,7 +23,7 @@ int main() {
   eigen_vector(eigen, x, y, z, &vec[0]);
   eigen_fin(eigen);
 
-  printf("%f %f %f\n", vec[0], vec[3], vec[6]);
+  printf("%g %g %g\n", vec[0], vec[3], vec[6]);
   //printf("%f %f %f\n", vec[1], vec[4], vec[7]);
   //printf("%f %f %f\n", vec[2], vec[5], vec[8]);
 

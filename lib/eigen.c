@@ -98,11 +98,10 @@ to_cm(int n, /**/ real * xx, real * yy, real * zz)
 
 
 int
-eigen_vector(T * q, real * x, real * y, real * z, /**/ real * ev)
+eigen_vector(T * q, real * x, real * y, real * z, /**/ real * v)
 {
     int n, i;
     real m[6];
-    real *v;
 
     n = q->n;
     v = q->v;
@@ -110,9 +109,20 @@ eigen_vector(T * q, real * x, real * y, real * z, /**/ real * ev)
     moment(n, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
 
-    for (i = 0; i < 9; i++) {
-        ev[i] = v[i];
-    }
+    return CO_OK;
+}
 
-    return (CO_OK);
+int
+eigen_vector_surface(T * q, He *he, real * x, real * y, real * z, /**/ real * v)
+{
+    int n, i;
+    real m[6];
+
+    n = q->n;
+    v = q->v;
+    to_cm(n, /**/ x, y, z);
+    moment(n, x, y, z, /**/ m);
+    alg_eig_vectors(m, v);
+
+    return CO_OK;
 }
