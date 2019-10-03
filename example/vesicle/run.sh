@@ -20,4 +20,4 @@ co.run ./main \
        juelicher_xin 1 0 0 0 \
        1 $D $rho $eta $lambda $gdot $dt \
        $start $end $freq 200 \
-       '<' init/0.9.off
+       '<' init/0.off
