@@ -26,7 +26,7 @@
 static const char *me = "sde_rho_eta_shear_flow";
 static const real pi  = 3.141592653589793115997964;
 static const real tol = 0.01;
-static const int iter_max=20;
+static const int iter_max=100;
   
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
@@ -229,8 +229,12 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       ratio = dd/d;
       	
       if ( ratio < tol ) {
-
-	if  ( k == iter_max ) {
+	
+	break;
+	
+      }
+      
+      if  ( k == iter_max ) {
 	  //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
 	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
 	    ER("Failed to open '%s'", file_msg);
@@ -238,11 +242,7 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
 	  
 	  fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
 	  fclose(fm);
-	}
-	
-	break;
-	
-      }
+      }      
       
       array_copy3(nv, wx, wy, wz, ux, uy, uz);
     }
@@ -381,11 +381,11 @@ int main(__UNUSED int argc, char **argv) {
 
       v = reduced_volume(A, V);
       
-      /*if ( s / 10 % freq_stat == 0 ) {
+      if ( s % freq_stat == 0 ) {
 	MSG("dt s t = %f %i %f", dt, s, t);
 	MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
 	MSG("et ega ev eb ebl ebn es = %f %f %f %f %f %f %f", et, ega, ev, eb, ebl, ebn, es);
-	}*/
+      }
       
       if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_stat);
