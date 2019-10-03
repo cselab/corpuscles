@@ -21,4 +21,3 @@ co.run ./main \
        1 $D $rho $eta $lambda $gdot $dt \
        $start $end $freq 200 \
        '<' init/0.9.off
-
