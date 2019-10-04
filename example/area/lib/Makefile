@@ -1,6 +1,6 @@
 .POSIX:
 include ../../../conf.mk
-M = tri ver
+M = tri ver voronoi
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`

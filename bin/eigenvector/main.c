@@ -14,18 +14,25 @@ static real vec[3*3];
 static He *he;
 static Eigen *eigen;
 
-
-int main() {
+int main(int argc, char **argv) {
+    int Surface;
 
   y_inif(stdin, &he, &x, &y, &z);
   nv = he_nv(he);
   eigen_ini(he, &eigen);
-  eigen_vector(eigen, x, y, z, &vec[0]);
+
+  argv++;
+  Surface = 0;
+  if (argv[0] && argv[0][0] == '-' && argv[0][1] == 's')
+      Surface = 1;
+  
+  if (Surface)
+      eigen_vector_surface(eigen, he, x, y, z, vec);
+  else
+      eigen_vector(eigen, x, y, z, vec);
   eigen_fin(eigen);
 
-  printf("%f %f %f\n", vec[0], vec[3], vec[6]);
-  //printf("%f %f %f\n", vec[1], vec[4], vec[7]);
-  //printf("%f %f %f\n", vec[2], vec[5], vec[8]);
+  printf("%g %g %g\n", vec[0], vec[3], vec[6]);
 
   y_fin(he, x, y, z);
   return 0;
