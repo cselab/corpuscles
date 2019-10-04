@@ -46,7 +46,16 @@ else
         euler)
             if ! "$BSUB" -V 2>/dev/null; then err "$BSUB is not found"; fi
             for i do shift; set -- "$@" "`quote "$i"`"; done
-            e $BSUB -n $NT $CO_ARG "$@"
+            t=/tmp/co.run.$$
+            trap 'rm $t' 1 2 3 15
+            e $BSUB -n $NT $CO_ARG "$@" '>'$t
+            status=$?
+            id=`awk -v FS='[<>]' '{print $2}' $t`
+            echo $id > .id
+            echo bkill $id > .kill
+            cat $t
+            rm -f $t
+            exit $status
             ;;
         falcon)
             e module load gsl
@@ -54,5 +63,5 @@ else
             e "$@"
             ;;
         *) e "$@"
-    esac 
+    esac
 fi
