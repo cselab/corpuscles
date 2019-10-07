@@ -4,12 +4,18 @@
 #include "co/memory.h"
 #include "co/err.h"
 #include "co/he.h"
-
+#include "co/oseen3.h"
 #include "co/bi/cortez.h"
 
 #define T BiCortez
 
+struct Tensor {
+    real *xx, *xy, *xz, *yy, *yz, *zz;
+};
+
 struct T {
+    Oseen3 *oseen;
+    struct Tensor O, K;
 };
 
 int
