@@ -7,7 +7,6 @@ hdr: $H; co.install $H $(PREFIX)/include
 lib$(P)_s.a: $O $(O_S); ar r $@ $O $(O_S) && ranlib $@
 lib$(P)_d.a: $O $(O_D); ar r $@ $O $(O_D) && ranlib $@
 lib$(P)_l.a: $O $(O_L); ar r $@ $O $(O_L) && ranlib $@
-$O : $H $I
 
 .c.m4.c:; co.m4 -s -o $@ $<
 .h.m4.h:; co.m4 -s -o $@ $<
