@@ -75,15 +75,16 @@ then
     echo "gam="$gam
     lam=$(printf "%.4f" $lambda)
     echo "lam="$lam
+    ddt=$(printf "%.6f" $dt)
     echo "dt="$dt
     
-    if [ ! -d lam${lam}_g${gam}_dt${dt}_Kc${Kc} ]; then
+    if [ ! -d lam${lam}_g${gam}_dt${ddt}_Kc${Kc} ]; then
 	
-	mkdir lam${lam}_g${gam}_dt${dt}_Kc${Kc}
+	mkdir lam${lam}_g${gam}_dt${ddt}_Kc${Kc}
 	
     fi
     
-    cd lam${lam}_g${gam}_dt${dt}_Kc${Kc}
+    cd lam${lam}_g${gam}_dt${ddt}_Kc${Kc}
     
     co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
    
