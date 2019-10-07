@@ -5,7 +5,7 @@ set -eu
 gdot=0.1
 lambda=5
 start=0
-end=100
+end=10000
 freq=100
 dt=0.01
 eta=645.928652122

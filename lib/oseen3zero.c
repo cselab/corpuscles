@@ -7,13 +7,13 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/normal.h"
-#include "co/oseen3.h"
+#include "co/oseen3zero.h"
 #include "co/i/matrix.h"
 #include "co/i/vec.h"
 #include "co/i/tri.h"
 #include "co/i/area.h"
 
-#define T Oseen3
+#define T Oseen3Zero
 static const real pi = 3.141592653589793115997964;
 struct T
 {
@@ -78,7 +78,7 @@ oseen0(real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 }
 
 int
-oseen3_ini(He *he, real e, T **pq)
+oseen3_zero_ini(He *he, real e, T **pq)
 {
 	T *q;
 	real *nx, *ny, *nz, *area;
@@ -98,7 +98,7 @@ oseen3_ini(He *he, real e, T **pq)
 }
 
 int
-oseen3_fin(T *q)
+oseen3_zero_fin(T *q)
 {
 	FREE3(q->nx, q->ny, q->nz);
 	FREE(q->area);
@@ -109,7 +109,7 @@ oseen3_fin(T *q)
 #define SET(i, j, s, a) i_matrix_set(n, n, i, j, s, a)
 
 int
-oseen3_apply(T *q, He *he, const real *x, const real *y, const real *z,
+oseen3_zero_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	int n, i;
@@ -201,7 +201,7 @@ stresslet0(__UNUSED real e, __UNUSED const real a[3], __UNUSED const real n[3],
 	return CO_OK;
 }
 int
-oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
+oseen3_zero_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	real *nx, *ny, *nz, *area, A, s, e;
@@ -256,56 +256,3 @@ oseen3_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	i_matrix_scale(n, n, s, ozz);
 	return CO_OK;
 }
-
-int
-oseen3_velocity(T *q, He *He, real mu, const real *x, const real *y, const real *z,
-	const real *fx, const real *fy, const real *fz, const real r[3], real v[3])
-{
-	return CO_OK;
-}
-
-int
-oseen3_vector_tensor(int n, real s, const real *x, const real *y, const real *z,
-		     real *Txx, real *Txy, real *Txz, real *Tyy, real *Tyz, real *Tzz,
-		     real *u, real *v, real *w)
-{
-    int i;
-#define GET(K) i_matrix_get(n, n, i, j, (K))
-#pragma omp parallel for
-    for (i = 0; i < n; i++) {
-	int j;
-	real xx, xy, xz, yy, yz, zz, du, dv, dw;
-	real a, b, c;
-	a = b = c = 0;
-	for (j = 0; j < n; j++) {
-	    xx = GET(Txx);
-	    xy = GET(Txy);
-	    xz = GET(Txz);
-	    yy = GET(Tyy);
-	    yz = GET(Tyz);
-	    zz = GET(Tzz);
-	    du = xx*x[j] + xy*y[j] + xz*z[j];
-	    dv = xy*x[j] + yy*y[j] + yz*z[j];
-	    dw = xz*x[j] + yz*y[j] + zz*z[j];
-	    a += du;
-	    b += dv;
-	    c += dw;
-	}
-	u[i] += s*a;
-	v[i] += s*b;
-	w[i] += s*c;
-    }
-    return CO_OK;
-#undef GET
-}
-
-/*
-
-Cortez, R., Fauci, L., & Medovikov, A. (2005). The method of
-regularized Stokeslets in three dimensions: analysis, validation, and
-application to helical swimming. Physics of Fluids, 17(3), 031504.
-doi:10.1063/1.1830486
-
-(10b)-(10c)
-
-*/

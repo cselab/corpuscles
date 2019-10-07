@@ -99,6 +99,7 @@ off.s.o\
 orient.s.o\
 oseen2.s.o\
 oseen3.s.o\
+oseen3zero.s.o\
 ply.s.o\
 polygon.s.o\
 pre/cons.s.o\
@@ -215,6 +216,7 @@ off.d.o\
 orient.d.o\
 oseen2.d.o\
 oseen3.d.o\
+oseen3zero.d.o\
 ply.d.o\
 polygon.d.o\
 pre/cons.d.o\
@@ -331,6 +333,7 @@ off.l.o\
 orient.l.o\
 oseen2.l.o\
 oseen3.l.o\
+oseen3zero.l.o\
 ply.l.o\
 polygon.l.o\
 pre/cons.l.o\
