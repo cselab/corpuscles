@@ -1,4 +1,4 @@
-#define T BeCortez
+#define T BiCortez
 
 typedef struct He He;
 typedef struct T T;
