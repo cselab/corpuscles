@@ -23,6 +23,7 @@
 #include <co/f/volume.h>
 #include <co/f/juelicher_xin.h>
 #include <co/equiangulate.h>
+#include <co/bi/cortez.h>
 
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
@@ -35,6 +36,7 @@ static const int iter_max=100;
 static Force *Fo[20] = {NULL};
 static He *he;
 static Oseen3 *oseen;
+static BiCortez *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
@@ -316,6 +318,7 @@ int main(__UNUSED int argc, char **argv) {
   fclose(fm);
   
   oseen3_ini(he, reg, &oseen);
+  bi_cortez_ini(reg, he, &bi);
   ode3_ini(RK4, nv, dt, F, NULL, &ode);
   
   CALLOC3(nv, &ux, &uy, &uz);
@@ -418,6 +421,7 @@ int main(__UNUSED int argc, char **argv) {
   tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
   oseen3_fin(oseen);
   ode3_fin(ode);
+  bi_cortez_fin(bi);
   fin();
   y_fin(he, x, y, z);
   
