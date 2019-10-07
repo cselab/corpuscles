@@ -21,9 +21,10 @@
 #include <co/off.h>
 #include <co/f/garea.h>
 #include <co/f/volume.h>
+#include <co/bi/cortez.h>
 #include <co/f/juelicher_xin.h>
 
-static const char *me = "sde_rho_eta_shear_flow";
+static const char *me = "benchmark";
 static const real pi = 3.141592653589793115997964;
 static const real tol = 0.01;
 static const int iter_max = 20;
@@ -37,6 +38,7 @@ static Force *Fo[20] = {
 
 static He *he;
 static Oseen3 *oseen;
+static BiCortez *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
@@ -242,12 +244,14 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     array_zero3(nv, fx, fy, fz);
     force(he, x, y, z, fx, fy, fz);
     oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+    bi_cortez_update(bi, he, x, y, z);
 
     array_zero3(nv, vx, vy, vz);
     for (i = 0; i < nv; i++)
         vx[i] += coef * gamdot * z[i];
     vector_tensor(nv, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy,
                   vz);
+    //bi_cortez_single(bi, he, al, x, y, z, fx, fy, fz, /**/  vx, vy, vz);
 
     //inner and outer viscosity has obvious contrast
     if (1 - lambda > tol || 1 - lambda < -tol) {
@@ -264,6 +268,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 
             vector_tensor(nv, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz,
                           wx, wy, wz);
+	    //bi_cortez_double(bi, he, be, x, y, z, ux, uy, uz, /**/  wx, wy, wz);
 
             d = array_msq_3d(nv, ux, uy, uz);
             dd = array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
@@ -366,6 +371,7 @@ main(__UNUSED int argc, char **argv)
     fclose(fm);
 
     oseen3_ini(he, reg, &oseen);
+    bi_cortez_ini(reg, he, &bi);
     ode3_ini(RK4, nv, dt, F, NULL, &ode);
 
     CALLOC3(nv, &ux, &uy, &uz);
@@ -463,6 +469,7 @@ main(__UNUSED int argc, char **argv)
     tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
     tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
     oseen3_fin(oseen);
+    bi_cortez_fin(bi);
     ode3_fin(ode);
     fin();
     y_fin(he, x, y, z);

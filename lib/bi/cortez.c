@@ -59,8 +59,7 @@ bi_cortez_fin(T *q)
 }
 
 int
-bi_cortez_update(T *q, He *he, real alpha,
-		 const real *x, const real *y, const real *z)
+bi_cortez_update(T *q, He *he, const real *x, const real *y, const real *z)
 {
     struct Tensor *O, *K;
     int status;
