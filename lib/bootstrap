@@ -48,3 +48,8 @@ src | norm | nreal | name o   | format O     > make/obj.mk
 src | norm |  real | name s.o | format O_S  >> make/obj.mk
 src | norm |  real | name d.o | format O_D  >> make/obj.mk
 src | norm |  real | name l.o | format O_L  >> make/obj.mk
+
+../tool/dep `src | norm | nreal` | ../tool/fmt   o >  make/dep.mk
+../tool/dep `src | norm |  real` | ../tool/fmt s.o >> make/dep.mk
+../tool/dep `src | norm |  real` | ../tool/fmt d.o >> make/dep.mk
+../tool/dep `src | norm |  real` | ../tool/fmt l.o >> make/dep.mk

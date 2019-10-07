@@ -1,10 +1,41 @@
-#!/usr/bin/awk -f
+#!/bin/sh
 
+awk -v suffix="$1" '
 BEGIN {
     RS = ""
     FS = "\n"
+
+    inc["s.o"] = "s"
+    inc["d.o"] = "d"
+    inc["l.o"] = "l"
 }
 
 {
-    print $1, NF
+    write($1)
 }
+
+function write(f)
+{
+    sub(/.c$/, "." suffix, f)
+    sub(/^.\//, "", f)
+    print f ":\\"
+    for (i = 2; i <= NF; i++)
+        print transform($i) "\\"
+    print ""
+}
+
+function transform(f)
+{
+    if (eq(f, "real.h"))
+        return "co/prec/" inc[suffix] "/real.h"
+    else if (eq(f, "real.inc"))
+        return "inc/" inc[suffix] "/real.inc"
+    else
+        return f
+}
+
+function eq(a, b)
+{
+    return "" a == "" b
+}
+'
