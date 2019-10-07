@@ -6,21 +6,14 @@
 #include "co/matrix.h"
 #include "co/memory.h"
 #include "co/oseen3.h"
+#include "co/tensor.h"
 #include "co/bi/cortez.h"
 
 #define T BiCortez
-
-struct Tensor {
-    real *xx, *xy, *xz, *yy, *yz, *zz;
-};
-
 struct T {
     Oseen3 *oseen;
     struct Tensor O, K;
 };
-
-static int tensor_ini(int, struct Tensor*);
-static int tensor_fin(struct Tensor*);
 
 int
 bi_cortez_ini(real eps, He *he, /**/ T **pq)
@@ -45,6 +38,9 @@ bi_cortez_ini(real eps, He *he, /**/ T **pq)
 int
 bi_cortez_argv(char ***p, He *he, /**/ T **pq)
 {
+    USED(p);
+    USED(he);
+    USED(pq);
     return CO_OK;
 }
 
@@ -89,8 +85,7 @@ bi_cortez_single(T *q, He *he, real al,
     
     O = &q->O;
     n = he_nv(he);
-    oseen3_vector_tensor(n, al, fx, fy, fz,
-			 O->xx, O->xy, O->xz, O->yy, O->yz, O->zz, ux, uy, uz);
+    tensor_vector(n, al, fx, fy, fz, O, ux, uy, uz);
     return CO_OK;
 }
 
@@ -108,32 +103,6 @@ bi_cortez_double(T *q, He *he, real al,
     
     K = &q->K;
     n = he_nv(he);
-    oseen3_vector_tensor(n, al, ux, uy, uz,
-			 K->xx, K->xy, K->xz, K->yy, K->yz, K->zz,
-			 wx, wy, wz);
-    return CO_OK;
-}
-
-static int
-tensor_ini(int n, struct Tensor *t)
-{
-    matrix_ini(n, n, &t->xx);
-    matrix_ini(n, n, &t->xy);
-    matrix_ini(n, n, &t->xz);
-    matrix_ini(n, n, &t->yy);
-    matrix_ini(n, n, &t->yz);
-    matrix_ini(n, n, &t->zz);
-    return CO_OK;
-}
-
-static int
-tensor_fin(struct Tensor *t)
-{
-    matrix_fin(t->xx);
-    matrix_fin(t->xy);
-    matrix_fin(t->xz);
-    matrix_fin(t->yy);
-    matrix_fin(t->yz);
-    matrix_fin(t->zz);
+    tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
     return CO_OK;
 }

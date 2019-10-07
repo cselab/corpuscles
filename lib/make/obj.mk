@@ -120,6 +120,7 @@ stretch.s.o\
 sum.s.o\
 surface.s.o\
 ten.s.o\
+tensor.s.o\
 transform.s.o\
 tri2.s.o\
 tri.s.o\
@@ -235,6 +236,7 @@ stretch.d.o\
 sum.d.o\
 surface.d.o\
 ten.d.o\
+tensor.d.o\
 transform.d.o\
 tri2.d.o\
 tri.d.o\
@@ -350,6 +352,7 @@ stretch.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\
+tensor.l.o\
 transform.l.o\
 tri2.l.o\
 tri.l.o\
