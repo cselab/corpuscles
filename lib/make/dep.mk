@@ -133,6 +133,13 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
+bi/cortez.s.o:\
+co/prec/s/real.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/bi/cortez.h\
+
 cell2.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -1272,6 +1279,13 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
+bi/cortez.d.o:\
+co/prec/d/real.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/bi/cortez.h\
+
 cell2.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -2410,6 +2424,13 @@ co/f/gompper_xin.h\
 co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
+
+bi/cortez.l.o:\
+co/prec/l/real.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/bi/cortez.h\
 
 cell2.l.o:\
 co/prec/l/real.h\

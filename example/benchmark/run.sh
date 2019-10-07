@@ -6,8 +6,8 @@ make main
 gamdot=161.4821630305
 lambda=5
 start=0
-end=10000000
-freq=1000
+end=100
+freq=100
 dt=0.0001
 #dt=0.000005
 #VAL='--tool=callgrind --quiet' \

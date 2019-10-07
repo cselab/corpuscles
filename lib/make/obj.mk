@@ -14,7 +14,7 @@ ode/3v.o\
 omp.o\
 predicate/main.o\
 read.o\
-util.o
+util.o\
 
 O_S = \
 arc.s.o\
@@ -25,6 +25,7 @@ array.s.o\
 bbox2.s.o\
 bbox.s.o\
 bending.s.o\
+bi/cortez.s.o\
 cell2.s.o\
 cell3.s.o\
 colormap.s.o\
@@ -128,7 +129,7 @@ volume.s.o\
 vtk2.s.o\
 vtk.s.o\
 x.s.o\
-y.s.o
+y.s.o\
 
 O_D = \
 arc.d.o\
@@ -139,6 +140,7 @@ array.d.o\
 bbox2.d.o\
 bbox.d.o\
 bending.d.o\
+bi/cortez.d.o\
 cell2.d.o\
 cell3.d.o\
 colormap.d.o\
@@ -242,7 +244,7 @@ volume.d.o\
 vtk2.d.o\
 vtk.d.o\
 x.d.o\
-y.d.o
+y.d.o\
 
 O_L = \
 arc.l.o\
@@ -253,6 +255,7 @@ array.l.o\
 bbox2.l.o\
 bbox.l.o\
 bending.l.o\
+bi/cortez.l.o\
 cell2.l.o\
 cell3.l.o\
 colormap.l.o\
@@ -356,5 +359,5 @@ volume.l.o\
 vtk2.l.o\
 vtk.l.o\
 x.l.o\
-y.l.o
+y.l.o\
 

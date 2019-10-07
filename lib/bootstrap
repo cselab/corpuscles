@@ -12,26 +12,26 @@ real0 () {
 real () {
     while read f
     do  if real0 "$f"
-	then printf "%s\n" "$f"
-	fi
+        then printf "%s\n" "$f"
+        fi
     done
 }
 
 nreal () {
     while read f
     do  if ! real0 "$f"
-	then printf "%s\n" "$f"
-	fi
+        then printf "%s\n" "$f"
+        fi
     done
 }
 
 format () {
    awk -v v="$1" '
    BEGIN { printf "%s = \\\n", v }
-   {   if (NR > 1) printf "%s", "\\\n"
-       printf "%s", $0
+   {
+       printf "%s\\\n", $0
    }
-   END { printf "%s", "\n\n" }
+   END { printf "%s", "\n" }
 '
 }
 

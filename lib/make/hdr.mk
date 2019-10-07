@@ -8,6 +8,7 @@ co/array.h\
 co/bbox2.h\
 co/bbox.h\
 co/bending.h\
+co/bi/cortez.h\
 co/bi.h\
 co/cell2.h\
 co/cell3.h\
@@ -135,5 +136,5 @@ co/vtk2.h\
 co/vtk.h\
 co/x.h\
 co/y.h\
-inc/def.h
+inc/def.h\
 
