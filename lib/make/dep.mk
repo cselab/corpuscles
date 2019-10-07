@@ -144,6 +144,17 @@ co/oseen3.h\
 co/tensor.h\
 co/bi/cortez.h\
 
+bi/cortez_zero.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
+co/bi/cortez_zero.h\
+
 cell2.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -1314,6 +1325,17 @@ co/oseen3.h\
 co/tensor.h\
 co/bi/cortez.h\
 
+bi/cortez_zero.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
+co/bi/cortez_zero.h\
+
 cell2.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -2483,6 +2505,17 @@ co/memory.h\
 co/oseen3.h\
 co/tensor.h\
 co/bi/cortez.h\
+
+bi/cortez_zero.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
+co/bi/cortez_zero.h\
 
 cell2.l.o:\
 co/prec/l/real.h\

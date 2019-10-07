@@ -26,6 +26,7 @@ bbox2.s.o\
 bbox.s.o\
 bending.s.o\
 bi/cortez.s.o\
+bi/cortez_zero.s.o\
 cell2.s.o\
 cell3.s.o\
 colormap.s.o\
@@ -143,6 +144,7 @@ bbox2.d.o\
 bbox.d.o\
 bending.d.o\
 bi/cortez.d.o\
+bi/cortez_zero.d.o\
 cell2.d.o\
 cell3.d.o\
 colormap.d.o\
@@ -260,6 +262,7 @@ bbox2.l.o\
 bbox.l.o\
 bending.l.o\
 bi/cortez.l.o\
+bi/cortez_zero.l.o\
 cell2.l.o\
 cell3.l.o\
 colormap.l.o\

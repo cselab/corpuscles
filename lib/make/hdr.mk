@@ -9,6 +9,7 @@ co/bbox2.h\
 co/bbox.h\
 co/bending.h\
 co/bi/cortez.h\
+co/bi/cortez_zero.h\
 co/bi.h\
 co/cell2.h\
 co/cell3.h\
