@@ -995,7 +995,7 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/real.h\
-real.inc\
+inc/s/real.inc\
 
 restore.s.o:\
 co/prec/s/real.h\
@@ -2134,7 +2134,7 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/real.h\
-real.inc\
+inc/d/real.inc\
 
 restore.d.o:\
 co/prec/d/real.h\
@@ -3273,7 +3273,7 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/real.h\
-real.inc\
+inc/l/real.inc\
 
 restore.l.o:\
 co/prec/l/real.h\

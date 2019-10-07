@@ -5,9 +5,9 @@ BEGIN {
     RS = ""
     FS = "\n"
 
-    inc["s.o"] = "co/prec/s"
-    inc["d.o"] = "co/prec/d"
-    inc["l.o"] = "co/prec/l"
+    inc["s.o"] = "s"
+    inc["d.o"] = "d"
+    inc["l.o"] = "l"
 }
 
 {
@@ -27,7 +27,9 @@ function write(f)
 function transform(f)
 {
     if (eq(f, "real.h"))
-        return inc[suffix] "/real.h"
+        return "co/prec/" inc[suffix] "/real.h"
+    else if (eq(f, "real.inc"))
+        return "inc/" inc[suffix] "/real.inc"
     else
         return f
 }
