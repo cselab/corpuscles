@@ -1,7 +1,7 @@
-CC = c99
+CC = gcc
 FC = gfortran
 FCFLAGS = -Ofast  -g
-CFLAGS = -Ofast  -g
+CFLAGS = -Og  -g
 LDFLAGS =
 PREFIX = $(HOME)
 DATAPATH = $(HOME)/.co

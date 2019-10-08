@@ -34,16 +34,15 @@ main(int argc, char **argv)
     MALLOC3(n, &fx, &fy, &fz);
     CALLOC3(n, &vx, &vy, &vz);
     for (i = 0; i < n; i++) {
-	fx[i] = 1;
-	fy[i] = 1;
-	fz[i] = 1;
+	fx[i] = x[i];
+	fy[i] = y[i];
+	fz[i] = z[i];
     }
-
-    alpha = 10.0;
-    //bi_update(bi, he, x, y, z);
-    //bi_single(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
-    //MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
-    //MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
+    alpha = 1.0;
+    bi_update(bi, he, x, y, z);
+    bi_single(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
+    MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
+    MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
 
     y_fin(he, x, y, z);
     bi_fin(bi);

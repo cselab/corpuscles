@@ -89,10 +89,7 @@ bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
 }
 
 int
-bi_cortez_fm_single(T *q, He *he, real al,
-		    const real *x, const real *y, const real *z,
-		    const real *fx, const real *fy, const real *fz,
-		    /*io*/ real *ux, real *uy, real *uz)
+bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /*io*/ real *ux, real *uy, real *uz)
 {
     real *wx, *wy, *wz;
     int n;
@@ -109,10 +106,7 @@ bi_cortez_fm_single(T *q, He *he, real al,
 }
 
 int
-bi_cortez_fm_double(T *q, He *he, real al,
-		 const real *x, const real *y, const real *z,
-		 const real *ux, const real *uy, const real *uz,
-		 /*io*/real *wx, real *wy, real *wz)
+bi_cortez_fm_double(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/real *wx, real *wy, real *wz)
 {
     int n;
     struct Tensor *K;

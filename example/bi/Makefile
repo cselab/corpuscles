@@ -1,5 +1,5 @@
 .POSIX:
-include ../../../conf.mk
+include ../../conf.mk
 PREC = d
 M = \
 single\
@@ -12,7 +12,6 @@ LINK = $(CC)
 all: $M
 .o:
 	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
-
 
 .c.o:
 	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c
