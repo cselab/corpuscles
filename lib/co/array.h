@@ -13,7 +13,6 @@ int array_scale(int, real, real[]);
 int array_multiply(int, const real[], real[]);
 int array_multiply3(int, const real[], real[], real[], real[]);
 int array_zero3(int, real[], real[], real[]);
-int array_zero3(int, real[], real[], real[]);
 int array_zero(int, real[]);
 int array_zero(int, real[]);
 real array_diff3(int, const real[], const real[], const real[],   const real[], const real[], const real[]);

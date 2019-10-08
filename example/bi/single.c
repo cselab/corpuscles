@@ -40,10 +40,10 @@ main(int argc, char **argv)
     }
 
     alpha = 10.0;
-    bi_update(bi, he, x, y, z);
-    bi_single(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
-    MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
-    MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
+    //bi_update(bi, he, x, y, z);
+    //bi_single(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
+    //MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
+    //MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
 
     y_fin(he, x, y, z);
     bi_fin(bi);

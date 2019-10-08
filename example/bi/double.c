@@ -15,7 +15,7 @@ main()
 {
     int i, n;
     FM *q;
-    real alpha, *x, *y, *z, *ux, *uy, *uz, *nx, *ny, *nz, *vx, *vy, *vz;
+    real *x, *y, *z, *ux, *uy, *uz, *nx, *ny, *nz, *vx, *vy, *vz;
     real *area;
 
     He *he;
@@ -35,12 +35,9 @@ main()
 	uy[i] = 0;
 	uz[i] = 0;
     }
-    alpha = 10.0;
-    fm_double(q, alpha, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
-
+    fm_double(q, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
     for (i = 0; i < n; i++)
 	MSG(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
-
     y_fin(he, x, y, z);
     FREE3(vx, vy, vz);
     FREE3(ux, uy, uz);
