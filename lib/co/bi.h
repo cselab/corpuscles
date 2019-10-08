@@ -1,4 +1,4 @@
-#define T Bi
+#define T BI
 
 typedef struct He He;
 typedef struct T T;
