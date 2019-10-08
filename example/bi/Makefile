@@ -10,12 +10,8 @@ CO_LDFLAGS = `fm.conf --libs $(PREC)` `co.conf --libs $(PREC)` `fm.conf --libs $
 LINK = $(CC)
 
 all: $M
-.o:
-	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
-
-.c.o:
-	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c
-
+.o:; $(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+.c.o:; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c
 .c:
 %: %.c
 

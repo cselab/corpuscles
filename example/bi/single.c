@@ -2,11 +2,12 @@
 #include <real.h>
 #include <co/err.h>
 #include <co/he.h>
+#include <co/macro.h>
 #include <co/memory.h>
 #include <co/y.h>
 #include <co/bi.h>
 
-#define FMT   CO_REAL_OUT
+#define FMT CO_REAL_OUT
 
 int
 main(int argc, char **argv)
@@ -16,6 +17,7 @@ main(int argc, char **argv)
     BI *bi;
     real alpha, *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz;
     He *he;
+    USED(argc);
 
     argv++;
     if (argv[0] == NULL)
