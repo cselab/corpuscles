@@ -25,7 +25,9 @@ array.s.o\
 bbox2.s.o\
 bbox.s.o\
 bending.s.o\
+bi.s.o\
 bi/cortez.s.o\
+bi/cortez_zero.s.o\
 cell2.s.o\
 cell3.s.o\
 colormap.s.o\
@@ -99,6 +101,7 @@ off.s.o\
 orient.s.o\
 oseen2.s.o\
 oseen3.s.o\
+oseen3zero.s.o\
 ply.s.o\
 polygon.s.o\
 pre/cons.s.o\
@@ -120,6 +123,7 @@ stretch.s.o\
 sum.s.o\
 surface.s.o\
 ten.s.o\
+tensor.s.o\
 transform.s.o\
 tri2.s.o\
 tri.s.o\
@@ -140,7 +144,9 @@ array.d.o\
 bbox2.d.o\
 bbox.d.o\
 bending.d.o\
+bi.d.o\
 bi/cortez.d.o\
+bi/cortez_zero.d.o\
 cell2.d.o\
 cell3.d.o\
 colormap.d.o\
@@ -214,6 +220,7 @@ off.d.o\
 orient.d.o\
 oseen2.d.o\
 oseen3.d.o\
+oseen3zero.d.o\
 ply.d.o\
 polygon.d.o\
 pre/cons.d.o\
@@ -235,6 +242,7 @@ stretch.d.o\
 sum.d.o\
 surface.d.o\
 ten.d.o\
+tensor.d.o\
 transform.d.o\
 tri2.d.o\
 tri.d.o\
@@ -255,7 +263,9 @@ array.l.o\
 bbox2.l.o\
 bbox.l.o\
 bending.l.o\
+bi.l.o\
 bi/cortez.l.o\
+bi/cortez_zero.l.o\
 cell2.l.o\
 cell3.l.o\
 colormap.l.o\
@@ -329,6 +339,7 @@ off.l.o\
 orient.l.o\
 oseen2.l.o\
 oseen3.l.o\
+oseen3zero.l.o\
 ply.l.o\
 polygon.l.o\
 pre/cons.l.o\
@@ -350,6 +361,7 @@ stretch.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\
+tensor.l.o\
 transform.l.o\
 tri2.l.o\
 tri.l.o\

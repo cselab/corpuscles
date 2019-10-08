@@ -6,23 +6,22 @@
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
-#include <co/len.h>
+#include <co/bi.h>
+#include <co/equiangulate.h>
 #include <co/err.h>
+#include <co/f/garea.h>
+#include <co/f/juelicher_xin.h>
 #include <co/force.h>
+#include <co/f/volume.h>
+#include <co/he.h>
+#include <co/len.h>
 #include <co/macro.h>
-#include <co/i/matrix.h>
 #include <co/matrix.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
-#include <co/oseen3.h>
-#include <co/he.h>
+#include <co/off.h>
 #include <co/punto.h>
 #include <co/y.h>
-#include <co/off.h>
-#include <co/f/garea.h>
-#include <co/f/volume.h>
-#include <co/f/juelicher_xin.h>
-#include <co/equiangulate.h>
 
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
@@ -34,15 +33,13 @@ static const int iter_max=100;
 
 static Force *Fo[20] = {NULL};
 static He *he;
-static Oseen3 *oseen;
+static Bi *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
 static real *fx, *fy, *fz;
 static real *ux, *uy, *uz;
 static real *wx, *wy, *wz;
-static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
-static real *Kxx, *Kxy, *Kxz, *Kyy, *Kyz, *Kzz;
 static int nv, nt;
 
 char file_out[999];
@@ -81,15 +78,20 @@ static int fargv(char ***p, He *he)
   
   i = 0;
   v = *p;
-  while (1) {
-    if (v[0] == NULL) break;
-    name = v[0];
-    MSG("%s", name);
-    if (!force_good(name)) break;
+  while ((name = v[0]) != NULL && force_good(name)) {
     v++;
-    force_argv(name, &v, he, &Fo[i]);
-    i++;
+    force_argv(name, &v, he, &Fo[i++]);
   }
+
+  name = v[0];
+  if (name == NULL)
+      ER("expecting BI");
+  if (!bi_good(name)) {
+      MSG("not a bi name: '%s'", name);
+      ER("possible names are: %s", bi_list());
+  }
+  v++;
+  bi_argv(name, &v, he, &bi);
   
   scl(v, &R);
   v++;
@@ -140,60 +142,12 @@ static int fin(void) {
   return CO_OK;
 }
 
-static int tensor_ini(int n, real **xx, real **xy, real **xz, real **yy, real **yz, real **zz) {
-  matrix_ini(n, n, xx); 
-  matrix_ini(n, n, xy);
-  matrix_ini(n, n, xz);
-  matrix_ini(n, n, yy);
-  matrix_ini(n, n, yz);
-  matrix_ini(n, n, zz);
-  return CO_OK;
-}
-
-static int tensor_fin(real *xx, real *xy, real *xz, real *yy, real *yz, real *zz) {
-  matrix_fin(xx);
-  matrix_fin(xy);
-  matrix_fin(xz);
-  matrix_fin(yy);
-  matrix_fin(yz);
-  matrix_fin(zz);
-  return CO_OK;
-}
-
-#define GET(K) i_matrix_get(n, n, i, j, (K))
-static int vector_tensor(int n, real s, const real *x, const real *y, const real *z,
-			 real *Txx, real *Txy, real *Txz, real *Tyy, real *Tyz, real *Tzz,
-			 real *u, real *v, real *w) {
-  int i;
-#pragma omp parallel for
-  for (i = 0; i < n; i++) {
-    int j;
-    real xx, xy, xz, yy, yz, zz, du, dv, dw;
-    for (j = 0; j < n; j++) {
-      xx = GET(Txx);
-      xy = GET(Txy);
-      xz = GET(Txz);
-      yy = GET(Tyy);
-      yz = GET(Tyz);
-      zz = GET(Tzz);
-      du = xx*x[j] + xy*y[j] + xz*z[j];
-      dv = xy*x[j] + yy*y[j] + yz*z[j];
-      dw = xz*x[j] + yz*y[j] + zz*z[j];
-      u[i] += s*du;
-      v[i] += s*dv;
-      w[i] += s*dw;
-    }
-  }
-  return CO_OK;
-}
-
-
 static int F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0) {
   
   int i, k;
   real coef, al, be;
-  real dx, dy, dz, d;
-  real ddx, ddy, ddz, dd, ratio;
+  real d;
+  real dd, ratio;
 
   coef= 2.0/(1.0+lambda);
   al  = -2/(eta*(1.0+lambda));
@@ -201,25 +155,22 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   	
   array_zero3(nv, fx, fy, fz);
   force(he, x, y, z, fx, fy, fz);
-  oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+  bi_update(bi, he, x, y, z);
   
   array_zero3(nv, vx, vy, vz);
   for (i = 0; i < nv; i++) vx[i] += coef*gamdot*z[i];
-  vector_tensor(nv, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
+  bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
 
   //inner and outer viscosity has obvious contrast
   if ( 1 - lambda > tol || 1 - lambda < -tol ) {
-    
-    oseen3_stresslet(oseen, he, x, y, z, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
-    
     array_zero3(nv, ux, uy, uz);
     for (i = 0; i < nv; i++) ux[i] += coef*gamdot*z[i];
     
     for (k = 1; k<=iter_max; k++) {
       
       array_copy3(nv, vx, vy, vz, wx, wy, wz);
-      
-      vector_tensor(nv, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, wx, wy, wz);
+      bi_double(bi, he, be, x, y, z, ux, uy, uz, wx, wy, wz);
+      //vector_tensor(nv, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, wx, wy, wz);
       
       d=array_msq_3d(nv, ux, uy, uz);
       dd=array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
@@ -283,7 +234,7 @@ int main(__UNUSED int argc, char **argv) {
   fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn\n", fm);
   fclose(fm);
   
-  
+  V0 = A0 = 1.0;
   i = 0;
   while (Fo[i]) {
     strcpy(name, force_name(Fo[i]));
@@ -303,7 +254,7 @@ int main(__UNUSED int argc, char **argv) {
   a   = A0/nt;
   e   = 2*sqrt(a)/sqrt(sqrt(3.0));
   reg = 0.1*e;
-  //reg = 0.5*e;
+  MSG("reg: %g", reg);
   
   if ( (fm = fopen(file_msg, "w") ) == NULL) {
     ER("Failed to open '%s'", file_msg);
@@ -315,15 +266,11 @@ int main(__UNUSED int argc, char **argv) {
   fprintf(fm, "M m a e reg dt = %f %f %f %f %f %f\n", M, m, a, e, reg, dt);
   fclose(fm);
   
-  oseen3_ini(he, reg, &oseen);
   ode3_ini(RK4, nv, dt, F, NULL, &ode);
   
   CALLOC3(nv, &ux, &uy, &uz);
   CALLOC3(nv, &wx, &wy, &wz);
   CALLOC3(nv, &fx, &fy, &fz);
-  
-  tensor_ini(nv, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
-  tensor_ini(nv, &Kxx, &Kxy, &Kxz, &Kyy, &Kyz, &Kzz);
   
   t = time = start*dt;
   s = start;
@@ -414,10 +361,8 @@ int main(__UNUSED int argc, char **argv) {
   FREE3(ux, uy, uz);
   FREE3(wx, wy, wz);
   FREE3(fx, fy, fz);
-  tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-  tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
-  oseen3_fin(oseen);
   ode3_fin(ode);
+  bi_fin(bi);
   fin();
   y_fin(he, x, y, z);
   

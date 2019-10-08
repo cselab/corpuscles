@@ -50,7 +50,7 @@ i_vec_angle(const real a[3], const real b[3])
 {
     enum {X, Y, Z};
     real u, v, w;
-    real x, y, z;
+    real x, y;
 
     u = a[Y]*b[Z]-b[Y]*a[Z];
     v = b[X]*a[Z]-a[X]*b[Z];

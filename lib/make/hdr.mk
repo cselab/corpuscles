@@ -9,6 +9,7 @@ co/bbox2.h\
 co/bbox.h\
 co/bending.h\
 co/bi/cortez.h\
+co/bi/cortez_zero.h\
 co/bi.h\
 co/cell2.h\
 co/cell3.h\
@@ -102,6 +103,7 @@ co/omp.h\
 co/orient.h\
 co/oseen2.h\
 co/oseen3.h\
+co/oseen3zero.h\
 co/ply.h\
 co/polygon.h\
 co/prec/d/real.h\
@@ -125,6 +127,7 @@ co/stretch.h\
 co/sum.h\
 co/surface.h\
 co/ten.h\
+co/tensor.h\
 co/transform.h\
 co/tri2.h\
 co/tri.h\

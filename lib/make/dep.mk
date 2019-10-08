@@ -133,12 +133,36 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
+bi.c.m4:\
+co/prec/s/real.h\
+co/container.h\
+co/err.h\
+co/bi.h\
+co/macro.h\
+co/memory.h\
+co/util.h\
+
 bi/cortez.s.o:\
 co/prec/s/real.h\
-co/memory.h\
 co/err.h\
 co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3.h\
+co/tensor.h\
 co/bi/cortez.h\
+
+bi/cortez_zero.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
+co/bi/cortez_zero.h\
 
 cell2.s.o:\
 co/prec/s/real.h\
@@ -931,6 +955,19 @@ co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
 
+oseen3zero.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/oseen3zero.h\
+co/i/matrix.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+
 ply.s.o:\
 co/prec/s/real.h\
 co/memory.h\
@@ -1119,6 +1156,13 @@ co/err.h\
 inc/def.h\
 co/ten.h\
 
+tensor.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/matrix.h\
+co/i/matrix.h\
+co/tensor.h\
+
 transform.c.m4:\
 co/prec/s/real.h\
 co/err.h\
@@ -1279,12 +1323,36 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
+bi.c.m4:\
+co/prec/d/real.h\
+co/container.h\
+co/err.h\
+co/bi.h\
+co/macro.h\
+co/memory.h\
+co/util.h\
+
 bi/cortez.d.o:\
 co/prec/d/real.h\
-co/memory.h\
 co/err.h\
 co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3.h\
+co/tensor.h\
 co/bi/cortez.h\
+
+bi/cortez_zero.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
+co/bi/cortez_zero.h\
 
 cell2.d.o:\
 co/prec/d/real.h\
@@ -2077,6 +2145,19 @@ co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
 
+oseen3zero.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/oseen3zero.h\
+co/i/matrix.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+
 ply.d.o:\
 co/prec/d/real.h\
 co/memory.h\
@@ -2265,6 +2346,13 @@ co/err.h\
 inc/def.h\
 co/ten.h\
 
+tensor.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/matrix.h\
+co/i/matrix.h\
+co/tensor.h\
+
 transform.c.m4:\
 co/prec/d/real.h\
 co/err.h\
@@ -2425,12 +2513,36 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
+bi.c.m4:\
+co/prec/l/real.h\
+co/container.h\
+co/err.h\
+co/bi.h\
+co/macro.h\
+co/memory.h\
+co/util.h\
+
 bi/cortez.l.o:\
 co/prec/l/real.h\
-co/memory.h\
 co/err.h\
 co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3.h\
+co/tensor.h\
 co/bi/cortez.h\
+
+bi/cortez_zero.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
+co/bi/cortez_zero.h\
 
 cell2.l.o:\
 co/prec/l/real.h\
@@ -3223,6 +3335,19 @@ co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
 
+oseen3zero.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/oseen3zero.h\
+co/i/matrix.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+
 ply.l.o:\
 co/prec/l/real.h\
 co/memory.h\
@@ -3410,6 +3535,13 @@ co/prec/l/real.h\
 co/err.h\
 inc/def.h\
 co/ten.h\
+
+tensor.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/matrix.h\
+co/i/matrix.h\
+co/tensor.h\
 
 transform.c.m4:\
 co/prec/l/real.h\
