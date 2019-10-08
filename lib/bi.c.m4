@@ -1,0 +1,159 @@
+include(`co.m4')dnl
+h_define(`List', `cortez, cortez_zero')dnl
+h_define(`foreach', `h_foreach(`n', `List', `$1')')dnl
+h_define(`cap', `h_translit(`'capitalize(h_translit($1, `_', ` ')), ` ', `')')dnl
+h_define(`type', `Bi`'cap($1)')dnl
+#include <stdio.h>
+#include <string.h>
+#include <stddef.h>
+#include "real.h"
+#include "co/container.h"
+#include "co/err.h"
+#include "co/bi.h"
+#include "co/macro.h"
+#include "co/memory.h"
+#include "co/util.h"
+foreach(
+``#include' "co/bi/n.h"
+')dnl
+
+#define T Bi
+#define SIZE (4048)
+static char Names[SIZE];
+
+foreach(
+`static int n`_argv'(char***, He*, T**);
+static int n`_fin'(T*);
+')dnl
+
+typedef struct Vtable Vtable;
+struct T
+{
+	struct Vtable *vtable;
+	const char *name;
+};
+struct Vtable {
+	int (*argv)(char***, He*, T**);
+	int (*fin)(T*);
+};
+
+foreach(
+`static Vtable n`_vtable' =
+{
+	n`_argv',
+	n`_fin',
+};
+')dnl
+
+static const char *Name[] =
+{
+foreach(
+`"n",
+')dnl
+};
+
+typedef int (*TypeArgv)(char***, He*, T**);
+static const TypeArgv Argv[] =
+{
+foreach(
+`n`_argv',
+')dnl
+};
+
+foreach(
+`h_pushdef(`N', `cap(n)')dnl
+h_pushdef(`F', `type(n)')dnl
+typedef struct N N;
+struct N
+{
+	T force;	
+    	F *local;
+};
+h_popdef(`N')dnl
+h_popdef(`F')dnl
+')dnl
+
+foreach(
+`h_pushdef(`N', `cap(n)')dnl
+static int
+n`_argv'(char ***p, He *he,  T **pq)
+{
+	N *q;
+	MALLOC(1, &q);
+	q->force.vtable = &n`_vtable';
+	*pq = &q->force;
+	return `bi_'n`_argv'(p, he, &q->local);
+}
+
+static int
+n`_fin'(T *q)
+{
+	int status;
+	N *b = CONTAINER_OF(q, N, force);
+	status = `bi_'n`_fin'(b->local);
+	FREE(q);
+	return status;
+}
+
+h_popdef(`N')dnl
+')dnl
+
+int
+force2_argv(const char *name, char ***parg, He *he, T **pq)
+{
+	int status;
+	T *q;
+	int i, n;
+
+	n = sizeof(Name)/sizeof(Name[0]);
+	for (i = 0; i < n; i++)
+		if (util_eq(name, Name[i])) {
+			status = Argv[i](parg, he, &q);
+			q->name = Name[i];
+			*pq = q;
+			return status;
+		}
+	MSG("unknown force2: '%s'", name);
+	MSG("possible values:");
+	for (i = 0; i < n; i++)
+		MSG("%s", Name[i]);
+	ERR(CO_INDEX, "");
+}
+
+
+const char*
+force2_list()
+{
+	const char *sep = "/";
+	int i, n;
+	n = sizeof(Name)/sizeof(Name[0]);
+	Names[0] = '\0';
+	for (i = 0; i < n; i++) {
+		if (i > 0) strncat(Names, sep, SIZE - 1);
+		strncat(Names, Name[i], SIZE - 1);
+	}
+	return Names;
+}
+
+int
+force2_fin(T *q)
+{
+	return q->vtable->fin(q);
+}
+
+const char*
+force2_name(T *q)
+{
+	return q->name;
+}
+
+int
+force2_good(const char *name)
+{
+	int i, n;
+	n = sizeof(Name)/sizeof(Name[0]);
+	for (i = 0; i < n; i++)
+		if (util_eq(name, Name[i]))
+			return 1;
+	return 0;
+}
