@@ -25,6 +25,7 @@ array.s.o\
 bbox2.s.o\
 bbox.s.o\
 bending.s.o\
+bi.s.o\
 bi/cortez.s.o\
 bi/cortez_zero.s.o\
 cell2.s.o\
@@ -143,6 +144,7 @@ array.d.o\
 bbox2.d.o\
 bbox.d.o\
 bending.d.o\
+bi.d.o\
 bi/cortez.d.o\
 bi/cortez_zero.d.o\
 cell2.d.o\
@@ -261,6 +263,7 @@ array.l.o\
 bbox2.l.o\
 bbox.l.o\
 bending.l.o\
+bi.l.o\
 bi/cortez.l.o\
 bi/cortez_zero.l.o\
 cell2.l.o\
