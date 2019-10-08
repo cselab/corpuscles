@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "real.h"
+#include "co/argv.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/macro.h"
@@ -38,10 +39,11 @@ bi_cortez_ini(real eps, He *he, /**/ T **pq)
 int
 bi_cortez_argv(char ***p, He *he, /**/ T **pq)
 {
-    USED(p);
-    USED(he);
-    USED(pq);
-    return CO_OK;
+    int status;
+    real x;
+    if ((status = argv_real(p, &x)) != CO_OK)
+	return status;
+    return bi_cortez_ini(x, he, pq);
 }
 
 int

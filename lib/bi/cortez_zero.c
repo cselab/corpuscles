@@ -2,6 +2,7 @@
 #include "real.h"
 #include "co/err.h"
 #include "co/he.h"
+#include "co/argv.h"
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
@@ -38,10 +39,11 @@ bi_cortez_zero_ini(real eps, He *he, /**/ T **pq)
 int
 bi_cortez_zero_argv(char ***p, He *he, /**/ T **pq)
 {
-    USED(p);
-    USED(he);
-    USED(pq);
-    return CO_OK;
+    int status;
+    real x;
+    if ((status = argv_real(p, &x)) != CO_OK)
+	return status;
+    return bi_cortez_zero_ini(x, he, pq);
 }
 
 int
