@@ -25,7 +25,7 @@ static int
 oseen(real e0, const real a[3], const real b[3],
       real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
-    USED(e0);
+        USED(e0);
 	enum
 	{
 		X, Y, Z
