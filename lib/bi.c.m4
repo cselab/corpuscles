@@ -25,6 +25,8 @@ foreach(
 `static int n`_argv'(char***, He*, T**);
 static int n`_fin'(T*);
 static int n`_single'(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
+static int n`_double'(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
+static int n`_update'(T*, He*, const real*, const real*, const real*);
 ')dnl
 
 typedef struct Vtable Vtable;
@@ -37,6 +39,8 @@ struct Vtable {
         int (*argv)(char***, He*, T**);
         int (*fin)(T*);
         int (*single)(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
+        int (*double0)(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
+        int (*update)(T*, He*, const real*, const real*, const real*);
 };
 
 foreach(
@@ -45,6 +49,8 @@ foreach(
         n`_argv',
         n`_fin',
         n`_single',
+        n`_double',
+        n`_update',
 };
 ')dnl
 
@@ -105,6 +111,20 @@ n`_single'(T *q, He *he, real alpha, const real *x, const real *y, const real *z
         return `bi_'n`_single'(b->local, he, alpha, x, y, z, fx, fy, fz, vx, vy, vz);
 }
 
+static int
+n`_double'(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *vx, const real *vy, const real *vz, real *ux, real *uy, real *uz)
+{
+        N *b = CONTAINER_OF(q, N, global);
+        return `bi_'n`_double'(b->local, he, alpha, x, y, z, vx, vy, vz, ux, uy, uz);
+}
+
+static int
+n`_update'(T *q, He *he, const real *x, const real *y, const real *z)
+{
+        N *b = CONTAINER_OF(q, N, global);
+        return `bi_'n`_update'(b->local, he, x, y, z);
+}
+
 h_popdef(`N')dnl
 ')dnl
 
@@ -155,6 +175,18 @@ int
 bi_single(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, real *vx, real *vy, real *vz)
 {
         return q->vtable->single(q, he, alpha, x, y, z, fx, fy, fz, vx, vy, vz);
+}
+
+int
+bi_double(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *vx, const real *vy, const real *vz, real *ux, real *uy, real *uz)
+{
+        return q->vtable->double0(q, he, alpha, x, y, z, vx, vy, vz, ux, uy, uz);
+}
+
+int
+bi_update(T *q, He *he, const real *x, const real *y, const real *z)
+{
+        return q->vtable->update(q, he, x, y, z);
 }
 
 const char*
