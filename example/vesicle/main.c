@@ -6,22 +6,22 @@
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
-#include <co/len.h>
+#include <co/bi.h>
+#include <co/equiangulate.h>
 #include <co/err.h>
+#include <co/f/garea.h>
+#include <co/f/juelicher_xin.h>
 #include <co/force.h>
+#include <co/f/volume.h>
+#include <co/he.h>
+#include <co/len.h>
 #include <co/macro.h>
 #include <co/matrix.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
-#include <co/he.h>
+#include <co/off.h>
 #include <co/punto.h>
 #include <co/y.h>
-#include <co/off.h>
-#include <co/f/garea.h>
-#include <co/f/volume.h>
-#include <co/f/juelicher_xin.h>
-#include <co/equiangulate.h>
-#include <co/bi/cortez.h>
 
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
@@ -33,7 +33,7 @@ static const int iter_max=100;
 
 static Force *Fo[20] = {NULL};
 static He *he;
-static BiCortez *bi;
+static Bi *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
@@ -78,15 +78,20 @@ static int fargv(char ***p, He *he)
   
   i = 0;
   v = *p;
-  while (1) {
-    if (v[0] == NULL) break;
-    name = v[0];
-    MSG("%s", name);
-    if (!force_good(name)) break;
+  while ((name = v[0]) != NULL && force_good(name)) {
     v++;
-    force_argv(name, &v, he, &Fo[i]);
-    i++;
+    force_argv(name, &v, he, &Fo[i++]);
   }
+
+  name = v[0];
+  if (name == NULL)
+      ER("expecting BI");
+  if (!bi_good(name)) {
+      MSG("not a bi name: '%s'", name);
+      ER("possible names are: %s", bi_list());
+  }
+  v++;
+  bi_argv(name, &v, he, &bi);
   
   scl(v, &R);
   v++;
@@ -150,11 +155,11 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   	
   array_zero3(nv, fx, fy, fz);
   force(he, x, y, z, fx, fy, fz);
-  bi_cortez_update(bi, he, x, y, z);
+  bi_update(bi, he, x, y, z);
   
   array_zero3(nv, vx, vy, vz);
   for (i = 0; i < nv; i++) vx[i] += coef*gamdot*z[i];
-  bi_cortez_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
+  bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
 
   //inner and outer viscosity has obvious contrast
   if ( 1 - lambda > tol || 1 - lambda < -tol ) {
@@ -164,7 +169,7 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
     for (k = 1; k<=iter_max; k++) {
       
       array_copy3(nv, vx, vy, vz, wx, wy, wz);
-      bi_cortez_double(bi, he, be, x, y, z, ux, uy, uz, wx, wy, wz);
+      bi_double(bi, he, be, x, y, z, ux, uy, uz, wx, wy, wz);
       //vector_tensor(nv, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, wx, wy, wz);
       
       d=array_msq_3d(nv, ux, uy, uz);
@@ -249,7 +254,7 @@ int main(__UNUSED int argc, char **argv) {
   a   = A0/nt;
   e   = 2*sqrt(a)/sqrt(sqrt(3.0));
   reg = 0.1*e;
-  //reg = 0.5*e;
+  MSG("reg: %g", reg);
   
   if ( (fm = fopen(file_msg, "w") ) == NULL) {
     ER("Failed to open '%s'", file_msg);
@@ -261,7 +266,6 @@ int main(__UNUSED int argc, char **argv) {
   fprintf(fm, "M m a e reg dt = %f %f %f %f %f %f\n", M, m, a, e, reg, dt);
   fclose(fm);
   
-  bi_cortez_ini(reg, he, &bi);
   ode3_ini(RK4, nv, dt, F, NULL, &ode);
   
   CALLOC3(nv, &ux, &uy, &uz);
@@ -358,7 +362,7 @@ int main(__UNUSED int argc, char **argv) {
   FREE3(wx, wy, wz);
   FREE3(fx, fy, fz);
   ode3_fin(ode);
-  bi_cortez_fin(bi);
+  bi_fin(bi);
   fin();
   y_fin(he, x, y, z);
   
