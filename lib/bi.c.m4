@@ -24,24 +24,27 @@ static char Names[SIZE];
 foreach(
 `static int n`_argv'(char***, He*, T**);
 static int n`_fin'(T*);
+static int n`_single'(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
 ')dnl
 
 typedef struct Vtable Vtable;
 struct T
 {
-	struct Vtable *vtable;
-	const char *name;
+        struct Vtable *vtable;
+        const char *name;
 };
 struct Vtable {
-	int (*argv)(char***, He*, T**);
-	int (*fin)(T*);
+        int (*argv)(char***, He*, T**);
+        int (*fin)(T*);
+        int (*single)(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
 };
 
 foreach(
 `static Vtable n`_vtable' =
 {
-	n`_argv',
-	n`_fin',
+        n`_argv',
+        n`_fin',
+        n`_single',
 };
 ')dnl
 
@@ -66,8 +69,8 @@ h_pushdef(`F', `type(n)')dnl
 typedef struct N N;
 struct N
 {
-	T force;	
-    	F *local;
+        T global;
+        F *local;
 };
 h_popdef(`N')dnl
 h_popdef(`F')dnl
@@ -78,82 +81,95 @@ foreach(
 static int
 n`_argv'(char ***p, He *he,  T **pq)
 {
-	N *q;
-	MALLOC(1, &q);
-	q->force.vtable = &n`_vtable';
-	*pq = &q->force;
-	return `bi_'n`_argv'(p, he, &q->local);
+        N *q;
+        MALLOC(1, &q);
+        q->global.vtable = &n`_vtable';
+        *pq = &q->global;
+        return `bi_'n`_argv'(p, he, &q->local);
 }
 
 static int
 n`_fin'(T *q)
 {
-	int status;
-	N *b = CONTAINER_OF(q, N, force);
-	status = `bi_'n`_fin'(b->local);
-	FREE(q);
-	return status;
+        int status;
+        N *b = CONTAINER_OF(q, N, global);
+        status = `bi_'n`_fin'(b->local);
+        FREE(q);
+        return status;
+}
+
+static int
+n`_single'(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, real *vx, real *vy, real *vz)
+{
+        N *b = CONTAINER_OF(q, N, global);
+        return `bi_'n`_single'(b->local, he, alpha, x, y, z, fx, fy, fz, vx, vy, vz);
 }
 
 h_popdef(`N')dnl
 ')dnl
 
 int
-force2_argv(const char *name, char ***parg, He *he, T **pq)
+bi_argv(const char *name, char ***parg, He *he, T **pq)
 {
-	int status;
-	T *q;
-	int i, n;
+        int status;
+        T *q;
+        int i, n;
 
-	n = sizeof(Name)/sizeof(Name[0]);
-	for (i = 0; i < n; i++)
-		if (util_eq(name, Name[i])) {
-			status = Argv[i](parg, he, &q);
-			q->name = Name[i];
-			*pq = q;
-			return status;
-		}
-	MSG("unknown force2: '%s'", name);
-	MSG("possible values:");
-	for (i = 0; i < n; i++)
-		MSG("%s", Name[i]);
-	ERR(CO_INDEX, "");
+        n = sizeof(Name)/sizeof(Name[0]);
+        for (i = 0; i < n; i++)
+                if (util_eq(name, Name[i])) {
+                        status = Argv[i](parg, he, &q);
+                        q->name = Name[i];
+                        *pq = q;
+                        return status;
+                }
+        MSG("unknown BI: '%s'", name);
+        MSG("possible values:");
+        for (i = 0; i < n; i++)
+                MSG("%s", Name[i]);
+        ERR(CO_INDEX, "");
 }
 
 
 const char*
-force2_list()
+bi_list()
 {
-	const char *sep = "/";
-	int i, n;
-	n = sizeof(Name)/sizeof(Name[0]);
-	Names[0] = '\0';
-	for (i = 0; i < n; i++) {
-		if (i > 0) strncat(Names, sep, SIZE - 1);
-		strncat(Names, Name[i], SIZE - 1);
-	}
-	return Names;
+        const char *sep = "/";
+        int i, n;
+        n = sizeof(Name)/sizeof(Name[0]);
+        Names[0] = '\0';
+        for (i = 0; i < n; i++) {
+                if (i > 0) strncat(Names, sep, SIZE - 1);
+                strncat(Names, Name[i], SIZE - 1);
+        }
+        return Names;
 }
 
 int
-force2_fin(T *q)
+bi_fin(T *q)
 {
-	return q->vtable->fin(q);
+        return q->vtable->fin(q);
+}
+
+int
+bi_single(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, real *vx, real *vy, real *vz)
+{
+        return q->vtable->single(q, he, alpha, x, y, z, fx, fy, fz, vx, vy, vz);
 }
 
 const char*
-force2_name(T *q)
+bi_name(T *q)
 {
-	return q->name;
+        return q->name;
 }
 
 int
-force2_good(const char *name)
+bi_good(const char *name)
 {
-	int i, n;
-	n = sizeof(Name)/sizeof(Name[0]);
-	for (i = 0; i < n; i++)
-		if (util_eq(name, Name[i]))
-			return 1;
-	return 0;
+        int i, n;
+        n = sizeof(Name)/sizeof(Name[0]);
+        for (i = 0; i < n; i++)
+                if (util_eq(name, Name[i]))
+                        return 1;
+        return 0;
 }
