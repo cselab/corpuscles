@@ -12,11 +12,14 @@
 #include "co/normal.h"
 #include "co/bi/cortez_fm.h"
 
+static const real pi = 3.141592653589793115997964;
+
 #define T BiCortezFm
 struct T {
     FM *fm;
     real *wx, *wy, *wz, *area;
     real *nx, *ny, *nz;
+    real eps;
 };
 
 int
@@ -25,10 +28,11 @@ bi_cortez_fm_ini(real eps, He *he, /**/ T **pq)
     T *q;
     int status, n;
 
+    n = he_nv(he);
     MALLOC(1, &q);
     if (eps <= 0)
 	ERR(CO_IO, "eps=%g <= 0", eps);
-    n = he_nv(he);
+    q->eps = eps;
     status = fm_ini(n, &q->fm);
     if (status != CO_OK)
 	ERR(CO_MEMORY, "fm_ini failed");
@@ -84,13 +88,17 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
 {
     real *wx, *wy, *wz;
     int n, status;
+    real eps;
 
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
+    eps = q->eps;
     n = he_nv(he);
+    
     array_zero3(n, wx, wy, wz);
     status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
+    array_axpy3(n, 1/(4*pi*eps), fx, fy, fz, wx, wy, wz); /* self */
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_single failed");
     array_axpy3(n, al, wx, wy, wz, ux, uy, uz);
