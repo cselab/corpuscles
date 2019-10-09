@@ -38,9 +38,9 @@ main(int argc, char **argv)
     CALLOC3(n, &vx, &vy, &vz);
 
     for (i = 0; i < n; i++) {
-	ux[i] = 1;
-	uy[i] = 2;
-	uz[i] = 3;
+	ux[i] = x[i];
+	uy[i] = y[i];
+	uz[i] = z[i];
     }
     alpha = 1.0;
     bi_update(bi, he, x, y, z);

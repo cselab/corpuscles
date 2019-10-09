@@ -19,6 +19,7 @@ struct T {
     FM *fm;
     real *wx, *wy, *wz, *area;
     real *nx, *ny, *nz;
+    real *ax, *ay, *az;
     real eps;
 };
 
@@ -38,6 +39,7 @@ bi_cortez_fm_ini(real eps, He *he, /**/ T **pq)
 	ERR(CO_MEMORY, "fm_ini failed");
     MALLOC3(n, &q->wx, &q->wy, &q->wz);
     MALLOC3(n, &q->nx, &q->ny, &q->nz);
+    MALLOC3(n, &q->ax, &q->ay, &q->az);
     MALLOC(n, &q->area);
     *pq = q;
     return CO_OK;
@@ -59,6 +61,7 @@ bi_cortez_fm_fin(T *q)
     fm_fin(q->fm);
     FREE3(q->wx, q->wy, q->wz);
     FREE3(q->nx, q->ny, q->nz);
+    FREE3(q->ax, q->ay, q->az);
     FREE(q->area);
     FREE(q);
     return CO_OK;
@@ -109,7 +112,8 @@ int
 bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/ real *vx, real *vy, real *vz)
 {
     int n, status;
-    real *wx, *wy, *wz, *nx, *ny, *nz, *area;
+    real *wx, *wy, *wz, *ax, *ay, *az;
+    const real *nx, *ny, *nz, *area;
     USED(x);
     USED(y);
     USED(z);
@@ -119,14 +123,17 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
     nx = q->nx;
     ny = q->ny;
     nz = q->nz;
+    ax = q->ax;
+    ay = q->ay;
+    az = q->az;
     area = q->area;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
-    
-    status = fm_double(q->fm, x, y, z, ux, uy, uz, nx, ny, nz, wx, wy, wz);
+    array_copy3(n, nx, ny, nz, ax, ay, az);
+    array_multiply3(n, area, ax, ay, az);
+    status = fm_double(q->fm, x, y, z, ux, uy, uz, ax, ay, az, wx, wy, wz);
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_double failed");
-    array_multiply3(n, area, wx, wy, wz);
     array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
     return CO_OK;
 }

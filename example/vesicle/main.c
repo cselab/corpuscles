@@ -219,7 +219,7 @@ int main(__UNUSED int argc, char **argv) {
   real a, e, reg;
   real M, m;
   
-  err_set_ignore();
+  //err_set_ignore();
   argv++;
   y_inif(stdin, &he, &x, &y, &z);
   fargv(&argv, he);

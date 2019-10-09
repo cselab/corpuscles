@@ -6,7 +6,7 @@ gdot=0.1
 lambda=5
 start=0
 end=10000
-freq=100
+freq=1
 dt=0.01
 eta=645.928652122
 rho=1
@@ -22,7 +22,7 @@ co.run ./main \
        volume 3.76991 5000 \
        area $a 500 \
        juelicher_xin 1 0 0 0 \
-       cortez_zero $reg \
+       cortez_fm $reg \
        1 $D $rho $eta $lambda $gdot $dt \
        $start $end $freq 200 \
        '<' init/0.off
