@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <real.h>
+#include <co/area.h>
+#include <co/bi.h>
+#include <co/err.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/normal.h>
+#include <co/y.h>
+
+#define FMT   CO_REAL_OUT
+
+int
+main(int argc, char **argv)
+{
+    char *name;
+    BI *bi;
+    int i, n;
+    real *x, *y, *z, *ux, *uy, *uz, *nx, *vx, *vy, *vz;
+    real alpha;
+    He *he;
+
+    USED(argc);
+    argv++;
+    if (argv[0] == NULL)
+	ER("needs an argument");
+    if (!bi_good(argv[0])) {
+	MSG("not a bi algorithm '%s'", argv[0]);
+	ER("possible values are '%s'", bi_list());
+    }
+    y_inif(stdin, &he, &x, &y, &z);
+    name = argv[0];
+    argv++;
+    bi_argv(name, &argv, he, &bi);
+    n = he_nv(he);
+    MALLOC3(n, &ux, &uy, &uz);
+    CALLOC3(n, &vx, &vy, &vz);
+
+    for (i = 0; i < n; i++) {
+	ux[i] = x[i];
+	uy[i] = y[i];
+	uz[i] = z[i];
+    }
+    alpha = 1.0;
+    bi_update(bi, he, x, y, z);
+    bi_double(bi, he, alpha, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
+    MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
+    MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
+    y_fin(he, x, y, z);
+    FREE3(vx, vy, vz);
+    FREE3(ux, uy, uz);
+    bi_fin(bi);
+}

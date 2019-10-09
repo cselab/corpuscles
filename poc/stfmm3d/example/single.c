@@ -13,7 +13,7 @@ main()
 {
     int i, n;
     FMM3 *q;
-    double *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz;
+    real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz;
 
     He *he;
     y_inif(stdin, &he, &x, &y, &z);
@@ -30,9 +30,8 @@ main()
     }
 
     fmm3_single(q, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
-
-    for (i = 0; i < 2; i++)
-	MSG(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
+    MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
+    MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
 
     y_fin(he, x, y, z);
     FREE3(fx, fy, fz);

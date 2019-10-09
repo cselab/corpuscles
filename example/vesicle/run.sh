@@ -13,8 +13,9 @@ rho=1
 D=0.000898798148042
 A=12.5663706144
 
-a=0.0392699 reg=0.0301148
-#a=0.0098174770425 reg=
+
+init=init/0.off a=0.0392699 reg=0.0301148
+#init=init/1.off a=0.0098174770425 reg=0.0150574
 
 make
 co.run ./main \
@@ -22,7 +23,7 @@ co.run ./main \
        volume 3.76991 5000 \
        area $a 500 \
        juelicher_xin 1 0 0 0 \
-       cortez_zero $reg \
+       cortez_fm $reg \
        1 $D $rho $eta $lambda $gdot $dt \
        $start $end $freq 200 \
-       '<' init/0.off
+       '<' $init

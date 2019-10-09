@@ -33,7 +33,7 @@ static const int iter_max=100;
 
 static Force *Fo[20] = {NULL};
 static He *he;
-static Bi *bi;
+static BI *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
@@ -219,7 +219,7 @@ int main(__UNUSED int argc, char **argv) {
   real a, e, reg;
   real M, m;
   
-  err_set_ignore();
+  //err_set_ignore();
   argv++;
   y_inif(stdin, &he, &x, &y, &z);
   fargv(&argv, he);

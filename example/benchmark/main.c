@@ -180,8 +180,6 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     array_zero3(nv, vx, vy, vz);
     for (i = 0; i < nv; i++)
         vx[i] += coef * gamdot * z[i];
-    //vector_tensor(nv, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy,
-    //              vz);
     bi_cortez_single(bi, he, al, x, y, z, fx, fy, fz, /**/  vx, vy, vz);
 
     //inner and outer viscosity has obvious contrast

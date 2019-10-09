@@ -1,4 +1,4 @@
-CC = c99
+CC = gcc
 FC = gfortran
 FCFLAGS = -Ofast  -g
 CFLAGS = -Ofast  -g
