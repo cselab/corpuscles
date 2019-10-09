@@ -98,7 +98,6 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
     wz = q->wz;
     eps = q->eps;
     n = he_nv(he);
-    
     array_zero3(n, wx, wy, wz);
     status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
     array_axpy3(n, 1/(4*pi*eps), fx, fy, fz, wx, wy, wz); /* self */
