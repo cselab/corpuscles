@@ -9,6 +9,7 @@
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
+#include "co/normal.h"
 #include "co/oseen3zero.h"
 #include "co/tensor.h"
 #include "co/bi/cortez_fm.h"
@@ -17,6 +18,7 @@
 struct T {
     FM *fm;
     real *wx, *wy, *wz, *area;
+    real *nx, *ny, *nz;
     Oseen3Zero *oseen;
     struct Tensor O, K;
 };
@@ -38,6 +40,7 @@ bi_cortez_fm_ini(real eps, He *he, /**/ T **pq)
     if (status != CO_OK)
 	ERR(CO_MEMORY, "fm_ini failed");	
     MALLOC3(n, &q->wx, &q->wy, &q->wz);
+    MALLOC3(n, &q->nx, &q->ny, &q->nz);
     MALLOC(n, &q->area);
     tensor_ini(n, &q->O);
     tensor_ini(n, &q->K);
@@ -63,6 +66,7 @@ bi_cortez_fm_fin(T *q)
     tensor_fin(&q->K);
     fm_fin(q->fm);
     FREE3(q->wx, q->wy, q->wz);
+    FREE3(q->nx, q->ny, q->nz);
     FREE(q->area);
     FREE(q);
     return CO_OK;
@@ -72,12 +76,16 @@ int
 bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
 {
     struct Tensor *O, *K;
-    real *area;
+    real *area, *nx, *ny, *nz;
     int status;
 
     O = &q->O;
     K = &q->K;
     area = q->area;
+    nx = q->nx;
+    ny = q->ny;
+    nz = q->nz;
+    
     status = oseen3_zero_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz, O->yy, O->yz, O->zz);
     if (status != CO_OK)
 	ERR(CO_NUM, "oseen3_zero_apply failed");
@@ -85,6 +93,7 @@ bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
     if (status != CO_OK)
 	ERR(CO_NUM, "oseen3_zero_stresslet failed");
     he_area_ver(he, x, y, z, area);
+    normal_mwa(he, x, y, z, nx, ny, nz);
     return CO_OK;
 }
 
@@ -100,7 +109,6 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
-    //array_multiply3(n, area, wx, wy, wz);
     array_axpy3(n, al, wx, wy, wz, ux, uy, uz);
     return CO_OK;
 }

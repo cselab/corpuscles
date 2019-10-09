@@ -1,47 +1,54 @@
 #include <stdio.h>
 #include <real.h>
 #include <co/area.h>
+#include <co/bi.h>
 #include <co/err.h>
 #include <co/he.h>
+#include <co/macro.h>
 #include <co/memory.h>
 #include <co/normal.h>
 #include <co/y.h>
-#include <fm.h>
 
 #define FMT   CO_REAL_OUT
 
 int
-main()
+main(int argc, char **argv)
 {
+    char *name;
+    BI *bi;
     int i, n;
-    FM *q;
-    real *x, *y, *z, *ux, *uy, *uz, *nx, *ny, *nz, *vx, *vy, *vz;
-    real *area;
-
+    real *x, *y, *z, *ux, *uy, *uz, *nx, *vx, *vy, *vz;
+    real alpha;
     He *he;
+
+    USED(argc);
+    argv++;
+    if (argv[0] == NULL)
+	ER("needs an argument");
+    if (!bi_good(argv[0])) {
+	MSG("not a bi algorithm '%s'", argv[0]);
+	ER("possible values are '%s'", bi_list());
+    }
     y_inif(stdin, &he, &x, &y, &z);
+    name = argv[0];
+    argv++;
+    bi_argv(name, &argv, he, &bi);
     n = he_nv(he);
     MALLOC3(n, &ux, &uy, &uz);
-    MALLOC3(n, &nx, &ny, &nz);
-    MALLOC(n, &area);
     CALLOC3(n, &vx, &vy, &vz);
 
-    fm_ini(n, &q);
-    normal_mwa(he, x, y, z, nx, ny, nz);
-    he_area_ver(he, x, y, z, area);
-
     for (i = 0; i < n; i++) {
-	ux[i] = area[i];
-	uy[i] = 0;
-	uz[i] = 0;
+	ux[i] = 1;
+	uy[i] = 2;
+	uz[i] = 3;
     }
-    fm_double(q, x, y, z, ux, uy, uz, nx, ny, nz, /**/ vx, vy, vz);
-    for (i = 0; i < n; i++)
-	MSG(FMT " " FMT " " FMT, vx[i], vy[i], vz[i]);
+    alpha = 1.0;
+    bi_update(bi, he, x, y, z);
+    bi_double(bi, he, alpha, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
+    MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
+    MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
     y_fin(he, x, y, z);
     FREE3(vx, vy, vz);
     FREE3(ux, uy, uz);
-    FREE3(nx, ny, nz);
-    FREE(area);
-    fm_fin(q);
+    bi_fin(bi);
 }

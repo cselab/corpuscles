@@ -27,7 +27,6 @@ main(int argc, char **argv)
 	ER("possible values are '%s'", bi_list());
     }
     y_inif(stdin, &he, &x, &y, &z);
-
     name = argv[0];
     argv++;
     bi_argv(name, &argv, he, &bi);
