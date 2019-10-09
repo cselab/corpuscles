@@ -9,7 +9,7 @@ u: [ux, uy, uz];
 rad: sqrt(d . d);
 
 t: s(k, s(i, u[i]*T*n[k]*dA));
-t0: factor(t), j = X;
+t0: factor(t), j = Z;
 
 assume('r > 0);
 t0: trigsimp(t0), x = 'r*cos('p), y = 'r*sin('p), dA = r*dp*dr;

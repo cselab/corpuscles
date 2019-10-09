@@ -167,6 +167,16 @@ int vec_norm(const real a[3], /**/ real b[3]) {
     return CO_OK;
 }
 
+int
+vec_normalize(real a[3])
+{
+    real s;
+    s = vec_abs(a);
+    if (!small(s))
+	vec_scale(1/s, a);
+    return CO_OK;
+}
+
 int vec_project(const real a[3], const real b[3], /**/ real c[3]) {
     real n[3], s;
     vec_norm(b, /**/ n);

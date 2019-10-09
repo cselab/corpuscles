@@ -38,6 +38,7 @@ real vec_cylindrical_r(const real[3]);
 real vec_spherical_theta(const real[3]);
 
 int vec_norm(const real[3], /**/ real[3]);
+int vec_normalize(real[3]);
 int vec_mean3(const real[3], const real[3], const real[3], /**/ real[3]);
 
 /* `c' = project `a' on `b' */

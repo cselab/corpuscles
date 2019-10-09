@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <tgmath.h>
 #include "real.h"
 #include <fm.h>
 #include "co/area.h"
@@ -10,6 +11,7 @@
 #include "co/matrix.h"
 #include "co/memory.h"
 #include "co/normal.h"
+#include "co/vec.h"
 #include "co/bi/cortez_fm.h"
 
 static const real pi = 3.141592653589793115997964;
@@ -89,18 +91,33 @@ bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
 int
 bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /*io*/ real *ux, real *uy, real *uz)
 {
-    real *wx, *wy, *wz;
-    int n, status;
-    real eps;
-
+    real *wx, *wy, *wz, *nx, *ny, *nz, *area, normal[3], force[3], reject[3];
+    real A, R, fX, fZ;
+    int n, i, status;
+    nx = q->nx;
+    ny = q->ny;
+    nz = q->nz;
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
-    eps = q->eps;
+    area = q->area;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
-    array_axpy3(n, 1/(4*pi*eps), fx, fy, fz, wx, wy, wz); /* self */
+    
+    //array_axpy3(n, 1/(4*pi*eps), fx, fy, fz, wx, wy, wz); /* self */
+    for (i = 0; i < n; i++) {
+	A = area[i];
+	R = sqrt(A/pi);
+	vec_get(i, nx, ny, nz, normal);
+	vec_get(i, fx, fy, fz, force);
+	fX = vec_reject_scalar(force, normal);
+	fZ = vec_project_scalar(force, normal);
+	vec_reject(force, normal, reject);
+	vec_normalize(reject);
+	vec_scalar_append(reject, 2*fX/(4*pi*R), i, wx, wy, wz);
+	vec_scalar_append(normal, 3*fZ/(4*pi*R), i, wx, wy, wz);
+    }
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_single failed");
     array_axpy3(n, al, wx, wy, wz, ux, uy, uz);
