@@ -33,7 +33,7 @@ static const int iter_max=100;
 
 static Force *Fo[20] = {NULL};
 static He *he;
-static Bi *bi;
+static BI *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
