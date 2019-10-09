@@ -114,16 +114,28 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
 }
 
 int
-bi_cortez_fm_double(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/real *wx, real *wy, real *wz)
+bi_cortez_fm_double(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/ real *vx, real *vy, real *vz)
 {
     int n;
     struct Tensor *K;
+    real *wx, *wy, *wz, *nx, *ny, *nz, *area, s;
     USED(x);
     USED(y);
     USED(z);
-    
-    K = &q->K;
+    wx = q->wx;
+    wy = q->wy;
+    wz = q->wz;
+    nx = q->nx;
+    ny = q->ny;
+    nz = q->nz;
+    area = q->area;
     n = he_nv(he);
-    tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
+    K = &q->K;
+    array_zero3(n, wx, wy, wz);
+    //tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
+    fm_double(q->fm, x, y, z, ux, uy, uz, nx, ny, nz, wx, wy, wz);
+    array_multiply3(n, area, wx, wy, wz);
+    s = 1.0;
+    array_axpy3(n, s, wx, wy, wz, vx, vy, vz);
     return CO_OK;
 }
