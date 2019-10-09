@@ -10,8 +10,6 @@
 #include "co/matrix.h"
 #include "co/memory.h"
 #include "co/normal.h"
-#include "co/oseen3zero.h"
-#include "co/tensor.h"
 #include "co/bi/cortez_fm.h"
 
 #define T BiCortezFm
@@ -19,8 +17,6 @@ struct T {
     FM *fm;
     real *wx, *wy, *wz, *area;
     real *nx, *ny, *nz;
-    Oseen3Zero *oseen;
-    struct Tensor O, K;
 };
 
 int
@@ -33,17 +29,12 @@ bi_cortez_fm_ini(real eps, He *he, /**/ T **pq)
     if (eps <= 0)
 	ERR(CO_IO, "eps=%g <= 0", eps);
     n = he_nv(he);
-    status = oseen3_zero_ini(he, eps, &q->oseen);
-    if (status != CO_OK)
-	ERR(CO_MEMORY, "oseen3_zero_ini failed");
     status = fm_ini(n, &q->fm);
     if (status != CO_OK)
-	ERR(CO_MEMORY, "fm_ini failed");	
+	ERR(CO_MEMORY, "fm_ini failed");
     MALLOC3(n, &q->wx, &q->wy, &q->wz);
     MALLOC3(n, &q->nx, &q->ny, &q->nz);
     MALLOC(n, &q->area);
-    tensor_ini(n, &q->O);
-    tensor_ini(n, &q->K);
     *pq = q;
     return CO_OK;
 }
@@ -61,9 +52,6 @@ bi_cortez_fm_argv(char ***p, He *he, /**/ T **pq)
 int
 bi_cortez_fm_fin(T *q)
 {
-    oseen3_zero_fin(q->oseen);
-    tensor_fin(&q->O);
-    tensor_fin(&q->K);
     fm_fin(q->fm);
     FREE3(q->wx, q->wy, q->wz);
     FREE3(q->nx, q->ny, q->nz);
@@ -75,25 +63,19 @@ bi_cortez_fm_fin(T *q)
 int
 bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
 {
-    struct Tensor *O, *K;
     real *area, *nx, *ny, *nz;
     int status;
 
-    O = &q->O;
-    K = &q->K;
     area = q->area;
     nx = q->nx;
     ny = q->ny;
     nz = q->nz;
-    
-    status = oseen3_zero_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz, O->yy, O->yz, O->zz);
+    status = he_area_ver(he, x, y, z, area);
     if (status != CO_OK)
-	ERR(CO_NUM, "oseen3_zero_apply failed");
-    status = oseen3_zero_stresslet(q->oseen, he, x, y, z, K->xx, K->xy, K->xz, K->yy, K->yz, K->zz);
+	ERR(CO_NUM, "he_area_ver failed");
+    status = normal_mwa(he, x, y, z, nx, ny, nz);
     if (status != CO_OK)
-	ERR(CO_NUM, "oseen3_zero_stresslet failed");
-    he_area_ver(he, x, y, z, area);
-    normal_mwa(he, x, y, z, nx, ny, nz);
+	ERR(CO_NUM, "normal_mwa failed");
     return CO_OK;
 }
 
@@ -114,11 +96,10 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
 }
 
 int
-bi_cortez_fm_double(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/ real *vx, real *vy, real *vz)
+bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/ real *vx, real *vy, real *vz)
 {
     int n;
-    struct Tensor *K;
-    real *wx, *wy, *wz, *nx, *ny, *nz, *area, s;
+    real *wx, *wy, *wz, *nx, *ny, *nz, *area;
     USED(x);
     USED(y);
     USED(z);
@@ -130,12 +111,9 @@ bi_cortez_fm_double(T *q, He *he, real al, const real *x, const real *y, const r
     nz = q->nz;
     area = q->area;
     n = he_nv(he);
-    K = &q->K;
     array_zero3(n, wx, wy, wz);
-    //tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
     fm_double(q->fm, x, y, z, ux, uy, uz, nx, ny, nz, wx, wy, wz);
     array_multiply3(n, area, wx, wy, wz);
-    s = 1.0;
-    array_axpy3(n, s, wx, wy, wz, vx, vy, vz);
+    array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
     return CO_OK;
 }
