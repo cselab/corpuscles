@@ -83,14 +83,16 @@ int
 bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /*io*/ real *ux, real *uy, real *uz)
 {
     real *wx, *wy, *wz;
-    int n;
+    int n, status;
 
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
-    fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
+    status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
+    if (status != CO_OK)
+	ERR(CO_NUM, "fm_single failed");
     array_axpy3(n, al, wx, wy, wz, ux, uy, uz);
     return CO_OK;
 }
@@ -98,7 +100,7 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
 int
 bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/ real *vx, real *vy, real *vz)
 {
-    int n;
+    int n, status;
     real *wx, *wy, *wz, *nx, *ny, *nz, *area;
     USED(x);
     USED(y);
@@ -112,7 +114,10 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
     area = q->area;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
-    fm_double(q->fm, x, y, z, ux, uy, uz, nx, ny, nz, wx, wy, wz);
+    
+    status = fm_double(q->fm, x, y, z, ux, uy, uz, nx, ny, nz, wx, wy, wz);
+    if (status != CO_OK)
+	ERR(CO_NUM, "fm_double failed");
     array_multiply3(n, area, wx, wy, wz);
     array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
     return CO_OK;
