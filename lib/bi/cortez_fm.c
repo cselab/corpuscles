@@ -115,8 +115,8 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
 	fZ = vec_project_scalar(force, normal);
 	vec_reject(force, normal, reject);
 	vec_normalize(reject);
-	vec_scalar_append(reject, 2*fX/(4*pi*R), i, wx, wy, wz);
-	vec_scalar_append(normal, 3*fZ/(4*pi*R), i, wx, wy, wz);
+	vec_scalar_append(reject, 3*fX/(4*pi*R), i, wx, wy, wz);
+	vec_scalar_append(normal, 2*fZ/(4*pi*R), i, wx, wy, wz);
     }
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_single failed");
