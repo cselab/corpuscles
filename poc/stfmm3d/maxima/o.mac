@@ -1,0 +1,19 @@
+(X: 1, Y: 2, Z: 3) $
+
+s(i, e)::=buildq([e, i], sum(e, i, 1, 3));
+
+matchdeclare([i, j], numberp);
+tellsimpafter(kd(i, j), if i = j then 1 else 0);
+
+G: kd(i, j)/rad + d[i]*d[j]/rad^3;
+d: [x, y, 0];
+u: [ux, uy, uz];
+rad: sqrt(d . d);
+
+t: s(i, u[i]*G*dA);
+t0: factor(t), j = Z;
+
+assume('r > 0);
+t0: trigsimp(t0), x = 'r*cos('p), y = 'r*sin('p), dA = r;
+
+integrate(integrate(t0, p, 0, 2*%pi), r, 0, R);
