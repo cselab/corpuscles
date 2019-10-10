@@ -3,11 +3,11 @@
 set -eu
 
 gdot=0.1
-lambda=5
+lambda=5.6
 start=0
 end=10000
 freq=10
-dt=0.01
+dt=0.05
 eta=645.928652122
 rho=1
 D=0.000898798148042
