@@ -3,6 +3,7 @@ include ../../conf.mk
 PREC = d
 M = \
 single\
+sphere\
 double\
 
 CO_CFLAGS = `fm.conf --cflags $(PREC)`

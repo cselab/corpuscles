@@ -147,7 +147,7 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
     real *wx, *wy, *wz, *ax, *ay, *az, *h;
     const real *nx, *ny, *nz, *area;
     real normal[3], velocity[3], reject[3];
-    real uX, p, curv;
+    real uX, p;
     USED(x);
     USED(y);
     USED(z);
@@ -170,14 +170,13 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_double failed");
     for (i = 0; i < n; i++) {
-	curv = h[i];
-	p = sqrt(area[i]/pi);
+	p = sqrt(area[i]/pi)*h[i];
 	vec_get(i, nx, ny, nz, normal);
 	vec_get(i, ux, uy, uz, velocity);
 	uX = vec_reject_scalar(velocity, normal);
 	vec_reject(velocity, normal, reject);
 	vec_normalize(reject);
-	vec_scalar_append(reject, -6*curv*uX*p/8     / 2, i, wx, wy, wz);
+	vec_scalar_append(reject, -6*uX*p/8     / 2, i, wx, wy, wz);
     }
     array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
     return CO_OK;
