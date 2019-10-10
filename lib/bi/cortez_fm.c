@@ -82,7 +82,7 @@ int
 bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
 {
     real *area, *nx, *ny, *nz, *area0, *h0, *h;
-    int n, status;
+    int i, n, status;
 
     area = q->area;
     nx = q->nx;
@@ -93,7 +93,8 @@ bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
     if (status != CO_OK)
 	ERR(CO_NUM, "H_apply failed");
     n = he_nv(he);
-    array_copy(n, h0, h);
+    for (i = 0; i < n; i++)
+	h[i] = 2*h0[i]/area0[i];
     status = he_area_ver(he, x, y, z, area);
     if (status != CO_OK)
 	ERR(CO_NUM, "he_area_ver failed");
@@ -172,7 +173,7 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
 	curv = h[i];
 	p = sqrt(area[i]/pi);
 	vec_get(i, nx, ny, nz, normal);
-	vec_get(i, ux, uy, z, velocity);
+	vec_get(i, ux, uy, uz, velocity);
 	uX = vec_reject_scalar(velocity, normal);
 	vec_reject(velocity, normal, reject);
 	vec_normalize(reject);
