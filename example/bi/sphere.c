@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <real.h>
+#include <co/area.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
@@ -16,7 +17,7 @@ main(int argc, char **argv)
     int i, n;
     char *name;
     BI *bi;
-    real alpha, *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz;
+    real alpha, *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *area;
     He *he;
     USED(argc);
 
@@ -34,9 +35,12 @@ main(int argc, char **argv)
     
     n = he_nv(he);
     MALLOC3(n, &fx, &fy, &fz);
+    MALLOC(n, &area);
     CALLOC3(n, &vx, &vy, &vz);
+    he_area_ver(he, x, y, z, area);
+    
     for (i = 0; i < n; i++) {
-	fx[i] = 1.0;
+	fx[i] = area[i];
 	fy[i] = 0.0;
 	fz[i] = 0.0;
     }
@@ -52,4 +56,5 @@ main(int argc, char **argv)
     bi_fin(bi);
     FREE3(fx, fy, fz);
     FREE3(vx, vy, vz);
+    FREE(area);
 }
