@@ -10,7 +10,7 @@ x: R*cos(t)*sin(p);
 y: R*sin(t)*sin(p);
 z: R*cos(p);
 
-u: [ux, uy, uz];
+u: [ux, 0, uz];
 r: [x, y, z];
 n: r / sqrt(r . r);
 r0: r, p = 0, t = 0;
@@ -24,8 +24,8 @@ e: s(k, s(i, u[i]*d[i]*d[j]*d[k]*n[k] * dA));
 A: ratexpand(taylor(e, p, 0, 5));
 B: ratexpand(taylor(rad^5, p, 0, 5));
 
-f: trigsimp(A/B);
-f: integrate(integrate(f, t, 0, 2*%pi), p, 0, p0);
-Area: integrate(integrate(dA, t, 0, 2*%pi), p, 0, p0);
+Area: integrate(integrate(dA, t, 0, 2*%pi), p, 0, p0) $
 solve(Area0 = ratexpand(taylor(Area, p0, 0, 2)), p0)[2];
+f: trigsimp(A/B) $
+f: integrate(integrate(f, t, 0, 2*%pi), p, 0, p0);
 

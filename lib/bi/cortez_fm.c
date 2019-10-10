@@ -44,7 +44,7 @@ bi_cortez_fm_ini(real eps, He *he, /**/ T **pq)
 	ERR(CO_MEMORY, "fm_ini failed");
     status = H_ini(he, &q->H);
     if (status != CO_OK)
-	ERR(CO_MEMORY, "H_ini failed");    
+	ERR(CO_MEMORY, "H_ini failed");
     MALLOC3(n, &q->wx, &q->wy, &q->wz);
     MALLOC3(n, &q->nx, &q->ny, &q->nz);
     MALLOC3(n, &q->ax, &q->ay, &q->az);
@@ -168,7 +168,7 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
     array_multiply3(n, area, ax, ay, az);
     status = fm_double(q->fm, x, y, z, ux, uy, uz, ax, ay, az, wx, wy, wz);
     if (status != CO_OK)
-	ERR(CO_NUM, "fm_double failed");  
+	ERR(CO_NUM, "fm_double failed");
     for (i = 0; i < n; i++) {
 	curv = h[i];
 	p = sqrt(area[i]/pi);
@@ -177,7 +177,7 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
 	uX = vec_reject_scalar(velocity, normal);
 	vec_reject(velocity, normal, reject);
 	vec_normalize(reject);
-	vec_scalar_append(reject, 6*curv*uX*p/8, i, wx, wy, wz); 
+	vec_scalar_append(reject, -6*curv*uX*p/8     / 2, i, wx, wy, wz);
     }
     array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
     return CO_OK;
