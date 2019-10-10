@@ -41,8 +41,8 @@ main(int argc, char **argv)
     
     for (i = 0; i < n; i++) {
 	fx[i] = area[i];
-	fy[i] = 0.0;
-	fz[i] = 0.0;
+	fy[i] = 2*area[i];
+	fz[i] = 3*area[i];
     }
     alpha = 1.0;
     bi_update(bi, he, x, y, z);
