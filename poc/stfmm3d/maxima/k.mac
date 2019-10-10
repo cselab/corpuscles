@@ -2,16 +2,18 @@
 
 s(i, e)::=buildq([e, i], sum(e, i, 1, 3));
 
-T: (d[i] * d[j] * d[i])/rad^5;
+j: Y;
+T: (d[i] * d[j] * d[k])/rad^5;
 n: [0, 0, 1];
 d: [x, y, 0];
 u: [ux, uy, uz];
 rad: sqrt(d . d);
 
 t: s(k, s(i, u[i]*T*n[k]*dA));
-t0: factor(t), j = X;
+t: factor(t);
+t: ev(t);
 
 assume('r > 0);
-t0: trigsimp(t0), x = 'r*cos('p), y = 'r*sin('p), dA = r*dp*dr;
+t0: trigsimp(t), x = 'r*cos('p), y = 'r*sin('p), dA = r*dp*dr;
 
 integrate(t0, p, 0, 2*%pi);
