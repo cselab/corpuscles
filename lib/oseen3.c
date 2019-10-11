@@ -261,7 +261,8 @@ int
 oseen3_velocity(T *q, He *He, real mu, const real *x, const real *y, const real *z,
 	const real *fx, const real *fy, const real *fz, const real r[3], real v[3])
 {
-	return CO_OK;
+    USED(q);
+    return CO_OK;
 }
 
 int
