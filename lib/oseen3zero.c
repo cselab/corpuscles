@@ -21,10 +21,9 @@ struct T
 };
 
 static int
-oseen(real e0, const real a[3], const real b[3],
+oseen(const real a[3], const real b[3],
       real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
-        USED(e0);
 	enum
 	{
 		X, Y, Z
@@ -97,7 +96,7 @@ oseen3_zero_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		SET(i, i, 0, ozz);
 		for (j = i + 1; j < n; j++) {
 			i_vec_get(j, x, y, z, b);
-			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+			oseen(a, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, xx, oxx);
 			SET(i, j, xy, oxy);
 			SET(i, j, xz, oxz);

@@ -18,15 +18,19 @@ r0: r, p = 0, t = 0;
 d: r - r0;
 rad: sqrt(d . d);
 
-j: X;
+j: Z;
 dA: R^2*sin(p);
-ee: s(i, dA*f[i]*(kd(i, j)/rad + d[i]*d[j]/rad^3));
-e: ratexpand(taylor(e, p, 0, 0));
+e: s(i,
+  dA*f[i]*
+  (kd(i, j)*(rad^2 + 2*ep^2)/(rad^2 + ep^2)^(3/2)
+    + d[i]*d[j]/(rad^2 + ep^2)^(3/2)));
+  
+e: ratexpand(taylor(e, p, 0, 1));
 e: trigsimp(e);
 e: integrate(integrate(e, 't, 0, 2*%pi), 'p, 0, p0);
 
 Area: integrate(integrate(dA, t, 0, 2*%pi), p, 0, p0) $
 pexp: solve(A = ratexpand(taylor(Area, p0, 0, 4)), p0)[2];
-pexp: solve(A = Area, p0)[1], R = 1/h;
 
-trigsimp(ev(e, pexp)), R = 1/h;
+assume(h > 0);
+q: trigsimp(ev(e, pexp)), R = 1/h;
