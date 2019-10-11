@@ -14,11 +14,13 @@
 #include "co/vec.h"
 #include "co/H.h"
 #include "co/bi/cortez_fm.h"
+#include "co/bi/self_circle.h"
 
 static const real pi = 3.141592653589793115997964;
 
 #define T BiCortezFm
 struct T {
+    BiSelfCircle *self;
     FM *fm;
     H *H;
     real *wx, *wy, *wz, *area;
@@ -41,6 +43,9 @@ bi_cortez_fm_ini(He *he, /**/ T **pq)
     status = H_ini(he, &q->H);
     if (status != CO_OK)
 	ERR(CO_MEMORY, "H_ini failed");
+    status = bi_self_circle_ini(he, &q->self);
+    if (status != CO_OK)
+	ERR(CO_MEMORY, "bi_self_circle_ini failed");
     MALLOC3(n, &q->wx, &q->wy, &q->wz);
     MALLOC3(n, &q->nx, &q->ny, &q->nz);
     MALLOC3(n, &q->ax, &q->ay, &q->az);
@@ -62,6 +67,7 @@ bi_cortez_fm_fin(T *q)
 {
     fm_fin(q->fm);
     H_fin(q->H);
+    bi_self_circle_fin(q->self);
     FREE3(q->wx, q->wy, q->wz);
     FREE3(q->nx, q->ny, q->nz);
     FREE3(q->ax, q->ay, q->az);
@@ -82,6 +88,7 @@ bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
     ny = q->ny;
     nz = q->nz;
     h = q->h;
+    status = bi_self_circle_update(q->self, he, x, y, z);
     status = H_apply(q->H, he, x, y, z, &h0, &area0);
     if (status != CO_OK)
 	ERR(CO_NUM, "H_apply failed");
@@ -113,20 +120,7 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
-    for (i = 0; i < n; i++) {
-	A = area[i];
-	R = sqrt(A/pi);
-	vec_get(i, nx, ny, nz, normal);
-	vec_get(i, fx, fy, fz, force);
-	fX = vec_reject_scalar(force, normal);
-	fZ = vec_project_scalar(force, normal);
-	vec_reject(force, normal, reject);
-	vec_normalize(reject);
-	vec_scalar_append(reject, 3*fX/(4*pi*R), i, wx, wy, wz);
-	vec_scalar_append(normal, 2*fZ/(4*pi*R), i, wx, wy, wz);
-    }
-    if (status != CO_OK)
-	ERR(CO_NUM, "fm_single failed");
+    status = bi_self_circle_single(q->self, he, al, x, y, z, fx, fy, fz, ux, uy, uz);
     array_axpy3(n, al, wx, wy, wz, ux, uy, uz);
     return CO_OK;
 }
