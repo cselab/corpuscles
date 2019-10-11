@@ -16,7 +16,7 @@ co.run ./main \
        volume 2.6892 1000000 \
        juelicher_xin 1.0 0.0 0.63662 19.9933 \
        strain ref/1.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
-       cortez_fm \
+       cortez_zero \
        1 0.000898798148042 1.0 $gamdot $lambda \
        7.1961916509 \
        $dt $start $end $freq 50 '<' init/1.off

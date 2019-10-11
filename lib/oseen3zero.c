@@ -90,12 +90,6 @@ oseen3_zero_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		real a[3], b[3], xx, xy, xz, yy, yz, zz;
 		int j;
 		i_vec_get(i, x, y, z, a);
-		SET(i, i, 0, oxx);
-		SET(i, i, 0, oxy);
-		SET(i, i, 0, oxz);
-		SET(i, i, 0, oyy);
-		SET(i, i, 0, oyz);
-		SET(i, i, 0, ozz);
 		for (j = i + 1; j < n; j++) {
 			i_vec_get(j, x, y, z, b);
 			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
@@ -172,37 +166,22 @@ oseen3_zero_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	n = he_nv(he);
 #pragma omp parallel for
 	for (i = 0; i < n; i++) {
-		real a[3], b[3], u[3], xx, xy, xz, yy, yz, zz;
 		int j;
+		real a[3], b[3], u[3], xx, xy, xz, yy, yz, zz;
 		i_vec_get(i, x, y, z, a);
-		i_vec_get(i, nx, ny, nz, u);
-		A = area[i];
-		SET(i, i, 0, oxx);
-		SET(i, i, 0, oxy);
-		SET(i, i, 0, oxz);
-		SET(i, i, 0, oyy);
-		SET(i, i, 0, oyz);
-		SET(i, i, 0, ozz);
 		for (j = 0; j < n; j++) {
-			if (i == j) continue;
-			i_vec_get(j, nx, ny, nz, u);
-			i_vec_get(j, x, y, z, b);
-			A = area[j];
-			stresslet(a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
-			SET(i, j, A*xx, oxx);
-			SET(i, j, A*xy, oxy);
-			SET(i, j, A*xz, oxz);
-			SET(i, j, A*yy, oyy);
-			SET(i, j, A*yz, oyz);
-			SET(i, j, A*zz, ozz);
+		    if (i == j) continue;
+		    i_vec_get(j, nx, ny, nz, u);
+		    i_vec_get(j, x, y, z, b);
+		    A = area[j]/(8*pi);
+		    stresslet(a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
+		    SET(i, j, A*xx, oxx);
+		    SET(i, j, A*xy, oxy);
+		    SET(i, j, A*xz, oxz);
+		    SET(i, j, A*yy, oyy);
+		    SET(i, j, A*yz, oyz);
+		    SET(i, j, A*zz, ozz);
 		}
 	}
-	s = 1/(8*pi);
-	i_matrix_scale(n, n, s, oxx);
-	i_matrix_scale(n, n, s, oxy);
-	i_matrix_scale(n, n, s, oxz);
-	i_matrix_scale(n, n, s, oyy);
-	i_matrix_scale(n, n, s, oyz);
-	i_matrix_scale(n, n, s, ozz);
 	return CO_OK;
 }
