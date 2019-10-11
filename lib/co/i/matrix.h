@@ -24,7 +24,6 @@ i_matrix_scale(int M, int N, real s, real *a) {
 static int
 i_matrix_add(int M, int N, int m, int n, real s, real *a)
 {
-    USED(M);
     a[N*m + n] += s;
     return CO_OK;
 }
