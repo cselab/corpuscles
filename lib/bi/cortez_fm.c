@@ -8,25 +8,19 @@
 #include "co/he.h"
 #include "co/argv.h"
 #include "co/macro.h"
-#include "co/matrix.h"
 #include "co/memory.h"
 #include "co/normal.h"
 #include "co/vec.h"
-#include "co/H.h"
 #include "co/bi/cortez_fm.h"
 #include "co/bi/self_circle.h"
-
-static const real pi = 3.141592653589793115997964;
 
 #define T BiCortezFm
 struct T {
     BiSelfCircle *self;
     FM *fm;
-    H *H;
     real *wx, *wy, *wz, *area;
     real *nx, *ny, *nz;
     real *ax, *ay, *az;
-    real *h;
 };
 
 int
@@ -40,9 +34,6 @@ bi_cortez_fm_ini(He *he, /**/ T **pq)
     status = fm_ini(n, &q->fm);
     if (status != CO_OK)
 	ERR(CO_MEMORY, "fm_ini failed");
-    status = H_ini(he, &q->H);
-    if (status != CO_OK)
-	ERR(CO_MEMORY, "H_ini failed");
     status = bi_self_circle_ini(he, &q->self);
     if (status != CO_OK)
 	ERR(CO_MEMORY, "bi_self_circle_ini failed");
@@ -50,7 +41,6 @@ bi_cortez_fm_ini(He *he, /**/ T **pq)
     MALLOC3(n, &q->nx, &q->ny, &q->nz);
     MALLOC3(n, &q->ax, &q->ay, &q->az);
     MALLOC(n, &q->area);
-    MALLOC(n, &q->h);
     *pq = q;
     return CO_OK;
 }
@@ -66,13 +56,11 @@ int
 bi_cortez_fm_fin(T *q)
 {
     fm_fin(q->fm);
-    H_fin(q->H);
     bi_self_circle_fin(q->self);
     FREE3(q->wx, q->wy, q->wz);
     FREE3(q->nx, q->ny, q->nz);
     FREE3(q->ax, q->ay, q->az);
     FREE(q->area);
-    FREE(q->h);
     FREE(q);
     return CO_OK;
 }
@@ -80,21 +68,14 @@ bi_cortez_fm_fin(T *q)
 int
 bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
 {
-    real *area, *nx, *ny, *nz, *area0, *h0, *h;
-    int i, n, status;
+    real *area, *nx, *ny, *nz;
+    int status;
 
     area = q->area;
     nx = q->nx;
     ny = q->ny;
     nz = q->nz;
-    h = q->h;
     status = bi_self_circle_update(q->self, he, x, y, z);
-    status = H_apply(q->H, he, x, y, z, &h0, &area0);
-    if (status != CO_OK)
-	ERR(CO_NUM, "H_apply failed");
-    n = he_nv(he);
-    for (i = 0; i < n; i++)
-	h[i] = 2*h0[i]/area0[i];
     status = he_area_ver(he, x, y, z, area);
     if (status != CO_OK)
 	ERR(CO_NUM, "he_area_ver failed");
@@ -107,20 +88,19 @@ bi_cortez_fm_update(T *q, He *he, const real *x, const real *y, const real *z)
 int
 bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /*io*/ real *ux, real *uy, real *uz)
 {
-    real *wx, *wy, *wz, *nx, *ny, *nz, *area, normal[3], force[3], reject[3];
-    real A, R, fX, fZ;
-    int n, i, status;
-    nx = q->nx;
-    ny = q->ny;
-    nz = q->nz;
+    real *wx, *wy, *wz;
+    int n, status;
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
-    area = q->area;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
+    if (status != CO_OK)
+	ERR(CO_NUM, "fm_single failed");
     status = bi_self_circle_single(q->self, he, al, x, y, z, fx, fy, fz, ux, uy, uz);
+    if (status != CO_OK)
+	ERR(CO_NUM, "bi_self_circle_single failed");
     array_axpy3(n, al, wx, wy, wz, ux, uy, uz);
     return CO_OK;
 }
@@ -128,11 +108,9 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
 int
 bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, const real *z, const real *ux, const real *uy, const real *uz, /*io*/ real *vx, real *vy, real *vz)
 {
-    int i, n, status;
-    real *wx, *wy, *wz, *ax, *ay, *az, *h;
+    int n, status;
+    real *wx, *wy, *wz, *ax, *ay, *az;
     const real *nx, *ny, *nz, *area;
-    real normal[3], velocity[3], reject[3];
-    real uX, p;
     USED(x);
     USED(y);
     USED(z);
@@ -146,7 +124,6 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
     ay = q->ay;
     az = q->az;
     area = q->area;
-    h = q->h;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     array_copy3(n, nx, ny, nz, ax, ay, az);
@@ -154,15 +131,9 @@ bi_cortez_fm_double(T *q, He *he, real alpha, const real *x, const real *y, cons
     status = fm_double(q->fm, x, y, z, ux, uy, uz, ax, ay, az, wx, wy, wz);
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_double failed");
-    for (i = 0; i < n; i++) {
-	p = sqrt(area[i]/pi)*h[i];
-	vec_get(i, nx, ny, nz, normal);
-	vec_get(i, ux, uy, uz, velocity);
-	uX = vec_reject_scalar(velocity, normal);
-	vec_reject(velocity, normal, reject);
-	vec_normalize(reject);
-	vec_scalar_append(reject, -6*uX*p/8     / 2, i, wx, wy, wz);
-    }
+    bi_self_circle_double(q->self, he, alpha, x, y, z, ux, uy, uz, vx, vy, vz);
+    if (status != CO_OK)
+	ERR(CO_NUM, "bi_self_circle_double failed");
     array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
     return CO_OK;
 }
