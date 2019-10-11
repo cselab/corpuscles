@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-int bi_cortez_fm_ini(real eps, He*, /**/ T**);
+int bi_cortez_fm_ini(He*, /**/ T**);
 int bi_cortez_fm_argv(char***, He*, /**/ T**);
 int bi_cortez_fm_fin(T*);
 int bi_cortez_fm_update(T*, He*, const real *x, const real *y, const real *z);

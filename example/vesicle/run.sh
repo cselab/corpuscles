@@ -23,7 +23,7 @@ co.run ./main \
        volume 3.76991 5000 \
        area $a 500 \
        juelicher_xin 1 0 0 0 \
-       cortez_fm $reg \
+       cortez_fm \
        1 $D $rho $eta $lambda $gdot $dt \
        $start $end $freq 200 \
        '<' $init

@@ -25,20 +25,16 @@ struct T {
     real *nx, *ny, *nz;
     real *ax, *ay, *az;
     real *h;
-    real eps;
 };
 
 int
-bi_cortez_fm_ini(real eps, He *he, /**/ T **pq)
+bi_cortez_fm_ini(He *he, /**/ T **pq)
 {
     T *q;
     int status, n;
 
     n = he_nv(he);
     MALLOC(1, &q);
-    if (eps <= 0)
-	ERR(CO_IO, "eps=%g <= 0", eps);
-    q->eps = eps;
     status = fm_ini(n, &q->fm);
     if (status != CO_OK)
 	ERR(CO_MEMORY, "fm_ini failed");
@@ -57,11 +53,8 @@ bi_cortez_fm_ini(real eps, He *he, /**/ T **pq)
 int
 bi_cortez_fm_argv(char ***p, He *he, /**/ T **pq)
 {
-    int status;
-    real x;
-    if ((status = argv_real(p, &x)) != CO_OK)
-	return status;
-    return bi_cortez_fm_ini(x, he, pq);
+    USED(p);
+    return bi_cortez_fm_ini(he, pq);
 }
 
 int
@@ -120,8 +113,6 @@ bi_cortez_fm_single(T *q, He *he, real al, const real *x, const real *y, const r
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
-
-    //array_axpy3(n, 1/(4*pi*eps), fx, fy, fz, wx, wy, wz); /* self */
     for (i = 0; i < n; i++) {
 	A = area[i];
 	R = sqrt(A/pi);
