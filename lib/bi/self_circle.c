@@ -91,8 +91,8 @@ bi_self_circle_update(T *q, He *he, const real *x, const real *y, const real *z)
 int
 bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /*io*/ real *ux, real *uy, real *uz)
 {
-    real *wx, *wy, *wz, *nx, *ny, *nz, *area, normal[3], force[3], reject[3];
-    real A, R, fX, fZ;
+    real *wx, *wy, *wz, *nx, *ny, *nz, *area, *h, normal[3], force[3], reject[3];
+    real A, R, fX, fZ, p;
     int n, i, status;
     nx = q->nx;
     ny = q->ny;
@@ -101,6 +101,7 @@ bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const
     wy = q->wy;
     wz = q->wz;
     area = q->area;
+    h = q->h;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     for (i = 0; i < n; i++) {
@@ -112,8 +113,8 @@ bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const
 	fZ = vec_project_scalar(force, normal);
 	vec_reject(force, normal, reject);
 	vec_normalize(reject);
-	vec_scalar_append(reject, 3*fX/(4*pi*R) / 2, i, wx, wy, wz);
-	vec_scalar_append(normal, 2*fZ/(4*pi*R) / 2, i, wx, wy, wz);
+	vec_scalar_append(reject, 3*fX/(8*pi*R), i, wx, wy, wz);
+	vec_scalar_append(normal,   fZ/(4*pi*R), i, wx, wy, wz);
     }
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_single failed");

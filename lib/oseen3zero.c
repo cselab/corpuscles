@@ -76,7 +76,6 @@ oseen3_zero_fin(T *q)
 }
 
 #define SET(i, j, s, a) i_matrix_set(n, n, i, j, s, a)
-
 int
 oseen3_zero_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
