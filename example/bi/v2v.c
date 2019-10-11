@@ -46,6 +46,7 @@ main(int argc, char **argv)
     }
     alpha = -2.0;
     bi_update(bi, he, x, y, z);
+
     bi_double(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
 
     const real *q[] = {x, y, z, vx, vy, vz, NULL};

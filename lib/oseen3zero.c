@@ -17,7 +17,6 @@
 static const real pi = 3.141592653589793115997964;
 struct T
 {
-	real e;
 	real *nx, *ny, *nz, *area;
 };
 
@@ -48,19 +47,8 @@ oseen(real e0, const real a[3], const real b[3],
 	return CO_OK;
 }
 
-static int
-oseen0(real e, real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
-{
-	real l;
-
-	l = 2/e;
-	*xx = *yy = *zz = l;
-	*xy = *xz = *yz = 0;
-	return CO_OK;
-}
-
 int
-oseen3_zero_ini(He *he, real e, T **pq)
+oseen3_zero_ini(He *he, T **pq)
 {
 	T *q;
 	real *nx, *ny, *nz, *area;
@@ -70,7 +58,6 @@ oseen3_zero_ini(He *he, real e, T **pq)
 	n = he_nv(he);
 	MALLOC3(n, &nx, &ny, &nz);
 	MALLOC(n, &area);
-	q->e = e;
 	q->nx = nx;
 	q->ny = ny;
 	q->nz = nz;
@@ -98,19 +85,17 @@ oseen3_zero_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	real e, s;
 
 	n = he_nv(he);
-	e = q->e;
 #pragma omp parallel for
 	for (i = 0; i < n; i++) {
 		real a[3], b[3], xx, xy, xz, yy, yz, zz;
 		int j;
 		i_vec_get(i, x, y, z, a);
-		oseen0(e, &xx, &xy, &xz, &yy, &yz, &zz);
-		SET(i, i, xx, oxx);
-		SET(i, i, xy, oxy);
-		SET(i, i, xz, oxz);
-		SET(i, i, yy, oyy);
-		SET(i, i, yz, oyz);
-		SET(i, i, zz, ozz);
+		SET(i, i, 0, oxx);
+		SET(i, i, 0, oxy);
+		SET(i, i, 0, oxz);
+		SET(i, i, 0, oyy);
+		SET(i, i, 0, oyz);
+		SET(i, i, 0, ozz);
 		for (j = i + 1; j < n; j++) {
 			i_vec_get(j, x, y, z, b);
 			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
@@ -140,10 +125,9 @@ oseen3_zero_apply(T *q, He *he, const real *x, const real *y, const real *z,
 }
 
 static int
-stresslet(real e0, const real a[3], const real n[3], const real b[3],
+stresslet(const real a[3], const real n[3], const real b[3],
 	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
 {
-        USED(e0);
 	enum
 	{
 		X, Y, Z
@@ -167,21 +151,14 @@ stresslet(real e0, const real a[3], const real n[3], const real b[3],
 	
 	return CO_OK;
 }
-static int
-stresslet0(__UNUSED real e, __UNUSED const real a[3], __UNUSED const real n[3],
-	real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
-{
-	*xx = *yy = *zz = *xy = *xz = *yz = 0;
-	return CO_OK;
-}
+
 int
 oseen3_zero_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
-	real *nx, *ny, *nz, *area, A, s, e;
+	real *nx, *ny, *nz, *area, A, s;
 	int status, n, i;
 
-	e = q->e;
 	nx = q->nx;
 	ny = q->ny;
 	nz = q->nz;
@@ -200,19 +177,18 @@ oseen3_zero_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		i_vec_get(i, x, y, z, a);
 		i_vec_get(i, nx, ny, nz, u);
 		A = area[i];
-		stresslet0(e, a, u, &xx, &xy, &xz, &yy, &yz, &zz);
-		SET(i, i, A*xx, oxx);
-		SET(i, i, A*xy, oxy);
-		SET(i, i, A*xz, oxz);
-		SET(i, i, A*yy, oyy);
-		SET(i, i, A*yz, oyz);
-		SET(i, i, A*zz, ozz);
+		SET(i, i, 0, oxx);
+		SET(i, i, 0, oxy);
+		SET(i, i, 0, oxz);
+		SET(i, i, 0, oyy);
+		SET(i, i, 0, oyz);
+		SET(i, i, 0, ozz);
 		for (j = 0; j < n; j++) {
 			if (i == j) continue;
 			i_vec_get(j, nx, ny, nz, u);
 			i_vec_get(j, x, y, z, b);
 			A = area[j];
-			stresslet(e, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
+			stresslet(a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
 			SET(i, j, A*xx, oxx);
 			SET(i, j, A*xy, oxy);
 			SET(i, j, A*xz, oxz);
