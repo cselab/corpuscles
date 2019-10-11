@@ -92,7 +92,7 @@ int
 bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const real *z, const real *fx, const real *fy, const real *fz, /*io*/ real *ux, real *uy, real *uz)
 {
     real *wx, *wy, *wz, *nx, *ny, *nz, *area, *h, normal[3], force[3], reject[3];
-    real A, R, fX, fZ, p;
+    real A, fX, fZ, wX, wZ, p;
     int n, i, status;
     nx = q->nx;
     ny = q->ny;
@@ -106,15 +106,17 @@ bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const
     array_zero3(n, wx, wy, wz);
     for (i = 0; i < n; i++) {
 	A = area[i];
-	R = sqrt(A/pi);
+	p = sqrt(pi/A);
 	vec_get(i, nx, ny, nz, normal);
 	vec_get(i, fx, fy, fz, force);
 	fX = vec_reject_scalar(force, normal);
 	fZ = vec_project_scalar(force, normal);
 	vec_reject(force, normal, reject);
 	vec_normalize(reject);
-	vec_scalar_append(reject, 3*fX/(8*pi*R), i, wx, wy, wz);
-	vec_scalar_append(normal,   fZ/(4*pi*R), i, wx, wy, wz);
+	wX = 3*fX*p;
+	wZ = 2*fZ*p;
+	vec_scalar_append(reject, wX/(8*pi), i, wx, wy, wz);
+	vec_scalar_append(normal, wZ/(8*pi), i, wx, wy, wz);
     }
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_single failed");

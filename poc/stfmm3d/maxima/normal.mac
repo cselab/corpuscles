@@ -6,11 +6,11 @@ load("vect") $
 cross(a, b):= express(a ~ b) $
 
 /* t in [0, 2*pi], p in [0, pi] */
-x: R*cos(t)*sin(p);
-y: R*sin(t)*sin(p);
-z: R*cos(p);
+x: 'R*cos('t)*sin('p);
+y: 'R*sin('t)*sin('p);
+z: 'R*cos('p);
 
-u: [ux, 0, uz];
+u: ['ux, 0, 'uz];
 r: [x, y, z];
 n: r / sqrt(r . r);
 r0: r, p = 0, t = 0;
