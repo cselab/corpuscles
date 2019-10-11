@@ -31,7 +31,7 @@ main(int argc, char **argv)
     name = argv[0];
     argv++;
     bi_argv(name, &argv, he, &bi);
-    
+
     n = he_nv(he);
     MALLOC3(n, &fx, &fy, &fz);
     CALLOC3(n, &vx, &vy, &vz);
@@ -43,9 +43,10 @@ main(int argc, char **argv)
     alpha = 1.0;
     bi_update(bi, he, x, y, z);
     bi_single(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
+
     const real *q[] = {x, y, z, vx, vy, vz, NULL};
     puts("x y z vx vy vz");
-    punto_fwrite(n, q, stdout);    
+    punto_fwrite(n, q, stdout);
 
     y_fin(he, x, y, z);
     bi_fin(bi);

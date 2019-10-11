@@ -90,6 +90,12 @@ oseen3_zero_apply(T *q, He *he, const real *x, const real *y, const real *z,
 		real a[3], b[3], xx, xy, xz, yy, yz, zz;
 		int j;
 		i_vec_get(i, x, y, z, a);
+		SET(i, i, 0, oxx);
+		SET(i, i, 0, oxy);
+		SET(i, i, 0, oxz);
+		SET(i, i, 0, oyy);
+		SET(i, i, 0, oyz);
+		SET(i, i, 0, ozz);
 		for (j = i + 1; j < n; j++) {
 			i_vec_get(j, x, y, z, b);
 			oseen(e, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
@@ -169,6 +175,12 @@ oseen3_zero_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		int j;
 		real a[3], b[3], u[3], xx, xy, xz, yy, yz, zz;
 		i_vec_get(i, x, y, z, a);
+		SET(i, i, 0, oxx);
+		SET(i, i, 0, oxy);
+		SET(i, i, 0, oxz);
+		SET(i, i, 0, oyy);
+		SET(i, i, 0, oyz);
+		SET(i, i, 0, ozz);
 		for (j = 0; j < n; j++) {
 		    if (i == j) continue;
 		    i_vec_get(j, nx, ny, nz, u);

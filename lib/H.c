@@ -10,12 +10,14 @@
 #include "co/H.h"
 
 #define T H
+#define MAGIC (12345)
 
 struct T {
     int nv;
     Laplace *laplace;
     real *nx, *ny, *nz;
     real *hh;
+    int magic;
 };
 
 int H_ini(He *he, /**/ T **pq) {
@@ -33,12 +35,15 @@ int H_ini(He *he, /**/ T **pq) {
     MALLOC(nv, &q->ny);
     MALLOC(nv, &q->nz);
 
+    q->magic = MAGIC;
     q->nv = nv;
     *pq = q;
     return status;
 }
 
 int H_fin(T *q) {
+    if (q->magic != MAGIC)
+	ERR(CO_MEMORY, "H_fin call");
     laplace_fin(q->laplace);
     FREE(q->hh);
     FREE(q->nx); FREE(q->ny); FREE(q->nz);
@@ -52,6 +57,9 @@ int H_apply(T *q, He *he, const real *x, const real *y, const real *z,
     real *lx, *ly, *lz, *area;
     real *nx, *ny, *nz;
     real *hh;
+
+    if (q->magic != MAGIC)
+	ERR(CO_MEMORY, "H_apply call");
 
     nv = he_nv(he);
     hh = q->hh;
