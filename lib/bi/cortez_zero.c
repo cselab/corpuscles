@@ -71,6 +71,8 @@ bi_cortez_zero_update(T *q, He *he, const real *x, const real *y, const real *z)
     if (status != CO_OK)
 	ERR(CO_NUM, "oseen3_zero_apply failed");
     status = bi_self_circle_update(q->self, he, x, y, z);
+    if (status != CO_OK)
+	ERR(CO_NUM, "bi_self_circle_update failed");
     q->KReady = 0;
     return CO_OK;
 }
@@ -109,8 +111,7 @@ bi_cortez_zero_double(T *q, He *he, real al,
     USED(z);
 
     K = &q->K;
-
-    if (q->KReady) {
+    if (q->KReady == 0) {
 	status = oseen3_zero_stresslet(q->oseen, he, x, y, z, K->xx, K->xy, K->xz, K->yy, K->yz, K->zz);
 	if (status != CO_OK)
 	    ERR(CO_NUM, "oseen3_zero_stresslet failed");
