@@ -17,6 +17,7 @@ struct T {
     BiSelfCircle *self;
     Oseen3Zero *oseen;
     struct Tensor O, K;
+    int KReady;
 };
 
 int
@@ -35,7 +36,7 @@ bi_cortez_zero_ini(He *he, /**/ T **pq)
     n = he_nv(he);
     tensor_ini(n, &q->O);
     tensor_ini(n, &q->K);
-
+    q->KReady = 0;
     *pq = q;
     return CO_OK;
 }
@@ -70,9 +71,7 @@ bi_cortez_zero_update(T *q, He *he, const real *x, const real *y, const real *z)
     if (status != CO_OK)
 	ERR(CO_NUM, "oseen3_zero_apply failed");
     status = bi_self_circle_update(q->self, he, x, y, z);
-    status = oseen3_zero_stresslet(q->oseen, he, x, y, z, K->xx, K->xy, K->xz, K->yy, K->yz, K->zz);
-    if (status != CO_OK)
-	ERR(CO_NUM, "oseen3_zero_stresslet failed");
+    q->KReady = 0;
     return CO_OK;
 }
 
@@ -110,6 +109,13 @@ bi_cortez_zero_double(T *q, He *he, real al,
     USED(z);
 
     K = &q->K;
+
+    if (q->KReady) {
+	status = oseen3_zero_stresslet(q->oseen, he, x, y, z, K->xx, K->xy, K->xz, K->yy, K->yz, K->zz);
+	if (status != CO_OK)
+	    ERR(CO_NUM, "oseen3_zero_stresslet failed");
+	q->KReady = 1;
+    }
     n = he_nv(he);
     bi_self_circle_double(q->self, he, al, x, y, z, ux, uy, uz, wx, wy, wz);
     if (status != CO_OK)
