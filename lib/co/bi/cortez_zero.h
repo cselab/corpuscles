@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-int bi_cortez_zero_ini(real eps, He*, /**/ T**);
+int bi_cortez_zero_ini(He*, /**/ T**);
 int bi_cortez_zero_argv(char***, He*, /**/ T**);
 int bi_cortez_zero_fin(T*);
 int bi_cortez_zero_update(T*, He*, const real *x, const real *y, const real *z);
