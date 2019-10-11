@@ -1,5 +1,5 @@
 # nTEST: cortez_fm_single
-./single self_circle  < /u/0.off | uscale 1e3 > single.out.txt
+./single cortez_fm  < `co.path`/sph/laplace/0.off | uscale 1e3 > single.out.txt
 
 # nTEST: cortez_fm_double
-./double cortez_fm < /u/0.off | uscale 1e3 > double.out.txt
+./double cortez_fm < `co.path`/sph/laplace/0.off | uscale 1e3 > double.out.txt

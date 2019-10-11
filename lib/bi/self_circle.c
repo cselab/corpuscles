@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <tgmath.h>
 #include "real.h"
-#include <fm.h>
 #include "co/area.h"
 #include "co/array.h"
 #include "co/err.h"
@@ -19,11 +18,9 @@ static const real pi = 3.141592653589793115997964;
 
 #define T BiSelfCircle
 struct T {
-    FM *fm;
     H *H;
     real *wx, *wy, *wz, *area;
     real *nx, *ny, *nz;
-    real *ax, *ay, *az;
     real *h;
 };
 
@@ -35,15 +32,11 @@ bi_self_circle_ini(He *he, /**/ T **pq)
 
     n = he_nv(he);
     MALLOC(1, &q);
-    status = fm_ini(n, &q->fm);
-    if (status != CO_OK)
-	ERR(CO_MEMORY, "fm_ini failed");
     status = H_ini(he, &q->H);
     if (status != CO_OK)
 	ERR(CO_MEMORY, "H_ini failed");
     MALLOC3(n, &q->wx, &q->wy, &q->wz);
     MALLOC3(n, &q->nx, &q->ny, &q->nz);
-    MALLOC3(n, &q->ax, &q->ay, &q->az);
     MALLOC(n, &q->area);
     MALLOC(n, &q->h);
     *pq = q;
@@ -60,11 +53,9 @@ bi_self_circle_argv(char ***p, He *he, /**/ T **pq)
 int
 bi_self_circle_fin(T *q)
 {
-    fm_fin(q->fm);
     H_fin(q->H);
     FREE3(q->wx, q->wy, q->wz);
     FREE3(q->nx, q->ny, q->nz);
-    FREE3(q->ax, q->ay, q->az);
     FREE(q->area);
     FREE(q->h);
     FREE(q);
@@ -112,7 +103,6 @@ bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const
     area = q->area;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
-    status = fm_single(q->fm, x, y, z, fx, fy, fz, wx, wy, wz);
     for (i = 0; i < n; i++) {
 	A = area[i];
 	R = sqrt(A/pi);
@@ -148,18 +138,10 @@ bi_self_circle_double(T *q, He *he, real alpha, const real *x, const real *y, co
     nx = q->nx;
     ny = q->ny;
     nz = q->nz;
-    ax = q->ax;
-    ay = q->ay;
-    az = q->az;
     area = q->area;
     h = q->h;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
-    array_copy3(n, nx, ny, nz, ax, ay, az);
-    array_multiply3(n, area, ax, ay, az);
-    status = fm_double(q->fm, x, y, z, ux, uy, uz, ax, ay, az, wx, wy, wz);
-    if (status != CO_OK)
-	ERR(CO_NUM, "fm_double failed");
     for (i = 0; i < n; i++) {
 	p = sqrt(area[i]/pi)*h[i];
 	vec_get(i, nx, ny, nz, normal);
