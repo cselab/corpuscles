@@ -7,6 +7,7 @@
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/normal.h>
+#include <co/punto.h>
 #include <co/y.h>
 
 #define FMT   CO_REAL_OUT
@@ -45,8 +46,9 @@ main(int argc, char **argv)
     alpha = 1.0;
     bi_update(bi, he, x, y, z);
     bi_double(bi, he, alpha, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
-    MSG(FMT " " FMT " " FMT, vx[0], vy[0], vz[0]);
-    MSG(FMT " " FMT " " FMT, vx[n - 1], vy[n - 1], vz[n - 1]);
+    const real *q[] = {x, y, z, vx, vy, vz, NULL};
+    puts("x y z vx vy vz");
+    punto_fwrite(n, q, stdout);    
     y_fin(he, x, y, z);
     FREE3(vx, vy, vz);
     FREE3(ux, uy, uz);

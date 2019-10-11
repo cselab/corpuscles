@@ -1,0 +1,5 @@
+# nTEST: cortez_zero_single
+./single cortez_zero 0.01 < /u/0.off | uscale 1e3 > single.out.txt
+
+# nTEST: cortez_zero_double
+./double cortez_zero 0.01 < /u/0.off | uscale 1e3 > double.out.txt

@@ -44,9 +44,9 @@ main(int argc, char **argv)
 	fy[i] = 2;
 	fz[i] = 3;
     }
-    alpha = 1.0;
+    alpha = -2.0;
     bi_update(bi, he, x, y, z);
-    bi_single(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
+    bi_double(bi, he, alpha, x, y, z, fx, fy, fz, /**/ vx, vy, vz);
 
     const real *q[] = {x, y, z, vx, vy, vz, NULL};
     puts("x y z vx vy vz");

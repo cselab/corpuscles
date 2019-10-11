@@ -18,7 +18,7 @@ all: $M
 %: %.c
 
 lint:; make CFLAGS='-Wall -Wextra -g -O2'
-test: $M
+test: $M; atest test/*
 install:
 
 .PHONY: clean test lint
