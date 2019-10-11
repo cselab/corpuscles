@@ -1,0 +1,4 @@
+This is a new RBC in shear flow client,
+which employes the fast-multipole summation
+
+it considers also density(rho) and viscosity contrast of innner and outer viscosities
