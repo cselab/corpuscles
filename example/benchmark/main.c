@@ -10,7 +10,6 @@
 #include <co/err.h>
 #include <co/force.h>
 #include <co/macro.h>
-#include <co/i/matrix.h>
 #include <co/matrix.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
@@ -20,7 +19,7 @@
 #include <co/off.h>
 #include <co/f/garea.h>
 #include <co/f/volume.h>
-#include <co/bi/cortez.h>
+#include <co/bi.h>
 #include <co/f/juelicher_xin.h>
 
 static const char *me = "benchmark";
@@ -36,7 +35,7 @@ static Force *Fo[20] = {
 };
 
 static He *he;
-static BiCortez *bi;
+static BI *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
@@ -104,6 +103,16 @@ fargv(char ***p, He * he)
         i++;
     }
 
+    name = v[0];
+    if (name == NULL)
+	ER("expecting BI");
+    if (!bi_good(name)) {
+	MSG("not a bi name: '%s'", name);
+	ER("possible names are: %s", bi_list());
+    }
+    v++;
+    bi_argv(name, &v, he, &bi);
+    
     scl(v, &R);
     v++;
     scl(v, &D);
@@ -166,8 +175,8 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 
     int i, k;
     real coef, al, be;
-    real dx, dy, dz, d;
-    real ddx, ddy, ddz, dd, ratio;
+    real d;
+    real dd, ratio;
 
     coef = 2 / (1 + lambda);
     al = -2 / (eta * (1 + lambda));
@@ -175,12 +184,12 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 
     array_zero3(nv, fx, fy, fz);
     force(he, x, y, z, fx, fy, fz);
-    bi_cortez_update(bi, he, x, y, z);
+    bi_update(bi, he, x, y, z);
 
     array_zero3(nv, vx, vy, vz);
     for (i = 0; i < nv; i++)
         vx[i] += coef * gamdot * z[i];
-    bi_cortez_single(bi, he, al, x, y, z, fx, fy, fz, /**/  vx, vy, vz);
+    bi_single(bi, he, al, x, y, z, fx, fy, fz, /**/  vx, vy, vz);
 
     //inner and outer viscosity has obvious contrast
     if (1 - lambda > tol || 1 - lambda < -tol) {
@@ -191,7 +200,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
         for (k = 1; k <= iter_max; k++) {
 
             array_copy3(nv, vx, vy, vz, wx, wy, wz);
-	    bi_cortez_double(bi, he, be, x, y, z, ux, uy, uz, /**/  wx, wy, wz);
+	    bi_double(bi, he, be, x, y, z, ux, uy, uz, /**/  wx, wy, wz);
 
             d = array_msq_3d(nv, ux, uy, uz);
             dd = array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
@@ -259,7 +268,7 @@ main(__UNUSED int argc, char **argv)
     }
     fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn es\n", fm);
     fclose(fm);
-
+    A0 = V0 = 1;
     i = 0;
     while (Fo[i]) {
 
@@ -293,7 +302,6 @@ main(__UNUSED int argc, char **argv)
             dt);
     fclose(fm);
 
-    bi_cortez_ini(reg, he, &bi);
     ode3_ini(RK4, nv, dt, F, NULL, &ode);
 
     CALLOC3(nv, &ux, &uy, &uz);
@@ -385,7 +393,7 @@ main(__UNUSED int argc, char **argv)
     FREE3(ux, uy, uz);
     FREE3(wx, wy, wz);
     FREE3(fx, fy, fz);
-    bi_cortez_fin(bi);
+    bi_fin(bi);
     ode3_fin(ode);
     fin();
     y_fin(he, x, y, z);
