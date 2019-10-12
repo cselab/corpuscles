@@ -264,7 +264,7 @@ int main(__UNUSED int argc, char **argv) {
   fprintf(fm, "M m a e dt = %f %f %f %f %f\n", M, m, a, e, dt);
   fclose(fm);
   
-  ode3_ini(RK4, nv, dt, F, NULL, &ode);
+  ode3_ini(RKF45, nv, dt, F, NULL, &ode);
   
   CALLOC3(nv, &ux, &uy, &uz);
   CALLOC3(nv, &wx, &wy, &wz);
