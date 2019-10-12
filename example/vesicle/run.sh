@@ -6,8 +6,8 @@ gdot=0.1
 lambda=5.6
 start=0
 end=100000
-freq=10
-dt=0.05
+freq=100
+dt=0.01
 eta=645.928652122
 rho=1
 D=0.000898798148042
@@ -21,7 +21,7 @@ init=init/0.off a=0.0384890625 reg=0.0301148
 
 make
 co.run ./main \
-       garea $A 50000 \
+       garea $A 20000 \
        volume $V 10000 \
        area $a 500 \
        juelicher_xin 1 0 0 0 \
