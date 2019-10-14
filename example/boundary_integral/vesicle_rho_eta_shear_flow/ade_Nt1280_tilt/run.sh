@@ -33,7 +33,7 @@ dt0=0.01
 scale=10
 #number of threads
 NT=1
-export CO_ARG="-W 48:00"
+export CO_ARG="-W 120:00"
 
 if test $# -ne 0
 then
