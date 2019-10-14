@@ -6,6 +6,7 @@
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/punto.h>
+#include <co/vec.h>
 #include <co/y.h>
 #include <co/bi.h>
 
@@ -32,21 +33,22 @@ main(int argc, char **argv)
     name = argv[0];
     argv++;
     bi_argv(name, &argv, he, &bi);
-    
+
     n = he_nv(he);
     MALLOC3(n, &ux, &uy, &uz);
     MALLOC(n, &area);
     CALLOC3(n, &vx, &vy, &vz);
     he_area_ver(he, x, y, z, area);
-    
+
+    real omega[] = {0, 0, 1};
+    real position[3], velocity[3];
     for (i = 0; i < n; i++) {
-	ux[i] = 1;
-	uy[i] = 2;
-	uz[i] = 3;
+	vec_get(i, x, y, z, position);
+	vec_cross(omega, position, velocity);
+	vec_set(velocity, i, ux, uy, uz);
     }
     alpha = -2.0;
     bi_update(bi, he, x, y, z);
-
     bi_double(bi, he, alpha, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
 
     const real *q[] = {x, y, z, vx, vy, vz, NULL};
