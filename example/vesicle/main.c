@@ -253,8 +253,6 @@ int main(__UNUSED int argc, char **argv) {
   m   = M/nv;
   a   = A0/nt;
   e   = 2*sqrt(a)/sqrt(sqrt(3.0));
-  reg = 0.1*e;
-  MSG("reg: %g", reg);
   
   if ( (fm = fopen(file_msg, "w") ) == NULL) {
     ER("Failed to open '%s'", file_msg);
@@ -263,10 +261,10 @@ int main(__UNUSED int argc, char **argv) {
   fprintf(fm, "A0 V0 v0 = %f %f %f\n", A0, V0, v0);
   fprintf(fm, "R D rho eta lambda gamdot = %f %f %f %f %f %f\n", R, D, rho, eta, lambda, gamdot);
   fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-  fprintf(fm, "M m a e reg dt = %f %f %f %f %f %f\n", M, m, a, e, reg, dt);
+  fprintf(fm, "M m a e dt = %f %f %f %f %f\n", M, m, a, e, dt);
   fclose(fm);
   
-  ode3_ini(RK4, nv, dt, F, NULL, &ode);
+  ode3_ini(RKF45, nv, dt, F, NULL, &ode);
   
   CALLOC3(nv, &ux, &uy, &uz);
   CALLOC3(nv, &wx, &wy, &wz);

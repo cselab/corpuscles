@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <real.h>
+#include <co/array.h>
 #include <co/area.h>
 #include <co/err.h>
 #include <co/he.h>
@@ -38,7 +39,8 @@ main(int argc, char **argv)
     MALLOC(n, &area);
     CALLOC3(n, &vx, &vy, &vz);
     he_area_ver(he, x, y, z, area);
-    
+
+    //array_scale3(n, 2.0, x, y, z);
     for (i = 0; i < n; i++) {
 	fx[i] = area[i];
 	fy[i] = 2*area[i];

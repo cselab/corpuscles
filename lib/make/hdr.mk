@@ -12,6 +12,7 @@ co/bi/cortez_fm.h\
 co/bi/cortez.h\
 co/bi/cortez_zero.h\
 co/bi.h\
+co/bi/self_circle.h\
 co/cell2.h\
 co/cell3.h\
 co/colormap.h\

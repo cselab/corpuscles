@@ -29,6 +29,7 @@ bi.s.o\
 bi/cortez.s.o\
 bi/cortez_fm.s.o\
 bi/cortez_zero.s.o\
+bi/self_circle.s.o\
 cell2.s.o\
 cell3.s.o\
 colormap.s.o\
@@ -149,6 +150,7 @@ bi.d.o\
 bi/cortez.d.o\
 bi/cortez_fm.d.o\
 bi/cortez_zero.d.o\
+bi/self_circle.d.o\
 cell2.d.o\
 cell3.d.o\
 colormap.d.o\
@@ -269,6 +271,7 @@ bi.l.o\
 bi/cortez.l.o\
 bi/cortez_fm.l.o\
 bi/cortez_zero.l.o\
+bi/self_circle.l.o\
 cell2.l.o\
 cell3.l.o\
 colormap.l.o\

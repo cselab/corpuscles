@@ -1,25 +1,26 @@
 assume('R > 0, 'p0 > 0);
 (X: 1, Y: 2, Z: 3) $
-s(i, e)::=buildq([e, i], sum(e, i, 1, 3)) $
+s(i, e)::=buildq([e, i], sum(e, i, 1, 2)) $
 
 load("vect") $
 cross(a, b):= express(a ~ b) $
 
 /* t in [0, 2*pi], p in [0, pi] */
-x: 'R*cos('t)*sin('p);
-y: 'R*sin('t)*sin('p);
-z: 'R*cos('p);
+x: R*cos(t)*sin(p);
+y: R*sin(t)*sin(p);
+z: R*cos(p);
 
-u: ['ux, 0, 'uz];
 r: [x, y, z];
 n: r / sqrt(r . r);
 r0: r, p = 0, t = 0;
 d: r - r0;
 rad: sqrt(d . d);
 
-j: X;
+i: Y;
+j: Y;
+
 dA: R^2*sin(p);
-e: s(k, s(i, u[i]*d[i]*d[j]*d[k]*n[k] * dA));
+e: s(k, d[i]*d[j]*d[k]*n[k] * dA);
 
 A: ratexpand(taylor(e, p, 0, 5));
 B: ratexpand(taylor(rad^5, p, 0, 5));
@@ -28,3 +29,4 @@ Area: integrate(integrate(dA, t, 0, 2*%pi), p, 0, p0) $
 solve(Area0 = ratexpand(taylor(Area, p0, 0, 2)), p0)[2];
 f: trigsimp(A/B) $
 f: integrate(integrate(f, t, 0, 2*%pi), p, 0, p0);
+

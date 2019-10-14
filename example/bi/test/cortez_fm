@@ -1,0 +1,5 @@
+# nTEST: cortez_fm_single
+./single cortez_fm  < `co.path`/sph/laplace/0.off | uscale 1e3 > single.out.txt
+
+# nTEST: cortez_fm_double
+./double cortez_fm < `co.path`/sph/laplace/0.off | uscale 1e3 > double.out.txt
