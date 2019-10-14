@@ -3,7 +3,7 @@
 set -eu
 
 gdot=0.1
-lambda=1.1
+lambda=5.6
 start=0
 end=100000
 freq=10
@@ -22,7 +22,6 @@ init=init/0.off a=0.0384890625 reg=0.0301148
 make
 co.run ./main \
        garea $A  500000 \
-       area $a 500 \
        juelicher_xin 1 0 0 0 \
        cortez_fm \
        $rho $eta $lambda $gdot $dt \
