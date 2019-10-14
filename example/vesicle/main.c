@@ -13,6 +13,7 @@
 #include <co/f/juelicher_xin.h>
 #include <co/force.h>
 #include <co/f/volume.h>
+#include <co/f/volume.h>
 #include <co/he.h>
 #include <co/len.h>
 #include <co/macro.h>
@@ -26,18 +27,19 @@
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
 
-static const char *me = "vesicle_rho_eta_shear_flow";
+static const char *me = "vesicle";
 static const real pi  = 3.141592653589793115997964;
 static const real tol = 0.01;
 static const int iter_max=100;
 
 static Force *Fo[20] = {NULL};
+static HeFVolume *fvolume;
 static He *he;
 static BI *bi;
-static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
 static real *fx, *fy, *fz;
+static real *Vx, *Vy, *Vz;
 static real *ux, *uy, *uz;
 static real *wx, *wy, *wz;
 static int nv, nt;
@@ -92,11 +94,11 @@ static int fargv(char ***p, He *he)
   }
   v++;
   bi_argv(name, &v, he, &bi);
+
+  he_f_volume_ini(3.6678, 10000, he, &fvolume);
+  MALLOC3(nv, &Vx, &Vy, &Vz);
+
   
-  scl(v, &R);
-  v++;
-  scl(v, &D);
-  v++;
   scl(v, &rho);
   v++;
   scl(v, &eta);
@@ -186,18 +188,23 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
     }
     
     if  ( k == iter_max ) {
-      //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
+      //MSG("t d dd ratio k = %g %g %g %g %i", t, d, dd, ratio, k);
       if ( (fm = fopen(file_msg, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_msg);
       }
       
-      fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
+      fprintf(fm, "t d dd ratio k = %g %g %g %g %i\n", t, d, dd, ratio, k);
       fclose(fm);
     }
     
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
     
   }// if inner and outer viscosity has obvious contrast
+
+
+  array_zero3(nv, Vx, Vy, Vz);
+  he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
+  array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
   
   return CO_OK;
 }
@@ -217,15 +224,13 @@ int main(__UNUSED int argc, char **argv) {
   real A0, V0, v0;
   real A, V, v;
   real a, e, reg;
-  real M, m;
   
   //err_set_ignore();
   argv++;
   y_inif(stdin, &he, &x, &y, &z);
-  fargv(&argv, he);
-
   nv = he_nv(he);
   nt = he_nt(he);
+  fargv(&argv, he);
 
   if ( (fm = fopen(file_stat, "w") ) == NULL) {
     ER("Failed to open '%s'", file_stat);
@@ -249,8 +254,6 @@ int main(__UNUSED int argc, char **argv) {
   }
   
   v0  = reduced_volume(A0, V0);  
-  M   = rho*A0*D*2;
-  m   = M/nv;
   a   = A0/nt;
   e   = 2*sqrt(a)/sqrt(sqrt(3.0));
   
@@ -258,10 +261,10 @@ int main(__UNUSED int argc, char **argv) {
     ER("Failed to open '%s'", file_msg);
   }
 
-  fprintf(fm, "A0 V0 v0 = %f %f %f\n", A0, V0, v0);
-  fprintf(fm, "R D rho eta lambda gamdot = %f %f %f %f %f %f\n", R, D, rho, eta, lambda, gamdot);
+  fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
+  fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g\n", rho, eta, lambda, gamdot);
   fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-  fprintf(fm, "M m a e dt = %f %f %f %f %f\n", M, m, a, e, dt);
+  fprintf(fm, "M m a e dt = %g %g %g\n", a, e, dt);
   fclose(fm);
   
   ode3_ini(RKF45, nv, dt, F, NULL, &ode);
@@ -321,16 +324,16 @@ int main(__UNUSED int argc, char **argv) {
       v = reduced_volume(A, V);
       
       /*if ( s / 10 % freq_stat == 0 ) {
-	MSG("dt s t = %f %i %f", dt, s, t);
-	MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
-	MSG("et ega ev eb ebl ebn = %f %f %f %f %f %f", et, ega, ev, eb, ebl, ebn);
+	MSG("dt s t = %g %i %g", dt, s, t);
+	MSG("A/A0 V/V0 v  = %g %g %g", A/A0, V/V0, v);
+	MSG("et ega ev eb ebl ebn = %g %g %g %g %g %g", et, ega, ev, eb, ebl, ebn);
 	}*/
       
       if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_stat);
       }
       
-      fprintf(fm, "%f %i %f %f %f %f %f %f %f %f %f %f\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn);
+      fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn);
       fclose(fm);
       
     }
@@ -355,7 +358,7 @@ int main(__UNUSED int argc, char **argv) {
     ode3_apply(ode, &time, t, x, y, z);
     
   }
-  
+  FREE3(Vx, Vy, Vz);
   FREE3(ux, uy, uz);
   FREE3(wx, wy, wz);
   FREE3(fx, fy, fz);
@@ -363,5 +366,5 @@ int main(__UNUSED int argc, char **argv) {
   bi_fin(bi);
   fin();
   y_fin(he, x, y, z);
-  
+  he_f_volume_fin(fvolume);
 }

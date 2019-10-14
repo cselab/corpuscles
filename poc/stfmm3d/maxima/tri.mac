@@ -29,5 +29,4 @@ f: ['fx, 0] $
 e: s(i, dA*f[i]*(kd(i, j)/rad + d[i]*d[j]/rad^3));
 
 assume(u < 1,  u > 0, cx > 0, cy > 0);
-/* integrate(e, 'v, 0, 1 - 'u); */
-
+integrate(e, 'v, 0, 1 - 'u);

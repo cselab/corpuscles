@@ -5,6 +5,7 @@ M = \
 single\
 f2v\
 v2v\
+volume\
 double\
 
 CO_CFLAGS = `fm.conf --cflags $(PREC)`
