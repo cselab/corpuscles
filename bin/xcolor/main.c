@@ -27,7 +27,9 @@ static void
 usg(void)
 {
 	fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
-	fprintf(stderr, "color vertices in B acording to (x-x_min)/(x_max-x_min) coordinate in A\n");
+	fprintf(stderr, "%s -a A.off lo hi B.off > C.off\n", me);
+	fprintf(stderr, "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
+	fprintf(stderr, "if -a is given color vertices in B acording to abs(x)/x_max in A\n");
 	exit(2);
 }
 
