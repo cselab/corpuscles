@@ -29,7 +29,7 @@
 
 static const char *me = "vesicle";
 static const real pi  = 3.141592653589793115997964;
-static const real tol = 0.01;
+static const real tol = 0.0001;
 static const int iter_max=100;
 
 static Force *Fo[20] = {NULL};

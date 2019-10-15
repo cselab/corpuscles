@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <tgmath.h>
 #include <real.h>
+#include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
@@ -35,54 +37,44 @@ int main(int argc, char **a)
 	real *x, *y, *z, *c;
 	real *u, *v, *w;
 	He *p, *q;
-	int i, n;
+	int i, n, Abs;
 	real min, max, d;
 	real lo, hi;
-
        	err_set_ignore();
 	a++;
 	if (*a == NULL)
 		ER("not enougth arguments");
 	if (util_eq(*a, "-h"))
 		usg();
-
+	Abs = 0;
+	if (util_eq(*a, "-a")) {
+	    Abs = 1;
+	    a++;
+	}
 	status = y_ini(*a, &q, &u, &v, &w);
 	if (status != CO_OK)
 		ER("not an off file '%s'", a[0]);
-
-	lo=0.0;
-	hi=1.0;
-	  
 	scl(++a, &lo);
 	scl(++a, &hi);
-
 	a++;
 	if (*a == NULL)
 		ER("not enougth arguments");
 	status = y_ini(*a, &p, &x, &y, &z);
 	if (status != CO_OK)
 		ER("not an off file '%s'", a[0]);
-
-
 	n = he_nv(q);
 	CALLOC(n, &c);
-	min=1000.0;
-	max=-1000.0;
-	
-	for (i=0;i<n;i++){
-	  if (u[i] < min ){
-	    min=u[i]; }
-	  else if ( u[i]> max ) {
-	    max=u[i];
-	  }
-	}
-	d=max-min;
-	for (i=0;i<n;i++){
-	  c[i]=(u[i]-min)/d;
-	}
-
-	//boff_ver_fwrite(p, x, y, z, c, stdout);
+	min = array_min(n, u);
+	max = array_max(n, u);
+	d = max - min;
+	if (Abs)
+	    for (i = 0; i < n; i++)
+		c[i] = fabs(u[i])/max;
+	else
+	    for (i = 0; i < n; i++)
+		c[i] = (u[i] - min)/d;
 	boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+	FREE(c);
 	y_fin(p, x, y, z);
 	y_fin(q, u, v, w);
 }
