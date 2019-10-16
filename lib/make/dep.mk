@@ -116,6 +116,23 @@ co/err.h\
 co/memory.h\
 co/bbox.h\
 
+bending.s.o:\
+co/prec/s/real.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/container.h\
+co/macro.h\
+co/util.h\
+co/f/kantor.h\
+co/f/juelicher_xin.h\
+co/f/gompper.h\
+co/f/gompper_kroll.h\
+co/f/gompper_xin.h\
+co/f/meyer_xin.h\
+co/f/meyer.h\
+co/bending.h\
+
 bending.c.m4:\
 co/prec/s/real.h\
 co/memory.h\
@@ -162,17 +179,17 @@ co/err.h\
 co/he.h\
 co/argv.h\
 co/macro.h\
-co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/cortez_fm.h\
+co/bi/self_circle.h\
 
 bi/cortez_zero.s.o:\
 co/prec/s/real.h\
 co/argv.h\
 co/bi/cortez_zero.h\
+co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
@@ -542,6 +559,18 @@ co/dtri.h\
 co/sum.h\
 co/f/garea.h\
 
+garea_sq.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_sq.h\
+
 garea_voronoi.s.o:\
 co/prec/s/real.h\
 co/argv.h\
@@ -681,6 +710,21 @@ co/sum.h\
 co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
+
+force2.s.o:\
+co/prec/s/real.h\
+co/container.h\
+co/err.h\
+co/force2.h\
+co/macro.h\
+co/memory.h\
+co/util.h\
+co/f2/area.h\
+co/f2/glen.h\
+co/f2/bend_ade.h\
+co/f2/bend_min.h\
+co/f2/bend_sc.h\
+co/f2/len.h\
 
 force2.c.m4:\
 co/prec/s/real.h\
@@ -1195,6 +1239,15 @@ co/matrix.h\
 co/i/matrix.h\
 co/tensor.h\
 
+transform.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/tri.h\
+co/sum.h\
+co/vec.h\
+co/transform.h\
+
 transform.c.m4:\
 co/prec/s/real.h\
 co/err.h\
@@ -1338,6 +1391,23 @@ co/err.h\
 co/memory.h\
 co/bbox.h\
 
+bending.d.o:\
+co/prec/d/real.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/container.h\
+co/macro.h\
+co/util.h\
+co/f/kantor.h\
+co/f/juelicher_xin.h\
+co/f/gompper.h\
+co/f/gompper_kroll.h\
+co/f/gompper_xin.h\
+co/f/meyer_xin.h\
+co/f/meyer.h\
+co/bending.h\
+
 bending.c.m4:\
 co/prec/d/real.h\
 co/memory.h\
@@ -1384,17 +1454,17 @@ co/err.h\
 co/he.h\
 co/argv.h\
 co/macro.h\
-co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/cortez_fm.h\
+co/bi/self_circle.h\
 
 bi/cortez_zero.d.o:\
 co/prec/d/real.h\
 co/argv.h\
 co/bi/cortez_zero.h\
+co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
@@ -1764,6 +1834,18 @@ co/dtri.h\
 co/sum.h\
 co/f/garea.h\
 
+garea_sq.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_sq.h\
+
 garea_voronoi.d.o:\
 co/prec/d/real.h\
 co/argv.h\
@@ -1903,6 +1985,21 @@ co/sum.h\
 co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
+
+force2.d.o:\
+co/prec/d/real.h\
+co/container.h\
+co/err.h\
+co/force2.h\
+co/macro.h\
+co/memory.h\
+co/util.h\
+co/f2/area.h\
+co/f2/glen.h\
+co/f2/bend_ade.h\
+co/f2/bend_min.h\
+co/f2/bend_sc.h\
+co/f2/len.h\
 
 force2.c.m4:\
 co/prec/d/real.h\
@@ -2417,6 +2514,15 @@ co/matrix.h\
 co/i/matrix.h\
 co/tensor.h\
 
+transform.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/tri.h\
+co/sum.h\
+co/vec.h\
+co/transform.h\
+
 transform.c.m4:\
 co/prec/d/real.h\
 co/err.h\
@@ -2560,6 +2666,23 @@ co/err.h\
 co/memory.h\
 co/bbox.h\
 
+bending.l.o:\
+co/prec/l/real.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/container.h\
+co/macro.h\
+co/util.h\
+co/f/kantor.h\
+co/f/juelicher_xin.h\
+co/f/gompper.h\
+co/f/gompper_kroll.h\
+co/f/gompper_xin.h\
+co/f/meyer_xin.h\
+co/f/meyer.h\
+co/bending.h\
+
 bending.c.m4:\
 co/prec/l/real.h\
 co/memory.h\
@@ -2606,17 +2729,17 @@ co/err.h\
 co/he.h\
 co/argv.h\
 co/macro.h\
-co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/cortez_fm.h\
+co/bi/self_circle.h\
 
 bi/cortez_zero.l.o:\
 co/prec/l/real.h\
 co/argv.h\
 co/bi/cortez_zero.h\
+co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
@@ -2986,6 +3109,18 @@ co/dtri.h\
 co/sum.h\
 co/f/garea.h\
 
+garea_sq.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_sq.h\
+
 garea_voronoi.l.o:\
 co/prec/l/real.h\
 co/argv.h\
@@ -3125,6 +3260,21 @@ co/sum.h\
 co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
+
+force2.l.o:\
+co/prec/l/real.h\
+co/container.h\
+co/err.h\
+co/force2.h\
+co/macro.h\
+co/memory.h\
+co/util.h\
+co/f2/area.h\
+co/f2/glen.h\
+co/f2/bend_ade.h\
+co/f2/bend_min.h\
+co/f2/bend_sc.h\
+co/f2/len.h\
 
 force2.c.m4:\
 co/prec/l/real.h\
@@ -3638,6 +3788,15 @@ co/err.h\
 co/matrix.h\
 co/i/matrix.h\
 co/tensor.h\
+
+transform.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/tri.h\
+co/sum.h\
+co/vec.h\
+co/transform.h\
 
 transform.c.m4:\
 co/prec/l/real.h\
