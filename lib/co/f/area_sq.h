@@ -3,7 +3,7 @@
 typedef struct He He;
 typedef struct T T;
 
-/* E = K/area0 * sum_{tri} area_{tri}^2 */
+/* E = K * sum_{tri} area_{tri}^2 */
 int he_f_area_sq_ini(real K, He*, T**);
 int he_f_area_sq_argv(char***, He*, T**);
 int he_f_area_sq_fin(T*);
