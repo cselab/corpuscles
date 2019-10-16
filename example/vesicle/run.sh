@@ -21,7 +21,7 @@ init=init/1.off a=0.009622265625 reg=0.0150574
 
 make
 co.run ./main \
-       area $a 100 \
+       area $a 400 \
        garea $A 50000 \
        juelicher_xin 1 0 0 0 \
        cortez_zero \
