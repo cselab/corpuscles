@@ -22,6 +22,14 @@ he_f_garea_force
 he_f_garea_energy
 he_f_garea_argv
 
+#include "co/f/garea_sq.h"
+garea_sq
+HeFGareaSq
+he_f_garea_sq_fin
+he_f_garea_sq_force
+he_f_garea_sq_energy
+he_f_garea_sq_argv
+
 #include "co/f/volume.h"
 volume
 HeFVolume

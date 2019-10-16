@@ -25,7 +25,6 @@ array.s.o\
 bbox2.s.o\
 bbox.s.o\
 bending.s.o\
-bending.s.o\
 bi.s.o\
 bi/cortez.s.o\
 bi/cortez_fm.s.o\
@@ -79,7 +78,6 @@ f/kantor.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
 force2.s.o\
-force2.s.o\
 force.s.o\
 f/rvolume.s.o\
 f/strain.s.o\
@@ -130,7 +128,6 @@ surface.s.o\
 ten.s.o\
 tensor.s.o\
 transform.s.o\
-transform.s.o\
 tri2.s.o\
 tri.s.o\
 vec2.s.o\
@@ -149,7 +146,6 @@ argv.d.o\
 array.d.o\
 bbox2.d.o\
 bbox.d.o\
-bending.d.o\
 bending.d.o\
 bi.d.o\
 bi/cortez.d.o\
@@ -204,7 +200,6 @@ f/kantor.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
 force2.d.o\
-force2.d.o\
 force.d.o\
 f/rvolume.d.o\
 f/strain.d.o\
@@ -255,7 +250,6 @@ surface.d.o\
 ten.d.o\
 tensor.d.o\
 transform.d.o\
-transform.d.o\
 tri2.d.o\
 tri.d.o\
 vec2.d.o\
@@ -274,7 +268,6 @@ argv.l.o\
 array.l.o\
 bbox2.l.o\
 bbox.l.o\
-bending.l.o\
 bending.l.o\
 bi.l.o\
 bi/cortez.l.o\
@@ -329,7 +322,6 @@ f/kantor.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
 force2.l.o\
-force2.l.o\
 force.l.o\
 f/rvolume.l.o\
 f/strain.l.o\
@@ -379,7 +371,6 @@ sum.l.o\
 surface.l.o\
 ten.l.o\
 tensor.l.o\
-transform.l.o\
 transform.l.o\
 tri2.l.o\
 tri.l.o\
