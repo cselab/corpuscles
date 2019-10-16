@@ -1,6 +1,8 @@
 #include <tgmath.h>
 #include <stdio.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include "real.h"
 #include "co/err.h"
 #include "co/he.h"
