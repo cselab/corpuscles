@@ -219,6 +219,14 @@ main(__UNUSED int argc, const char **v0)
 		vec(p);
 		tri_point_closest(a, b, c, p, q);
 		vec_printf(q, FMT);
+	} else if (eq(op, "moment")) {
+		vec(a);
+		vec(b);
+		vec(c);
+		real m[6];
+		tri_moment(a, b, c, &m[0], &m[1], &m[2], &m[3], &m[4], &m[5]);
+		printf(FMT " " FMT " " FMT "\n", m[0], m[1], m[2]);
+		printf(FMT " " FMT " " FMT "\n", m[3], m[4], m[5]);
 	} else
 		ER("unknown operation '%s'", op);
 	return 0;

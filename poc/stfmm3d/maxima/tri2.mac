@@ -1,32 +1,36 @@
+load("vect")$
+cross(a, b):=express(a ~ b) $
+vabs(a):= sqrt(a . a) $
 (X: 1, Y: 2, Z: 3) $
-s(i, e)::=buildq([e, i], sum(e, i, 1, 2))$
-matchdeclare([i, j], numberp)$
-tellsimpafter(kd(i, j), if i = j then 1 else 0)$
 
-a: [0, 0]$
-b: [1, 0]$
-c: ['cx, 'cy]$
+a: ['ax, 'ay, 'az]$
+b: ['bx, 'by, 'bz]$
+c: ['cx, 'cy, 'cz]$
 
 /* u in [0, 1], v in [0, 1 - u] */
 r: a + 'u*(b - a) + 'v*(c - a);
 
+ru: diff(r, u);
+rv: diff(r, v);
+
+dA: vabs(cross(ru, rv));
+int(e):=integrate(integrate(e, 'v, 0, 1 - 'u), 'u, 0, 1);
 x: r[X];
 y: r[Y];
+z: r[Z];
 
-j: X;
+int(1);
 
-J: matrix([diff(x, 'u), diff(x, 'v)], [diff(y, 'u), diff(y, 'v)]);
-dA: determinant(J);
+matchdeclare(x, true) $
+defrule(r_sq, x^2, sq(x)) $
+f_sq(e):=apply1(e, r_sq) $
 
-int(e):=integrate(integrate(e, 'v, 0, 1 - 'u), 'u, 0, 1);
-int(dA);
+grind(f_sq(int(z*z)));
 
-r0: r, u = 0, v = 0;
-d: r - r0;
-rad: sqrt(d . d);
-f: ['fx, 0] $
+grind(f_sq(int(y*z)));
+int(x*z);
 
-e: s(i, dA*f[i]*(kd(i, j)/rad + d[i]*d[j]/rad^3));
+int(y*y);
+int(y*z);
 
-assume(u < 1,  u > 0, cx > 0, cy > 0);
-/* integrate(e, 'v, 0, 1 - 'u); */
+int(z*z);

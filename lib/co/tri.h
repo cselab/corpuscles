@@ -38,3 +38,5 @@ int tri_abc(const real[3], const real[3], const real[3], const real[3], const re
 real tri_point_distance2(const real[3], const real[3], const real[3], const real[3]);
 real tri_point_distance(const real[3], const real[3], const real[3], const real[3]);
 int tri_point_closest(const real[3], const real[3], const real[3], const real[3], /**/ real[3]);
+int tri_moment(const real[3], const real[3], const real[3], /**/
+	       real*, real*, real*, real*, real*, real*);

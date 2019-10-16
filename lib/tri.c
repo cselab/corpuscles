@@ -430,3 +430,42 @@ tri_point_closest(const real a[3], const real b[3], const real c[3], const real 
 	z = a[Z] + t1*u[Z] + t2*v[Z];
 	return vec_ini(x, y, z, ans);
 }
+
+static real
+sq(real x)
+{
+    return x*x;
+}
+
+int
+tri_moment(const real a[3], const real b[3], const real c[3],
+	   real *xx, real *xy, real *xz, real *yy, real *yz, real *zz) {
+    real ax, ay, az, bx, by, bz, cx, cy, cz, area;
+
+    ax = a[X];
+    ay = a[Y];
+    az = a[Z];
+    bx = b[X];
+    by = b[Y];
+    bz = b[Z];
+    cx = c[X];
+    cy = c[Y];
+    cz = c[Z];
+    area = tri_area(a, b, c);
+    *xx = (sq(cx)+(bx+ax)*cx+sq(bx)+ax*bx+sq(ax))/12;
+    *yy = (sq(cy)+(by+ay)*cy+sq(by)+ay*by+sq(ay))/12;
+    *zz = (sq(cz)+(bz+az)*cz+sq(bz)+az*bz+sq(az))/12;
+
+    *xy = ((2*cx+bx+ax)*cy+(by+ay)*cx+(2*bx+ax)*by+ay*bx+2*ax*ay)/24;
+    *xz = ((2*cx+bx+ax)*cz+(bz+az)*cx+(2*bx+ax)*bz+az*bx+2*ax*az)/24;
+    *yz = ((2*cy+by+ay)*cz+(bz+az)*cy+(2*by+ay)*bz+az*by+2*ay*az)/24;
+
+    *xx *= area;
+    *yy *= area;
+    *zz *= area;
+    *xy *= area;
+    *xz *= area;
+    *yz *= area;
+
+    return CO_OK;
+}
