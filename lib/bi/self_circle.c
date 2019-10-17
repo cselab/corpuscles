@@ -112,10 +112,10 @@ bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const
 	fZ = vec_project_scalar(force, normal);
 	vec_reject(force, normal, reject);
 	vec_normalize(reject);
-	wX = -(5*A*h[i]*h[i]-72*pi)/(24*sqrt(pi)*sqrt(A));
-	wZ = (A*h[i]*h[i]+24*pi)/(12*sqrt(pi)*sqrt(A));
-	//wX = 3*sqrt(pi)/sqrt(A);
-	//wZ = 2*sqrt(pi)/sqrt(A);
+	//wX = -(5*A*h[i]*h[i]-72*pi)/(24*sqrt(pi)*sqrt(A));
+	//wZ = (A*h[i]*h[i]+24*pi)/(12*sqrt(pi)*sqrt(A));
+	wX = 3*sqrt(pi)/sqrt(A);
+	wZ = 2*sqrt(pi)/sqrt(A);
 	vec_scalar_append(reject, fX*wX/(8*pi), i, wx, wy, wz);
 	vec_scalar_append(normal, fZ*wZ/(8*pi), i, wx, wy, wz);
     }
@@ -147,7 +147,8 @@ bi_self_circle_double(T *q, He *he, real alpha, const real *x, const real *y, co
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     for (i = 0; i < n; i++) {
-	p = pi-acos((area[i]*h[i]*h[i])/(2*pi)-1);
+	//p = pi-acos((area[i]*h[i]*h[i])/(2*pi)-1);
+	p = sqrt(area[i])/sqrt(pi)*h[i];
 	vec_get(i, nx, ny, nz, normal);
 	vec_get(i, ux, uy, uz, velocity);
 	uX = vec_reject_scalar(velocity, normal);

@@ -1,7 +1,7 @@
 load("interpol") $
 d(v):=4*%pi*(v^(-2/3) - 1)$
 
-L: read_nested_list("2") $
+L: read_nested_list("3") $
 define(f(x), linearinterpol(L)) $
 g(v):=f(d(v)) $
 
