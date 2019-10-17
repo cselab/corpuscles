@@ -153,7 +153,7 @@ bi_self_circle_double(T *q, He *he, real alpha, const real *x, const real *y, co
 	uX = vec_reject_scalar(velocity, normal);
 	vec_reject(velocity, normal, reject);
 	vec_normalize(reject);
-	vec_scalar_append(reject, -6*uX*p/8     / 2, i, wx, wy, wz);
+	vec_scalar_append(reject, -6*uX*p/8, i, wx, wy, wz);
     }
     array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
     return CO_OK;
