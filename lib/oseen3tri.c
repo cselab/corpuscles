@@ -10,9 +10,11 @@
 #include "co/memory.h"
 #include "co/normal.h"
 #include "co/oseen3tri.h"
+#include "co/matrix.h"
 #include "co/i/matrix.h"
 #include "co/i/vec.h"
 #include "co/i/tri.h"
+#include "co/tri.h"
 #include "co/i/area.h"
 
 #define T Oseen3Tri
@@ -146,16 +148,24 @@ stresslet(const real a[3], const real n[3], const real b[3],
 	*yy = d[Y]*d[Y]*l;
 	*yz = d[Y]*d[Z]*l;
 	*zz = d[Z]*d[Z]*l;
-	
+
 	return CO_OK;
 }
+
+#define TSET(i, s, a)					\
+    do {						\
+    i_matrix_add(nv, nv, i, ia, s, a);			\
+    i_matrix_add(nv, nv, i, ib, s, a);			\
+    i_matrix_add(nv, nv, i, ic, s, a);			\
+    } while (0);					\
+
 
 int
 oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	real *nx, *ny, *nz, *area, A, s;
-	int status, n, i;
+	int status, nv, nt, i;;
 
 	nx = q->nx;
 	ny = q->ny;
@@ -167,31 +177,33 @@ oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	status = i_area_ver(he, x, y, z, area);
 	if (status != CO_OK)
 		ERR(CO_NUM, "area_ver failed");
-	n = he_nv(he);
+	nv = he_nv(he);
+	matrix_zero(nv, nv, oxx);
+	matrix_zero(nv, nv, oxy);
+	matrix_zero(nv, nv, oxz);
+	matrix_zero(nv, nv, oyy);
+	matrix_zero(nv, nv, oyz);
+	matrix_zero(nv, nv, ozz);
 #pragma omp parallel for
-	for (i = 0; i < n; i++) {
-		int j;
-		real a[3], b[3], u[3], xx, xy, xz, yy, yz, zz;
-		i_vec_get(i, x, y, z, a);
-		SET(i, i, 0, oxx);
-		SET(i, i, 0, oxy);
-		SET(i, i, 0, oxz);
-		SET(i, i, 0, oyy);
-		SET(i, i, 0, oyz);
-		SET(i, i, 0, ozz);
-		for (j = 0; j < n; j++) {
-		    if (i == j) continue;
-		    i_vec_get(j, nx, ny, nz, u);
-		    i_vec_get(j, x, y, z, b);
-		    A = 3*area[j]/(4*pi);
-		    stresslet(a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
-		    SET(i, j, A*xx, oxx);
-		    SET(i, j, A*xy, oxy);
-		    SET(i, j, A*xz, oxz);
-		    SET(i, j, A*yy, oyy);
-		    SET(i, j, A*yz, oyz);
-		    SET(i, j, A*zz, ozz);
-		}
+	for (i = 0; i < nv; i++) {
+	    int j, ia, ib, ic;
+	    real a[3], b[3], c[3], point[3], center[3], normal[3];
+	    real xx, xy, xz, yy, yz, zz;
+	    i_vec_get(i, x, y, z, point);
+	    for (j = 0; j < nt; j++) {
+		he_tri_ijk(he, j, &ia, &ib, &ic);
+		i_vec_get3(ia, ib, ic, x, y, z, a, b, c);
+		tri_center(a, b, c, center);
+		tri_normal(a, b, c, normal);
+		A = tri_area(a, b, c)/(4*pi);
+		stresslet(point, normal, center, &xx, &xy, &xz, &yy, &yz, &zz);
+		TSET(i, A*xx, oxx);
+		TSET(i, A*xy, oxy);
+		TSET(i, A*xz, oxz);
+		TSET(i, A*yy, oyy);
+		TSET(i, A*yz, oyz);
+		TSET(i, A*zz, ozz);
+	    }
 	}
 	return CO_OK;
 }
