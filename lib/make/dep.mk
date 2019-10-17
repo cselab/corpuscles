@@ -162,17 +162,17 @@ co/err.h\
 co/he.h\
 co/argv.h\
 co/macro.h\
-co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/cortez_fm.h\
+co/bi/self_circle.h\
 
 bi/cortez_zero.s.o:\
 co/prec/s/real.h\
 co/argv.h\
 co/bi/cortez_zero.h\
+co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
@@ -542,6 +542,18 @@ co/dtri.h\
 co/sum.h\
 co/f/garea.h\
 
+garea_sq.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_sq.h\
+
 garea_voronoi.s.o:\
 co/prec/s/real.h\
 co/argv.h\
@@ -702,6 +714,7 @@ co/util.h\
 co/f/area.h\
 co/f/darea.h\
 co/f/garea.h\
+co/f/garea_sq.h\
 co/f/volume.h\
 co/f/dvolume.h\
 co/f/rvolume.h\
@@ -1384,17 +1397,17 @@ co/err.h\
 co/he.h\
 co/argv.h\
 co/macro.h\
-co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/cortez_fm.h\
+co/bi/self_circle.h\
 
 bi/cortez_zero.d.o:\
 co/prec/d/real.h\
 co/argv.h\
 co/bi/cortez_zero.h\
+co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
@@ -1764,6 +1777,18 @@ co/dtri.h\
 co/sum.h\
 co/f/garea.h\
 
+garea_sq.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_sq.h\
+
 garea_voronoi.d.o:\
 co/prec/d/real.h\
 co/argv.h\
@@ -1924,6 +1949,7 @@ co/util.h\
 co/f/area.h\
 co/f/darea.h\
 co/f/garea.h\
+co/f/garea_sq.h\
 co/f/volume.h\
 co/f/dvolume.h\
 co/f/rvolume.h\
@@ -2606,17 +2632,17 @@ co/err.h\
 co/he.h\
 co/argv.h\
 co/macro.h\
-co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/cortez_fm.h\
+co/bi/self_circle.h\
 
 bi/cortez_zero.l.o:\
 co/prec/l/real.h\
 co/argv.h\
 co/bi/cortez_zero.h\
+co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
@@ -2986,6 +3012,18 @@ co/dtri.h\
 co/sum.h\
 co/f/garea.h\
 
+garea_sq.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_sq.h\
+
 garea_voronoi.l.o:\
 co/prec/l/real.h\
 co/argv.h\
@@ -3146,6 +3184,7 @@ co/util.h\
 co/f/area.h\
 co/f/darea.h\
 co/f/garea.h\
+co/f/garea_sq.h\
 co/f/volume.h\
 co/f/dvolume.h\
 co/f/rvolume.h\

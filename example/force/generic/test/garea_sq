@@ -1,0 +1,3 @@
+# nTEST: garea_sq
+i=`co.path`/rbc/laplace/0.off
+co.run ./main garea_sq 2 < $i | uscale 1e6 > main.out.txt

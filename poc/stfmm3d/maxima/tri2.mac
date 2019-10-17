@@ -1,0 +1,36 @@
+load("vect")$
+cross(a, b):=express(a ~ b) $
+vabs(a):= sqrt(a . a) $
+(X: 1, Y: 2, Z: 3) $
+
+a: ['ax, 'ay, 'az]$
+b: ['bx, 'by, 'bz]$
+c: ['cx, 'cy, 'cz]$
+
+/* u in [0, 1], v in [0, 1 - u] */
+r: a + 'u*(b - a) + 'v*(c - a);
+
+ru: diff(r, u);
+rv: diff(r, v);
+
+dA: vabs(cross(ru, rv));
+int(e):=integrate(integrate(e, 'v, 0, 1 - 'u), 'u, 0, 1);
+x: r[X];
+y: r[Y];
+z: r[Z];
+
+int(1);
+
+matchdeclare(x, true) $
+defrule(r_sq, x^2, sq(x)) $
+f_sq(e):=apply1(e, r_sq) $
+
+grind(f_sq(int(z*z)));
+
+grind(f_sq(int(y*z)));
+int(x*z);
+
+int(y*y);
+int(y*z);
+
+int(z*z);

@@ -1,0 +1,14 @@
+load("eigen");
+v: [1, 23, 0, 1, 1, -1, 12];
+
+v2matrix(v):=block([
+    xx: v[1], xy: v[2], xz: v[3],
+    yy: v[4], yz: v[5], zz: v[6]],
+  matrix([xx, xy, xz], [xy, yy, yz], [xz, yz, zz]));
+
+m: v2matrix(v);
+
+[v, e]: eigenvectors(m);
+
+v0: [0.043766, -0.0037985, -0.999035];
+(m . v0) / v0;

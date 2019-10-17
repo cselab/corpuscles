@@ -1,0 +1,8 @@
+load("interpol") $
+d(v):=4*%pi*(v^(-2/3) - 1)$
+
+L: read_nested_list("2") $
+define(f(x), linearinterpol(L)) $
+g(v):=f(d(v)) $
+
+g(0.9), numer;

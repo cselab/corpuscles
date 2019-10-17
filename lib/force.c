@@ -14,6 +14,7 @@
 #include "co/f/area.h"
 #include "co/f/darea.h"
 #include "co/f/garea.h"
+#include "co/f/garea_sq.h"
 #include "co/f/volume.h"
 #include "co/f/dvolume.h"
 #include "co/f/rvolume.h"
@@ -37,6 +38,7 @@
 static int force_area_argv(char***, He*, T**);
 static int force_darea_argv(char***, He*, T**);
 static int force_garea_argv(char***, He*, T**);
+static int force_garea_sq_argv(char***, He*, T**);
 static int force_volume_argv(char***, He*, T**);
 static int force_dvolume_argv(char***, He*, T**);
 static int force_rvolume_argv(char***, He*, T**);
@@ -65,6 +67,7 @@ static const char *Name[] = {
     "area",
     "darea",
     "garea",
+    "garea_sq",
     "volume",
     "dvolume",
     "rvolume",
@@ -85,6 +88,7 @@ static const TypeArgv Argv[] = {
     force_area_argv,
     force_darea_argv,
     force_garea_argv,
+    force_garea_sq_argv,
     force_volume_argv,
     force_dvolume_argv,
     force_rvolume_argv,
@@ -306,6 +310,49 @@ int force_garea_argv(char ***p, He *he, /**/ T **pq)
     q->force.vtable = &garea_vtable;
     *pq = &q->force;
     return he_f_garea_argv(p, he, &q->local);
+}
+typedef struct Garea_sq Garea_sq;
+struct Garea_sq {
+    T force;
+    HeFGareaSq *local;
+};
+static int garea_sq_fin(T *q)
+{
+    int status;
+    Garea_sq *b = CONTAINER_OF(q, Garea_sq, force);
+    status = he_f_garea_sq_fin(b->local);
+    FREE(q);
+    return status;
+}
+static int garea_sq_force(T *q, He *he, const real *x, const real *y, const real *z,
+                               /**/ real *fx, real *fy, real *fz)
+{
+    Garea_sq *b = CONTAINER_OF(q, Garea_sq, force);
+    return he_f_garea_sq_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+static real garea_sq_energy(T *q, He *he, const real *x, const real *y, const real *z)
+{
+    Garea_sq *b = CONTAINER_OF(q, Garea_sq, force);
+    return he_f_garea_sq_energy(b->local, he, x, y, z);
+}
+static void* garea_sq_pointer(T *q)
+{
+    Garea_sq *b = CONTAINER_OF(q, Garea_sq, force);
+    return b->local;
+}
+static Vtable garea_sq_vtable = {
+    garea_sq_fin,
+    garea_sq_force,
+    garea_sq_energy,
+    garea_sq_pointer,
+};
+int force_garea_sq_argv(char ***p, He *he, /**/ T **pq)
+{
+    Garea_sq *q;
+    MALLOC(1, &q);
+    q->force.vtable = &garea_sq_vtable;
+    *pq = &q->force;
+    return he_f_garea_sq_argv(p, he, &q->local);
 }
 typedef struct Volume Volume;
 struct Volume {

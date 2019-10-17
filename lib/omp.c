@@ -1,5 +1,7 @@
 #include <stdio.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 #include "co/err.h"
 #include "co/omp.h"
 

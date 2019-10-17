@@ -65,6 +65,7 @@ fd.s.o\
 f/dvolume.s.o\
 f/edg_sq.s.o\
 f/garea.s.o\
+f/garea_sq.s.o\
 f/garea_voronoi.s.o\
 f/gompper.s.o\
 f/gompper_kroll.s.o\
@@ -186,6 +187,7 @@ fd.d.o\
 f/dvolume.d.o\
 f/edg_sq.d.o\
 f/garea.d.o\
+f/garea_sq.d.o\
 f/garea_voronoi.d.o\
 f/gompper.d.o\
 f/gompper_kroll.d.o\
@@ -307,6 +309,7 @@ fd.l.o\
 f/dvolume.l.o\
 f/edg_sq.l.o\
 f/garea.l.o\
+f/garea_sq.l.o\
 f/garea_voronoi.l.o\
 f/gompper.l.o\
 f/gompper_kroll.l.o\
