@@ -1,0 +1,1 @@
+awk 'BEGIN {count=0; x=0;y=0;z=0; r1=0;r2=0;} {if (NR>=3&&NR<=644) {count++; x+=$1; y+=$2; z+=$3; rxy=sqrt($1*$1+$2*$2); if(rxy>r1){r1=rxy} rz=sqrt($3*$3); if (rz>r2) {r2=rz} }} END { xc=x/count;yc=y/count;zc=z/count; print "x0="xc, "y0="yc, "z0="zc, "a="r1, "b="r2, "a/b="r1/r2, "b/a="r2/r1}' $1
