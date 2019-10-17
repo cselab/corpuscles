@@ -112,13 +112,12 @@ bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const
 	fZ = vec_project_scalar(force, normal);
 	vec_reject(force, normal, reject);
 	vec_normalize(reject);
-	//wX = -(5*A*h[i]*h[i]-72*pi)/(24*sqrt(pi)*sqrt(A));
-	//wZ = (A*h[i]*h[i]+24*pi)/(12*sqrt(pi)*sqrt(A));
-	wX = 3*sqrt(pi)/sqrt(A);
-	wZ = 2*sqrt(pi)/sqrt(A);
+	wX = -(5*A*h[i]*h[i]-72*pi)/(24*sqrt(pi)*sqrt(A));
+	wZ = (A*h[i]*h[i]+24*pi)/(12*sqrt(pi)*sqrt(A));
+	//wX = 3*sqrt(pi)/sqrt(A);
+	//wZ = 2*sqrt(pi)/sqrt(A);
 	vec_scalar_append(reject, fX*wX/(8*pi), i, wx, wy, wz);
 	vec_scalar_append(normal, fZ*wZ/(8*pi), i, wx, wy, wz);
-	//vec_scalar_append(force,  0.5, i, wx, wy, wz);
     }
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_single failed");
