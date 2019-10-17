@@ -147,6 +147,38 @@ moment_surface(He * he, const real *xx, const real *yy, const real *zz, /**/ rea
     return CO_OK;
 }
 
+static int
+moment_tri(He * he, const real *xx, const real *yy, const real *zz, /**/ real *m) {
+    enum {X, Y, Z};
+    enum {
+	XX,
+	XY,
+	XZ,
+	YY,
+	YZ,
+	ZZ
+    };
+    real a[3], b[3], c[3], area;
+    real x, y, z;
+    int nt, t, i, j, k;
+    real uu, uv, uw, vv, vw, ww;
+    m[XX] = m[XY] = m[XZ] = m[YY] = m[YZ] = m[ZZ] = 0;
+    nt = he_nt(he);
+    for (t = 0; t < nt; t++) {
+	he_tri_ijk(he, t, &i, &j, &k);
+	vec_get3(i, j, k, xx, yy, zz, a, b, c);
+	tri_moment(a, b, c, &uu, &uv, &uw, &vv, &vw, &ww);
+	area = tri_area(a, b, c);
+	m[XX] += (vv + ww) * area;
+	m[YY] += (uu + ww) * area;
+	m[ZZ] += (uu + vv) * area;
+	m[XY] += -uv * area;
+	m[XZ] += -uw * area;
+	m[YZ] += -vw * area;
+    }
+    return CO_OK;
+}
+
 int
 eigen_vector_surface(T * q, He * he, real * x, real * y, real * z,
 		     /**/ real * ev)
@@ -159,6 +191,24 @@ eigen_vector_surface(T * q, He * he, real * x, real * y, real * z,
     v = q->v;
     to_cm(n, /**/ x, y, z);
     moment_surface(he, x, y, z, /**/ m);
+    alg_eig_vectors(m, v);
+    for (i = 0; i < 9; i++)
+	ev[i] = v[i];
+    return CO_OK;
+}
+
+int
+eigen_vector_tri(T * q, He * he, real * x, real * y, real * z,
+		 /**/ real * ev)
+{
+    int n, i;
+    real m[6];
+    real *v;
+
+    n = q->n;
+    v = q->v;
+    to_cm(n, /**/ x, y, z);
+    moment_tri(he, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
     for (i = 0; i < 9; i++)
 	ev[i] = v[i];

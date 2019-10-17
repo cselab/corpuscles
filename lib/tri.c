@@ -460,12 +460,5 @@ tri_moment(const real a[3], const real b[3], const real c[3],
     *xz = ((2*cx+bx+ax)*cz+(bz+az)*cx+(2*bx+ax)*bz+az*bx+2*ax*az)/24;
     *yz = ((2*cy+by+ay)*cz+(bz+az)*cy+(2*by+ay)*bz+az*by+2*ay*az)/24;
 
-    *xx *= area;
-    *yy *= area;
-    *zz *= area;
-    *xy *= area;
-    *xz *= area;
-    *yz *= area;
-
     return CO_OK;
 }
