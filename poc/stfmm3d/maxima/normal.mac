@@ -21,13 +21,13 @@ j: X;
 dA: R^2*sin(p);
 e: s(k, s(i, u[i]*d[i]*d[j]*d[k]*n[k] * dA));
 
-A: ratexpand(taylor(e, p, 0, 6));
-B: ratexpand(taylor(rad^5, p, 0, 6));
+A: ratexpand(taylor(e, p, 0, 5));
+B: ratexpand(taylor(rad^5, p, 0, 5));
 
 Area: integrate(integrate(dA, t, 0, 2*%pi), p, 0, p0) $
-q: solve(Area0 = ratexpand(taylor(Area, p0, 0, 3)), p0)[2];
+q: solve(Area0 = Area, p0);
 f: trigsimp(A/B) $
 f: integrate(integrate(f, t, 0, 2*%pi), p, 0, p0);
 
-q0: subst([Area0 = area[i], 'R = 1/h[i], '%pi = pi], q);
+q0: subst([Area0 = area['j], 'R = 1, '%pi = pi], q);
 grind(q0);

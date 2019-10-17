@@ -107,6 +107,7 @@ co/omp.h\
 co/orient.h\
 co/oseen2.h\
 co/oseen3.h\
+co/oseen3tri.h\
 co/oseen3zero.h\
 co/ply.h\
 co/polygon.h\
