@@ -132,22 +132,20 @@ stresslet(const real a[3], const real n[3], const real b[3],
 	{
 		X, Y, Z
 	};
-	real d[3], r, r5, p, l6;
+	real d[3], r, p, l;
 
 	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
 	p = i_vec_dot(d, n);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
-	r5 = r*r*r*r*r;
-	l6 = 6*p/r5;
-
-	*xx = d[X]*d[X]*l6;
-	*xy = d[X]*d[Y]*l6;
-	*xz = d[X]*d[Z]*l6;
-	*yy = d[Y]*d[Y]*l6;
-	*yz = d[Y]*d[Z]*l6;
-	*zz = d[Z]*d[Z]*l6;
+	l = p/(r*r*r*r*r);
+	*xx = d[X]*d[X]*l;
+	*xy = d[X]*d[Y]*l;
+	*xz = d[X]*d[Z]*l;
+	*yy = d[Y]*d[Y]*l;
+	*yz = d[Y]*d[Z]*l;
+	*zz = d[Z]*d[Z]*l;
 	
 	return CO_OK;
 }
@@ -185,7 +183,7 @@ oseen3_zero_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		    if (i == j) continue;
 		    i_vec_get(j, nx, ny, nz, u);
 		    i_vec_get(j, x, y, z, b);
-		    A = area[j]/(8*pi);
+		    A = 3*area[j]/(4*pi);
 		    stresslet(a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
 		    SET(i, j, A*xx, oxx);
 		    SET(i, j, A*xy, oxy);
