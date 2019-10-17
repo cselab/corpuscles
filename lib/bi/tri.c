@@ -118,7 +118,7 @@ bi_tri_double(T *q, He *he, real al,
 	q->KReady = 1;
     }
     n = he_nv(he);
-    bi_self_circle_double(q->self, he, al, x, y, z, ux, uy, uz, wx, wy, wz);
+    //bi_self_circle_double(q->self, he, al, x, y, z, ux, uy, uz, wx, wy, wz);
     if (status != CO_OK)
 	ERR(CO_NUM, "bi_self_circle_double failed");
     tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
