@@ -79,7 +79,7 @@ bi_self_circle_update(T *q, He *he, const real *x, const real *y, const real *z)
     n = he_nv(he);
     for (i = 0; i < n; i++)
 	h[i] = 2*h0[i]/area0[i];
-    status = he_area_ver(he, x, y, z, area);
+    status = area_ver_voronoi(he, x, y, z, area);
     if (status != CO_OK)
 	ERR(CO_NUM, "he_area_ver failed");
     status = normal_mwa(he, x, y, z, nx, ny, nz);
