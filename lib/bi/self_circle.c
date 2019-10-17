@@ -147,7 +147,9 @@ bi_self_circle_double(T *q, He *he, real alpha, const real *x, const real *y, co
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     for (i = 0; i < n; i++) {
-	p = sqrt(area[i]/pi)*h[i];
+	p = (sqrt(2)*sqrt(h[i])
+	     *sqrt(sqrt(3)*sqrt(pi)*sqrt((3*pi)/h[i]*h[i]-area[i])+(3*pi)/h[i]))
+	    /sqrt(pi);
 	vec_get(i, nx, ny, nz, normal);
 	vec_get(i, ux, uy, uz, velocity);
 	uX = vec_reject_scalar(velocity, normal);
