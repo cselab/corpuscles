@@ -196,6 +196,19 @@ co/vec.h\
 co/H.h\
 co/bi/self_circle.h\
 
+bi/tri.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/bi/tri.h\
+co/bi/self_circle.h\
+co/err.h\
+co/he.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
+
 cell2.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -1008,9 +1021,11 @@ co/macro.h\
 co/memory.h\
 co/normal.h\
 co/oseen3tri.h\
+co/matrix.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
+co/tri.h\
 co/i/area.h\
 
 oseen3zero.s.o:\
@@ -1443,6 +1458,19 @@ co/normal.h\
 co/vec.h\
 co/H.h\
 co/bi/self_circle.h\
+
+bi/tri.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/bi/tri.h\
+co/bi/self_circle.h\
+co/err.h\
+co/he.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
 
 cell2.d.o:\
 co/prec/d/real.h\
@@ -2256,9 +2284,11 @@ co/macro.h\
 co/memory.h\
 co/normal.h\
 co/oseen3tri.h\
+co/matrix.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
+co/tri.h\
 co/i/area.h\
 
 oseen3zero.d.o:\
@@ -2691,6 +2721,19 @@ co/normal.h\
 co/vec.h\
 co/H.h\
 co/bi/self_circle.h\
+
+bi/tri.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/bi/tri.h\
+co/bi/self_circle.h\
+co/err.h\
+co/he.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/oseen3zero.h\
+co/tensor.h\
 
 cell2.l.o:\
 co/prec/l/real.h\
@@ -3504,9 +3547,11 @@ co/macro.h\
 co/memory.h\
 co/normal.h\
 co/oseen3tri.h\
+co/matrix.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
+co/tri.h\
 co/i/area.h\
 
 oseen3zero.l.o:\
