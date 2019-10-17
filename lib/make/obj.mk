@@ -30,6 +30,7 @@ bi/cortez.s.o\
 bi/cortez_fm.s.o\
 bi/cortez_zero.s.o\
 bi/self_circle.s.o\
+bi/tri.s.o\
 cell2.s.o\
 cell3.s.o\
 colormap.s.o\
@@ -104,6 +105,7 @@ off.s.o\
 orient.s.o\
 oseen2.s.o\
 oseen3.s.o\
+oseen3tri.s.o\
 oseen3zero.s.o\
 ply.s.o\
 polygon.s.o\
@@ -152,6 +154,7 @@ bi/cortez.d.o\
 bi/cortez_fm.d.o\
 bi/cortez_zero.d.o\
 bi/self_circle.d.o\
+bi/tri.d.o\
 cell2.d.o\
 cell3.d.o\
 colormap.d.o\
@@ -226,6 +229,7 @@ off.d.o\
 orient.d.o\
 oseen2.d.o\
 oseen3.d.o\
+oseen3tri.d.o\
 oseen3zero.d.o\
 ply.d.o\
 polygon.d.o\
@@ -274,6 +278,7 @@ bi/cortez.l.o\
 bi/cortez_fm.l.o\
 bi/cortez_zero.l.o\
 bi/self_circle.l.o\
+bi/tri.l.o\
 cell2.l.o\
 cell3.l.o\
 colormap.l.o\
@@ -348,6 +353,7 @@ off.l.o\
 orient.l.o\
 oseen2.l.o\
 oseen3.l.o\
+oseen3tri.l.o\
 oseen3zero.l.o\
 ply.l.o\
 polygon.l.o\

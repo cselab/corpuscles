@@ -1,5 +1,5 @@
 include(`co.m4')dnl
-h_define(`List', `cortez, cortez_fm, cortez_zero, self_circle')dnl
+h_define(`List', `cortez, cortez_fm, cortez_zero, tri, self_circle')dnl
 h_define(`foreach', `h_foreach(`n', `List', `$1')')dnl
 h_define(`cap', `h_translit(`'capitalize(h_translit($1, `_', ` ')), ` ', `')')dnl
 h_define(`type', `Bi`'cap($1)')dnl

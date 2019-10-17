@@ -79,7 +79,7 @@ bi_self_circle_update(T *q, He *he, const real *x, const real *y, const real *z)
     n = he_nv(he);
     for (i = 0; i < n; i++)
 	h[i] = 2*h0[i]/area0[i];
-    status = he_area_ver(he, x, y, z, area);
+    status = area_ver_voronoi(he, x, y, z, area);
     if (status != CO_OK)
 	ERR(CO_NUM, "he_area_ver failed");
     status = normal_mwa(he, x, y, z, nx, ny, nz);
@@ -118,7 +118,6 @@ bi_self_circle_single(T *q, He *he, real al, const real *x, const real *y, const
 	wZ = 2*sqrt(pi)/sqrt(A);
 	vec_scalar_append(reject, fX*wX/(8*pi), i, wx, wy, wz);
 	vec_scalar_append(normal, fZ*wZ/(8*pi), i, wx, wy, wz);
-	//vec_scalar_append(force,  0.5, i, wx, wy, wz);
     }
     if (status != CO_OK)
 	ERR(CO_NUM, "fm_single failed");
@@ -133,7 +132,7 @@ bi_self_circle_double(T *q, He *he, real alpha, const real *x, const real *y, co
     real *wx, *wy, *wz, *ax, *ay, *az, *h;
     const real *nx, *ny, *nz, *area;
     real normal[3], velocity[3], reject[3];
-    real uX, p;
+    real uX, p, A;
     USED(x);
     USED(y);
     USED(z);
@@ -148,7 +147,9 @@ bi_self_circle_double(T *q, He *he, real alpha, const real *x, const real *y, co
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     for (i = 0; i < n; i++) {
-	p = sqrt(area[i]/pi)*h[i];
+	//p = pi-acos((area[i]*h[i]*h[i])/(2*pi)-1);
+	A = area[i];
+	p = sqrt(A)/sqrt(pi)*h[i];
 	vec_get(i, nx, ny, nz, normal);
 	vec_get(i, ux, uy, uz, velocity);
 	uX = vec_reject_scalar(velocity, normal);

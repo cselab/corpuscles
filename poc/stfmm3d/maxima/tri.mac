@@ -1,19 +1,18 @@
 (X: 1, Y: 2, Z: 3) $
-s(i, e)::=buildq([e, i], sum(e, i, 1, 2))$
+s(i, e)::=buildq([e, i], sum(e, i, 1, 3))$
 matchdeclare([i, j], numberp)$
 tellsimpafter(kd(i, j), if i = j then 1 else 0)$
 
-a: [0, 0]$
-b: [1, 0]$
-c: ['cx, 'cy]$
+a: [0, 0, 0]$
+b: [1, 0, 0]$
+c: ['cx, 'cy, 0]$
 
 /* u in [0, 1], v in [0, 1 - u] */
 r: a + 'u*(b - a) + 'v*(c - a);
 
 x: r[X];
 y: r[Y];
-
-j: X;
+z: r[Z];
 
 J: matrix([diff(x, 'u), diff(x, 'v)], [diff(y, 'u), diff(y, 'v)]);
 dA: determinant(J);
@@ -24,9 +23,11 @@ int(dA);
 r0: r, u = 0, v = 0;
 d: r - r0;
 rad: sqrt(d . d);
-f: ['fx, 0] $
+u: ['ux, 'uy, 'uz] $
+n: [0, 0, 'nz] $
 
-e: s(i, dA*f[i]*(kd(i, j)/rad + d[i]*d[j]/rad^3));
+j: Z;
+e: s(k, s(i, u[i]*d[i]*d[j]*d[k]*n[k] * dA));
 
 assume(u < 1,  u > 0, cx > 0, cy > 0);
 integrate(e, 'v, 0, 1 - 'u);
