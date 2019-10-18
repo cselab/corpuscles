@@ -200,13 +200,12 @@ bi/tri.s.o:\
 co/prec/s/real.h\
 co/argv.h\
 co/bi/tri.h\
-co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3zero.h\
+co/oseen3tri.h\
 co/tensor.h\
 
 cell2.s.o:\
@@ -1463,13 +1462,12 @@ bi/tri.d.o:\
 co/prec/d/real.h\
 co/argv.h\
 co/bi/tri.h\
-co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3zero.h\
+co/oseen3tri.h\
 co/tensor.h\
 
 cell2.d.o:\
@@ -2726,13 +2724,12 @@ bi/tri.l.o:\
 co/prec/l/real.h\
 co/argv.h\
 co/bi/tri.h\
-co/bi/self_circle.h\
 co/err.h\
 co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3zero.h\
+co/oseen3tri.h\
 co/tensor.h\
 
 cell2.l.o:\
