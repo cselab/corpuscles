@@ -227,6 +227,14 @@ main(__UNUSED int argc, const char **v0)
 		tri_moment(a, b, c, &m[0], &m[1], &m[2], &m[3], &m[4], &m[5]);
 		printf(FMT " " FMT " " FMT "\n", m[0], m[1], m[2]);
 		printf(FMT " " FMT " " FMT "\n", m[3], m[4], m[5]);
+	} else if (eq(op, "edg_center")) {
+		vec(a);
+		vec(b);
+		vec(c);
+		tri_edg_center(a, b, c, u, v, w);
+		vec_printf(u, FMT);
+		vec_printf(v, FMT);
+		vec_printf(w, FMT);
 	} else
 		ER("unknown operation '%s'", op);
 	return 0;

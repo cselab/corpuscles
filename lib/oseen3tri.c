@@ -36,10 +36,10 @@ oseen(const real a[3], const real b[3],
 
 	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
-	r3 = r*r*r;
-	l = 1/r;
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
+	r3 = r*r*r;
+	l = 1/r;
 	*xx = l + d[X]*d[X]/r3;
 	*yy = l + d[Y]*d[Y]/r3;
 	*zz = l + d[Z]*d[Z]/r3;
@@ -79,6 +79,8 @@ oseen3_tri_fin(T *q)
 }
 
 #define SET(i, j, s, a) i_matrix_set(n, n, i, j, s, a)
+#define ADD(i, j, s, a) i_matrix_add(n, n, i, j, s, a)
+
 int
 oseen3_tri_apply(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
@@ -138,9 +140,9 @@ stresslet(const real a[3], const real n[3], const real b[3],
 
 	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
-	p = i_vec_dot(d, n);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
+	p = i_vec_dot(d, n);
 	l = p/(r*r*r*r*r);
 	*xx = d[X]*d[X]*l;
 	*xy = d[X]*d[Y]*l;
@@ -148,24 +150,30 @@ stresslet(const real a[3], const real n[3], const real b[3],
 	*yy = d[Y]*d[Y]*l;
 	*yz = d[Y]*d[Z]*l;
 	*zz = d[Z]*d[Z]*l;
-
+	if (r > 0.5) {
+	    *xx = *xy = *xz = *yy = *yz = *zz = 1/(r*r);
+	} else {
+	    *xx = *xy = *xz = *yy = *yz = *zz = 0;
+	}
 	return CO_OK;
 }
 
-#define TSET(i, s, a)					\
-    do {						\
-    i_matrix_add(nv, nv, i, ia, s, a);			\
-    i_matrix_add(nv, nv, i, ib, s, a);			\
-    i_matrix_add(nv, nv, i, ic, s, a);			\
-    } while (0);					\
-
+#define TSET(k, m)							\
+    do {								\
+	ADD(k, m, A*xx, oxx);						\
+	ADD(k, m, A*xy, oxy);						\
+	ADD(k, m, A*xz, oxz);						\
+	ADD(k, m, A*yy, oyy);						\
+	ADD(k, m, A*yz, oyz);						\
+	ADD(k, m, A*zz, ozz);						\
+    } while (0);							\
 
 int
 oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
 {
 	real *nx, *ny, *nz, *area, A, s;
-	int status, nv, nt, i;;
+	int status, n, nt, i;
 
 	nx = q->nx;
 	ny = q->ny;
@@ -177,32 +185,40 @@ oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	status = i_area_ver(he, x, y, z, area);
 	if (status != CO_OK)
 		ERR(CO_NUM, "area_ver failed");
-	nv = he_nv(he);
-	matrix_zero(nv, nv, oxx);
-	matrix_zero(nv, nv, oxy);
-	matrix_zero(nv, nv, oxz);
-	matrix_zero(nv, nv, oyy);
-	matrix_zero(nv, nv, oyz);
-	matrix_zero(nv, nv, ozz);
+	n = he_nv(he);
+	nt = he_nt(he);
+	matrix_zero(n, n, oxx);
+	matrix_zero(n, n, oxy);
+	matrix_zero(n, n, oxz);
+	matrix_zero(n, n, oyy);
+	matrix_zero(n, n, oyz);
+	matrix_zero(n, n, ozz);
 #pragma omp parallel for
-	for (i = 0; i < nv; i++) {
+	for (i = 0; i < n; i++) {
 	    int j, ia, ib, ic;
-	    real a[3], b[3], c[3], point[3], center[3], normal[3];
+	    real a[3], b[3], c[3], ea[3], eb[3], ec[3];
+	    real point[3], center[3], normal[3];
 	    real xx, xy, xz, yy, yz, zz;
 	    i_vec_get(i, x, y, z, point);
 	    for (j = 0; j < nt; j++) {
 		he_tri_ijk(he, j, &ia, &ib, &ic);
+		if (ia == i || ib == i || ic == i)
+		    continue;
 		i_vec_get3(ia, ib, ic, x, y, z, a, b, c);
 		tri_center(a, b, c, center);
 		tri_normal(a, b, c, normal);
-		A = tri_area(a, b, c)/(4*pi);
-		stresslet(point, normal, center, &xx, &xy, &xz, &yy, &yz, &zz);
-		TSET(i, A*xx, oxx);
-		TSET(i, A*xy, oxy);
-		TSET(i, A*xz, oxz);
-		TSET(i, A*yy, oyy);
-		TSET(i, A*yz, oyz);
-		TSET(i, A*zz, ozz);
+		tri_edg_center(a, b, c,  ea, eb, ec);
+		A = tri_area(a, b, c)/(8*pi);
+
+		stresslet(point, normal, ea, &xx, &xy, &xz, &yy, &yz, &zz);
+		TSET(i, ib); TSET(i, ic);
+		stresslet(point, normal, eb, &xx, &xy, &xz, &yy, &yz, &zz);
+		TSET(i, ia); TSET(i, ic);
+		stresslet(point, normal, ec, &xx, &xy, &xz, &yy, &yz, &zz);
+		TSET(i, ia); TSET(i, ib);
+
+		/*stresslet(point, normal, center, &xx, &xy, &xz, &yy, &yz, &zz);
+		  TSET(i, ia); TSET(i, ib); TSET(i, ic); */
 	    }
 	}
 	return CO_OK;

@@ -2,7 +2,6 @@
 #include "real.h"
 #include "co/argv.h"
 #include "co/bi/tri.h"
-#include "co/bi/self_circle.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/i/matrix.h"
@@ -14,7 +13,6 @@
 #define T BiTri
 static const real pi = 3.141592653589793115997964;
 struct T {
-    BiSelfCircle *self;
     Oseen3Tri *oseen;
     struct Tensor O, K;
     int KReady;
@@ -30,9 +28,6 @@ bi_tri_ini(He *he, /**/ T **pq)
     status = oseen3_tri_ini(he, &q->oseen);
     if (status != CO_OK)
 	ERR(CO_MEMORY, "oseen3_tri_ini failed");
-    status = bi_self_circle_ini(he, &q->self);
-    if (status != CO_OK)
-	ERR(CO_MEMORY, "bi_self_circle_ini failed");
     n = he_nv(he);
     tensor_ini(n, &q->O);
     tensor_ini(n, &q->K);
@@ -51,7 +46,6 @@ int
 bi_tri_fin(T *q)
 {
     oseen3_tri_fin(q->oseen);
-    bi_self_circle_fin(q->self);
     tensor_fin(&q->O);
     tensor_fin(&q->K);
     FREE(q);
@@ -70,9 +64,6 @@ bi_tri_update(T *q, He *he, const real *x, const real *y, const real *z)
     status = oseen3_tri_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz, O->yy, O->yz, O->zz);
     if (status != CO_OK)
 	ERR(CO_NUM, "oseen3_tri_apply failed");
-    status = bi_self_circle_update(q->self, he, x, y, z);
-    if (status != CO_OK)
-	ERR(CO_NUM, "bi_self_circle_update failed");
     q->KReady = 0;
     return CO_OK;
 }
@@ -91,9 +82,6 @@ bi_tri_single(T *q, He *he, real al,
 
     O = &q->O;
     n = he_nv(he);
-    status = bi_self_circle_single(q->self, he, al, x, y, z, fx, fy, fz, ux, uy, uz);
-    if (status != CO_OK)
-	ERR(CO_NUM, "bi_self_circle_single failed");
     tensor_vector(n, al, fx, fy, fz, O, ux, uy, uz);
     return CO_OK;
 }
@@ -118,9 +106,6 @@ bi_tri_double(T *q, He *he, real al,
 	q->KReady = 1;
     }
     n = he_nv(he);
-    bi_self_circle_double(q->self, he, al, x, y, z, ux, uy, uz, wx, wy, wz);
-    if (status != CO_OK)
-	ERR(CO_NUM, "bi_self_circle_double failed");
     tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
     return CO_OK;
 }

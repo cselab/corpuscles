@@ -40,3 +40,5 @@ real tri_point_distance(const real[3], const real[3], const real[3], const real[
 int tri_point_closest(const real[3], const real[3], const real[3], const real[3], /**/ real[3]);
 int tri_moment(const real[3], const real[3], const real[3], /**/
 	       real*, real*, real*, real*, real*, real*);
+/* center of opposing edge */
+int tri_edg_center(const real[3], const real[3], const real[3], /**/ real[3], real[3], real[3]);
