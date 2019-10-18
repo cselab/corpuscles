@@ -85,3 +85,12 @@ edg_vect(const real a[3], const real b[3], FILE *f)
 	vec_fprintf(b, f, FMT);
 	return CO_OK;
 }
+
+int
+edg_center(const real a[3], const real b[3], real c[3])
+{
+    c[X] = (a[X] + b[X])/2;
+    c[Y] = (a[Y] + b[Y])/2;
+    c[Z] = (a[Z] + b[Z])/2;
+    return CO_OK;
+}

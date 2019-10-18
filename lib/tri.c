@@ -439,7 +439,8 @@ sq(real x)
 
 int
 tri_moment(const real a[3], const real b[3], const real c[3],
-	   real *xx, real *xy, real *xz, real *yy, real *yz, real *zz) {
+	   real *xx, real *xy, real *xz, real *yy, real *yz, real *zz)
+{
     real ax, ay, az, bx, by, bz, cx, cy, cz, area;
 
     ax = a[X];
@@ -455,10 +456,18 @@ tri_moment(const real a[3], const real b[3], const real c[3],
     *xx = (sq(cx)+(bx+ax)*cx+sq(bx)+ax*bx+sq(ax))/6;
     *yy = (sq(cy)+(by+ay)*cy+sq(by)+ay*by+sq(ay))/6;
     *zz = (sq(cz)+(bz+az)*cz+sq(bz)+az*bz+sq(az))/6;
-
     *xy = ((2*cx+bx+ax)*cy+(by+ay)*cx+(2*bx+ax)*by+ay*bx+2*ax*ay)/12;
     *xz = ((2*cx+bx+ax)*cz+(bz+az)*cx+(2*bx+ax)*bz+az*bx+2*ax*az)/12;
     *yz = ((2*cy+by+ay)*cz+(bz+az)*cy+(2*by+ay)*bz+az*by+2*ay*az)/12;
+    return CO_OK;
+}
 
+int
+tri_edg_center(const real a[3], const real b[3], const real c[3], /**/
+		real u[3], real v[3], real w[3])
+{
+    edg_center(a, b, w);
+    edg_center(b, c, u);
+    edg_center(c, a, v);
     return CO_OK;
 }
