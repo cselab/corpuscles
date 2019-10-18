@@ -27,4 +27,3 @@ A: tri_area(u, v, w)$
 [xx, xy, xz, yy, yz, zz]: tri_moment(u - c, v - c, w - c) * A$
 Ix: factor(yy);
 Iy: factor(xx);
-
