@@ -1,0 +1,12 @@
+load("co/edg.mac");
+load("co/vec.mac");
+load("co/tri.mac");
+
+vec_any(a);
+vec_any(b);
+vec_any(c);
+
+[u, v, w]: tri_edg_center(a, b, c);
+
+vec_arg(a, b, c);
+vec_arg(u, v, w);

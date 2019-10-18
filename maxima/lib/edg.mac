@@ -5,3 +5,5 @@ edg_abs(a, b):=block([u],
 edg_sq(a, b):=block([u],
   u: b - a,
   vec_dot(u, u));
+
+edg_center(a, b):= (a + b)/2;
