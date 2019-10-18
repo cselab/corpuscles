@@ -81,6 +81,7 @@ co/i/matrix.h\
 co/integral/circle_line.h\
 co/integral/sph_2plane.h\
 co/integral/sph_plane.h\
+co/integral/tri.h\
 co/invariants.h\
 co/i/tri.h\
 co/i/vec.h\

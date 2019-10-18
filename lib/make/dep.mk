@@ -851,6 +851,14 @@ co/macro.h\
 co/memory.h\
 co/integral/sph_plane.h\
 
+integral/tri.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+co/tri.h\
+co/integral/tri.h\
+
 invariants.s.o:\
 co/prec/s/real.h\
 co/he.h\
@@ -2113,6 +2121,14 @@ co/macro.h\
 co/memory.h\
 co/integral/sph_plane.h\
 
+integral/tri.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+co/tri.h\
+co/integral/tri.h\
+
 invariants.d.o:\
 co/prec/d/real.h\
 co/he.h\
@@ -3374,6 +3390,14 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/sph_plane.h\
+
+integral/tri.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+co/tri.h\
+co/integral/tri.h\
 
 invariants.l.o:\
 co/prec/l/real.h\
