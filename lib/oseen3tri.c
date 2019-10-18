@@ -192,14 +192,11 @@ oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	    i_vec_get(i, x, y, z, point);
 	    for (j = 0; j < nt; j++) {
 		he_tri_ijk(he, j, &ia, &ib, &ic);
-		if (i == ia || i == ib || i == ic)
-		    continue;
 		i_vec_get3(ia, ib, ic, x, y, z, a, b, c);
 		tri_center(a, b, c, center);
 		tri_normal(a, b, c, normal);
 		A = tri_area(a, b, c)/(4*pi);
 		stresslet(point, normal, center, &xx, &xy, &xz, &yy, &yz, &zz);
-
 		TSET(i, A*xx, oxx);
 		TSET(i, A*xy, oxy);
 		TSET(i, A*xz, oxz);
