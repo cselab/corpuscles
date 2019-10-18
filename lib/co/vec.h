@@ -12,7 +12,6 @@ int vec_add(const real[3], /*io*/ real[3]);
 int vec_sub(const real[3], /*io*/ real[3]);
 /* y += a*x */
 int vec_axpy(real a, const real x[3], /*io*/ real y[3]);
-/* x = -x */
 int vec_neg(/*io*/ real[3]);
 
  /* al*a + be*b */
