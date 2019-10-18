@@ -152,12 +152,12 @@ stresslet(const real a[3], const real n[3], const real b[3],
 	return CO_OK;
 }
 
-#define TSET(i, s, a)						\
-    do {							\
-	i_matrix_add(nv, nv, i, ia, (s), (a));			\
-	i_matrix_add(nv, nv, i, ib, (s), (a));			\
-	i_matrix_add(nv, nv, i, ic, (s), (a));			\
-    } while (0);						\
+#define TSET(i, s, a)							\
+    do {								\
+	i_matrix_add(nv, nv, i, ia, (s), (a));				\
+	i_matrix_add(nv, nv, i, ib, (s), (a));				\
+	i_matrix_add(nv, nv, i, ic, (s), (a));				\
+    } while (0);							\
 
 int
 oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,

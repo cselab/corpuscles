@@ -3,31 +3,30 @@ cross(a, b):=express(a ~ b) $
 vabs(a):= sqrt(a . a) $
 (X: 1, Y: 2, Z: 3) $
 
-a: ['ax, 'ay, 'az]$
-b: ['bx, 'by, 'bz]$
-c: ['cx, 'cy, 'cz]$
+a: ['x, 'y, 'z];
+b: ['u, 'v, 'w];
+c: ['p, 'q, 'r];
 
 /* u in [0, 1], v in [0, 1 - u] */
-r: a + 'u*(b - a) + 'v*(c - a);
+r: a + 'g*(b - a) + 'h*(c - a);
 
-ru: diff(r, u);
-rv: diff(r, v);
+rg: diff(r, g);
+rh: diff(r, h);
 
-dA: vabs(cross(ru, rv));
-int(e):=integrate(integrate(e, 'v, 0, 1 - 'u), 'u, 0, 1);
-x: r[X];
-y: r[Y];
-z: r[Z];
+dA: vabs(cross(rg, rh));
+int(e):=integrate(integrate(e, 'g, 0, 1 - 'h), 'h, 0, 1);
 
-int(1);
+int(dA);
 
 matchdeclare(x, true) $
 defrule(r_sq, x^2, sq(x)) $
 f_sq(e):=apply1(e, r_sq) $
 
-grind(f_sq(int(z*z)));
+grind(f_sq(int(r[X]*r[X])));
 
 grind(f_sq(int(y*z)));
+
+grind(int(x*x));
 int(x*z);
 
 int(y*y);

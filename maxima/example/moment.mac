@@ -1,0 +1,10 @@
+load("co/vec.mac");
+load("co/tri.mac");
+
+vec_any(a);
+vec_any(b);
+vec_any(c);
+
+tri_moment(a, b, c);
+
+vec_arg(a, b, c);
