@@ -109,10 +109,12 @@ tri_moment(a, b, c):=block([x, y, z, u, v, w, p, q, r, xx, xy, xz, yy, yz, zz],
   [x, y, z]: a,
   [u, v, w]: b,
   [p, q, r]: c,
-  xx: (x^2+(u+p)*x+u^2+p*u+p^2)/12,
-  yy: (y^2+(v+q)*y+v^2+q*v+q^2)/12,
-  zz: (z^2+(w+r)*z+w^2+r*w+r^2)/12,
-  xy: ((2*x+u+p)*y+(v+q)*x+(2*u+p)*v+q*u+2*p*q)/24,
-  xz: ((2*x+u+p)*z+(w+r)*x+(2*u+p)*w+r*u+2*p*r)/24,
-  yz: ((2*y+v+q)*z+(w+r)*y+(2*v+q)*w+r*v+2*q*r)/24,
+  xx: (x^2+(u+p)*x+u^2+p*u+p^2)/6,
+  yy: (y^2+(v+q)*y+v^2+q*v+q^2)/6,
+  zz: (z^2+(w+r)*z+w^2+r*w+r^2)/6,
+  xy: ((2*x+u+p)*y+(v+q)*x+(2*u+p)*v+q*u+2*p*q)/12,
+  xz: ((2*x+u+p)*z+(w+r)*x+(2*u+p)*w+r*u+2*p*r)/12,
+  yz: ((2*y+v+q)*z+(w+r)*y+(2*v+q)*w+r*v+2*q*r)/12,
   [xx, xy, xz, yy, yz, zz]);
+
+tri_center(a, b, c):= (a + b + c)/3;
