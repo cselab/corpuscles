@@ -36,10 +36,10 @@ oseen(const real a[3], const real b[3],
 
 	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
-	r3 = r*r*r;
-	l = 1/r;
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
+	r3 = r*r*r;
+	l = 1/r;
 	*xx = l + d[X]*d[X]/r3;
 	*yy = l + d[Y]*d[Y]/r3;
 	*zz = l + d[Z]*d[Z]/r3;
@@ -140,9 +140,9 @@ stresslet(const real a[3], const real n[3], const real b[3],
 
 	i_vec_minus(a, b, d);
 	r = i_vec_abs(d);
-	p = i_vec_dot(d, n);
 	if (r == 0)
 		ERR(CO_NUM, "r == 0");
+	p = i_vec_dot(d, n);
 	l = p/(r*r*r*r*r);
 	*xx = d[X]*d[X]*l;
 	*xy = d[X]*d[Y]*l;
@@ -150,7 +150,11 @@ stresslet(const real a[3], const real n[3], const real b[3],
 	*yy = d[Y]*d[Y]*l;
 	*yz = d[Y]*d[Z]*l;
 	*zz = d[Z]*d[Z]*l;
-
+	if (r > 0.5) {
+	    *xx = *xy = *xz = *yy = *yz = *zz = 1/(r*r);
+	} else {
+	    *xx = *xy = *xz = *yy = *yz = *zz = 0;
+	}
 	return CO_OK;
 }
 
@@ -198,17 +202,23 @@ oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	    i_vec_get(i, x, y, z, point);
 	    for (j = 0; j < nt; j++) {
 		he_tri_ijk(he, j, &ia, &ib, &ic);
+		if (ia == i || ib == i || ic == i)
+		    continue;
 		i_vec_get3(ia, ib, ic, x, y, z, a, b, c);
 		tri_center(a, b, c, center);
 		tri_normal(a, b, c, normal);
 		tri_edg_center(a, b, c,  ea, eb, ec);
 		A = tri_area(a, b, c)/(8*pi);
+
 		stresslet(point, normal, ea, &xx, &xy, &xz, &yy, &yz, &zz);
 		TSET(i, ib); TSET(i, ic);
 		stresslet(point, normal, eb, &xx, &xy, &xz, &yy, &yz, &zz);
 		TSET(i, ia); TSET(i, ic);
 		stresslet(point, normal, ec, &xx, &xy, &xz, &yy, &yz, &zz);
 		TSET(i, ia); TSET(i, ib);
+
+		/*stresslet(point, normal, center, &xx, &xy, &xz, &yy, &yz, &zz);
+		  TSET(i, ia); TSET(i, ib); TSET(i, ic); */
 	    }
 	}
 	return CO_OK;
