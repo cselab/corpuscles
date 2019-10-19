@@ -11,6 +11,7 @@
 #include "co/normal.h"
 #include "co/oseen3tri.h"
 #include "co/matrix.h"
+#include "co/integral/tri.h"
 #include "co/i/matrix.h"
 #include "co/i/vec.h"
 #include "co/i/tri.h"
@@ -21,7 +22,9 @@
 static const real pi = 3.141592653589793115997964;
 struct T
 {
-	real *nx, *ny, *nz, *area;
+    real *nx, *ny, *nz, *area;
+    IntegralTri *integral;
+    
 };
 
 static int
@@ -61,6 +64,7 @@ oseen3_tri_ini(He *he, T **pq)
 	n = he_nv(he);
 	MALLOC3(n, &nx, &ny, &nz);
 	MALLOC(n, &area);
+	integral_tri_ini(&q->integral);
 	q->nx = nx;
 	q->ny = ny;
 	q->nz = nz;
@@ -75,6 +79,7 @@ oseen3_tri_fin(T *q)
 	FREE3(q->nx, q->ny, q->nz);
 	FREE(q->area);
 	FREE(q);
+	integral_tri_fin(q->integral);
 	return CO_OK;
 }
 
@@ -168,6 +173,21 @@ stresslet(const real a[3], const real n[3], const real b[3],
 	ADD(k, m, A*zz, ozz);						\
     } while (0);							\
 
+
+static real
+F(real x, real y, real z, void *vp)
+{
+    enum {X, Y, Z};
+    real *p, r;
+    p = vp;
+
+    x -= p[X];
+    y -= p[Y];
+    z -= p[Z];
+    r = x*x + y*y + z*z;
+    return r > 0.25 ? 1/(r*r) : 0;
+}
+
 int
 oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	real *oxx, real *oxy, real *oxz, real *oyy, real *oyz, real *ozz)
@@ -199,6 +219,7 @@ oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 	    real a[3], b[3], c[3], ea[3], eb[3], ec[3];
 	    real point[3], center[3], normal[3];
 	    real xx, xy, xz, yy, yz, zz;
+	    MSG("i: %04d/%04d", i, n);
 	    i_vec_get(i, x, y, z, point);
 	    for (j = 0; j < nt; j++) {
 		he_tri_ijk(he, j, &ia, &ib, &ic);
@@ -210,12 +231,16 @@ oseen3_tri_stresslet(T *q, He *he, const real *x, const real *y, const real *z,
 		tri_edg_center(a, b, c,  ea, eb, ec);
 		A = tri_area(a, b, c)/(8*pi);
 
-		stresslet(point, normal, ea, &xx, &xy, &xz, &yy, &yz, &zz);
+		real res;
+		integral_tri_apply(q->integral, a, b, c, F, point, &res);
+		i_matrix_add(n, n, i, ia, res, oxx);
+
+		/* stresslet(point, normal, ea, &xx, &xy, &xz, &yy, &yz, &zz);
 		TSET(i, ib); TSET(i, ic);
 		stresslet(point, normal, eb, &xx, &xy, &xz, &yy, &yz, &zz);
 		TSET(i, ia); TSET(i, ic);
 		stresslet(point, normal, ec, &xx, &xy, &xz, &yy, &yz, &zz);
-		TSET(i, ia); TSET(i, ib);
+		TSET(i, ia); TSET(i, ib); */
 
 		/*stresslet(point, normal, center, &xx, &xy, &xz, &yy, &yz, &zz);
 		  TSET(i, ia); TSET(i, ib); TSET(i, ic); */

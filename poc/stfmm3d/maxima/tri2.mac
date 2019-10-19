@@ -23,6 +23,7 @@ int(e):=integrate(integrate(e, 'v, 0, 1 - 'u), 'u, 0, 1);
 
 dA / tri_area(a, b, c);
 
-int(x*y*z*dA), numer;
+rad: vabs(r);
+int(dA/r^2), numer, radan;
 
 vec_arg(a, b, c);
