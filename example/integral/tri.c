@@ -3,9 +3,10 @@
 #include <tgmath.h>
 #include <real.h>
 
-#include <co/vec.h>
+#include <co/err.h>
 #include <co/integral/tri.h>
 #include <co/macro.h>
+#include <co/vec.h>
 
 #define FMT CO_REAL_OUT
 
@@ -13,7 +14,7 @@ static real
 f(real x, real y, real z, void *p)
 {
     USED(p);
-    return x * y * z;
+    return x*y*z;
 }
 
 int

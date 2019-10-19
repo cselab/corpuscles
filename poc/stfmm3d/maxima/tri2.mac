@@ -4,9 +4,9 @@ load("vect")$
 cross(a, b):=express(a ~ b) $
 vabs(a):= sqrt(a . a) $
 
-vec_ini(a);
-vec_ini(b);
-vec_ini(c);
+vec_any(a);
+vec_any(b);
+vec_any(c);
 
 /* u in [0, 1], v in [0, 1 - u] */
 r: a + 'u*(b - a) + 'v*(c - a);
@@ -19,6 +19,10 @@ dA: vabs(cross(ru, rv));
 int1(e):=integrate(e, 'v, 0, 1 - 'u)$
 int(e):=integrate(integrate(e, 'v, 0, 1 - 'u), 'u, 0, 1);
 
-expand(int(dA)/tri_area(a, b, c));
+/* expand(int(dA)/tri_area(a, b, c)); */
 
-int1(1/x);
+dA / tri_area(a, b, c);
+
+int(x*y*z*dA), numer;
+
+vec_arg(a, b, c);

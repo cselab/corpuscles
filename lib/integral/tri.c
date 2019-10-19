@@ -76,6 +76,7 @@ int
 integral_tri_fin(T *q)
 {
     alg_integration2_fin(q->integ);
+    FREE(q);
     return CO_OK;
 }
 
@@ -95,10 +96,10 @@ v1(real u, void *p)
 }
 
 int
-integral_tri_apply(T *q, const real a[3], const real b[3], const real c[3], real (*f)(real, real, real, void*), void *param, /**/ real *res)
+integral_tri_apply(T *q, const real a[3], const real b[3], const real c[3], real (*f)(real, real, real, void*), void *param, /**/ real *pres)
 {
     struct Param p;
-    real A, u0, u1;
+    real A, u0, u1, res;
     int status;
 
     p.f = f;
@@ -109,9 +110,10 @@ integral_tri_apply(T *q, const real a[3], const real b[3], const real c[3], real
     A = tri_area(a, b, c);
     u0 = 0;
     u1 = 1;
-    status = alg_integration2_apply(q->integ, u0, u1, &v0, &v1, &F, &p, res);
+    status = alg_integration2_apply(q->integ, u0, u1, &v0, &v1, &F, &p, &res);
     if (status != CO_OK)
 	ERR(CO_NUM, "alg_integration2_apply failed");
-    *res *= A;
+    res *= 2*A;
+    *pres = res;
     return CO_OK;
 }
