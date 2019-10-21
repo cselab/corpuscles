@@ -836,6 +836,14 @@ co/macro.h\
 co/memory.h\
 co/integral/circle_line.h\
 
+integral/quad.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+co/tri.h\
+co/integral/quad.h\
+
 integral/sph_2plane.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -2107,6 +2115,14 @@ co/macro.h\
 co/memory.h\
 co/integral/circle_line.h\
 
+integral/quad.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+co/tri.h\
+co/integral/quad.h\
+
 integral/sph_2plane.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -3377,6 +3393,14 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/circle_line.h\
+
+integral/quad.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+co/tri.h\
+co/integral/quad.h\
 
 integral/sph_2plane.l.o:\
 co/prec/l/real.h\

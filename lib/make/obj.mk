@@ -88,6 +88,7 @@ f/wlc.s.o\
 gts.s.o\
 H.s.o\
 integral/circle_line.s.o\
+integral/quad.s.o\
 integral/sph_2plane.s.o\
 integral/sph_plane.s.o\
 integral/tri.s.o\
@@ -213,6 +214,7 @@ f/wlc.d.o\
 gts.d.o\
 H.d.o\
 integral/circle_line.d.o\
+integral/quad.d.o\
 integral/sph_2plane.d.o\
 integral/sph_plane.d.o\
 integral/tri.d.o\
@@ -338,6 +340,7 @@ f/wlc.l.o\
 gts.l.o\
 H.l.o\
 integral/circle_line.l.o\
+integral/quad.l.o\
 integral/sph_2plane.l.o\
 integral/sph_plane.l.o\
 integral/tri.l.o\
