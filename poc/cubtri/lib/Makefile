@@ -10,6 +10,7 @@ L = libcubtri.a
 
 O = \
 main.o\
+lib.o\
 
 libcubtri.a: $O ; ar r $@ $O && ranlib $@
 

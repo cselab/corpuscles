@@ -7,6 +7,7 @@ LINK = $(FC)
 
 M = \
 main\
+f90\
 
 all: $M
 .o:
