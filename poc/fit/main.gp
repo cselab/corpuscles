@@ -15,4 +15,5 @@ f(x) = f0 + f1*x + f2*x*x + f3*x*x*x
 g(x) = g0 + g1*x + g2*x*x + g3*x*x*x
 h(x) = g(x) + (f(x) - g(x))*(cos(2*pi*x/h0 + h1) + 1)/2
 
+set sample 10000, 10000
 plot [20:] "stat.dat" u 3:13 w dots, h(x)
