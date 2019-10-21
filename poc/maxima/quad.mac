@@ -1,0 +1,13 @@
+load("co/vec.mac");
+
+vec_ini(a)$
+vec_ini(b)$
+vec_ini(c)$
+
+r(u, v):=a + u*(b - a) + (c - a)*v;
+
+r(0, 0);
+r(1, 0);
+r(0, 1);
+
+r(u, v)[1];

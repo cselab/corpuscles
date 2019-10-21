@@ -10,13 +10,40 @@
 #define T IntegralQuad
 #define FMT CO_REAL_OUT
 
+static real U[] = {
+    0.659027622374092,
+    0.659027622374092,
+    0.231933368553031,
+    0.231933368553031,
+    0.109039009072877,
+    0.109039009072877,
+};
+
+static real V[] = {
+    0.231933368553031,
+    0.109039009072877,
+    0.659027622374092,
+    0.109039009072877,
+    0.659027622374092,
+    0.231933368553031,
+};
+
+static real W[] = {
+    0.16666666666666666667,
+    0.16666666666666666667,
+    0.16666666666666666667,
+    0.16666666666666666667,
+    0.16666666666666666667,
+    0.16666666666666666667,
+};
+
 struct T {
-    
+
 };
 
 struct Param {
     const real *a, *b, *c;
-    real(*f) (real, real, real, void *);
+     real(*f) (real, real, real, void *);
     void *param;
 };
 
@@ -69,12 +96,12 @@ integral_quad_fin(T * q)
 
 int
 integral_quad_apply(T * q, const real a[3], const real b[3],
-                   const real c[3], real(*f) (real, real, real, void *),
-                   void *param, /**/ real * pres)
+                    const real c[3], real(*f) (real, real, real, void *),
+                    void *param, /**/ real * pres)
 {
     struct Param p;
-    real A, u0, u1, res;
-    int status;
+    real A, u, v, w, res;
+    int i, status;
 
     p.f = f;
     p.param = param;
@@ -82,11 +109,15 @@ integral_quad_apply(T * q, const real a[3], const real b[3],
     p.b = b;
     p.c = c;
     A = tri_area(a, b, c);
-    u0 = 0;
-    u1 = 1;
 
-    res = 1.0;
-    res *= 2 * A;
+    res = 0;
+    for (i = 0; i < sizeof(W)/sizeof(W[0]); i++) {
+	u = U[i];
+	v = V[i];
+	w = W[i];
+	res += w * F(v, u, &p);
+    }
+    res *= A;
     *pres = res;
     return CO_OK;
 }

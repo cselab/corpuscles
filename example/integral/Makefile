@@ -1,6 +1,21 @@
 .POSIX:
 include ../../conf.mk
-M = cons cons2 cons2d density density2d line line2 plane plane2 tri visc visc2 visc2d
+M = \
+cons\
+cons2\
+cons2d\
+density\
+density2d\
+line\
+line2\
+plane\
+plane2\
+quad\
+tri\
+visc\
+visc2\
+visc2d\
+
 PREC = d
 CO_CFLAGS = `alg.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`  `alg.conf --libs $(PREC)` 
