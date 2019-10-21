@@ -20,10 +20,13 @@ struct T {
     int magic;
 };
 
-int H_ini(He *he, /**/ T **pq) {
+int
+H_ini(He * he, /**/ T ** pq)
+{
     T *q;
     int status;
     int nv;
+
     MALLOC(1, &q);
     nv = he_nv(he);
     status = laplace_ini(he, &q->laplace);
@@ -41,35 +44,43 @@ int H_ini(He *he, /**/ T **pq) {
     return status;
 }
 
-int H_fin(T *q) {
+int
+H_fin(T * q)
+{
     if (q->magic != MAGIC)
-	ERR(CO_MEMORY, "H_fin call");
+        ERR(CO_MEMORY, "H_fin call");
     laplace_fin(q->laplace);
     FREE(q->hh);
-    FREE(q->nx); FREE(q->ny); FREE(q->nz);
+    FREE(q->nx);
+    FREE(q->ny);
+    FREE(q->nz);
     FREE(q);
     return CO_OK;
 }
 
-int H_apply(T *q, He *he, const real *x, const real *y, const real *z,
-                  /**/ real **pH, real **parea) {
+int
+H_apply(T * q, He * he, const real * x, const real * y, const real * z,
+        /**/ real ** pH, real ** parea)
+{
     int nv, i;
     real *lx, *ly, *lz, *area;
     real *nx, *ny, *nz;
     real *hh;
 
     if (q->magic != MAGIC)
-	ERR(CO_MEMORY, "H_apply call");
+        ERR(CO_MEMORY, "H_apply call");
 
     nv = he_nv(he);
     hh = q->hh;
-    nx = q->nx; ny = q->ny; nz = q->nz;
+    nx = q->nx;
+    ny = q->ny;
+    nz = q->nz;
 
     laplace_apply(q->laplace, he, x, y, z, &lx, &ly, &lz, &area);
     normal_mwa(he, x, y, z, /**/ nx, ny, nz);
 
     for (i = 0; i < nv; i++)
-        hh[i] = lx[i]*nx[i] + ly[i]*ny[i] + lz[i]*nz[i];
+        hh[i] = lx[i] * nx[i] + ly[i] * ny[i] + lz[i] * nz[i];
 
     *pH = q->hh;
     *parea = area;

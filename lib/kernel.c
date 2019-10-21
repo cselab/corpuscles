@@ -16,4 +16,3 @@
 #include "kernel/gauss.inc"
 
 #include "kernel/main.inc"
-

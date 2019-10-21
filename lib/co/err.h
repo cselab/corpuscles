@@ -1,9 +1,11 @@
 /* error codes */
-enum {CO_OK, CO_IO, CO_MEMORY, CO_SYS, CO_USER, CO_INDEX, CO_NUM, CO_NOT};
+enum { CO_OK, CO_IO, CO_MEMORY, CO_SYS, CO_USER, CO_INDEX, CO_NUM,
+    CO_NOT
+};
 
 #ifdef __clang__
-#    pragma clang diagnostic push
-#    pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #endif
 
 /* for user code */
@@ -17,7 +19,7 @@ enum {CO_OK, CO_IO, CO_MEMORY, CO_SYS, CO_USER, CO_INDEX, CO_NUM, CO_NOT};
 #define MSG(fmt, ...) he_msg(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 
 #ifdef __clang__
-#   pragma clang diagnostic pop
+#pragma clang diagnostic pop
 #endif
 
 void he_err(int code, const char *file, int line, const char *fmt, ...);

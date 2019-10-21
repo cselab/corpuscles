@@ -24,10 +24,12 @@
 struct T {
     He *he;
     real *x, *y, *z;
-    real *al, *be; /* on triangles */
+    real *al, *be;              /* on triangles */
 };
 
-int invariants_inif(FILE *f, /**/ T **pq) {
+int
+invariants_inif(FILE * f, /**/ T ** pq)
+{
     T *q;
     int n;
     real *al, *be;
@@ -39,15 +41,19 @@ int invariants_inif(FILE *f, /**/ T **pq) {
     MALLOC(n, &al);
     MALLOC(n, &be);
     q->he = he;
-    q->al = al; q->be = be;
+    q->al = al;
+    q->be = be;
 
     *pq = q;
 
     return CO_OK;
 }
 
-int invariants_ini(const char *path, T **pq) {
+int
+invariants_ini(const char *path, T ** pq)
+{
     FILE *f;
+
     if ((f = fopen(path, "r")) == NULL)
         ERR(CO_IO, "fail to open '%s'", path);
     if (invariants_inif(f, pq) != CO_OK)
@@ -57,45 +63,55 @@ int invariants_ini(const char *path, T **pq) {
     return CO_OK;
 }
 
-int invariants_fin(T *q) {
+int
+invariants_fin(T * q)
+{
     y_fin(q->he, q->x, q->y, q->z);
-    FREE(q->al); FREE(q->be);
+    FREE(q->al);
+    FREE(q->be);
 
     FREE(q);
     return CO_OK;
 }
 
-static int get3(const real *x, const real *y, const real *z,
-                int i, int j, int k,  /**/
-                real a[3], real b[3], real c[3]) {
+static int
+get3(const real * x, const real * y, const real * z,
+     int i, int j, int k, /**/ real a[3], real b[3], real c[3])
+{
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
     return CO_OK;
 }
 
-int invariants_al(T *q, const real *x, const real *y, const real *z, real **pq) {
+int
+invariants_al(T * q, const real * x, const real * y, const real * z,
+              real ** pq)
+{
     int t, i, j, k, nt;
     real a[3], b[3], c[3], a0[3], b0[3], c0[3];
     real v;
     He *he;
-    
+
     BEGIN {
-        tri_3d_invariants(a0, b0, c0, a, b, c,  &v, NULL);
+        tri_3d_invariants(a0, b0, c0, a, b, c, &v, NULL);
         q->al[t] = v;
     } END;
     *pq = q->al;
     return CO_OK;
 }
 
-int invariants_be(T *q, const real *x, const real *y, const real *z, real **pq) {
+int
+invariants_be(T * q, const real * x, const real * y, const real * z,
+              real ** pq)
+{
     int t, i, j, k, nt;
     real a[3], b[3], c[3], a0[3], b0[3], c0[3];
     real v;
     He *he;
-    
+
     BEGIN {
-        tri_3d_invariants(a0, b0, c0, a, b, c,  NULL, &v);
+        tri_3d_invariants(a0, b0, c0, a, b, c, NULL, &v);
         q->be[t] = v;
     } END;
     *pq = q->be;

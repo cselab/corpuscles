@@ -6,17 +6,26 @@
 #include "co/force.h"
 #include "co/he.h"
 
-static real fd0(real *p, Force *f, He *he, real delta, real *x, real *y, real *z) {
+static real
+fd0(real * p, Force * f, He * he, real delta, real * x, real * y, real * z)
+{
     real t, hi, lo;
+
     t = *p;
-    *p += delta; hi = force_energy(f, he, x, y, z); *p = t;
-    *p -= delta; lo = force_energy(f, he, x, y, z); *p = t;
-    return (hi - lo)/(2*delta);
+    *p += delta;
+    hi = force_energy(f, he, x, y, z);
+    *p = t;
+    *p -= delta;
+    lo = force_energy(f, he, x, y, z);
+    *p = t;
+    return (hi - lo) / (2 * delta);
 }
 
-int fd(Force *f, He *he, real delta, real *x, real *y, real *z,
-       /**/ real *fx, real *fy, real *fz) {
-    enum {X, Y, Z};
+int
+fd(Force * f, He * he, real delta, real * x, real * y, real * z,
+   /**/ real * fx, real * fy, real * fz)
+{
+    enum { X, Y, Z };
     int n, i;
 
     n = he_nv(he);

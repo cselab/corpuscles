@@ -8,7 +8,9 @@
 #include "co/off.h"
 #include "co/y.h"
 
-int y_inif(FILE *f, /**/ He **phe, real **px, real **py, real **pz) {
+int
+y_inif(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
+{
     HeOff *off;
     int nv, nt;
     int *tri;
@@ -23,22 +25,29 @@ int y_inif(FILE *f, /**/ He **phe, real **px, real **py, real **pz) {
 
     if (off_tri(off, &tri) != CO_OK)
         ERR(CO_IO, "off_tri failed");
-    
+
     if (he_tri_ini(nv, nt, tri, &he) != CO_OK)
         ERR(CO_IO, "he_tri_ini failed");
 
-    MALLOC(nv, &x); MALLOC(nv, &y); MALLOC(nv, &z);
+    MALLOC(nv, &x);
+    MALLOC(nv, &y);
+    MALLOC(nv, &z);
     off_xyz(off, x, y, z);
     off_fin(off);
 
     *phe = he;
-    *px = x; *py = y; *pz = z;
-    
+    *px = x;
+    *py = y;
+    *pz = z;
+
     return CO_OK;
 }
 
-int y_ini(const char *path, /**/ He **he, real **x, real **y, real **z) {
+int
+y_ini(const char *path, /**/ He ** he, real ** x, real ** y, real ** z)
+{
     FILE *f;
+
     if ((f = fopen(path, "r")) == NULL)
         ERR(CO_IO, "fail to open '%s'", path);
     if (y_inif(f, he, x, y, z) != CO_OK)
@@ -48,8 +57,12 @@ int y_ini(const char *path, /**/ He **he, real **x, real **y, real **z) {
     return CO_OK;
 }
 
-int y_fin(He *he, real *x, real *y, real *z) {
+int
+y_fin(He * he, real * x, real * y, real * z)
+{
     he_fin(he);
-    FREE(x); FREE(y); FREE(z);
+    FREE(x);
+    FREE(y);
+    FREE(z);
     return CO_OK;
 }

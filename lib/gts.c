@@ -12,14 +12,18 @@
 
 #define OUT CO_REAL_OUT
 
-int gts_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
+int
+gts_fwrite(He * he, const real * x, const real * y, const real * z,
+           /**/ FILE * f)
+{
     int nv, nt, ne, v, e, t, i, j, k, h, n, m;
 
     nv = he_nv(he);
     ne = he_ne(he);
     nt = he_nt(he);
 
-    fprintf(f, "%d %d %d %s\n", nv, ne, nt, "GtsSurface GtsFace GtsEdge GtsVertex");
+    fprintf(f, "%d %d %d %s\n", nv, ne, nt,
+            "GtsSurface GtsFace GtsEdge GtsVertex");
 
     for (v = 0; v < nv; v++)
         fprintf(f, OUT " " OUT " " OUT "\n", x[v], y[v], z[v]);

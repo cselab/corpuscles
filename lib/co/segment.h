@@ -1,1 +1,1 @@
-real segment_average(He*, const real*, const real*, const real*);
+real segment_average(He *, const real *, const real *, const real *);

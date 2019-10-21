@@ -15,22 +15,37 @@
 
 static const real EPS = 1e-8;
 
-static int env_area(void) {
-    enum {UNSET, YES, NO};
+static int
+env_area(void)
+{
+    enum { UNSET, YES, NO };
     static int f = UNSET;
+
     if (f == UNSET)
         f = getenv("AREA") ? YES : NO;
     return f == YES;
 }
 
-static int small_v(const real a[3]) { return vec_abs(a) < EPS; }
-static int small(real a) { return fabs(a) < EPS; }
+static int
+small_v(const real a[3])
+{
+    return vec_abs(a) < EPS;
+}
 
-static int assert_force_3d(const real a[3], const real b[3], const real c[3],
-                           const real da[3], const real db[3], const real dc[3]) {
+static int
+small(real a)
+{
+    return fabs(a) < EPS;
+}
+
+static int
+assert_force_3d(const real a[3], const real b[3], const real c[3],
+                const real da[3], const real db[3], const real dc[3])
+{
     /* check total force and  torque */
     real m[3], f[3], t[3], ma[3], mb[3], mc[3];
     real ta[3], tb[3], tc[3];
+
     tri_center(a, b, c, /**/ m);
     vec_minus(a, m, /**/ ma);
     vec_minus(b, m, /**/ mb);
@@ -42,7 +57,7 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
     vec_cross(mc, dc, /**/ tc);
     vec_mean3(ta, tb, tc, /**/ t);
 
-    if (!small_v(f) || !small_v(t))  {
+    if (!small_v(f) || !small_v(t)) {
         MSG("bad 3d triangle in strain");
         MSG("a, b, c, f, t:");
         vec_fprintf(a, stderr, FMT);
@@ -60,11 +75,15 @@ static int assert_force_3d(const real a[3], const real b[3], const real c[3],
         return 1;
 }
 
-int strain_force_3d(void *param,
-                    real (*F)(void*, real, real), real (*F1)(void*, real, real), real (*F2)(void*, real, real),
-                    const real a0[3], const real b0[3], const real c0[3],
-                    const real a[3], const real b[3], const real c[3], /**/
-                    real da_tot[3], real db_tot[3], real dc_tot[3]) {
+int
+strain_force_3d(void *param,
+                real(*F) (void *, real, real), real(*F1) (void *, real,
+                                                          real),
+                real(*F2) (void *, real, real), const real a0[3],
+                const real b0[3], const real c0[3], const real a[3],
+                const real b[3], const real c[3], /**/ real da_tot[3],
+                real db_tot[3], real dc_tot[3])
+{
     real da[3], db[3], dc[3];
     real bx, cx, cy, ux, wx, wy;
     real dvx, dvy, dux, duy, dwx, dwy;
@@ -77,22 +96,17 @@ int strain_force_3d(void *param,
     strain_2d(param, F1, F2,
               bx, cx, cy,
               ux, wx, wy,
-              &dvx, &dvy, &dux, &duy, &dwx, &dwy,
-              &I1, &I2, &area);
+              &dvx, &dvy, &dux, &duy, &dwx, &dwy, &I1, &I2, &area);
     if (!small(dvx + dux + dwx))
-        ERR(CO_NUM,
-            "2d force fails: " FMT " " FMT " " FMT,
-            dvx, dux, dwx);
+        ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvx, dux, dwx);
 
     if (!small(dvy + duy + dwy))
-        ERR(CO_NUM,
-            "2d force fails: " FMT " " FMT " " FMT,
-            dvy, duy, dwy);
+        ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvy, duy, dwy);
 
     tri_2to3(a, b, c, /**/ ex, ey);
-    vec_linear_combination(dvx, ex,  dvy, ey, /**/ da);
-    vec_linear_combination(dux, ex,  duy, ey, /**/ db);
-    vec_linear_combination(dwx, ex,  dwy, ey, /**/ dc);
+    vec_linear_combination(dvx, ex, dvy, ey, /**/ da);
+    vec_linear_combination(dux, ex, duy, ey, /**/ db);
+    vec_linear_combination(dwx, ex, dwy, ey, /**/ dc);
     if (!assert_force_3d(a, b, c, da, db, dc))
         ERR(CO_NUM, "bad 3d forces in triangle");
     area = fabs(area);
@@ -109,11 +123,18 @@ int strain_force_3d(void *param,
     return CO_OK;
 }
 
-static real Dummy(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2) { return 0; }
-int strain_energy_3d(void *param, real (*F)(void*, real, real),
-                     const real a0[3], const real b0[3], const real c0[3],
-                     const real a[3], const real b[3], const real c[3],
-                     real *p_eng, real *p_deng) {
+static real
+Dummy(__UNUSED void *param, __UNUSED real I1, __UNUSED real I2)
+{
+    return 0;
+}
+
+int
+strain_energy_3d(void *param, real(*F) (void *, real, real),
+                 const real a0[3], const real b0[3], const real c0[3],
+                 const real a[3], const real b[3], const real c[3],
+                 real * p_eng, real * p_deng)
+{
     real bx, cx, cy, ux, wx, wy;
     real I1, I2, A, eng, deng;
 
@@ -123,8 +144,7 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
     strain_2d(param, Dummy, Dummy,
               bx, cx, cy,
               ux, wx, wy,
-              NULL, NULL, NULL, NULL, NULL, NULL,
-              &I1, &I2, &A);
+              NULL, NULL, NULL, NULL, NULL, NULL, &I1, &I2, &A);
 
     deng = F(param, I1, I2);
     eng = deng * fabs(A);
@@ -135,9 +155,11 @@ int strain_energy_3d(void *param, real (*F)(void*, real, real),
     return CO_OK;
 }
 
-int strain_invariants(const real a0[3], const real b0[3], const real c0[3],
-                      const real a[3], const real b[3], const real c[3],
-                      real *I1, real *I2) {
+int
+strain_invariants(const real a0[3], const real b0[3], const real c0[3],
+                  const real a[3], const real b[3], const real c[3],
+                  real * I1, real * I2)
+{
     real bx, cx, cy, ux, wx, wy;
 
     tri_3to2(a0, b0, c0, /**/ &bx, &cx, &cy);
@@ -146,6 +168,5 @@ int strain_invariants(const real a0[3], const real b0[3], const real c0[3],
     return strain_2d(NULL, Dummy, Dummy,
                      bx, cx, cy,
                      ux, wx, wy,
-                     NULL, NULL, NULL, NULL, NULL, NULL,
-                     I1, I2, NULL);
+                     NULL, NULL, NULL, NULL, NULL, NULL, I1, I2, NULL);
 }

@@ -14,13 +14,13 @@
 #include "co/ply.h"
 
 #define T Ply
-enum {SIZE = MAX_STRING_SIZE};
-enum {X, Y, Z};
+enum { SIZE = MAX_STRING_SIZE };
+enum { X, Y, Z };
 
 #define FMT CO_REAL_IN
 #define FLT "%.16e"
 
-#   define FWRITE(ptr, size) \
+#define FWRITE(ptr, size) \
         if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))          \
             ERR(CO_IO, "fwrite failed: need = %d, got = %d", size, cnt)
 
@@ -33,15 +33,18 @@ typedef struct Work Work;
 
 struct T {
     real *x, *y, *z;
-    int  *tri; /* t0[0] t1[0] t2[0] ... */
+    int *tri;                   /* t0[0] t1[0] t2[0] ... */
     He *he;
     int nv, nt, nm, nvar;
     Work w;
 };
 
-static int get_nb(void) {
+static int
+get_nb(void)
+{
     int n;
     char *s;
+
     if ((s = getenv("nb")) == NULL)
         ERR(CO_IO, "environment variable `nb' is not set");
     if (sscanf(s, "%d", &n) != 1)
@@ -49,21 +52,23 @@ static int get_nb(void) {
     return n;
 }
 
-int ply_fread(FILE *f, T **pq) {
+int
+ply_fread(FILE * f, T ** pq)
+{
     T *q;
     int nb, nv, nt, nm, cnt, i, j, k, nvar;
     char line[SIZE];
 
-#   define NXT() if (util_fgets(line, f) == NULL)  \
+#define NXT() if (util_fgets(line, f) == NULL)  \
         ERR(CO_IO, "unexpected EOF")
-#   define MATCH(s) do { \
+#define MATCH(s) do { \
         NXT();                                  \
         if (!util_eq(line, s)) {                \
             MSG("expecting: '%s'", s);          \
             ERR(CO_IO, "got: '%s'", line);      \
         }                                       \
     } while(0)
-#   define FREAD(ptr, size) \
+#define FREAD(ptr, size) \
         if (size != (cnt = fread(ptr, sizeof((ptr)[0]), size, f)))          \
             ERR(CO_IO, "fread failed: need = %d, got = %d", size, cnt)
     MALLOC(1, &q);
@@ -98,13 +103,13 @@ int ply_fread(FILE *f, T **pq) {
     MATCH("property list int int vertex_index");
     MATCH("end_header");
 
-    MALLOC(6*nv, &q->w.ver);
-    MALLOC(4*nt, &q->w.tri);
+    MALLOC(6 * nv, &q->w.ver);
+    MALLOC(4 * nt, &q->w.tri);
     MALLOC(nv, &q->w.scalar);
     MALLOC(nt, &q->w.tscalar);
 
-    FREAD(q->w.ver, nvar*nv);
-    FREAD(q->w.tri, 4*nt);
+    FREAD(q->w.ver, nvar * nv);
+    FREAD(q->w.tri, 4 * nt);
 
     MALLOC(nv, &q->x);
     MALLOC(nv, &q->y);
@@ -114,7 +119,9 @@ int ply_fread(FILE *f, T **pq) {
         q->y[i] = q->w.ver[j++];
         q->z[i] = q->w.ver[j++];
         if (nvar == 6) {
-            j++; j++; j++; /* skip uvw */
+            j++;
+            j++;
+            j++;                /* skip uvw */
         }
     }
 
@@ -128,7 +135,7 @@ int ply_fread(FILE *f, T **pq) {
     nt /= nm;
     nv /= nm;
 
-    MALLOC(3*nt, &q->tri);
+    MALLOC(3 * nt, &q->tri);
     for (i = j = k = 0; i < nt; i++) {
         j++;
         q->tri[k++] = q->w.tri[j++];
@@ -147,47 +154,77 @@ int ply_fread(FILE *f, T **pq) {
     return CO_OK;
 }
 
-int ply_fin(T *q) {
-    FREE(q->x); FREE(q->y); FREE(q->z);
+int
+ply_fin(T * q)
+{
+    FREE(q->x);
+    FREE(q->y);
+    FREE(q->z);
     FREE(q->tri);
-    FREE(q->w.ver); FREE(q->w.tri);
-    FREE(q->w.scalar); FREE(q->w.tscalar);
+    FREE(q->w.ver);
+    FREE(q->w.tri);
+    FREE(q->w.scalar);
+    FREE(q->w.tscalar);
     FREE(q);
     return CO_OK;
 }
 
-int ply_nv(T *q) { return q->nv; }
-int ply_nt(T *q) { return q->nt; }
-int ply_nm(T *q) { return q->nm; }
+int
+ply_nv(T * q)
+{
+    return q->nv;
+}
 
-int ply_he(T *q, He **p) {
+int
+ply_nt(T * q)
+{
+    return q->nt;
+}
+
+int
+ply_nm(T * q)
+{
+    return q->nm;
+}
+
+int
+ply_he(T * q, He ** p)
+{
     *p = q->he;
     return CO_OK;
 }
 
-int ply_tri(T *q, int **p) {
+int
+ply_tri(T * q, int **p)
+{
     *p = q->tri;
     return CO_OK;
 }
 
-int ply_x(T *q, int m, real **p) {
+int
+ply_x(T * q, int m, real ** p)
+{
     if (m >= q->nm)
         ERR(CO_INDEX, "m=%d >= q->nm=%d", m, q->nm);
-    *p = q->x + m*q->nv ;
+    *p = q->x + m * q->nv;
     return CO_OK;
 }
 
-int ply_y(T *q, int m, real **p) {
+int
+ply_y(T * q, int m, real ** p)
+{
     if (m >= q->nm)
         ERR(CO_INDEX, "m=%d >= q->nm=%d", m, q->nm);
-    *p = q->y + m*q->nv ;
+    *p = q->y + m * q->nv;
     return CO_OK;
 }
 
-int ply_z(T *q, int m, real **p) {
+int
+ply_z(T * q, int m, real ** p)
+{
     if (m >= q->nm)
         ERR(CO_INDEX, "m=%d >= q->nm=%d", m, q->nm);
-    *p = q->z + m*q->nv ;
+    *p = q->z + m * q->nv;
     return CO_OK;
 }
 
@@ -233,7 +270,9 @@ int ply_z(T *q, int m, real **p) {
     } while (0)
 
 
-int ply_fwrite(T *q, FILE *f, int *b) {
+int
+ply_fwrite(T * q, FILE * f, int *b)
+{
     float *ver;
     int *wtri, *tri;
     int i, j, k, l, m, nv, nm, nt, cnt, n;
@@ -243,8 +282,12 @@ int ply_fwrite(T *q, FILE *f, int *b) {
     ver = q->w.ver;
     wtri = q->w.tri;
     tri = q->tri;
-    nv = q->nv; nm = q->nm; nt = q->nt;
-    x = q->x; y = q->y; z = q->z;
+    nv = q->nv;
+    nm = q->nm;
+    nt = q->nt;
+    x = q->x;
+    y = q->y;
+    z = q->z;
 
     FILL();
     fprintf(f, "ply\n"
@@ -255,20 +298,22 @@ int ply_fwrite(T *q, FILE *f, int *b) {
             "property float z\n"
             "element face %d\n"
             "property list int int vertex_index\n"
-            "end_header\n", nv*onm, nt*onm);
-    n = nv*onm;
+            "end_header\n", nv * onm, nt * onm);
+    n = nv * onm;
     for (i = j = k = 0; i < n; i++, j += q->nvar) {
         ver[k++] = ver[j + X];
         ver[k++] = ver[j + Y];
         ver[k++] = ver[j + Z];
-    }    
-    FWRITE(ver, 3*nv*onm);
-    FWRITE(wtri, 4*nt*onm);
+    }
+    FWRITE(ver, 3 * nv * onm);
+    FWRITE(wtri, 4 * nt * onm);
 
     return CO_OK;
 }
 
-int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
+int
+ply_vtk_txt(T * q, FILE * f, int *b, real * scalar)
+{
     float *ver, *wscalar;
     int *wtri, *tri;
     int i, j, k, l, m, nv, nm, nt;
@@ -279,35 +324,35 @@ int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
     wtri = q->w.tri;
     wscalar = q->w.scalar;
     tri = q->tri;
-    nv = q->nv; nm = q->nm; nt = q->nt;
-    x = q->x; y = q->y; z = q->z;
+    nv = q->nv;
+    nm = q->nm;
+    nt = q->nt;
+    x = q->x;
+    y = q->y;
+    z = q->z;
 
     FILL();
     SCALAR();
 
-    n = nv*onm;
+    n = nv * onm;
     fprintf(f, "# vtk DataFile Version 2.0\n"
             "created with he\n"
-            "ASCII\n"
-            "DATASET POLYDATA\n"
-            "POINTS %d double\n", nv*onm);
+            "ASCII\n" "DATASET POLYDATA\n" "POINTS %d double\n", nv * onm);
     for (i = 0; i < n; i++, ver += q->nvar)
-        fprintf(f, FLT " " FLT " " FLT "\n",
-                ver[X], ver[Y], ver[Z]);
+        fprintf(f, FLT " " FLT " " FLT "\n", ver[X], ver[Y], ver[Z]);
 
-    n = nt*onm;
-    fprintf(f, "POLYGONS %d %d\n", n, 4*n);
+    n = nt * onm;
+    fprintf(f, "POLYGONS %d %d\n", n, 4 * n);
     for (i = 0; i < n; i++, wtri += 4)
-        fprintf(f, "%d %d %d %d\n",
-                wtri[0], wtri[1], wtri[2], wtri[3]);
-    n = nv*onm;
+        fprintf(f, "%d %d %d %d\n", wtri[0], wtri[1], wtri[2], wtri[3]);
+    n = nv * onm;
     fprintf(f, "POINT_DATA %d\n", n);
     fprintf(f, "SCALARS s double 1\n");
     fprintf(f, "LOOKUP_TABLE default\n");
     for (i = 0; i < n; i++)
         fprintf(f, FLT "\n", wscalar[i]);
 
-    n = nt*onm;
+    n = nt * onm;
     fprintf(f, "CELL_DATA %d\n", n);
     fprintf(f, "SCALARS t int 1\n");
     fprintf(f, "LOOKUP_TABLE default\n");
@@ -317,7 +362,9 @@ int ply_vtk_txt(T *q, FILE *f, int *b, real *scalar) {
     return CO_OK;
 }
 
-int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
+int
+ply_vtk_bin(T * q, FILE * f, int *b, real * scalar)
+{
     float *ver, *wscalar, *tscalar;
     int *wtri, *tri;
     int i, j, k, l, m, nv, nm, nt, cnt;
@@ -329,40 +376,42 @@ int ply_vtk_bin(T *q, FILE *f, int *b, real *scalar) {
     wscalar = q->w.scalar;
     tscalar = q->w.tscalar;
     tri = q->tri;
-    nv = q->nv; nm = q->nm; nt = q->nt;
-    x = q->x; y = q->y; z = q->z;
+    nv = q->nv;
+    nm = q->nm;
+    nt = q->nt;
+    x = q->x;
+    y = q->y;
+    z = q->z;
 
     FILL();
     SCALAR();
 
-    n = nv*onm;
+    n = nv * onm;
     fprintf(f, "# vtk DataFile Version 2.0\n"
             "created with he\n"
-            "BINARY\n"
-            "DATASET POLYDATA\n"
-            "POINTS %d float\n", nv*onm);
+            "BINARY\n" "DATASET POLYDATA\n" "POINTS %d float\n", nv * onm);
     for (i = j = k = 0; i < n; i++, j += q->nvar) {
         ver[k++] = ver[j + X];
         ver[k++] = ver[j + Y];
         ver[k++] = ver[j + Z];
     }
-    n = 3*nv*onm;
+    n = 3 * nv * onm;
     big_endian_flt(n, ver);
     FWRITE(ver, n);
 
-    n = nt*onm;
-    fprintf(f, "\nPOLYGONS %d %d\n", n, 4*n);
-    big_endian_int(4*n, wtri);
-    FWRITE(wtri, 4*n);
+    n = nt * onm;
+    fprintf(f, "\nPOLYGONS %d %d\n", n, 4 * n);
+    big_endian_int(4 * n, wtri);
+    FWRITE(wtri, 4 * n);
 
-    n = nv*onm;
+    n = nv * onm;
     fprintf(f, "\nPOINT_DATA %d\n", n);
     fprintf(f, "SCALARS s float 1\n");
     fprintf(f, "LOOKUP_TABLE default\n");
     big_endian_flt(n, wscalar);
     FWRITE(wscalar, n);
 
-    n = nt*onm;
+    n = nt * onm;
     fprintf(f, "\nCELL_DATA %d\n", n);
     fprintf(f, "SCALARS t float 1\n");
     fprintf(f, "LOOKUP_TABLE default\n");

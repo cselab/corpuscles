@@ -4,10 +4,10 @@ VERSION_CONTROL=none
 export VERSION_CONTROL
 
 exec indent \
-     -kr\
+     --pointer-align-right\
+     --k-and-r-style\
      --blank-lines-after-declarations\
      --procnames-start-lines\
      --no-tabs\
-     --pointer-align-right\
      --tab-size 4\
      "$@"

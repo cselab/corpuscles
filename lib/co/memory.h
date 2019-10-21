@@ -9,8 +9,8 @@
 #define FREE2(x, y) FREE(x), FREE(y)
 #define FREE3(x, y, z) FREE(x), FREE(y), FREE(z)
 #define MEMCPY(n, src, dest) co_memcpy((void*)(dest), (const void*)(src), (n)*sizeof(*(dest)))
-int co_malloc(int, void**);
-int co_realloc(int, void**);
-int co_calloc(int, void**);
+int co_malloc(int, void **);
+int co_realloc(int, void **);
+int co_calloc(int, void **);
 int co_free(void *ptr);
 int co_memcpy(void *dest, const void *src, size_t n);

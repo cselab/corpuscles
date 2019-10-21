@@ -19,7 +19,7 @@ struct T {
 };
 
 int
-bi_tri_ini(He *he, /**/ T **pq)
+bi_tri_ini(He * he, /**/ T ** pq)
 {
     T *q;
     int status, n;
@@ -27,7 +27,7 @@ bi_tri_ini(He *he, /**/ T **pq)
     MALLOC(1, &q);
     status = oseen3_tri_ini(he, &q->oseen);
     if (status != CO_OK)
-	ERR(CO_MEMORY, "oseen3_tri_ini failed");
+        ERR(CO_MEMORY, "oseen3_tri_ini failed");
     n = he_nv(he);
     tensor_ini(n, &q->O);
     tensor_ini(n, &q->K);
@@ -37,13 +37,13 @@ bi_tri_ini(He *he, /**/ T **pq)
 }
 
 int
-bi_tri_argv(char ***p, He *he, /**/ T **pq)
+bi_tri_argv(char ***p, He * he, /**/ T ** pq)
 {
     return bi_tri_ini(he, pq);
 }
 
 int
-bi_tri_fin(T *q)
+bi_tri_fin(T * q)
 {
     oseen3_tri_fin(q->oseen);
     tensor_fin(&q->O);
@@ -53,7 +53,8 @@ bi_tri_fin(T *q)
 }
 
 int
-bi_tri_update(T *q, He *he, const real *x, const real *y, const real *z)
+bi_tri_update(T * q, He * he, const real * x, const real * y,
+              const real * z)
 {
     struct Tensor *O, *K;
     int status, n, i;
@@ -61,21 +62,24 @@ bi_tri_update(T *q, He *he, const real *x, const real *y, const real *z)
 
     O = &q->O;
     K = &q->K;
-    status = oseen3_tri_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz, O->yy, O->yz, O->zz);
+    status =
+        oseen3_tri_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz, O->yy,
+                         O->yz, O->zz);
     if (status != CO_OK)
-	ERR(CO_NUM, "oseen3_tri_apply failed");
+        ERR(CO_NUM, "oseen3_tri_apply failed");
     q->KReady = 0;
     return CO_OK;
 }
 
 int
-bi_tri_single(T *q, He *he, real al,
-		 const real *x, const real *y, const real *z,
-		 const real *fx, const real *fy, const real *fz,
-		 /*io*/ real *ux, real *uy, real *uz)
+bi_tri_single(T * q, He * he, real al,
+              const real * x, const real * y, const real * z,
+              const real * fx, const real * fy, const real * fz,
+              /*io */ real * ux, real * uy, real * uz)
 {
     struct Tensor *O;
     int n, status;
+
     USED(x);
     USED(y);
     USED(z);
@@ -87,23 +91,26 @@ bi_tri_single(T *q, He *he, real al,
 }
 
 int
-bi_tri_double(T *q, He *he, real al,
-		 const real *x, const real *y, const real *z,
-		 const real *ux, const real *uy, const real *uz,
-		 /*io*/real *wx, real *wy, real *wz)
+bi_tri_double(T * q, He * he, real al,
+              const real * x, const real * y, const real * z,
+              const real * ux, const real * uy, const real * uz,
+              /*io */ real * wx, real * wy, real * wz)
 {
     int n, status;
     struct Tensor *K;
+
     USED(x);
     USED(y);
     USED(z);
 
     K = &q->K;
     if (q->KReady == 0) {
-	status = oseen3_tri_stresslet(q->oseen, he, x, y, z, K->xx, K->xy, K->xz, K->yy, K->yz, K->zz);
-	if (status != CO_OK)
-	    ERR(CO_NUM, "oseen3_tri_stresslet failed");
-	q->KReady = 1;
+        status =
+            oseen3_tri_stresslet(q->oseen, he, x, y, z, K->xx, K->xy,
+                                 K->xz, K->yy, K->yz, K->zz);
+        if (status != CO_OK)
+            ERR(CO_NUM, "oseen3_tri_stresslet failed");
+        q->KReady = 1;
     }
     n = he_nv(he);
     tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);

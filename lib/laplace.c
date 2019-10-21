@@ -24,10 +24,12 @@
     vec_get(k, x, y, z, c);
 #define END_LOOP }
 
-enum {X, Y, Z};
+enum { X, Y, Z };
 
 typedef struct Vec Vec;
-struct Vec { real v[3]; };
+struct Vec {
+    real v[3];
+};
 
 struct T {
     int nv, nh;
@@ -36,9 +38,12 @@ struct T {
     real *area, *lx, *ly, *lz;
 };
 
-int laplace_ini(He *he, /**/ T **pq) {
+int
+laplace_ini(He * he, /**/ T ** pq)
+{
     int nv, nh;
     T *q;
+
     MALLOC(1, &q);
 
     nv = he_nv(he);
@@ -65,18 +70,29 @@ int laplace_ini(He *he, /**/ T **pq) {
     return CO_OK;
 }
 
-int laplace_fin(T *q) {
-    FREE(q->tb); FREE(q->tc);
-    FREE(q->eb); FREE(q->ec);
-    FREE(q->sb); FREE(q->sc);
-    FREE(q->area); FREE(q->lp);
-    FREE(q->lx); FREE(q->ly); FREE(q->lz);
+int
+laplace_fin(T * q)
+{
+    FREE(q->tb);
+    FREE(q->tc);
+    FREE(q->eb);
+    FREE(q->ec);
+    FREE(q->sb);
+    FREE(q->sc);
+    FREE(q->area);
+    FREE(q->lp);
+    FREE(q->lx);
+    FREE(q->ly);
+    FREE(q->lz);
     FREE(q);
     return CO_OK;
 }
 
-int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
-                  /**/ real **plx, real **ply, real **plz, real **parea) {
+int
+laplace_apply(T * q, He * he, const real * x, const real * y,
+              const real * z, /**/ real ** plx, real ** ply, real ** plz,
+              real ** parea)
+{
     int nh, nv, h, i, j, k;
     real a[3], b[3], c[3];
     real *tb, *tc, *sb, *sc, *area;
@@ -94,9 +110,11 @@ int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
     area = q->area;
     lp = q->lp;
 
-    lx = q->lx; ly = q->ly; lz = q->lz;
+    lx = q->lx;
+    ly = q->ly;
+    lz = q->lz;
 
-    nv = he_nv(he);    
+    nv = he_nv(he);
     for (i = 0; i < nv; i++) {
         area[i] = 0;
         vec_zero(lp[i].v);
@@ -111,13 +129,15 @@ int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
 
         sb[h] = edg_sq(a, b);
         sc[h] = edg_sq(a, c);
-    } END_LOOP;
+    }
+    END_LOOP;
 
     BEGIN_LOOP {
         vec_axpy(tb[h], ec[h].v, /**/ lp[i].v);
         vec_axpy(tc[h], eb[h].v, /**/ lp[i].v);
-        area[i] += tb[h]*sc[h] + tc[h]*sb[h];
-    } END_LOOP;
+        area[i] += tb[h] * sc[h] + tc[h] * sb[h];
+    }
+    END_LOOP;
 
     for (i = 0; i < nv; i++) {
         lx[i] = lp[i].v[X];
@@ -125,6 +145,9 @@ int laplace_apply(T *q, He *he, const real *x, const real *y, const real *z,
         lz[i] = lp[i].v[Z];
     }
 
-    *plx = lx; *ply = ly; *plz = lz; *parea = area;
+    *plx = lx;
+    *ply = ly;
+    *plz = lz;
+    *parea = area;
     return CO_OK;
 }

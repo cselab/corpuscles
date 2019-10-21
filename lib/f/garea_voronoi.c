@@ -31,52 +31,74 @@ struct T {
     real *H;
 };
 
-static real dda(__UNUSED void *p, __UNUSED real area) {
+static real
+dda(__UNUSED void *p, __UNUSED real area)
+{
     return 1;
 }
 
-static void zero(int n, real *a) {
+static void
+zero(int n, real * a)
+{
     int i;
-    for (i = 0; i < n; i++) a[i] = 0;
+
+    for (i = 0; i < n; i++)
+        a[i] = 0;
 }
-static int plus(int n, const real *a, /*io*/ real *b) {
+
+static int
+plus(int n, const real * a, /*io */ real * b)
+{
     int i;
+
     for (i = 0; i < n; i++)
         b[i] += a[i];
     return CO_OK;
 }
-static int scale(real sc, int n, /*io*/ real *a) {
+
+static int
+scale(real sc, int n, /*io */ real * a)
+{
     int i;
+
     for (i = 0; i < n; i++)
         a[i] *= sc;
     return CO_OK;
 }
 
-int he_f_garea_voronoi_ini(real A0, real K, He *he, T **pq) {
-#   define M(n, f) MALLOC(n, &q->f)
-#   define S(f) q->f = f
+int
+he_f_garea_voronoi_ini(real A0, real K, He * he, T ** pq)
+{
+#define M(n, f) MALLOC(n, &q->f)
+#define S(f) q->f = f
     T *q;
     int nv;
 
     MALLOC(1, &q);
     nv = he_nv(he);
-    M(nv, fx); M(nv, fy); M(nv, fz);
+    M(nv, fx);
+    M(nv, fy);
+    M(nv, fz);
     M(nv, H);
 
     S(nv);
-    S(A0); S(K);
+    S(A0);
+    S(K);
 
     da_ini(he, &q->da);
 
     *pq = q;
     return CO_OK;
-#   undef S
-#   undef M
+#undef S
+#undef M
 }
 
-int he_f_garea_voronoi_argv(char ***p, He *he, T **pq) {
+int
+he_f_garea_voronoi_argv(char ***p, He * he, T ** pq)
+{
     int status;
     real x, y;
+
     if ((status = argv_real(p, &x)) != CO_OK)
         return status;
     if ((status = argv_real(p, &y)) != CO_OK)
@@ -84,26 +106,33 @@ int he_f_garea_voronoi_argv(char ***p, He *he, T **pq) {
     return he_f_garea_voronoi_ini(x, y, he, pq);
 }
 
-int he_f_garea_voronoi_fin(T *q) {
-#   define F(x) FREE(q->x)
+int
+he_f_garea_voronoi_fin(T * q)
+{
+#define F(x) FREE(q->x)
     da_fin(q->da);
-    F(fx); F(fy); F(fz);
+    F(fx);
+    F(fy);
+    F(fz);
     F(H);
     FREE(q);
     return CO_OK;
-#   undef F
+#undef F
 }
 
-real he_f_garea_voronoi_energy(T *q, He *he,
-                             const real *x, const real *y, const real *z) {
+real
+he_f_garea_voronoi_energy(T * q, He * he,
+                          const real * x, const real * y, const real * z)
+{
     /* get, set */
-#   define G(f) f = q->f
+#define G(f) f = q->f
     int nv;
     Da *da;
     real A0, K;
     real C, A, *area, d;
 
-    G(A0); G(K);
+    G(A0);
+    G(K);
     G(da);
 
     nv = he_nv(he);
@@ -113,17 +142,19 @@ real he_f_garea_voronoi_energy(T *q, He *he,
 
     A = he_sum_array(nv, area);
     d = A - A0;
-    C = K/A0;
-    return C*d*d;
-#   undef A
-#   undef S
+    C = K / A0;
+    return C * d * d;
+#undef A
+#undef S
 }
 
-int he_f_garea_voronoi_force(T *q, He *he,
-                           const real *x, const real *y, const real *z, /**/
-                           real *hx, real *hy, real *hz) {
+int
+he_f_garea_voronoi_force(T * q, He * he,
+                         const real * x, const real * y, const real * z,
+                         /**/ real * hx, real * hy, real * hz)
+{
     /* get, set */
-#   define G(f) f = q->f
+#define G(f) f = q->f
     int nv;
     real A0, K;
     real *fx, *fy, *fz;
@@ -132,23 +163,32 @@ int he_f_garea_voronoi_force(T *q, He *he,
     Da *da;
     dAParam param;
 
-    G(A0); G(K);
+    G(A0);
+    G(K);
     G(da);
-    G(fx); G(fy); G(fz);
+    G(fx);
+    G(fy);
+    G(fz);
 
     nv = he_nv(he);
-    zero(nv, fx); zero(nv, fy); zero(nv, fz);
+    zero(nv, fx);
+    zero(nv, fy);
+    zero(nv, fz);
 
     param.da = dda;
     da_force(da, param, he, x, y, z, /**/ fx, fy, fz);
     da_area(da, &area);
 
     A = he_sum_array(nv, area);
-    C = 2*(K/A0)*(A - A0);
-    scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
-    plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
+    C = 2 * (K / A0) * (A - A0);
+    scale(C, nv, fx);
+    scale(C, nv, fy);
+    scale(C, nv, fz);
+    plus(nv, fx, hx);
+    plus(nv, fy, hy);
+    plus(nv, fz, hz);
 
     return CO_OK;
-#   undef A
-#   undef S
+#undef A
+#undef S
 }

@@ -31,17 +31,21 @@ struct T {
     real *H;
 };
 
-static int axypz(int n, real a, const real *x, const real *y,
-                 /**/ real *z) {
+static int
+axypz(int n, real a, const real * x, const real * y, /**/ real * z)
+{
     int i;
+
     for (i = 0; i < n; i++)
-        z[i] += a*x[i]*y[i];
+        z[i] += a * x[i] * y[i];
     return CO_OK;
 }
 
-int he_f_volume_normal_ini(real v0, real K, He *he, T **pq) {
-#   define M(n, f) MALLOC(n, &q->f)
-#   define S(f) q->f = f
+int
+he_f_volume_normal_ini(real v0, real K, He * he, T ** pq)
+{
+#define M(n, f) MALLOC(n, &q->f)
+#define S(f) q->f = f
     T *q;
     int nv;
 
@@ -50,51 +54,62 @@ int he_f_volume_normal_ini(real v0, real K, He *he, T **pq) {
     M(nv, H);
 
     S(nv);
-    S(v0); S(K);
+    S(v0);
+    S(K);
 
     dh_ini(he, &q->dh);
 
     *pq = q;
     return CO_OK;
-#   undef S
-#   undef M
+#undef S
+#undef M
 }
 
-int he_f_volume_normal_argv(__UNUSED char ***p, __UNUSED He *he, __UNUSED T **pq) {
+int
+he_f_volume_normal_argv(__UNUSED char ***p, __UNUSED He * he,
+                        __UNUSED T ** pq)
+{
     return CO_OK;
 }
 
-int he_f_volume_normal_fin(T *q) {
-#   define F(x) FREE(q->x)
+int
+he_f_volume_normal_fin(T * q)
+{
+#define F(x) FREE(q->x)
     dh_fin(q->dh);
     F(H);
     FREE(q);
     return CO_OK;
-#   undef F
+#undef F
 }
 
-real he_f_volume_normal_energy(T *q, He *he,
-                             const real *x, const real *y, const real *z) {
+real
+he_f_volume_normal_energy(T * q, He * he,
+                          const real * x, const real * y, const real * z)
+{
     /* get, set */
-#   define G(f) f = q->f
+#define G(f) f = q->f
     real v0, K;
     real C, V, d;
 
-    G(v0); G(K);
+    G(v0);
+    G(K);
 
     V = he_volume_tri(he, x, y, z);
     d = V - v0;
-    C = K/v0;
-    return C*d*d;
-#   undef A
-#   undef S
+    C = K / v0;
+    return C * d * d;
+#undef A
+#undef S
 }
 
-int he_f_volume_normal_force(T *q, He *he,
-                           const real *x, const real *y, const real *z, /**/
-                           real *fx, real *fy, real *fz) {
+int
+he_f_volume_normal_force(T * q, He * he,
+                         const real * x, const real * y, const real * z,
+                         /**/ real * fx, real * fy, real * fz)
+{
     /* get, set */
-#   define G(f) f = q->f
+#define G(f) f = q->f
     int nv;
     real v0, K;
     real *area;
@@ -102,7 +117,8 @@ int he_f_volume_normal_force(T *q, He *he,
     real C, V, d;
     Dh *dh;
 
-    G(v0); G(K);
+    G(v0);
+    G(K);
     G(dh);
 
     nv = he_nv(he);
@@ -113,12 +129,12 @@ int he_f_volume_normal_force(T *q, He *he,
 
     V = he_volume_tri(he, x, y, z);
     d = V - v0;
-    C = -2*(K/v0)*d; /* TODO: invert nomral */
+    C = -2 * (K / v0) * d;      /* TODO: invert nomral */
     axypz(nv, C, area, nx, fx);
     axypz(nv, C, area, ny, fy);
     axypz(nv, C, area, nz, fz);
 
     return CO_OK;
-#   undef A
-#   undef S
+#undef A
+#undef S
 }

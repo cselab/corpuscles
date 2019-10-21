@@ -21,7 +21,7 @@ struct T {
 };
 
 int
-bi_cortez_zero_ini(He *he, /**/ T **pq)
+bi_cortez_zero_ini(He * he, /**/ T ** pq)
 {
     T *q;
     int status, n;
@@ -29,10 +29,10 @@ bi_cortez_zero_ini(He *he, /**/ T **pq)
     MALLOC(1, &q);
     status = oseen3_zero_ini(he, &q->oseen);
     if (status != CO_OK)
-	ERR(CO_MEMORY, "oseen3_zero_ini failed");
+        ERR(CO_MEMORY, "oseen3_zero_ini failed");
     status = bi_self_circle_ini(he, &q->self);
     if (status != CO_OK)
-	ERR(CO_MEMORY, "bi_self_circle_ini failed");
+        ERR(CO_MEMORY, "bi_self_circle_ini failed");
     n = he_nv(he);
     tensor_ini(n, &q->O);
     tensor_ini(n, &q->K);
@@ -42,13 +42,13 @@ bi_cortez_zero_ini(He *he, /**/ T **pq)
 }
 
 int
-bi_cortez_zero_argv(char ***p, He *he, /**/ T **pq)
+bi_cortez_zero_argv(char ***p, He * he, /**/ T ** pq)
 {
     return bi_cortez_zero_ini(he, pq);
 }
 
 int
-bi_cortez_zero_fin(T *q)
+bi_cortez_zero_fin(T * q)
 {
     oseen3_zero_fin(q->oseen);
     bi_self_circle_fin(q->self);
@@ -59,7 +59,8 @@ bi_cortez_zero_fin(T *q)
 }
 
 int
-bi_cortez_zero_update(T *q, He *he, const real *x, const real *y, const real *z)
+bi_cortez_zero_update(T * q, He * he, const real * x, const real * y,
+                      const real * z)
 {
     struct Tensor *O, *K;
     int status, n, i;
@@ -67,60 +68,69 @@ bi_cortez_zero_update(T *q, He *he, const real *x, const real *y, const real *z)
 
     O = &q->O;
     K = &q->K;
-    status = oseen3_zero_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz, O->yy, O->yz, O->zz);
+    status =
+        oseen3_zero_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz,
+                          O->yy, O->yz, O->zz);
     if (status != CO_OK)
-	ERR(CO_NUM, "oseen3_zero_apply failed");
+        ERR(CO_NUM, "oseen3_zero_apply failed");
     status = bi_self_circle_update(q->self, he, x, y, z);
     if (status != CO_OK)
-	ERR(CO_NUM, "bi_self_circle_update failed");
+        ERR(CO_NUM, "bi_self_circle_update failed");
     q->KReady = 0;
     return CO_OK;
 }
 
 int
-bi_cortez_zero_single(T *q, He *he, real al,
-		 const real *x, const real *y, const real *z,
-		 const real *fx, const real *fy, const real *fz,
-		 /*io*/ real *ux, real *uy, real *uz)
+bi_cortez_zero_single(T * q, He * he, real al,
+                      const real * x, const real * y, const real * z,
+                      const real * fx, const real * fy, const real * fz,
+                      /*io */ real * ux, real * uy, real * uz)
 {
     struct Tensor *O;
     int n, status;
+
     USED(x);
     USED(y);
     USED(z);
 
     O = &q->O;
     n = he_nv(he);
-    status = bi_self_circle_single(q->self, he, al, x, y, z, fx, fy, fz, ux, uy, uz);
+    status =
+        bi_self_circle_single(q->self, he, al, x, y, z, fx, fy, fz, ux, uy,
+                              uz);
     if (status != CO_OK)
-	ERR(CO_NUM, "bi_self_circle_single failed");
+        ERR(CO_NUM, "bi_self_circle_single failed");
     tensor_vector(n, al, fx, fy, fz, O, ux, uy, uz);
     return CO_OK;
 }
 
 int
-bi_cortez_zero_double(T *q, He *he, real al,
-		 const real *x, const real *y, const real *z,
-		 const real *ux, const real *uy, const real *uz,
-		 /*io*/real *wx, real *wy, real *wz)
+bi_cortez_zero_double(T * q, He * he, real al,
+                      const real * x, const real * y, const real * z,
+                      const real * ux, const real * uy, const real * uz,
+                      /*io */ real * wx, real * wy, real * wz)
 {
     int n, status;
     struct Tensor *K;
+
     USED(x);
     USED(y);
     USED(z);
 
     K = &q->K;
     if (q->KReady == 0) {
-	status = oseen3_zero_stresslet(q->oseen, he, x, y, z, K->xx, K->xy, K->xz, K->yy, K->yz, K->zz);
-	if (status != CO_OK)
-	    ERR(CO_NUM, "oseen3_zero_stresslet failed");
-	q->KReady = 1;
+        status =
+            oseen3_zero_stresslet(q->oseen, he, x, y, z, K->xx, K->xy,
+                                  K->xz, K->yy, K->yz, K->zz);
+        if (status != CO_OK)
+            ERR(CO_NUM, "oseen3_zero_stresslet failed");
+        q->KReady = 1;
     }
     n = he_nv(he);
-    bi_self_circle_double(q->self, he, al, x, y, z, ux, uy, uz, wx, wy, wz);
+    bi_self_circle_double(q->self, he, al, x, y, z, ux, uy, uz, wx, wy,
+                          wz);
     if (status != CO_OK)
-	ERR(CO_NUM, "bi_self_circle_double failed");
+        ERR(CO_NUM, "bi_self_circle_double failed");
     tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
     return CO_OK;
 }

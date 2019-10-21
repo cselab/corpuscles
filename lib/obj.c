@@ -13,8 +13,12 @@
 
 #define OUT CO_REAL_OUT
 
-int obj_fwrite(He *he, const real *x, const real *y, const real *z, /**/ FILE *f) {
+int
+obj_fwrite(He * he, const real * x, const real * y, const real * z,
+           /**/ FILE * f)
+{
     int nv, nt, v, t, i, j, k;
+
     nv = he_nv(he);
     nt = he_nt(he);
 
