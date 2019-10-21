@@ -234,7 +234,6 @@ oseen3_tri_stresslet(T * q, He * he, const real * x, const real * y,
             A = tri_area(a, b, c) / (8 * pi);
 
             real res;
-
             integral_tri_apply(q->integral, a, b, c, F, point, &res);
             i_matrix_add(n, n, i, ia, res, oxx);
 

@@ -10,7 +10,7 @@
 #include "co/integral/tri.h"
 
 enum {
-    TYPE = GAUSS31
+    TYPE = QAGS
 };
 
 #define T IntegralTri
