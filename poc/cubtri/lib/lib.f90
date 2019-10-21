@@ -1,14 +1,12 @@
 module mod
 contains
   function F(x, y, idata, rdata)
-    use iso_c_binding    
     implicit none
     real :: x, y
-    integer(c_int), intent(in) :: idata(:)
-    real(c_double), intent(in) :: rdata(:)
+    integer, intent(in) :: idata(:)
+    real, intent(in) :: rdata(:)
     real :: F
-    print *, x, y
-    F = 1.0
+    F = 1/(x*x + 1)
   end function F
 end module mod
 
@@ -28,13 +26,24 @@ subroutine cubtri2(T, EPS, MCALLS, ANS, ERR, NCALLS, W, NW, IER) bind(c)
 
   integer :: idata(1)
   real :: rdata(1)
-  real :: tt(2, 3)
+  
+  real :: T0(2, 3)
+  real :: EPS0
+  integer ::  MCALLS0
+  real :: ANS0
+  real :: ERR0
+  integer :: NCALLS0
+  real :: W0(NW)
+  integer  :: NW0
+  integer :: IER0
 
-  tt = TT
-  call cubtri(tt, EPS, MCALLS, ANS, ERR, NCALLS, W, NW, IER, idata, rdata)
-  !print *, F(1.3, 4.5, idata, rdata)
-  !ans = 4.2
-  !err = 1e-12
-  !ncalls = 123
-  !ier = 0
+  T0 = T
+  EPS0 = EPS
+  MCALLS0 = MCALLS
+  W0 = W
+  NW0 = NW
+  call cubtri(F, T0, EPS0, MCALLS0, ANS0, ERR0, NCALLS0, W0, NW0, IER0, idata, rdata)
+  ANS = ANS0
+  ERR = ERR0
+  NCALLS = NCALLS0
 end subroutine cubtri2

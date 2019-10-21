@@ -26,10 +26,10 @@ main()
     T[i++] = c[Y];
 
     mcalls = 100;
+    eps = 1e-4;
 
     cubtri2(T, eps, mcalls, &ans, &err, &ncalls, w, NW, &ier);
-    /*printf("ans: %g\n", ans);
+    printf("ans: %g\n", ans);
     printf("err: %g\n", err);
     printf("ncalls: %d\n", ncalls);
-    printf("ier: %d\n", ier);     */
 }
