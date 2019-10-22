@@ -17,3 +17,5 @@ h(x) = g(x) + (f(x) - g(x))*(cos(2*pi*x/h0 + h1) + 1)/2
 
 set sample 10000, 10000
 plot [20:] "stat.dat" u 3:13 w dots, h(x)
+
+show vari
