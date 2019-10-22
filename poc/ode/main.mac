@@ -1,0 +1,36 @@
+load("scifac") $
+load("co/vec.mac") $
+cross(a, b) = vec_cross(a, b) $
+to_vec(e):= [e[1, 1], e[2, 1], e[3, 1]];
+Rth: matrix([cos('th), -sin('th), 0], [sin('th), cos('th), 0], [0, 0, 1]) $
+Rph: matrix([1, 0, 0], [0, cos('ph), -sin('ph)], [0, sin('ph), cos('ph)]) $
+Rps: matrix([cos('ps), -sin('ps), 0], [sin('ps), cos('ps), 0], [0, 0, 1]) $
+
+R: Rth . Rph . Rps $
+P: factor(trigsimp(R^^(-1))) $
+W: trigsimp(diff(P) . R) $
+w: [ W[2, 3], -W[1, 3], W[1, 2]];
+
+u: [g*x2, 0, 0] $
+L: matrix(diff(u, x1), diff(u, x2), diff(u, x3)) $
+E: (L + transpose(L))/2 $
+E: transpose(R) . E . R $
+
+e23: factor(trigreduce(trigreduce(E[2, 3], th), ph));
+e31: factor(trigreduce(trigreduce(E[3, 1], th), ph));
+
+k1(x, y):= (x^2 - y^2)/(x^2 + y^2);
+k2(x, y):= 2*x*y/(x^2 + y^2);
+
+o1 = -g/2*sin(ph)*sin(ps) + k1(a2, a3)*'e23 - k2(a2, a3)*O1;
+o2 = -g/2*sin(ph)*cos(ps) + k1(a3, a1)*'e23 - k2(a3, a1)*O2;
+o3 = -g/2*cos(ph);
+
+load("itensor");
+i: 3;
+sum(sum('a[j] * levi_civita([i, j, k]) * 'O[i] * 'x[k] / 'a[k], j, 1, 3), k, 1, 3);
+
+so: solve( [w[1] = 'o1, w[2] = 'o2, w[3] = 'o3], [del('ph), del('ps), del('th)]);
+so: trigsimp(so);
+
+declare(g, constant);
