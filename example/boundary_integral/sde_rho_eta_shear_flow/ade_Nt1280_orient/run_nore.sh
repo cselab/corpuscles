@@ -55,7 +55,7 @@ then
     Re=$(echo $gamdot $R $rho $eta | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
     
-    in_file=../init_tilt/init_v${v}_Da${Da1}.off
+    in_file=../init_orient/init_v${v}_Da${Da1}.off
     ref_file=../ref/ref_v0.95.off
     
     echo "input file:" $in_file
