@@ -180,12 +180,11 @@ F(real x, real y, real z, void *vp)
 	real *p, r;
 
 	p = vp;
-
 	x -= p[X];
 	y -= p[Y];
 	z -= p[Z];
 	r = x * x + y * y + z * z;
-	return r > 0.25 ? 1 / (r * r) : 0;
+	return  r > 0.1 ? 1/ (r * r) : 0;
 }
 
 int
@@ -226,8 +225,8 @@ oseen3_tri_stresslet(T * q, He * he, const real * x, const real * y,
 		i_vec_get(i, x, y, z, point);
 		for (j = 0; j < nt; j++) {
 			he_tri_ijk(he, j, &ia, &ib, &ic);
-			if (ia == i || ib == i || ic == i)
-				continue;
+			//if (ia == i || ib == i || ic == i)
+			//	continue;
 			i_vec_get3(ia, ib, ic, x, y, z, a, b, c);
 			tri_center(a, b, c, center);
 			tri_normal(a, b, c, normal);
