@@ -1,10 +1,10 @@
 .POSIX:
-.SUFFIXES:  .f .f90 .o
+.SUFFIXES: .c .f .f90 .o
 
 CC = c99
 FC = gfortran
-FCFLAGS = -Ofast  -g
-CFLAGS = -Ofast  -g
+FCFLAGS = -Og  -g
+CFLAGS = -Og  -g
 
 L = libcubtri.a
 

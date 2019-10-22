@@ -1,4 +1,9 @@
 .POSIX:
+.SUFFIXES: .c .o
+
+CC = c99
+CFLAGS = -Og  -g
+
 M = \
 main\
 

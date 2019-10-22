@@ -7,7 +7,7 @@ module mod
        use iso_c_binding
        implicit none
        real(c_double), intent(in), value :: x, y
-       type(c_ptr)                       :: p
+       type(c_ptr), intent(in), value :: p
        real(c_double) :: fun
      end function fun
   end interface
@@ -33,7 +33,7 @@ subroutine cubtri2(PTR, T, EPS, MCALLS, ANS, ERR, NCALLS, W, NW, IER) bind(c)
   real(c_double), intent(in) :: T(2, 3)
   real(c_double), intent(in), value :: EPS
   integer(c_int), intent(in), value ::  MCALLS
-  type(c_ptr) , intent(in)  :: PTR
+  type(c_ptr) , intent(in), value  :: PTR
   real(c_double), intent(out) :: ANS
   real(c_double), intent(out) :: ERR
   integer(c_int), intent(out) :: NCALLS
