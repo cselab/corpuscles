@@ -157,7 +157,6 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
 	n = he_nv(he);
 	array_zero3(n, wx, wy, wz);
 	for (i = 0; i < n; i++) {
-		//p = pi-acos((area[i]*h[i]*h[i])/(2*pi)-1);
 		A = area[i];
 		p = sqrt(A) / sqrt(pi) * h[i];
 		vec_get(i, nx, ny, nz, normal);
@@ -165,7 +164,7 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
 		uX = vec_reject_scalar(velocity, normal);
 		vec_reject(velocity, normal, reject);
 		vec_normalize(reject);
-		vec_scalar_append(reject, -6 * uX * p / 8 / 2, i, wx, wy, wz);
+		vec_scalar_append(reject, - 3 * uX * p / 8, i, wx, wy, wz);
 	}
 	array_axpy3(n, alpha, wx, wy, wz, vx, vy, vz);
 	return CO_OK;

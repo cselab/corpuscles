@@ -128,7 +128,7 @@ bi_cortez_zero_double(T * q, He * he, real al,
 	}
 	n = he_nv(he);
 	bi_self_circle_double(q->self, he, al, x, y, z, ux, uy, uz, wx, wy,
-						  wz);
+			      wz);
 	if (status != CO_OK)
 		ERR(CO_NUM, "bi_self_circle_double failed");
 	tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
