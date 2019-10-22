@@ -1,12 +1,25 @@
 module mod
+  interface
+     function fun(x, y) bind(c)
+       use iso_c_binding
+       implicit none
+       real(c_double), intent(in), value :: x, y
+       real(c_double) :: fun
+     end function fun
+  end interface
 contains
   function F(x, y, idata, rdata)
+    use iso_c_binding
     implicit none
     real :: x, y
     integer, intent(in) :: idata(:)
     real, intent(in) :: rdata(:)
     real :: F
-    F = 1/(x*x + 1)
+    
+    real(c_double) :: x0, y0
+    x0 = x
+    y0 = y
+    F = fun(x0, y0)
   end function F
 end module mod
 
@@ -26,7 +39,7 @@ subroutine cubtri2(T, EPS, MCALLS, ANS, ERR, NCALLS, W, NW, IER) bind(c)
 
   integer :: idata(1)
   real :: rdata(1)
-  
+
   real :: T0(2, 3)
   real :: EPS0
   integer ::  MCALLS0

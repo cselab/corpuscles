@@ -11,6 +11,7 @@ L = libcubtri.a
 O = \
 main.o\
 lib.o\
+fun.o\
 
 libcubtri.a: $O ; ar r $@ $O && ranlib $@
 
@@ -18,3 +19,5 @@ libcubtri.a: $O ; ar r $@ $O && ranlib $@
 .f90.o:; $(FC) $(FCFLAGS) $< -c
 .c.o:; $(CC) $(CFLAGS) $< -c
 
+.PHONY: clean
+clean:; rm -f $O libcubtri.a mod.mod
