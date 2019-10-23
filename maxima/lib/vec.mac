@@ -11,6 +11,9 @@ vec_any(a)::=buildq([a, lo: gensym(), hi: gensym(), L: gensym()],
 
 vec_zero():=[0, 0, 0];
 
+vec_minus(a, b):= a - b;
+vec_plus(a, b):= a - b;
+
 vec_dot(a, b):= block([X: 1, Y: 2, Z: 3],
   a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]);
 
