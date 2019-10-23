@@ -13,6 +13,14 @@
 enum {
     X, Y, Z
 };
+enum {
+    XX,
+    XY,
+    XZ,
+    YY,
+    YZ,
+    ZZ
+};
 
 #define FMT   CO_REAL_OUT
 
@@ -513,6 +521,21 @@ tri_moment(const real a[3], const real b[3], const real c[3],
     *yz =
         ((2 * cy + by + ay) * cz + (bz + az) * cy + (2 * by + ay) * bz +
          az * by + 2 * ay * az) / 12;
+    return CO_OK;
+}
+
+int
+tri_inertia(const real a[3], const real b[3], const real c[3], real m[6])
+{
+    real xx, xy, xz, yy, yz, zz, area;
+    tri_moment(a, b, c, &xx, &xy, &xz, &yy, &yz, &zz);
+    area = tri_area(a, b, c);
+    m[XX] = (yy + zz) * area;
+    m[YY] = (xx + zz) * area;
+    m[ZZ] = (xx + yy) * area;
+    m[XY] = -xy * area;
+    m[XZ] = -xz * area;
+    m[YZ] = -yz * area;
     return CO_OK;
 }
 
