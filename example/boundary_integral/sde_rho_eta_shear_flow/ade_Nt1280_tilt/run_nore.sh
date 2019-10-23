@@ -150,6 +150,12 @@ else
     Kc=20000
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
+    num=54
+    gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
+    dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
+    Kc=20000
+    bash run_nore.sh $Da1 $gamdot $dt $Kc
+
     num=56
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
