@@ -6,13 +6,13 @@
 #include "co/bbox2.h"
 
 enum {
-	X, Y
+    X, Y
 };
 
 #define T Bbox2
 struct T {
-	real lo[2];
-	real hi[2];
+    real lo[2];
+    real hi[2];
 };
 
 #define DI(D, d) \
@@ -24,61 +24,61 @@ struct T {
 int
 bbox2_ini(T ** pq)
 {
-	T *q;
+    T *q;
 
-	MALLOC(1, &q);
-	*pq = q;
-	return CO_OK;
+    MALLOC(1, &q);
+    *pq = q;
+    return CO_OK;
 }
 
 int
 bbox2_fin(T * q)
 {
-	FREE(q);
-	return CO_OK;
+    FREE(q);
+    return CO_OK;
 }
 
 int
 bbox2_update(T * q, int n, const real * x, const real * y)
 {
-	DI(X, x);
-	DI(Y, y);
-	return CO_OK;
+    DI(X, x);
+    DI(Y, y);
+    return CO_OK;
 }
 
 int
 bbox2_inside(T * q, real x, real y)
 {
 #define CM(d, D) (lo[D] < d && d < hi[D])
-	real *lo, *hi;
+    real *lo, *hi;
 
-	lo = q->lo;
-	hi = q->hi;
-	return CM(x, X) && CM(y, Y);
+    lo = q->lo;
+    hi = q->hi;
+    return CM(x, X) && CM(y, Y);
 }
 
 int
 bbox2_lo(T * q, real ** p)
 {
-	*p = q->lo;
-	return CO_OK;
+    *p = q->lo;
+    return CO_OK;
 }
 
 int
 bbox2_hi(T * q, real ** p)
 {
-	*p = q->hi;
-	return CO_OK;
+    *p = q->hi;
+    return CO_OK;
 }
 
 real
 bbox2_xhi(T * q)
 {
-	return q->hi[X];
+    return q->hi[X];
 }
 
 real
 bbox2_yhi(T * q)
 {
-	return q->hi[Y];
+    return q->hi[Y];
 }

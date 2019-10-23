@@ -111,11 +111,11 @@ integral_quad_apply(T * q, const real a[3], const real b[3],
     A = tri_area(a, b, c);
 
     res = 0;
-    for (i = 0; i < sizeof(W)/sizeof(W[0]); i++) {
-	u = U[i];
-	v = V[i];
-	w = W[i];
-	res += w * F(v, u, &p);
+    for (i = 0; i < sizeof(W) / sizeof(W[0]); i++) {
+        u = U[i];
+        v = V[i];
+        w = W[i];
+        res += w * F(v, u, &p);
     }
     res *= A;
     *pres = res;
