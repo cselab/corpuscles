@@ -1,9 +1,9 @@
 .POSIX:
 include ../../../conf.mk
-M = main juelicher
+M = main juelicher ring
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
-CO_LDFLAGS = `co.conf --libs $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)`
 
 LINK = $(CC)
 
