@@ -229,15 +229,17 @@ co/prec/s/real.h\
 co/err.h\
 co/colormap.h\
 
-curv/mean.s.o:\
+curv/mean/juelicher.s.o:\
 co/prec/s/real.h\
+co/array.h\
+co/curv/mean/juelicher.h\
+co/dih.h\
+co/edg.h\
 co/err.h\
 co/he.h\
-co/vec.h\
-co/tri.h\
-co/edg.h\
 co/memory.h\
-co/curv/mean.h\
+co/tri.h\
+co/vec.h\
 
 da.s.o:\
 co/prec/s/real.h\
@@ -1517,15 +1519,17 @@ co/prec/d/real.h\
 co/err.h\
 co/colormap.h\
 
-curv/mean.d.o:\
+curv/mean/juelicher.d.o:\
 co/prec/d/real.h\
+co/array.h\
+co/curv/mean/juelicher.h\
+co/dih.h\
+co/edg.h\
 co/err.h\
 co/he.h\
-co/vec.h\
-co/tri.h\
-co/edg.h\
 co/memory.h\
-co/curv/mean.h\
+co/tri.h\
+co/vec.h\
 
 da.d.o:\
 co/prec/d/real.h\
@@ -2805,15 +2809,17 @@ co/prec/l/real.h\
 co/err.h\
 co/colormap.h\
 
-curv/mean.l.o:\
+curv/mean/juelicher.l.o:\
 co/prec/l/real.h\
+co/array.h\
+co/curv/mean/juelicher.h\
+co/dih.h\
+co/edg.h\
 co/err.h\
 co/he.h\
-co/vec.h\
-co/tri.h\
-co/edg.h\
 co/memory.h\
-co/curv/mean.h\
+co/tri.h\
+co/vec.h\
 
 da.l.o:\
 co/prec/l/real.h\

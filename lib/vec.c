@@ -22,7 +22,7 @@ vec_ini(real x, real y, real z, /**/ real a[3])
 
 int
 vec_get(int i, const real x[], const real y[], const real z[],
-        /**/ real a[3])
+	/**/ real a[3])
 {
     a[X] = x[i];
     a[Y] = y[i];
@@ -32,11 +32,22 @@ vec_get(int i, const real x[], const real y[], const real z[],
 
 int
 vec_get3(int i, int j, int k, const real x[], const real y[],
-         const real z[], /**/ real a[3], real b[3], real c[3])
+	 const real z[], /**/ real a[3], real b[3], real c[3])
 {
     vec_get(i, x, y, z, /**/ a);
     vec_get(j, x, y, z, /**/ b);
     vec_get(k, x, y, z, /**/ c);
+    return CO_OK;
+}
+
+int
+vec_get4(int i, int j, int k, int l, const real x[], const real y[],
+	 const real z[], /**/ real a[3], real b[3], real c[3], real d[3])
+{
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    vec_get(k, x, y, z, /**/ c);
+    vec_get(l, x, y, z, /**/ d);
     return CO_OK;
 }
 
@@ -133,7 +144,7 @@ vec_neg(real x[3])
 
 int
 vec_linear_combination(real al, const real a[3], real be, const real b[3],
-                       /**/ real c[3])
+		       /**/ real c[3])
 {
     c[X] = al * a[X] + be * b[X];
     c[Y] = al * a[Y] + be * b[Y];
@@ -179,7 +190,7 @@ vec_substr(const real a[3], int i, /**/ real * x, real * y, real * z)
 
 int
 vec_scalar_append(const real a[3], real s, int i, /**/ real * x, real * y,
-                  real * z)
+		  real * z)
 {
     x[i] += s * a[X];
     y[i] += s * a[Y];
@@ -242,11 +253,11 @@ small(real s)
     const real eps = 1e-32;
 
     if (s > eps)
-        return 0;
+	return 0;
     else if (s < -eps)
-        return 0;
+	return 0;
     else
-        return 1;
+	return 1;
 }
 
 int
@@ -256,9 +267,9 @@ vec_norm(const real a[3], /**/ real b[3])
 
     s = vec_abs(a);
     if (!small(s))
-        vec_scalar(a, 1 / s, /**/ b);
+	vec_scalar(a, 1 / s, /**/ b);
     else
-        vec_copy(a, b);
+	vec_copy(a, b);
     return CO_OK;
 }
 
@@ -269,7 +280,7 @@ vec_normalize(real a[3])
 
     s = vec_abs(a);
     if (!small(s))
-        vec_scale(1 / s, a);
+	vec_scale(1 / s, a);
     return CO_OK;
 }
 
@@ -317,7 +328,7 @@ vec_reject(const real a[3], const real b[3], /**/ real c[3])
 
 int
 vec_mean3(const real a[3], const real b[3], const real c[3],
-          /**/ real m[3])
+	  /**/ real m[3])
 {
     m[X] = (a[X] + b[X] + c[X]) / 3;
     m[Y] = (a[Y] + b[Y] + c[Y]) / 3;
@@ -339,7 +350,7 @@ vec_fprintf(const real a[3], FILE * f, const char *fmt0)
 
     r = snprintf(fmt, SIZE, "%s %s %s\n", fmt0, fmt0, fmt0);
     if (r < 0)
-        ERR(CO_IO, "snprintf failed for fmt0='%s'", fmt0);
+	ERR(CO_IO, "snprintf failed for fmt0='%s'", fmt0);
 
     r = fprintf(f, fmt, a[X], a[Y], a[Z]);
     return r < 0 ? CO_IO : CO_OK;
@@ -353,7 +364,7 @@ vec_fprintf0(const real a[3], FILE * f, const char *fmt0)
 
     r = snprintf(fmt, SIZE, "%s %s %s", fmt0, fmt0, fmt0);
     if (r < 0)
-        ERR(CO_IO, "snprintf failed for fmt0='%s'", fmt0);
+	ERR(CO_IO, "snprintf failed for fmt0='%s'", fmt0);
     r = fprintf(f, fmt, a[X], a[Y], a[Z]);
     return r < 0 ? CO_IO : CO_OK;
 }
@@ -372,10 +383,10 @@ vec_argv(const char **pq[], /**/ real a[3])
     q = *pq;
 #define NXT(d)                                                       \
     do {                                                                \
-        if (*q == NULL) ERR(CO_IO, "not enough args");                  \
-        if (!nxt(*q, &a[d]))                                            \
-            ERR(CO_IO, "not a number '%s", *q);                         \
-        q++;                                                            \
+	if (*q == NULL) ERR(CO_IO, "not enough args");                  \
+	if (!nxt(*q, &a[d]))                                            \
+	    ERR(CO_IO, "not a number '%s", *q);                         \
+	q++;                                                            \
     } while (0);
     NXT(X);
     NXT(Y);

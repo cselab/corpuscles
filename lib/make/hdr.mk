@@ -18,6 +18,7 @@ co/cell2.h\
 co/cell3.h\
 co/colormap.h\
 co/container.h\
+co/curv/mean/juelicher.h\
 co/da.h\
 co/ddih.h\
 co/dedg2.h\
