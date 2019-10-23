@@ -3,14 +3,13 @@ set -eu
 pi=3.141592653589793115997964
 A=12.5663706144
 V=2.68919777043
-#v=0.641998677173
 v=0.642
 R=1
 
+Da1=0.143
+Kc0=20000
+
 Nt=1280
-Kc=20000
-Kga=$Kc
-Kv=$Kc
 
 Kb=1.0
 C0=0.0
@@ -28,7 +27,8 @@ b2=0.75
 rho=1.0
 eta=645.928652122
 lambda=1.0
-gamdot0=0.00144
+gamdot0=0.00143923833018
+gamdot1=0.00144
 dt0=0.01
 tscale=10
 
@@ -44,10 +44,15 @@ export CO_ARG="-W 120:00"
 if test $# -ne 0
 then
 
-    Da1="$1"
-    gamdot="$2"
-    dt="$3"
-    Kc="$4"
+    num="$1"
+    
+    gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
+    dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
+    if [ $num -le 100 ]; then
+	Kc=$Kc0
+    else
+	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
+    fi
     
     Kga=$Kc
     Kv=$Kc
@@ -74,54 +79,43 @@ then
     DA0=$(echo $Kb, $C0, $Kad, $Da0, $D, $pi, $A | awk '{print $4*$7}')
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
 
-    gam=$(printf "%.3g" $gamdot)
-    echo "gam="$gam
-    lam=$(printf "%.1g" $lambda)
-    echo "lam="$lam
-    dt=$(printf "%.4g" $dt)
-    echo "dt="$dt
+    fgam=$(printf "%.5f" $gamdot)
+    echo "fgam="$fgam
+    flam=$(printf "%.1f" $lambda)
+    echo "flam="$flam
+    fdt=$(printf "%.6f" $dt)
+    echo "fdt="$fdt
     
-    if [ ! -d Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc} ]; then
+    if [ ! -d Da${Da1}_lam${flam}_g${fgam}_dt${fdt}_Kc${Kc} ]; then
 	
-	mkdir Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}
+	mkdir Da${Da1}_lam${flam}_g${fgam}_dt${fdt}_Kc${Kc}
 	
     fi
     
-    cd Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}
+    cd Da${Da1}_lam${flam}_g${fgam}_dt${fdt}_Kc${Kc}
     
     co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
    
     
 else
 
-    Da1=0.143
-    Kc0=20000
     
     for i in `seq 1 20`;
     do
 	num=$(echo $i | awk '{print $1*5}')
-	gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
-	dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-	Kc=$Kc0
-	bash run.sh $Da1 $gamdot $dt $Kc	
+	bash run.sh $num
     done
 
-    for i in `seq 21 40`;
+    for i in `seq 11 25`;
     do
-	num=$(echo $i | awk '{print $1*5}')
-	gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
-	dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')
-	bash run.sh $Da1 $gamdot $dt $Kc	
+	num=$(echo $i | awk '{print $1*10}')
+	bash run.sh $num
     done
 
-    for i in `seq 5 20`;
+    for i in `seq 3 20`;
     do
-	num=$(echo $i | awk '{print $1*50}')
-	gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
-	dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')
-	bash run.sh $Da1 $gamdot $dt $Kc	
+	num=$(echo $i | awk '{print $1*100}')
+	bash run.sh $num
     done
 
 fi
