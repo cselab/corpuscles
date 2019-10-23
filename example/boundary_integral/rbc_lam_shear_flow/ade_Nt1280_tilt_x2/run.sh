@@ -34,8 +34,8 @@ tscale=10
 
 start=0
 end=9000000
-freq_out=1000
-freq_stat=100
+freq_out=50
+freq_stat=10
 
 #number of threads
 NT=1
@@ -89,15 +89,19 @@ then
     
     cd Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}
     
-    co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
-   
+    co.run ../../main volume $V $Kv garea $A $Kga \
+	   juelicher_xin $Kb $C0 $Kad $DA0D \
+	   strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 \
+	   cortez_zero $R $D $rho $eta $lambda \
+	   $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
+      
     
 else
 
     Da1=0.143
     Kc0=20000
     
-    for i in `seq 1 20`;
+    for i in `seq 16 17`;
     do
 	num=$(echo $i | awk '{print $1*5}')
 	gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')

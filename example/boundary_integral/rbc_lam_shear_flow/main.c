@@ -10,11 +10,8 @@
 #include <co/err.h>
 #include <co/force.h>
 #include <co/macro.h>
-#include <co/i/matrix.h>
-#include <co/matrix.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
-#include <co/oseen3.h>
 #include <co/he.h>
 #include <co/punto.h>
 #include <co/y.h>
@@ -22,6 +19,7 @@
 #include <co/f/garea.h>
 #include <co/f/volume.h>
 #include <co/f/juelicher_xin.h>
+#include <co/bi.h>
 
 static const char *me = "sde_rho_eta_shear_flow";
 static const real pi  = 3.141592653589793115997964;
@@ -34,16 +32,17 @@ static const int iter_max=100;
 static Force *Fo[20] = {
     NULL
   };
+static HeFVolume *fvolume;
 static He *he;
-static Oseen3 *oseen;
+static BI *bi;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
 static real *fx, *fy, *fz;
 static real *ux, *uy, *uz;
 static real *wx, *wy, *wz;
-static real *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
-static real *Kxx, *Kxy, *Kxz, *Kyy, *Kyz, *Kzz;
+static real *Vx, *Vy, *Vz;
+
 static int nv, nt;
 
 char file_out[999];
@@ -52,10 +51,10 @@ char file_msg[99]="msg.out";
 FILE *fm;
 
 static void usg(void) {
-  fprintf(stderr, "%s garea A Kga area a Ka volume V Kv\n", me);
+  fprintf(stderr, "%s volume V Kv garea A Kga area a Ka \n", me);
   fprintf(stderr, "juelicher_xin Kb C0 Kad DA0D\n");
   fprintf(stderr, "strain ref_file lim mua mub a3 a4 b1 b2\n");
-  fprintf(stderr, "R D rho eta lamda gamdot dt\n");
+  fprintf(stderr, "cortez R D rho eta lamda gamdot dt\n");
   fprintf(stderr, "start end freq_out freq_stat\n");
   fprintf(stderr, "< OFF input file\n");
 }
@@ -84,6 +83,14 @@ static int fargv(char ***p, He *he)
   
   i = 0;
   v = *p;
+
+  if ( strcmp(v[0], "volume") != 0 ) {
+    ER("not a volume %s", v[0]);
+  }
+  v++;
+  he_f_volume_argv(&v, he, &fvolume);
+  MALLOC3(nv, &Vx, &Vy, &Vz);
+  
   while (1) {
     if (v[0] == NULL) break;
     name = v[0];
@@ -93,7 +100,17 @@ static int fargv(char ***p, He *he)
     force_argv(name, &v, he, &Fo[i]);
     i++;
   }
-  
+
+  name = v[0];
+  if (name == NULL)
+    ER("expecting BI");
+  if (!bi_good(name)) {
+    MSG("not a bi name: '%s'", name);
+    ER("possible names are: %s", bi_list());
+  }
+  v++;
+  bi_argv(name, &v, he, &bi);
+
   scl(v, &R);
   v++;
   scl(v, &D);
@@ -143,60 +160,12 @@ static int fin(void) {
   return CO_OK;
 }
 
-
-static int tensor_ini(int n, real **xx, real **xy, real **xz, real **yy, real **yz, real **zz) {
-  matrix_ini(n, n, xx); 
-  matrix_ini(n, n, xy);
-  matrix_ini(n, n, xz);
-  matrix_ini(n, n, yy);
-  matrix_ini(n, n, yz);
-  matrix_ini(n, n, zz);
-  return CO_OK;
-}
-
-static int tensor_fin(real *xx, real *xy, real *xz, real *yy, real *yz, real *zz) {
-  matrix_fin(xx);
-  matrix_fin(xy);
-  matrix_fin(xz);
-  matrix_fin(yy);
-  matrix_fin(yz);
-  matrix_fin(zz);
-  return CO_OK;
-}
-
-#define GET(K) i_matrix_get(n, n, i, j, (K))
-static int vector_tensor(int n, real s, const real *x, const real *y, const real *z,
-			 real *Txx, real *Txy, real *Txz, real *Tyy, real *Tyz, real *Tzz,
-			 real *u, real *v, real *w) {
-  int i;
-#pragma omp parallel for
-  for (i = 0; i < n; i++) {
-    int j;
-    real xx, xy, xz, yy, yz, zz, du, dv, dw;
-    for (j = 0; j < n; j++) {
-      xx = GET(Txx);
-      xy = GET(Txy);
-      xz = GET(Txz);
-      yy = GET(Tyy);
-      yz = GET(Tyz);
-      zz = GET(Tzz);
-      du = xx*x[j] + xy*y[j] + xz*z[j];
-      dv = xy*x[j] + yy*y[j] + yz*z[j];
-      dw = xz*x[j] + yz*y[j] + zz*z[j];
-      u[i] += s*du;
-      v[i] += s*dv;
-      w[i] += s*dw;
-    }
-  }
-  return CO_OK;
-}
-
 static int F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0) {
   
   int i, k;
   real coef, al, be;
-  real dx, dy, dz, d;
-  real ddx, ddy, ddz, dd, ratio;
+  real d;
+  real dd, ratio;
 
   coef= 2/(1+lambda);
   al  = -2/(eta*(1 + lambda));
@@ -204,16 +173,14 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   	
   array_zero3(nv, fx, fy, fz);
   force(he, x, y, z, fx, fy, fz);
-  oseen3_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+  bi_update(bi, he, x, y, z);
   
   array_zero3(nv, vx, vy, vz);
   for (i = 0; i < nv; i++) vx[i] += coef*gamdot*z[i];
-  vector_tensor(nv, al, fx, fy, fz, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz, vx, vy, vz);
+  bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
 
   //inner and outer viscosity has obvious contrast
   if ( 1 - lambda > tol || 1 - lambda < -tol ) {
-    
-    oseen3_stresslet(oseen, he, x, y, z, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
     
     array_zero3(nv, ux, uy, uz);
     for (i = 0; i < nv; i++) ux[i] += coef*gamdot*z[i];
@@ -221,8 +188,7 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
     for (k = 1; k<=iter_max; k++) {
       
       array_copy3(nv, vx, vy, vz, wx, wy, wz);
-      
-      vector_tensor(nv, be, ux, uy, uz, Kxx, Kxy, Kxz, Kyy, Kyz, Kzz, wx, wy, wz);
+      bi_double(bi, he, be, x, y, z, ux, uy, uz, wx, wy, wz);
       
       d=array_msq_3d(nv, ux, uy, uz);
       dd=array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
@@ -250,7 +216,11 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
     
   }
-  
+
+  array_zero3(nv, Vx, Vy, Vz);
+  he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
+  array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
+
   return CO_OK;
 }
 
@@ -271,21 +241,25 @@ int main(__UNUSED int argc, char **argv) {
   real a, e, reg;
   real M, m;
   
-  err_set_ignore();
+  //err_set_ignore();
   argv++;
   y_inif(stdin, &he, &x, &y, &z);
-  fargv(&argv, he);
-  
   nv = he_nv(he);
   nt = he_nt(he);
+  fargv(&argv, he);
+  
   
   if ( (fm = fopen(file_stat, "w") ) == NULL) {
     ER("Failed to open '%s'", file_stat);
   }
   fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn es\n", fm);
   fclose(fm);
-	
+  
+  V0 = he_f_volume_V0(fvolume);
+  MSG("V0=%g", V0);//
+  
   i = 0;
+  A0 = -1;
   while (Fo[i]) {
     
     strcpy(name, force_name(Fo[i]));
@@ -293,9 +267,8 @@ int main(__UNUSED int argc, char **argv) {
     if ( strcmp(name, "garea") == 0 ) {
       A0 = he_f_garea_A0(force_pointer(Fo[i]));
     }
-    else if ( strcmp(name, "volume") == 0 ) {
-      V0 = he_f_volume_V0(force_pointer(Fo[i]));
-    }
+    //else if ( strcmp(name, "volume") == 0 ) {
+      //V0 = he_f_volume_V0(force_pointer(Fo[i]));}
     i++;
   }
   
@@ -317,15 +290,11 @@ int main(__UNUSED int argc, char **argv) {
   fprintf(fm, "M m a e reg dt = %f %f %f %f %f %f\n", M, m, a, e, reg, dt);
   fclose(fm);
   
-  oseen3_ini(he, reg, &oseen);
   ode3_ini(RK4, nv, dt, F, NULL, &ode);
   
   CALLOC3(nv, &ux, &uy, &uz);
   CALLOC3(nv, &wx, &wy, &wz);
   CALLOC3(nv, &fx, &fy, &fz);
-  
-  tensor_ini(nv, &Oxx, &Oxy, &Oxz, &Oyy, &Oyz, &Ozz);
-  tensor_ini(nv, &Kxx, &Kxy, &Kxz, &Kyy, &Kyz, &Kzz);
   
   t = time = start*dt;
   s = start;
@@ -350,8 +319,12 @@ int main(__UNUSED int argc, char **argv) {
       V=0.0;
       v=0.0;
       
-      i  = 0;
       et = 0.0;
+
+      ev = he_f_volume_energy(fvolume, he, x, y, z);
+      V  = he_f_volume_V(fvolume);
+      
+      i  = 0;
       while (Fo[i]) {
 	
 	strcpy(name, force_name(Fo[i]));
@@ -362,10 +335,10 @@ int main(__UNUSED int argc, char **argv) {
 	  ega = eng;
 	  A   = he_f_garea_A(force_pointer(Fo[i]));
 	}
-	else if ( strcmp(name, "volume") == 0 ) {
-	  ev = eng;
-	  V  = he_f_volume_V(force_pointer(Fo[i]));
-	}
+	//else if ( strcmp(name, "volume") == 0 ) {
+	//  ev = eng;
+	//  V  = he_f_volume_V(force_pointer(Fo[i]));
+	//}
 	else if ( strcmp(name, "juelicher_xin") == 0 ) {
 	  eb  = eng;
 	  ebl = he_f_juelicher_xin_energy_bend(force_pointer(Fo[i]));
@@ -378,7 +351,7 @@ int main(__UNUSED int argc, char **argv) {
 	
 	i++;
       }
-
+      
       v = reduced_volume(A, V);
       
       if ( s % freq_stat == 0 ) {
@@ -405,13 +378,14 @@ int main(__UNUSED int argc, char **argv) {
     
   }
   
+  FREE3(Vx, Vy, Vz);
   FREE3(ux, uy, uz);
   FREE3(wx, wy, wz);
   FREE3(fx, fy, fz);
-  tensor_fin(Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-  tensor_fin(Kxx, Kxy, Kxz, Kyy, Kyz, Kzz);
-  oseen3_fin(oseen);
   ode3_fin(ode);
+  bi_fin(bi);
   fin();
   y_fin(he, x, y, z);
+  he_f_volume_fin(fvolume);
+
 }
