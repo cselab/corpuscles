@@ -56,3 +56,8 @@ vec_angle(a, b):=block([n, x, y, ang],
   atan2(y, x));
 
 vec_arg([L]):=printf(true, "~{~f ~}~%", flatten(L));
+vec_get(i, he):=block([x, y, z],
+  x: he_x(he),
+  y: he_y(he),
+  z: he_z(he),
+  [x[i], y[i], z[i]]);

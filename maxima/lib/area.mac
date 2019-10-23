@@ -1,9 +1,9 @@
-area_ver(he):=block([n], local(area),
+area_ver(he):=block([n, area], local(area),
   n: he_nv(he),
   calloc(n, area),
-  loop_tri(he, [numer: true, area0],
+  loop_tri(he, block([numer: true, area0],
     area0: tri_area(a, b, c)/3,
     area[i] += area0,
     area[j] += area0,
-    area[k] += area0),
+    area[k] += area0)),
   area);

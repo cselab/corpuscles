@@ -1,0 +1,16 @@
+load("stringproc") $
+load("co/util.mac")$
+load("co/off.mac") $
+load("co/he.mac") $
+load("co/area.mac") $
+load("co/vec.mac") $
+load("co/tri.mac") $
+load("co/loop.mac") $
+load("co/normal.mac") $
+
+he: he("/u/0.off") $
+area: area_ver(he) $
+normal: normal_mwa(he) $
+
+a: vec_get(0, he);
+loop_ver(
