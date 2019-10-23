@@ -11,18 +11,18 @@
 #include "co/normal.h"
 #include "co/oseen3tri.h"
 #include "co/matrix.h"
-#include "co/integral/tri.h"
 #include "co/i/matrix.h"
 #include "co/i/vec.h"
 #include "co/i/tri.h"
 #include "co/tri.h"
 #include "co/i/area.h"
+#include "cubtri.h"
 
 #define T Oseen3Tri
 static const real pi = 3.141592653589793115997964;
 struct T {
     real *nx, *ny, *nz, *area;
-    IntegralTri *integral;
+    Cubtri *integral;
 
 };
 
@@ -62,7 +62,7 @@ oseen3_tri_ini(He * he, T ** pq)
     n = he_nv(he);
     MALLOC3(n, &nx, &ny, &nz);
     MALLOC(n, &area);
-    integral_tri_ini(&q->integral);
+    cubtri_ini(&q->integral);
     q->nx = nx;
     q->ny = ny;
     q->nz = nz;
@@ -77,7 +77,7 @@ oseen3_tri_fin(T * q)
     FREE3(q->nx, q->ny, q->nz);
     FREE(q->area);
     FREE(q);
-    integral_tri_fin(q->integral);
+    cubtri_fin(q->integral);
     return CO_OK;
 }
 
@@ -180,12 +180,11 @@ F(real x, real y, real z, void *vp)
     real *p, r;
 
     p = vp;
-
     x -= p[X];
     y -= p[Y];
     z -= p[Z];
     r = x * x + y * y + z * z;
-    return r > 0.25 ? 1 / (r * r) : 0;
+    return r > 0.1 ? 1 / (r * r) : 0;
 }
 
 int
@@ -221,12 +220,13 @@ oseen3_tri_stresslet(T * q, He * he, const real * x, const real * y,
         real point[3], center[3], normal[3];
         real xx, xy, xz, yy, yz, zz;
 
-        MSG("i: %04d/%04d", i, n);
+        if (i % 100 == 0)
+            MSG("i: %04d/%04d", i, n);
         i_vec_get(i, x, y, z, point);
         for (j = 0; j < nt; j++) {
             he_tri_ijk(he, j, &ia, &ib, &ic);
-            if (ia == i || ib == i || ic == i)
-                continue;
+            //if (ia == i || ib == i || ic == i)
+            //  continue;
             i_vec_get3(ia, ib, ic, x, y, z, a, b, c);
             tri_center(a, b, c, center);
             tri_normal(a, b, c, normal);
@@ -234,7 +234,8 @@ oseen3_tri_stresslet(T * q, He * he, const real * x, const real * y,
             A = tri_area(a, b, c) / (8 * pi);
 
             real res;
-            integral_tri_apply(q->integral, a, b, c, F, point, &res);
+
+            cubtri_apply(q->integral, a, b, c, F, point, &res);
             i_matrix_add(n, n, i, ia, res, oxx);
 
             /* stresslet(point, normal, ea, &xx, &xy, &xz, &yy, &yz, &zz);

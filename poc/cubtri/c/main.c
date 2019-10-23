@@ -14,7 +14,9 @@ struct Function
 static
 double F(double x, double y, void *p)
 {
-    return x*y + 1;
+    double *al;
+    al = p;
+    return (*al);
 }
 
 int
@@ -42,10 +44,9 @@ main()
     eps = 1e-4;
     alpha = 42.0;
     function.function = F;
-    function.params = NULL;
+    function.params = &alpha;
     
     cubtri2(&function, T, eps, mcalls, &ans, &err, &ncalls, w, NW, &ier);
     printf("ans: %g\n", ans);
-    printf("err: %g\n", err);
     printf("ncalls: %d\n", ncalls);
 }
