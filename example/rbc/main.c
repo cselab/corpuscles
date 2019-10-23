@@ -21,7 +21,7 @@
 #include <co/f/juelicher_xin.h>
 #include <co/bi.h>
 
-static const char *me = "sde_rho_eta_shear_flow";
+static const char *me = "rbc";
 static const real pi  = 3.141592653589793115997964;
 static const real tol = 0.01;
 static const int iter_max=100;
@@ -131,7 +131,6 @@ static int fargv(char ***p, He *he)
   v++;
   num(v, &freq_out);
   v++;
-  //MSG("freq_stat:  %s", v[0]);
   num(v, &freq_stat);
   v++;
   
@@ -201,11 +200,9 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       }
       
       if  ( k == iter_max ) {
-	  //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
 	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
 	    ER("Failed to open '%s'", file_msg);
 	  }
-	  
 	  fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
 	  fclose(fm);
       }      
@@ -256,7 +253,6 @@ int main(__UNUSED int argc, char **argv) {
   fclose(fm);
   
   V0 = he_f_volume_V0(fvolume);
-  MSG("V0=%g", V0);//
   
   i = 0;
   A0 = -1;
