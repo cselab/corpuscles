@@ -1,0 +1,20 @@
+ttyoff: true$
+load("co/util.mac")$
+load("co/area.mac") $
+load("co/array.mac") $
+load("co/curv.mac") $
+load("co/dih.mac") $
+load("co/edg.mac") $
+load("co/he.mac") $
+load("co/loop.mac") $
+load("co/off.mac") $
+load("co/tri.mac") $
+load("co/vec.mac") $
+load("stringproc") $
+ttyoff: false$
+
+he: he("/u/0.off") $
+curv: curv_mean(he) $
+nv: he_nv(he) $
+array_max(nv, curv);
+array_min(nv, curv);
