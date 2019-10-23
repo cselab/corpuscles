@@ -94,81 +94,85 @@ then
 else
 
     Da1=0.143
-
-
-    num=32
+    Kc0=20000
+    
+    num=85
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$Kc0
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=34
+    num=90
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$Kc0
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=36
+    num=95
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$Kc0
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=38
+    num=105
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=42
+    num=110
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
-
-    num=44
+    
+    num=120
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=46
+    num=130
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=48
+    num=140
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
-
-    num=52
+    
+    num=150
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=54
+    num=160
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=56
+    num=170
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-    num=58
+    num=180
     gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
     dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
-    Kc=20000
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
     bash run_nore.sh $Da1 $gamdot $dt $Kc
 
-
-
+    num=190
+    gamdot=$(echo $gamdot0 $num | awk '{print $1*$2}')
+    dt=$(echo $gamdot0 $dt0 $gamdot $tscale | awk '{print $1*$2/$3*$4}')
+    Kc=$(echo $Kc0 $num | awk '{print $1*$2/100}')
+    bash run_nore.sh $Da1 $gamdot $dt $Kc
+    
 fi
     
