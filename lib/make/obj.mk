@@ -34,6 +34,7 @@ bi/tri.s.o\
 cell2.s.o\
 cell3.s.o\
 colormap.s.o\
+curv/mean.s.o\
 da.s.o\
 ddih.s.o\
 dedg2.s.o\
@@ -160,6 +161,7 @@ bi/tri.d.o\
 cell2.d.o\
 cell3.d.o\
 colormap.d.o\
+curv/mean.d.o\
 da.d.o\
 ddih.d.o\
 dedg2.d.o\
@@ -286,6 +288,7 @@ bi/tri.l.o\
 cell2.l.o\
 cell3.l.o\
 colormap.l.o\
+curv/mean.l.o\
 da.l.o\
 ddih.l.o\
 dedg2.l.o\

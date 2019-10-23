@@ -229,6 +229,16 @@ co/prec/s/real.h\
 co/err.h\
 co/colormap.h\
 
+curv/mean.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/edg.h\
+co/memory.h\
+co/curv/mean.h\
+
 da.s.o:\
 co/prec/s/real.h\
 co/dedg.h\
@@ -1037,7 +1047,6 @@ co/memory.h\
 co/normal.h\
 co/oseen3tri.h\
 co/matrix.h\
-co/integral/tri.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
@@ -1507,6 +1516,16 @@ colormap.d.o:\
 co/prec/d/real.h\
 co/err.h\
 co/colormap.h\
+
+curv/mean.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/edg.h\
+co/memory.h\
+co/curv/mean.h\
 
 da.d.o:\
 co/prec/d/real.h\
@@ -2316,7 +2335,6 @@ co/memory.h\
 co/normal.h\
 co/oseen3tri.h\
 co/matrix.h\
-co/integral/tri.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
@@ -2786,6 +2804,16 @@ colormap.l.o:\
 co/prec/l/real.h\
 co/err.h\
 co/colormap.h\
+
+curv/mean.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/edg.h\
+co/memory.h\
+co/curv/mean.h\
 
 da.l.o:\
 co/prec/l/real.h\
@@ -3595,7 +3623,6 @@ co/memory.h\
 co/normal.h\
 co/oseen3tri.h\
 co/matrix.h\
-co/integral/tri.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\

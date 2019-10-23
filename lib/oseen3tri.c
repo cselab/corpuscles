@@ -4,6 +4,7 @@
 #include <omp.h>
 #endif
 #include "real.h"
+#include <cubtri.h>
 #include "co/err.h"
 #include "co/he.h"
 #include "co/macro.h"
@@ -16,7 +17,6 @@
 #include "co/i/tri.h"
 #include "co/tri.h"
 #include "co/i/area.h"
-#include "cubtri.h"
 
 #define T Oseen3Tri
 static const real pi = 3.141592653589793115997964;
