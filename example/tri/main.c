@@ -261,7 +261,7 @@ main(__UNUSED int argc, const char **v0)
 	vec(a);
 	vec(b);
 	vec(c);
-	tri_inertia(a, b, c, &m[XX], &m[XY], &m[XZ], &m[YY], &m[YZ], &m[ZZ]);
+	tri_inertia(a, b, c, m);
 	printf(FMT " " FMT " " FMT "\n", m[XX], m[XY], m[XZ]);
 	printf(FMT " " FMT " " FMT "\n", m[YY], m[YZ], m[ZZ]);
     } else if (eq(op, "edg_center")) {
