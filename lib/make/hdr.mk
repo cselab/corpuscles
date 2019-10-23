@@ -19,6 +19,7 @@ co/cell3.h\
 co/colormap.h\
 co/container.h\
 co/curv/mean/juelicher.h\
+co/curv/mean/ring.h\
 co/da.h\
 co/ddih.h\
 co/dedg2.h\

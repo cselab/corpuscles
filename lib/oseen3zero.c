@@ -81,7 +81,7 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
                   real * oyy, real * oyz, real * ozz)
 {
     int n, i;
-    real e, s;
+    real s;
 
     n = he_nv(he);
 #pragma omp parallel for
