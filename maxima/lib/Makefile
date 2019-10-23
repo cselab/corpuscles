@@ -3,6 +3,8 @@ include $S/conf.mk
 
 M = \
 area.mac\
+array.mac\
+curv.mac\
 ddih.mac\
 dedg.mac\
 dih.mac\

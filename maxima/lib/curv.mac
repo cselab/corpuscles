@@ -1,0 +1,12 @@
+curv_mean(he):=block([n, i, area, ans], local(area, ans),
+  n: he_nv(he),
+  calloc(n, area, ans),
+  area: area_ver(he),
+  loop_dih(he, block([len, theta, coeff],
+    len: edg_abs(c, b),
+    theta: dih_angle_sup(a, b, c, d),
+    coeff: len*theta,
+    ans[j] += coeff,
+    ans[k] += coeff)),
+  for i: 0 thru n - 1 do ans[i] /= 4*area[i],
+  ans);

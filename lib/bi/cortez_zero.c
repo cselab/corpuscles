@@ -44,6 +44,7 @@ bi_cortez_zero_ini(He * he, /**/ T ** pq)
 int
 bi_cortez_zero_argv(char ***p, He * he, /**/ T ** pq)
 {
+    USED(p);
     return bi_cortez_zero_ini(he, pq);
 }
 

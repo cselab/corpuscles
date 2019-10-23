@@ -183,17 +183,16 @@ co/tensor.h\
 
 bi/self_circle.s.o:\
 co/prec/s/real.h\
-co/area.h\
 co/array.h\
 co/err.h\
 co/he.h\
 co/argv.h\
+co/curv/mean/juelicher.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/self_circle.h\
 
 bi/tri.s.o:\
@@ -229,15 +228,30 @@ co/prec/s/real.h\
 co/err.h\
 co/colormap.h\
 
-curv/mean.s.o:\
+curv/mean/juelicher.s.o:\
 co/prec/s/real.h\
+co/array.h\
+co/curv/mean/juelicher.h\
+co/dih.h\
+co/edg.h\
 co/err.h\
 co/he.h\
-co/vec.h\
-co/tri.h\
-co/edg.h\
 co/memory.h\
-co/curv/mean.h\
+co/tri.h\
+co/vec.h\
+
+curv/mean/ring.s.o:\
+co/prec/s/real.h\
+co/array.h\
+co/curv/mean/ring.h\
+co/dih.h\
+co/edg.h\
+co/err.h\
+co/he.h\
+co/memory.h\
+co/tri.h\
+co/ring.h\
+co/vec.h\
 
 da.s.o:\
 co/prec/s/real.h\
@@ -1471,17 +1485,16 @@ co/tensor.h\
 
 bi/self_circle.d.o:\
 co/prec/d/real.h\
-co/area.h\
 co/array.h\
 co/err.h\
 co/he.h\
 co/argv.h\
+co/curv/mean/juelicher.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/self_circle.h\
 
 bi/tri.d.o:\
@@ -1517,15 +1530,30 @@ co/prec/d/real.h\
 co/err.h\
 co/colormap.h\
 
-curv/mean.d.o:\
+curv/mean/juelicher.d.o:\
 co/prec/d/real.h\
+co/array.h\
+co/curv/mean/juelicher.h\
+co/dih.h\
+co/edg.h\
 co/err.h\
 co/he.h\
-co/vec.h\
-co/tri.h\
-co/edg.h\
 co/memory.h\
-co/curv/mean.h\
+co/tri.h\
+co/vec.h\
+
+curv/mean/ring.d.o:\
+co/prec/d/real.h\
+co/array.h\
+co/curv/mean/ring.h\
+co/dih.h\
+co/edg.h\
+co/err.h\
+co/he.h\
+co/memory.h\
+co/tri.h\
+co/ring.h\
+co/vec.h\
 
 da.d.o:\
 co/prec/d/real.h\
@@ -2759,17 +2787,16 @@ co/tensor.h\
 
 bi/self_circle.l.o:\
 co/prec/l/real.h\
-co/area.h\
 co/array.h\
 co/err.h\
 co/he.h\
 co/argv.h\
+co/curv/mean/juelicher.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
 co/normal.h\
 co/vec.h\
-co/H.h\
 co/bi/self_circle.h\
 
 bi/tri.l.o:\
@@ -2805,15 +2832,30 @@ co/prec/l/real.h\
 co/err.h\
 co/colormap.h\
 
-curv/mean.l.o:\
+curv/mean/juelicher.l.o:\
 co/prec/l/real.h\
+co/array.h\
+co/curv/mean/juelicher.h\
+co/dih.h\
+co/edg.h\
 co/err.h\
 co/he.h\
-co/vec.h\
-co/tri.h\
-co/edg.h\
 co/memory.h\
-co/curv/mean.h\
+co/tri.h\
+co/vec.h\
+
+curv/mean/ring.l.o:\
+co/prec/l/real.h\
+co/array.h\
+co/curv/mean/ring.h\
+co/dih.h\
+co/edg.h\
+co/err.h\
+co/he.h\
+co/memory.h\
+co/tri.h\
+co/ring.h\
+co/vec.h\
 
 da.l.o:\
 co/prec/l/real.h\

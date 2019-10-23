@@ -34,7 +34,8 @@ bi/tri.s.o\
 cell2.s.o\
 cell3.s.o\
 colormap.s.o\
-curv/mean.s.o\
+curv/mean/juelicher.s.o\
+curv/mean/ring.s.o\
 da.s.o\
 ddih.s.o\
 dedg2.s.o\
@@ -161,7 +162,8 @@ bi/tri.d.o\
 cell2.d.o\
 cell3.d.o\
 colormap.d.o\
-curv/mean.d.o\
+curv/mean/juelicher.d.o\
+curv/mean/ring.d.o\
 da.d.o\
 ddih.d.o\
 dedg2.d.o\
@@ -288,7 +290,8 @@ bi/tri.l.o\
 cell2.l.o\
 cell3.l.o\
 colormap.l.o\
-curv/mean.l.o\
+curv/mean/juelicher.l.o\
+curv/mean/ring.l.o\
 da.l.o\
 ddih.l.o\
 dedg2.l.o\

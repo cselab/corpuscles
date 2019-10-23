@@ -1,0 +1,50 @@
+load("stringproc") $
+load("co/util.mac")$
+load("co/off.mac") $
+load("co/he.mac") $
+load("co/area.mac") $
+load("co/vec.mac") $
+load("co/tri.mac") $
+load("co/loop.mac") $
+load("co/dih.mac") $
+load("co/edg.mac") $
+load("co/normal.mac") $
+load("co/curv.mac") $
+
+(X: 1, Y: 2, Z: 3) $
+
+he: he("/u/0.off") $
+area: area_ver(he) $
+normal: normal_mwa(he) $
+h: curv_mean(he) $
+nv: he_nv(he) $
+
+i: 1$
+a: vec_get(i, he) $
+
+ans: 0 $
+for j: 0 thru nv - 1 do  if i # j then
+block([numer: true],
+  b: vec_get(j, he),
+  n: normal[j],
+  d: vec_minus(a, b),
+  r: vec_abs(d),
+  p: vec_dot(d, n),
+  l: p / r^5,
+  xx: d[X] * d[X] * l,
+  A: 3 * area[j] / (4 * %pi),
+  ans += A*xx) $
+
+A: area[i];
+p: sqrt(A)/sqrt(%pi)*h[i];
+normal: normal[i];
+velocity: [1, 0, 0];
+uX: vec_reject_scalar(velocity, normal);
+reject: vec_reject(velocity, normal);
+reject: vec_norm(reject);
+ans += -3 * uX * p * reject[X] / 8;
+
+g0: 0.9916356118571802;
+g1: 1.000475869252951;
+
+-2*ans/g1, numer;

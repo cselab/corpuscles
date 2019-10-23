@@ -474,7 +474,7 @@ ring_H(int n, const real * xyz, const real * C)
     buv = ring_buv(n, xyz, C);
     bvv = ring_bvv(n, xyz, C);
     g = guu * gvv - guv * guv;
-    return (buu * gvv - 2 * buv * guv + bvv * guu) / (2 * g);
+    return - (buu * gvv - 2 * buv * guv + bvv * guu) / (2 * g);
 }
 
 real

@@ -1,24 +1,23 @@
 #include <stdio.h>
 #include <tgmath.h>
 #include "real.h"
-#include "co/area.h"
 #include "co/array.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/argv.h"
+#include "co/curv/mean/juelicher.h"
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
 #include "co/normal.h"
 #include "co/vec.h"
-#include "co/H.h"
 #include "co/bi/self_circle.h"
 
 static const real pi = 3.141592653589793115997964;
 
 #define T BiSelfCircle
 struct T {
-    H *H;
+    CurvMeanJuelicher *H;
     real *wx, *wy, *wz, *area;
     real *nx, *ny, *nz;
     real *h;
@@ -32,7 +31,7 @@ bi_self_circle_ini(He * he, /**/ T ** pq)
 
     n = he_nv(he);
     MALLOC(1, &q);
-    status = H_ini(he, &q->H);
+    status = curv_mean_juelicher_ini(he, &q->H);
     if (status != CO_OK)
         ERR(CO_MEMORY, "H_ini failed");
     MALLOC3(n, &q->wx, &q->wy, &q->wz);
@@ -53,7 +52,7 @@ bi_self_circle_argv(char ***p, He * he, /**/ T ** pq)
 int
 bi_self_circle_fin(T * q)
 {
-    H_fin(q->H);
+    curv_mean_juelicher_fin(q->H);
     FREE3(q->wx, q->wy, q->wz);
     FREE3(q->nx, q->ny, q->nz);
     FREE(q->area);
@@ -66,7 +65,7 @@ int
 bi_self_circle_update(T * q, He * he, const real * x, const real * y,
                       const real * z)
 {
-    real *area, *nx, *ny, *nz, *area0, *h0, *h;
+    real *area, *area0, *nx, *ny, *nz, *h;
     int i, n, status;
 
     area = q->area;
@@ -74,15 +73,12 @@ bi_self_circle_update(T * q, He * he, const real * x, const real * y,
     ny = q->ny;
     nz = q->nz;
     h = q->h;
-    status = H_apply(q->H, he, x, y, z, &h0, &area0);
+    status = curv_mean_juelicher_apply(q->H, he, x, y, z, h);
     if (status != CO_OK)
-        ERR(CO_NUM, "H_apply failed");
+        ERR(CO_NUM, "curv_mean_juelicher_apply failed");
     n = he_nv(he);
-    for (i = 0; i < n; i++)
-        h[i] = 2 * h0[i] / area0[i];
-    status = area_ver_voronoi(he, x, y, z, area);
-    if (status != CO_OK)
-        ERR(CO_NUM, "he_area_ver failed");
+    curv_mean_juelicher_area(q->H, &area0);
+    array_copy(n, area0, area);
     status = normal_mwa(he, x, y, z, nx, ny, nz);
     if (status != CO_OK)
         ERR(CO_NUM, "normal_mwa failed");

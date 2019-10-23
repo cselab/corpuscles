@@ -11,6 +11,9 @@ vec_any(a)::=buildq([a, lo: gensym(), hi: gensym(), L: gensym()],
 
 vec_zero():=[0, 0, 0];
 
+vec_minus(a, b):= a - b;
+vec_plus(a, b):= a - b;
+
 vec_dot(a, b):= block([X: 1, Y: 2, Z: 3],
   a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]);
 
@@ -56,3 +59,8 @@ vec_angle(a, b):=block([n, x, y, ang],
   atan2(y, x));
 
 vec_arg([L]):=printf(true, "~{~f ~}~%", flatten(L));
+vec_get(i, he):=block([x, y, z],
+  x: he_x(he),
+  y: he_y(he),
+  z: he_z(he),
+  [x[i], y[i], z[i]]);

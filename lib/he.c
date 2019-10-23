@@ -31,9 +31,9 @@ distinct(const int a[])
     int i, j;
 
     for (i = 0; a[i] != END; i++)
-        for (j = i + 1; a[j] != END; j++)
-            if (a[i] == a[j])
-                return 0;
+	for (j = i + 1; a[j] != END; j++)
+	    if (a[i] == a[j])
+		return 0;
     return 1;
 }
 
@@ -43,7 +43,7 @@ he_file_ini(const char *path, T ** pq)
     HeRead *read;
 
     if (he_read_ini(path, &read) != CO_OK)
-        ERR(CO_IO, "he_read_ini failed");
+	ERR(CO_IO, "he_read_ini failed");
     he_ini(read, /**/ pq);
     he_read_fin(read);
     return CO_OK;
@@ -124,7 +124,7 @@ int
 he_fin(T * q)
 {
     if (q->magic != MAGIC)
-        ERR(CO_MEMORY, "wrong fin() call");
+	ERR(CO_MEMORY, "wrong fin() call");
     FREE(q->nxt);
     FREE(q->flp);
     FREE(q->ver);
@@ -174,7 +174,7 @@ he_nh(T * q)
 
 /* validate */
 #define V(i, n) if (0 > (i) || (i) >= n)                        \
-        ERR(CO_INDEX, "%s=%d is not in [0, %d)", #i, i, n)
+	ERR(CO_INDEX, "%s=%d is not in [0, %d)", #i, i, n)
 int
 he_nxt(T * q, int h)
 {
@@ -189,7 +189,7 @@ he_flp(T * q, int h)
 
     V(h, q->nh);
     if ((f = q->flp[h]) == -1)
-        ERR(CO_INDEX, "no flip for %d", h);
+	ERR(CO_INDEX, "no flip for %d", h);
     return f;
 }
 
@@ -281,6 +281,24 @@ he_edg_ij(T * q, int e, /**/ int *pi, int *pj)
 
     *pi = i;
     *pj = j;
+    return CO_OK;
+}
+
+int
+he_dih_ijkl(T * q, int e, /**/ int *i, int *j, int *k, int *l)
+{
+    int h, n, nn, nnf;
+
+    h = he_hdg_edg(q, e);
+    n = he_nxt(q, h);
+    nn = he_nxt(q, he_nxt(q, h));
+    nnf = he_nxt(q, he_nxt(q, he_flp(q, h)));
+
+    *j = he_ver(q, h);
+    *k = he_ver(q, n);
+    *i = he_ver(q, nn);
+    *l = he_ver(q, nnf);
+
     return CO_OK;
 }
 
@@ -415,13 +433,13 @@ he_edg_rotate(T * q, int e0)
 
     const int set[] = { h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, END };
     if (!distinct(set)) {
-        MSG("v: %d %d %d %d", v0, v1, v2, v3);
-        MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
-        MSG("t: %d %d", t0, t1);
-        MSG("t: h2 = %d   h8 = %d", h2, h8);
-        MSG("t: h4 = %d   h7 = %d", h4, h7);
-        ERR(CO_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
-            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
+	MSG("v: %d %d %d %d", v0, v1, v2, v3);
+	MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
+	MSG("t: %d %d", t0, t1);
+	MSG("t: h2 = %d   h8 = %d", h2, h8);
+	MSG("t: h4 = %d   h7 = %d", h4, h7);
+	ERR(CO_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
+	    h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
     }
 
     assert(v0 == ver(h4));
@@ -545,14 +563,14 @@ he_E(T * he, int **pE0, int **pE1)
     ne = he_ne(he);
 
     for (e = 0; e < ne; e++) {
-        h = he_hdg_edg(he, e);
-        if (he_bnd(he, h)) {
-            E0[e] = E1[e] = -1;
-        } else {
-            n = he_nxt(he, h);
-            E0[e] = he_ver(he, h);
-            E1[e] = he_ver(he, n);
-        }
+	h = he_hdg_edg(he, e);
+	if (he_bnd(he, h)) {
+	    E0[e] = E1[e] = -1;
+	} else {
+	    n = he_nxt(he, h);
+	    E0[e] = he_ver(he, h);
+	    E1[e] = he_ver(he, n);
+	}
     }
     *pE0 = E0;
     *pE1 = E1;
@@ -571,12 +589,12 @@ he_T(T * he, int **pT0, int **pT1, int **pT2)
     nt = he_nt(he);
 
     for (t = 0; t < nt; t++) {
-        h = he_hdg_tri(he, t);
-        n = he_nxt(he, h);
-        nn = he_nxt(he, n);
-        T0[t] = he_ver(he, h);
-        T1[t] = he_ver(he, n);
-        T2[t] = he_ver(he, nn);
+	h = he_hdg_tri(he, t);
+	n = he_nxt(he, h);
+	nn = he_nxt(he, n);
+	T0[t] = he_ver(he, h);
+	T1[t] = he_ver(he, n);
+	T2[t] = he_ver(he, nn);
     }
 
     *pT0 = T0;
@@ -598,19 +616,19 @@ he_D(T * he, int **pD0, int **pD1, int **pD2, int **pD3)
     ne = he_ne(he);
 
     for (e = 0; e < ne; e++) {
-        h = he_hdg_edg(he, e);
-        if (he_bnd(he, h)) {
-            D0[e] = D1[e] = D2[e] = D3[e] = -1;
-        } else {
-            h = he_hdg_edg(he, e);
-            n = he_nxt(he, h);
-            nn = he_nxt(he, he_nxt(he, h));
-            nnf = he_nxt(he, he_nxt(he, he_flp(he, h)));
-            D1[e] = he_ver(he, h);
-            D2[e] = he_ver(he, n);
-            D0[e] = he_ver(he, nn);
-            D3[e] = he_ver(he, nnf);
-        }
+	h = he_hdg_edg(he, e);
+	if (he_bnd(he, h)) {
+	    D0[e] = D1[e] = D2[e] = D3[e] = -1;
+	} else {
+	    h = he_hdg_edg(he, e);
+	    n = he_nxt(he, h);
+	    nn = he_nxt(he, he_nxt(he, h));
+	    nnf = he_nxt(he, he_nxt(he, he_flp(he, h)));
+	    D1[e] = he_ver(he, h);
+	    D2[e] = he_ver(he, n);
+	    D0[e] = he_ver(he, nn);
+	    D3[e] = he_ver(he, nnf);
+	}
     }
     *pD0 = D0;
     *pD1 = D1;
@@ -628,17 +646,17 @@ he_bnd_ver(T * he, int v)
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
-        if (rank >= RANK_MAX)
-            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
-                RANK_MAX);
-        rank++;
-        n = he_nxt(he, h);
-        if (he_bnd(he, n))
-            return 1;
-        f = he_flp(he, n);
-        h = he_nxt(he, f);
-        if (h == h0)
-            return 0;
+	if (rank >= RANK_MAX)
+	    ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+		RANK_MAX);
+	rank++;
+	n = he_nxt(he, h);
+	if (he_bnd(he, n))
+	    return 1;
+	f = he_flp(he, n);
+	h = he_nxt(he, f);
+	if (h == h0)
+	    return 0;
     }
 }
 
@@ -651,24 +669,24 @@ he_ring(T * he, int v, int *prank, int **pring)
     ring = he->ring;
 
     if (v >= he->nv)
-        ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
+	ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
     h = he_hdg_ver(he, v);
     if (he_bnd(he, h))
-        ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
+	ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
 
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
-        if (rank >= RANK_MAX)
-            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
-                RANK_MAX);
-        i = he_ver(he, h);
-        ring[rank++] = i;
-        n = he_nxt(he, h);
-        f = he_flp(he, n);
-        h = he_nxt(he, f);
-        if (h == h0)
-            break;
+	if (rank >= RANK_MAX)
+	    ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+		RANK_MAX);
+	i = he_ver(he, h);
+	ring[rank++] = i;
+	n = he_nxt(he, h);
+	f = he_flp(he, n);
+	h = he_nxt(he, f);
+	if (h == h0)
+	    break;
     }
     ring[rank] = -1;
 
