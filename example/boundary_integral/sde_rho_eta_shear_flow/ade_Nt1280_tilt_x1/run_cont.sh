@@ -55,6 +55,14 @@ then
 	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
     fi
 
+    #some typos need to be modified
+    if [ $num -eq 160 ]; then
+	Kc=36000
+    fi
+    if [ $num -eq 1600 ]; then
+	Kc=380000
+    fi
+
     Kga=$Kc
     Kv=$Kc
     
@@ -74,7 +82,7 @@ then
 
     gamdot=$(echo $gamdot0, $num | awk '{print $1*$2}')
     gam=$gamdot
-    gam=$(printf "%.4f" $gam)
+    gam=$(printf "%.3g" $gam)
     #echo "gam="$gam
     gam1=$(echo $gamdot1, $num | awk '{print $1*$2}')
     gam1=$(printf "%.3g" $gam1)
