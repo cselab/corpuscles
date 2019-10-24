@@ -17,7 +17,7 @@ static const char *me = "co.xcolor";
 #define FMT_IN CO_REAL_IN
 
 static int scl(char **v, /**/ real *p) {
-    if (*v == NULL) ER("not enough args");
+  if (*v == NULL) ER("%s: not enough args", me);
     if (sscanf(*v, FMT_IN, p) != 1)
         ER("not a number '%s'", *v);
     return CO_OK;
