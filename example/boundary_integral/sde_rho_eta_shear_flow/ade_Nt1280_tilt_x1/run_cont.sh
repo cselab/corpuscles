@@ -48,8 +48,13 @@ if test $# -ne 0
 then
 
     num="$1"
-    Kc="$2"
-    
+
+    if [ $num -le 100 ]; then
+	Kc=$Kc0
+    else
+	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
+    fi
+
     Kga=$Kc
     Kv=$Kc
     
@@ -119,12 +124,43 @@ then
 else
     
     num=1
-    Kc=$Kc0
-    bash run_cont.sh $num $Kc
+    #bash run_cont.sh $num
     
     num=2
-    Kc=$Kc0
-    bash run_cont.sh $num $Kc
+    #bash run_cont.sh $num
+
+    num=40
+    bash run_cont.sh $num
+    
+    num=50
+    bash run_cont.sh $num
+    
+    num=80
+    bash run_cont.sh $num
+
+    num=100
+    bash run_cont.sh $num
+
+    num=160
+    bash run_cont.sh $num
+
+    num=200
+    bash run_cont.sh $num
+    
+    num=400
+    bash run_cont.sh $num
+    
+    num=500
+    bash run_cont.sh $num
+
+    num=800
+    bash run_cont.sh $num
+
+    num=1000
+    bash run_cont.sh $num
+    
+    num=1600
+    bash run_cont.sh $num
 
 
 fi

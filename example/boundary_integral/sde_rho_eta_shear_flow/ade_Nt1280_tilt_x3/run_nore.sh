@@ -97,7 +97,6 @@ then
     
 else
 
-    
     for i in `seq 30 2 38`;
     do
 	num=$i
