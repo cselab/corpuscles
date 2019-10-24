@@ -2,6 +2,7 @@
 include ../../conf.mk
 PREC = d
 M = \
+err\
 single\
 f2v\
 v2v\
