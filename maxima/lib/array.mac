@@ -1,0 +1,9 @@
+array_max(n, a):=block([i, m],
+  m: a[0],
+  for i: 0 thru n - 1 do if a[i] > m then m: a[i],
+  m);
+
+array_min(n, a):=block([i, m],
+  m: a[0],
+  for i: 0 thru n - 1 do if a[i] < m then m: a[i],
+  m);
