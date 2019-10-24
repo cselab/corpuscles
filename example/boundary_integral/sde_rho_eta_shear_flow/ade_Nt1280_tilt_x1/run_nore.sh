@@ -97,6 +97,7 @@ then
     
 else
 
+    
     for i in `seq 30 2 38`;
     do
 	num=$i
@@ -115,20 +116,11 @@ else
 	bash run_nore.sh $num
     done
 
-    for i in `seq 65 5 75`;
+    for i in `seq 70 5 95`;
     do
 	num=$i
 	bash run_nore.sh $num
     done
-
-    for i in `seq 85 5 95`;
-    do
-	num=$i
-	bash run_nore.sh $num
-    done
-    
-    num=105
-    bash run_nore.sh $num
 
     for i in `seq 110 10 190`;
     do
