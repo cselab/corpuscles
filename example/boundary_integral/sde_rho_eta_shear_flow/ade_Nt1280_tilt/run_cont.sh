@@ -48,7 +48,11 @@ if test $# -ne 0
 then
 
     num="$1"
-    Kc="$2"
+    if [ $num -le 100 ]; then
+	Kc=$Kc0
+    else
+	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}');
+    fi
     
     Kga=$Kc
     Kv=$Kc
@@ -81,16 +85,16 @@ then
     #echo "ddt="$ddt
 
     
-    if [ -d  ../Da${Da1}_lam${lam}_g${gam1}_dt${dt}_Kc${Kc} ]; then
+    if [ -d  Da${Da1}_lam${lam}_g${gam1}_dt${dt}_Kc${Kc} ]; then
 	gam=$gam1;
     fi
 
-    if [ -d  ../Da${Da1}_lam${lam}_g${gam1}_dt${ddt}_Kc${Kc} ]; then
+    if [ -d  Da${Da1}_lam${lam}_g${gam1}_dt${ddt}_Kc${Kc} ]; then
 	gam=$gam1;
 	dt=$ddt;
     fi
     
-    if [ -d  ../Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc} ]; then
+    if [ -d  Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc} ]; then
 	dt=$ddt;
     fi
     
@@ -119,6 +123,18 @@ then
 else
     
     num=1
-    Kc=$Kc0
-    bash run_cont.sh $num $Kc
+    #bash run_cont.sh $num
+    
+    num=2
+    #bash run_cont.sh $num
+
+    num=50
+    bash run_cont.sh $num
+
+    num=80
+    bash run_cont.sh $num
+
+    num=100
+    bash run_cont.sh $num
+
 fi

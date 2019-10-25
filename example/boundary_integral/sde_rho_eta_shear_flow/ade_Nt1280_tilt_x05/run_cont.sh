@@ -56,7 +56,6 @@ then
     fi
 
     #correcting the typos
-
     if [ $num -eq 160 ]; then
 	Kc=36000
     fi
@@ -150,29 +149,35 @@ else
     num=15
     #bash run_cont.sh $num
 
+    num=50
+    #bash run_cont.sh $num
+
+    num=80
+    #bash run_cont.sh $num
+
     num=100
     #bash run_cont.sh $num
 
     num=160
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
     num=200
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
     num=1000
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
     num=1600
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
     num=2000
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
     num=4000
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
     num=5000
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
 
 fi
