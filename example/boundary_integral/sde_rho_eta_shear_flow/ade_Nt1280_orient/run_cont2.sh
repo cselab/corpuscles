@@ -48,7 +48,12 @@ if test $# -ne 0
 then
 
     num="$1"
-    Kc="$2"
+    
+    if [ $num -le 100 ]; then
+	Kc=$Kc0
+    else
+	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
+    fi
     
     Kga=$Kc
     Kv=$Kc
@@ -63,42 +68,45 @@ then
     ref_file=../ref/ref_v0.95.off
     
     Da1=$(printf "%.3f" $Da1)
-    #echo "Da1="$Da1
     lam=$(printf "%.4f" $lambda)
+    #echo "Da1="$Da1
     #echo "lam="$lam
-
+    #echo "Kc="$Kc
+    
     gamdot=$(echo $gamdot0, $num | awk '{print $1*$2}')
     gam=$gamdot
     gam=$(printf "%.4f" $gam)
-    #echo "gam="$gam
     gam1=$(echo $gamdot1, $num | awk '{print $1*$2}')
     gam1=$(printf "%.4f" $gam1)
+    #echo "gam="$gam
     #echo "gam1="$gam1
 
     dt=$(echo $dt0, $num, $tscale | awk '{print $1*$3/$2}')
-    #echo "dt="$dt
     ddt=$(printf "%.4f" $dt)
+    #echo "dt="$dt
     #echo "ddt="$ddt
 
     
-    if [ -d  ../Da${Da1}_lam${lam}_g${gam1}_dt${dt}_Kc${Kc} ]; then
+    if [ -d Da${Da1}_lam${lam}_g${gam1}_dt${dt}_Kc${Kc} ]; then
 	gam=$gam1;
     fi
 
-    if [ -d  ../Da${Da1}_lam${lam}_g${gam1}_dt${ddt}_Kc${Kc} ]; then
+    if [ -d Da${Da1}_lam${lam}_g${gam1}_dt${ddt}_Kc${Kc} ]; then
 	gam=$gam1;
 	dt=$ddt;
     fi
     
-    if [ -d  ../Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc} ]; then
+    if [ -d Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc} ]; then
 	dt=$ddt;
     fi
     
-    #echo "gam="$gam
-    #echo "dt="$dt
+    echo "gam="$gam
+    echo "dt="$dt
 
     folder="Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}"
-    
+
+    #echo $folder
+    #exit
     if [ ! -d ${folder}_cont ]; then
 	mkdir ${folder}_cont
     fi    
@@ -119,87 +127,66 @@ then
 else
     
     num=4
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
-
+    #bash run_cont2.sh $num
+    
     num=6
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=7
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=8
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=9
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=11
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=12
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=13
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=14
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
-
+    bash run_cont2.sh $num
+    #does not work
+    
     num=15
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=16
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    bash run_cont2.sh $num
 
     num=17
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=18
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=19
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
-
+    bash run_cont2.sh $num
+    
     num=21
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=25
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
-
+    #bash run_cont2.sh $num
+    
     num=30
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=40
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=60
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
+    #bash run_cont2.sh $num
 
     num=70
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
-
+    bash run_cont2.sh $num
+    
     num=80
-    Kc=$Kc0
-    bash run_cont2.sh $num $Kc
-        
-fi
+    bash run_cont2.sh $num
+    
