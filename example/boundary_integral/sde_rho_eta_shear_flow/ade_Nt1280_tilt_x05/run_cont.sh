@@ -151,7 +151,7 @@ else
     #bash run_cont.sh $num
 
     num=100
-    bash run_cont.sh $num
+    #bash run_cont.sh $num
 
     num=160
     bash run_cont.sh $num
