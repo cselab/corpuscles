@@ -58,10 +58,10 @@ then
     #correcting the typos
 
     if [ $num -eq 160 ]; then
-	num=3600
+	Kc=36000
     fi
     if [ $num -eq 1600 ]; then
-	num=38000
+	Kc=380000
     fi
     
     Kga=$Kc
