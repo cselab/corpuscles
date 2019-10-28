@@ -26,7 +26,7 @@ b2=0.75
 
 rho=1.0
 eta=645.928652122
-lambda=5.0
+lambda=0.2
 gamdot0=0.00143923833018
 dt0=0.01
 tscale=10
@@ -99,26 +99,11 @@ then
     
 else
 
-    for i in `seq 2 2 8`;
+    for i in `seq 5 5 120`;
     do
 	num=$i
-	bash run.sh $num
+	bash run_dt5.sh $num
     done
-
-    #exclude runs on falcon
-    for i in `seq 20 10 190`;
-    do
-	if [ $i -eq 50 ]; then
-	   continue
-	fi
-	if [ $i -eq 100 ]; then
-	   continue
-	fi
-	   	   
-	num=$i
-	bash run.sh $num
-    done
-
 
 fi
     
