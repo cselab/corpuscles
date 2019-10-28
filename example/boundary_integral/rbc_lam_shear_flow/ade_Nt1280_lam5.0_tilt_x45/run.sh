@@ -105,6 +105,7 @@ else
 	bash run.sh $num
     done
 
+    #exclude runs on falcon
     for i in `seq 20 10 190`;
     do
 	if [ $i -eq 50 ]; then

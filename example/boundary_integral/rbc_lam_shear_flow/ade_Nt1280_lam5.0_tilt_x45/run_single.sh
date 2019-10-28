@@ -99,7 +99,17 @@ then
     
 else
 
-    num=27
+    #on falcon
+    num=10
+    bash run_single.sh $num
+    
+    num=50
+    bash run_single.sh $num
+    
+    num=100
+    bash run_single.sh $num
+    
+    num=200
     bash run_single.sh $num
 
 fi
