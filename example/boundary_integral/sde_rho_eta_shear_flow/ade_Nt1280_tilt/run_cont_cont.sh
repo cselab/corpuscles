@@ -125,5 +125,11 @@ else
     num=1
     bash run_cont_cont.sh $num
     
+    num=2
+    bash run_cont_cont.sh $num
+    
+    num=4
+    bash run_cont_cont.sh $num
+    
 
 fi
