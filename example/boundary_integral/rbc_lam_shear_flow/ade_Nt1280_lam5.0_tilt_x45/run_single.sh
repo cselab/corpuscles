@@ -99,11 +99,8 @@ then
     
 else
 
-    for i in `seq 10 20 100`;
-    do
-	num=$i
-	bash run_falcon.sh $num
-    done
+    num=27
+    bash run_single.sh $num
 
 fi
     
