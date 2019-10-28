@@ -126,6 +126,10 @@ else
     Kc=$Kc0
     bash run_cont.sh $num $Kc
 
+    num=3
+    Kc=$Kc0
+    bash run_cont.sh $num $Kc
+
     num=4
     Kc=$Kc0
     bash run_cont.sh $num $Kc

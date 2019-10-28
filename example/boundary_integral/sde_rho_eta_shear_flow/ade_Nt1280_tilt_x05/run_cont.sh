@@ -137,6 +137,12 @@ else
     num=2
     #bash run_cont.sh $num
 
+    num=3
+    #bash run_cont.sh $num
+
+    num=4
+    #bash run_cont.sh $num
+
     num=12
     #bash run_cont.sh $num
     

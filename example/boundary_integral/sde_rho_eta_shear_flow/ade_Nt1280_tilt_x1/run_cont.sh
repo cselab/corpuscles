@@ -136,6 +136,9 @@ else
     
     num=2
     #bash run_cont.sh $num
+    
+    num=3
+    #bash run_cont.sh $num
 
     num=40
     bash run_cont.sh $num
