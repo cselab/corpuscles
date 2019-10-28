@@ -99,11 +99,25 @@ then
     
 else
 
-    for i in `seq 5 5 120`;
+    for i in `seq 2 2 8`;
     do
 	num=$i
 	bash run.sh $num
     done
+
+    for i in `seq 20 10 190`;
+    do
+	if [ $i -eq 50 ]; then
+	   exit
+	fi
+	if [ $i -eq 100 ]; then
+	    exit
+	fi
+	   	   
+	num=$i
+	bash run.sh $num
+    done
+
 
 fi
     
