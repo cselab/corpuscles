@@ -29,7 +29,7 @@ eta=645.928652122
 lambda=0.2
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=10
+tscale=5
 
 start=0
 end=9000000
