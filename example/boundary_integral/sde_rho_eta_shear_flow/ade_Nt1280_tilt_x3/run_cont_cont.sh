@@ -122,5 +122,9 @@ else
     Kc=$Kc0
     bash run_cont_cont.sh $num $Kc
 
+    num=2
+    Kc=$Kc0
+    bash run_cont_cont.sh $num $Kc
+
 
 fi
