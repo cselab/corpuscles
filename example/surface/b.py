@@ -287,37 +287,6 @@ SetActiveSource(cellDatatoPointData1)
 # END READERS
 # ----------------------------------------------------------------
 
-surf = Calculator(Input=surf)
-surf.ResultNormals = 1
-surf.AttributeType = 'Point Data'
-surf.ResultArrayName = 'normals'
-surf.Function = 'nn'
-
-surfDisplay = Show(surf, renderView1)
-surfDisplay.Representation = 'Surface'
-surfDisplay.OSPRayMaterial = 'water'
-
-floor = Plane()
-floor.Origin = [-20.0, -0.01, -35.0]
-floor.Point1 = [-20.0, -0.01, 5.0]
-floor.Point2 = [20.0, -0.01, -35.0]
-floorDisplay = Show(floor, renderView1)
-floorDisplay.Representation = 'Surface'
-floorDisplay.ColorArrayName = ['POINTS', '']
-floorDisplay.OSPRayMaterial = 'checker grey'
-
-bottom = Plane()
-bottom.Origin = [0.0, 0.00015, 0.0]
-bottom.Point1 = [2.0, 0.00015, 0.0]
-bottom.Point2 = [0.0, 0.00015, 1.0]
-bottomDisplay = Show(bottom, renderView1)
-bottomDisplay.Representation = 'Surface'
-bottomDisplay.ColorArrayName = [None, '']
-
-#####################################################
-### END OF STATE FILE
-#####################################################
-
 for i in list(range(len(ss))):
     fn = bo.format("{:04d}".format(ss[i]))
     if os.path.isfile(fn):
