@@ -15,15 +15,6 @@ def Log(s):
     o.write(s)
     o.flush()
 
-# natural sort
-def natkey(s, _nsre=re.compile('([0-9]+)')):
-    return [int(text) if text.isdigit() else text.lower()
-            for text in re.split(_nsre, s)]
-
-def natsorted(v):
-    return sorted(v, key=natkey)
-# Returns sorted list of files in base by pattern pre_*.xmf
-
 # Sets time of datasets to step i
 def SetTime(i):
     global vft, vt
@@ -60,17 +51,11 @@ draft = CheckFlag('-draft')
 fine = CheckFlag('-fine')
 fine2 = CheckFlag('-fine2')
 
-# vf input
-ff = natsorted(av[1:])
-# vf basename
+ff = sorted(av[1:])
 ffb = list(map(os.path.basename, ff))
-# vf dirname
 ffd = list(map(os.path.dirname, ff))
-# steps
 ss = [int(re.findall("_([0-9]*)", fb)[0]) for fb in ffb]
-
-# output pattern (:0 substituted by frame number)
-bo = "a_{:}.png"
+bo = "{:}.png"
 
 #####################################################
 ### BEGIN OF STATE FILE
@@ -101,7 +86,7 @@ surf = LegacyVTKReader(FileNames=ff)
 vs = [surf]
 
 # time steps
-vt = [np.array(s.TimestepValues) for s in vs]
+vt = [np.array(s.TimestepValues if s.TimestepValues else [0]) for s in vs]
 
 # replace with ForceTime
 surf = ForceTime(surf)

@@ -27,8 +27,8 @@ main(int argc, const char **argv)
   real size = 0.2;
 
   m = 100;
-  lo = -1;
-  hi = 1;
+  lo = -1.2;
+  hi = 1.2;
   n = m * m * m;
   MALLOC(n, &u);
   MALLOC(n, &v);
