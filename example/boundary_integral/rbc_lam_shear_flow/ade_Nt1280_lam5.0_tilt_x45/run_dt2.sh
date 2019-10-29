@@ -29,7 +29,7 @@ eta=645.928652122
 lambda=5.0
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=5
+tscale=2
 
 start=0
 end=9000000
@@ -99,28 +99,10 @@ then
     
 else
 
-    for i in `seq 2 2 8`;
-    do
-	num=$i
-	#bash run_dt5.sh $num
-    done
-
-    for i in `seq 10 10 200`;
-    do
-	num=$i
-	#bash run_dt5.sh $num
-    done
-
-    for i in `seq 250 50 1000`;
-    do
-	num=$i
-	#bash run_dt5.sh $num
-    done
-
     for i in `seq 1500 500 5000`;
     do
 	num=$i
-	bash run_dt5.sh $num
+	bash run_dt2.sh $num
     done
 
 

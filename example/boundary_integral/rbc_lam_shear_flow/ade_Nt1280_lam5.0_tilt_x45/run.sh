@@ -102,7 +102,7 @@ else
     for i in `seq 2 2 8`;
     do
 	num=$i
-	bash run.sh $num
+	#bash run.sh $num
     done
 
     #exclude runs on falcon
@@ -116,8 +116,21 @@ else
 	fi
 	   	   
 	num=$i
+	#bash run.sh $num
+    done
+
+    for i in `seq 250 50 1000`;
+    do
+	num=$i
+	#bash run.sh $num
+    done
+
+    for i in `seq 1500 500 5000`;
+    do
+	num=$i
 	bash run.sh $num
     done
+
 
 
 fi

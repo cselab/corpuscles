@@ -25,11 +25,15 @@ b1=0.7
 b2=0.75
 
 rho=1.0
-eta=645.928652122
+eta_in=645.928652122
 lambda=5.0
+eta_out=$(echo ${eta_in} $lambda | awk '{print $1/$2}')
+#echo "eta_in : "$eta_in
+#echo "eta_out: "$eta_out
+#exit  
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=5
+tscale=10
 
 start=0
 end=9000000
@@ -57,7 +61,7 @@ then
     Kga=$Kc
     Kv=$Kc
 
-    Re=$(echo $gamdot $R $rho $eta | awk '{print $1*$2*$3/$4}')
+    Re=$(echo $gamdot $R $rho ${eta_out} | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
     
     in_file=../init_tilt/init_v${v}_Da${Da1}.off
@@ -69,32 +73,28 @@ then
     V=$(echo $A, $v | awk '{print 0.09403159725795977*$1**1.5*$2}')
     echo "A, V, v   :" $A, $V, $v
     
-    #area=$(echo $A, $Nt | awk '{print $1/$2}')
-    #edge=$(echo $area | awk '{print 2*sqrt($1/sqrt(3.0))}')
-    #CFL=0.25
-    #dt_gam=$(echo $CFL $gamdot | awk '{print $1/$2}')
-    #echo "area, edge, dt_gam:" $area, $edge, $dt_gam
-
     Da0=$(echo $Da1 | awk '{print $1/100}')
     DA0=$(echo $Kb, $C0, $Kad, $Da0, $D, $pi, $A | awk '{print $4*$7}')
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
 
-    fgam=$(printf "%.4f" $gamdot)
-    echo "fgam="$fgam
     flam=$(printf "%.1f" $lambda)
-    echo "flam="$flam
+    fgam=$(printf "%.4f" $gamdot)
     fdt=$(printf "%.6f" $dt)
+    
+    echo "flam="$flam
+    echo "num="$num
+    echo "fgam="$fgam
     echo "fdt="$fdt
     
-    if [ ! -d Da${Da1}_lam${flam}_g${fgam}_dt${fdt}_Kc${Kc} ]; then
+    if [ ! -d Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc} ]; then
 	
-	mkdir Da${Da1}_lam${flam}_g${fgam}_dt${fdt}_Kc${Kc}
+	mkdir Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
 	
     fi
     
-    cd Da${Da1}_lam${flam}_g${fgam}_dt${fdt}_Kc${Kc}
+    cd Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
     
-    co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
+    co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
       
     
 else
@@ -102,26 +102,27 @@ else
     for i in `seq 2 2 8`;
     do
 	num=$i
-	#bash run_dt5.sh $num
+	bash run_dt10.sh $num
     done
 
-    for i in `seq 10 10 200`;
+    for i in `seq 20 10 190`;
     do
-	num=$i
-	#bash run_dt5.sh $num
+   	num=$i
+	bash run_dt10.sh $num
     done
 
     for i in `seq 250 50 1000`;
     do
 	num=$i
-	#bash run_dt5.sh $num
+	bash run_dt10.sh $num
     done
-
+    
     for i in `seq 1500 500 5000`;
     do
 	num=$i
-	bash run_dt5.sh $num
+	bash run_dt10.sh $num
     done
+
 
 
 fi

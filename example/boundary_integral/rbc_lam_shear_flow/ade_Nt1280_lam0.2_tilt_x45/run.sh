@@ -102,6 +102,12 @@ else
     for i in `seq 5 5 120`;
     do
 	num=$i
+	#bash run.sh $num
+    done
+
+    for i in `seq 150 50 500`;
+    do
+	num=$i
 	bash run.sh $num
     done
 
