@@ -7,34 +7,33 @@
 
 #define FMT CO_REAL_OUT
 
-enum
-{
-	X, Y, Z
+enum {
+  X, Y, Z
 };
 
 int
 main(int argc, const char **v)
 {
-	Surface *surface;
-	He *he;
-	real *x, *y, *z;
-	real p[3];
-	real lo[3] = {-3, -3, -3};
-	real hi[3] = {3, 3, 3};
-	real size = 0.25;
+  Surface *surface;
+  He *he;
+  real *x, *y, *z;
+  real p[3];
+  real lo[3] = { -3, -3, -3 };
+  real hi[3] = { 3, 3, 3 };
+  real size = 0.25;
 
-	v++;
-	vec_argv(&v, p);
-	y_inif(stdin, &he, &x, &y, &z);
-	surface_ini(lo, hi, size, &surface);
-	surface_update(surface, he, x, y, z);
+  v++;
+  vec_argv(&v, p);
+  y_inif(stdin, &he, &x, &y, &z);
+  surface_ini(lo, hi, size, &surface);
+  surface_update(surface, he, x, y, z);
 
-	printf("%d\n", surface_inside(surface, p[X], p[Y], p[Z]));
+  printf("%d\n", surface_inside(surface, p[X], p[Y], p[Z]));
 
-	y_fin(he, x, y, z);
-	surface_fin(surface);
+  y_fin(he, x, y, z);
+  surface_fin(surface);
 
-	return 0;
+  return 0;
 }
 
 
