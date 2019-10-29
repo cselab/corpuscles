@@ -117,16 +117,6 @@ edg.Function = ''
 # create a new 'Cell Data to Point Data'
 cellDatatoPointData1 = CellDatatoPointData(Input=edg)
 
-# create a new 'Gaussian Resampling'
-gaussianResampling1 = GaussianResampling(Input=cellDatatoPointData1)
-gaussianResampling1.ResampleField = ['POINTS', 'c']
-gaussianResampling1.ExtenttoResample = [-1.0, 1.0, -1.0, 1.0, -1.0, 1.0]
-gaussianResampling1.GaussianSplatRadius = 0.01
-gaussianResampling1.ScaleSplats = 0
-gaussianResampling1.EllipticalSplats = 0
-gaussianResampling1.FillVolumeBoundary = 0
-gaussianResampling1.SplatAccumulationMode = 'Sum'
-
 # create a new 'Point Data to Cell Data'
 pointDatatoCellData1 = PointDatatoCellData(Input=cellDatatoPointData1)
 
@@ -154,39 +144,8 @@ cPWF.ScalarRangeInitialized = 1
 cellDatatoPointData1Display.Representation = 'Volume'
 cellDatatoPointData1Display.ColorArrayName = ['POINTS', 'c']
 cellDatatoPointData1Display.LookupTable = cLUT
-cellDatatoPointData1Display.OSPRayScaleFunction = 'PiecewiseFunction'
-cellDatatoPointData1Display.SelectOrientationVectors = 'None'
-cellDatatoPointData1Display.ScaleFactor = 0.202020202020202
-cellDatatoPointData1Display.SelectScaleArray = 'c'
-cellDatatoPointData1Display.GlyphType = 'Arrow'
-cellDatatoPointData1Display.GlyphTableIndexArray = 'c'
-cellDatatoPointData1Display.GaussianRadius = 0.0101010101010101
-cellDatatoPointData1Display.SetScaleArray = [None, '']
-cellDatatoPointData1Display.ScaleTransferFunction = 'PiecewiseFunction'
-cellDatatoPointData1Display.OpacityArray = [None, '']
-cellDatatoPointData1Display.OpacityTransferFunction = 'PiecewiseFunction'
-cellDatatoPointData1Display.DataAxesGrid = 'GridAxesRepresentation'
-cellDatatoPointData1Display.SelectionCellLabelFontFile = ''
-cellDatatoPointData1Display.SelectionPointLabelFontFile = ''
-cellDatatoPointData1Display.PolarAxes = 'PolarAxesRepresentation'
 cellDatatoPointData1Display.ScalarOpacityUnitDistance = 0.0349909254054319
 cellDatatoPointData1Display.ScalarOpacityFunction = cPWF
-cellDatatoPointData1Display.IsosurfaceValues = [0.5]
-cellDatatoPointData1Display.Slice = 50
-
-# init the 'GridAxesRepresentation' selected for 'DataAxesGrid'
-cellDatatoPointData1Display.DataAxesGrid.XTitleFontFile = ''
-cellDatatoPointData1Display.DataAxesGrid.YTitleFontFile = ''
-cellDatatoPointData1Display.DataAxesGrid.ZTitleFontFile = ''
-cellDatatoPointData1Display.DataAxesGrid.XLabelFontFile = ''
-cellDatatoPointData1Display.DataAxesGrid.YLabelFontFile = ''
-cellDatatoPointData1Display.DataAxesGrid.ZLabelFontFile = ''
-
-# init the 'PolarAxesRepresentation' selected for 'PolarAxes'
-cellDatatoPointData1Display.PolarAxes.PolarAxisTitleFontFile = ''
-cellDatatoPointData1Display.PolarAxes.PolarAxisLabelFontFile = ''
-cellDatatoPointData1Display.PolarAxes.LastRadialAxisTextFontFile = ''
-cellDatatoPointData1Display.PolarAxes.SecondaryRadialAxesTextFontFile = ''
 
 # show data from cellDatatoPointData2
 cellDatatoPointData2Display = Show(cellDatatoPointData2, renderView1)
@@ -207,85 +166,11 @@ separate_cellDatatoPointData2Display_cPWF.ScalarRangeInitialized = 1
 cellDatatoPointData2Display.Representation = 'Volume'
 cellDatatoPointData2Display.ColorArrayName = ['POINTS', 'c']
 cellDatatoPointData2Display.LookupTable = separate_cellDatatoPointData2Display_cLUT
-cellDatatoPointData2Display.OSPRayScaleFunction = 'PiecewiseFunction'
-cellDatatoPointData2Display.SelectOrientationVectors = 'None'
-cellDatatoPointData2Display.ScaleFactor = 0.202020202020202
-cellDatatoPointData2Display.SelectScaleArray = 'c'
-cellDatatoPointData2Display.GlyphType = 'Arrow'
-cellDatatoPointData2Display.GlyphTableIndexArray = 'c'
-cellDatatoPointData2Display.GaussianRadius = 0.0101010101010101
-cellDatatoPointData2Display.SetScaleArray = [None, '']
-cellDatatoPointData2Display.ScaleTransferFunction = 'PiecewiseFunction'
-cellDatatoPointData2Display.OpacityArray = [None, '']
-cellDatatoPointData2Display.OpacityTransferFunction = 'PiecewiseFunction'
-cellDatatoPointData2Display.DataAxesGrid = 'GridAxesRepresentation'
-cellDatatoPointData2Display.SelectionCellLabelFontFile = ''
-cellDatatoPointData2Display.SelectionPointLabelFontFile = ''
-cellDatatoPointData2Display.PolarAxes = 'PolarAxesRepresentation'
 cellDatatoPointData2Display.ScalarOpacityUnitDistance = 0.0349909254054319
 cellDatatoPointData2Display.ScalarOpacityFunction = separate_cellDatatoPointData2Display_cPWF
-cellDatatoPointData2Display.IsosurfaceValues = [0.5]
-cellDatatoPointData2Display.Slice = 50
-
-# init the 'GridAxesRepresentation' selected for 'DataAxesGrid'
-cellDatatoPointData2Display.DataAxesGrid.XTitleFontFile = ''
-cellDatatoPointData2Display.DataAxesGrid.YTitleFontFile = ''
-cellDatatoPointData2Display.DataAxesGrid.ZTitleFontFile = ''
-cellDatatoPointData2Display.DataAxesGrid.XLabelFontFile = ''
-cellDatatoPointData2Display.DataAxesGrid.YLabelFontFile = ''
-cellDatatoPointData2Display.DataAxesGrid.ZLabelFontFile = ''
-
-# init the 'PolarAxesRepresentation' selected for 'PolarAxes'
-cellDatatoPointData2Display.PolarAxes.PolarAxisTitleFontFile = ''
-cellDatatoPointData2Display.PolarAxes.PolarAxisLabelFontFile = ''
-cellDatatoPointData2Display.PolarAxes.LastRadialAxisTextFontFile = ''
-cellDatatoPointData2Display.PolarAxes.SecondaryRadialAxesTextFontFile = ''
 
 # set separate color map
 cellDatatoPointData2Display.UseSeparateColorMap = True
-
-# setup the color legend parameters for each legend in this view
-
-# get color legend/bar for cLUT in view renderView1
-cLUTColorBar = GetScalarBar(cLUT, renderView1)
-cLUTColorBar.WindowLocation = 'UpperRightCorner'
-cLUTColorBar.Title = 'c'
-cLUTColorBar.ComponentTitle = ''
-cLUTColorBar.TitleFontFile = ''
-cLUTColorBar.LabelFontFile = ''
-
-# set color bar visibility
-cLUTColorBar.Visibility = 1
-
-# get color legend/bar for separate_cellDatatoPointData2Display_cLUT in view renderView1
-separate_cellDatatoPointData2Display_cLUTColorBar = GetScalarBar(separate_cellDatatoPointData2Display_cLUT, renderView1)
-separate_cellDatatoPointData2Display_cLUTColorBar.Title = 'c'
-separate_cellDatatoPointData2Display_cLUTColorBar.ComponentTitle = ''
-separate_cellDatatoPointData2Display_cLUTColorBar.TitleFontFile = ''
-separate_cellDatatoPointData2Display_cLUTColorBar.LabelFontFile = ''
-
-# set color bar visibility
-separate_cellDatatoPointData2Display_cLUTColorBar.Visibility = 1
-
-# show color legend
-cellDatatoPointData1Display.SetScalarBarVisibility(renderView1, True)
-
-# show color legend
-cellDatatoPointData2Display.SetScalarBarVisibility(renderView1, True)
-
-# ----------------------------------------------------------------
-# setup color maps and opacity mapes used in the visualization
-# note: the Get..() functions create a new object, if needed
-# ----------------------------------------------------------------
-
-# ----------------------------------------------------------------
-# finally, restore active source
-SetActiveSource(cellDatatoPointData1)
-# ----------------------------------------------------------------
-
-# ----------------------------------------------------------------
-# END READERS
-# ----------------------------------------------------------------
 
 for i in list(range(len(ss))):
     fn = bo.format("{:04d}".format(ss[i]))
