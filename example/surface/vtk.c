@@ -27,7 +27,7 @@ main(int argc, const char **argv)
 	real chi[3] = {2, 2, 2};
 	real size = 0.2;
 
-	m  = 50;
+	m  = 100;
 	lo = -1;
 	hi =  1;
 	n = m*m*m;
