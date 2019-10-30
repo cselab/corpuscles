@@ -34,7 +34,10 @@ function ini(   i) {
 
     Icommand = !eq(icommand, "-")
     Command = !eq(command, "-")
+
     Ecommand = !eq(ecommand, "-")
+    EcommandArgs = sub(/^\|/, "", ecommand) # is |?
+
     Report  = Command
 
     Format = format
@@ -125,11 +128,9 @@ function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt, c) {
     rx = rad2ang(rx)
     ry = rad2ang(ry)
     rz = rad2ang(rz)
-    if (ecommand ~ /^\|/) { # TODO
-        c = ecommand
-        sub(/^\|/, "", c)
+    if (EcommandArgs) {
         fmt = "<%s %s"
-        c = sprintf(fmt, off, c)
+        c = sprintf(fmt, off, ecommand)
     } else {
         fmt = "<%s %s -t %g %g %g -r %g %g %g -f %g -i %d -n %d"
         c = sprintf(fmt, off, ecommand, tx, ty, tz, rx, ry, rz, fov, ioff - 1, noff)
@@ -147,11 +148,11 @@ function parse_key(k,   s,  T, fov, file) {
     else if (k == KEY_P)
          g("ui-panel geomview on")
     else if (k == KEY_E) {
-         if (Ecommand) {
+        if (Ecommand) {
              read_transform(T)
              fov = read_fov()
              run_ecommand(T, fov)
-         }
+        }
     }
     else if (k == KEY_S) {
         file = sprintf("snap.%s", Suffix)
