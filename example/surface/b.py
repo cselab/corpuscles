@@ -15,33 +15,12 @@ def Log(s):
     o.write(s)
     o.flush()
 
-# Sets time of datasets to step i
-def SetTime(i):
-    global vft, vt
-    for j in range(len(vft)):
-        s = vft[j]
-        s.ForcedTime = vt[j][i]
-        s.UpdatePipeline()
-
 av = sys.argv
-if len(av) < 2 or av[1] == '-h':
-    sys.stderr.write('''usage: {:} [sm_*.vtk]
-Plots isosurface.
-# Output:
-# a_*.png in current folder
-'''.format(av[0]))
-    exit(1)
-
 ff = sorted(av[1:])
-ffb = list(map(os.path.basename, ff))
-ffd = list(map(os.path.dirname, ff))
-ss = [int(re.findall("_([0-9]*)", fb)[0]) for fb in ffb]
-bo = "{:}.png"
 
 #####################################################
 ### BEGIN OF STATE FILE
 #####################################################
-
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
@@ -59,13 +38,10 @@ renderView1.Background = [0.3686274509803922, 0.3686274509803922, 0.368627450980
 # BEGIN READERS
 # ----------------------------------------------------------------
 # create a new 'XDMF Reader'
-surf = LegacyVTKReader(FileNames=ff)
+surf = LegacyVTKReader(FileNames=ff[0])
 
 # list of all sources
 vs = [surf]
-
-# time steps
-vt = [np.array(s.TimestepValues if s.TimestepValues else [0]) for s in vs]
 
 # replace with ForceTime
 surf = ForceTime(surf)
@@ -136,12 +112,8 @@ cellDatatoPointData2Display.ScalarOpacityFunction = separate_cellDatatoPointData
 # set separate color map
 cellDatatoPointData2Display.UseSeparateColorMap = True
 
-for i in list(range(len(ss))):
-    fn = bo.format("{:04d}".format(ss[i]))
-    with open(fn, "w") as f:
-      f.write("")
-    SetTime(i)
-    Log("{:}/{:}: {:}".format(i + 1, len(ss), fn))
-    SaveScreenshot(fn, renderView1)
+fn = "o.png"
+Log(fn)
+SaveScreenshot(fn, renderView1)
 
 exit(0)
