@@ -1,6 +1,7 @@
 include(`co.m4')dnl
 include(`util.m4')dnl
 include(`args.m4')dnl
+#!/bin/sh
 . co.util
 
 prog=co.geomview0
