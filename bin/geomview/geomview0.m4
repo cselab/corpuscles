@@ -124,9 +124,11 @@ function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt, c) {
     rx = rad2ang(rx)
     ry = rad2ang(ry)
     rz = rad2ang(rz)
-    if (ecommand ~ /^\|/) {
-        fmt = "cat %s %s"
-        c = sprintf(fmt, off, ecommand)
+    if (ecommand ~ /^\|/) { # TODO
+        c = ecommand
+        sub(/^\|/, "", c)
+        fmt = "<%s %s"
+        c = sprintf(fmt, off, c)
     } else {
         fmt = "<%s %s -t %g %g %g -r %g %g %g -f %g -i %d -n %d"
         c = sprintf(fmt, off, ecommand, tx, ty, tz, rx, ry, rz, fov, ioff - 1, noff)

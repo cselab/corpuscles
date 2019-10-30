@@ -22,8 +22,9 @@ he geomview wrapper
 -p command    process every off file by running 'command' < IN.off > OUT.off
 -n none|each|all|keep normalization status (see geomview manual)
 -c command    run command on every file and write output to stderr, %f is replaced by a file name
--e command    run 'command -t x y z -r x y z -f zoom -i [index of a file] -n  [number of files] < OFF'
-              if 'E' is pressed,
+-e command    if keys 'e' is pressed runs
+              '<OFF command -t x y z -r x y z -f zoom -i [index of a file] -n  [number of files] ' or
+              '<OFF command' if -e '|command' is passed
 -i command    run command on every image, %i replaced by input; %o -- by output; %b --- by basename
 
 Keys:
