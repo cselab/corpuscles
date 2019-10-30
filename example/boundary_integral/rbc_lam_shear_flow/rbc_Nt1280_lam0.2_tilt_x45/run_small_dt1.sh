@@ -33,7 +33,7 @@ eta_out=$(echo ${eta_in} $lambda | awk '{print $1/$2}')
 #exit
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=10
+tscale=1
 
 start=0
 end=9000000
@@ -49,13 +49,16 @@ then
 
     num="$1"
 
+    #convert num to integer inum
+    inum=$(printf "%.0f" $num)
+
     gamdot=$(echo $gamdot0, $num | awk '{print $1*$2}')
     dt=$(echo $dt0 $num $tscale | awk '{print $1*$3/$2}')
 
-    if [ $num -le 100 ]; then
+    if [ $inum -le 100 ]; then
 	Kc=$Kc0
     else
-	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
+	Kc=$(echo $inum $Kc0 | awk '{print $1*$2/100}')	
     fi
 
     Kga=$Kc
@@ -85,6 +88,7 @@ then
     echo "num="$num
     echo "fgam="$fgam
     echo "fdt="$fdt
+    echo "Kc="$Kc
 
     
     if [ ! -d Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc} ]; then
@@ -100,43 +104,13 @@ then
     
 else
 
-    for i in `seq 5 5 120`;
+    inc=0.1
+    for i in `seq 2 2 30`;
     do
-	num=$i
-	#bash run_dt10.sh $num
+	num=$(echo $i $inc | awk '{print $1*$2}')
+	bash run_small_dt1.sh $num
     done
 
-    for i in `seq 150 50 500`;
-    do
-	num=$i
-	#bash run_dt10.sh $num
-    done
-
-
-    for i in `seq 1 1 4`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 6 1 9`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 11 1 14`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 16 1 19`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-    
 
 fi
     

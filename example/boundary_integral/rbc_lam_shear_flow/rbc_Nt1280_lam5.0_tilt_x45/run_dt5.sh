@@ -26,14 +26,14 @@ b2=0.75
 
 rho=1.0
 eta_in=645.928652122
-lambda=0.2
+lambda=5.0
 eta_out=$(echo ${eta_in} $lambda | awk '{print $1/$2}')
 #echo "eta_in : "$eta_in
 #echo "eta_out: "$eta_out
-#exit
+#exit  
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=10
+tscale=5
 
 start=0
 end=9000000
@@ -85,7 +85,6 @@ then
     echo "num="$num
     echo "fgam="$fgam
     echo "fdt="$fdt
-
     
     if [ ! -d Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc} ]; then
 	
@@ -100,43 +99,11 @@ then
     
 else
 
-    for i in `seq 5 5 120`;
+    for i in `seq 1500 500 5000`;
     do
 	num=$i
-	#bash run_dt10.sh $num
+	bash run_dt5.sh $num
     done
-
-    for i in `seq 150 50 500`;
-    do
-	num=$i
-	#bash run_dt10.sh $num
-    done
-
-
-    for i in `seq 1 1 4`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 6 1 9`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 11 1 14`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 16 1 19`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-    
 
 fi
     

@@ -33,7 +33,7 @@ eta_out=$(echo ${eta_in} $lambda | awk '{print $1/$2}')
 #exit
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=10
+tscale=2
 
 start=0
 end=9000000
@@ -100,43 +100,11 @@ then
     
 else
 
-    for i in `seq 5 5 120`;
-    do
-	num=$i
-	#bash run_dt10.sh $num
-    done
-
     for i in `seq 150 50 500`;
     do
 	num=$i
-	#bash run_dt10.sh $num
+	bash run_dt2.sh $num
     done
-
-
-    for i in `seq 1 1 4`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 6 1 9`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 11 1 14`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 16 1 19`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-    
 
 fi
     
