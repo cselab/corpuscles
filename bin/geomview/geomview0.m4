@@ -13,7 +13,7 @@ usg () {
 
 if test $# -ne 0 && test "$1" = -h; then usg; fi
 h_foreach_sep(`A', `
-', Args, `A="`$1'"; shift')dnl
+', Args, `A=`$1'; shift')dnl
 
 Tmp=/tmp/co.geomview.$$.ppm
 trap 'rm -f $Tmp; echo 2' 1 2 3 15
@@ -25,7 +25,7 @@ h_changequote()dnl
 function ini(   i) {
     noff = ARGC - 1; ioff = 1
     for (i = 1; i in ARGV; i++)
-	offs[i] = ARGV[i]
+        offs[i] = ARGV[i]
     ARGC = 1
     Save = 0 # snapshot every draw()?
 
@@ -40,9 +40,15 @@ function ini(   i) {
     Suffix = eq(format, "ps") ? "ps" : "ppm"
 
     X = 1; Y = 2; Z = 3; W = 4
-    KEY_Q = 113; KEY_S = 115; KEY_P = 112; KEY_SPACE = 32;
-    KEY_J = 106; KEY_K = 107
-    KEY_JJ = 74; KEY_SS = 83
+    KEY_J = 106
+    KEY_JJ = 74
+    KEY_K = 107
+    KEY_P = 112
+    KEY_Q = 113
+    KEY_S = 115
+    KEY_SPACE = 32
+    KEY_SS = 83
+    KEY_E = 101
     OK = 0; EOF = 1; ERR = -1
     split(translate, Translate)
     split(rotate,    Rotate)
@@ -62,14 +68,14 @@ function parse(s,   a, n) {
 function m_row(s, D, T,  a, i) {
     n = split(s, a)
     for (i = 1; i <= n; i++)
-	T[D, i] = a[i]
+        T[D, i] = a[i]
 }
 
 function read_transform(T,   s) {
     g("write transform - worldgeom universe")
     if (getline s == ERR) err("fail to parse transform")
     if (s !~ /^transform {/)
-	err(sprintf("expecting transform, got: `%s`", s))
+        err(sprintf("expecting transform, got: `%s`", s))
     getline s; m_row(s, X, T)
     getline s; m_row(s, Y, T)
     getline s; m_row(s, Z, T)
@@ -80,72 +86,99 @@ function read_transform(T,   s) {
 function read_fov(  fov, n) {
     g("write camera - focus")
     if (getline s == ERR)
-	err("fail to parse camera reply")
+        err("fail to parse camera reply")
     if (s !~ /^camera {/)
-	err(sprintf("expecting camera, got: `%s`", s))
+        err(sprintf("expecting camera, got: `%s`", s))
     for (n = 1; n > 0; ) {
-	if (getline == ERR)
-	    err("fail to parse camera info")
-	if (/{/) n++
-	if (/}/) n--
-	if (n == 0) break
-	if (/[ \t]*fov[ \t]/) fov = $2
+        if (getline == ERR)
+            err("fail to parse camera info")
+        if (/{/) n++
+        if (/}/) n--
+        if (n == 0) break
+        if (/[ \t]*fov[ \t]/) fov = $2
     }
     if (emptyp(fov))
-	err("have not found fov")
+        err("have not found fov")
     return fov
 }
 
-function write_command(T, fov,   tx, ty, tz, rx, ry, rz) {
+function write_command(T, fov,   tx, ty, tz, rx, ry, rz, c, fmt) {
     tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
     rx = atan2(-T[Y,Z], T[Z,Z])
     ry = atan2(T[X,Z], sqrt(T[Y,Z]^2 + T[Z,Z]^2))
     rz = atan2(-T[X,Y], T[X,X])
-    msg0(sprintf("-t %g %g %g -r %g %g %g -f %g", tx, ty, tz,
-		 rad2ang(rx), rad2ang(ry), rad2ang(rz), fov))
+    rx = rad2ang(rx)
+    ry = rad2ang(ry)
+    rz = rad2ang(rz)
+    fmt = "-t %g %g %g -r %g %g %g -f %g"
+    c = sprintf(fmt, tx, ty, tz, rx, ry, rz, fov)
+    msg0(c)
+}
+
+function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt) {
+    off = offs[ioff]
+    tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
+    rx = atan2(-T[Y,Z], T[Z,Z])
+    ry = atan2(T[X,Z], sqrt(T[Y,Z]^2 + T[Z,Z]^2))
+    rz = atan2(-T[X,Y], T[X,X])
+    rx = rad2ang(rx)
+    ry = rad2ang(ry)
+    rz = rad2ang(rz)
+    fmt = "%s -t %g %g %g -r %g %g %g -f %g -i %d -n %d < %s"
+    c = sprintf(fmt, ecommand, tx, ty, tz, rx, ry, rz, fov, ioff, noff, off)
+    sys0(c)
 }
 
 function parse_key(k,   s,  T, fov, file) {
     if (k == KEY_Q) {
-	read_transform(T)
-	fov = read_fov()
-	write_command(T, fov)
-	gexit(0)
+        read_transform(T)
+        fov = read_fov()
+        write_command(T, fov)
+        gexit(0)
     }
-    else if (k == KEY_P) g("ui-panel geomview on")
+    else if (k == KEY_P)
+         g("ui-panel geomview on")
+    else if (k == KEY_E) {
+         if (!eq(ecommand, "-")) {
+             read_transform(T)
+             fov = read_fov()
+             run_ecommand(T, fov)
+         }
+    }
     else if (k == KEY_S) {
         file = sprintf("snap.%s", Suffix)
-	msg0(file)
-	snap(file)
+        msg0(file)
+        snap(file)
     } else if (k == KEY_SPACE) {
-	read_transform(T)
-	fov = read_fov()
-	write_command(T, fov)
+        read_transform(T)
+        fov = read_fov()
+        write_command(T, fov)
     } else if (k == KEY_K) {
-	if (--ioff < 1) ioff = noff
-	draw()
+        if (--ioff < 1) ioff = noff
+        draw()
     } else if (k == KEY_J) {
-	if (++ioff > noff) ioff = 1
-	draw()
+        if (++ioff > noff) ioff = 1
+        draw()
     } else if (k == KEY_JJ) {
-	Report = !Report
-	draw()
+        Report = !Report
+        draw()
     } else if (k == KEY_SS) {
-	Save = !Save
-	draw()
+        Save = !Save
+        draw()
     }
     else err("unknown key: " k)
 }
 
 function key0(k) { g(sprintf("interest (rawevent %s)", k)) }
 function key() {
+    key0(KEY_E)
+    key0(KEY_J)
+    key0(KEY_JJ)
+    key0(KEY_K)
+    key0(KEY_P)
     key0(KEY_Q)
     key0(KEY_S)
-    key0(KEY_P)
     key0(KEY_SPACE)
-    key0(KEY_J)
-    key0(KEY_K)
-    key0(KEY_JJ)
     key0(KEY_SS)
 }
 
@@ -155,30 +188,30 @@ function geom() {
         g(sprintf("normalization obj %s", normalization))
     g("bbox-draw obj no")
     if (eq(appearance, "-"))
-	g("read appearance {define appearance { +edge } material {ks 0}}")
+        g("read appearance {define appearance { +edge } material {ks 0}}")
     else
-	g(sprintf("read appearance { define appearance < `%s`}",
-		  appearance))
+        g(sprintf("read appearance { define appearance < `%s`}",
+                  appearance))
 }
 
 function draw(   off, file) {
     off = offs[ioff]
     g(sprintf("read geometry   { define off        < `%s` }", off))
     if (Save) {
-	if (eq(SaveType, "image")) {
-	    file = sprintf("%05d.%s", ioff, Suffix)
-	    msg0(file); snap(file)
-	} else if (eq(SaveType, "oogl")) {
-	    file = sprintf("%05d", ioff)
-	    msg0(file); oogl(file)
-	} else
-	    err(sprintf("unknown SaveType \"%s\"", SaveType))
+        if (eq(SaveType, "image")) {
+            file = sprintf("%05d.%s", ioff, Suffix)
+            msg0(file); snap(file)
+        } else if (eq(SaveType, "oogl")) {
+            file = sprintf("%05d", ioff)
+            msg0(file); oogl(file)
+        } else
+            err(sprintf("unknown SaveType \"%s\"", SaveType))
     }
 
     if (Report && Command)
-	sys(command)
+        sys(command)
     else if (Report)
-	msg0(off)
+        msg0(off)
 }
 
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
@@ -191,25 +224,25 @@ function g0(s) {
 
 function m_ident(A,   i, j) {
     for (i = 1; i <= W; i++)
-	for (j = 1; j <= W; j++)
-	    A[i,j] = (i == j) + 0
+        for (j = 1; j <= W; j++)
+            A[i,j] = (i == j) + 0
 }
 function m_str(A,   i, j, s) {
     for (i = 1; (i, 1) in A; i++) {
-	if (i > 1) s = s "\n"
-	for (j = 1; (i, j) in A; j++) {
-	    if (j > 0) s = s " "
-	    s = s sprintf("%.16g", A[i,j])
-	}
+        if (i > 1) s = s "\n"
+        for (j = 1; (i, j) in A; j++) {
+            if (j > 0) s = s " "
+            s = s sprintf("%.16g", A[i,j])
+        }
     }
     return s
 }
 
 function m_mult(A, B,   i, j, k, C) { # A *= B
     for (i = 1; (i, 1) in A; i++)
-	for (j = 1; (i, j) in A; j++)
-	    for (k = 1; (j, k) in B; k++)
-		C[i,k] += A[i,j] * B[j,k]
+        for (j = 1; (i, j) in A; j++)
+            for (k = 1; (j, k) in B; k++)
+                C[i,k] += A[i,j] * B[j,k]
     m_copy(C, A)
 }
 
@@ -243,18 +276,18 @@ function snap(file,   c, out) {
     out = "\"" file "\""
     input = Tmp
     if (!Icommand) {
-	snap0(input)
-	c = sprintf("mv %s %s", input, out)
-	sys0(c)
+        snap0(input)
+        c = sprintf("mv %s %s", input, out)
+        sys0(c)
     }
     else {
-	snap0(input)
-	c = icommand
-	gsub(/%f/, off, c)
-	gsub(/%i/, input, c)
-	gsub(/%o/, out, c)
-	gsub(/%b/, basename(file), c)
-	sys0(c)
+        snap0(input)
+        c = icommand
+        gsub(/%f/, off, c)
+        gsub(/%i/, input, c)
+        gsub(/%o/, out, c)
+        gsub(/%b/, basename(file), c)
+        sys0(c)
     }
 }
 
@@ -265,7 +298,7 @@ function snap0(file,   cmd, reply, status) {
     g("echo done\\n") # synchronize
     status = getline reply
     if (!eq(reply, "done"))
-	err("snap0 failed")
+        err("snap0 failed")
 }
 
 function oogl(file,   reply, status) {
@@ -275,7 +308,7 @@ function oogl(file,   reply, status) {
     g("echo done\\n") # synchronize
     status = getline reply
     if (!eq(reply, "done"))
-	err("oogl failed")
+        err("oogl failed")
 }
 
 BEGIN {
@@ -286,21 +319,21 @@ BEGIN {
     set_fov()
     draw()
     if (eq(output, "-")) {
-	for (;;) {
-	    if (getline s == ERR) break
-	    if (parse(s) != OK) {
-		msg("fail to parse: " s)
-		break
-	    }
-	}
+        for (;;) {
+            if (getline s == ERR) break
+            if (parse(s) != OK) {
+                msg("fail to parse: " s)
+                break
+            }
+        }
     } else if (eq(output, "-OO") || eq(output, "-O")) {
-	Save = 1
-	for (ioff = 1; ioff <= noff; ioff++)
-	    draw()
-	gexit(0)
+        Save = 1
+        for (ioff = 1; ioff <= noff; ioff++)
+            draw()
+        gexit(0)
     } else {
-	snap(output)
-	gexit(0)
+        snap(output)
+        gexit(0)
     }
 }
 function gexit(s) {
@@ -319,9 +352,9 @@ function eq(a ,b) { return "" a == "" b }
 function sys(c,  file) {
     file = "\""  offs[ioff]  "\""
     if (c ~ /%/)
-	gsub("%f", file, c)
+        gsub("%f", file, c)
     else
-	c = c " " file
+        c = c " " file
     sys0(c)
 }
 
@@ -329,10 +362,10 @@ function sys0(c,   s) {
     c = sprintf("(%s) >&2", c)
     s = system(c)
     if (!eq(LOG, "0"))
-	msg("system: " c)
+        msg("system: " c)
     if (s != 0) {
-	msg(sprintf("command: \"%s\" failed", c))
-	gexit(2)
+        msg(sprintf("command: \"%s\" failed", c))
+        gexit(2)
     }
 }
 function basename(s) {
