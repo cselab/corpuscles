@@ -81,7 +81,7 @@ gview () {
     trap '' SIGHUP
     "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b $BACKGROUND \
      -run "$prog0" \
-       foreach(Args, `\""$A"\"') \
+       foreach(Args, `h_backtick`'"$A"h_backtick`'') \
        "$@"
     status=$?
     if test $status -ne 0

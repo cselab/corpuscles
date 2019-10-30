@@ -147,4 +147,6 @@ h_define(`h_cmd',
 h_ifelse(h_sysval, `0', `', `h_fatal(command "`$1'" failed)')')
 h_define(`h_backtick', h_changequote([,
  ])[h_changequote([,])`h_changequote(`,')]h_changequote(`,')))
+h_define(`h_qsingle', h_changequote([,
+ ])[h_changequote([,])'h_changequote(`,')]h_changequote(`,'))) 
 divert`'dnl
