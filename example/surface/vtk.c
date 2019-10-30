@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <real.h>
 
+#include <co/array.h>
+#include <co/err.h>
+#include <co/he.h>
 #include <co/memory.h>
+#include <co/surface.h>
 #include <co/vec.h>
 #include <co/y.h>
-#include <co/surface.h>
 
 #define FMT CO_REAL_OUT
 
@@ -19,26 +22,28 @@ main(int argc, const char **argv)
   Surface *surface;
   He *he;
   real *x, *y, *z, *u, *v, *w, *color;
-
-  int m, n, i, j, k, l;
+  int m, n, nv, i, j, k, l;
   real lo, hi, dx, x0, y0, z0;
-  real clo[3] = { -2, -2, -2 };
-  real chi[3] = { 2, 2, 2 };
   real size = 0.2;
 
+  err_set_ignore();
   m = 100;
-  lo = -1.2;
-  hi = 1.2;
+  y_inif(stdin, &he, &x, &y, &z);
+  nv = he_nv(he);
+  lo = array_min3(nv, x, y, z);
+  hi = array_max3(nv, x, y, z);
+  MSG("lh: %g %g", lo, hi);
+  real clo[3] = { lo - size, lo - size, lo - size };
+  real chi[3] = { hi + size, hi + size, hi + size };
+  surface_ini(clo, chi, size, &surface);
+  surface_update(surface, he, x, y, z);
+  
   n = m * m * m;
   MALLOC(n, &u);
   MALLOC(n, &v);
   MALLOC(n, &w);
   CALLOC(n, &color);
-
-  y_inif(stdin, &he, &x, &y, &z);
-  surface_ini(clo, chi, size, &surface);
-  surface_update(surface, he, x, y, z);
-
+  
   dx = (hi - lo) / (m - 1);
   l = 0;
   for (k = 0; k < m; k++)
