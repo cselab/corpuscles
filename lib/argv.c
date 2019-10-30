@@ -12,51 +12,51 @@
 int
 argv_real(char ***pargv, real * p)
 {
-    char **argv;
+  char **argv;
 
-    argv = *pargv;
+  argv = *pargv;
 
-    if (*argv == NULL)
-        ERR(CO_IO, "not enough arguments");
+  if (*argv == NULL)
+    ERR(CO_IO, "not enough arguments");
 
-    if (sscanf(*argv, CO_REAL_IN, p) != 1)
-        ERR(CO_IO, "not a number '%s'", *argv);
+  if (sscanf(*argv, CO_REAL_IN, p) != 1)
+    ERR(CO_IO, "not a number '%s'", *argv);
 
-    argv++;
-    *pargv = argv;
-    return CO_OK;
+  argv++;
+  *pargv = argv;
+  return CO_OK;
 }
 
 int
 argv_int(char ***pargv, int *p)
 {
-    char **argv;
+  char **argv;
 
-    argv = *pargv;
+  argv = *pargv;
 
-    if (*argv == NULL)
-        ERR(CO_IO, "not enough arguments");
+  if (*argv == NULL)
+    ERR(CO_IO, "not enough arguments");
 
-    if (sscanf(*argv, "%d", p) != 1)
-        ERR(CO_IO, "not an integer '%s'", *argv);
+  if (sscanf(*argv, "%d", p) != 1)
+    ERR(CO_IO, "not an integer '%s'", *argv);
 
-    argv++;
-    *pargv = argv;
-    return CO_OK;
+  argv++;
+  *pargv = argv;
+  return CO_OK;
 }
 
 int
 argv_str(char ***pargv, char *p)
 {
-    char **argv;
+  char **argv;
 
-    argv = *pargv;
+  argv = *pargv;
 
-    if (*argv == NULL)
-        ERR(CO_IO, "not enough arguments");
-    strcpy(p, *argv);
+  if (*argv == NULL)
+    ERR(CO_IO, "not enough arguments");
+  strcpy(p, *argv);
 
-    argv++;
-    *pargv = argv;
-    return CO_OK;
+  argv++;
+  *pargv = argv;
+  return CO_OK;
 }

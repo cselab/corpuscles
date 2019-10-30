@@ -23,15 +23,6 @@ def SetTime(i):
         s.ForcedTime = vt[j][i]
         s.UpdatePipeline()
 
-# Returns bounding box of object o
-def GetBox(o):
-    o.UpdatePipeline()
-    di = o.GetDataInformation()
-    lim = di.DataInformation.GetBounds()
-    lim0 = np.array(lim[::2])
-    lim1 = np.array(lim[1::2])
-    return lim0, lim1
-
 av = sys.argv
 if len(av) < 2 or av[1] == '-h':
     sys.stderr.write('''usage: {:} [sm_*.vtk]
@@ -40,16 +31,6 @@ Plots isosurface.
 # a_*.png in current folder
 '''.format(av[0]))
     exit(1)
-
-def CheckFlag(name):
-    if name in av:
-        av.remove(name)
-        return True
-    return False
-
-draft = CheckFlag('-draft')
-fine = CheckFlag('-fine')
-fine2 = CheckFlag('-fine2')
 
 ff = sorted(av[1:])
 ffb = list(map(os.path.basename, ff))
@@ -66,14 +47,12 @@ paraview.simple._DisableFirstRenderCameraReset()
 
 # Create a new 'Render View'
 renderView1 = CreateView('RenderView')
-renderView1.ViewSize = [1920,1080]
+renderView1.ViewSize = [1918, 1059]
 renderView1.AxesGrid = 'GridAxes3DActor'
 renderView1.OrientationAxesVisibility = 0
 renderView1.StereoType = 0
-renderView1.CameraPosition = [-0.06639579949199569, -3.497418118038352, 2.942109625083673]
-renderView1.CameraViewUp = [0.9473537951210076, -0.21645985996474684, -0.2359362538777504]
-renderView1.CameraParallelScale = 1.1830140069454795
-renderView1.CameraParallelProjection = 1
+renderView1.CameraViewAngle = 40.0
+renderView1.CameraPosition = [0, 0, 3]
 renderView1.Background = [0.3686274509803922, 0.3686274509803922, 0.3686274509803922]
 
 # ----------------------------------------------------------------
@@ -159,15 +138,9 @@ cellDatatoPointData2Display.UseSeparateColorMap = True
 
 for i in list(range(len(ss))):
     fn = bo.format("{:04d}".format(ss[i]))
-    if os.path.isfile(fn):
-        Log("skip existing {:}".format(fn))
-        continue
-
     with open(fn, "w") as f:
       f.write("")
-
     SetTime(i)
-
     Log("{:}/{:}: {:}".format(i + 1, len(ss), fn))
     SaveScreenshot(fn, renderView1)
 

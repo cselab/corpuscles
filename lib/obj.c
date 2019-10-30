@@ -17,20 +17,20 @@ int
 obj_fwrite(He * he, const real * x, const real * y, const real * z,
            /**/ FILE * f)
 {
-    int nv, nt, v, t, i, j, k;
+  int nv, nt, v, t, i, j, k;
 
-    nv = he_nv(he);
-    nt = he_nt(he);
+  nv = he_nv(he);
+  nt = he_nt(he);
 
-    if (fputs("# File type: ASCII OBJ\n", f) == EOF)
-        ERR(CO_IO, "file to write");
+  if (fputs("# File type: ASCII OBJ\n", f) == EOF)
+    ERR(CO_IO, "file to write");
 
-    for (v = 0; v < nv; v++)
-        fprintf(f, "v " OUT " " OUT " " OUT "\n", x[v], y[v], z[v]);
+  for (v = 0; v < nv; v++)
+    fprintf(f, "v " OUT " " OUT " " OUT "\n", x[v], y[v], z[v]);
 
-    for (t = 0; t < nt; t++) {
-        he_tri_ijk(he, t, &i, &j, &k);
-        fprintf(f, "f %d %d %d\n", i + 1, j + 1, k + 1);
-    }
-    return CO_OK;
+  for (t = 0; t < nt; t++) {
+    he_tri_ijk(he, t, &i, &j, &k);
+    fprintf(f, "f %d %d %d\n", i + 1, j + 1, k + 1);
+  }
+  return CO_OK;
 }
