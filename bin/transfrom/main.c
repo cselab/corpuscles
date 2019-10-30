@@ -103,7 +103,7 @@ main(__UNUSED int argc, char **argv)
       if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
 	  ER("fail to write");
   } else {
-      sprintf(name, "%05d.off", i);
+      sprintf(name, "%05d.t.off", i);
       file = fopen(name, "w");
       if (file == NULL)
 	  ER("fail to open '%s'", name);
