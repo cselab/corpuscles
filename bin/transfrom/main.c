@@ -13,7 +13,7 @@
 #include <co/y.h>
 
 #define radian(x) (0.0174532925199433*(x))
-static const char *me = "co.orient";
+static const char *me = "co.transform";
 static const real FV = 40; /* default field of view  */
 
 static void
@@ -38,12 +38,16 @@ main(__UNUSED int argc, char **argv)
   real tx, ty, tz, rx, ry, rz, f;
   He *he;
   char *arg;
-  int n;
+  int n, i;
+  FILE *file;
+  char name[999];
 
   err_set_ignore();
   argv++;
   tx = ty = tz = rx = ry = rz = 0;
   f = FV;
+  i = -1;
+  n = -1;
   while (*argv != NULL) {
     arg = argv++[0];
     if (arg[0] != '-')
@@ -71,7 +75,15 @@ main(__UNUSED int argc, char **argv)
     case 'f':
 	if (argv_real(&argv, &f) != CO_OK)
 	    ER("wrong -f option");
-      break;
+	break;
+    case 'i':
+	if (argv_int(&argv, &i) != CO_OK)
+	    ER("wrong -i option");
+	break;
+    case 'n':
+	if (argv_int(&argv, &n) != CO_OK)
+	    ER("wrong -n option");
+	break;
     default:
       ER("%s: unknown option: '%s'", me, arg);
     }
@@ -87,8 +99,20 @@ main(__UNUSED int argc, char **argv)
   transform_trany(ty, n, x, y, z);
   transform_tranz(tz, n, x, y, z);
 
-  if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
-    ER("fail to write");
+  if (i == -1) {
+      if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
+	  ER("fail to write");
+  } else {
+      sprintf(name, "%05d.off", i);
+      file = fopen(name, "w");
+      if (file == NULL)
+	  ER("fail to open '%s'", name);
+      if (off_he_xyz_fwrite(he, x, y, z, file) != CO_OK)
+	  ER("fail to write '%s'", name);
+      fprintf(stderr, "%s: %s\n", me, name);
+      fclose(file);
+  }
+
   y_fin(he, x, y, z);
   return 0;
 }

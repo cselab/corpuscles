@@ -125,7 +125,7 @@ function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt) {
     ry = rad2ang(ry)
     rz = rad2ang(rz)
     fmt = "%s -t %g %g %g -r %g %g %g -f %g -i %d -n %d < %s"
-    c = sprintf(fmt, ecommand, tx, ty, tz, rx, ry, rz, fov, ioff, noff, off)
+    c = sprintf(fmt, ecommand, tx, ty, tz, rx, ry, rz, fov, ioff - 1, noff, off)
     sys0(c)
 }
 
@@ -322,7 +322,7 @@ BEGIN {
         for (;;) {
             if (getline s == ERR) break
             if (parse(s) != OK) {
-                msg("fail to parse: " s)
+                msg("fail to parse: " quote(s))
                 break
             }
         }
