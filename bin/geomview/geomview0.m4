@@ -18,7 +18,7 @@ h_foreach_sep(`A', `
 Tmp=/tmp/co.geomview.$$.ppm
 trap 'rm -f $Tmp; echo 2' 1 2 3 15
 
-"$AWK" -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
+"$AWK" -v Q=\' -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
 foreach(Args, `-v A="$A"') \
 h_changequote()dnl
 '
@@ -115,8 +115,8 @@ function write_command(T, fov,   tx, ty, tz, rx, ry, rz, c, fmt) {
     msg0(c)
 }
 
-function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt) {
-    off = offs[ioff]
+function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt, c) {
+    off = singleq(offs[ioff])
     tx = T[W, X]; ty = T[W, Y]; tz = T[W, Z]
     rx = atan2(-T[Y,Z], T[Z,Z])
     ry = atan2(T[X,Z], sqrt(T[Y,Z]^2 + T[Z,Z]^2))
@@ -124,8 +124,13 @@ function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt) {
     rx = rad2ang(rx)
     ry = rad2ang(ry)
     rz = rad2ang(rz)
-    fmt = "%s -t %g %g %g -r %g %g %g -f %g -i %d -n %d < %s"
-    c = sprintf(fmt, ecommand, tx, ty, tz, rx, ry, rz, fov, ioff - 1, noff, off)
+    if (ecommand ~ /^\|/) {
+        fmt = "cat %s %s"
+        c = sprintf(fmt, off, ecommand)
+    } else {
+        fmt = "<%s %s -t %g %g %g -r %g %g %g -f %g -i %d -n %d"
+        c = sprintf(fmt, off, ecommand, tx, ty, tz, rx, ry, rz, fov, ioff - 1, noff)
+    }
     sys0(c)
 }
 
@@ -214,6 +219,7 @@ function draw(   off, file) {
         msg0(off)
 }
 
+function singleq(s) { return Q s Q }
 function quote(s) { sub(/`/, "\"", s); sub(/`/, "\"", s); return s }
 function g(s) { g0("(" s ")") }
 function g0(s) {
