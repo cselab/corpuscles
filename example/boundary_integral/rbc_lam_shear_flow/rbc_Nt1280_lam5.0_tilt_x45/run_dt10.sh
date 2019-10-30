@@ -99,13 +99,13 @@ then
     
 else
 
-    for i in `seq 2 2 8`;
+    for i in `seq 2 2 10`;
     do
 	num=$i
 	bash run_dt10.sh $num
     done
 
-    for i in `seq 20 10 190`;
+    for i in `seq 20 10 200`;
     do
    	num=$i
 	bash run_dt10.sh $num
@@ -122,8 +122,6 @@ else
 	num=$i
 	bash run_dt10.sh $num
     done
-
-
 
 fi
     
