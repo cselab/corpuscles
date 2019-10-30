@@ -34,6 +34,7 @@ function ini(   i) {
 
     Icommand = !eq(icommand, "-")
     Command = !eq(command, "-")
+    Ecommand = !eq(ecommand, "-")
     Report  = Command
 
     Format = format
@@ -146,7 +147,7 @@ function parse_key(k,   s,  T, fov, file) {
     else if (k == KEY_P)
          g("ui-panel geomview on")
     else if (k == KEY_E) {
-         if (!eq(ecommand, "-")) {
+         if (Ecommand) {
              read_transform(T)
              fov = read_fov()
              run_ecommand(T, fov)
