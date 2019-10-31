@@ -32,7 +32,24 @@ surf = LegacyVTKReader(FileNames=ff[0])
 surf = ForceTime(surf)
 surf = PointDatatoCellData(surf)
 surf = CellDatatoPointData(surf)
+Display1 = Show(surf, view)
+cLUT = GetColorTransferFunction('c')
+cLUT.RGBPoints = [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+cLUT.ScalarRangeInitialized = 1.0
+cPWF = GetOpacityTransferFunction('c')
+cPWF.Points = [0.0, 0.0, 0.5, 0.0, 1.0, 0.01, 0.5, 0.0]
+cPWF.ScalarRangeInitialized = 1
 
+# trace defaults for the display properties.
+Display1.Representation = 'Volume'
+Display1.ColorArrayName = ['POINTS', 'c']
+Display1.LookupTable = cLUT
+Display1.ScalarOpacityUnitDistance = 0.0349909254054319
+Display1.ScalarOpacityFunction = cPWF
+SaveScreenshot("a.png", view, TransparentBackground = 1)
+Log("a.png")
+
+# show data from cellDatatoPointData2
 Display2 = Show(surf, view)
 
 # get separate color transfer function/color map for 'c'
@@ -54,7 +71,8 @@ Display2.ScalarOpacityUnitDistance = 0.0349909254054319
 Display2.ScalarOpacityFunction = separate_Display2_cPWF
 Display2.UseSeparateColorMap = True
 
-SaveScreenshot("b.png", view, TransparentBackground = 1)
-Log("b.png")
+fn = "o.png"
+Log(fn)
+SaveScreenshot(fn, view, TransparentBackground = 1)
 
 exit(0)
