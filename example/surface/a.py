@@ -34,17 +34,19 @@ surf = PointDatatoCellData(surf)
 surf = CellDatatoPointData(surf)
 Display1 = Show(surf, view)
 cLUT = GetColorTransferFunction('c')
-cLUT.RGBPoints = [0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+cLUT.RGBPoints = [0, 0, 0, 0,       1, 1, 1, 1]
 cLUT.ScalarRangeInitialized = 1.0
 cPWF = GetOpacityTransferFunction('c')
-cPWF.Points = [0.0, 0.0, 0.5, 0.0, 1.0, 0.01, 0.5, 0.0]
+midpoint = 0.5
+sharpness = 0
+cPWF.Points = [0, 0, midpoint, sharpness,     1, 0.01, midpoint, sharpness]
 cPWF.ScalarRangeInitialized = 1
 
 # trace defaults for the display properties.
 Display1.Representation = 'Volume'
 Display1.ColorArrayName = ['POINTS', 'c']
 Display1.LookupTable = cLUT
-Display1.ScalarOpacityUnitDistance = 0.0349909254054319
+Display1.ScalarOpacityUnitDistance = 0.01
 Display1.ScalarOpacityFunction = cPWF
 
 SaveScreenshot("a.png", view, TransparentBackground = 1)

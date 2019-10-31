@@ -1,0 +1,10 @@
+load('cgrind)$
+
+f(x) := 1/(1 + exp(-f1*x));
+g(x) := f(x) - f(0);
+h(x) := g(x)/g(1);
+p(x) := h(2*x - 1);
+
+draw2d(explicit(p(x), x, 0, 1), 'color = 'red, explicit(2*x - 1, x, 0, 1)), f1 = 3;
+
+cgrind(fullratsimp(h(u))), numer;
