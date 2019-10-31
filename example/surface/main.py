@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 ALPHA = 3
-d = cv.imread('img/0.png', cv.IMREAD_UNCHANGED)
+d = cv.imread('img/a.png', cv.IMREAD_UNCHANGED)
 alpha = d[:, :, ALPHA]
 
 f1 = 4
@@ -23,7 +23,7 @@ def sigmoid(x):
 
 def transform(e):
     e = (e - lo)/(hi - lo)
-    e = sigmoid(e)
+    #e = sigmoid(e)
     e *= 255
     if e < 0:
        e = 0
@@ -34,6 +34,7 @@ def transform(e):
 transform = np.vectorize(transform)
 lo = np.min(alpha)
 hi = np.max(alpha)
+print(lo, hi)
 alpha = transform(alpha)
 
 d[:, :, ALPHA] = alpha
