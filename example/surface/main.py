@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import cv2 as cv
 import math
 import numpy as np
@@ -22,19 +24,18 @@ def sigmoid(x):
     return h(2*x - 1)
 
 def transform(e):
-    e = (e - lo)/(hi - lo)
-    #e = sigmoid(e)
+    e = (e - lo + 0.0)/(hi - lo)
+    e = sigmoid(e)
     e *= 255
+    e = int(e)
     if e < 0:
        e = 0
     elif e > 255:
        e = 255
-    e = int(e)
     return e
 transform = np.vectorize(transform)
 lo = np.min(alpha)
 hi = np.max(alpha)
-print(lo, hi)
 alpha = transform(alpha)
 
 d[:, :, ALPHA] = alpha
