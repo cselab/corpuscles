@@ -113,29 +113,16 @@ else
     done
 
 
-    for i in `seq 1 1 4`;
+    for i in `seq 1 1 20`;
     do
 	num=$i
+	mu=$((num%5))
+	if [ $mu -eq 0 ]; then
+	    continue;
+	fi
 	bash run_dt10.sh $num
     done
 
-    for i in `seq 6 1 9`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 11 1 14`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
-
-    for i in `seq 16 1 19`;
-    do
-	num=$i
-	bash run_dt10.sh $num
-    done
     
 
 fi

@@ -26,14 +26,14 @@ b2=0.75
 
 rho=1.0
 eta_in=645.928652122
-lambda=0.2
+lambda=5.0
 eta_out=$(echo ${eta_in} $lambda | awk '{print $1/$2}')
 #echo "eta_in : "$eta_in
 #echo "eta_out: "$eta_out
-#exit
+#exit  
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=1
+tscale=10
 
 start=0
 end=9000000
@@ -49,16 +49,13 @@ then
 
     num="$1"
 
-    #convert num to integer inum
-    inum=$(printf "%.0f" $num)
-
     gamdot=$(echo $gamdot0, $num | awk '{print $1*$2}')
     dt=$(echo $dt0 $num $tscale | awk '{print $1*$3/$2}')
 
-    if [ $inum -le 100 ]; then
+    if [ $num -le 100 ]; then
 	Kc=$Kc0
     else
-	Kc=$(echo $inum $Kc0 | awk '{print $1*$2/100}')	
+	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
     fi
 
     Kga=$Kc
@@ -88,27 +85,43 @@ then
     echo "num="$num
     echo "fgam="$fgam
     echo "fdt="$fdt
-    echo "Kc="$Kc
-
     
     if [ ! -d Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc} ]; then
+	
 	mkdir Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
+	
     fi
     
     cd Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
-
+    
     co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
       
     
 else
 
-    inc=0.1
-    for i in `seq 2 2 30`; #15
+    for i in `seq 2 2 10`;
     do
-	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_small_dt1.sh $num
+	num=$i
+	bash run_dt10.sh $num
     done
 
+    for i in `seq 20 10 200`;
+    do
+   	num=$i
+	bash run_dt10.sh $num
+    done
+
+    for i in `seq 250 50 1000`;
+    do
+	num=$i
+	bash run_dt10.sh $num
+    done
+    
+    for i in `seq 1500 500 5000`;
+    do
+	num=$i
+	#bash run_dt10.sh $num
+    done
 
 fi
     
