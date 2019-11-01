@@ -5,6 +5,5 @@ g(x) := f(x) - f(0);
 h(x) := g(x)/g(1);
 p(x) := h(2*x - 1);
 
-draw2d(explicit(p(x), x, 0, 1), 'color = 'red, explicit(2*x - 1, x, 0, 1)), f1 = 4;
+draw2d(explicit(p(x), x, 0, 1), 'color = 'red, explicit(2*x - 1, x, 0, 1)), f1 = 8;
 
-cgrind(expand(h(u))), f1 = 4, numer;

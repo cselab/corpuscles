@@ -16,7 +16,7 @@ enum {
   X, Y, Z
 };
 static const char me[] = "surface/vtk";
-static const int M = 1000000;
+static const int M = 2000000;
 
 int
 main(int argc, const char **argv)
