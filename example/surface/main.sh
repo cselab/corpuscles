@@ -1,6 +1,6 @@
 # i=/u/co/img/dupier.off
 #i=/u/.co/rbc/laplace/0.off
-i=data/edg.off
+i=$1
 ./vtk < $i > b.vtk
 ./a.py b.vtk
 ./b.py b.vtk

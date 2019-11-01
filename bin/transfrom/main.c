@@ -20,7 +20,7 @@ static void
 usg(void)
 {
   fprintf(stderr,
-	  "%s -t x y z -r ox oy oz -f [field of view] < IN.off > OUT.off\n",
+	  "%s [-c] -t x y z -r ox oy oz -f [field of view] < IN.off > OUT.off\n",
 	  me);
   exit(2);
 }
@@ -38,12 +38,13 @@ main(__UNUSED int argc, char **argv)
   real tx, ty, tz, rx, ry, rz, f;
   He *he;
   char *arg;
-  int n, i;
+  int n, i, Center;
   FILE *file;
   char name[999];
 
   err_set_ignore();
   argv++;
+  Center = 0;
   tx = ty = tz = rx = ry = rz = 0;
   f = FV;
   i = -1;
@@ -55,6 +56,9 @@ main(__UNUSED int argc, char **argv)
     switch (arg[1]) {
     case 'h':
       usg();
+      break;
+    case 'c':
+      Center = 1;
       break;
     case 't':
 	if (argv_real(&argv, &tx) != CO_OK)
@@ -91,6 +95,9 @@ main(__UNUSED int argc, char **argv)
   if (y_inif(stdin, &he, &x, &y, &z) != CO_OK)
     ER("fail to open input file");
   n = he_nv(he);
+  if (Center)
+    transform_center(n, x, y, z);
+  
   transform_rotx(radian(-rx), n, x, y, z);
   transform_roty(radian(-ry), n, x, y, z);
   transform_rotz(radian(-rz), n, x, y, z);

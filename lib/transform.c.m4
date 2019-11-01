@@ -4,10 +4,11 @@ include(`co.m4')dnl
 
 #include "real.h"
 
+#include "co/array.h"
 #include "co/err.h"
 #include "co/he.h"
-#include "co/tri.h"
 #include "co/sum.h"
+#include "co/tri.h"
 #include "co/vec.h"
 
 #include "co/transform.h"
@@ -138,4 +139,16 @@ int transform_scal(const real s[3], int n, /*io*/ real *x, real *y, real *z) {
     transform_scaly(s[Y], n, x, y, z);
     transform_scalz(s[Z], n, x, y, z);
     return CO_OK;
+}
+
+int transform_center(int n, /*io*/ real * x, real * y, real * z)
+{
+  enum {X, Y, Z};
+  real r[3];
+  
+  r[X] = -array_mean(n, x);
+  r[Y] = -array_mean(n, y);
+  r[Z] = -array_mean(n, z);
+  transform_tran(r, n, x, y, z);
+  return CO_OK;
 }
