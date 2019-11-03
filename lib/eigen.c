@@ -227,5 +227,5 @@ eigen_values(T *q, /**/ real val[3])
 {
   real *m;
   m = q->m;
-  return alg_eig_vectors(m, val);
+  return alg_eig_values(m, val);
 }
