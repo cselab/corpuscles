@@ -16,6 +16,7 @@
 
 struct T {
     int n;
+    real m[6];
     real v[3 * 3];
 };
 
@@ -100,11 +101,11 @@ int
 eigen_vector(T * q, real * x, real * y, real * z, /**/ real * ev)
 {
     int n, i;
-    real m[6];
-    real *v;
+    real *v, *m;
 
     n = q->n;
     v = q->v;
+    m = q->m;
     to_cm(n, /**/ x, y, z);
     moment(n, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
@@ -190,11 +191,11 @@ eigen_vector_surface(T * q, He * he, real * x, real * y, real * z,
                      /**/ real * ev)
 {
     int n, i;
-    real m[6];
-    real *v;
+    real *v, *m;
 
     n = q->n;
     v = q->v;
+    m = q->m;
     to_cm(n, /**/ x, y, z);
     moment_surface(he, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
@@ -208,15 +209,23 @@ eigen_vector_tri(T * q, He * he, real * x, real * y, real * z,
                  /**/ real * ev)
 {
     int n, i;
-    real m[6];
-    real *v;
+    real *v, *m;
 
     n = q->n;
     v = q->v;
+    m = q->m;
     to_cm(n, /**/ x, y, z);
     moment_tri(he, x, y, z, /**/ m);
     alg_eig_vectors(m, v);
     for (i = 0; i < 9; i++)
         ev[i] = v[i];
     return CO_OK;
+}
+
+int
+eigen_values(T *q, /**/ real val[3])
+{
+  real *m;
+  m = q->m;
+  return alg_eig_vectors(m, val);
 }
