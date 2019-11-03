@@ -14,14 +14,14 @@
 
 #define radian(x) (0.0174532925199433*(x))
 static const char *me = "co.transform";
-static const real FV = 40; /* default field of view  */
+static const real FV = 40;      /* default field of view  */
 
 static void
 usg(void)
 {
   fprintf(stderr,
-	  "%s [-c] -t x y z -r ox oy oz -s sx sy sz -f [field of view] < IN.off > OUT.off\n",
-	  me);
+          "%s [-c] -t x y z -r ox oy oz -s sx sy sz -f [field of view] < IN.off > OUT.off\n",
+          me);
   exit(2);
 }
 
@@ -62,41 +62,41 @@ main(__UNUSED int argc, char **argv)
       Center = 1;
       break;
     case 't':
-	if (argv_real(&argv, &tx) != CO_OK)
-	    ER("wrong -t option");
-	if (argv_real(&argv, &ty) != CO_OK)
-	    ER("wrong -t option");
-	if (argv_real(&argv, &tz) != CO_OK)
-	    ER("wrong -t option");
-	break;
+      if (argv_real(&argv, &tx) != CO_OK)
+        ER("wrong -t option");
+      if (argv_real(&argv, &ty) != CO_OK)
+        ER("wrong -t option");
+      if (argv_real(&argv, &tz) != CO_OK)
+        ER("wrong -t option");
+      break;
     case 's':
-	if (argv_real(&argv, &sx) != CO_OK)
-	    ER("wrong -s option");
-	if (argv_real(&argv, &sy) != CO_OK)
-	    ER("wrong -s option");
-	if (argv_real(&argv, &sz) != CO_OK)
-	    ER("wrong -s option");
-	break;
+      if (argv_real(&argv, &sx) != CO_OK)
+        ER("wrong -s option");
+      if (argv_real(&argv, &sy) != CO_OK)
+        ER("wrong -s option");
+      if (argv_real(&argv, &sz) != CO_OK)
+        ER("wrong -s option");
+      break;
     case 'r':
-	if (argv_real(&argv, &rx) != CO_OK)
-	    ER("wrong -r option");
-	if (argv_real(&argv, &ry) != CO_OK)
-	    ER("wrong -r option");
-	if (argv_real(&argv, &rz) != CO_OK)
-	    ER("wrong -r option");
-	break;
+      if (argv_real(&argv, &rx) != CO_OK)
+        ER("wrong -r option");
+      if (argv_real(&argv, &ry) != CO_OK)
+        ER("wrong -r option");
+      if (argv_real(&argv, &rz) != CO_OK)
+        ER("wrong -r option");
+      break;
     case 'f':
-	if (argv_real(&argv, &f) != CO_OK)
-	    ER("wrong -f option");
-	break;
+      if (argv_real(&argv, &f) != CO_OK)
+        ER("wrong -f option");
+      break;
     case 'i':
-	if (argv_int(&argv, &i) != CO_OK)
-	    ER("wrong -i option");
-	break;
+      if (argv_int(&argv, &i) != CO_OK)
+        ER("wrong -i option");
+      break;
     case 'n':
-	if (argv_int(&argv, &n) != CO_OK)
-	    ER("wrong -n option");
-	break;
+      if (argv_int(&argv, &n) != CO_OK)
+        ER("wrong -n option");
+      break;
     default:
       ER("%s: unknown option: '%s'", me, arg);
     }
@@ -120,17 +120,17 @@ main(__UNUSED int argc, char **argv)
   transform_tranz(tz, n, x, y, z);
 
   if (i == -1) {
-      if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
-	  ER("fail to write");
+    if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
+      ER("fail to write");
   } else {
-      sprintf(name, "%05d.t.off", i);
-      file = fopen(name, "w");
-      if (file == NULL)
-	  ER("fail to open '%s'", name);
-      if (off_he_xyz_fwrite(he, x, y, z, file) != CO_OK)
-	  ER("fail to write '%s'", name);
-      fprintf(stderr, "%s: %s\n", me, name);
-      fclose(file);
+    sprintf(name, "%05d.t.off", i);
+    file = fopen(name, "w");
+    if (file == NULL)
+      ER("fail to open '%s'", name);
+    if (off_he_xyz_fwrite(he, x, y, z, file) != CO_OK)
+      ER("fail to write '%s'", name);
+    fprintf(stderr, "%s: %s\n", me, name);
+    fclose(file);
   }
 
   y_fin(he, x, y, z);
