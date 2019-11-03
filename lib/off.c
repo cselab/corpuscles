@@ -17,9 +17,16 @@
 #define T HeOff
 enum { SIZE = MAX_STRING_SIZE };
 
-#define FWRITE(ptr, size) \
-    if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))         \
-	ERR(CO_IO, "fwrite failed: need = %d, got = %d", size, cnt)
+#define FWRITE(ptr, size)					     \
+    do							     \
+    if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))	     \
+	ERR(CO_IO, "fwrite failed: need = %d, got = %d", size, cnt); \
+    while (0)
+#define FREAD(n, p)					\
+    do							\
+    if ((int)fread(p, sizeof(*(p)), (n), (f)) != (n))	\
+	ERR(CO_IO, "fread failed, n = %d", n);		\
+    while (0)
 
 #define FMT CO_REAL_IN
 #define OUT CO_REAL_OUT
@@ -29,7 +36,6 @@ struct T {
   int *tri;                     /* t0[0] t1[0] t2[0] ... */
   int nv, nt;
 };
-
 
 #define NXT() if (util_comment_fgets(line, f) == NULL)  \
 	ERR(CO_IO, "unexpected EOF")
@@ -41,7 +47,7 @@ read_text(T *q, FILE * f)
   int *t0, *t1, *t2, cnt, np;
   real *ver, *x, *y, *z;
   int *tri;
-  
+
   NXT();
   cnt = sscanf(line, "%d %d %*d", &nv, &nt);
   if (cnt != 2)
@@ -76,51 +82,59 @@ read_text(T *q, FILE * f)
   }
   q->nv = nv;
   q->nt = nt;
+  return CO_OK;
 }
 
 static int
-read_binary(T *q, FILE * f)
+read_binary(T *q, int Color, FILE * f)
 {
+  enum {X, Y, Z};
   char line[SIZE];
-  int i, nv, nt;
-  int *t0, *t1, *t2, cnt, np;
-  real *ver, *x, *y, *z;
+  int i, j, nv, nt, ibuf[1 + 3], np, nc;
+  real *ver;
   int *tri;
+  float fbuf[7];
+
+  FREAD(3, ibuf);
+  big_endian_int(3, ibuf);
+  nv = ibuf[0];
+  nt = ibuf[1];
+  MALLOC(3*nv, &ver);
+  MALLOC(3*nt, &tri);
+
+  Color = 1;
+  for (i = j = 0; i < nv; i++) {
+      if (Color)
+	  FREAD(7, fbuf);
+      else
+	  FREAD(3, fbuf);
+      big_endian_flt(3, fbuf);
+      ver[j++] = fbuf[X];
+      ver[j++] = fbuf[Y];
+      ver[j++] = fbuf[Z];
+  }
   
-  NXT();
-  cnt = sscanf(line, "%d %d %*d", &nv, &nt);
-  if (cnt != 2)
-    ERR(CO_IO, "fail to parse: '%s'", line);
-  if (3 * nt < nv)
-    ERR(CO_IO, "3*(nt=%d)   <   nv=%d", nt, nv);
-
-  MALLOC(3 * nv, &q->ver);
-  ver = q->ver;
-  MALLOC(3 * nt, &q->tri);
-  tri = q->tri;
-  for (i = 0; i < nv; i++) {
-    NXT();
-    x = ver++;
-    y = ver++;
-    z = ver++;
-    cnt = sscanf(line, FMT " " FMT " " FMT, x, y, z);
-    if (cnt != 3)
-      ERR(CO_IO, "wrong vertex line '%s'", line);
+  for (i = j = 0; i < nt; i++) {
+      FREAD(1, &np);
+      big_endian_int(1, &np);
+      if (np != 3)
+	  ERR(CO_IO, "np=%d != 3");
+      FREAD(3, ibuf);
+      big_endian_int(3, ibuf);
+      tri[j++] = ibuf[0];
+      tri[j++] = ibuf[1];
+      tri[j++] = ibuf[2];
+      FREAD(1, &nc); /* skip colors */
+      big_endian_int(1, &nc);
+      if (nc > 0)
+	  FREAD(nc, fbuf);
   }
 
-  for (i = 0; i < nt; i++) {
-    NXT();
-    t0 = tri++;
-    t1 = tri++;
-    t2 = tri++;
-    cnt = sscanf(line, "%d %d %d %d", &np, t0, t1, t2);
-    if (cnt != 4)
-      ERR(CO_IO, "wrong triangle line '%s'", line);
-    if (np != 3)
-      ERR(CO_IO, "not a triangle '%s'", line);
-  }
+  q->tri = tri;
+  q->ver = ver;
   q->nv = nv;
   q->nt = nt;
+  return CO_OK;
 }
 
 int
@@ -128,7 +142,7 @@ off_inif(FILE * f, T ** pq)
 {
   T *q;
   char line[SIZE];
-  int status;
+  int status, Color;
 
   MALLOC(1, &q);
   if (f == NULL)
@@ -136,10 +150,12 @@ off_inif(FILE * f, T ** pq)
   NXT();
   if (util_eq(line, "OFF"))
     status = read_text(q, f);
-  else if (util_eq(line, "COFF"))
-    status = read_binary(q, f);
+  else if (util_eq(line, "OFF BINARY"))
+      status = read_binary(q, Color = 0, f);      
+  else if (util_eq(line, "COFF BINARY"))
+      status = read_binary(q, Color = 1, f);
   else
-    ERR(CO_IO, "expecting 'OFF' got '%s'", line);
+    ERR(CO_IO, "expecting 'OFF' or 'COFF' got '%s'", line);
   if (status != CO_OK)
     ERR(CO_IO, "read_xt failed");
   *pq = q;
@@ -214,7 +230,7 @@ off_tri(T * q, int **p)
 
 int
 off_fwrite(T * q, const real * x, const real * y, const real * z,
-           /**/ FILE * f)
+	   /**/ FILE * f)
 {
   int nv, nt, ne, npv, *tri, m, i, j, k;
 
@@ -241,7 +257,7 @@ off_fwrite(T * q, const real * x, const real * y, const real * z,
 
 int
 off_write0(T * q, const real * x, const real * y, const real * z,
-           /**/ const char *path)
+	   /**/ const char *path)
 {
   FILE *f;
 
@@ -353,7 +369,7 @@ off_he_write(T * q, He * he, /**/ const char *path)
 
 int
 off_xyz_tri_fwrite(int nv, const real * xyz, int nt, const int *tri,
-                   FILE * f)
+		   FILE * f)
 {
   int ne, npv, i, j, k;
   real x, y, z;
@@ -380,7 +396,7 @@ off_xyz_tri_fwrite(int nv, const real * xyz, int nt, const int *tri,
 
 int
 off_he_xyz_fwrite(He * he, const real * x, const real * y, const real * z,
-                  /**/ FILE * f)
+		  /**/ FILE * f)
 {
   int nv, nt, ne, npv, m, i, j, k;
 
@@ -402,7 +418,7 @@ off_he_xyz_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 off_he_xyz_write(He * he, const real * x, const real * y, const real * z,
-                 /**/ const char *path)
+		 /**/ const char *path)
 {
   FILE *f;
 
@@ -417,7 +433,7 @@ off_he_xyz_write(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_fwrite(He * he, const real * x, const real * y, const real * z,
-            /**/ FILE * f)
+	    /**/ FILE * f)
 {
   int nv, nt, ne, npv, nc, m, i, j, k;
   int ib[5], n, cnt;
@@ -462,7 +478,7 @@ boff_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_lh_tri_fwrite(He * he, const real * x, const real * y, const real * z,
-                   real lo, real hi, const real * a, /**/ FILE * f)
+		   real lo, real hi, const real * a, /**/ FILE * f)
 {
   int nv, nt, ne, npv, nc, m, i, j, k;
   int ib[5], n, cnt;
@@ -518,7 +534,7 @@ boff_lh_tri_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_tri_fwrite(He * he, const real * x, const real * y, const real * z,
-                const real * a, /**/ FILE * f)
+		const real * a, /**/ FILE * f)
 {
   int nt;
   real l, h;
@@ -532,7 +548,7 @@ boff_tri_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
-                   real lo, real hi, const real * a, /**/ FILE * f)
+		   real lo, real hi, const real * a, /**/ FILE * f)
 {
   int nv, nt, ne, npv, nc, m, i, j, k;
   int ib[5], n, cnt;
@@ -584,7 +600,7 @@ boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_ver_fwrite(He * he, const real * x, const real * y, const real * z,
-                const real * a, /**/ FILE * f)
+		const real * a, /**/ FILE * f)
 {
   int n;
   real l, h;
@@ -597,8 +613,8 @@ boff_ver_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_vect_fwrite(He * he, const real * xx, const real * yy,
-                 const real * zz, const real * uu, const real * vv,
-                 const real * ww, /**/ FILE * f)
+		 const real * zz, const real * uu, const real * vv,
+		 const real * ww, /**/ FILE * f)
 {
 #define P(x, y, z) do {                              \
 	fb[m++] = (x); fb[m++] = (y); fb[m++] = (z);    \
@@ -676,8 +692,8 @@ boff_vect_fwrite(He * he, const real * xx, const real * yy,
 
 int
 boff_lh_point_fwrite(He * he, const real * x, const real * y,
-                     const real * z, real lo, real hi, const real * a,
-                     /**/ FILE * f)
+		     const real * z, real lo, real hi, const real * a,
+		     /**/ FILE * f)
 {
   int n, m, i, cnt;
   float red, blue, green, alpha;
@@ -734,7 +750,7 @@ boff_lh_point_fwrite(He * he, const real * x, const real * y,
 
 int
 boff_point_fwrite(He * he, const real * x, const real * y, const real * z,
-                  const real * a, /**/ FILE * f)
+		  const real * a, /**/ FILE * f)
 {
   int nt;
   real l, h;

@@ -20,7 +20,7 @@ static void
 usg(void)
 {
   fprintf(stderr,
-	  "%s [-c] -t x y z -r ox oy oz -f [field of view] < IN.off > OUT.off\n",
+	  "%s [-c] -t x y z -r ox oy oz -s sx sy sz -f [field of view] < IN.off > OUT.off\n",
 	  me);
   exit(2);
 }
@@ -35,7 +35,7 @@ int
 main(__UNUSED int argc, char **argv)
 {
   real *x, *y, *z;
-  real tx, ty, tz, rx, ry, rz, f;
+  real tx, ty, tz, rx, ry, rz, sx, sy, sz, f;
   He *he;
   char *arg;
   int n, i, Center;
@@ -46,6 +46,7 @@ main(__UNUSED int argc, char **argv)
   argv++;
   Center = 0;
   tx = ty = tz = rx = ry = rz = 0;
+  sx = sy = sz = 1;
   f = FV;
   i = -1;
   n = -1;
@@ -67,6 +68,14 @@ main(__UNUSED int argc, char **argv)
 	    ER("wrong -t option");
 	if (argv_real(&argv, &tz) != CO_OK)
 	    ER("wrong -t option");
+	break;
+    case 's':
+	if (argv_real(&argv, &sx) != CO_OK)
+	    ER("wrong -s option");
+	if (argv_real(&argv, &sy) != CO_OK)
+	    ER("wrong -s option");
+	if (argv_real(&argv, &sz) != CO_OK)
+	    ER("wrong -s option");
 	break;
     case 'r':
 	if (argv_real(&argv, &rx) != CO_OK)
@@ -97,10 +106,14 @@ main(__UNUSED int argc, char **argv)
   n = he_nv(he);
   if (Center)
     transform_center(n, x, y, z);
-  
+
   transform_rotx(radian(-rx), n, x, y, z);
   transform_roty(radian(-ry), n, x, y, z);
   transform_rotz(radian(-rz), n, x, y, z);
+
+  transform_scalx(sx, n, x, y, z);
+  transform_scaly(sy, n, x, y, z);
+  transform_scalz(sz, n, x, y, z);
 
   transform_tranx(tx, n, x, y, z);
   transform_trany(ty, n, x, y, z);
