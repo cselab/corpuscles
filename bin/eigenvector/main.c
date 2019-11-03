@@ -17,13 +17,14 @@ usg(void)
     fprintf(stderr, "  -t   use triangles\n", me);
     fprintf(stderr, "  -s   use surface\n", me);
     fprintf(stderr, "  -p   use points (default)\n", me);
-    fprintf(stderr, "  -a   print eigenvalues (default: eigenvector)\n", me);
+    fprintf(stderr, "  -a   print eigenvalues (default: eigenvector)\n",
+            me);
     exit(2);
 }
 
 static int
 eigen_vector_point(Eigen * q, He * he, real * x, real * y, real * z,
-		   real * v)
+                   real * v)
 {
     USED(he);
     return eigen_vector(q, x, y, z, v);
@@ -45,28 +46,28 @@ main(__UNUSED int argc, char **argv)
     Alg = eigen_vector_point;
     Report = VECTOR;
     while (*argv != NULL) {
-	arg = argv++[0];
-	if (arg[0] != '-')
-	    break;
-	switch (arg[1]) {
-	case 'h':
-	    usg();
-	    break;
-	case 's':
-	    Alg = eigen_vector_surface;
-	    break;
-	case 'p':
-	    Alg = eigen_vector_point;
-	    break;
-	case 't':
-	    Alg = eigen_vector_tri;
-	    break;
-	case 'a':
-	    Report = VALUE;
-	    break;
-	default:
-	    ER("%s: unknown option '%s'", me, arg);
-	}
+        arg = argv++[0];
+        if (arg[0] != '-')
+            break;
+        switch (arg[1]) {
+        case 'h':
+            usg();
+            break;
+        case 's':
+            Alg = eigen_vector_surface;
+            break;
+        case 'p':
+            Alg = eigen_vector_point;
+            break;
+        case 't':
+            Alg = eigen_vector_tri;
+            break;
+        case 'a':
+            Report = VALUE;
+            break;
+        default:
+            ER("%s: unknown option '%s'", me, arg);
+        }
     }
 
     y_inif(stdin, &he, &x, &y, &z);
@@ -75,9 +76,9 @@ main(__UNUSED int argc, char **argv)
     eigen_values(eigen, val);
 
     if (Report == VECTOR)
-	printf(FMT " " FMT " " FMT "\n", vec[0], vec[3], vec[6]);
+        printf(FMT " " FMT " " FMT "\n", vec[0], vec[3], vec[6]);
     else
-	vec_printf(val, FMT);
+        vec_printf(val, FMT);
     eigen_fin(eigen);
     y_fin(he, x, y, z);
     return 0;
