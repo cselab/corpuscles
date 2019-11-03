@@ -17,7 +17,7 @@ usg(void)
     fprintf(stderr, "  -t   use triangles\n", me);
     fprintf(stderr, "  -s   use surface\n", me);
     fprintf(stderr, "  -p   use points (default)\n", me);
-    fprintf(stderr, "  -v   print eigenvalues (default: eigenvector)\n", me);
+    fprintf(stderr, "  -a   print eigenvalues (default: eigenvector)\n", me);
     exit(2);
 }
 
@@ -61,7 +61,7 @@ main(__UNUSED int argc, char **argv)
 	case 't':
 	    Alg = eigen_vector_tri;
 	    break;
-	case 'v':
+	case 'a':
 	    Report = VALUE;
 	    break;
 	default:
