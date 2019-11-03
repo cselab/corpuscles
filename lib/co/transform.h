@@ -16,4 +16,4 @@ int transform_scalx(real, int, /*io */ real *, real *, real *);
 int transform_scaly(real, int, /*io */ real *, real *, real *);
 int transform_scalz(real, int, /*io */ real *, real *, real *);
 int transform_scal(const real[3], int, /*io */ real *, real *, real *);
-int transform_center(int , /*io*/ real *, real *, real *);
+int transform_center(int, /*io */ real *, real *, real *);

@@ -143,8 +143,8 @@ strain_energy_3d(void *param, real(*F) (void *, real, real),
 
     strain_2d(param, Dummy, Dummy,
               bx, cx, cy,
-              ux, wx, wy,
-              NULL, NULL, NULL, NULL, NULL, NULL, &I1, &I2, &A);
+              ux, wx, wy, NULL, NULL, NULL, NULL, NULL, NULL, &I1, &I2,
+              &A);
 
     deng = F(param, I1, I2);
     eng = deng * fabs(A);
