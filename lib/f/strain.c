@@ -197,8 +197,8 @@ he_f_strain_force(T * q, __UNUSED He * he0, const real * x, const real * y,
     BEGIN {
         strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
         if (!assert_force(a, b, c, da, db, dc))
-            ERR(CO_NUM,
-                "bad forces in triangle: %d [%d %d %d]", t, i, j, k);
+            ERR(CO_NUM, "bad forces in triangle: %d [%d %d %d]", t, i, j,
+                k);
         vec_append(da, i, /**/ fx, fy, fz);
         vec_append(db, j, /**/ fx, fy, fz);
         vec_append(dc, k, /**/ fx, fy, fz);

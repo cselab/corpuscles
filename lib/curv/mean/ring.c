@@ -22,7 +22,7 @@ struct T {
 };
 
 int
-curv_mean_ring_ini(He * he, T **pq)
+curv_mean_ring_ini(He * he, T ** pq)
 {
     T *q;
     int nv;
@@ -46,22 +46,22 @@ curv_mean_ring_fin(T * q)
 }
 
 int
-curv_mean_ring_apply(T * q, He * he, const real * x, const real * y, const real * z,
-	/**/ real * ans)
+curv_mean_ring_apply(T * q, He * he, const real * x, const real * y,
+                     const real * z, /**/ real * ans)
 {
     int nv, i;
     int n, *rring;
     real *C, *xyz;
-    
+
     nv = q->nv;
     if (nv != he_nv(he))
-	ERR(CO_NUM, "nv=%d != he_nv(he)=%d", nv, he_nv(he));
+        ERR(CO_NUM, "nv=%d != he_nv(he)=%d", nv, he_nv(he));
     for (i = 0; i < nv; i++) {
-	he_ring(he, i, &n, &rring);
-	ring_xyz(q->ring, i, rring, x, y, z, &xyz);
-	ring_C(q->ring, i, rring, x, y, z, &C);
-	ans[i] = ring_H(n, xyz, C);
+        he_ring(he, i, &n, &rring);
+        ring_xyz(q->ring, i, rring, x, y, z, &xyz);
+        ring_C(q->ring, i, rring, x, y, z, &C);
+        ans[i] = ring_H(n, xyz, C);
     }
-    
+
     return CO_OK;
 }
