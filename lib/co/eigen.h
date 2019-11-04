@@ -7,9 +7,9 @@ int eigen_ini(He *, /**/ T **);
 int eigen_fin(T *);
 
 int eigen_vector(T *, real * x, real *, real *, /**/ real[9]);
-int eigen_vector_surface(T *, He *, real *, real *, real*, /**/ real[9]);
+int eigen_vector_surface(T *, He *, real *, real *, real *, /**/ real[9]);
 int eigen_vector_tri(T *, He *, real *, real *, real *, /**/ real[9]);
 
-int eigen_values(T *, /**/ real val[3]);
+int eigen_values(T *, /**/ real[3]);
 
 #undef T
