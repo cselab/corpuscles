@@ -132,8 +132,12 @@ then
 else
     
     num=1
+    #bash run_cont_cont.sh $num
+
+    num=80
     bash run_cont_cont.sh $num
     
-
+    num=100
+    bash run_cont_cont.sh $num
 
 fi

@@ -4,7 +4,6 @@ Da1=0.143
 pi=3.141592653589793115997964
 A=12.5663706144
 V=2.68919777043
-#v=0.641998677173
 v=0.642
 R=1
 
@@ -49,15 +48,18 @@ then
 
     num="$1"
 
+    #convert num to integer inum, in case num is not an integer
+    inum=$(printf "%.0f" $num)
+
     gamdot=$(echo $gamdot0, $num | awk '{print $1*$2}')
     dt=$(echo $dt0 $num $tscale | awk '{print $1*$3/$2}')
 
-    if [ $num -le 100 ]; then
+    if [ $inum -le 100 ]; then
 	Kc=$Kc0
     else
-	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
+	Kc=$(echo $inum $Kc0 | awk '{print $1*$2/100}')	
     fi
-
+    
     Kga=$Kc
     Kv=$Kc
 
@@ -97,25 +99,18 @@ then
     
 else
 
-    for i in `seq 1 1 20`;
+    inc=0.2
+    for i in `seq 10 50`; #41
+    do
+	num=$(echo $i $inc | awk '{print $1*$2}')
+	bash run_dt10.sh $num
+    done
+
+    for i in `seq 11 1 30`; #20
     do
 	num=$i
 	bash run_dt10.sh $num
     done
-
-    for i in `seq 25 5 120`;
-    do
-	num=$i
-	#bash run_dt10.sh $num
-    done
-
-    for i in `seq 150 50 500`;
-    do
-	num=$i
-	#bash run_dt10.sh $num
-    done
-
-   
 
 fi
     

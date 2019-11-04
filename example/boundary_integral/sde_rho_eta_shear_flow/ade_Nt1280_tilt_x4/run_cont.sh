@@ -125,10 +125,29 @@ then
 
 else
 
-    for i in `seq 5 5 20`;
+    for i in `seq 5 5 100`;
+    do
+	num=$i
+	#bash run_cont.sh $num
+    done
+    
+    for i in `seq 110 10 200`;
+    do
+	num=$i
+	#bash run_cont.sh $num
+    done
+
+    for i in `seq 210 10 250`;
     do
 	num=$i
 	bash run_cont.sh $num
     done
+
+    for i in `seq 300 100 2000`;
+    do
+	num=$i
+	bash run_cont.sh $num
+    done
+
 
 fi
