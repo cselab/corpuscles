@@ -73,41 +73,18 @@ then
     ref_file=../ref/ref_v0.95.off
     
     Da1=$(printf "%.3f" $Da1)
-    #echo "Da1="$Da1
     lam=$(printf "%.4f" $lambda)
-    #echo "lam="$lam
-
     gamdot=$(echo $gamdot0, $num | awk '{print $1*$2}')
-    gam=$gamdot
-    gam=$(printf "%.4f" $gam)
-    #echo "gam="$gam
-    gam1=$(echo $gamdot1, $num | awk '{print $1*$2}')
-    gam1=$(printf "%.4f" $gam1)
-    #echo "gam1="$gam1
-
-    dt=$(echo $dt0, $num, $tscale | awk '{print $1*$3/$2}')
-    #echo "dt="$dt
-    ddt=$(printf "%.4f" $dt)
-    #echo "ddt="$ddt
-
-    
-    if [ -d  Da${Da1}_lam${lam}_g${gam1}_dt${dt}_Kc${Kc} ]; then
-	gam=$gam1;
-    fi
-
-    if [ -d  Da${Da1}_lam${lam}_g${gam1}_dt${ddt}_Kc${Kc} ]; then
-	gam=$gam1;
-	dt=$ddt;
-    fi
-    
-    if [ -d  Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc} ]; then
-	dt=$ddt;
-    fi
-    
+    dt=$(echo $dt0 $num $tscale | awk '{print $1*$3/$2}')
+    gam=$(printf "%.4f" $gamdot)
+    #echo "Da1="$Da1
+    #echo "lam="$lam
     #echo "gam="$gam
     #echo "dt="$dt
-
-    folder="Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}"
+    #echo "Kc="$Kc
+    #exit
+    
+    folder="Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}_cont"
     
     if [ ! -d ${folder}_cont ]; then
 	mkdir ${folder}_cont
@@ -124,33 +101,39 @@ then
     echo "in_file: "$in_file
     echo "start: "$start
     
-    co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file
+    co.run ../../main garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
 
 else
 
-    for i in `seq 1 21`;
+    for i in `seq 5 5 20`;
     do
 	num=$i
-	if [ $num -eq 3 ]; then
-	    continue
-	fi
-	#echo $num
 	#bash run_cont_cont.sh $num
     done
 
     for i in `seq 30 10 80`;
     do
 	num=$i
-	echo $num
-	#bash run_cont_cont.sh $num
-    done
+	bash run_cont_cont.sh $num
+    done    
 
-    bash run_cont_cont.sh 100
-    bash run_cont_cont.sh 200
-    bash run_cont_cont.sh 500
-    bash run_cont_cont.sh 1000
-    bash run_cont_cont.sh 2000
-    bash run_cont_cont.sh 5000
+    num=100
+    bash run_cont_cont.sh $num
     
-   
+    num=200
+    bash run_cont_cont.sh $num
+    
+    num=500
+    bash run_cont_cont.sh $num
+
+    num=1000
+    bash run_cont_cont.sh $num
+    
+    num=2000
+    bash run_cont_cont.sh $num
+    
+    num=5000
+    bash run_cont_cont.sh $num
+    
+
 fi
