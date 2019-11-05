@@ -33,7 +33,7 @@ eta_out=$(echo ${eta_in} $lambda | awk '{print $1/$2}')
 #exit
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=10
+tscale=5
 
 start=0
 end=9000000
@@ -49,13 +49,16 @@ then
 
     num="$1"
 
+    #convert num to integer inum
+    inum=$(printf "%.0f" $num)
+
     gamdot=$(echo $gamdot0, $num | awk '{print $1*$2}')
     dt=$(echo $dt0 $num $tscale | awk '{print $1*$3/$2}')
 
-    if [ $num -le 100 ]; then
+    if [ $inum -le 100 ]; then
 	Kc=$Kc0
     else
-	Kc=$(echo $num $Kc0 | awk '{print $1*$2/100}')	
+	Kc=$(echo $inum $Kc0 | awk '{print $1*$2/100}')	
     fi
 
     Kga=$Kc
@@ -80,12 +83,10 @@ then
     flam=$(printf "%.1f" $lambda)
     fdt=$(printf "%.6f" $dt)
     
-    echo "Da="$Da1
     echo "flam="$flam
     echo "num="$num
     echo "fdt="$fdt
-    echo "Kc="$Kc
-    
+
     folder=Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
     if [ ! -d $folder ]; then
 	mkdir $folder	
@@ -97,46 +98,24 @@ then
     
 else
 
-    for i in `seq 1 1 20`;
+    for i in `seq 5 5 120`;
     do
 	num=$i
-	#bash run_dt10.sh $num
-    done
-
-    for i in `seq 25 5 120`;
-    do
-	num=$i
-	#bash run_dt10.sh $num
+	#bash run_dt5.sh $num
     done
 
     for i in `seq 150 50 500`;
     do
 	num=$i
-	#bash run_dt10.sh $num
+	#bash run_dt5.sh $num
     done
 
     inc=0.1
-    for i in `seq 22 2 28`; #4
+    for i in `seq 10 2 20`; #6
     do
 	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_dt10.sh $num
+	bash run_dt5.sh $num
     done
-
-    inc=0.1
-    for i in `seq 32 2 38`; #4
-    do
-	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_dt10.sh $num
-    done
-
-    inc=0.1
-    for i in `seq 42 2 48`; #4
-    do
-	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_dt10.sh $num
-    done
-
-   
 
 fi
     

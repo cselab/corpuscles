@@ -64,10 +64,7 @@ then
     Re=$(echo $gamdot $R $rho ${eta_out} | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
     
-    in_file=../init_tilt/init_v${v}_Da${Da1}.off
     ref_file=../ref/ref_v0.95.off
-    
-    echo "input file:" $in_file
     echo "ref file  :" $ref_file
 
     V=$(echo $A, $v | awk '{print 0.09403159725795977*$1**1.5*$2}')
@@ -87,54 +84,39 @@ then
     echo "Kc="$Kc
     
     folder=Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
-    if [ ! -d $folder ]; then
-	mkdir $folder	
+    folder_cont=${folder}_cont
+    if [ ! -d $folder_cont ]; then
+	mkdir $folder_cont
     fi
-    cd $folder
-    
+    cd $folder_cont
+
+    in_file=$(ls ../${folder}/*.off | tail -n 1)
+
+    fname=`basename $in_file`
+    fnum=${fname%.*}
+    start=$(echo $fnum | sed 's/^0*//')
+
+    echo "folder:  "$folder
+    echo "in_file: "$in_file
+    echo "start: "$start
+
     co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
       
     
 else
 
-    for i in `seq 1 1 20`;
+    for i in `seq 2 1 20`;
     do
 	num=$i
-	#bash run_dt10.sh $num
+	bash run_dt10_cont.sh $num
     done
 
     for i in `seq 25 5 120`;
     do
 	num=$i
-	#bash run_dt10.sh $num
+	#bash run_dt10_cont.sh $num
     done
 
-    for i in `seq 150 50 500`;
-    do
-	num=$i
-	#bash run_dt10.sh $num
-    done
-
-    inc=0.1
-    for i in `seq 22 2 28`; #4
-    do
-	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_dt10.sh $num
-    done
-
-    inc=0.1
-    for i in `seq 32 2 38`; #4
-    do
-	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_dt10.sh $num
-    done
-
-    inc=0.1
-    for i in `seq 42 2 48`; #4
-    do
-	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_dt10.sh $num
-    done
 
    
 
