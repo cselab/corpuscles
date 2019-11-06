@@ -1,4 +1,4 @@
-#include <tgmath.h>
+#include <math.h>
 #include <stdio.h>
 #include "real.h"
 #include "co/dedg2.h"

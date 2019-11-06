@@ -27,6 +27,7 @@ static int n`_fin'(T*);
 static int n`_single'(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
 static int n`_double'(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
 static int n`_update'(T*, He*, const real*, const real*, const real*);
+static void* n`_pointer'(T*);
 ')dnl
 
 typedef struct Vtable Vtable;
@@ -41,6 +42,7 @@ struct Vtable {
         int (*single)(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
         int (*double0)(T*, He*, real, const real*, const real*, const real*, const real*, const real*, const real*, real*, real*, real*);
         int (*update)(T*, He*, const real*, const real*, const real*);
+        void *(*pointer)(T*);
 };
 
 foreach(
@@ -51,6 +53,7 @@ foreach(
         n`_single',
         n`_double',
         n`_update',
+        n`_pointer',
 };
 ')dnl
 
@@ -123,6 +126,13 @@ n`_update'(T *q, He *he, const real *x, const real *y, const real *z)
 {
         N *b = CONTAINER_OF(q, N, global);
         return `bi_'n`_update'(b->local, he, x, y, z);
+}
+
+void *
+n`_pointer'(T *q)
+{
+        N *b = CONTAINER_OF(q, N, global);
+        return b->local;
 }
 
 h_popdef(`N')dnl
@@ -204,4 +214,10 @@ bi_good(const char *name)
                 if (util_eq(name, Name[i]))
                         return 1;
         return 0;
+}
+
+void*
+bi_pointer(T *q)
+{
+        return q->vtable->pointer(q);
 }

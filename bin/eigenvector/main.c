@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <tgmath.h>
+#include <math.h>
 #include <real.h>
 #include <co/eigen.h>
 #include <co/err.h>
@@ -36,7 +36,7 @@ main(__UNUSED int argc, char **argv)
     int Report, i, n;
     real *x, *y, *z, vec[3 * 3], val[3];
     real *u, *v, *w;
-    real a, b, c, A, B, C, M;
+    real a, b, c, A, B, C;
     He *he, *she;
     Eigen *eigen;
     const char *shape;
@@ -94,18 +94,13 @@ main(__UNUSED int argc, char **argv)
 	A = val[X];
 	B = val[Y];
 	C = val[Z];
-	a = 5*(C + B - A)/2;
-	b = 5*(C - B + A)/2;
-	c = - 5*(C - B - A)/2;
+	a = C + B - A;
+	b = C - B + A;
+	c = - (C - B - A);
 
 	a = sqrt(a);
 	b = sqrt(b);
 	c = sqrt(c);
-	M = 4.0/3*pi*a*b*c;
-
-	a /= pow(M, 1.0/3);
-	b /= pow(M, 1.0/3);
-	c /= pow(M, 1.0/3);
 
 	MSG("ABC: %g %g %g", a, b, c);
 	n = he_nv(she);

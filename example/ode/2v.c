@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <tgmath.h>
+#include <math.h>
 #include <real.h>
 #include <alg/ode.h>
 #include <co/area2.h>

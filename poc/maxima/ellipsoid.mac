@@ -1,0 +1,24 @@
+cross(a, b):=[a[2]*b[3]-b[2]*a[3],b[1]*a[3]-a[1]*b[3],a[1]*b[2]-b[1]*a[2]];
+vabs(a):= sqrt(a[1]^2 + a[2]^2 + a[3]^2);
+
+/* t in [0, pi], p in [0, 2*pi] */
+/* a: 1; */
+a: 1;
+b: 2;
+c: 2;
+
+x: a*sin(t)*cos(p);
+y: b*sin(t)*sin(p);
+z: c*cos(t);
+
+r: [x, y, z];
+
+u: diff(r, p);
+v: diff(r, t);
+
+dA: vabs(cross(u, v));
+dA: trigsimp(dA);
+
+assume(sin(t) > 0);
+e: expand(trigsimp(x^2 * dA));
+integrate(integrate(e, t, 0, %pi), p, 0, 2*%pi);
