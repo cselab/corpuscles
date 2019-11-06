@@ -28,7 +28,7 @@ Da1=0.143
 rho=1.0
 eta=645.928652122
 start=0
-end=9000000
+end=20000000
 freq_out=1000
 freq_stat=100
 
@@ -94,23 +94,23 @@ then
     #echo "ddt="$ddt
 
 
-    if [ -d Da${Da1}_lam${lam}_g${gam1}_dt${dt}_Kc${Kc}_cont_cont ]; then
+    if [ -d Da${Da1}_lam${lam}_g${gam1}_dt${dt}_Kc${Kc}_cont ]; then
 	gam=$gam1;
     fi
 
-    if [ -d  Da${Da1}_lam${lam}_g${gam1}_dt${ddt}_Kc${Kc}_cont_cont ]; then
+    if [ -d  Da${Da1}_lam${lam}_g${gam1}_dt${ddt}_Kc${Kc}_cont ]; then
 	gam=$gam1;
 	dt=$ddt;
     fi
     
-    if [ -d  Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc}_cont_cont ]; then
+    if [ -d  Da${Da1}_lam${lam}_g${gam}_dt${ddt}_Kc${Kc}_cont ]; then
 	dt=$ddt;
     fi
     
     echo "gam="$gam
     echo "dt="$dt
 
-    folder="Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}_cont_cont"
+    folder="Da${Da1}_lam${lam}_g${gam}_dt${dt}_Kc${Kc}_cont"
     
     if [ ! -d ${folder}_cont ]; then
 	mkdir ${folder}_cont
@@ -130,14 +130,47 @@ then
     co.run ../../main8 garea $A $Kga volume $V $Kv juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
 
 else
+
+    for i in `seq 52 2 60`;
+    do
+	num=$i
+	bash run_nore_cont2.sh $num
+    done
     
-    num=1
-    #bash run_cont_cont_cont.sh $num   
+    for i in `seq 65 5 75`;
+    do
+	num=$i
+	#bash run_nore_cont2.sh $num
+    done
+    
+    for i in `seq 85 5 95`;
+    do
+	num=$i
+	#bash run_nore_cont2.sh $num
+    done
+    
+    for i in `seq 110 10 150`;
+    do
+	num=$i
+	#bash run_nore_cont2.sh $num
+    done
 
-    num=80
-    bash run_cont_cont_cont.sh $num   
+    for i in `seq 170 10 190`;
+    do
+	num=$i
+	#bash run_nore_cont2.sh $num
+    done
 
-    num=100
-    bash run_cont_cont_cont.sh $num   
+    for i in `seq 250 50 350`;
+    do
+	num=$i
+	#bash run_nore_cont2.sh $num
+    done
 
+    for i in `seq 5 1`;
+    do
+	num=$1
+	#bash run_nore_cont2.sh $num
+    done
+    
 fi
