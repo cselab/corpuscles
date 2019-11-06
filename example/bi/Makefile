@@ -2,13 +2,14 @@
 include ../../conf.mk
 PREC = d
 M = \
-err\
-single\
-f2v\
-v2v\
-r2v\
-volume\
 double\
+err\
+f2v\
+pointer\
+r2v\
+single\
+v2v\
+volume\
 
 CO_CFLAGS = `fm.conf --cflags $(PREC)`
 CO_LDFLAGS = `fm.conf --libs $(PREC)` `alg.conf --libs $(PREC)` `co.conf --libs $(PREC)` `fm.conf --libs $(PREC)`
