@@ -5,7 +5,7 @@
 //**********************************************************
 #include <stdio.h>
 #include <stdlib.h>
-#include <tgmath.h>
+#include <math.h>
 #include <string.h>
 #include <time.h>
 #include <stdlib.h>

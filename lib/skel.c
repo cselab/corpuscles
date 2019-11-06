@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <tgmath.h>
+#include <math.h>
 #include "real.h"
 #include "co/arc.h"
 #include "co/array.h"

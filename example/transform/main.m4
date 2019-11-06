@@ -1,7 +1,7 @@
 include(`co.m4')dnl
 #include <stdio.h>
 #include <stdlib.h>
-#include <tgmath.h>
+#include <math.h>
 
 #include <real.h>
 

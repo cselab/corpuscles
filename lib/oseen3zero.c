@@ -1,4 +1,4 @@
-#include <tgmath.h>
+#include <math.h>
 #include <stdio.h>
 #ifdef _OPENMP
 #include <omp.h>
