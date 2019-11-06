@@ -302,7 +302,7 @@ int main(__UNUSED int argc, char **argv) {
   while ( 1 ) {
     
     if ( s % freq_out == 0 ) {
-      sprintf(file_out, "%07d.off", s);
+      sprintf(file_out, "%08d.off", s);
       off_he_xyz_write(he, x, y, z, file_out);
     }
     
