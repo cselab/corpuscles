@@ -135,3 +135,13 @@ bi_cortez_zero_double(T * q, He * he, real al,
     tensor_vector(n, al, ux, uy, uz, K, wx, wy, wz);
     return CO_OK;
 }
+
+int
+bi_cortez_zero_velocity(T * q, He * he,
+			const real * x, const real * y, const real * z,
+			const real * fx, const real * fy, const real * fz,
+			const real * vx, const real * vy, const real * vz,
+			const real r[3], /**/ real v[3])
+{
+  return oseen3zero_velocity(q->oseen, he, x, y, z, fx, fy, fz, vx, vy, vz, r, v);
+}

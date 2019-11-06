@@ -9,6 +9,7 @@ pointer\
 r2v\
 single\
 v2v\
+velocity\
 volume\
 
 CO_CFLAGS = `fm.conf --cflags $(PREC)`
