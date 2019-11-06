@@ -478,7 +478,7 @@ static int main0(real *vx, real *vy, real *vz,
 	    vc = reduced_volume(A, V);
 
             MSG("dt, s, t: %g %d %g", dt, i, time);
-            MSG("v, ca, cv, Kc: %g %g %g %g", vc, ca, cv, Kc);
+            MSG("v, ca, cv, Kc, lama, lamv: %g %g %g %g %g %g", vc, ca, cv, Kc, lama, lamv);
             MSG("et,  ea,  ev,  ek,  eb, ebl, ebn, es: %g %g %g %g %g %g %g %g", et, ea, ev, ek, eb, ebl, ebn, es);
 
             fm = fopen(fullpath(filemsg), "a");
