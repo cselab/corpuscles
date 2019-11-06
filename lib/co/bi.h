@@ -12,6 +12,7 @@ int bi_double(T *, He *, real alpha, const real * x, const real * y,
               const real * z, const real * vx, const real * vy,
               const real * vz, real *, real *, real *);
 int bi_update(T *, He *, const real * x, const real * y, const real * z);
+void *bi_pointer(T *);
 const char *bi_name(T *);
 int bi_good(const char *);
 const char *bi_list();
