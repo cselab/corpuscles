@@ -125,10 +125,9 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
 }
 
 int
-oseen3zero_velocity(T * q, He * he,
+oseen3zero_single_velocity(T * q, He * he,
                     const real * x, const real * y, const real * z,
                     const real * fx, const real * fy, const real * fz,
-                    const real * vx, const real * vy, const real * vz,
                     const real a[3], /**/ real v[3])
 {
     int n, i;
@@ -136,9 +135,7 @@ oseen3zero_velocity(T * q, He * he,
     real dx, dy, dz;
 
     USED(q);
-    USED(vx);
-    USED(vy);
-    USED(vz);
+    USED(he);
     enum { X, Y, Z };
 
     n = he_nv(he);

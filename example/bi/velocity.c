@@ -1,7 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <real.h>
 #include <co/area.h>
-#include <co/bi.h>
 #include <co/bi/cortez_zero.h>
 #include <co/err.h>
 #include <co/he.h>
@@ -12,30 +12,31 @@
 
 #define FMT   CO_REAL_OUT
 
+static char me[] = "vtk/off";
+static void
+usg()
+{
+  fprintf(stderr, "%s -b xl yl zl xh yh zh -n nx ny nz < OFF > VTK\n", me);
+  exit(1);
+}
+
 int
 main(int argc, char **argv)
 {
-    char *name;
-    BI *bi;
-    BiCortezZero *cortez;
-
     int i, n;
-    real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *area;
-    He *he;
+    BiCortezZero *cortez;
+    He *he;    
+    real *x, *y, *z, *fx, *fy, *fz, *area;
 
     USED(argc);
-    argv++;
-    if (argv[0] == NULL)
-	ER("needs an argument");
-    if (!bi_good(argv[0])) {
-	MSG("not a bi algorithm '%s'", argv[0]);
-	ER("possible values are '%s'", bi_list());
-    }
+    while (*++argv != NULL && argv[0][0] == '-')
+      switch (argv[0][1]) {
+      case 'h':
+	usg();
+	break;
+      }
     y_inif(stdin, &he, &x, &y, &z);
-    name = argv[0];
-    argv++;
-    bi_argv(name, &argv, he, &bi);
-    cortez = bi_pointer(bi);
+    bi_cortez_zero_ini(he, &cortez);
     n = he_nv(he);
     MALLOC3(n, &fx, &fy, &fz);
     MALLOC(n, &area);
@@ -47,10 +48,9 @@ main(int argc, char **argv)
     }
     real r[] = {0, 0, -1.01};
     real v[3];
-    bi_cortez_zero_velocity(cortez, he, x, y, z, fx, fy, fz, NULL, NULL, NULL, r, v);
+    bi_cortez_zero_single_velocity(cortez, he, x, y, z, fx, fy, fz, r, v);
     y_fin(he, x, y, z);
     vec_printf(v, FMT);
-    FREE3(vx, vy, vz);
     FREE3(fx, fy, fz);
-    bi_fin(bi);
+    bi_cortez_zero_fin(cortez);
 }
