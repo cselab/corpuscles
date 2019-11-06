@@ -67,9 +67,9 @@ main(int argc, char **argv)
     if (!Bset)
       ER("nees -n option");
 
-    dx = (hx - lx)/nx;
-    dy = (hy - ly)/ny;
-    dz = (hz - lz)/nz;
+    dx = nx == 0 ? 0 : (hx - lx)/nx;
+    dy = ny == 0 ? 0 : (hy - ly)/ny;
+    dz = nz == 0 ? 0 : (hz - lz)/nz;
     n = (nx + 1) * (ny + 1) * (nz + 1);
 
     y_inif(stdin, &he, &x, &y, &z);
