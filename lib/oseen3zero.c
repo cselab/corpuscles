@@ -124,6 +124,40 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
     return CO_OK;
 }
 
+int
+oseen3zero_velocity(T * q, He * he,
+                    const real * x, const real * y, const real * z,
+                    const real * fx, const real * fy, const real * fz,
+                    const real * vx, const real * vy, const real * vz,
+                    const real a[3], /**/ real v[3])
+{
+    int n, i;
+    real s, xx, xy, xz, yy, yz, zz, b[3], f[3];
+    real dx, dy, dz;
+
+    USED(q);
+    USED(vx);
+    USED(vy);
+    USED(vz);
+    enum { X, Y, Z };
+
+    n = he_nv(he);
+    dx = dy = dz = 0;
+    for (i = 0; i < n; i++) {
+        i_vec_get(i, x, y, z, b);
+        i_vec_get(i, fx, fy, fz, f);
+        oseen(a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+        dx += xx * f[X] + xy * f[Y] + xz * f[Z];
+        dy += xy * f[X] + yy * f[Y] + yz * f[Z];
+        dz += xz * f[X] + yz * f[Y] + zz * f[Z];
+    }
+    s = 1 / (8 * pi);
+    v[X] = s * dx;
+    v[Y] = s * dy;
+    v[Z] = s * dz;
+    return CO_OK;
+}
+
 static int
 stresslet(const real a[3], const real n[3], const real b[3],
           real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)

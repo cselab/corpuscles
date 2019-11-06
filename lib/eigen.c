@@ -223,9 +223,10 @@ eigen_vector_tri(T * q, He * he, real * x, real * y, real * z,
 }
 
 int
-eigen_values(T *q, /**/ real val[3])
+eigen_values(T * q, /**/ real val[3])
 {
-  real *m;
-  m = q->m;
-  return alg_eig_values(m, val);
+    real *m;
+
+    m = q->m;
+    return alg_eig_values(m, val);
 }
