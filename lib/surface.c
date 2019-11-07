@@ -137,6 +137,7 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
     real a[3], b[3], c[3], r[3], d, m;
     He *he;
     const real *x, *y, *z;
+    int status;
 
     n = he_nt(he);
     vec_ini(x0, y0, z0, r);
@@ -146,7 +147,9 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
     y = q->y;
     z = q->z;
     for (t = 0; t < n; t++) {
-        he_tri_ijk(he, t, &i, &j, &k);
+        status = he_tri_ijk(he, t, &i, &j, &k);
+	if (status != CO_OK)
+	    ERR(CO_NUM, "he_tri_ijk failed (t=%d, n=%d)", t, n);
         vec_get(i, x, y, z, a);
         vec_get(j, x, y, z, b);
         vec_get(k, x, y, z, c);
