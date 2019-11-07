@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <real.h>
-#include <co/argv.h>
+#include <co/array.h>
 #include <co/area.h>
+#include <co/argv.h>
 #include <co/bi/cortez_zero.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
+#include <co/surface.h>
 #include <co/vec.h>
 #include <co/y.h>
 
@@ -26,11 +28,13 @@ main(int argc, char **argv)
 {
   enum {X, Y, Z};
   int i, j, k, l, nv, n;
+  Surface *surface;
     BiCortezZero *cortez;
     He *he;
-    real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *area;
+    real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *area, *distance;
     real lx, ly, lz, hx, hy, hz, dx, dy, dz, r[3], v[3];
     int nx, ny, nz, Bset, Nset;
+    real lo[2] = {-3, -3}, hi[2] = {3, 3}, size = 0.25;
 
     //err_set_ignore();
     USED(argc);
@@ -73,10 +77,14 @@ main(int argc, char **argv)
     n = (nx + 1) * (ny + 1) * (nz + 1);
 
     y_inif(stdin, &he, &x, &y, &z);
+    surface_ini(lo, hi, size, &surface);
+    surface_update(surface, he, x, y, z);
+		
     bi_cortez_zero_ini(he, &cortez);
     nv = he_nv(he);
     MALLOC3(nv, &fx, &fy, &fz);
     MALLOC3(n, &vx, &vy, &vz);
+    MALLOC(n, &distance);
     MALLOC(nv, &area);
     he_area_ver(he, x, y, z, area);
     for (i = 0; i < nv; i++) {
@@ -96,6 +104,7 @@ main(int argc, char **argv)
 	  vx[l] = v[X];
 	  vy[l] = v[Y];
 	  vz[l] = v[Z];
+	  surface_distance(surface, r[X], r[Y], r[Z], &distance[l]);
 	  l++;
 	}
     FILE *f;
@@ -112,8 +121,15 @@ main(int argc, char **argv)
     fputs("VECTORS v double\n", f);
     for (i = 0; i < n; i++)
       fprintf(f, FMT " " FMT " " FMT "\n", vx[i], vy[i], vz[i]);
+    fputs("SCALARS distance double\n", f);
+    fputs("LOOKUP_TABLE DEFAULT\n", f);
+    for (i = 0; i < n; i++)
+	fprintf(f, FMT "\n", distance[i]);    
+
+    surface_fin(surface);
     y_fin(he, x, y, z);
     FREE(area);
+    FREE(distance);
     FREE3(fx, fy, fz);
     FREE3(vx, vy, vz);
     bi_cortez_zero_fin(cortez);
