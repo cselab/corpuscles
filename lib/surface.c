@@ -1,12 +1,14 @@
 #include <stdio.h>
+#include <math.h>
 #include "real.h"
 
 #include "co/bbox.h"
 #include "co/err.h"
 #include "co/he.h"
+#include "co/list/tri2.h"
 #include "co/memory.h"
 #include "co/predicate.h"
-#include "co/list/tri2.h"
+#include "co/tri.h"
 #include "co/vec.h"
 
 #include "co/surface.h"
@@ -126,4 +128,36 @@ surface_inside_fast(T * q, real u, real v, real w)
         m += predicate_ray(d, e, a, b, c);
     }
     return m % 2;
+}
+
+int
+surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
+{
+    int t, n, i, j, k;
+    real a[3], b[3], c[3], r[3], d, m;
+    He *he;
+    const real *x, *y, *z;
+
+    n = he_nt(he);
+    vec_ini(x0, y0, z0, r);
+    m = 0;
+    he = q->he;
+    x = q->x;
+    y = q->y;
+    z = q->z;
+    for (t = 0; t < n; t++) {
+        he_tri_ijk(he, t, &i, &j, &k);
+        vec_get(i, x, y, z, a);
+        vec_get(j, x, y, z, b);
+        vec_get(k, x, y, z, c);
+        d = tri_point_distance2(a, b, c, r);
+        if (d > m)
+            m = d;
+    }
+    d = sqrt(m);
+    if (surface_inside(q, x0, y0, z0))
+        *p = d;
+    else
+        *p = -d;
+    return CO_OK;
 }
