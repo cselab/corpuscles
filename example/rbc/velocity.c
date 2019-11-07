@@ -6,15 +6,14 @@
 #include <real.h>
 #include <co/argv.h>
 #include <co/array.h>
+#include <co/bbox.h>
 #include <co/bi/cortez_zero.h>
 #include <co/bi.h>
 #include <co/err.h>
 #include <co/f/garea.h>
-#include <co/f/juelicher_xin.h>
 #include <co/force.h>
-#include <co/f/volume.h>
 #include <co/he.h>
-#include <co/len.h>
+#include <co/vec.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/util.h>
@@ -180,18 +179,32 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     int i, j, k, l;
     real r[3], v[3];
     real *distance, *vx, *vy, *vz;
-    int nx, ny, nz, n;
+    int nx, ny, nz, nv, n;
     real lx, ly, lz, hx, hy, hz, dx, dy, dz;
+    real *blo, *bhi;
     FILE *f;
-
-    nx = ny = nz = 10;
-    lx = ly = lz = -2;
-    hx = hy = hz = 2;
+    Bbox *box;
+    real margin[] = {0.2, 0.2, 0.2};
+    nx = ny = nz = 50;
+    
+    nv = he_nv(he);
+    bbox_ini(&box);
+    bbox_update(box, nv, x, y, z);
+    bbox_lo(box, &blo);
+    bbox_hi(box, &bhi);
+    vec_sub(margin, blo);
+    vec_add(margin, bhi);
+    lx = blo[X];
+    ly = blo[Y];
+    lz = blo[Z];
+    hx = bhi[X];
+    hy = bhi[Y];
+    hz = bhi[Z];
+    bbox_fin(box);
     dx = nx == 0 ? 0 : (hx - lx) / nx;
     dy = ny == 0 ? 0 : (hy - ly) / ny;
     dz = nz == 0 ? 0 : (hz - lz) / nz;
     n = (nx + 1) * (ny + 1) * (nz + 1);
-
     MALLOC3(n, &vx, &vy, &vz);
     MALLOC(n, &distance);
 

@@ -2,6 +2,11 @@
 
 . co.util
 
+prog=velocity.sh
+if test $# -eq 0
+then err 'missing input file'
+fi
+i=$1; shift
 V=2.6892
 kv=20000
 A=12.5663706144
@@ -20,4 +25,4 @@ co.run ./velocity \
        strain ref/ref_v0.95.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
        cortez_zero \
        $eta $lambda $gamdot \
-       '<' "$1"
+       '<' "$i"
