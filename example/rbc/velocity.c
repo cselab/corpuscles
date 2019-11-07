@@ -4,6 +4,7 @@
 #include <math.h>
 #include <omp.h>
 #include <real.h>
+#include <co/argv.h>
 #include <co/array.h>
 #include <co/bi/cortez_zero.h>
 #include <co/bi.h>
@@ -24,13 +25,10 @@
 
 #define FMT   CO_REAL_OUT
 
-static int num(char **, /**/ int *);
-static int scl(char **, /**/ real *);
 static int fargv(char ***, He *);
 static int force(He *, const real *, const real *, const real *, real *,
                  real *, real *);
 static int fin(void);
-static real reduced_volume(real, real);
 
 static struct {
     Surface *surface;
@@ -41,35 +39,19 @@ static int grid_write(He *, const real *, const real *, const real *,
                       const real *, const real *, const real *);
 static int grid_fin(void);
 
-static const char *me = "rbc";
-static const real pi = 3.141592653589793115997964;
-static const real tol = 0.01;
-static const int iter_max = 100;
+static const char *me = "rbc/velocity";
 
 #define FMT_IN CO_REAL_IN
-#define FMT_OUT CO_REAL_OUT
 
 static Force *Fo[20] = {
     NULL
 };
 
-static HeFVolume *fvolume;
 static He *he;
 static BI *bi;
-static real R, D;
-static real rho, eta, lambda, gamdot, dt;
-static int start, end, freq_out, freq_stat;
+static real eta, lambda, gamdot;
 static real *fx, *fy, *fz;
-static real *ux, *uy, *uz;
-static real *wx, *wy, *wz;
-static real *Vx, *Vy, *Vz;
-
 static int nv, nt;
-
-char file_out[999];
-char file_stat[99] = "stat.dat";
-char file_msg[99] = "msg.out";
-FILE *fm;
 
 static void
 usg(void)
@@ -86,108 +68,22 @@ int
 main(__UNUSED int argc, char **argv)
 {
     real *x, *y, *z;
-    real t, time;
-    int s, i;
-    real eng, et, ega, ev, eb, ebl, ebn, es;
-    char name[99];
-    real A0, V0, v0;
-    real A, V, v;
-    real a, e, reg;
-    real M, m;
-
     //err_set_ignore();
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
     nt = he_nt(he);
     fargv(&argv, he);
-
-
-    if ((fm = fopen(file_stat, "w")) == NULL) {
-        ER("Failed to open '%s'", file_stat);
-    }
-    fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn es\n", fm);
-    fclose(fm);
-
-    V0 = he_f_volume_V0(fvolume);
-
-    i = 0;
-    A0 = -1;
-    while (Fo[i]) {
-
-        strcpy(name, force_name(Fo[i]));
-
-        if (strcmp(name, "garea") == 0) {
-            A0 = he_f_garea_A0(force_pointer(Fo[i]));
-        }
-        //else if ( strcmp(name, "volume") == 0 ) {
-        //V0 = he_f_volume_V0(force_pointer(Fo[i]));}
-        i++;
-    }
-
-    v0 = reduced_volume(A0, V0);
-
-    M = rho * A0 * D * 2;
-    m = M / nv;
-    a = A0 / nt;
-    e = 2 * sqrt(a) / sqrt(sqrt(3.0));
-    reg = 0.1 * e;
-
-    if ((fm = fopen(file_msg, "w")) == NULL) {
-        ER("Failed to open '%s'", file_msg);
-    }
-
-    fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
-    fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", R, D,
-            rho, eta, lambda, gamdot);
-    fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-    fprintf(fm, "M m a e reg dt = %g %g %g %g %g %g\n", M, m, a, e, reg,
-            dt);
-    fclose(fm);
-
-    CALLOC3(nv, &ux, &uy, &uz);
-    CALLOC3(nv, &wx, &wy, &wz);
     CALLOC3(nv, &fx, &fy, &fz);
-
-    t = time = start * dt;
-    s = start;
-
     grid_ini(bi);
     force(he, x, y, z, fx, fy, fz);
     grid_write(he, x, y, z, fx, fy, fz);
     grid_fin();
 
-    FREE3(Vx, Vy, Vz);
-    FREE3(ux, uy, uz);
-    FREE3(wx, wy, wz);
     FREE3(fx, fy, fz);
     bi_fin(bi);
     fin();
     y_fin(he, x, y, z);
-    he_f_volume_fin(fvolume);
-
-}
-
-static int
-num(char **v, /**/ int *p)
-{
-    if (*v == NULL) {
-        usg();
-        ER("not enough args");
-    }
-    if (sscanf(*v, "%d", p) != 1)
-        ER("not a number '%s'", *v);
-    return CO_OK;
-}
-
-static int
-scl(char **v, /**/ real * p)
-{
-    if (*v == NULL)
-        ER("not enough args");
-    if (sscanf(*v, FMT_IN, p) != 1)
-        ER("not a number '%s'", *v);
-    return CO_OK;
 }
 
 static int
@@ -200,13 +96,6 @@ fargv(char ***p, He * he)
     i = 0;
     v = *p;
 
-    if (strcmp(v[0], "volume") != 0) {
-        ER("not a volume %s", v[0]);
-    }
-    v++;
-    he_f_volume_argv(&v, he, &fvolume);
-    MALLOC3(nv, &Vx, &Vy, &Vz);
-
     while (1) {
         if (v[0] == NULL)
             break;
@@ -218,7 +107,6 @@ fargv(char ***p, He * he)
         force_argv(name, &v, he, &Fo[i]);
         i++;
     }
-
     name = v[0];
     if (name == NULL)
         ER("expecting BI");
@@ -228,30 +116,9 @@ fargv(char ***p, He * he)
     }
     v++;
     bi_argv(name, &v, he, &bi);
-
-    scl(v, &R);
-    v++;
-    scl(v, &D);
-    v++;
-    scl(v, &rho);
-    v++;
-    scl(v, &eta);
-    v++;
-    scl(v, &lambda);
-    v++;
-    scl(v, &gamdot);
-    v++;
-    scl(v, &dt);
-    v++;
-    num(v, &start);
-    v++;
-    num(v, &end);
-    v++;
-    num(v, &freq_out);
-    v++;
-    num(v, &freq_stat);
-    v++;
-
+    argv_real(&v, &eta);
+    argv_real(&v, &lambda);
+    argv_real(&v, &gamdot);
     *p = v;
     return CO_OK;
 }
@@ -282,12 +149,6 @@ fin(void)
         i++;
     }
     return CO_OK;
-}
-
-static real
-reduced_volume(real area, real volume)
-{
-    return (6 * sqrt(pi) * volume) / pow(area, 3.0 / 2);
 }
 
 static int
@@ -323,7 +184,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     real lx, ly, lz, hx, hy, hz, dx, dy, dz;
     FILE *f;
 
-    nx = ny = nz = 40;
+    nx = ny = nz = 20;
     lx = ly = lz = -2;
     hx = hy = hz = 2;
     dx = nx == 0 ? 0 : (hx - lx) / nx;

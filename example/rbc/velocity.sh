@@ -13,17 +13,12 @@ eta=645.928652122
 lambda=1
 # gamdot=0.1152
 gamdot=0.576
-start=0
-end=9000000
-freq_out=100
-freq_stat=100
-dt=`ae 0.01*$gamdot`
 
 make
-co.run ./main volume $V $kv \
+co.run ./velocity \
        garea $A $kga \
        juelicher_xin 1.0 0.0 0.63662 19.9933 \
        strain ref/ref_v0.95.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
        cortez_zero \
-       $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat \
-       '<' init_tilt/init_v0.642_Da0.143.off > q.vtk
+       $eta $lambda $gamdot \
+       '<' data/deform.off > q.vtk
