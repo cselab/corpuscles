@@ -185,7 +185,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     FILE *f;
     Bbox *box;
     real margin[] = {0.2, 0.2, 0.2};
-    nx = ny = nz = 40;
+    nx = ny = nz = 60;
     
     nv = he_nv(he);
     bbox_ini(&box);
