@@ -9,5 +9,6 @@ int surface_update(T *, He *, const real * x, const real * y,
                    const real * z);
 int surface_inside(T *, real, real, real);
 int surface_inside_fast(T *, real, real, real);
+int surface_distance(T *, real, real, real, /**/ real *);
 
 #undef T
