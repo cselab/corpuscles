@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <co/err.h>
-#include <co/list/a.h>
 #include <co/list/c.h>
 
 int
