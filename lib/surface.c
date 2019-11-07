@@ -154,7 +154,7 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
     z = q->z;
     n = he_nt(he);
     vec_ini(x0, y0, z0, r);
-    First = 1;
+    m = 1e32;
     for (t = 0; t < n; t++) {
         status = he_tri_ijk(he, t, &i, &j, &k);
 	if (status != CO_OK)
@@ -163,10 +163,8 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
         vec_get(j, x, y, z, b);
         vec_get(k, x, y, z, c);
         d = tri_point_distance2(a, b, c, r);
-        if (First || d < m) {
-	    First = 0;
+        if (d < m)
             m = d;
-	}
     }
     d = sqrt(m);
     if (surface_inside(q, x0, y0, z0))

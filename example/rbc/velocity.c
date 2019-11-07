@@ -184,7 +184,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     real lx, ly, lz, hx, hy, hz, dx, dy, dz;
     FILE *f;
 
-    nx = ny = nz = 20;
+    nx = ny = nz = 10;
     lx = ly = lz = -2;
     hx = hy = hz = 2;
     dx = nx == 0 ? 0 : (hx - lx) / nx;
