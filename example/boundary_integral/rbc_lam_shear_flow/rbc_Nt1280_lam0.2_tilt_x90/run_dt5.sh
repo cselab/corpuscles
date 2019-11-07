@@ -33,10 +33,10 @@ eta_out=$(echo ${eta_in} $lambda | awk '{print $1/$2}')
 #exit
 gamdot0=0.00143923833018
 dt0=0.01
-tscale=1
+tscale=5
 
 start=0
-end=9000000
+end=20000000
 freq_out=1000
 freq_stat=100
 
@@ -67,7 +67,7 @@ then
     Re=$(echo $gamdot $R $rho ${eta_out} | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
     
-    in_file=../init_tilt/init_v${v}_Da${Da1}.off
+    in_file=../init_orient/init_v${v}_Da${Da1}.off
     ref_file=../ref/ref_v0.95.off
     
     echo "input file:" $in_file
@@ -81,35 +81,28 @@ then
     DA0D=$(echo $DA0, $D | awk '{print $1/$2}')
 
     flam=$(printf "%.1f" $lambda)
-    fgam=$(printf "%.4f" $gamdot)
     fdt=$(printf "%.6f" $dt)
     
     echo "flam="$flam
     echo "num="$num
-    echo "fgam="$fgam
     echo "fdt="$fdt
-    echo "Kc="$Kc
 
-    
-    if [ ! -d Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc} ]; then
-	
-	mkdir Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
-	
+    folder=Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
+    if [ ! -d $folder ]; then
+	mkdir $folder	
     fi
+    cd $folder
     
-    cd Da${Da1}_lam${flam}_num${num}_dt${fdt}_Kc${Kc}
-    
-    co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
+    co.run ../../main8 volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
       
     
 else
-
     inc=0.1
-    for i in `seq 2 2 30`;
+    for i in `seq 10 2 20`; #6
     do
 	num=$(echo $i $inc | awk '{print $1*$2}')
-	bash run_small_dt1.sh $num
-    done
+	bash run_dt5.sh $num
+    done   
 
 
 fi
