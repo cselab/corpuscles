@@ -4,22 +4,25 @@
 #include <math.h>
 #include <omp.h>
 #include <real.h>
-#include <alg/ode.h>
 #include <co/array.h>
-#include <co/len.h>
+#include <co/bi/cortez_zero.h>
+#include <co/bi.h>
 #include <co/err.h>
+#include <co/f/garea.h>
+#include <co/f/juelicher_xin.h>
 #include <co/force.h>
+#include <co/f/volume.h>
+#include <co/he.h>
+#include <co/len.h>
 #include <co/macro.h>
 #include <co/memory.h>
-#include <co/ode/3.h>
-#include <co/he.h>
-#include <co/punto.h>
-#include <co/y.h>
+#include <co/util.h>
 #include <co/off.h>
-#include <co/f/garea.h>
-#include <co/f/volume.h>
-#include <co/f/juelicher_xin.h>
-#include <co/bi.h>
+#include <co/punto.h>
+#include <co/surface.h>
+#include <co/y.h>
+
+#define FMT   CO_REAL_OUT
 
 static int num(char **, /**/ int *);
 static int scl(char **, /**/ real *);
@@ -27,9 +30,16 @@ static int fargv(char ***, He *);
 static int force(He *, const real *, const real *, const real *, real *,
                  real *, real *);
 static int fin(void);
-static int F(real, const real *, const real *, const real *, real *,
-             real *, real *, void *);
 static real reduced_volume(real, real);
+
+static struct {
+    Surface *surface;
+    BiCortezZero *cortez;
+} Grid;
+static int grid_ini(BI * bi);
+static int grid_write(He *, const real *, const real *, const real *,
+                      const real *, const real *, const real *);
+static int grid_fin(void);
 
 static const char *me = "rbc";
 static const real pi = 3.141592653589793115997964;
@@ -76,7 +86,6 @@ int
 main(__UNUSED int argc, char **argv)
 {
     real *x, *y, *z;
-    Ode3 *ode;
     real t, time;
     int s, i;
     real eng, et, ega, ev, eb, ebl, ebn, es;
@@ -136,8 +145,6 @@ main(__UNUSED int argc, char **argv)
             dt);
     fclose(fm);
 
-    ode3_ini(RK4, nv, dt, F, NULL, &ode);
-
     CALLOC3(nv, &ux, &uy, &uz);
     CALLOC3(nv, &wx, &wy, &wz);
     CALLOC3(nv, &fx, &fy, &fz);
@@ -145,95 +152,15 @@ main(__UNUSED int argc, char **argv)
     t = time = start * dt;
     s = start;
 
-    while (1) {
-
-        if (s % freq_out == 0) {
-            sprintf(file_out, "%07d.off", s);
-            off_he_xyz_write(he, x, y, z, file_out);
-        }
-
-        if (s % freq_stat == 0) {
-
-            eng = 0.0;
-            ega = 0.0;
-            ev = 0.0;
-            eb = 0.0;
-            ebl = 0.0;
-            ebn = 0.0;
-            es = 0.0;
-            A = 0.0;
-            V = 0.0;
-            v = 0.0;
-
-            et = 0.0;
-
-            ev = he_f_volume_energy(fvolume, he, x, y, z);
-            V = he_f_volume_V(fvolume);
-
-            i = 0;
-            while (Fo[i]) {
-
-                strcpy(name, force_name(Fo[i]));
-                eng = force_energy(Fo[i], he, x, y, z);
-                et += eng;
-
-                if (strcmp(name, "garea") == 0) {
-                    ega = eng;
-                    A = he_f_garea_A(force_pointer(Fo[i]));
-                }
-                //else if ( strcmp(name, "volume") == 0 ) {
-                //  ev = eng;
-                //  V  = he_f_volume_V(force_pointer(Fo[i]));
-                //}
-                else if (strcmp(name, "juelicher_xin") == 0) {
-                    eb = eng;
-                    ebl =
-                        he_f_juelicher_xin_energy_bend(force_pointer
-                                                       (Fo[i]));
-                    ebn =
-                        he_f_juelicher_xin_energy_ad(force_pointer(Fo[i]));
-
-                } else if (strcmp(name, "strain") == 0) {
-                    es = eng;
-                }
-
-                i++;
-            }
-
-            v = reduced_volume(A, V);
-
-            if (s % freq_stat == 0) {
-                MSG("dt s t = %g %i %g", dt, s, t);
-                MSG("A/A0 V/V0 v  = %g %g %g", A / A0, V / V0, v);
-                MSG("et ega ev eb ebl ebn es = %g %g %g %g %g %g %g", et,
-                    ega, ev, eb, ebl, ebn, es);
-            }
-
-            if ((fm = fopen(file_stat, "a")) == NULL) {
-                ER("Failed to open '%s'", file_stat);
-            }
-            fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g %g\n", dt, s,
-                    t, A / A0, V / V0, v, et, ega, ev, eb, ebl, ebn, es);
-            fclose(fm);
-
-        }
-
-
-        s++;
-        t = time + dt;
-
-        if (s > end)
-            break;
-
-        ode3_apply(ode, &time, t, x, y, z);
-
-    }
+    grid_ini(bi);
+    force(he, x, y, z, fx, fy, fz);
+    grid_write(he, x, y, z, fx, fy, fz);
+    grid_fin();
 
     FREE3(Vx, Vy, Vz);
     FREE3(ux, uy, uz);
     FREE3(wx, wy, wz);
     FREE3(fx, fy, fz);
-    ode3_fin(ode);
     bi_fin(bi);
     fin();
     y_fin(he, x, y, z);
@@ -357,76 +284,93 @@ fin(void)
     return CO_OK;
 }
 
-static int
-F(__UNUSED real t, const real * x, const real * y, const real * z,
-  real * vx, real * vy, real * vz, __UNUSED void *p0)
-{
-
-    int i, k;
-    real coef, al, be;
-    real d;
-    real dd, ratio;
-
-    coef = 2 / (1 + lambda);
-    al = -2 / (eta * (1 + lambda));
-    be = 2 * (1 - lambda) / (1 + lambda);
-
-    array_zero3(nv, fx, fy, fz);
-    force(he, x, y, z, fx, fy, fz);
-    bi_update(bi, he, x, y, z);
-
-    array_zero3(nv, vx, vy, vz);
-    for (i = 0; i < nv; i++)
-        vx[i] += coef * gamdot * z[i];
-    bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
-
-    //inner and outer viscosity has obvious contrast
-    if (1 - lambda > tol || 1 - lambda < -tol) {
-
-        array_zero3(nv, ux, uy, uz);
-        for (i = 0; i < nv; i++)
-            ux[i] += coef * gamdot * z[i];
-
-        for (k = 1; k <= iter_max; k++) {
-
-            array_copy3(nv, vx, vy, vz, wx, wy, wz);
-            bi_double(bi, he, be, x, y, z, ux, uy, uz, wx, wy, wz);
-
-            d = array_msq_3d(nv, ux, uy, uz);
-            dd = array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
-            ratio = dd / d;
-
-            if (ratio < tol) {
-
-                break;
-
-            }
-
-            if (k == iter_max) {
-                if ((fm = fopen(file_msg, "a")) == NULL) {
-                    ER("Failed to open '%s'", file_msg);
-                }
-                fprintf(fm, "t d dd ratio k = %g %g %g %g %i\n", t, d, dd,
-                        ratio, k);
-                fclose(fm);
-            }
-
-            array_copy3(nv, wx, wy, wz, ux, uy, uz);
-        }
-
-        array_copy3(nv, ux, uy, uz, vx, vy, vz);
-
-    }
-
-    array_zero3(nv, Vx, Vy, Vz);
-    he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
-    array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
-
-    return CO_OK;
-}
-
 static real
 reduced_volume(real area, real volume)
 {
     return (6 * sqrt(pi) * volume) / pow(area, 3.0 / 2);
+}
+
+static int
+grid_ini(BI * bi)
+{
+    int status;
+    real lo[2] = { -3, -3 }, hi[2] = { 3, 3 }, size = 0.25;
+    if (!util_eq(bi_name(bi), "cortez_zero"))
+        ER("grid is defined only for cortez_zero");
+    Grid.cortez = bi_pointer(bi);
+    status = surface_ini(lo, hi, size, &Grid.surface);
+    if (status != CO_OK)
+        ER("surface_ini faield");
+    return CO_OK;
+}
+
+static int
+grid_fin(void)
+{
+    surface_fin(Grid.surface);
+    return CO_OK;
+}
+
+static int
+grid_write(He * he, const real * x, const real * y, const real * z,
+           const real * fx, const real * fy, const real * fz)
+{
+    enum { X, Y, Z };
+    int i, j, k, l;
+    real r[3], v[3];
+    real *distance, *vx, *vy, *vz;
+    int nx, ny, nz, n;
+    real lx, ly, lz, hx, hy, hz, dx, dy, dz;
+    FILE *f;
+
+    nx = ny = nz = 40;
+    lx = ly = lz = -2;
+    hx = hy = hz = 2;
+    dx = nx == 0 ? 0 : (hx - lx) / nx;
+    dy = ny == 0 ? 0 : (hy - ly) / ny;
+    dz = nz == 0 ? 0 : (hz - lz) / nz;
+    n = (nx + 1) * (ny + 1) * (nz + 1);
+
+    MALLOC3(n, &vx, &vy, &vz);
+    MALLOC(n, &distance);
+
+    surface_update(Grid.surface, he, x, y, z);
+    l = 0;
+    for (k = 0; k <= nz; k++)
+        for (j = 0; j <= ny; j++)
+            for (i = 0; i <= nx; i++) {
+                r[X] = lx + dx * i;
+                r[Y] = ly + dy * j;
+                r[Z] = lz + dz * k;
+                bi_cortez_zero_single_velocity(Grid.cortez, he, x, y, z,
+                                               fx, fy, fz, r, v);
+                vx[l] = -1 / eta * v[X] + gamdot * r[Z];
+                vy[l] = -1 / eta * v[Y];
+                vz[l] = -1 / eta * v[Z];
+                surface_distance(Grid.surface, r[X], r[Y], r[Z],
+                                 &distance[l]);
+                l++;
+            }
+
+    f = stdout;
+    fprintf(f, "# vtk DataFile Version 2.0\n"
+            "generated by %s\n"
+            "ASCII\n"
+            "DATASET STRUCTURED_POINTS\n"
+            "DIMENSIONS %d %d %d\n"
+            "ORIGIN %.16g %.16g %.16g\n"
+            "SPACING %.16g %.16g %.16g\n",
+            me, nx + 1, ny + 1, nz + 1, lx, ly, lz, dx, dy, dz);
+    fprintf(f, "POINT_DATA %d\n", n);
+    fputs("VECTORS v double\n", f);
+    for (i = 0; i < n; i++)
+        fprintf(f, FMT " " FMT " " FMT "\n", vx[i], vy[i], vz[i]);
+    fputs("SCALARS distance double\n", f);
+    fputs("LOOKUP_TABLE DEFAULT\n", f);
+    for (i = 0; i < n; i++)
+        fprintf(f, FMT "\n", distance[i]);
+
+    FREE3(vx, vy, vz);
+    FREE(distance);
+    return CO_OK;
 }
