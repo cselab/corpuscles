@@ -3,14 +3,16 @@
 #include <co/list/a.h>
 #include <co/list/c.h>
 
-int main(void)
+int
+main(void)
 {
-	Clist *clist;
-	clist_gen_ppn(3, 3, 3, &clist);
+    Clist *clist;
 
-	clist_push(clist, 0, 100);
-	clist_fwrite(stdout, clist);
-	clist_fin(clist);
+    clist_gen_ppn(3, 3, 3, &clist);
 
-	return 0;
+    clist_push(clist, 0, 100);
+    clist_fwrite(stdout, clist);
+    clist_fin(clist);
+
+    return 0;
 }
