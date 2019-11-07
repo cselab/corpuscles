@@ -101,9 +101,9 @@ main(int argc, char **argv)
 	  r[Y] = ly + dy * j;
 	  r[Z] = lz + dz * k;
 	  bi_cortez_zero_single_velocity(cortez, he, x, y, z, fx, fy, fz, r, v);
-	  vx[l] = v[X];
-	  vy[l] = v[Y];
-	  vz[l] = v[Z];
+	  vx[l] = 1 - v[X];
+	  vy[l] = -v[Y];
+	  vz[l] = -v[Z];
 	  surface_distance(surface, r[X], r[Y], r[Z], &distance[l]);
 	  l++;
 	}

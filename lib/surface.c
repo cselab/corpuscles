@@ -164,7 +164,7 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
         vec_get(k, x, y, z, c);
         d = tri_point_distance2(a, b, c, r);
         if (First || d < m) {
-	    First = 1;
+	    First = 0;
             m = d;
 	}
     }
