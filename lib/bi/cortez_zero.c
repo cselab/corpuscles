@@ -146,3 +146,14 @@ bi_cortez_zero_single_velocity(T * q, He * he,
     return oseen3zero_single_velocity(q->oseen, he, x, y, z, fx, fy, fz, r,
                                       v);
 }
+
+int
+bi_cortez_zero_double_velocity(T * q, He * he,
+                               const real * x, const real * y,
+                               const real * z, const real * ux,
+                               const real * uy, const real * uz,
+                               const real r[3], /**/ real v[3])
+{
+    return oseen3zero_double_velocity(q->oseen, he, x, y, z, ux, uy, uz, r,
+                                      v);
+}
