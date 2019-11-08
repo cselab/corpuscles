@@ -218,9 +218,9 @@ oseen3zero_double_velocity(T * q, He * he,
         i_vec_get(i, ux, uy, uz, u);
         A = area[i];
         stresslet(r, normal, b, &xx, &xy, &xz, &yy, &yz, &zz);
-        dx += A*(xx * u[X] + xy * u[Y] + xz * u[Z]);
-        dy += A*(xy * u[X] + yy * u[Y] + yz * u[Z]);
-        dz += A*(xz * u[X] + yz * u[Y] + zz * u[Z]);
+        dx += A * (xx * u[X] + xy * u[Y] + xz * u[Z]);
+        dy += A * (xy * u[X] + yy * u[Y] + yz * u[Z]);
+        dz += A * (xz * u[X] + yz * u[Y] + zz * u[Z]);
     }
     s = 3 / (4 * pi);
     v[X] = s * dx;
