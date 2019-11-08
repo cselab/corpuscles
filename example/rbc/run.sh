@@ -15,7 +15,7 @@ lambda=5
 gamdot=0.576
 start=0
 end=100
-freq_out=100
+freq_out=10
 freq_stat=100
 dt=`ae 0.01*$gamdot`
 
