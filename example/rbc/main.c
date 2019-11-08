@@ -31,6 +31,67 @@ static int F(real, const real *, const real *, const real *, real *,
              real *, real *, void *);
 static real reduced_volume(real, real);
 
+enum { SUBST_TOL, SUBST_ITER, SUBST_FAIL };
+struct {
+    int n, niter;
+    real alpha, tol, *wx, *wy, *wz;
+    int status, iiter;
+} Subst;
+static int
+subst_ini(int n, real alpha, real tol, int niter)
+{
+    Subst.n = n;
+    Subst.alpha = alpha;
+    Subst.tol = tol;
+    Subst.niter = niter;
+    MALLOC3(n, &Subst.wx, &Subst.wy, &Subst.wz);
+    return CO_OK;
+}
+static int
+subst_fin(void)
+{
+    FREE3(Subst.wx, Subst.wy, Subst.wz);
+    return CO_OK;
+}
+static int
+subst_apply(He * he, BI * bi,
+            const real * x, const real * y, const real * z,
+            const real * ux, const real * uy, const real * uz,
+            real * vx, real * vy, real * vz)
+{
+    int status, n, niter, iiter;
+    real *wx, *wy, *wz, alpha, tol, diff, norm;
+
+    alpha = Subst.alpha;
+    tol = Subst.tol;
+    n = Subst.n;
+    niter = Subst.niter;
+    wx = Subst.wx;
+    wy = Subst.wy;
+    wz = Subst.wz;
+    for (iiter = 0; iiter < niter; iiter++) {
+        array_copy3(n, ux, uy, uz, wx, wy, wz);
+        status = bi_double(bi, he, alpha, x, y, z, vx, vy, vz, wx, wy, wz);
+        if (status != CO_OK)
+            goto fail;
+        norm = array_msq_3d(n, wx, wy, wz);
+        diff = array_l2_3d(n, wx, wy, wz, vx, vy, vz);
+        if (diff <= tol * norm)
+            goto tol;
+    }
+    Subst.iiter = iiter;
+    Subst.status = SUBST_ITER;
+    return CO_OK;
+  tol:
+    Subst.iiter = iiter;
+    Subst.status = SUBST_TOL;
+    return CO_OK;
+  fail:
+    Subst.iiter = iiter;
+    Subst.status = SUBST_FAIL;
+    ERR(CO_NUM, "subst_apply failed (n=%d, iiter=%d", n, iiter);
+}
+
 static const char *me = "rbc";
 static const real pi = 3.141592653589793115997964;
 static const real tol = 0.01;

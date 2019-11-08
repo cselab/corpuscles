@@ -67,6 +67,7 @@ int
 main(__UNUSED int argc, char **argv)
 {
     real *x, *y, *z;
+
     //err_set_ignore();
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
@@ -184,9 +185,9 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     real *blo, *bhi;
     FILE *f;
     Bbox *box;
-    real margin[] = {0.2, 0.2, 0.2};
+    real margin[] = { 0.2, 0.2, 0.2 };
     nx = ny = nz = 60;
-    
+
     nv = he_nv(he);
     bbox_ini(&box);
     bbox_update(box, nv, x, y, z);
