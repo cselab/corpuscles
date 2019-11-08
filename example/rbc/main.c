@@ -21,6 +21,16 @@
 #include <co/f/juelicher_xin.h>
 #include <co/bi.h>
 
+static int num(char **, /**/ int *);
+static int scl(char **, /**/ real *);
+static int fargv(char ***, He *);
+static int force(He *, const real *, const real *, const real *, real *,
+                 real *, real *);
+static int fin(void);
+static int F(real, const real *, const real *, const real *, real *,
+             real *, real *, void *);
+static real reduced_volume(real, real);
+
 static const char *me = "rbc";
 static const real pi = 3.141592653589793115997964;
 static const real tol = 0.01;
@@ -60,6 +70,175 @@ usg(void)
     fprintf(stderr, "cortez R D rho eta lamda gamdot dt\n");
     fprintf(stderr, "start end freq_out freq_stat\n");
     fprintf(stderr, "< OFF input file\n");
+}
+
+int
+main(__UNUSED int argc, char **argv)
+{
+    real *x, *y, *z;
+    Ode3 *ode;
+    real t, time;
+    int s, i;
+    real eng, et, ega, ev, eb, ebl, ebn, es;
+    char name[99];
+    real A0, V0, v0;
+    real A, V, v;
+    real a, e, reg;
+    real M, m;
+
+    //err_set_ignore();
+    argv++;
+    y_inif(stdin, &he, &x, &y, &z);
+    nv = he_nv(he);
+    nt = he_nt(he);
+    fargv(&argv, he);
+
+
+    if ((fm = fopen(file_stat, "w")) == NULL) {
+        ER("Failed to open '%s'", file_stat);
+    }
+    fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn es\n", fm);
+    fclose(fm);
+
+    V0 = he_f_volume_V0(fvolume);
+
+    i = 0;
+    A0 = -1;
+    while (Fo[i]) {
+
+        strcpy(name, force_name(Fo[i]));
+
+        if (strcmp(name, "garea") == 0) {
+            A0 = he_f_garea_A0(force_pointer(Fo[i]));
+        }
+        //else if ( strcmp(name, "volume") == 0 ) {
+        //V0 = he_f_volume_V0(force_pointer(Fo[i]));}
+        i++;
+    }
+
+    v0 = reduced_volume(A0, V0);
+
+    M = rho * A0 * D * 2;
+    m = M / nv;
+    a = A0 / nt;
+    e = 2 * sqrt(a) / sqrt(sqrt(3.0));
+    reg = 0.1 * e;
+
+    if ((fm = fopen(file_msg, "w")) == NULL) {
+        ER("Failed to open '%s'", file_msg);
+    }
+
+    fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
+    fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", R, D,
+            rho, eta, lambda, gamdot);
+    fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
+    fprintf(fm, "M m a e reg dt = %g %g %g %g %g %g\n", M, m, a, e, reg,
+            dt);
+    fclose(fm);
+
+    ode3_ini(RK4, nv, dt, F, NULL, &ode);
+
+    CALLOC3(nv, &ux, &uy, &uz);
+    CALLOC3(nv, &wx, &wy, &wz);
+    CALLOC3(nv, &fx, &fy, &fz);
+
+    t = time = start * dt;
+    s = start;
+
+    while (1) {
+
+        if (s % freq_out == 0) {
+            sprintf(file_out, "%07d.off", s);
+            off_he_xyz_write(he, x, y, z, file_out);
+        }
+
+        if (s % freq_stat == 0) {
+
+            eng = 0.0;
+            ega = 0.0;
+            ev = 0.0;
+            eb = 0.0;
+            ebl = 0.0;
+            ebn = 0.0;
+            es = 0.0;
+            A = 0.0;
+            V = 0.0;
+            v = 0.0;
+
+            et = 0.0;
+
+            ev = he_f_volume_energy(fvolume, he, x, y, z);
+            V = he_f_volume_V(fvolume);
+
+            i = 0;
+            while (Fo[i]) {
+
+                strcpy(name, force_name(Fo[i]));
+                eng = force_energy(Fo[i], he, x, y, z);
+                et += eng;
+
+                if (strcmp(name, "garea") == 0) {
+                    ega = eng;
+                    A = he_f_garea_A(force_pointer(Fo[i]));
+                }
+                //else if ( strcmp(name, "volume") == 0 ) {
+                //  ev = eng;
+                //  V  = he_f_volume_V(force_pointer(Fo[i]));
+                //}
+                else if (strcmp(name, "juelicher_xin") == 0) {
+                    eb = eng;
+                    ebl =
+                        he_f_juelicher_xin_energy_bend(force_pointer
+                                                       (Fo[i]));
+                    ebn =
+                        he_f_juelicher_xin_energy_ad(force_pointer(Fo[i]));
+
+                } else if (strcmp(name, "strain") == 0) {
+                    es = eng;
+                }
+
+                i++;
+            }
+
+            v = reduced_volume(A, V);
+
+            if (s % freq_stat == 0) {
+                MSG("dt s t = %g %i %g", dt, s, t);
+                MSG("A/A0 V/V0 v  = %g %g %g", A / A0, V / V0, v);
+                MSG("et ega ev eb ebl ebn es = %g %g %g %g %g %g %g", et,
+                    ega, ev, eb, ebl, ebn, es);
+            }
+
+            if ((fm = fopen(file_stat, "a")) == NULL) {
+                ER("Failed to open '%s'", file_stat);
+            }
+            fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g %g\n", dt, s,
+                    t, A / A0, V / V0, v, et, ega, ev, eb, ebl, ebn, es);
+            fclose(fm);
+
+        }
+
+
+        s++;
+        t = time + dt;
+
+        if (s > end)
+            break;
+
+        ode3_apply(ode, &time, t, x, y, z);
+
+    }
+
+    FREE3(Vx, Vy, Vz);
+    FREE3(ux, uy, uz);
+    FREE3(wx, wy, wz);
+    FREE3(fx, fy, fz);
+    ode3_fin(ode);
+    bi_fin(bi);
+    fin();
+    y_fin(he, x, y, z);
+    he_f_volume_fin(fvolume);
+
 }
 
 static int
@@ -246,178 +425,8 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     return CO_OK;
 }
 
-
 static real
 reduced_volume(real area, real volume)
 {
     return (6 * sqrt(pi) * volume) / pow(area, 3.0 / 2);
-}
-
-int
-main(__UNUSED int argc, char **argv)
-{
-    real *x, *y, *z;
-    Ode3 *ode;
-    real t, time;
-    int s, i;
-    real eng, et, ega, ev, eb, ebl, ebn, es;
-    char name[99];
-    real A0, V0, v0;
-    real A, V, v;
-    real a, e, reg;
-    real M, m;
-
-    //err_set_ignore();
-    argv++;
-    y_inif(stdin, &he, &x, &y, &z);
-    nv = he_nv(he);
-    nt = he_nt(he);
-    fargv(&argv, he);
-
-
-    if ((fm = fopen(file_stat, "w")) == NULL) {
-        ER("Failed to open '%s'", file_stat);
-    }
-    fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn es\n", fm);
-    fclose(fm);
-
-    V0 = he_f_volume_V0(fvolume);
-
-    i = 0;
-    A0 = -1;
-    while (Fo[i]) {
-
-        strcpy(name, force_name(Fo[i]));
-
-        if (strcmp(name, "garea") == 0) {
-            A0 = he_f_garea_A0(force_pointer(Fo[i]));
-        }
-        //else if ( strcmp(name, "volume") == 0 ) {
-        //V0 = he_f_volume_V0(force_pointer(Fo[i]));}
-        i++;
-    }
-
-    v0 = reduced_volume(A0, V0);
-
-    M = rho * A0 * D * 2;
-    m = M / nv;
-    a = A0 / nt;
-    e = 2 * sqrt(a) / sqrt(sqrt(3.0));
-    reg = 0.1 * e;
-
-    if ((fm = fopen(file_msg, "w")) == NULL) {
-        ER("Failed to open '%s'", file_msg);
-    }
-
-    fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
-    fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", R, D,
-            rho, eta, lambda, gamdot);
-    fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-    fprintf(fm, "M m a e reg dt = %g %g %g %g %g %g\n", M, m, a, e, reg,
-            dt);
-    fclose(fm);
-
-    ode3_ini(RK4, nv, dt, F, NULL, &ode);
-
-    CALLOC3(nv, &ux, &uy, &uz);
-    CALLOC3(nv, &wx, &wy, &wz);
-    CALLOC3(nv, &fx, &fy, &fz);
-
-    t = time = start * dt;
-    s = start;
-
-    while (1) {
-
-        if (s % freq_out == 0) {
-            sprintf(file_out, "%07d.off", s);
-            off_he_xyz_write(he, x, y, z, file_out);
-        }
-
-        if (s % freq_stat == 0) {
-
-            eng = 0.0;
-            ega = 0.0;
-            ev = 0.0;
-            eb = 0.0;
-            ebl = 0.0;
-            ebn = 0.0;
-            es = 0.0;
-            A = 0.0;
-            V = 0.0;
-            v = 0.0;
-
-            et = 0.0;
-
-            ev = he_f_volume_energy(fvolume, he, x, y, z);
-            V = he_f_volume_V(fvolume);
-
-            i = 0;
-            while (Fo[i]) {
-
-                strcpy(name, force_name(Fo[i]));
-                eng = force_energy(Fo[i], he, x, y, z);
-                et += eng;
-
-                if (strcmp(name, "garea") == 0) {
-                    ega = eng;
-                    A = he_f_garea_A(force_pointer(Fo[i]));
-                }
-                //else if ( strcmp(name, "volume") == 0 ) {
-                //  ev = eng;
-                //  V  = he_f_volume_V(force_pointer(Fo[i]));
-                //}
-                else if (strcmp(name, "juelicher_xin") == 0) {
-                    eb = eng;
-                    ebl =
-                        he_f_juelicher_xin_energy_bend(force_pointer
-                                                       (Fo[i]));
-                    ebn =
-                        he_f_juelicher_xin_energy_ad(force_pointer(Fo[i]));
-
-                } else if (strcmp(name, "strain") == 0) {
-                    es = eng;
-                }
-
-                i++;
-            }
-
-            v = reduced_volume(A, V);
-
-            if (s % freq_stat == 0) {
-                MSG("dt s t = %g %i %g", dt, s, t);
-                MSG("A/A0 V/V0 v  = %g %g %g", A / A0, V / V0, v);
-                MSG("et ega ev eb ebl ebn es = %g %g %g %g %g %g %g", et,
-                    ega, ev, eb, ebl, ebn, es);
-            }
-
-            if ((fm = fopen(file_stat, "a")) == NULL) {
-                ER("Failed to open '%s'", file_stat);
-            }
-            fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g %g\n", dt, s,
-                    t, A / A0, V / V0, v, et, ega, ev, eb, ebl, ebn, es);
-            fclose(fm);
-
-        }
-
-
-        s++;
-        t = time + dt;
-
-        if (s > end)
-            break;
-
-        ode3_apply(ode, &time, t, x, y, z);
-
-    }
-
-    FREE3(Vx, Vy, Vz);
-    FREE3(ux, uy, uz);
-    FREE3(wx, wy, wz);
-    FREE3(fx, fy, fz);
-    ode3_fin(ode);
-    bi_fin(bi);
-    fin();
-    y_fin(he, x, y, z);
-    he_f_volume_fin(fvolume);
-
 }

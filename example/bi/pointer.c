@@ -28,10 +28,10 @@ main(int argc, char **argv)
     USED(argc);
     argv++;
     if (argv[0] == NULL)
-	ER("needs an argument");
+        ER("needs an argument");
     if (!bi_good(argv[0])) {
-	MSG("not a bi algorithm '%s'", argv[0]);
-	ER("possible values are '%s'", bi_list());
+        MSG("not a bi algorithm '%s'", argv[0]);
+        ER("possible values are '%s'", bi_list());
     }
     y_inif(stdin, &he, &x, &y, &z);
     name = argv[0];
@@ -42,14 +42,15 @@ main(int argc, char **argv)
     MALLOC3(n, &ux, &uy, &uz);
     CALLOC3(n, &vx, &vy, &vz);
     for (i = 0; i < n; i++) {
-	ux[i] = x[i];
-	uy[i] = y[i];
-	uz[i] = z[i];
+        ux[i] = x[i];
+        uy[i] = y[i];
+        uz[i] = z[i];
     }
     alpha = 1.0;
     bi_cortez_zero_update(cortez, he, x, y, z);
-    bi_cortez_zero_double(cortez, he, alpha, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
-    const real *q[] = {x, y, z, vx, vy, vz, NULL};
+    bi_cortez_zero_double(cortez, he, alpha, x, y, z, ux, uy, uz, /**/ vx,
+                          vy, vz);
+    const real *q[] = { x, y, z, vx, vy, vz, NULL };
     puts("x y z vx vy vz");
     punto_fwrite(n, q, stdout);
     y_fin(he, x, y, z);

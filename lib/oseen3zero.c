@@ -126,9 +126,10 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
 
 int
 oseen3zero_single_velocity(T * q, He * he,
-                    const real * x, const real * y, const real * z,
-                    const real * fx, const real * fy, const real * fz,
-                    const real a[3], /**/ real v[3])
+                           const real * x, const real * y, const real * z,
+                           const real * fx, const real * fy,
+                           const real * fz, const real a[3],
+                           /**/ real v[3])
 {
     int n, i;
     real s, xx, xy, xz, yy, yz, zz, b[3], f[3];

@@ -1,6 +1,7 @@
 .POSIX:
 include ../../conf.mk
 M = \
+ini\
 grid\
 point\
 vtk\

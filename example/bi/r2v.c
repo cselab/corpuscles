@@ -20,14 +20,15 @@ main(int argc, char **argv)
     BI *bi;
     real alpha, *x, *y, *z, *ux, *uy, *uz, *vx, *vy, *vz, *area;
     He *he;
+
     USED(argc);
 
     argv++;
     if (argv[0] == NULL)
-	ER("needs an argument");
+        ER("needs an argument");
     if (!bi_good(argv[0])) {
-	MSG("not a bi algorithm '%s'", argv[0]);
-	ER("possible values are '%s'", bi_list());
+        MSG("not a bi algorithm '%s'", argv[0]);
+        ER("possible values are '%s'", bi_list());
     }
     y_inif(stdin, &he, &x, &y, &z);
     name = argv[0];
@@ -40,18 +41,19 @@ main(int argc, char **argv)
     CALLOC3(n, &vx, &vy, &vz);
     he_area_ver(he, x, y, z, area);
 
-    real omega[] = {0, 0, 1};
+    real omega[] = { 0, 0, 1 };
     real position[3], velocity[3];
+
     for (i = 0; i < n; i++) {
-	vec_get(i, x, y, z, position);
-	vec_cross(omega, position, velocity);
-	vec_set(velocity, i, ux, uy, uz);
+        vec_get(i, x, y, z, position);
+        vec_cross(omega, position, velocity);
+        vec_set(velocity, i, ux, uy, uz);
     }
     alpha = -2.0;
     bi_update(bi, he, x, y, z);
     bi_double(bi, he, alpha, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
 
-    const real *q[] = {x, y, z, vx, vy, vz, NULL};
+    const real *q[] = { x, y, z, vx, vy, vz, NULL };
     puts("x y z vx vy vz");
     punto_fwrite(n, q, stdout);
 
