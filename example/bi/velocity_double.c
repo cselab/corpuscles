@@ -91,8 +91,8 @@ main(int argc, char **argv)
     he_area_ver(he, x, y, z, area);
     for (i = 0; i < nv; i++) {
         ux[i] = 1;
-        uy[i] = 0;
-        uz[i] = 0;
+        uy[i] = 2;
+        uz[i] = 3;
     }
     l = 0;
     for (k = 0; k <= nz; k++)
@@ -103,9 +103,9 @@ main(int argc, char **argv)
                 r[Z] = lz + dz * k;
                 bi_cortez_zero_double_velocity(cortez, he, x, y, z, ux, uy,
                                                uz, r, v);
-                vx[l] = -v[X];
-                vy[l] = -v[Y];
-                vz[l] = -v[Z];
+                vx[l] = v[X];
+                vy[l] = v[Y];
+                vz[l] = v[Z];
                 surface_distance(surface, r[X], r[Y], r[Z], &distance[l]);
                 l++;
             }

@@ -51,9 +51,7 @@ main(int argc, char **argv)
     alpha = -2.0;
     bi_update(bi, he, x, y, z);
     bi_double(bi, he, alpha, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
-
     int t, j, k;
-    real coeff;
 
     for (t = 0; t < nt; t++) {
         he_tri_ijk(he, t, &i, &j, &k);

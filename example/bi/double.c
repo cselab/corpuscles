@@ -18,7 +18,7 @@ main(int argc, char **argv)
     char *name;
     BI *bi;
     int i, n;
-    real *x, *y, *z, *ux, *uy, *uz, *nx, *vx, *vy, *vz;
+    real *x, *y, *z, *ux, *uy, *uz, *vx, *vy, *vz;
     real alpha;
     He *he;
 
