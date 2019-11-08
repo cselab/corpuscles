@@ -396,6 +396,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
     array_zero3(nv, ux, uy, uz);
     subst_apply(he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
+    array_copy3(nv, ux, uy, uz, vx, vy, vz);
     MSG("Subst.iiter: %d", Subst.iiter);
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
