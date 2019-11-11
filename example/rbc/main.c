@@ -36,7 +36,6 @@ static int subst_fin(void);
 static int subst_apply(He *, BI *, const real *, const real *,
                        const real *, const real *, const real *,
                        const real *, real *, real *, real *);
-
 enum { SUBST_TOL, SUBST_ITER, SUBST_FAIL };
 struct {
     int n, niter;
