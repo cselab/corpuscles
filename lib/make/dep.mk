@@ -1246,6 +1246,14 @@ co/util.h\
 co/stretch.h\
 co/util.h\
 
+subst.s.o:\
+co/prec/s/real.h\
+co/array.h\
+co/bi.h\
+co/err.h\
+co/memory.h\
+co/subst.h\
+
 sum.s.o:\
 co/memory.h\
 co/err.h\
@@ -1256,9 +1264,10 @@ co/prec/s/real.h\
 co/bbox.h\
 co/err.h\
 co/he.h\
+co/list/tri2.h\
 co/memory.h\
 co/predicate.h\
-co/list/tri2.h\
+co/tri.h\
 co/vec.h\
 co/surface.h\
 
@@ -1277,10 +1286,11 @@ co/tensor.h\
 
 transform.c.m4:\
 co/prec/s/real.h\
+co/array.h\
 co/err.h\
 co/he.h\
-co/tri.h\
 co/sum.h\
+co/tri.h\
 co/vec.h\
 co/transform.h\
 
@@ -2548,6 +2558,14 @@ co/util.h\
 co/stretch.h\
 co/util.h\
 
+subst.d.o:\
+co/prec/d/real.h\
+co/array.h\
+co/bi.h\
+co/err.h\
+co/memory.h\
+co/subst.h\
+
 sum.d.o:\
 co/memory.h\
 co/err.h\
@@ -2558,9 +2576,10 @@ co/prec/d/real.h\
 co/bbox.h\
 co/err.h\
 co/he.h\
+co/list/tri2.h\
 co/memory.h\
 co/predicate.h\
-co/list/tri2.h\
+co/tri.h\
 co/vec.h\
 co/surface.h\
 
@@ -2579,10 +2598,11 @@ co/tensor.h\
 
 transform.c.m4:\
 co/prec/d/real.h\
+co/array.h\
 co/err.h\
 co/he.h\
-co/tri.h\
 co/sum.h\
+co/tri.h\
 co/vec.h\
 co/transform.h\
 
@@ -3850,6 +3870,14 @@ co/util.h\
 co/stretch.h\
 co/util.h\
 
+subst.l.o:\
+co/prec/l/real.h\
+co/array.h\
+co/bi.h\
+co/err.h\
+co/memory.h\
+co/subst.h\
+
 sum.l.o:\
 co/memory.h\
 co/err.h\
@@ -3860,9 +3888,10 @@ co/prec/l/real.h\
 co/bbox.h\
 co/err.h\
 co/he.h\
+co/list/tri2.h\
 co/memory.h\
 co/predicate.h\
-co/list/tri2.h\
+co/tri.h\
 co/vec.h\
 co/surface.h\
 
@@ -3881,10 +3910,11 @@ co/tensor.h\
 
 transform.c.m4:\
 co/prec/l/real.h\
+co/array.h\
 co/err.h\
 co/he.h\
-co/tri.h\
 co/sum.h\
+co/tri.h\
 co/vec.h\
 co/transform.h\
 

@@ -32,7 +32,7 @@ main(int argc, char **argv)
     Surface *surface;
     BiCortezZero *cortez;
     He *he;
-    real *x, *y, *z, *fx, *fy, *fz, *vx, *vy, *vz, *area, *distance;
+    real *x, *y, *z, *ux, *uy, *uz, *vx, *vy, *vz, *area, *distance;
     real lx, ly, lz, hx, hy, hz, dx, dy, dz, r[3], v[3];
     int nx, ny, nz, Bset, Nset;
     FILE *f;
@@ -69,9 +69,9 @@ main(int argc, char **argv)
             break;
         }
     if (!Nset)
-        ER("nees -n option");
+        ER("needs -n option");
     if (!Bset)
-        ER("nees -n option");
+        ER("needs -b option");
 
     dx = nx == 0 ? 0 : (hx - lx) / nx;
     dy = ny == 0 ? 0 : (hy - ly) / ny;
@@ -84,17 +84,16 @@ main(int argc, char **argv)
 
     bi_cortez_zero_ini(he, &cortez);
     nv = he_nv(he);
-    MALLOC3(nv, &fx, &fy, &fz);
+    MALLOC3(nv, &ux, &uy, &uz);
     MALLOC3(n, &vx, &vy, &vz);
     MALLOC(n, &distance);
     MALLOC(nv, &area);
     he_area_ver(he, x, y, z, area);
     for (i = 0; i < nv; i++) {
-        fx[i] = area[i];
-        fy[i] = 0;
-        fz[i] = 0;
+        ux[i] = 1;
+        uy[i] = 2;
+        uz[i] = 3;
     }
-
     l = 0;
     for (k = 0; k <= nz; k++)
         for (j = 0; j <= ny; j++)
@@ -102,11 +101,11 @@ main(int argc, char **argv)
                 r[X] = lx + dx * i;
                 r[Y] = ly + dy * j;
                 r[Z] = lz + dz * k;
-                bi_cortez_zero_single_velocity(cortez, he, x, y, z, fx, fy,
-                                               fz, r, v);
-                vx[l] = 1 - v[X];
-                vy[l] = -v[Y];
-                vz[l] = -v[Z];
+                bi_cortez_zero_double_velocity(cortez, he, x, y, z, ux, uy,
+                                               uz, r, v);
+                vx[l] = v[X];
+                vy[l] = v[Y];
+                vz[l] = v[Z];
                 surface_distance(surface, r[X], r[Y], r[Z], &distance[l]);
                 l++;
             }
@@ -132,7 +131,7 @@ main(int argc, char **argv)
     y_fin(he, x, y, z);
     FREE(area);
     FREE(distance);
-    FREE3(fx, fy, fz);
+    FREE3(ux, uy, uz);
     FREE3(vx, vy, vz);
     bi_cortez_zero_fin(cortez);
 }

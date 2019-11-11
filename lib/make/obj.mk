@@ -129,6 +129,7 @@ strain/2d.s.o\
 strain/3d.s.o\
 strain.s.o\
 stretch.s.o\
+subst.s.o\
 sum.s.o\
 surface.s.o\
 ten.s.o\
@@ -257,6 +258,7 @@ strain/2d.d.o\
 strain/3d.d.o\
 strain.d.o\
 stretch.d.o\
+subst.d.o\
 sum.d.o\
 surface.d.o\
 ten.d.o\
@@ -385,6 +387,7 @@ strain/2d.l.o\
 strain/3d.l.o\
 strain.l.o\
 stretch.l.o\
+subst.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\

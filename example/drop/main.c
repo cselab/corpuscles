@@ -95,10 +95,8 @@ static int fargv(char ***p, He *he)
   v++;
   bi_argv(name, &v, he, &bi);
 
-  he_f_volume_ini(3.6678, 10000, he, &fvolume);
+  he_f_volume_ini(4.04705, 10000, he, &fvolume);
   MALLOC3(nv, &Vx, &Vy, &Vz);
-
-  
   scl(v, &rho);
   v++;
   scl(v, &eta);

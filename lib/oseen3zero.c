@@ -21,30 +21,10 @@ struct T {
     real *nx, *ny, *nz, *area;
 };
 
-static int
-oseen(const real a[3], const real b[3],
-      real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
-{
-    enum {
-        X, Y, Z
-    };
-    real d[3], r, r3, l;
-
-    i_vec_minus(a, b, d);
-    r = i_vec_abs(d);
-    r3 = r * r * r;
-    l = 1 / r;
-    if (r == 0)
-        ERR(CO_NUM, "r == 0");
-    *xx = l + d[X] * d[X] / r3;
-    *yy = l + d[Y] * d[Y] / r3;
-    *zz = l + d[Z] * d[Z] / r3;
-
-    *xy = d[X] * d[Y] / r3;
-    *xz = d[X] * d[Z] / r3;
-    *yz = d[Y] * d[Z] / r3;
-    return CO_OK;
-}
+static int oseen(const real[3], const real[3], real *, real *, real *,
+                 real *, real *, real *);
+static int stresslet(const real[3], const real[3], const real[3], real *,
+                     real *, real *, real *, real *, real *);
 
 int
 oseen3_zero_ini(He * he, T ** pq)
@@ -82,6 +62,8 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
 {
     int n, i;
     real s;
+
+    USED(q);
 
     n = he_nv(he);
 #pragma omp parallel for
@@ -156,37 +138,12 @@ oseen3zero_single_velocity(T * q, He * he,
     return CO_OK;
 }
 
-static int
-stresslet(const real a[3], const real n[3], const real b[3],
-          real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
-{
-    enum {
-        X, Y, Z
-    };
-    real d[3], r, p, l;
-
-    i_vec_minus(a, b, d);
-    r = i_vec_abs(d);
-    p = i_vec_dot(d, n);
-    if (r == 0)
-        ERR(CO_NUM, "r == 0");
-    l = p / (r * r * r * r * r);
-    *xx = d[X] * d[X] * l;
-    *xy = d[X] * d[Y] * l;
-    *xz = d[X] * d[Z] * l;
-    *yy = d[Y] * d[Y] * l;
-    *yz = d[Y] * d[Z] * l;
-    *zz = d[Z] * d[Z] * l;
-
-    return CO_OK;
-}
-
 int
 oseen3_zero_stresslet(T * q, He * he, const real * x, const real * y,
                       const real * z, real * oxx, real * oxy, real * oxz,
                       real * oyy, real * oyz, real * ozz)
 {
-    real *nx, *ny, *nz, *area, A, s;
+    real *nx, *ny, *nz, *area, A;
     int status, n, i;
 
     nx = q->nx;
@@ -227,5 +184,95 @@ oseen3_zero_stresslet(T * q, He * he, const real * x, const real * y,
             SET(i, j, A * zz, ozz);
         }
     }
+    return CO_OK;
+}
+
+int
+oseen3zero_double_velocity(T * q, He * he,
+                           const real * x, const real * y, const real * z,
+                           const real * ux, const real * uy,
+                           const real * uz, const real r[3],
+                           /**/ real v[3])
+{
+    enum { X, Y, Z };
+    real *nx, *ny, *nz, *area, A, s;
+    int n, i, status;
+    real xx, xy, xz, yy, yz, zz, b[3], u[3], normal[3];
+    real dx, dy, dz;
+
+    nx = q->nx;
+    ny = q->ny;
+    nz = q->nz;
+    area = q->area;
+    status = normal_mwa(he, x, y, z, nx, ny, nz);
+    if (status != CO_OK)
+        ERR(CO_NUM, "normal_mwa failed");
+    status = i_area_ver(he, x, y, z, area);
+    if (status != CO_OK)
+        ERR(CO_NUM, "area_ver failed");
+    n = he_nv(he);
+    dx = dy = dz = 0;
+    for (i = 0; i < n; i++) {
+        i_vec_get(i, nx, ny, nz, normal);
+        i_vec_get(i, x, y, z, b);
+        i_vec_get(i, ux, uy, uz, u);
+        A = area[i];
+        stresslet(r, normal, b, &xx, &xy, &xz, &yy, &yz, &zz);
+        dx += A * (xx * u[X] + xy * u[Y] + xz * u[Z]);
+        dy += A * (xy * u[X] + yy * u[Y] + yz * u[Z]);
+        dz += A * (xz * u[X] + yz * u[Y] + zz * u[Z]);
+    }
+    s = 3 / (4 * pi);
+    v[X] = s * dx;
+    v[Y] = s * dy;
+    v[Z] = s * dz;
+    return CO_OK;
+}
+
+static int
+oseen(const real a[3], const real b[3],
+      real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
+{
+    enum {
+        X, Y, Z
+    };
+    real d[3], r, r3, l;
+
+    i_vec_minus(a, b, d);
+    r = i_vec_abs(d);
+    r3 = r * r * r;
+    l = 1 / r;
+    if (r == 0)
+        ERR(CO_NUM, "r == 0");
+    *xx = l + d[X] * d[X] / r3;
+    *yy = l + d[Y] * d[Y] / r3;
+    *zz = l + d[Z] * d[Z] / r3;
+    *xy = d[X] * d[Y] / r3;
+    *xz = d[X] * d[Z] / r3;
+    *yz = d[Y] * d[Z] / r3;
+    return CO_OK;
+}
+
+static int
+stresslet(const real a[3], const real n[3], const real b[3],
+          real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
+{
+    enum {
+        X, Y, Z
+    };
+    real d[3], r, p, l;
+
+    i_vec_minus(a, b, d);
+    r = i_vec_abs(d);
+    p = i_vec_dot(d, n);
+    if (r == 0)
+        ERR(CO_NUM, "r == 0");
+    l = p / (r * r * r * r * r);
+    *xx = d[X] * d[X] * l;
+    *xy = d[X] * d[Y] * l;
+    *xz = d[X] * d[Z] * l;
+    *yy = d[Y] * d[Y] * l;
+    *yz = d[Y] * d[Z] * l;
+    *zz = d[Z] * d[Z] * l;
     return CO_OK;
 }

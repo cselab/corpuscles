@@ -314,7 +314,6 @@ gen2(int K, int M, int (*bc)(int, int, int *, int *), T ** pq)
                 if (bc(K, M, &i, &j))
                     alist_push_uniq(a, i * M + j, k * M + m);
             }
-    MALLOC(1, &q);
     clist_ini(K * M, &q);
     clist_alist_own(q, a);
     *pq = q;

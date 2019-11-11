@@ -13,15 +13,16 @@ rho=1
 
 A=12.3165
 V=3.6678
-sigma=50.0
+sigma=10
 
-init=`co.path`/sph/icosa/Nt320.off  a=0.0384890625 reg=0.0301148
-#init=`co.path`/sph/icosa/Nt1280.off  a=0.0384890625 reg=0.0301148
+init=`co.path`/sph/icosa/Nt320.off  a=0.0384890625
+#init=`co.path`/sph/icosa/Nt1280.off  a=0.0384890625
 #init=init/1.off a=0.009622265625 reg=0.0150574
 #init=init/2.off a=0.00245436875 reg=1
 
 make
 co.run ./main \
+       edg_sq 1 \
        garea_sq $sigma \
        cortez_zero \
        $rho $eta $lambda $gdot $dt \

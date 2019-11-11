@@ -134,6 +134,7 @@ co/strain/2d.h\
 co/strain/3d.h\
 co/strain.h\
 co/stretch.h\
+co/subst.h\
 co/sum.h\
 co/surface.h\
 co/ten.h\

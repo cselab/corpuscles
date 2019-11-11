@@ -24,4 +24,10 @@ int bi_cortez_zero_single_velocity(T * q, He * he,
                                    const real * fy, const real * fz,
                                    const real r[3], /**/ real v[3]);
 
+int bi_cortez_zero_double_velocity(T * q, He * he,
+                                   const real * x, const real * y,
+                                   const real * z, const real * fx,
+                                   const real * fy, const real * fz,
+                                   const real r[3], /**/ real v[3]);
+
 #undef T

@@ -2,37 +2,38 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <omp.h>
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
-#include <co/len.h>
+#include <co/bi.h>
 #include <co/err.h>
+#include <co/f/garea.h>
+#include <co/f/juelicher_xin.h>
 #include <co/force.h>
+#include <co/f/volume.h>
+#include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
-#include <co/he.h>
-#include <co/punto.h>
-#include <co/y.h>
 #include <co/off.h>
-#include <co/f/garea.h>
-#include <co/f/volume.h>
-#include <co/f/juelicher_xin.h>
-#include <co/bi.h>
+#include <co/punto.h>
+#include <co/subst.h>
+#include <co/y.h>
+
+static const char *me = "rbc";
+static const real pi = 3.141592653589793115997964;
+static const real tol = 0.001;
+static const int iter_max = 100;
 
 static int num(char **, /**/ int *);
 static int scl(char **, /**/ real *);
 static int fargv(char ***, He *);
-static int force(He *, const real *, const real *, const real *, real *, real *, real *);
+static int force(He *, const real *, const real *, const real *, real *,
+                 real *, real *);
 static int fin(void);
-static int F(real, const real *, const real *, const real *, real *, real *, real *, void *);
+static int F(real, const real *, const real *, const real *, real *,
+             real *, real *, void *);
 static real reduced_volume(real, real);
-
-static const char *me = "rbc";
-static const real pi = 3.141592653589793115997964;
-static const real tol = 0.01;
-static const int iter_max = 100;
 
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
@@ -44,6 +45,7 @@ static Force *Fo[20] = {
 static HeFVolume *fvolume;
 static He *he;
 static BI *bi;
+static Subst *subst;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
@@ -126,6 +128,10 @@ main(__UNUSED int argc, char **argv)
         ER("Failed to open '%s'", file_msg);
     }
 
+    real alpha;
+
+    alpha = 2 * (1 - lambda) / (1 + lambda);
+    subst_ini(nv, alpha, tol, iter_max, &subst);
     fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
     fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", R, D,
             rho, eta, lambda, gamdot);
@@ -377,45 +383,11 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     for (i = 0; i < nv; i++)
         vx[i] += coef * gamdot * z[i];
     bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
-
-    //inner and outer viscosity has obvious contrast
-    if (1 - lambda > tol || 1 - lambda < -tol) {
-
-        array_zero3(nv, ux, uy, uz);
-        for (i = 0; i < nv; i++)
-            ux[i] += coef * gamdot * z[i];
-
-        for (k = 1; k <= iter_max; k++) {
-
-            array_copy3(nv, vx, vy, vz, wx, wy, wz);
-            bi_double(bi, he, be, x, y, z, ux, uy, uz, wx, wy, wz);
-
-            d = array_msq_3d(nv, ux, uy, uz);
-            dd = array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
-            ratio = dd / d;
-
-            if (ratio < tol) {
-
-                break;
-
-            }
-
-            if (k == iter_max) {
-                if ((fm = fopen(file_msg, "a")) == NULL) {
-                    ER("Failed to open '%s'", file_msg);
-                }
-                fprintf(fm, "t d dd ratio k = %g %g %g %g %i\n", t, d, dd,
-                        ratio, k);
-                fclose(fm);
-            }
-
-            array_copy3(nv, wx, wy, wz, ux, uy, uz);
-        }
-
-        array_copy3(nv, ux, uy, uz, vx, vy, vz);
-
-    }
-
+    array_zero3(nv, ux, uy, uz);
+    subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
+    array_copy3(nv, ux, uy, uz, vx, vy, vz);
+    if (subst_niter(subst))
+        MSG("Subst.iiter: %d", subst_niter(subst));
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
