@@ -187,7 +187,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     FILE *f;
     Bbox *box;
     real margin[] = { 0.2, 0.2, 0.2 };
-    nx = ny = nz = 30;
+    nx = ny = nz = 40;
 
     nv = he_nv(he);
     bbox_ini(&box);
@@ -241,8 +241,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
                                                fx, fy, fz, r, vs);
                 bi_cortez_zero_double_velocity(Grid.cortez, he, x, y, z,
                                                ux, uy, uz, r, vd);
-		lambda = 1;
-                vx[l] = -vs[X]/(2*eta) + (1 - lambda)/2*vd[X] + gamdot * r[Z];
+                vx[l] = -vs[X]/(2*eta) + (1 - lambda)/2*vd[X] + gamdot*r[Z];
                 vy[l] = -vs[Y]/(2*eta) + (1 - lambda)/2*vd[Y];
                 vz[l] = -vx[Z]/(2*eta) + (1 - lambda)/2*vd[Z];
                 surface_distance(Grid.surface, r[X], r[Y], r[Z],
