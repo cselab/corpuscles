@@ -11,13 +11,12 @@ D=0.000898798148042
 rho=1
 eta=645.928652122
 lambda=5
-# gamdot=0.1152
-gamdot=0.576
+gamdot=2
 start=0
 end=100
 freq_out=10
 freq_stat=100
-dt=`ae 0.01*$gamdot`
+dt=`ae 0.025*$gamdot`
 
 make
 co.run ./main volume $V $kv \

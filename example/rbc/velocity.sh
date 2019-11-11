@@ -15,7 +15,7 @@ R=1
 D=0.000898798148042
 rho=1
 eta=645.928652122
-lambda=1
+lambda=5
 # gamdot=0.1152
 gamdot=0.576
 

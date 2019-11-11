@@ -208,7 +208,6 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     n = (nx + 1) * (ny + 1) * (nz + 1);
     MALLOC3(n, &vx, &vy, &vz);
     MALLOC(n, &distance);
-
     surface_update(Grid.surface, he, x, y, z);
     l = 0;
     for (k = 0; k <= nz; k++)

@@ -187,7 +187,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     FILE *f;
     Bbox *box;
     real margin[] = { 0.2, 0.2, 0.2 };
-    nx = ny = nz = 60;
+    nx = ny = nz = 30;
 
     nv = he_nv(he);
     bbox_ini(&box);
@@ -211,18 +211,24 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     MALLOC(n, &distance);
 
     Subst *subst;
-    real alpha, beta;
+    real alpha, beta, coef;
     real *ux, *uy, *uz;
+    real *wx, *wy, *wz;
     MALLOC3(nv, &ux, &uy, &uz);
+    CALLOC3(nv, &wx, &wy, &wz);
     alpha = 2 * (1 - lambda) / (1 + lambda);
     beta = -2 / (eta * (1 + lambda));
     real tol = 0.001;
     int iter_max = 100;
+    coef = 2 / (1 + lambda);
     subst_ini(nv, alpha, tol, iter_max, &subst);
-    bi_single(bi, he, beta, x, y, z, fx, fy, fz, vx, vy, vz);
-    array_zero3(nv, ux, uy, uz);
-    subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
-    
+    for (i = 0; i < nv; i++)
+        wx[i] += coef * gamdot * z[i];
+    bi_update(bi, he, x, y, z);
+    bi_single(bi, he, beta, x, y, z, fx, fy, fz, wx, wy, wz);
+    subst_apply(subst, he, bi, x, y, z, wx, wy, wz, ux, uy, uz);
+    if (subst_niter(subst)  > 1)
+        MSG("Subst.iiter: %d", subst_niter(subst));    
     surface_update(Grid.surface, he, x, y, z);
     l = 0;
     for (k = 0; k <= nz; k++)
@@ -234,10 +240,11 @@ grid_write(He * he, const real * x, const real * y, const real * z,
                 bi_cortez_zero_single_velocity(Grid.cortez, he, x, y, z,
                                                fx, fy, fz, r, vs);
                 bi_cortez_zero_double_velocity(Grid.cortez, he, x, y, z,
-                                               ux, uy, uz, r, vd);		
-                vx[l] = -1 / eta * (vs[X] + vd[X]) + gamdot * r[Z];
-                vy[l] = -1 / eta * (vs[Y] + vd[Y]);
-                vz[l] = -1 / eta * (vs[Z] + vd[Z]);
+                                               ux, uy, uz, r, vd);
+		lambda = 1;
+                vx[l] = -vs[X]/(2*eta) + (1 - lambda)/2*vd[X] + gamdot * r[Z];
+                vy[l] = -vs[Y]/(2*eta) + (1 - lambda)/2*vd[Y];
+                vz[l] = -vx[Z]/(2*eta) + (1 - lambda)/2*vd[Z];
                 surface_distance(Grid.surface, r[X], r[Y], r[Z],
                                  &distance[l]);
                 l++;
@@ -264,6 +271,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     subst_fin(subst);
     FREE3(vx, vy, vz);
     FREE3(ux, uy, uz);
+    FREE3(wx, wy, wz);
     FREE(distance);
     return CO_OK;
 }
