@@ -11,7 +11,7 @@ D=0.000898798148042
 rho=1
 eta=645.928652122
 lambda=5
-gamdot=2
+gamdot=0.576
 start=0
 end=100
 freq_out=10
@@ -25,4 +25,4 @@ co.run ./main volume $V $kv \
        strain ref/ref_v0.95.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
        cortez_zero \
        $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat \
-       '<' init_tilt/init_v0.642_Da0.143.off
+       '<' data/la5.off

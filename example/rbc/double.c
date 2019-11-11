@@ -241,9 +241,9 @@ grid_write(He * he, const real * x, const real * y, const real * z,
                                                fx, fy, fz, r, vs);
                 bi_cortez_zero_double_velocity(Grid.cortez, he, x, y, z,
                                                ux, uy, uz, r, vd);
-                vx[l] = -vs[X]/(2*eta) + (1 - lambda)/2*vd[X] + gamdot*r[Z];
-                vy[l] = -vs[Y]/(2*eta) + (1 - lambda)/2*vd[Y];
-                vz[l] = -vx[Z]/(2*eta) + (1 - lambda)/2*vd[Z];
+                vx[l] = -vs[X]/eta + (1 - lambda)*vd[X] + gamdot*r[Z];
+                vy[l] = -vs[Y]/eta + (1 - lambda)*vd[Y];
+                vz[l] = -vx[Z]/eta + (1 - lambda)*vd[Z];
                 surface_distance(Grid.surface, r[X], r[Y], r[Z],
                                  &distance[l]);
                 l++;
