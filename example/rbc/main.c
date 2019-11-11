@@ -40,12 +40,12 @@ static int subst_apply(He *, BI *, const real *, const real *,
 enum { SUBST_TOL, SUBST_ITER, SUBST_FAIL };
 struct {
     int n, niter;
-    real alpha, tol, *wx, *wy, *wz;
+    real alpha, tol, *wx, *wy, *wz, *vx, *vy, *vz;
     int status, iiter;
 } Subst;
 static const char *me = "rbc";
 static const real pi = 3.141592653589793115997964;
-static const real tol = 0.01;
+static const real tol = 0.001;
 static const int iter_max = 100;
 
 #define FMT_IN CO_REAL_IN
@@ -141,6 +141,7 @@ main(__UNUSED int argc, char **argv)
     }
 
     real alpha;
+
     alpha = 2 * (1 - lambda) / (1 + lambda);
     subst_ini(nv, alpha, tol, iter_max);
     fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
@@ -397,7 +398,8 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     array_zero3(nv, ux, uy, uz);
     subst_apply(he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
-    MSG("Subst.iiter: %d", Subst.iiter);
+    if (Subst.iiter)
+        MSG("Subst.iiter: %d", Subst.iiter);
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
@@ -419,6 +421,7 @@ subst_ini(int n, real alpha, real tol, int niter)
     Subst.tol = tol;
     Subst.niter = niter;
     MALLOC3(n, &Subst.wx, &Subst.wy, &Subst.wz);
+    CALLOC3(n, &Subst.vx, &Subst.vy, &Subst.vz);
     return CO_OK;
 }
 
@@ -426,6 +429,7 @@ static int
 subst_fin(void)
 {
     FREE3(Subst.wx, Subst.wy, Subst.wz);
+    FREE3(Subst.vx, Subst.vy, Subst.vz);
     return CO_OK;
 }
 
@@ -433,10 +437,10 @@ static int
 subst_apply(He * he, BI * bi,
             const real * x, const real * y, const real * z,
             const real * ux, const real * uy, const real * uz,
-            real * vx, real * vy, real * vz)
+            real * vx0, real * vy0, real * vz0)
 {
     int status, n, niter, iiter;
-    real *wx, *wy, *wz, alpha, tol, diff, norm;
+    real *wx, *wy, *wz, *vx, *vy, *vz, alpha, tol, diff, norm;
 
     alpha = Subst.alpha;
     tol = Subst.tol;
@@ -445,6 +449,9 @@ subst_apply(He * he, BI * bi,
     wx = Subst.wx;
     wy = Subst.wy;
     wz = Subst.wz;
+    vx = Subst.vx;
+    vy = Subst.vy;
+    vz = Subst.vz;
     for (iiter = 0; iiter < niter; iiter++) {
         array_copy3(n, ux, uy, uz, wx, wy, wz);
         status = bi_double(bi, he, alpha, x, y, z, vx, vy, vz, wx, wy, wz);
@@ -452,16 +459,18 @@ subst_apply(He * he, BI * bi,
             goto fail;
         norm = array_msq_3d(n, wx, wy, wz);
         diff = array_l2_3d(n, wx, vx, wy, vy, wz, vz);
-	array_copy3(nv, wx, wy, wz, vx, vy, vz);
+        array_copy3(nv, wx, wy, wz, vx, vy, vz);
         if (diff <= tol * norm)
             goto tol;
     }
     Subst.iiter = iiter;
     Subst.status = SUBST_ITER;
+    array_copy3(n, vx, vy, vz, vx0, vy0, vz0);
     return CO_OK;
   tol:
     Subst.iiter = iiter;
     Subst.status = SUBST_TOL;
+    array_copy3(n, vx, vy, vz, vx0, vy0, vz0);
     return CO_OK;
   fail:
     Subst.iiter = iiter;
