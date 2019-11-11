@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <omp.h>
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
@@ -13,7 +12,6 @@
 #include <co/force.h>
 #include <co/f/volume.h>
 #include <co/he.h>
-#include <co/len.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
