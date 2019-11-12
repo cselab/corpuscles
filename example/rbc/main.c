@@ -129,6 +129,7 @@ main(__UNUSED int argc, char **argv)
     }
 
     real alpha;
+
     alpha = 2 * (1 - lambda) / (1 + lambda);
     subst_ini(nv, alpha, tol, iter_max, &subst);
     fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
@@ -385,7 +386,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     array_zero3(nv, ux, uy, uz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
-    if (subst_niter(subst)  > 1)
+    if (subst_niter(subst) > 1)
         MSG("Subst.iiter: %d", subst_niter(subst));
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
