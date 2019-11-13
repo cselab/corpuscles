@@ -331,7 +331,7 @@ int main(__UNUSED int argc, char **argv) {
       fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn);
       fclose(fm);
     }
-    if (s % 1000 == 0 ) {
+    if (s % 100 == 0 ) {
       j = 0;
       do {
 	he_equiangulate(he, x, y, z, &cnt);
