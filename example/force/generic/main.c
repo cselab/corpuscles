@@ -84,7 +84,7 @@ int main(int __UNUSED argc, char *argv[]) {
 
     main0();
 
-    FREE(rr); FREE(fm);
+    FREE(rr); FREE(fm); FREE(area);
     FREE(fx); FREE(fy); FREE(fz);
     FREE(gx); FREE(gy); FREE(gz);
 

@@ -17,7 +17,6 @@ struct T {
     int n;
     real *area;
     real K;
-    real A;
 };
 
 int
@@ -100,7 +99,7 @@ compute_area(He * he, const real * x, const real * y, const real * z,
 }
 
 static void
-compute_force(real K, real A, He * he,
+compute_force(real K, real A, He * he, const real * area,
               const real * x, const real * y, const real * z,
               /**/ real * fx, real * fy, real * fz)
 {
@@ -113,9 +112,8 @@ compute_force(real K, real A, He * he,
         vec_get(i, x, y, z, /**/ a);
         vec_get(j, x, y, z, /**/ b);
         vec_get(k, x, y, z, /**/ c);
-
         dtri_area(a, b, c, /**/ da, db, dc);
-        coeff = 2 * K * A;
+        coeff = 2 * K * (n - 1) * (n * area[t] - A) / n;
         vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
         vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
         vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
@@ -133,15 +131,12 @@ he_f_area_diff_force(T * q, He * he,
     n = q->n;
     area = q->area;
     K = q->K;
-
     if (he_nt(he) != n)
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
-
     compute_area(he, x, y, z, /**/ area);
     A = he_sum_array(n, area);
-    q->A = A;
-    compute_force(K, A, he, x, y, z, /**/ fx, fy, fz);
-
+    MSG("A: %g", (double)A);
+    compute_force(K, A, he, area, x, y, z, /**/ fx, fy, fz);
     return CO_OK;
 }
 
@@ -149,19 +144,19 @@ real
 he_f_area_diff_energy(T * q, He * he,
                      const real * x, const real * y, const real * z)
 {
-    int n;
-    real *area, A, K;
-
+    int n, i;
+    real *area, A, K, ans, d;
     n = q->n;
     area = q->area;
     K = q->K;
-
     if (he_nt(he) != n)
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
-
     compute_area(he, x, y, z, /**/ area);
     A = he_sum_array(n, area);
-    
-    q->A = A;
-    return K * A * A;
+    ans = 0;
+    for (i = 0; i < n; i++) {
+      d = n*area[i] - A;
+      ans += d * d;
+    }
+    return K * ans / n;
 }
