@@ -320,41 +320,29 @@ int main(__UNUSED int argc, char **argv) {
       }
       
       v = reduced_volume(A, V);
-      
       /*if ( s / 10 % freq_stat == 0 ) {
 	MSG("dt s t = %g %i %g", dt, s, t);
 	MSG("A/A0 V/V0 v  = %g %g %g", A/A0, V/V0, v);
 	MSG("et ega ev eb ebl ebn = %g %g %g %g %g %g", et, ega, ev, eb, ebl, ebn);
 	}*/
-      
       if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_stat);
       }
-      
       fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn);
       fclose(fm);
-      
     }
-    
-    if (s % 100 == 0 ) {
-	
+    if (s % 1000 == 0 ) {
       j = 0;
       do {
 	he_equiangulate(he, x, y, z, &cnt);
-	//MSG("cnt : %d", cnt);
 	j++;
       } while (cnt > 0 && j < 10);
       
     }
-    
-    
     s ++;
     t = time + dt;
-    
     if ( s > end ) break;
-    
     ode3_apply(ode, &time, t, x, y, z);
-    
   }
   FREE3(Vx, Vy, Vz);
   FREE3(ux, uy, uz);
