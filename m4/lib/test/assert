@@ -1,0 +1,5 @@
+# TEST: assert
+co.m4 2> main.out.txt <<'!'
+include(`co.m4')dnl
+h_assert(0)dnl
+!

@@ -1,0 +1,2 @@
+stdin:2: error: assert failed: 0
+co.m4: failed
