@@ -135,7 +135,6 @@ he_f_area_diff_force(T * q, He * he,
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
     compute_area(he, x, y, z, /**/ area);
     A = he_sum_array(n, area);
-    MSG("A: %g", (double)A);
     compute_force(K, A, he, area, x, y, z, /**/ fx, fy, fz);
     return CO_OK;
 }

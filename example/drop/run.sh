@@ -15,14 +15,14 @@ A=12.3165
 V=3.6678
 sigma=10
 
-init=`co.path`/sph/icosa/Nt320.off  a=0.0384890625
-#init=`co.path`/sph/icosa/Nt1280.off  a=0.0384890625
-#init=init/1.off a=0.009622265625 reg=0.0150574
-#init=init/2.off a=0.00245436875 reg=1
+#init=`co.path`/sph/icosa/Nt320.off
+init=`co.path`/sph/icosa/Nt1280.off
+#init=init/1.off a=0.009622265625
+#init=init/2.off a=0.00245436875
 
 make
 co.run ./main \
-       area_sq 1 \
+       area_diff 1 \
        garea_sq $sigma \
        cortez_zero \
        $rho $eta $lambda $gdot $dt \
