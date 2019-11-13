@@ -1,0 +1,10 @@
+declare(n, constant);
+
+defrule(r_A, diff(A), diff(a));
+d0: n*a - A;
+defrule(r_d, 'diff(d), diff(d0));
+
+E: d0^2/n;
+dE: diff(E);
+dE: apply2(dE, r_A, r_d);
+factor(dE);

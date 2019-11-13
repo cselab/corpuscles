@@ -60,6 +60,7 @@ f2/bend_sc.s.o\
 f2/glen.s.o\
 f2/len.s.o\
 f/area.s.o\
+f/area_diff.s.o\
 f/area_sq.s.o\
 f/area_voronoi.s.o\
 fd2.s.o\
@@ -189,6 +190,7 @@ f2/bend_sc.d.o\
 f2/glen.d.o\
 f2/len.d.o\
 f/area.d.o\
+f/area_diff.d.o\
 f/area_sq.d.o\
 f/area_voronoi.d.o\
 fd2.d.o\
@@ -318,6 +320,7 @@ f2/bend_sc.l.o\
 f2/glen.l.o\
 f2/len.l.o\
 f/area.l.o\
+f/area_diff.l.o\
 f/area_sq.l.o\
 f/area_voronoi.l.o\
 fd2.l.o\

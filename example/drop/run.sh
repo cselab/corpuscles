@@ -22,7 +22,7 @@ init=`co.path`/sph/icosa/Nt320.off  a=0.0384890625
 
 make
 co.run ./main \
-       edg_sq 1 \
+       area_sq 1 \
        garea_sq $sigma \
        cortez_zero \
        $rho $eta $lambda $gdot $dt \

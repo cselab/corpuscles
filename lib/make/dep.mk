@@ -491,6 +491,17 @@ co/tri.h\
 co/dtri.h\
 co/f/area.h\
 
+area_diff.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/f/area_diff.h\
+
 area_sq.s.o:\
 co/prec/s/real.h\
 co/argv.h\
@@ -763,6 +774,7 @@ co/f/area_voronoi.h\
 co/f/garea_voronoi.h\
 co/f/volume_normal.h\
 co/f/area_sq.h\
+co/f/area_diff.h\
 co/f/gompper.h\
 co/f/strain.h\
 co/force.h\
@@ -1803,6 +1815,17 @@ co/tri.h\
 co/dtri.h\
 co/f/area.h\
 
+area_diff.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/f/area_diff.h\
+
 area_sq.d.o:\
 co/prec/d/real.h\
 co/argv.h\
@@ -2075,6 +2098,7 @@ co/f/area_voronoi.h\
 co/f/garea_voronoi.h\
 co/f/volume_normal.h\
 co/f/area_sq.h\
+co/f/area_diff.h\
 co/f/gompper.h\
 co/f/strain.h\
 co/force.h\
@@ -3115,6 +3139,17 @@ co/tri.h\
 co/dtri.h\
 co/f/area.h\
 
+area_diff.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/f/area_diff.h\
+
 area_sq.l.o:\
 co/prec/l/real.h\
 co/argv.h\
@@ -3387,6 +3422,7 @@ co/f/area_voronoi.h\
 co/f/garea_voronoi.h\
 co/f/volume_normal.h\
 co/f/area_sq.h\
+co/f/area_diff.h\
 co/f/gompper.h\
 co/f/strain.h\
 co/force.h\
