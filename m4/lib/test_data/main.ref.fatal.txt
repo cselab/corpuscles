@@ -1,0 +1,2 @@
+stdin:2: error: preved
+co.m4: failed
