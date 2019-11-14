@@ -64,6 +64,7 @@ static int check_tri() {
         if (tri(nn) != t)
             ER("h=%d t=%d tri(nn)=%d", h, t, tri(nn));
     }
+    return CO_OK;
 }
 
 static int check_ver() {
@@ -74,6 +75,7 @@ static int check_ver() {
         if (ver(h) != v)
             ER("h=%d v=%d ver(h)=%d", h, v, ver(h));
     }
+    return CO_OK;
 }
 
 static int check_edg() {
@@ -92,6 +94,7 @@ static int check_edg() {
         if (q != h && q != f)
             ER("h=%d f=%d e=%d q=%d", h, f, e, q);
     }
+    return CO_OK;
 }
 
 static int check_hdgA() {
@@ -104,12 +107,14 @@ static int check_hdgA() {
         if (n == f)
             ER("n=%d   ==   f=%d (h = %d)", n, f, h);
         if (nf == h)
-            ER("nf=%d   ==   f=%d (h = %d)", nf, f, h);         }
+            ER("nf=%d   ==   f=%d (h = %d)", nf, f, h);
+    }
+    return CO_OK;
 }
 
 static int check_hdgB() {
     int nh;
-    int h0, h1, h2, h3, h4, h5, h6, h7, h8;
+    int h0, h1, h2, h3, h4, h8;
     nh = he_nh(he);
     for (h0 = 0; h0 < nh; h0++) {
         h1 = nxt(h0);
@@ -117,13 +122,11 @@ static int check_hdgB() {
 
         h3 = flp(h0);
         h4 = nxt(h3);
-        h5 = nxt(h4);
 
-        h6 = flp(h1);
-        h7 = flp(h2);
         h8 = flp(h4);
         assert(h2 != h8);
     }
+    return CO_OK;
 }
 
 static void main0(int e) {
