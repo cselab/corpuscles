@@ -14,7 +14,6 @@ end=1000000
 freq=100
 dt=0.001
 eta=1
-rho=1
 
 A=12.3165
 V=3.6678
@@ -25,9 +24,9 @@ init=`co.path`/sph/icosa/Nt1280.off
 
 make
 co.run ./main \
-       area_diff 0.1 \
+       area_diff 0.01 \
        garea_zero $sigma \
        cortez_zero \
-       $rho $eta $lambda $gdot $dt \
+       $eta $lambda $gdot $dt \
        $start $end $freq 200 \
        '<' $init
