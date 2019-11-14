@@ -385,7 +385,9 @@ set_hdg_tri(T * q, int t, int i)
 #define  hdg_tri(t) he_hdg_tri(q, (t))
 
 #define  s_nxt(h, i)     set_nxt(q, (h), (i))
+#define  s_nxt3(i, j, k) s_nxt(i, j), s_nxt(j, k), s_nxt(k, i)
 #define  s_flp(h, i)     set_flp(q, (h), (i)), set_flp(q, (i), (h))
+#define  s_flp4(i, j, v, u) s_flp(i, j), s_ver(i, v), s_ver(j, u)
 #define  s_ver(h, i)     set_ver(q, (h), (i))
 #define  s_edg(h, i)     set_edg(q, (h), (i))
 #define  s_tri(h, i)     set_tri(q, (h), (i))
@@ -608,6 +610,22 @@ he_edg_split(T * q, int e0)
     h13 = nh++;
     h14 = nh++;
     h15 = nh++;
+
+    s_nxt3(h0, h1, h12);
+    s_nxt3(h15, h13, h2);
+    s_nxt3(h14, h4, h11);
+    s_nxt3(h3, h10, h5);
+
+    s_flp4(h9, h5, v1, v3);
+    s_flp4(h10, h11, v4, v3);
+    s_flp4(h4, h8, v0, v3);
+    s_flp4(h3, h0, v1, v4);
+    s_flp4(h14, h15, v4, v0);
+    s_flp4(h6, h1, v2, v1);
+    s_flp4(h12, h13, v2, v4);
+    s_flp4(h2, h7, v2, v0);
+
+    /* TODO */
 
     q->nv = nv;
     q->nt = nt;
