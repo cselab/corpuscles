@@ -58,6 +58,7 @@ co/f/edg_sq.h\
 co/f/garea.h\
 co/f/garea_sq.h\
 co/f/garea_voronoi.h\
+co/f/garea_zero.h\
 co/f/gompper.h\
 co/f/gompper_kroll.h\
 co/f/gompper_xin.h\

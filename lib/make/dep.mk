@@ -500,6 +500,7 @@ co/he.h\
 co/vec.h\
 co/tri.h\
 co/dtri.h\
+co/sum.h\
 co/f/area_diff.h\
 
 area_sq.s.o:\
@@ -615,6 +616,18 @@ co/sum.h\
 co/da.h\
 co/macro.h\
 co/f/garea_voronoi.h\
+
+garea_zero.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_zero.h\
 
 gompper.s.o:\
 co/prec/s/real.h\
@@ -762,6 +775,7 @@ co/f/area.h\
 co/f/darea.h\
 co/f/garea.h\
 co/f/garea_sq.h\
+co/f/garea_zero.h\
 co/f/volume.h\
 co/f/dvolume.h\
 co/f/rvolume.h\
@@ -1824,6 +1838,7 @@ co/he.h\
 co/vec.h\
 co/tri.h\
 co/dtri.h\
+co/sum.h\
 co/f/area_diff.h\
 
 area_sq.d.o:\
@@ -1939,6 +1954,18 @@ co/sum.h\
 co/da.h\
 co/macro.h\
 co/f/garea_voronoi.h\
+
+garea_zero.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_zero.h\
 
 gompper.d.o:\
 co/prec/d/real.h\
@@ -2086,6 +2113,7 @@ co/f/area.h\
 co/f/darea.h\
 co/f/garea.h\
 co/f/garea_sq.h\
+co/f/garea_zero.h\
 co/f/volume.h\
 co/f/dvolume.h\
 co/f/rvolume.h\
@@ -3148,6 +3176,7 @@ co/he.h\
 co/vec.h\
 co/tri.h\
 co/dtri.h\
+co/sum.h\
 co/f/area_diff.h\
 
 area_sq.l.o:\
@@ -3263,6 +3292,18 @@ co/sum.h\
 co/da.h\
 co/macro.h\
 co/f/garea_voronoi.h\
+
+garea_zero.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/tri.h\
+co/dtri.h\
+co/sum.h\
+co/f/garea_zero.h\
 
 gompper.l.o:\
 co/prec/l/real.h\
@@ -3410,6 +3451,7 @@ co/f/area.h\
 co/f/darea.h\
 co/f/garea.h\
 co/f/garea_sq.h\
+co/f/garea_zero.h\
 co/f/volume.h\
 co/f/dvolume.h\
 co/f/rvolume.h\
