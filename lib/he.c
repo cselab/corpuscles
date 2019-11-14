@@ -375,9 +375,6 @@ set_hdg_tri(T * q, int t, int i)
     return CO_OK;
 }
 
-int
-he_edg_rotate(T * q, int e0)
-{
 #define  nxt(h)     he_nxt(q, (h))
 #define  flp(h)     he_flp(q, (h))
 #define  ver(h)     he_ver(q, (h))
@@ -395,7 +392,9 @@ he_edg_rotate(T * q, int e0)
 #define  s_hdg_ver(v, i) set_hdg_ver(q, (v), (i))
 #define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
 #define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
-
+int
+he_edg_rotate(T * q, int e0)
+{
     int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
     int v0, v1, v2, v3;
     int e1, e2, e3, e4;
