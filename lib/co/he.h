@@ -30,6 +30,7 @@ int he_edg_ij(T *, int e, /**/ int *, int *);
 int he_dih_ijkl(T *, int e, /**/ int *, int *, int *, int *);
 
 int he_edg_rotate(T *, int e);  /* AKA flip edge */
+int he_edg_split(T *, int e);
 
 int he_E(T *, int **, int **);
 int he_T(T *, int **, int **, int **);
