@@ -12,7 +12,7 @@ gdot=$Ca
 start=0
 end=1000000
 freq=100
-dt=0.001
+dt=0.01
 eta=1
 
 A=12.3165
