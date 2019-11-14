@@ -553,6 +553,44 @@ he_edg_rotate(T * q, int e0)
 }
 
 int
+he_edg_split(T * q, int e0)
+{
+    int h0, h1, h2, h3, h4, h5, h6, h7, h8, h9;
+    int v0, v1, v2, v3;
+    int e1, e2, e3, e4;
+    int t0, t1;
+
+    h0 = hdg_edg(e0);
+    h1 = nxt(h0);
+    h2 = nxt(h1);
+
+    h3 = flp(h0);
+    h4 = nxt(h3);
+    h5 = nxt(h4);
+
+    h6 = flp(h1);
+    h7 = flp(h2);
+    h8 = flp(h4);
+    h9 = flp(h5);
+
+    v0 = ver(h0);
+    v1 = ver(h1);
+    v2 = ver(h2);
+    v3 = ver(h5);               /* sic */
+
+    e1 = edg(h1);
+    e2 = edg(h2);
+    e3 = edg(h4);               /* sic */
+    e4 = edg(h5);
+
+    t0 = tri(h0);
+    t1 = tri(h3);
+
+    /* TODO */
+    return CO_OK;
+}
+
+int
 he_E(T * he, int **pE0, int **pE1)
 {
     int ne, e, *E0, *E1;
