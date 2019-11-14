@@ -101,8 +101,6 @@ read_binary(T * q, int Color, FILE * f)
     nt = ibuf[1];
     MALLOC(3 * nv, &ver);
     MALLOC(3 * nt, &tri);
-
-    Color = 1;
     for (i = j = 0; i < nv; i++) {
         if (Color)
             FREAD(7, fbuf);

@@ -12,7 +12,7 @@
 static HeOff *off;
 static HeRead *read;
 static real *ver;
-static int  nv, nt, *tri;
+static int nv, nt, *tri;
 static He *he;
 static const char **argv;
 
@@ -25,15 +25,20 @@ static const char **argv;
 #define  hdg_edg(e) he_hdg_edg(he, (e))
 #define  hdg_tri(t) he_hdg_tri(he, (t))
 
-static int num(/**/ int *p) {
-    if (*argv == NULL) ER("not enough args");
+static int
+num( /**/ int *p)
+{
+    if (*argv == NULL)
+        ER("not enough args");
     if (sscanf(*argv, "%d", p) != 1)
         ER("not a number '%s'", *argv);
     argv++;
     return CO_OK;
 }
 
-static void ini() {
+static void
+ini()
+{
     off_ini("/dev/stdin", &off);
     nv = off_nv(off);
     nt = off_nt(off);
@@ -42,15 +47,21 @@ static void ini() {
     he_read_tri_ini(nv, nt, tri, &read);
     he_ini(read, &he);
 }
-static void fin() {
+
+static void
+fin()
+{
     off_fin(off);
     he_read_fin(read);
     he_fin(he);
 }
 
-static int check_tri() {
+static int
+check_tri()
+{
     int h, nh, n, nn, nnn;
     int t;
+
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         n = nxt(h);
@@ -67,8 +78,11 @@ static int check_tri() {
     return CO_OK;
 }
 
-static int check_ver() {
+static int
+check_ver()
+{
     int nv, v, h;
+
     nv = he_nv(he);
     for (v = 0; v < nv; v++) {
         h = hdg_ver(v);
@@ -78,8 +92,11 @@ static int check_ver() {
     return CO_OK;
 }
 
-static int check_edg() {
+static int
+check_edg()
+{
     int nh, h, f, ff, e, q;
+
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         f = flp(h);
@@ -97,8 +114,11 @@ static int check_edg() {
     return CO_OK;
 }
 
-static int check_hdgA() {
+static int
+check_hdgA()
+{
     int nh, h, n, f, nf;
+
     nh = he_nh(he);
     for (h = 0; h < nh; h++) {
         n = nxt(h);
@@ -112,9 +132,12 @@ static int check_hdgA() {
     return CO_OK;
 }
 
-static int check_hdgB() {
+static int
+check_hdgB()
+{
     int nh;
     int h0, h1, h2, h3, h4, h8;
+
     nh = he_nh(he);
     for (h0 = 0; h0 < nh; h0++) {
         h1 = nxt(h0);
@@ -129,7 +152,9 @@ static int check_hdgB() {
     return CO_OK;
 }
 
-static void main0(int e) {
+static void
+main0(int e)
+{
     if (!he_ear(he, e)) {
         MSG("rotated: %d", e);
         he_edg_rotate(he, e);
@@ -142,9 +167,13 @@ static void main0(int e) {
     off_he_write(off, he, "/dev/stdout");
 }
 
-int main(int __UNUSED argc, const char *v[]) {
+int
+main(int __UNUSED argc, const char *v[])
+{
     int e;
-    argv = v; argv++;
+
+    argv = v;
+    argv++;
     num(&e);
     ini();
     main0(e);
