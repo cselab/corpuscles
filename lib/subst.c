@@ -14,7 +14,7 @@ struct T {
 };
 
 int
-subst_ini(int n, real alpha, real tol, int niter, T **pq)
+subst_ini(int n, real alpha, real tol, int niter, T ** pq)
 {
     T *q;
 
@@ -30,7 +30,7 @@ subst_ini(int n, real alpha, real tol, int niter, T **pq)
 }
 
 int
-subst_fin(T *q)
+subst_fin(T * q)
 {
     FREE3(q->wx, q->wy, q->wz);
     FREE3(q->vx, q->vy, q->vz);
@@ -40,9 +40,9 @@ subst_fin(T *q)
 
 int
 subst_apply(T * q, He * he, BI * bi,
-	    const real * x, const real * y, const real * z,
-	    const real * ux, const real * uy, const real * uz,
-	    real * vx0, real * vy0, real * vz0)
+            const real * x, const real * y, const real * z,
+            const real * ux, const real * uy, const real * uz,
+            real * vx0, real * vy0, real * vz0)
 {
     int status, n, niter, iiter;
     real *wx, *wy, *wz, *vx, *vy, *vz, alpha, tol, diff, norm;
@@ -58,15 +58,15 @@ subst_apply(T * q, He * he, BI * bi,
     vy = q->vy;
     vz = q->vz;
     for (iiter = 0; iiter < niter; iiter++) {
-	array_copy3(n, ux, uy, uz, wx, wy, wz);
-	status = bi_double(bi, he, alpha, x, y, z, vx, vy, vz, wx, wy, wz);
-	if (status != CO_OK)
-	    goto fail;
-	norm = array_msq_3d(n, wx, wy, wz);
-	diff = array_l2_3d(n, wx, vx, wy, vy, wz, vz);
-	array_copy3(n, wx, wy, wz, vx, vy, vz);
-	if (diff <= tol * norm)
-	    goto tol;
+        array_copy3(n, ux, uy, uz, wx, wy, wz);
+        status = bi_double(bi, he, alpha, x, y, z, vx, vy, vz, wx, wy, wz);
+        if (status != CO_OK)
+            goto fail;
+        norm = array_msq_3d(n, wx, wy, wz);
+        diff = array_l2_3d(n, wx, vx, wy, vy, wz, vz);
+        array_copy3(n, wx, wy, wz, vx, vy, vz);
+        if (diff <= tol * norm)
+            goto tol;
     }
     q->iiter = iiter;
     q->status = SUBST_ITER;
@@ -83,12 +83,14 @@ subst_apply(T * q, He * he, BI * bi,
     ERR(CO_NUM, "subst_apply failed (n=%d, iiter=%d", n, iiter);
 }
 
-int subst_status(T *q)
+int
+subst_status(T * q)
 {
     return q->status;
 }
 
-int subst_niter(T *q)
+int
+subst_niter(T * q)
 {
     return q->iiter + 1;
 }
