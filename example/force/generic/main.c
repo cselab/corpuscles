@@ -68,7 +68,10 @@ static void main0() {
 }
 
 int main(int __UNUSED argc, char *argv[]) {
+    err_set_ignore();
     argv++;
+    if (*argv == NULL)
+	ER("needs an argument");
     if (util_eq(*argv, "-h"))
         usg();
     y_inif(stdin, &he, &x, &y, &z);

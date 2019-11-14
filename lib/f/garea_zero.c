@@ -112,7 +112,7 @@ compute_force(real K, real A, He * he,
               /**/ real * fx, real * fy, real * fz)
 {
     int n, t, i, j, k;
-    real a[3], b[3], c[3], da[3], db[3], dc[3], coeff;
+    real a[3], b[3], c[3], da[3], db[3], dc[3];
 
     n = he_nt(he);
     for (t = 0; t < n; t++) {
@@ -122,10 +122,9 @@ compute_force(real K, real A, He * he,
         vec_get(k, x, y, z, /**/ c);
 
         dtri_area(a, b, c, /**/ da, db, dc);
-        coeff = 2 * K * A;
-        vec_scalar_append(da, coeff, i, /**/ fx, fy, fz);
-        vec_scalar_append(db, coeff, j, /**/ fx, fy, fz);
-        vec_scalar_append(dc, coeff, k, /**/ fx, fy, fz);
+        vec_scalar_append(da, K, i, /**/ fx, fy, fz);
+        vec_scalar_append(db, K, j, /**/ fx, fy, fz);
+        vec_scalar_append(dc, K, k, /**/ fx, fy, fz);
     }
 }
 
@@ -169,5 +168,5 @@ he_f_garea_zero_energy(T * q, He * he,
     compute_area(he, x, y, z, /**/ area);
     A = he_sum_array(n, area);
     q->A = A;
-    return K * A * A;
+    return K * A;
 }
