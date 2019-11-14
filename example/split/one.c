@@ -54,9 +54,9 @@ main(int __UNUSED argc, const char **argv)
         fprintf(stderr, "%s: e=%d >= ne=%d\n", me, e, ne);
         exit(2);
     }
-    status = he_edg_rotate(he, e);
+    status = he_edg_split(he, e);
     if (status != CO_OK)
-        ER("he_edg_rotate failed");
+        ER("he_edg_split failed");
     CALLOC(nt, &color);
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);

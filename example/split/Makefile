@@ -1,7 +1,6 @@
 .POSIX:
 include ../../conf.mk
 M = \
-main\
 one\
 
 PREC = d

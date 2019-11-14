@@ -31,9 +31,9 @@ distinct(const int a[])
     int i, j;
 
     for (i = 0; a[i] != END; i++)
-        for (j = i + 1; a[j] != END; j++)
-            if (a[i] == a[j])
-                return 0;
+	for (j = i + 1; a[j] != END; j++)
+	    if (a[i] == a[j])
+		return 0;
     return 1;
 }
 
@@ -43,7 +43,7 @@ he_file_ini(const char *path, T ** pq)
     HeRead *read;
 
     if (he_read_ini(path, &read) != CO_OK)
-        ERR(CO_IO, "he_read_ini failed");
+	ERR(CO_IO, "he_read_ini failed");
     he_ini(read, /**/ pq);
     he_read_fin(read);
     return CO_OK;
@@ -124,7 +124,7 @@ int
 he_fin(T * q)
 {
     if (q->magic != MAGIC)
-        ERR(CO_MEMORY, "wrong fin() call");
+	ERR(CO_MEMORY, "wrong fin() call");
     FREE(q->nxt);
     FREE(q->flp);
     FREE(q->ver);
@@ -189,7 +189,7 @@ he_flp(T * q, int h)
 
     V(h, q->nh);
     if ((f = q->flp[h]) == -1)
-        ERR(CO_INDEX, "no flip for %d", h);
+	ERR(CO_INDEX, "no flip for %d", h);
     return f;
 }
 
@@ -385,9 +385,14 @@ set_hdg_tri(T * q, int t, int i)
 #define  hdg_tri(t) he_hdg_tri(q, (t))
 
 #define  s_nxt(h, i)     set_nxt(q, (h), (i))
-#define  s_nxt3(i, j, k) s_nxt(i, j), s_nxt(j, k), s_nxt(k, i)
+#define  s_nxt3(t, i, j, k)			\
+  s_hdg_tri(t, i),				\
+  s_tri(i, t), s_tri(j, t), s_tri(k, t),	\
+  s_nxt(i, j), s_nxt(j, k), s_nxt(k, i)
 #define  s_flp(h, i)     set_flp(q, (h), (i)), set_flp(q, (i), (h))
-#define  s_flp4(i, j, v, u) s_flp(i, j), s_ver(i, v), s_ver(j, u)
+#define  s_flp4(e, i, j, v, u) \
+  s_hdg_edg(e, i), s_edg(i, e), s_edg(j, e), s_flp(i, j), s_ver(i, v), s_ver(j, u)
+
 #define  s_ver(h, i)     set_ver(q, (h), (i))
 #define  s_edg(h, i)     set_edg(q, (h), (i))
 #define  s_tri(h, i)     set_tri(q, (h), (i))
@@ -434,13 +439,13 @@ he_edg_rotate(T * q, int e0)
 
     const int set[] = { h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, END };
     if (!distinct(set)) {
-        MSG("v: %d %d %d %d", v0, v1, v2, v3);
-        MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
-        MSG("t: %d %d", t0, t1);
-        MSG("t: h2 = %d   h8 = %d", h2, h8);
-        MSG("t: h4 = %d   h7 = %d", h4, h7);
-        ERR(CO_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
-            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
+	MSG("v: %d %d %d %d", v0, v1, v2, v3);
+	MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
+	MSG("t: %d %d", t0, t1);
+	MSG("t: h2 = %d   h8 = %d", h2, h8);
+	MSG("t: h4 = %d   h7 = %d", h4, h7);
+	ERR(CO_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
+	    h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
     }
 
     assert(v0 == ver(h4));
@@ -610,27 +615,52 @@ he_edg_split(T * q, int e0)
     h13 = nh++;
     h14 = nh++;
     h15 = nh++;
-
-    s_nxt3(h0, h1, h12);
-    s_nxt3(h15, h13, h2);
-    s_nxt3(h14, h4, h11);
-    s_nxt3(h3, h10, h5);
-
-    s_flp4(h9, h5, v1, v3);
-    s_flp4(h10, h11, v4, v3);
-    s_flp4(h4, h8, v0, v3);
-    s_flp4(h3, h0, v1, v4);
-    s_flp4(h14, h15, v4, v0);
-    s_flp4(h6, h1, v2, v1);
-    s_flp4(h12, h13, v2, v4);
-    s_flp4(h2, h7, v2, v0);
-
-    /* TODO */
-
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
     q->nh = nh;
+
+    /* */
+    REALLOC(nh, &q->nxt);
+    REALLOC(nh, &q->flp);
+    REALLOC(nh, &q->ver);
+    REALLOC(nh, &q->tri);
+    REALLOC(nh, &q->edg);
+    REALLOC(nv, &q->hdg_ver);
+    REALLOC(ne, &q->hdg_edg);
+    REALLOC(nt, &q->hdg_tri);
+    REALLOC(ne, &q->E0);
+    REALLOC(ne, &q->E1);
+    REALLOC(nt, &q->T0);
+    REALLOC(nt, &q->T1);
+    REALLOC(nt, &q->T2);
+    REALLOC(ne, &q->D0);
+    REALLOC(ne, &q->D1);
+    REALLOC(ne, &q->D2);
+    REALLOC(ne, &q->D3);
+    /* */
+
+    s_nxt3(t0, h0, h1, h12);
+    s_nxt3(t3, h15, h13, h2);
+    s_nxt3(t2, h14, h4, h11);
+    s_nxt3(t1, h3, h10, h5);
+
+    s_flp4(e4, h9, h5, v1, v3);
+    s_flp4(e6, h10, h11, v4, v3);
+    s_flp4(e3, h4, h8, v0, v3);
+    s_flp4(e0, h3, h0, v1, v4);
+    s_flp4(e5, h14, h15, v4, v0);
+    s_flp4(e1, h6, h1, v2, v1);
+    s_flp4(e7, h12, h13, v2, v4);
+    s_flp4(e2, h2, h7, v2, v0);
+
+    s_hdg_ver(v0, h4);
+    s_hdg_ver(v1, h1);
+    s_hdg_ver(v2, h2);
+    s_hdg_ver(v3, h5);
+    s_hdg_ver(v4, h0);
+    /* TODO */
+
     return CO_OK;
 }
 
@@ -645,14 +675,14 @@ he_E(T * he, int **pE0, int **pE1)
     ne = he_ne(he);
 
     for (e = 0; e < ne; e++) {
-        h = he_hdg_edg(he, e);
-        if (he_bnd(he, h)) {
-            E0[e] = E1[e] = -1;
-        } else {
-            n = he_nxt(he, h);
-            E0[e] = he_ver(he, h);
-            E1[e] = he_ver(he, n);
-        }
+	h = he_hdg_edg(he, e);
+	if (he_bnd(he, h)) {
+	    E0[e] = E1[e] = -1;
+	} else {
+	    n = he_nxt(he, h);
+	    E0[e] = he_ver(he, h);
+	    E1[e] = he_ver(he, n);
+	}
     }
     *pE0 = E0;
     *pE1 = E1;
@@ -671,12 +701,12 @@ he_T(T * he, int **pT0, int **pT1, int **pT2)
     nt = he_nt(he);
 
     for (t = 0; t < nt; t++) {
-        h = he_hdg_tri(he, t);
-        n = he_nxt(he, h);
-        nn = he_nxt(he, n);
-        T0[t] = he_ver(he, h);
-        T1[t] = he_ver(he, n);
-        T2[t] = he_ver(he, nn);
+	h = he_hdg_tri(he, t);
+	n = he_nxt(he, h);
+	nn = he_nxt(he, n);
+	T0[t] = he_ver(he, h);
+	T1[t] = he_ver(he, n);
+	T2[t] = he_ver(he, nn);
     }
 
     *pT0 = T0;
@@ -698,19 +728,19 @@ he_D(T * he, int **pD0, int **pD1, int **pD2, int **pD3)
     ne = he_ne(he);
 
     for (e = 0; e < ne; e++) {
-        h = he_hdg_edg(he, e);
-        if (he_bnd(he, h)) {
-            D0[e] = D1[e] = D2[e] = D3[e] = -1;
-        } else {
-            h = he_hdg_edg(he, e);
-            n = he_nxt(he, h);
-            nn = he_nxt(he, he_nxt(he, h));
-            nnf = he_nxt(he, he_nxt(he, he_flp(he, h)));
-            D1[e] = he_ver(he, h);
-            D2[e] = he_ver(he, n);
-            D0[e] = he_ver(he, nn);
-            D3[e] = he_ver(he, nnf);
-        }
+	h = he_hdg_edg(he, e);
+	if (he_bnd(he, h)) {
+	    D0[e] = D1[e] = D2[e] = D3[e] = -1;
+	} else {
+	    h = he_hdg_edg(he, e);
+	    n = he_nxt(he, h);
+	    nn = he_nxt(he, he_nxt(he, h));
+	    nnf = he_nxt(he, he_nxt(he, he_flp(he, h)));
+	    D1[e] = he_ver(he, h);
+	    D2[e] = he_ver(he, n);
+	    D0[e] = he_ver(he, nn);
+	    D3[e] = he_ver(he, nnf);
+	}
     }
     *pD0 = D0;
     *pD1 = D1;
@@ -728,17 +758,17 @@ he_bnd_ver(T * he, int v)
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
-        if (rank >= RANK_MAX)
-            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
-                RANK_MAX);
-        rank++;
-        n = he_nxt(he, h);
-        if (he_bnd(he, n))
-            return 1;
-        f = he_flp(he, n);
-        h = he_nxt(he, f);
-        if (h == h0)
-            return 0;
+	if (rank >= RANK_MAX)
+	    ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+		RANK_MAX);
+	rank++;
+	n = he_nxt(he, h);
+	if (he_bnd(he, n))
+	    return 1;
+	f = he_flp(he, n);
+	h = he_nxt(he, f);
+	if (h == h0)
+	    return 0;
     }
 }
 
@@ -751,24 +781,24 @@ he_ring(T * he, int v, int *prank, int **pring)
     ring = he->ring;
 
     if (v >= he->nv)
-        ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
+	ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
     h = he_hdg_ver(he, v);
     if (he_bnd(he, h))
-        ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
+	ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
 
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
-        if (rank >= RANK_MAX)
-            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
-                RANK_MAX);
-        i = he_ver(he, h);
-        ring[rank++] = i;
-        n = he_nxt(he, h);
-        f = he_flp(he, n);
-        h = he_nxt(he, f);
-        if (h == h0)
-            break;
+	if (rank >= RANK_MAX)
+	    ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+		RANK_MAX);
+	i = he_ver(he, h);
+	ring[rank++] = i;
+	n = he_nxt(he, h);
+	f = he_flp(he, n);
+	h = he_nxt(he, f);
+	if (h == h0)
+	    break;
     }
     ring[rank] = -1;
 
