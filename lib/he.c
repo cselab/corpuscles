@@ -383,7 +383,6 @@ set_hdg_tri(T * q, int t, int i)
 #define  hdg_ver(v) he_hdg_ver(q, (v))
 #define  hdg_edg(e) he_hdg_edg(q, (e))
 #define  hdg_tri(t) he_hdg_tri(q, (t))
-
 #define  s_nxt(h, i)     set_nxt(q, (h), (i))
 #define  s_nxt3(t, i, j, k)			\
   s_hdg_tri(t, i),				\
@@ -392,7 +391,6 @@ set_hdg_tri(T * q, int t, int i)
 #define  s_flp(h, i)     set_flp(q, (h), (i)), set_flp(q, (i), (h))
 #define  s_flp4(e, i, j, v, u) \
   s_hdg_edg(e, i), s_edg(i, e), s_edg(j, e), s_flp(i, j), s_ver(i, v), s_ver(j, u)
-
 #define  s_ver(h, i)     set_ver(q, (h), (i))
 #define  s_edg(h, i)     set_edg(q, (h), (i))
 #define  s_tri(h, i)     set_tri(q, (h), (i))
