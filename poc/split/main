@@ -31,11 +31,23 @@ BEGIN {
           set_tri($1, $2, $3)
           set_tri($2, $3, $1)
           set_tri($3, $1, $2)
+
+          set_edg($1, $2)
+          set_edg($2, $3)
+          set_edg($3, $1)
       }
       close(file)
 
-      for (t in hdg_tri)
-          print t, hdg_tri[t] | "sort -g"
+      for (h in edg)
+          print h ":" edg[h] | "sort -g"      
+}
+
+function set_edg(i, j,  e, h)
+{
+    e = id_edg(i, j)
+    h = id_hdg(i, j)
+    edg[h] = e
+    hdg_edg[e] = h
 }
 
 function set_ver(i, j,  h, v)
@@ -102,7 +114,7 @@ function new_ver(i)
     return i
 }
 
-function id_tri(i, j, k, t)
+function id_tri(i, j, k)
 {
     if ((i, j, k) in TRI)
         return TRI[i, j, k]
@@ -110,10 +122,24 @@ function id_tri(i, j, k, t)
         return TRI[i, j, k] = TRI[k, i, j] = TRI[j, k, i] = new_tri(i, j, k)
 }
 
-function new_tri(i, j, k, t)
+function new_tri(i, j, k,   t)
 {
     t = T++
-    return "t" ":" i ":" j ":" k ":" sprintf("%02d", t)
+    return "t" sprintf("%02d", t)
+}
+
+function id_edg(i, j)
+{
+    if ((i, j) in EDG)
+        return EDG[i, j]
+    else
+        return EDG[i, j] = EDG[j, i] = new_edg(i, j)
+}
+
+function new_edg(i, j,   e)
+{
+    e = E++
+    return "e" sprintf("%02d", e)
 }
 
 '
