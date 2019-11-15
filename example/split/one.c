@@ -62,6 +62,18 @@ main(int __UNUSED argc, const char **argv)
     status = he_invariant_nxt(he);
     if (status != CO_OK)
 	ER("he_invariant_nxt failed");
+    status = he_invariant_flp(he);
+    if (status != CO_OK)
+	ER("he_invariant_flp failed");
+    status = he_invariant_ver(he);
+    if (status != CO_OK)
+	ER("he_invariant_ver failed");
+    status = he_invariant_tri(he);
+    if (status != CO_OK)
+	ER("he_invariant_tri failed");
+    status = he_invariant_edg(he);
+    if (status != CO_OK)
+	ER("he_invariant_edg failed");
 
     CALLOC(nt, &color);
     h = he_hdg_edg(he, e);
