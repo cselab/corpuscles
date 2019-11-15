@@ -14,7 +14,6 @@ BEGIN {
 
       h = t = e = 0
       file = "data/tri"
-
       while (getline < file > 0) {
           set_nxt($1, $2, $3)
           set_nxt($2, $3, $1)
@@ -46,39 +45,39 @@ function set_edg(i, j,  e, h)
 {
     e = id_edg(i, j)
     h = id_hdg(i, j)
-    edg[h] = e
-    hdg_edg[e] = h
+    SET(edg, h, e)
+    SET(hdg_edg, e, h)
 }
 
 function set_ver(i, j,  h, v)
 {
     h = id_hdg(i, j)
     v = id_ver(i)
-    ver[h] = v
-    hdg_ver[v] = h
+    SET(ver, h, v)
+    SET(hdg_ver, v, h)
 }
 
 function set_nxt(i, j, k,  h, n)
 {
     h = id_hdg(i, j)
     n = id_hdg(j, k)
-    nxt[h] = n
+    SET(nxt, h, n)
 }
 
 function set_tri(i, j, k,  h, t)
 {
     h = id_hdg(i, j)
     t = id_tri(i, j, k)
-    tri[h] = t
-    hdg_tri[t] = h
+    SET(tri, h, t)
+    SET(hdg_tri, t, h)
 }
 
 function set_flp(i, j,   h, f)
 {
     h = id_hdg(i, j)
     f = id_hdg(j, i)
-    flp[h] = f
-    flp[f] = h
+    SET(flp, h, f)
+    SET(flp, f, h)
 }
 
 function reg(i, j)
@@ -140,6 +139,12 @@ function new_edg(i, j,   e)
 {
     e = E++
     return "e" sprintf("%02d", e)
+}
+
+function SET(map, key, val)
+{
+    if (!(key in map))
+        map[key] = val
 }
 
 '
