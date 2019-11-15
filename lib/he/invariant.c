@@ -1,5 +1,7 @@
+#include <stdlib.h>
 #include "co/err.h"
 #include "co/he.h"
+#include "co/memory.h"
 #include "co/he/invariant.h"
 
 int
@@ -76,5 +78,33 @@ he_invariant_edg(He *he)
 	if (ee != e)
 	    ERR(CO_NUM, "ee=%d != e=%d", ee, e);
     }
+    return CO_OK;
+}
+
+int
+he_invariant_edg_visit(He *he)
+{
+#define CNT_EDG(h)				\
+    do {					\
+	e = he_edg(he, h);			\
+	cnt[e] += he_bnd(he, h) ? 2 : 1;	\
+    } while (0)
+
+    int ne, nt, t, h, hh, hhh, e, *cnt;
+    ne = he_ne(he);
+    nt = he_nt(he);
+    CALLOC(ne, &cnt);
+    for (t = 0; t < nt; t++) {
+	h = he_hdg_tri(he, t);
+	hh = he_nxt(he, h);
+	hhh = he_nxt(he, hh);
+	CNT_EDG(h);
+	CNT_EDG(hh);
+	CNT_EDG(hhh);
+    }
+    for (e = 0; e < ne; e++)
+	if (cnt[e] != 2)
+	    ERR(CO_NUM, "cnt[%d]=%d != 2", e, cnt[e]);
+    FREE(cnt);
     return CO_OK;
 }

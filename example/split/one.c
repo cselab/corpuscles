@@ -23,7 +23,7 @@ main(int __UNUSED argc, const char **argv)
     He *he;
     real *x, *y, *z, *color;
     const char *arg;
-    int e, i, j, h, f, ne, nt, Eflag, status;
+    int e, i, j, h, f, ne, nt, nv, Eflag, status;
 
     Eflag = 0;
     while (*++argv != NULL && argv[0][0] == '-')
@@ -58,6 +58,13 @@ main(int __UNUSED argc, const char **argv)
     status = he_edg_split(he, e);
     if (status != CO_OK)
 	ER("he_edg_split failed");
+    nv = he_nv(he);
+    REALLOC(nv, &x);
+    REALLOC(nv, &y);
+    REALLOC(nv, &z);
+    CALLOC(nt, &color);
+    x[nv - 1] = y[nv - 1] = z[nv - 1] = 0;
+    MSG("nv: %d", nv);
 
     status = he_invariant_nxt(he);
     if (status != CO_OK)
@@ -74,8 +81,9 @@ main(int __UNUSED argc, const char **argv)
     status = he_invariant_edg(he);
     if (status != CO_OK)
 	ER("he_invariant_edg failed");
-
-    CALLOC(nt, &color);
+    status = he_invariant_edg_visit(he);
+    if (status != CO_OK)
+	ER("he_invariant_edg_visit failed");
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);
     i = he_tri(he, h);
