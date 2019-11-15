@@ -14,16 +14,16 @@ BEGIN {
 
       h = t = e = 0
       file = "data/tri"
-      
+
       while (getline < file > 0) {
           set_nxt($1, $2, $3)
           set_nxt($2, $3, $1)
           set_nxt($3, $1, $2)
-          
+
           set_flp($1, $2)
           set_flp($2, $3)
           set_flp($3, $1)
-          
+
           set_ver($1, $2)
           set_ver($2, $3)
           set_ver($3, $1)
@@ -39,7 +39,7 @@ BEGIN {
       close(file)
 
       for (h in edg)
-          print h ":" edg[h] | "sort -g"      
+          print h ":" edg[h] | "sort -g"
 }
 
 function set_edg(i, j,  e, h)
