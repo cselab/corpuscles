@@ -79,6 +79,7 @@ co/f/wlc.h\
 co/gts.h\
 co/hash.h\
 co/he.h\
+co/he/invariant.h\
 co/H.h\
 co/i/area.h\
 co/i/matrix.h\

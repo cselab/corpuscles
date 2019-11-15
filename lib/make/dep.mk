@@ -17,6 +17,11 @@ co/read.h\
 inc/def.h\
 co/he.h\
 
+he/invariant.o:\
+co/err.h\
+co/he.h\
+co/he/invariant.h\
+
 list/a.o:\
 co/err.h\
 co/memory.h\

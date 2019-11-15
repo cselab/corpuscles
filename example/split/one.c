@@ -3,6 +3,7 @@
 #include <real.h>
 #include <co/err.h>
 #include <co/he.h>
+#include <co/he/invariant.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/off.h>
@@ -57,6 +58,11 @@ main(int __UNUSED argc, const char **argv)
     status = he_edg_split(he, e);
     if (status != CO_OK)
         ER("he_edg_split failed");
+
+    status = he_invariant_nxt(he);
+    if (status != CO_OK)
+	ER("he_invariant_nxt failed");
+    
     CALLOC(nt, &color);
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);

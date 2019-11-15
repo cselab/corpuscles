@@ -3,6 +3,7 @@ endian.o\
 err.o\
 hash.o\
 he.o\
+he/invariant.o\
 list/a.o\
 list/c.o\
 list/i.o\
