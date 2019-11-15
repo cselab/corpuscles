@@ -122,8 +122,8 @@ compute_force(real K, real A, He * he, const real * area,
 
 int
 he_f_area_diff_force(T * q, He * he,
-                    const real * x, const real * y, const real * z, /**/
-                    real * fx, real * fy, real * fz)
+                     const real * x, const real * y, const real * z, /**/
+                     real * fx, real * fy, real * fz)
 {
     int n;
     real *area, A, K;
@@ -141,10 +141,11 @@ he_f_area_diff_force(T * q, He * he,
 
 real
 he_f_area_diff_energy(T * q, He * he,
-                     const real * x, const real * y, const real * z)
+                      const real * x, const real * y, const real * z)
 {
     int n, i;
     real *area, A, K, ans, d;
+
     n = q->n;
     area = q->area;
     K = q->K;
@@ -154,8 +155,8 @@ he_f_area_diff_energy(T * q, He * he,
     A = he_sum_array(n, area);
     ans = 0;
     for (i = 0; i < n; i++) {
-      d = n*area[i] - A;
-      ans += d * d;
+        d = n * area[i] - A;
+        ans += d * d;
     }
     return K * ans / n;
 }

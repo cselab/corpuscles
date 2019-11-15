@@ -130,8 +130,8 @@ compute_force(real K, real A, He * he,
 
 int
 he_f_garea_zero_force(T * q, He * he,
-                    const real * x, const real * y, const real * z, /**/
-                    real * fx, real * fy, real * fz)
+                      const real * x, const real * y, const real * z, /**/
+                      real * fx, real * fy, real * fz)
 {
     int n;
     real *area, A, K;
@@ -153,7 +153,7 @@ he_f_garea_zero_force(T * q, He * he,
 
 real
 he_f_garea_zero_energy(T * q, He * he,
-                     const real * x, const real * y, const real * z)
+                       const real * x, const real * y, const real * z)
 {
     int n;
     real *area, A, K;

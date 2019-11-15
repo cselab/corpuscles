@@ -8,7 +8,7 @@ he_invariant_nxt(He *he)
     int h, nh, n, nn, nnn;
     nh = he_nh(he);
 
-    for (h = 0; h < nh, h++) {
+    for (h = 0; h < nh; h++) {
 	n  = he_nxt(he, h);
 	nn = he_nxt(he, n);
 	nnn = he_nxt(he, nn);
