@@ -27,38 +27,38 @@ main(int __UNUSED argc, const char **argv)
 
     Eflag = 0;
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	case 'e':
-	    argv++;
-	    if ((arg = *argv) == NULL) {
-		fprintf(stderr, "%s: -t needs an argument\n", me);
-		exit(2);
-	    }
-	    Eflag = 1;
-	    e = atoi(*argv);
-	    break;
-	default:
-	    fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
-	    exit(2);
-	}
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        case 'e':
+            argv++;
+            if ((arg = *argv) == NULL) {
+                fprintf(stderr, "%s: -t needs an argument\n", me);
+                exit(2);
+            }
+            Eflag = 1;
+            e = atoi(*argv);
+            break;
+        default:
+            fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
+            exit(2);
+        }
     y_inif(stdin, &he, &x, &y, &z);
     ne = he_ne(he);
-    nt = he_nt(he);
     if (!Eflag) {
-	fprintf(stderr, "%s: edge (-e) is not set\n", me);
-	exit(2);
+        fprintf(stderr, "%s: edge (-e) is not set\n", me);
+        exit(2);
     }
     if (e >= ne) {
-	fprintf(stderr, "%s: e=%d >= ne=%d\n", me, e, ne);
-	exit(2);
+        fprintf(stderr, "%s: e=%d >= ne=%d\n", me, e, ne);
+        exit(2);
     }
     status = he_edg_split(he, e);
     if (status != CO_OK)
-	ER("he_edg_split failed");
+        ER("he_edg_split failed");
     nv = he_nv(he);
+    nt = he_nt(he);
     REALLOC(nv, &x);
     REALLOC(nv, &y);
     REALLOC(nv, &z);
@@ -68,22 +68,22 @@ main(int __UNUSED argc, const char **argv)
 
     status = he_invariant_nxt(he);
     if (status != CO_OK)
-	ER("he_invariant_nxt failed");
+        ER("he_invariant_nxt failed");
     status = he_invariant_flp(he);
     if (status != CO_OK)
-	ER("he_invariant_flp failed");
+        ER("he_invariant_flp failed");
     status = he_invariant_ver(he);
     if (status != CO_OK)
-	ER("he_invariant_ver failed");
+        ER("he_invariant_ver failed");
     status = he_invariant_tri(he);
     if (status != CO_OK)
-	ER("he_invariant_tri failed");
+        ER("he_invariant_tri failed");
     status = he_invariant_edg(he);
     if (status != CO_OK)
-	ER("he_invariant_edg failed");
+        ER("he_invariant_edg failed");
     status = he_invariant_edg_visit(he);
     if (status != CO_OK)
-	ER("he_invariant_edg_visit failed");
+        ER("he_invariant_edg_visit failed");
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);
     i = he_tri(he, h);
