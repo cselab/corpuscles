@@ -5,3 +5,4 @@ int he_invariant_ver(He *);
 int he_invariant_tri(He *);
 int he_invariant_edg(He *);
 int he_invariant_edg_visit(He *);
+int he_invariant(He *);

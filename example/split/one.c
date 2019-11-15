@@ -66,24 +66,10 @@ main(int __UNUSED argc, const char **argv)
     x[nv - 1] = y[nv - 1] = z[nv - 1] = 0;
     MSG("nv: %d", nv);
 
-    status = he_invariant_nxt(he);
+    status = he_invariant(he);
     if (status != CO_OK)
-        ER("he_invariant_nxt failed");
-    status = he_invariant_flp(he);
-    if (status != CO_OK)
-        ER("he_invariant_flp failed");
-    status = he_invariant_ver(he);
-    if (status != CO_OK)
-        ER("he_invariant_ver failed");
-    status = he_invariant_tri(he);
-    if (status != CO_OK)
-        ER("he_invariant_tri failed");
-    status = he_invariant_edg(he);
-    if (status != CO_OK)
-        ER("he_invariant_edg failed");
-    status = he_invariant_edg_visit(he);
-    if (status != CO_OK)
-        ER("he_invariant_edg_visit failed");
+        ER("he_invariant failed");    
+
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);
     i = he_tri(he, h);
