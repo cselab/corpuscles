@@ -14,34 +14,44 @@ BEGIN {
 	err("needs new")
     new = ARGV[i++]
     one(old)
-    copy(hdg_tri, hdg_tri0)
+    copy(nxt, nxt0)
+    copy(flp, flp0)
+    copy(ver, ver0)
+    copy(tri, tri0)
+    copy(edg, edg0)
     copy(hdg_ver, hdg_ver0)
     copy(hdg_edg, hdg_edg0)
-    copy(ver, ver0)
+    copy(hdg_tri, hdg_tri0)
     read(old)
-    delete hdg_tri
+    delete ver
+    delete nxt
+    delete flp
+    delete edg    
     delete hdg_ver
     delete hdg_edg
-    delete ver
+    delete hdg_tri
     one(new)
     write()
+}
+
+function read0(a, def,   i)
+{
+    for (i in a)
+	printf "%s = %s(%s);\n", i, def, a[i]
 }
 
 function read(file, t, h, n, nn, f)
 {
     # t = TRI["F", "B", "D"]
-    t = TRI["A", "B", "D"]
+    # t = TRI["A", "B", "D"]
+    t = TRI["A", "D", "B"]
     h = hdg_tri[t]
     printf "%s = hdg_tri(%s);\n", h, t
     walk(h)
-    for (v in hdg_ver) {
-	h = hdg_ver[v]
-	printf "%s = ver(%s);\n", v, h
-    }
-    for (e in hdg_edg) {
-	h = hdg_edg[e]
-	printf "%s = edg(%s);\n", e, h
-    }
+    print "/**/"
+    read0(hdg_ver, "ver")
+    read0(hdg_edg, "edg")
+    read0(hdg_tri, "tri")
 }
 
 function walk(h,   n, f)
@@ -73,10 +83,13 @@ function write0(x, y, def,   a, b, i)
 	    printf "%s = %s;\n", b[i], def
 }
 
-function array(a, def,   i)
+function array(a, b, def,   i, d, key)
 {
-    for (i in a)
-	printf "%s(%s, %s);\n", def, i, a[i]
+    diff(a, b, d)
+    for (i in d) {
+	key = d[i]
+	printf "%s(%s, %s);\n", def, key, a[key]
+    }
 }
 
 function write(   h, i)
@@ -86,14 +99,14 @@ function write(   h, i)
     write0(hdg_tri0, hdg_tri, "nt++")
     write0(ver0, ver, "nh++")
 
-    array(nxt, "s_nxt")
-    array(flp, "s_flp")
-    array(ver, "s_ver")
-    array(tri, "s_tri")
-    array(edg, "s_edg")
-    array(hdg_ver, "s_hdg_ver")
-    array(hdg_edg, "s_hdg_edg")
-    array(hdg_tri, "s_hdg_tri")
+    array(nxt, nxt0, "s_nxt")
+    array(flp, flp0, "s_flp")
+    array(ver, ver0, "s_ver")
+    array(tri, tri0, "s_tri")
+    array(edg, edg0, "s_edg")
+    array(hdg_ver, hdg_ver0, "s_hdg_ver")
+    array(hdg_edg, hdg_edg0, "s_hdg_edg")
+    array(hdg_tri, hdg_tri0, "s_hdg_tri")
 }
 
 function one(file)
