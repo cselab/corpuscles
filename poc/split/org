@@ -5,7 +5,7 @@ BEGIN {
     one(ARGV[1])
     read(ARGV[1])
     one(ARGV[2])
-    # write(ARGV[2])
+    write(ARGV[2])
 }
 
 function read(file, t, h, n, nn, f)
@@ -15,15 +15,17 @@ function read(file, t, h, n, nn, f)
     printf "%s = hdg_tri(%s);\n", h, t
 
     walk(h)
-    for (v in hdg_ver) {    
+    copy(hdg_tri, hdg_tri0)
+    copy(hdg_ver, hdg_ver0)
+    copy(hdg_edg, hdg_edg0)
+    for (v in hdg_ver) {
 	h = hdg_ver[v]
 	printf "%s = ver(%s);\n", v, h
     }
-
     for (e in hdg_edg) {
 	h = hdg_edg[e]
 	printf "%s = edg(%s);\n", e, h
-    }    
+    }
 }
 
 function walk(h,   n, f)
@@ -44,13 +46,20 @@ function walk(h,   n, f)
     }
 }
 
-function write(file,    i, j, k)
+function write(file,    v, t, h)
 {
-    while (getline < file > 0) {
-	i = $1; j = $2; k =$3
-	print TRI[i, j, k]
-    }
-    close(file)
+    for (v in hdg_ver)
+	if (!(v in hdg_ver0)) {
+	    printf "%s = nv++;\n", v
+	}
+    for (t in hdg_tri)
+	if (!(t in hdg_tri0)) {
+	    printf "%s = nt++;\n", t
+	}
+    for (e in hdg_edg)
+	if (!(e in hdg_edg0)) {
+	    printf "%s = ne++;\n", e
+	}
 }
 
 function one(file)
@@ -127,9 +136,9 @@ function reg(i, j)
 function id_hdg(i, j)
 {
     if ((i, j) in HDG)
-        return HDG[i, j]
+	return HDG[i, j]
     else
-        return HDG[i, j] = new_hdg(i, j)
+	return HDG[i, j] = new_hdg(i, j)
 }
 
 function new_hdg(i, j, h)
@@ -141,9 +150,9 @@ function new_hdg(i, j, h)
 function id_ver(i)
 {
     if (i in VER)
-        return VER[i]
+	return VER[i]
     else
-        return VER[i] = new_ver(i)
+	return VER[i] = new_ver(i)
 }
 
 function new_ver(i)
@@ -154,9 +163,9 @@ function new_ver(i)
 function id_tri(i, j, k)
 {
     if ((i, j, k) in TRI)
-        return TRI[i, j, k]
+	return TRI[i, j, k]
     else
-        return TRI[i, j, k] = TRI[k, i, j] = TRI[j, k, i] = new_tri(i, j, k)
+	return TRI[i, j, k] = TRI[k, i, j] = TRI[j, k, i] = new_tri(i, j, k)
 }
 
 function new_tri(i, j, k,   t)
@@ -168,9 +177,9 @@ function new_tri(i, j, k,   t)
 function id_edg(i, j)
 {
     if ((i, j) in EDG)
-        return EDG[i, j]
+	return EDG[i, j]
     else
-        return EDG[i, j] = EDG[j, i] = new_edg(i, j)
+	return EDG[i, j] = EDG[j, i] = new_edg(i, j)
 }
 
 function new_edg(i, j,   e)
@@ -182,13 +191,19 @@ function new_edg(i, j,   e)
 function SET(map, key, val)
 {
     if (!(key in map))
-        map[key] = val
+	map[key] = val
 }
 
 function err(a, b, c, d, e)
 {
     printf a, b, c, d, e | "cat >&2"
     exit(2)
+}
+
+function copy(a, b,   i)
+{
+    for (i in a)
+	b[i] = a[i]
 }
 
 ' "$@"
