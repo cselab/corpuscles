@@ -39,7 +39,7 @@ BEGIN {
     delete VER
     one(new)
     write()
-    var()
+    # var()
 }
 
 function read0(a, def,   i)
@@ -50,14 +50,32 @@ function read0(a, def,   i)
     }
 }
 
-function read(file, t, h, n, nn, f)
+function ini_ver(   v, h)
+{
+    v = VER["X"]
+    h = hdg_ver[v]
+    printf "%s = hdg_ver(%s);\n", h, v
+    push_var(h)
+    return h
+}
+
+function ini_tri(   t, h)
 {
     t = TRI["F", "B", "D"]
-    # t = TRI["A", "B", "C"]
-    # t = TRI["A", "D", "B"]
     h = hdg_tri[t]
     printf "%s = hdg_tri(%s);\n", h, t
-    push_var(h);
+    push_var(h)
+    return h
+}
+
+function read(file, h, n, nn, f)
+{
+    #
+    # t = TRI["A", "B", "C"]
+    # t = TRI["A", "D", "B"]
+    # h = hdg_tri[t]
+    h = ini_ver()
+
     VISITED[h]
     walk(h)
     print "/**/"
@@ -99,30 +117,32 @@ function write0(x, y, def,   a, b, i)
     }
 }
 
-function array(a, b, def,   i, d, key)
+function array(a, def,   i)
 {
-    diff(a, b, d)
-    for (i in d) {
-	key = d[i]
-	printf "%s(%s, %s);\n", def, key, a[key]
-    }
+    for (i in a)
+	printf "%s(%s, %s);\n", def, a[i], i
 }
 
-function write()
+function write(  d)
 {
     write0(hdg_ver0, hdg_ver, "nv++")
     write0(hdg_edg0, hdg_edg, "ne++")
     write0(hdg_tri0, hdg_tri, "nt++")
     write0(ver0, ver, "nh++")
 
-    array(nxt, NULL, "s_nxt")
-    array(flp, NULL, "s_flp")
-    array(ver, NULL, "s_ver")
-    array(tri, NULL, "s_tri")
-    array(edg, NULL, "s_edg")
-    array(hdg_ver, NULL, "s_hdg_ver")
-    array(hdg_edg, NULL, "s_hdg_edg")
-    array(hdg_tri, NULL, "s_hdg_tri")
+    diff(hdg_ver0, hdg_ver, d)
+    diff(hdg_edg0, hdg_edg, d)
+    for (i in d)
+	msg(d[i])
+
+    array(nxt, "s_nxt")
+    array(flp, "s_flp")
+    array(ver, "s_ver")
+    array(tri, "s_tri")
+    array(edg, "s_edg")
+    array(hdg_ver, "s_hdg_ver")
+    array(hdg_edg, "s_hdg_edg")
+    array(hdg_tri, "s_hdg_tri")
 }
 
 function one(file)
@@ -204,7 +224,7 @@ function id_hdg(i, j)
 	return HDG[i, j] = new_hdg(i, j)
 }
 
-function new_hdg(i, j, h)
+function new_hdg(i, j)
 {
     return "h" i j
 }
@@ -243,8 +263,13 @@ function id_edg(i, j)
 	return EDG[i, j] = EDG[j, i] = new_edg(i, j)
 }
 
-function new_edg(i, j,   e)
+function new_edg(i, j,   t)
 {
+    if (i > j) {
+	t = i
+	i = j
+	j = t
+    }
     return "e" i j
 }
 
