@@ -2,6 +2,7 @@
 include ../../conf.mk
 M = \
 one\
+tri\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`

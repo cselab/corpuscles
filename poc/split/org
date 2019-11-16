@@ -37,16 +37,16 @@ BEGIN {
 function read0(a, def,   i)
 {
     for (i in a)
-	printf "%s = %s(%s);\n", i, def, a[i]
+	printf "int %s = %s(%s);\n", i, def, a[i]
 }
 
 function read(file, t, h, n, nn, f)
 {
-    # t = TRI["F", "B", "D"]
-    t = TRI["A", "B", "C"]
+    t = TRI["F", "B", "D"]
+    # t = TRI["A", "B", "C"]
     # t = TRI["A", "D", "B"]
     h = hdg_tri[t]
-    printf "%s = hdg_tri(%s);\n", h, t
+    printf "int %s = hdg_tri(%s);\n", h, t
     VISITED[h]
     walk(h)
     print "/**/"
@@ -63,12 +63,12 @@ function walk(h,   n, f)
     f = flp[h]
     if (!(n in VISITED)) {
 	VISITED[n]
-	printf "%s = nxt(%s);\n", n, h
+	printf "int %s = nxt(%s);\n", n, h
 	walk(n)
     }
     if (!(f in VISITED)) {
 	VISITED[f]
-	printf "%s = flp(%s);\n", f, h
+	printf "int %s = flp(%s);\n", f, h
 	walk(f)
     }
 }
@@ -79,9 +79,9 @@ function write0(x, y, def,   a, b, i)
     diff(y, x, b)
     for (i in b)
 	if (i in a)
-	    printf "%s = %s;\n", b[i], a[i]
+	    printf "int %s = %s;\n", b[i], a[i]
 	else
-	    printf "%s = %s;\n", b[i], def
+	    printf "int %s = %s;\n", b[i], def
 }
 
 function array(a, b, def,   i, d, key)

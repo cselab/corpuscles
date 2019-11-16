@@ -54,9 +54,10 @@ main(int __UNUSED argc, const char **argv)
         fprintf(stderr, "%s: e=%d >= ne=%d\n", me, e, ne);
         exit(2);
     }
-    status = he_edg_split(he, e);
+    MSG("he_nv: %d", he_nv(he));
+    status = he_tri_split(he, e);
     if (status != CO_OK)
-        ER("he_edg_split failed");
+        ER("he_tri_split failed");
     nv = he_nv(he);
     nt = he_nt(he);
     REALLOC(nv, &x);
@@ -65,11 +66,9 @@ main(int __UNUSED argc, const char **argv)
     CALLOC(nt, &color);
     x[nv - 1] = y[nv - 1] = z[nv - 1] = 0;
     MSG("nv: %d", nv);
-
     status = he_invariant(he);
     if (status != CO_OK)
         ER("he_invariant failed");    
-
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);
     i = he_tri(he, h);
