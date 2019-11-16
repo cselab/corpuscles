@@ -1,0 +1,84 @@
+#!/bin/sh
+
+me=$0
+
+${AWK=awk} -v me="$me" '
+BEGIN {
+    while (ARGV[++i] ~ /^-/)
+	if (ARGV[i] == "-h")
+	    usg()
+    if (!(i in ARGV))
+	err("needs file")
+    var_set(ARGV[i], var)
+    for (i in var)
+	print i
+}
+
+function var_set(file, var,   i, j, k)
+{
+    delete var
+    while (getline < file > 0) {
+	i = $1
+	j = $2
+	k = $3
+	var[new_tri(i, j, k)]
+	var_edg(i, j, var)
+	var_edg(j, k, var)
+	var_edg(k, i, var)
+    }
+    close(file)
+}
+
+function var_edg(i, j, var)
+{
+    var[new_edg(i, j)]
+    var[new_hdg(i, j)]
+    var[new_hdg(j, i)]
+    var[new_ver(i)]
+    var[new_ver(j)]
+}
+
+function err(a, b, c, d, e)
+{
+    msg(a, b, c, d, e)
+    exit(2)
+}
+
+function msg(a, b, c, d, e,   s)
+{
+    s = sprintf(a, b, c, d, e)
+    printf "%s: %s\n", me, s | "cat >&2"
+}
+
+function usg()
+{
+    printf "%s file\n", me | "cat >&2"
+    exit(2)
+}
+
+function new_ver(i)
+{
+    return i
+}
+
+function new_tri(i, j, k)
+{
+    return i j k
+}
+
+function new_edg(i, j,   t, e)
+{
+    if (i > j) {
+	t = i
+	i = j
+	j = t
+    }
+    return "e" i j
+}
+
+function new_hdg(i, j, h)
+{
+    return "h" i j
+}
+
+' "$@"
