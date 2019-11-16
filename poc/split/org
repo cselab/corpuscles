@@ -39,7 +39,7 @@ BEGIN {
     delete VER
     one(new)
     write()
-    # var()
+    var()
 }
 
 function read0(a, def,   i)
@@ -74,7 +74,7 @@ function read(file, h, n, nn, f)
     # t = TRI["A", "B", "C"]
     # t = TRI["A", "D", "B"]
     # h = hdg_tri[t]
-    h = ini_ver()
+    h = ini_tri()
 
     VISITED[h]
     walk(h)
@@ -109,9 +109,10 @@ function write0(x, y, def,   a, b, i)
     diff(x, y, a)
     diff(y, x, b)
     for (i in b) {
-	if (i in a)
+	if (i in a) {
 	    printf "%s = %s;\n", b[i], a[i]
-	else
+	    delete x[a[i]]
+	} else
 	    printf "%s = %s;\n", b[i], def
 	push_var(b[i])
     }
@@ -129,12 +130,10 @@ function write(  d)
     write0(hdg_edg0, hdg_edg, "ne++")
     write0(hdg_tri0, hdg_tri, "nt++")
     write0(ver0, ver, "nh++")
-
-    diff(hdg_ver0, hdg_ver, d)
+    #diff(hdg_ver0, hdg_ver, d)
     diff(hdg_edg0, hdg_edg, d)
     for (i in d)
 	msg(d[i])
-
     array(nxt, "s_nxt")
     array(flp, "s_flp")
     array(ver, "s_ver")
@@ -250,8 +249,14 @@ function id_tri(i, j, k)
 	return TRI[i, j, k] = TRI[k, i, j] = TRI[j, k, i] = new_tri(i, j, k)
 }
 
-function new_tri(i, j, k)
+function new_tri(i, j, k, t)
 {
+    if (i > j) {
+	t = i; i = j; j = t
+    }
+    if (j > k) {
+	t = j; j = k; k = t
+    }
     return i j k
 }
 
