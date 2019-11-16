@@ -65,10 +65,12 @@ main(int __UNUSED argc, const char **argv)
     REALLOC(nv, &z);
     CALLOC(nt, &color);
     x[nv - 1] = y[nv - 1] = z[nv - 1] = 0;
+    x[nv - 2] = y[nv - 2] = z[nv - 2] = 0;
+    x[nv - 3] = y[nv - 3] = z[nv - 3] = 0;
     MSG("nv: %d", nv);
     status = he_invariant(he);
     if (status != CO_OK)
-        ER("he_invariant failed");    
+      ER("he_invariant failed");
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);
     i = he_tri(he, h);

@@ -675,12 +675,18 @@ int hFB = nxt(hDF);
 int hBF = flp(hFB);
 int hFA = nxt(hBF);
 int hAB = nxt(hFA);
+int hBA = flp(hAB);
+int hAF = flp(hFA);
 int hFD = flp(hDF);
 int hDE = nxt(hFD);
 int hEF = nxt(hDE);
+int hFE = flp(hEF);
+int hED = flp(hDE);
 int hDB = flp(hBD);
 int hBC = nxt(hDB);
 int hCD = nxt(hBC);
+int hDC = flp(hCD);
+int hCB = flp(hBC);
 /**/
 int A = ver(hAB);
 int B = ver(hBF);
@@ -772,7 +778,6 @@ int hZD = hBD;
     REALLOC(ne, &q->D2);
     REALLOC(ne, &q->D3);
     /* */
- 
 s_nxt(hDZ, hZY);
 s_nxt(hFX, hXZ);
 s_nxt(hYZ, hZX);
