@@ -70,12 +70,7 @@ function ini_tri(   t, h)
 
 function read(file, h, n, nn, f)
 {
-    #
-    # t = TRI["A", "B", "C"]
-    # t = TRI["A", "D", "B"]
-    # h = hdg_tri[t]
-    h = ini_tri()
-
+    h = ini_ver()
     VISITED[h]
     walk(h)
     print "/**/"
@@ -124,16 +119,27 @@ function array(a, def,   i)
 	printf "%s(%s, %s);\n", def, a[i], i
 }
 
+function remove0(a, b, def,   d, i, s)
+{
+    diff(a, b, d)
+    for (i in d) {
+    	s = sprintf(def, d[i])
+    	msg(s)
+    }
+}
+
 function write(  d)
 {
     write0(hdg_ver0, hdg_ver, "nv++")
     write0(hdg_edg0, hdg_edg, "ne++")
     write0(hdg_tri0, hdg_tri, "nt++")
     write0(ver0, ver, "nh++")
-    #diff(hdg_ver0, hdg_ver, d)
-    diff(hdg_edg0, hdg_edg, d)
-    for (i in d)
-	msg(d[i])
+
+    remove0(hdg_ver0, hdg_ver, "REMOVE_VER(%s);")
+    remove0(hdg_edg0, hdg_edg, "REMOVE_EDG(%s);")
+    remove0(hdg_tri0, hdg_tri, "REMOVE_TRI(%s);")
+    remove0(ver0, ver, "REMOVE_HDG(%s);")
+
     array(nxt, "s_nxt")
     array(flp, "s_flp")
     array(ver, "s_ver")
