@@ -15,7 +15,7 @@ he_invariant_nxt(He *he)
 	nn = he_nxt(he, n);
 	nnn = he_nxt(he, nn);
 	if (nnn != h)
-	    ERR(CO_NUM, "nnn=%d != h=%d", nnn, h);
+	  ERR(CO_NUM, "nnn=%d != h=%d, n=%d", nnn, h, n);
     }
     return CO_OK;
 }
@@ -61,7 +61,7 @@ he_invariant_tri(He *he)
 	h = he_hdg_tri(he, t);
 	tt = he_tri(he, h);
 	if (tt != t)
-	    ERR(CO_NUM, "tt=%d != t=%d", tt, t);
+	  ERR(CO_NUM, "tt=%d != t=%d, h=%d", tt, t, h);
     }
     return CO_OK;
 }

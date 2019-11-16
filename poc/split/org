@@ -19,14 +19,24 @@ BEGIN {
     copy(ver, ver0)
     copy(tri, tri0)
     copy(edg, edg0)
+    copy(hdg, hdg0)
     copy(hdg_ver, hdg_ver0)
     copy(hdg_edg, hdg_edg0)
     copy(hdg_tri, hdg_tri0)
     read(old)
-    delete ver
     delete hdg_ver
     delete hdg_edg
     delete hdg_tri
+    delete nxt
+    delete ver
+    delete flp
+    delete edg
+    delete hdg
+    delete tri
+    delete TRI
+    delete HDG
+    delete EDG
+    delete VER
     one(new)
     write()
     var()
@@ -98,18 +108,18 @@ function array(a, b, def,   i, d, key)
     }
 }
 
-function write(   h, i)
+function write()
 {
     write0(hdg_ver0, hdg_ver, "nv++")
     write0(hdg_edg0, hdg_edg, "ne++")
     write0(hdg_tri0, hdg_tri, "nt++")
     write0(ver0, ver, "nh++")
 
-    array(nxt, nxt0, "s_nxt")
-    array(flp, flp0, "s_flp")
-    array(ver, ver0, "s_ver")
-    array(tri, tri0, "s_tri")
-    array(edg, edg0, "s_edg")
+    array(nxt, NULL, "s_nxt")
+    array(flp, NULL, "s_flp")
+    array(ver, NULL, "s_ver")
+    array(tri, NULL, "s_tri")
+    array(edg, NULL, "s_edg")
     array(hdg_ver, NULL, "s_hdg_ver")
     array(hdg_edg, NULL, "s_hdg_edg")
     array(hdg_tri, NULL, "s_hdg_tri")
@@ -260,12 +270,6 @@ function copy(a, b,   i)
 {
     for (i in a)
 	b[i] = a[i]
-}
-
-function move(a, b,   i)
-{
-    copy(a, b)
-    delete a
 }
 
 function usg()

@@ -34,7 +34,7 @@ main(int __UNUSED argc, const char **argv)
         case 'e':
             argv++;
             if ((arg = *argv) == NULL) {
-                fprintf(stderr, "%s: -t needs an argument\n", me);
+                fprintf(stderr, "%s: -e needs an argument\n", me);
                 exit(2);
             }
             Eflag = 1;
