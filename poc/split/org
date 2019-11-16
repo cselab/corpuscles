@@ -1,23 +1,39 @@
 #!/bin/sh
 
-awk '
+me=$0
+
+"${AWK=awk}" -v me="$me" '
 BEGIN {
-    one(ARGV[1])
-    read(ARGV[1])
-    one(ARGV[2])
-    write(ARGV[2])
+    while (ARGV[++i] ~ /^-/)
+	if (ARGV[i] == "-h")
+	    usg()
+    if (!(i in ARGV))
+	err("needs old")
+    old = ARGV[i++]
+    if (!(i in ARGV))
+	err("needs new")
+    new = ARGV[i++]
+    one(old)
+    copy(hdg_tri, hdg_tri0)
+    copy(hdg_ver, hdg_ver0)
+    copy(hdg_edg, hdg_edg0)
+    copy(ver, ver0)
+    read(old)
+    delete hdg_tri
+    delete hdg_ver
+    delete hdg_edg
+    delete ver
+    one(new)
+    write()
 }
 
 function read(file, t, h, n, nn, f)
 {
-    t = TRI["F", "B", "D"]
+    # t = TRI["F", "B", "D"]
+    t = TRI["A", "B", "D"]
     h = hdg_tri[t]
     printf "%s = hdg_tri(%s);\n", h, t
-
     walk(h)
-    copy(hdg_tri, hdg_tri0)
-    copy(hdg_ver, hdg_ver0)
-    copy(hdg_edg, hdg_edg0)
     for (v in hdg_ver) {
 	h = hdg_ver[v]
 	printf "%s = ver(%s);\n", v, h
@@ -46,20 +62,38 @@ function walk(h,   n, f)
     }
 }
 
-function write(file,    v, t, h)
+function write0(x, y, def,   a, b, i)
 {
-    for (v in hdg_ver)
-	if (!(v in hdg_ver0)) {
-	    printf "%s = nv++;\n", v
-	}
-    for (t in hdg_tri)
-	if (!(t in hdg_tri0)) {
-	    printf "%s = nt++;\n", t
-	}
-    for (e in hdg_edg)
-	if (!(e in hdg_edg0)) {
-	    printf "%s = ne++;\n", e
-	}
+    diff(x, y, a)
+    diff(y, x, b)
+    for (i in b)
+	if (i in a)
+	    printf "%s = %s;\n", b[i], a[i]
+	else
+	    printf "%s = %s;\n", b[i], def
+}
+
+function array(a, def,   i)
+{
+    for (i in a)
+	printf "%s(%s, %s);\n", def, i, a[i]
+}
+
+function write(   h, i)
+{
+    write0(hdg_ver0, hdg_ver, "nv++")
+    write0(hdg_edg0, hdg_edg, "ne++")
+    write0(hdg_tri0, hdg_tri, "nt++")
+    write0(ver0, ver, "nh++")
+
+    array(nxt, "s_nxt")
+    array(flp, "s_flp")
+    array(ver, "s_ver")
+    array(tri, "s_tri")
+    array(edg, "s_edg")
+    array(hdg_ver, "s_hdg_ver")
+    array(hdg_edg, "s_hdg_edg")
+    array(hdg_tri, "s_hdg_tri")
 }
 
 function one(file)
@@ -143,8 +177,7 @@ function id_hdg(i, j)
 
 function new_hdg(i, j, h)
 {
-    h = H++
-    return "h" sprintf("%02d", h)
+    return "h" i j
 }
 
 function id_ver(i)
@@ -168,10 +201,9 @@ function id_tri(i, j, k)
 	return TRI[i, j, k] = TRI[k, i, j] = TRI[j, k, i] = new_tri(i, j, k)
 }
 
-function new_tri(i, j, k,   t)
+function new_tri(i, j, k)
 {
-    t = T++
-    return "t" sprintf("%02d", t)
+    return i j k
 }
 
 function id_edg(i, j)
@@ -184,8 +216,7 @@ function id_edg(i, j)
 
 function new_edg(i, j,   e)
 {
-    e = E++
-    return "e" sprintf("%02d", e)
+    return "e" i j
 }
 
 function SET(map, key, val)
@@ -196,14 +227,36 @@ function SET(map, key, val)
 
 function err(a, b, c, d, e)
 {
-    printf a, b, c, d, e | "cat >&2"
+    msg(a, b, c, d, e)
     exit(2)
+}
+
+function msg(a, b, c, d, e,   s)
+{
+    s = sprintf(a, b, c, d, e)
+    printf "%s: %s\n", me, s | "cat >&2"
 }
 
 function copy(a, b,   i)
 {
     for (i in a)
 	b[i] = a[i]
+}
+
+function usg()
+{
+    printf "%s old new\n", me | "cat >&2"
+    exit(2)
+}
+
+function diff(a, b, c,   d, x, i)
+{
+    delete c
+    copy(a, d)
+    for (x in b)
+	delete d[x]
+    for (x in d)
+	c[++i] = x
 }
 
 ' "$@"
