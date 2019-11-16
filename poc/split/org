@@ -257,6 +257,12 @@ function copy(a, b,   i)
 	b[i] = a[i]
 }
 
+function move(a, b,   i)
+{
+    copy(a, b)
+    delete a
+}
+
 function usg()
 {
     printf "%s old new\n", me | "cat >&2"
