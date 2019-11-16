@@ -2,7 +2,7 @@
 
 me=$0
 
-"${AWK=awk}" -v me="$me" '
+${AWK=awk} -v me="$me" '
 BEGIN {
     while (ARGV[++i] ~ /^-/)
 	if (ARGV[i] == "-h")
@@ -43,10 +43,11 @@ function read0(a, def,   i)
 function read(file, t, h, n, nn, f)
 {
     # t = TRI["F", "B", "D"]
-    # t = TRI["A", "B", "D"]
-    t = TRI["A", "D", "B"]
+    t = TRI["A", "B", "C"]
+    # t = TRI["A", "D", "B"]
     h = hdg_tri[t]
     printf "%s = hdg_tri(%s);\n", h, t
+    VISITED[h]
     walk(h)
     print "/**/"
     read0(hdg_ver, "ver")
@@ -104,9 +105,9 @@ function write(   h, i)
     array(ver, ver0, "s_ver")
     array(tri, tri0, "s_tri")
     array(edg, edg0, "s_edg")
-    array(hdg_ver, hdg_ver0, "s_hdg_ver")
-    array(hdg_edg, hdg_edg0, "s_hdg_edg")
-    array(hdg_tri, hdg_tri0, "s_hdg_tri")
+    array(hdg_ver, NULL, "s_hdg_ver")
+    array(hdg_edg, NULL, "s_hdg_edg")
+    array(hdg_tri, NULL, "s_hdg_tri")
 }
 
 function one(file)
