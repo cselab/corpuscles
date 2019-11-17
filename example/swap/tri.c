@@ -11,7 +11,7 @@
 #include <co/vec.h>
 #include <co/y.h>
 
-const char *me = "swap/ver";
+const char *me = "swap/tri";
 static void
 usg()
 {
@@ -23,8 +23,8 @@ int
 main(int __UNUSED argc, char **argv)
 {
     He *he;
-    real *x, *y, *z, *ver, *tri;
-    int i, j, k, t, nv, nt, status;
+    real *x, *y, *z, *tri;
+    int i, j, nt, status;
 
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
@@ -38,27 +38,17 @@ main(int __UNUSED argc, char **argv)
     argv_int(&argv, &i);
     argv_int(&argv, &j);
     y_inif(stdin, &he, &x, &y, &z);
-    status = he_swap_ver(he, i, j);
+    status = he_swap_tri(he, i, j);
     if (status != CO_OK)
-        ER("he_swap_ver failed");
+        ER("he_swap_tri failed");
     status = he_invariant(he);
     if (status != CO_OK)
         ER("he_invariant failed");
-    nv = he_nv(he);
     nt = he_nt(he);
-    CALLOC(nv, &ver);
     CALLOC(nt, &tri);
-    ver[i] = 1;
-    ver[j] = 2;
-    vec_swap(i, j, x, y, z);
-    for (t = 0; t < nt; t++) {
-        he_tri_ijk(he, t, &i, &j, &k);
-        tri[t] += ver[i] / 3;
-        tri[t] += ver[j] / 3;
-        tri[t] += ver[k] / 3;
-    }
+    tri[i] = 1;
+    tri[j] = 2;
     boff_tri_fwrite(he, x, y, z, tri, stdout);
     FREE(tri);
-    FREE(ver);
     y_fin(he, x, y, z);
 }

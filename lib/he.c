@@ -1068,7 +1068,7 @@ he_tri_split(T * q, int BDF)
 int
 he_swap_ver(T * q, int i, int j)
 {
-    int hi, hj, tmp, nv, h, n, f;
+    int hi, hj, nv, h, n, f;
 
     if (bnd_ver(i))
         ERR(CO_INDEX, "bnd_ver(%d)", i);
@@ -1079,6 +1079,8 @@ he_swap_ver(T * q, int i, int j)
     nv = he_nv(q);
     if (i >= nv)
         ERR(CO_INDEX, "i=%d >= nv=%d", i, nv);
+    if (j >= nv)
+        ERR(CO_INDEX, "j=%d >= nv=%d", j, nv);
     hi = hdg_ver(i);
     hj = hdg_ver(j);
     h = hi;
@@ -1091,10 +1093,42 @@ he_swap_ver(T * q, int i, int j)
     do {
         assert(ver(h) == j);
         s_ver(h, i);
-        h = flp(nxt(nxt(h)));	
+        h = flp(nxt(nxt(h)));
     } while (h != hj);
     s_hdg_ver(i, hj);
     s_hdg_ver(j, hi);
+    return CO_OK;
+}
+
+int
+he_swap_tri(T * q, int i, int j)
+{
+    int hi, hj, nt, h, n, f;
+
+    if (i == j)
+        return CO_OK;
+    nt = he_nt(q);
+    if (i >= nt)
+        ERR(CO_INDEX, "i=%d >= nt=%d", i, nt);
+    if (j >= nt)
+        ERR(CO_INDEX, "j=%d >= nt=%d", j, nt);
+
+    hi = hdg_tri(i);
+    hj = hdg_tri(j);
+    h = hi;
+    do {
+        assert(tri(h) == i);
+        s_tri(h, j);
+        h = nxt(h);
+    } while (h != hi);
+    h = hj;
+    do {
+        assert(tri(h) == j);
+        s_tri(h, i);
+        h = nxt(h);
+    } while (h != hj);
+    s_hdg_tri(i, hj);
+    s_hdg_tri(j, hi);
     return CO_OK;
 }
 
