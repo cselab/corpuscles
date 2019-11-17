@@ -402,3 +402,22 @@ vec_zero(real a[3])
     vec_ini(0, 0, 0, /**/ a);
     return CO_OK;
 }
+
+static int
+swap(int i, int j, real *a)
+{
+  real t;
+  t = a[i];
+  a[i] = a[j];
+  a[j] = t;
+  return CO_OK;
+}
+
+int
+vec_swap(int i, int j, real *x, real *y, real *z)
+{
+  swap(i, j, x);
+  swap(i, j, y);
+  swap(i, j, z);
+  return CO_OK;
+}

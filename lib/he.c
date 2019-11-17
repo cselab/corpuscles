@@ -1081,21 +1081,20 @@ he_swap_ver(T * q, int i, int j)
         ERR(CO_INDEX, "i=%d >= nv=%d", i, nv);
     hi = hdg_ver(i);
     hj = hdg_ver(j);
-    s_hdg_ver(i, hj);
-    s_hdg_ver(j, hi);
-
     h = hi;
     do {
+        assert(ver(h) == i);
         s_ver(h, j);
-        h = nxt(flp(nxt(h)));
+        h = flp(nxt(nxt(h)));
     } while (h != hi);
-
     h = hj;
     do {
+        assert(ver(h) == j);
         s_ver(h, i);
-        h = nxt(flp(nxt(h)));
+        h = flp(nxt(nxt(h)));	
     } while (h != hj);
-
+    s_hdg_ver(i, hj);
+    s_hdg_ver(j, hi);
     return CO_OK;
 }
 

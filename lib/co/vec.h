@@ -5,6 +5,7 @@ int vec_get3(int, int, int, const real[], const real[], const real[],
 int vec_get4(int, int, int, int, const real[], const real[], const real[],
              /**/ real[3], real[3], real[3], real[3]);
 int vec_set(const real[3], int, /**/ real[], real[], real[]);
+int vec_swap(int, int, /**/ real[], real[], real[]);
 
 int vec_coord(const real[3], /**/ real *, real *, real *);
 
