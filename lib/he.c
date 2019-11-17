@@ -375,14 +375,15 @@ set_hdg_tri(T * q, int t, int i)
     return CO_OK;
 }
 
-#define  nxt(h)     he_nxt(q, (h))
-#define  flp(h)     he_flp(q, (h))
-#define  ver(h)     he_ver(q, (h))
-#define  edg(h)     he_edg(q, (h))
-#define  tri(h)     he_tri(q, (h))
-#define  hdg_ver(v) he_hdg_ver(q, (v))
-#define  hdg_edg(e) he_hdg_edg(q, (e))
-#define  hdg_tri(t) he_hdg_tri(q, (t))
+#define  nxt(h)     (he_nxt(q, (h)))
+#define  flp(h)     (he_flp(q, (h)))
+#define  ver(h)     (he_ver(q, (h)))
+#define  edg(h)     (he_edg(q, (h)))
+#define  tri(h)     (he_tri(q, (h)))
+#define  hdg_ver(v) (he_hdg_ver(q, (v)))
+#define  hdg_edg(e) (he_hdg_edg(q, (e)))
+#define  hdg_tri(t) (he_hdg_tri(q, (t)))
+#define  bnd_ver(v) (he_bnd_ver(q, (v)))
 #define  s_nxt(h, i)     set_nxt(q, (h), (i))
 #define  s_nxt3(t, i, j, k)			\
   s_hdg_tri(t, i),				\
@@ -1061,6 +1062,40 @@ he_tri_split(T * q, int BDF)
     s_hdg_tri(CDY, hCD);
     s_hdg_tri(EFZ, hEF);
     s_hdg_tri(DZY, hDZ);
+    return CO_OK;
+}
+
+int
+he_swap_ver(T * q, int i, int j)
+{
+    int hi, hj, tmp, nv, h, n, f;
+
+    if (bnd_ver(i))
+        ERR(CO_INDEX, "bnd_ver(%d)", i);
+    if (bnd_ver(j))
+        ERR(CO_INDEX, "bnd_ver(%d)", j);
+    if (i == j)
+        return CO_OK;
+    nv = he_nv(q);
+    if (i >= nv)
+        ERR(CO_INDEX, "i=%d >= nv=%d", i, nv);
+    hi = hdg_ver(i);
+    hj = hdg_ver(j);
+    s_hdg_ver(i, hj);
+    s_hdg_ver(j, hi);
+
+    h = hi;
+    do {
+        s_ver(h, j);
+        h = nxt(flp(nxt(h)));
+    } while (h != hi);
+
+    h = hj;
+    do {
+        s_ver(h, i);
+        h = nxt(flp(nxt(h)));
+    } while (h != hj);
+
     return CO_OK;
 }
 
