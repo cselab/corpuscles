@@ -1134,6 +1134,24 @@ he_swap_tri(T * q, int i, int j)
 }
 
 int
+he_swap_hdg(T * q, int i, int j)
+{
+    int nh;
+    if (i == j)
+        return CO_OK;
+    nh = he_nh(q);
+    if (i >= nh)
+        ERR(CO_INDEX, "i=%d >= nh=%d", i, nh);
+    if (j >= nh)
+        ERR(CO_INDEX, "j=%d >= nh=%d", j, nh);
+
+    //s_hdg_tri(i, hj);
+    //s_hdg_tri(j, hi);
+    return CO_OK;
+}
+
+
+int
 he_swap_edg(T * q, int i, int j)
 {
     int hi, hj, ne, fi, fj;
