@@ -1,6 +1,7 @@
 .POSIX:
 include ../../conf.mk
 M = \
+edg\
 ver\
 tri\
 

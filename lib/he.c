@@ -384,6 +384,7 @@ set_hdg_tri(T * q, int t, int i)
 #define  hdg_edg(e) (he_hdg_edg(q, (e)))
 #define  hdg_tri(t) (he_hdg_tri(q, (t)))
 #define  bnd_ver(v) (he_bnd_ver(q, (v)))
+#define  bnd(h) (he_bnd(q, (h)))
 #define  s_nxt(h, i)     set_nxt(q, (h), (i))
 #define  s_nxt3(t, i, j, k)			\
   s_hdg_tri(t, i),				\
@@ -1068,7 +1069,7 @@ he_tri_split(T * q, int BDF)
 int
 he_swap_ver(T * q, int i, int j)
 {
-    int hi, hj, nv, h, n, f;
+    int hi, hj, nv, h;
 
     if (bnd_ver(i))
         ERR(CO_INDEX, "bnd_ver(%d)", i);
@@ -1103,7 +1104,7 @@ he_swap_ver(T * q, int i, int j)
 int
 he_swap_tri(T * q, int i, int j)
 {
-    int hi, hj, nt, h, n, f;
+    int hi, hj, nt, h;
 
     if (i == j)
         return CO_OK;
@@ -1131,6 +1132,40 @@ he_swap_tri(T * q, int i, int j)
     s_hdg_tri(j, hi);
     return CO_OK;
 }
+
+int
+he_swap_edg(T * q, int i, int j)
+{
+    int hi, hj, ne, fi, fj;
+
+    if (i == j)
+        return CO_OK;
+    ne = he_ne(q);
+    if (i >= ne)
+        ERR(CO_INDEX, "i=%d >= ne=%d", i, ne);
+    if (j >= ne)
+        ERR(CO_INDEX, "j=%d >= ne=%d", j, ne);
+    hi = hdg_edg(i);
+    hj = hdg_edg(j);
+    if (bnd(hi))
+        ERR(CO_INDEX, "bnd(%d)", i);
+    if (bnd(hj))
+        ERR(CO_INDEX, "bnd(%d)", j);
+    fi = flp(hi);
+    fj = flp(hj);
+    assert(edg(fi) == i);
+    assert(edg(fj) == j);
+    s_edg(fi, j);
+    s_edg(hi, j);
+    s_hdg_edg(j, hi);
+    
+    s_edg(hj, i);
+    s_edg(fj, i);
+    s_hdg_edg(i, hj);    
+
+    return CO_OK;
+}
+
 
 int
 he_E(T * he, int **pE0, int **pE1)
