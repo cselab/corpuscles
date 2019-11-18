@@ -2,6 +2,7 @@
 include ../../conf.mk
 M = \
 edg\
+hdg\
 ver\
 tri\
 

@@ -1138,8 +1138,8 @@ he_swap_hdg(T * q, int i, int j)
 {
 #define MAP(v, i, j) if ((v) == (j)) (v) = (i)
     int nh;
-    int ni, fi, vi, ti, ei;
-    int nj, fj, vj, tj, ej;
+    int ni, nni, fi, vi, ti, ei;
+    int nj, nnj, fj, vj, tj, ej;
     if (i == j)
 	return CO_OK;
     nh = he_nh(q);
@@ -1148,23 +1148,28 @@ he_swap_hdg(T * q, int i, int j)
     if (j >= nh)
 	ERR(CO_INDEX, "j=%d >= nh=%d", j, nh);
     ni = nxt(i);
+    nni = nxt(ni);
     fi = flp(i);
     MAP(ni, i, j);
+    MAP(nni, i, j);
     MAP(fi, i, j);
     vi = ver(i);
     ti = tri(i);
     ei = edg(i);
 
     nj = nxt(j);
+    nnj = nxt(nj);
     fj = flp(j);
     MAP(nj, j, i);
+    MAP(nnj, j, i);
     MAP(fj, j, i);
     vj = ver(j);
     tj = tri(j);
     ej = edg(j);
 
-    s_nxt(i, nj);
-    s_flp(i, fj);
+    s_nxt(i, nj); s_nxt(nnj, i);
+    s_flp(i, fj); s_flp(fj, i);
+    
     s_ver(i, vj);
     s_tri(i, tj);
     s_edg(i, ej);
@@ -1172,8 +1177,8 @@ he_swap_hdg(T * q, int i, int j)
     s_hdg_tri(tj, i);
     s_hdg_edg(ej, i);
 
-    s_nxt(j, ni);
-    s_flp(j, fi);
+    s_nxt(j, ni); s_nxt(nni, j);
+    s_flp(j, fi); s_flp(fi, j);
     s_ver(j, vi);
     s_tri(j, ti);
     s_edg(j, ei);
