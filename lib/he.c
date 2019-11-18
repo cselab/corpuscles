@@ -1144,12 +1144,12 @@ he_swap_hdg(T * q, int i, int j)
         ERR(CO_INDEX, "i=%d >= nh=%d", i, nh);
     if (j >= nh)
         ERR(CO_INDEX, "j=%d >= nh=%d", j, nh);
-
-    //s_hdg_tri(i, hj);
-    //s_hdg_tri(j, hi);
+    ni = s_nxt(hi);
+    fi = s_flp(hi);
+    nj = s_nxt(hj);
+    fj = s_nxt(hj);
     return CO_OK;
 }
-
 
 int
 he_swap_edg(T * q, int i, int j)
