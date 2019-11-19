@@ -399,6 +399,12 @@ set_hdg_tri(T * q, int t, int i)
 #define  s_hdg_ver(v, i) set_hdg_ver(q, (v), (i))
 #define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
 #define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
+
+#define DEL_VER(i) he_swap_ver(q, (i), --nv)
+#define DEL_EDG(i) he_swap_edg(q, (i), --ne)
+#define DEL_TRI(i) he_swap_tri(q, (i), --nt)
+#define DEL_HDG(i) he_swap_hdg(q, (i), --nh)
+
 int
 he_edg_rotate(T * q, int e0)
 {
@@ -663,6 +669,200 @@ he_edg_split(T * q, int e0)
 
     return CO_OK;
 }
+
+int
+he_ver_remove5(T * q, int X)
+{
+    int nv, nt, ne, nh;
+    int A;
+int ABC;
+int ABX;
+int ACE;
+int AEX;
+int B;
+int BCX;
+int C;
+int CDE;
+int CDX;
+int D;
+int DEX;
+int E;
+int eAB;
+int eAC;
+int eAE;
+int eAX;
+int eBC;
+int eBX;
+int eCD;
+int eCE;
+int eCX;
+int eDE;
+int eDX;
+int eEX;
+int hAB;
+int hAC;
+int hAE;
+int hAX;
+int hBA;
+int hBC;
+int hBX;
+int hCA;
+int hCB;
+int hCD;
+int hCE;
+int hCX;
+int hDC;
+int hDE;
+int hDX;
+int hEA;
+int hEC;
+int hED;
+int hEX;
+int hXA;
+int hXB;
+int hXC;
+int hXD;
+int hXE;
+hXA = hdg_ver(X);
+hAB = nxt(hXA);
+hBX = nxt(hAB);
+hXB = flp(hBX);
+hBC = nxt(hXB);
+hCX = nxt(hBC);
+hXC = flp(hCX);
+hCD = nxt(hXC);
+hDX = nxt(hCD);
+hXD = flp(hDX);
+hDE = nxt(hXD);
+hEX = nxt(hDE);
+hXE = flp(hEX);
+hEA = nxt(hXE);
+hAX = nxt(hEA);
+hAE = flp(hEA);
+hED = flp(hDE);
+hDC = flp(hCD);
+hCB = flp(hBC);
+hBA = flp(hAB);
+/**/
+A = ver(hAB);
+B = ver(hBX);
+C = ver(hCX);
+D = ver(hDX);
+E = ver(hEX);
+X = ver(hXA);
+eBC = edg(hBC);
+eAE = edg(hEA);
+eCD = edg(hCD);
+eDE = edg(hDE);
+eAX = edg(hXA);
+eBX = edg(hBX);
+eCX = edg(hCX);
+eDX = edg(hDX);
+eEX = edg(hEX);
+eAB = edg(hAB);
+AEX = tri(hEA);
+DEX = tri(hDE);
+BCX = tri(hBC);
+CDX = tri(hCD);
+ABX = tri(hAB);
+eAC = eAX;
+eCE = eBX;
+ABC = AEX;
+CDE = DEX;
+ACE = BCX;
+hCA = hXD;
+hAC = hDX;
+hCE = hXE;
+hEC = hEX;
+s_nxt(hBC, hAB);
+s_nxt(hCE, hAC);
+s_nxt(hAB, hCA);
+s_nxt(hCA, hBC);
+s_nxt(hAC, hEA);
+s_nxt(hDE, hCD);
+s_nxt(hCD, hEC);
+s_nxt(hEA, hCE);
+s_nxt(hEC, hDE);
+s_flp(hAB, hBA);
+s_flp(hBA, hAB);
+s_flp(hCA, hAC);
+s_flp(hAC, hCA);
+s_flp(hBC, hCB);
+s_flp(hCB, hBC);
+s_flp(hEA, hAE);
+s_flp(hAE, hEA);
+s_flp(hCD, hDC);
+s_flp(hDC, hCD);
+s_flp(hCE, hEC);
+s_flp(hEC, hCE);
+s_flp(hDE, hED);
+s_flp(hED, hDE);
+s_ver(A, hAB);
+s_ver(A, hAC);
+s_ver(C, hCA);
+s_ver(B, hBC);
+s_ver(E, hEA);
+s_ver(C, hCD);
+s_ver(E, hEC);
+s_ver(C, hCE);
+s_ver(D, hDE);
+s_tri(ABC, hAB);
+s_tri(ACE, hAC);
+s_tri(ABC, hCA);
+s_tri(ABC, hBC);
+s_tri(ACE, hEA);
+s_tri(CDE, hCD);
+s_tri(CDE, hEC);
+s_tri(ACE, hCE);
+s_tri(CDE, hDE);
+s_edg(eAB, hAB);
+s_edg(eAC, hAC);
+s_edg(eAC, hCA);
+s_edg(eBC, hBC);
+s_edg(eAE, hEA);
+s_edg(eCD, hCD);
+s_edg(eCE, hEC);
+s_edg(eCE, hCE);
+s_edg(eDE, hDE);
+s_hdg_ver(hAB, A);
+s_hdg_ver(hBC, B);
+s_hdg_ver(hCA, C);
+s_hdg_ver(hDE, D);
+s_hdg_ver(hEA, E);
+s_hdg_edg(hCA, eAC);
+s_hdg_edg(hBC, eBC);
+s_hdg_edg(hEA, eAE);
+s_hdg_edg(hCD, eCD);
+s_hdg_edg(hCE, eCE);
+s_hdg_edg(hDE, eDE);
+s_hdg_edg(hAB, eAB);
+s_hdg_tri(hAB, ABC);
+s_hdg_tri(hCD, CDE);
+s_hdg_tri(hAC, ACE);
+nv = q->nv;
+nt = q->nt;
+ne = q->ne;
+nh = q->nh;
+DEL_VER(X);
+DEL_EDG(eCX);
+DEL_EDG(eDX);
+DEL_EDG(eEX);
+DEL_TRI(CDX);
+DEL_TRI(ABX);
+DEL_HDG(hAX);
+DEL_HDG(hXA);
+DEL_HDG(hXB);
+DEL_HDG(hBX);
+DEL_HDG(hXC);
+DEL_HDG(hCX);
+    q->nv = nv;
+    q->nt = nt;
+    q->ne = ne;
+    q->nh = nh;
+    return CO_OK;
+}
+
+
 
 int
 he_tri_split(T * q, int BDF)

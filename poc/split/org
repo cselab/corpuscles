@@ -59,6 +59,15 @@ function ini_ver(   v, h)
     return h
 }
 
+function ini_edg(   e, h)
+{
+    e = EDG["X"]
+    h = hdg_edg[e]
+    printf "%s = hdg_edg(%s);\n", h, e
+    push_var(h)
+    return h
+}
+
 function ini_tri(   t, h)
 {
     t = TRI["F", "B", "D"]
@@ -124,7 +133,7 @@ function remove0(a, b, def,   d, i, s)
     diff(a, b, d)
     for (i in d) {
     	s = sprintf(def, d[i])
-    	msg(s)
+        print s > "del"
     }
 }
 
@@ -332,8 +341,8 @@ function push_var(var,   i)
 
 function var(   i) {
     for (i = 0; i in VAR; i++)
-	printf "int %s;\n", VAR[i] | "sort"
-    close("sort")
+	printf "int %s;\n", VAR[i] | "sort > var" 
+    close("sort > var")
 }
 
 ' "$@"
