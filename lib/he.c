@@ -671,7 +671,7 @@ he_edg_split(T * q, int e0)
 }
 
 int
-he_ver_remove5(T * q, int X)
+he_ver_delete5(T * q, int X)
 {
     int nv, nt, ne, nh;
     int A;
