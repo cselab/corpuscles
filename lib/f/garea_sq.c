@@ -92,8 +92,7 @@ get(int t, He * he,
     vec_get(k, x, y, z, /**/ c);
 }
 
-static
-    void
+static void
 compute_area(He * he, const real * x, const real * y, const real * z,
              /**/ real * area)
 {

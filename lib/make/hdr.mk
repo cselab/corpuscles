@@ -45,6 +45,7 @@ co/f2/bend_min.h\
 co/f2/bend_sc.h\
 co/f2/glen.h\
 co/f2/len.h\
+co/f/area_diff.h\
 co/f/area_eq.h\
 co/f/area.h\
 co/f/area_sq.h\
@@ -57,6 +58,7 @@ co/f/edg_sq.h\
 co/f/garea.h\
 co/f/garea_sq.h\
 co/f/garea_voronoi.h\
+co/f/garea_zero.h\
 co/f/gompper.h\
 co/f/gompper_kroll.h\
 co/f/gompper_xin.h\
@@ -77,6 +79,7 @@ co/f/wlc.h\
 co/gts.h\
 co/hash.h\
 co/he.h\
+co/he/invariant.h\
 co/H.h\
 co/i/area.h\
 co/i/matrix.h\

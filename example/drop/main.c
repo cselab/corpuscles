@@ -36,7 +36,7 @@ static Force *Fo[20] = {NULL};
 static HeFVolume *fvolume;
 static He *he;
 static BI *bi;
-static real rho, eta, lambda, gamdot, dt;
+static real eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
 static real *fx, *fy, *fz;
 static real *Vx, *Vy, *Vz;
@@ -52,7 +52,7 @@ FILE *fm;
 static void usg(void) {
     fprintf(stderr, "%s garea A Kga area a Ka volume V Kv\n", me);
     fprintf(stderr, "juelicher_xin Kb C0 Kad DA0D\n");
-    fprintf(stderr, "R D rho eta lamda gamdot dt\n");
+    fprintf(stderr, "eta lambda gamdot dt\n");
     fprintf(stderr, "start end freq_out freq_stat\n");
     fprintf(stderr, "< OFF input file \n");
 }
@@ -97,8 +97,6 @@ static int fargv(char ***p, He *he)
 
   he_f_volume_ini(4.04705, 10000, he, &fvolume);
   MALLOC3(nv, &Vx, &Vy, &Vz);
-  scl(v, &rho);
-  v++;
   scl(v, &eta);
   v++;
   scl(v, &lambda);
@@ -260,7 +258,7 @@ int main(__UNUSED int argc, char **argv) {
   }
 
   fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
-  fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g\n", rho, eta, lambda, gamdot);
+  fprintf(fm, "eta lambda gamdot = %g %g %g\n", eta, lambda, gamdot);
   fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
   fprintf(fm, "M m a e dt = %g %g %g\n", a, e, dt);
   fclose(fm);
@@ -320,41 +318,29 @@ int main(__UNUSED int argc, char **argv) {
       }
       
       v = reduced_volume(A, V);
-      
       /*if ( s / 10 % freq_stat == 0 ) {
 	MSG("dt s t = %g %i %g", dt, s, t);
 	MSG("A/A0 V/V0 v  = %g %g %g", A/A0, V/V0, v);
 	MSG("et ega ev eb ebl ebn = %g %g %g %g %g %g", et, ega, ev, eb, ebl, ebn);
 	}*/
-      
       if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_stat);
       }
-      
       fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn);
       fclose(fm);
-      
     }
-    
     if (s % 100 == 0 ) {
-	
       j = 0;
       do {
 	he_equiangulate(he, x, y, z, &cnt);
-	//MSG("cnt : %d", cnt);
 	j++;
       } while (cnt > 0 && j < 10);
       
     }
-    
-    
     s ++;
     t = time + dt;
-    
     if ( s > end ) break;
-    
     ode3_apply(ode, &time, t, x, y, z);
-    
   }
   FREE3(Vx, Vy, Vz);
   FREE3(ux, uy, uz);

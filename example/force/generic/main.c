@@ -68,7 +68,10 @@ static void main0() {
 }
 
 int main(int __UNUSED argc, char *argv[]) {
+    err_set_ignore();
     argv++;
+    if (*argv == NULL)
+	ER("needs an argument");
     if (util_eq(*argv, "-h"))
         usg();
     y_inif(stdin, &he, &x, &y, &z);
@@ -84,7 +87,7 @@ int main(int __UNUSED argc, char *argv[]) {
 
     main0();
 
-    FREE(rr); FREE(fm);
+    FREE(rr); FREE(fm); FREE(area);
     FREE(fx); FREE(fy); FREE(fz);
     FREE(gx); FREE(gy); FREE(gz);
 

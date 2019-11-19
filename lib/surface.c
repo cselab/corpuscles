@@ -78,7 +78,7 @@ surface_inside(T * q, real u, real v, real w)
     real zm, eps;
 
     if (q->Update == 0)
-	ERR(CO_NUM, "surface_update was not called");
+        ERR(CO_NUM, "surface_update was not called");
     eps = 1e-10;
     he = q->he;
     x = q->x;
@@ -110,9 +110,9 @@ surface_inside_fast(T * q, real u, real v, real w)
     real a[3], b[3], c[3], d[3], e[3];
     real zm, eps;
     int *tris;
-    
+
     if (q->Update == 0)
-	ERR(CO_NUM, "surface_update was not called");
+        ERR(CO_NUM, "surface_update was not called");
     eps = 1e-10;
     he = q->he;
     x = q->x;
@@ -147,7 +147,7 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
     int status, First;
 
     if (q->Update == 0)
-	ERR(CO_NUM, "surface_update was not called");
+        ERR(CO_NUM, "surface_update was not called");
     he = q->he;
     x = q->x;
     y = q->y;
@@ -157,8 +157,8 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
     m = 1e32;
     for (t = 0; t < n; t++) {
         status = he_tri_ijk(he, t, &i, &j, &k);
-	if (status != CO_OK)
-	    ERR(CO_NUM, "he_tri_ijk failed (t=%d, n=%d)", t, n);
+        if (status != CO_OK)
+            ERR(CO_NUM, "he_tri_ijk failed (t=%d, n=%d)", t, n);
         vec_get(i, x, y, z, a);
         vec_get(j, x, y, z, b);
         vec_get(k, x, y, z, c);

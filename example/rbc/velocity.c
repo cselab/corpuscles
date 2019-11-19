@@ -186,7 +186,7 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     FILE *f;
     Bbox *box;
     real margin[] = { 0.2, 0.2, 0.2 };
-    nx = ny = nz = 60;
+    nx = ny = nz = 20;
 
     nv = he_nv(he);
     bbox_ini(&box);
@@ -208,7 +208,6 @@ grid_write(He * he, const real * x, const real * y, const real * z,
     n = (nx + 1) * (ny + 1) * (nz + 1);
     MALLOC3(n, &vx, &vy, &vz);
     MALLOC(n, &distance);
-
     surface_update(Grid.surface, he, x, y, z);
     l = 0;
     for (k = 0; k <= nz; k++)
@@ -219,9 +218,9 @@ grid_write(He * he, const real * x, const real * y, const real * z,
                 r[Z] = lz + dz * k;
                 bi_cortez_zero_single_velocity(Grid.cortez, he, x, y, z,
                                                fx, fy, fz, r, v);
-                vx[l] = -1 / eta * v[X] + gamdot * r[Z];
-                vy[l] = -1 / eta * v[Y];
-                vz[l] = -1 / eta * v[Z];
+                vx[l] = -v[X] / (2 * eta) + gamdot * r[Z];
+                vy[l] = -v[Y] / (2 * eta);
+                vz[l] = -v[Z] / (2 * eta);
                 surface_distance(Grid.surface, r[X], r[Y], r[Z],
                                  &distance[l]);
                 l++;

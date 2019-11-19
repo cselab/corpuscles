@@ -46,7 +46,7 @@ h_define(`h_fatal',
 
 h_define(`h_assert',
 `h_ifelse(h_eval(`$1'), 0,
-       `h_fatal(`assert failed: $1', `$2')')')
+       `h_fatal(`assert failed: $1')')')
 
 h_define(`h_shift3', `h_shift(h_shift(h_shift($@)))')
 

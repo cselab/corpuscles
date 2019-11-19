@@ -23,6 +23,11 @@ int he_hdg_ver(T *, int v);     /* return half-edg */
 int he_hdg_edg(T *, int e);
 int he_hdg_tri(T *, int t);
 
+int he_swap_ver(T *, int, int);
+int he_swap_tri(T *, int, int);
+int he_swap_edg(T *, int, int);
+int he_swap_hdg(T *, int, int);
+
 int he_bnd(T *, int h);         /* 1 for boundary */
 int he_ijk(T *, int h, /**/ int *, int *, int *);
 int he_tri_ijk(T *, int t, /**/ int *, int *, int *);
@@ -30,6 +35,8 @@ int he_edg_ij(T *, int e, /**/ int *, int *);
 int he_dih_ijkl(T *, int e, /**/ int *, int *, int *, int *);
 
 int he_edg_rotate(T *, int e);  /* AKA flip edge */
+int he_edg_split(T *, int e);
+int he_tri_split(T *, int t);
 
 int he_E(T *, int **, int **);
 int he_T(T *, int **, int **, int **);

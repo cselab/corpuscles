@@ -3,6 +3,7 @@ endian.o\
 err.o\
 hash.o\
 he.o\
+he/invariant.o\
 list/a.o\
 list/c.o\
 list/i.o\
@@ -60,6 +61,7 @@ f2/bend_sc.s.o\
 f2/glen.s.o\
 f2/len.s.o\
 f/area.s.o\
+f/area_diff.s.o\
 f/area_sq.s.o\
 f/area_voronoi.s.o\
 fd2.s.o\
@@ -70,6 +72,7 @@ f/edg_sq.s.o\
 f/garea.s.o\
 f/garea_sq.s.o\
 f/garea_voronoi.s.o\
+f/garea_zero.s.o\
 f/gompper.s.o\
 f/gompper_kroll.s.o\
 f/gompper_xin.s.o\
@@ -189,6 +192,7 @@ f2/bend_sc.d.o\
 f2/glen.d.o\
 f2/len.d.o\
 f/area.d.o\
+f/area_diff.d.o\
 f/area_sq.d.o\
 f/area_voronoi.d.o\
 fd2.d.o\
@@ -199,6 +203,7 @@ f/edg_sq.d.o\
 f/garea.d.o\
 f/garea_sq.d.o\
 f/garea_voronoi.d.o\
+f/garea_zero.d.o\
 f/gompper.d.o\
 f/gompper_kroll.d.o\
 f/gompper_xin.d.o\
@@ -318,6 +323,7 @@ f2/bend_sc.l.o\
 f2/glen.l.o\
 f2/len.l.o\
 f/area.l.o\
+f/area_diff.l.o\
 f/area_sq.l.o\
 f/area_voronoi.l.o\
 fd2.l.o\
@@ -328,6 +334,7 @@ f/edg_sq.l.o\
 f/garea.l.o\
 f/garea_sq.l.o\
 f/garea_voronoi.l.o\
+f/garea_zero.l.o\
 f/gompper.l.o\
 f/gompper_kroll.l.o\
 f/gompper_xin.l.o\
