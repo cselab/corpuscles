@@ -5,6 +5,7 @@ M = \
 5\
 6\
 7\
+8\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
