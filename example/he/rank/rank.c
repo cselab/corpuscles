@@ -10,9 +10,9 @@
 int
 main()
 {
-    real *x, *y, *z, *rank;
+    real *x, *y, *z;
     He *he;
-    int nv, nt, i, j, n, *ring, status;
+    int nv, nt, i, j, n, *ring, status, *rank;
 
     err_set_ignore();
 
@@ -30,10 +30,8 @@ main()
             rank[i] = n;
         }
     }
-
-    const char *na[] = { "rank", NULL };
-    const real *sc[] = { rank, NULL };
-    vtk_fwrite(he, x, y, z, sc, na, stdout);
+    for (i = 0; i < nv; i++)
+        printf("%d\n", rank[i]);
     FREE(rank);
-    return y_fin(he, x, y, z);
+    y_fin(he, x, y, z);
 }
