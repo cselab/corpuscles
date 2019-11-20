@@ -3,9 +3,9 @@
 . co.util
 
 #lambda=0.08 Ca=0.4
-#lambda=1 Ca=0.38
+lambda=1 Ca=0.38
 #lambda=3.6 Ca=1.5
-lambda=6.4 Ca=2.5
+#lambda=6.4 Ca=2.5
 
 area=12.5065
 gdot=$Ca
