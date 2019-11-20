@@ -125,7 +125,7 @@ function write0(x, y, def,   a, b, i)
 function array(a, def,   i)
 {
     for (i in a)
-	printf "%s(%s, %s);\n", def, a[i], i
+	printf "%s(%s, %s);\n", def, i, a[i]
 }
 
 function remove0(a, b, def,   d, i, s)

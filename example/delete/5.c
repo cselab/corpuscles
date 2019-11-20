@@ -24,8 +24,7 @@ main(int __UNUSED argc, const char **argv)
 {
     He *he;
     real *x, *y, *z, *color;
-    const char *arg;
-    int t, i, j, k, nt, nv, v, status;
+    int i, nt, nv;
     while (*++argv != NULL && argv[0][0] == '-')
 	switch (argv[0][1]) {
 	case 'h':
@@ -44,14 +43,25 @@ main(int __UNUSED argc, const char **argv)
 	if (rank == 5)
 	    break;
     }
-    status = he_ver_delete5(he, v);
-    if (status != CO_OK)
+    if (i == nv)
+	ER("i=%d == nv=%d", i, nv);
+    MSG("nv: %d", he_nv(he));
+    MSG("nt: %d", he_nt(he));
+    if (he_ver_delete5(he, i) != CO_OK)
 	ER("he_ver_delete5 failed");
-    status = he_invariant(he);
-    if (status != CO_OK)
+    if (he_invariant(he) != CO_OK)
       ER("he_invariant failed");
+    vec_swap(i, nv - 1, x, y, z);
     nt = he_nt(he);
     CALLOC(nt, &color);
+    MSG("nv: %d", he_nv(he));
+    MSG("nt: %d", he_nt(he));
+
+    int t;
+    t = he_tri(he, he_hdg_ver(he, ring[1]));
+    MSG("t: %d", t);
+    color[t] = 1;
+    
     boff_tri_fwrite(he, x, y, z, color, stdout);
     FREE(color);
     y_fin(he, x, y, z);
