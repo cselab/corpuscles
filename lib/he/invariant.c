@@ -110,26 +110,47 @@ he_invariant_edg_visit(He *he)
 }
 
 int
+he_invariant_edg_orient(He *he)
+{
+    int ne, e, h, f, v0, v1;
+    ne = he_ne(he);
+    for (e = 0; e < ne; e++)
+    {
+	h = he_hdg_edg(he, e);
+	if (he_bnd(he, h)) continue;
+	f = he_flp(he, h);
+	v0 = he_ver(he, h);
+	v1 = he_ver(he, f);
+	if (v0 == v1)
+	    ERR(CO_NUM, "v0=%d == v1=%d, e = %d, h = %d", v0, v1, e, h);
+    }
+    return CO_OK;
+}
+
+int
 he_invariant(He *he)
 {
     int status;
     status = he_invariant_nxt(he);
     if (status != CO_OK)
-        ERR(CO_NUM, "he_invariant_nxt failed");
+	ERR(CO_NUM, "he_invariant_nxt failed");
     status = he_invariant_flp(he);
     if (status != CO_OK)
-        ERR(CO_NUM, "he_invariant_flp failed");
+	ERR(CO_NUM, "he_invariant_flp failed");
     status = he_invariant_ver(he);
     if (status != CO_OK)
-        ERR(CO_NUM, "he_invariant_ver failed");
+	ERR(CO_NUM, "he_invariant_ver failed");
     status = he_invariant_tri(he);
     if (status != CO_OK)
-        ERR(CO_NUM, "he_invariant_tri failed");
+	ERR(CO_NUM, "he_invariant_tri failed");
     status = he_invariant_edg(he);
     if (status != CO_OK)
-        ERR(CO_NUM, "he_invariant_edg failed");
+	ERR(CO_NUM, "he_invariant_edg failed");
     status = he_invariant_edg_visit(he);
     if (status != CO_OK)
-        ERR(CO_NUM, "he_invariant_edg_visit failed");
+	ERR(CO_NUM, "he_invariant_edg_visit failed");
+    status = he_invariant_edg_orient(he);
+    if (status != CO_OK)
+	ERR(CO_NUM, "he_invariant_edg_orient failed");
     return CO_OK;
 }
