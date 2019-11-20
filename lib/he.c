@@ -1388,6 +1388,157 @@ s_hdg_tri(DEF, hDE);
 }
 
 int
+he_ver_delete4(T * q, int X)
+{
+        int nv, nt, ne, nh;
+int A;
+int ABD;
+int ABX;
+int ADX;
+int B;
+int BCD;
+int BCX;
+int C;
+int CDX;
+int D;
+int eAB;
+int eAD;
+int eAX;
+int eBC;
+int eBD;
+int eBX;
+int eCD;
+int eCX;
+int eDX;
+int hAB;
+int hAD;
+int hAX;
+int hBA;
+int hBC;
+int hBD;
+int hBX;
+int hCB;
+int hCD;
+int hCX;
+int hDA;
+int hDB;
+int hDC;
+int hDX;
+int hXA;
+int hXB;
+int hXC;
+int hXD;
+
+nv = q->nv;
+nt = q->nt;
+ne = q->ne;
+nh = q->nh;
+
+hXA = hdg_ver(X);
+hAB = nxt(hXA);
+hBX = nxt(hAB);
+hXB = flp(hBX);
+hBC = nxt(hXB);
+hCX = nxt(hBC);
+hXC = flp(hCX);
+hCD = nxt(hXC);
+hDX = nxt(hCD);
+hXD = flp(hDX);
+hDA = nxt(hXD);
+hAX = nxt(hDA);
+hAD = flp(hDA);
+hDC = flp(hCD);
+hCB = flp(hBC);
+hBA = flp(hAB);
+A = ver(hAB);
+B = ver(hBX);
+C = ver(hCX);
+D = ver(hDX);
+eAD = edg(hDA);
+eBC = edg(hBC);
+eCD = edg(hCD);
+eAX = edg(hXA);
+eBX = edg(hBX);
+eCX = edg(hCX);
+eDX = edg(hDX);
+eAB = edg(hAB);
+ADX = tri(hDA);
+BCX = tri(hBC);
+CDX = tri(hCD);
+ABX = tri(hAB);
+
+DEL_VER(X);
+DEL_EDG(eBX);
+DEL_EDG(eCX);
+DEL_EDG(eDX);
+DEL_TRI(CDX);
+DEL_TRI(ABX);
+DEL_HDG(hAX);
+DEL_HDG(hXA);
+DEL_HDG(hXB);
+DEL_HDG(hBX);
+DEL_HDG(hXC);
+DEL_HDG(hCX);
+
+/**/
+eBD = eAX;
+ABD = ADX;
+BCD = BCX;
+hBD = hXD;
+hDB = hDX;
+s_nxt(hAB, hBD);
+s_nxt(hBC, hCD);
+s_nxt(hDA, hAB);
+s_nxt(hDB, hBC);
+s_nxt(hBD, hDA);
+s_nxt(hCD, hDB);
+s_flp(hBA, hAB);
+s_flp(hAB, hBA);
+s_flp(hCB, hBC);
+s_flp(hBC, hCB);
+s_flp(hAD, hDA);
+s_flp(hDA, hAD);
+s_flp(hDB, hBD);
+s_flp(hBD, hDB);
+s_flp(hDC, hCD);
+s_flp(hCD, hDC);
+s_ver(hAB, A);
+s_ver(hBC, B);
+s_ver(hDA, D);
+s_ver(hDB, D);
+s_ver(hBD, B);
+s_ver(hCD, C);
+s_tri(hAB, ABD);
+s_tri(hBC, BCD);
+s_tri(hDA, ABD);
+s_tri(hDB, BCD);
+s_tri(hBD, ABD);
+s_tri(hCD, BCD);
+s_edg(hAB, eAB);
+s_edg(hBC, eBC);
+s_edg(hDA, eAD);
+s_edg(hDB, eBD);
+s_edg(hBD, eBD);
+s_edg(hCD, eCD);
+s_hdg_ver(A, hAB);
+s_hdg_ver(B, hBD);
+s_hdg_ver(C, hCD);
+s_hdg_ver(D, hDA);
+s_hdg_edg(eBC, hBC);
+s_hdg_edg(eAD, hDA);
+s_hdg_edg(eBD, hBD);
+s_hdg_edg(eCD, hCD);
+s_hdg_edg(eAB, hAB);
+s_hdg_tri(ABD, hAB);
+s_hdg_tri(BCD, hBC);
+    q->nv = nv;
+    q->nt = nt;
+    q->ne = ne;
+    q->nh = nh;
+    return CO_OK;
+}
+
+int
 he_tri_split(T * q, int BDF)
 {
     int A;

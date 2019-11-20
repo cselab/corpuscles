@@ -1,6 +1,7 @@
 .POSIX:
 include ../../conf.mk
 M = \
+4\
 5\
 6\
 7\
