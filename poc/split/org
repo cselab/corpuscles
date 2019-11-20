@@ -82,10 +82,10 @@ function read(file, h, n, nn, f)
     h = ini_ver()
     VISITED[h]
     walk(h)
-    print "/**/"
     read0(hdg_ver, "ver")
     read0(hdg_edg, "edg")
     read0(hdg_tri, "tri")
+    print "/**/"
 }
 
 function walk(h,   n, f)

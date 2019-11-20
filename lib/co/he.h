@@ -39,6 +39,7 @@ int he_edg_split(T *, int e);
 int he_tri_split(T *, int t);
 int he_ver_delete5(T *, int v);
 int he_ver_delete6(T *, int v);
+int he_ver_delete7(T *, int v);
 
 int he_E(T *, int **, int **);
 int he_T(T *, int **, int **, int **);
