@@ -43,7 +43,7 @@ static Force *Fo[20] = {
 };
 
 static HeFVolume *fvolume;
-static He *he;
+static He *he, *he0, *he1;
 static BI *bi;
 static Subst *subst;
 static real R, D;
@@ -92,7 +92,7 @@ main(__UNUSED int argc, char **argv)
     FILE *off0, *off1;
     off0 = fopen("data/0.off", "r");
     off1 = fopen("data/1.off", "r");
-    y_inif2(off0, off1, &he, &x, &y, &z);
+    y_inif2b(off0, off1, &he0, &he1, &he, &x, &y, &z);
     boff_fwrite(he, x, y, z, stdout);
     exit(0);
     nv = he_nv(he);
@@ -246,7 +246,7 @@ main(__UNUSED int argc, char **argv)
     ode3_fin(ode);
     bi_fin(bi);
     fin();
-    y_fin(he, x, y, z);
+    y_fin2b(he, he0, he1, x, y, z);
     he_f_volume_fin(fvolume);
 
 }
