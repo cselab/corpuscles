@@ -2,6 +2,7 @@
 include ../../conf.mk
 M = \
 2\
+2b\
 merge\
 
 PREC = d
