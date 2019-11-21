@@ -5,6 +5,7 @@ typedef struct HeRead HeRead;
 int he_ini(HeRead *, T **);
 int he_file_ini(const char *path, T **);
 int he_tri_ini(int nv, int nt, int *tri, T **);
+int he_merge2(T *, T *, T **);
 
 int he_fin(T *);
 
