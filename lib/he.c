@@ -2574,3 +2574,68 @@ alloc(T * q, int nv, int ne, int nh, int nt)
     MALLOC(ne, &q->D3);
     return CO_OK;
 }
+
+int
+he_merge2(T * q0, T * q1, T ** pq)
+{
+    T *q;
+    int nv, ne, nh, nt;
+    int nv0, ne0, nh0, nt0;
+    int nv1, ne1, nh1, nt1;
+    int i, j;
+
+    MALLOC(1, &q);
+
+    nv0 = he_nv(q0);
+    ne0 = he_ne(q0);
+    nh0 = he_nh(q0);
+    nt0 = he_nt(q0);
+
+    nv1 = he_nv(q1);
+    ne1 = he_ne(q1);
+    nh1 = he_nh(q1);
+    nt1 = he_nt(q1);
+
+    nv = nv0 + nv1;
+    ne = ne0 + ne1;
+    nh = nh0 + nh1;
+    nt = nt0 + nt1;
+
+    alloc(q, nv, ne, nh, nt);
+
+#define CP0(f) q->f[j] = q0->f[i]
+#define CP1(f, n) q->f[j] = q1->f[i] + (n)
+#define CPH(f, n0, n1)				\
+  do {						\
+    for (i = j = 0; i < n0; i++, j++)		\
+      q->f[j] = q0->f[i];			\
+    for (i = 0; i < n1; i++, j++)		\
+      q->f[j] = q1->f[i] + nh0;			\
+  } while(0)
+
+    for (i = j = 0; i < nh0; i++, j++) {
+        CP0(nxt);
+        CP0(flp);
+        CP0(ver);
+        CP0(tri);
+        CP0(edg);
+    }
+    for (i = 0; i < nh1; i++, j++) {
+        CP1(nxt, nh0);
+        CP1(flp, nh0);
+        CP1(ver, nv0);
+        CP1(tri, nt0);
+        CP1(edg, ne0);
+    }
+    CPH(hdg_ver, nv0, nv1);
+    CPH(hdg_edg, ne0, ne1);
+    CPH(hdg_tri, nt0, nt1);
+
+    q->nv = nv;
+    q->nt = nt;
+    q->ne = ne;
+    q->nh = nh;
+    q->magic = MAGIC;
+    *pq = q;
+    return CO_OK;
+}
