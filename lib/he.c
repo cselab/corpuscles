@@ -24,6 +24,8 @@ struct T {
     int magic;
 };
 
+static int alloc(T *, int nv, int ne, int nh, int nt);
+
 enum { END = -1 };
 static int
 distinct(const int a[])
@@ -63,26 +65,8 @@ he_ini(HeRead * r, T ** pq)
     nt = q->nt = he_read_nt(r);
     ne = q->ne = he_read_ne(r);
     nh = q->nh = he_read_nh(r);
-
-    MALLOC(nh, &q->nxt);
-    MALLOC(nh, &q->flp);
-    MALLOC(nh, &q->ver);
-    MALLOC(nh, &q->tri);
-    MALLOC(nh, &q->edg);
-    MALLOC(nv, &q->hdg_ver);
-    MALLOC(ne, &q->hdg_edg);
-    MALLOC(nt, &q->hdg_tri);
-
-    MALLOC(ne, &q->E0);
-    MALLOC(ne, &q->E1);
-    MALLOC(nt, &q->T0);
-    MALLOC(nt, &q->T1);
-    MALLOC(nt, &q->T2);
-    MALLOC(ne, &q->D0);
-    MALLOC(ne, &q->D1);
-    MALLOC(ne, &q->D2);
-    MALLOC(ne, &q->D3);
-
+    if (alloc(q, nv, ne, nh, nt) != CO_OK)
+      ERR(CO_MEMORY, "alloc failed");
     he_read_nxt(r, &nxt);
     he_read_flp(r, &flp);
     he_read_ver(r, &ver);
@@ -2563,5 +2547,29 @@ he_ring(T * he, int v, int *prank, int **pring)
 
     *prank = rank;
     *pring = he->ring;
+    return CO_OK;
+}
+
+static int
+alloc(T *q, int nv, int ne, int nh, int nt)
+{
+    MALLOC(nh, &q->nxt);
+    MALLOC(nh, &q->flp);
+    MALLOC(nh, &q->ver);
+    MALLOC(nh, &q->tri);
+    MALLOC(nh, &q->edg);
+    MALLOC(nv, &q->hdg_ver);
+    MALLOC(ne, &q->hdg_edg);
+    MALLOC(nt, &q->hdg_tri);
+
+    MALLOC(ne, &q->E0);
+    MALLOC(ne, &q->E1);
+    MALLOC(nt, &q->T0);
+    MALLOC(nt, &q->T1);
+    MALLOC(nt, &q->T2);
+    MALLOC(ne, &q->D0);
+    MALLOC(ne, &q->D1);
+    MALLOC(ne, &q->D2);
+    MALLOC(ne, &q->D3);
     return CO_OK;
 }
