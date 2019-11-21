@@ -27,7 +27,7 @@ static const int iter_max = 100;
 
 static int num(char **, /**/ int *);
 static int scl(char **, /**/ real *);
-static int fargv(char ***, He *);
+static int fargv(char ***);
 static int force(He *, const real *, const real *, const real *, real *,
                  real *, real *);
 static int fin(void);
@@ -43,7 +43,7 @@ static Force *Fo[20] = {
 };
 
 static HeFVolume *fvolume;
-static He *he, *he0, *he1;
+static He *hh, *he0, *he1;
 static BI *bi;
 static Subst *subst;
 static real R, D;
@@ -54,7 +54,7 @@ static real *ux, *uy, *uz;
 static real *wx, *wy, *wz;
 static real *Vx, *Vy, *Vz;
 
-static int nv, nt;
+static int nv, nt, nv0, nv1;
 
 char file_out[999];
 char file_stat[99] = "stat.dat";
@@ -92,28 +92,22 @@ main(__UNUSED int argc, char **argv)
     FILE *off0, *off1;
     off0 = fopen("data/0.off", "r");
     off1 = fopen("data/1.off", "r");
-    y_inif2b(off0, off1, &he0, &he1, &he, &x, &y, &z);
-    boff_fwrite(he, x, y, z, stdout);
-    exit(0);
-    nv = he_nv(he);
-    nt = he_nt(he);
-    fargv(&argv, he);
-
-
+    y_inif2b(off0, off1, &he0, &he1, &hh, &x, &y, &z);
+    nv0 = he_nv(he0);
+    nv1 = he_nv(he1);
+    nv = he_nv(hh);
+    nt = he_nt(hh);
+    fargv(&argv);
     if ((fm = fopen(file_stat, "w")) == NULL) {
         ER("Failed to open '%s'", file_stat);
     }
     fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn es\n", fm);
     fclose(fm);
-
     V0 = he_f_volume_V0(fvolume);
-
     i = 0;
     A0 = -1;
     while (Fo[i]) {
-
         strcpy(name, force_name(Fo[i]));
-
         if (strcmp(name, "garea") == 0) {
             A0 = he_f_garea_A0(force_pointer(Fo[i]));
         }
@@ -123,7 +117,6 @@ main(__UNUSED int argc, char **argv)
     }
 
     v0 = reduced_volume(A0, V0);
-
     M = rho * A0 * D * 2;
     m = M / nv;
     a = A0 / nt;
@@ -156,14 +149,11 @@ main(__UNUSED int argc, char **argv)
     s = start;
 
     while (1) {
-
         if (s % freq_out == 0) {
             sprintf(file_out, "%07d.off", s);
-            off_he_xyz_write(he, x, y, z, file_out);
+            off_he_xyz_write(hh, x, y, z, file_out);
         }
-
         if (s % freq_stat == 0) {
-
             eng = 0.0;
             ega = 0.0;
             ev = 0.0;
@@ -174,27 +164,18 @@ main(__UNUSED int argc, char **argv)
             A = 0.0;
             V = 0.0;
             v = 0.0;
-
             et = 0.0;
-
-            ev = he_f_volume_energy(fvolume, he, x, y, z);
+            ev = he_f_volume_energy(fvolume, he0, x, y, z);
             V = he_f_volume_V(fvolume);
-
             i = 0;
             while (Fo[i]) {
-
                 strcpy(name, force_name(Fo[i]));
-                eng = force_energy(Fo[i], he, x, y, z);
+                eng = force_energy(Fo[i], he0, x, y, z);
                 et += eng;
-
                 if (strcmp(name, "garea") == 0) {
                     ega = eng;
                     A = he_f_garea_A(force_pointer(Fo[i]));
                 }
-                //else if ( strcmp(name, "volume") == 0 ) {
-                //  ev = eng;
-                //  V  = he_f_volume_V(force_pointer(Fo[i]));
-                //}
                 else if (strcmp(name, "juelicher_xin") == 0) {
                     eb = eng;
                     ebl =
@@ -206,39 +187,29 @@ main(__UNUSED int argc, char **argv)
                 } else if (strcmp(name, "strain") == 0) {
                     es = eng;
                 }
-
                 i++;
             }
-
             v = reduced_volume(A, V);
-
             if (s % freq_stat == 0) {
                 MSG("dt s t = %g %i %g", dt, s, t);
                 MSG("A/A0 V/V0 v  = %g %g %g", A / A0, V / V0, v);
                 MSG("et ega ev eb ebl ebn es = %g %g %g %g %g %g %g", et,
                     ega, ev, eb, ebl, ebn, es);
             }
-
             if ((fm = fopen(file_stat, "a")) == NULL) {
                 ER("Failed to open '%s'", file_stat);
             }
             fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g %g\n", dt, s,
                     t, A / A0, V / V0, v, et, ega, ev, eb, ebl, ebn, es);
             fclose(fm);
-
         }
-
-
         s++;
         t = time + dt;
-
         if (s > end)
             break;
-
         ode3_apply(ode, &time, t, x, y, z);
-
+	MSG("x[0]: %g", x[0]);
     }
-
     FREE3(Vx, Vy, Vz);
     FREE3(ux, uy, uz);
     FREE3(wx, wy, wz);
@@ -246,9 +217,8 @@ main(__UNUSED int argc, char **argv)
     ode3_fin(ode);
     bi_fin(bi);
     fin();
-    y_fin2b(he, he0, he1, x, y, z);
+    y_fin2b(hh, he0, he1, x, y, z);
     he_f_volume_fin(fvolume);
-
 }
 
 static int
@@ -274,7 +244,7 @@ scl(char **v, /**/ real * p)
 }
 
 static int
-fargv(char ***p, He * he)
+fargv(char ***p)
 {
 
     char *name, **v;
@@ -287,9 +257,8 @@ fargv(char ***p, He * he)
         ER("not a volume %s", v[0]);
     }
     v++;
-    he_f_volume_argv(&v, he, &fvolume);
+    he_f_volume_argv(&v, he0, &fvolume);
     MALLOC3(nv, &Vx, &Vy, &Vz);
-
     while (1) {
         if (v[0] == NULL)
             break;
@@ -298,7 +267,7 @@ fargv(char ***p, He * he)
             break;
         MSG("%s", name);
         v++;
-        force_argv(name, &v, he, &Fo[i]);
+        force_argv(name, &v, he0, &Fo[i]);
         i++;
     }
 
@@ -310,7 +279,7 @@ fargv(char ***p, He * he)
         ER("possible names are: %s", bi_list());
     }
     v++;
-    bi_argv(name, &v, he, &bi);
+    bi_argv(name, &v, hh, &bi);
 
     scl(v, &R);
     v++;
@@ -371,31 +340,32 @@ static int
 F(__UNUSED real t, const real * x, const real * y, const real * z,
   real * vx, real * vy, real * vz, __UNUSED void *p0)
 {
-
     int i, k;
     real coef, al, be;
     real d;
     real dd, ratio;
-
     coef = 2 / (1 + lambda);
     al = -2 / (eta * (1 + lambda));
     be = 2 * (1 - lambda) / (1 + lambda);
 
     array_zero3(nv, fx, fy, fz);
-    force(he, x, y, z, fx, fy, fz);
-    bi_update(bi, he, x, y, z);
-
+    force(he0, x, y, z, fx, fy, fz);
+    force(he1, &x[nv0], &y[nv0], &z[nv0], &fx[nv0], &fy[nv0], &fz[nv0]);
+    bi_update(bi, hh, x, y, z);
     array_zero3(nv, vx, vy, vz);
     for (i = 0; i < nv; i++)
         vx[i] += coef * gamdot * z[i];
-    bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
+    bi_single(bi, hh, al, x, y, z, fx, fy, fz, vx, vy, vz);
     array_zero3(nv, ux, uy, uz);
-    subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
+    if (subst_apply(subst, hh, bi, x, y, z, vx, vy, vz, ux, uy, uz) != CO_OK)
+	ER("subst_apply failed");
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
-    if (subst_niter(subst) > 1)
+    if (subst_niter(subst) > 2)
         MSG("Subst.iiter: %d", subst_niter(subst));
     array_zero3(nv, Vx, Vy, Vz);
-    he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
+    he_f_volume_force(fvolume, he0, x, y, z, Vx, Vy, Vz);
+    he_f_volume_force(fvolume, he1, &x[nv0], &y[nv0], &z[nv0], &Vx[nv0], &Vy[nv0],
+		      &Vz[nv0]);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
 
     return CO_OK;
