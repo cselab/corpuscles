@@ -52,5 +52,6 @@ e ffmpeg \
   -y \
   -loglevel error \
   -vcodec libx264 -crf 0 -pix_fmt yuv420p "$Output"
-
+code=$?
 rm -f $t
+exit $code
