@@ -85,18 +85,21 @@ main(__UNUSED int argc, char **argv)
     real A, V, v;
     real a, e, reg;
     real M, m;
-
-    //err_set_ignore();
-    argv++;
-
     FILE *off0, *off1;
-    off0 = fopen("data/0.off", "r");
-    off1 = fopen("data/1.off", "r");
+    if (*++argv == NULL)
+	ER("not enough arguments");
+    if ((off0 = fopen(argv[0], "r"))  == NULL)
+	ER("fail to open '%s'", argv[0]);
+    if (*++argv == NULL)
+	ER("not enough arguments");
+    if ((off1 = fopen(argv[0], "r"))  == NULL)
+	ER("fail to open '%s'", argv[0]);
     y_inif2b(off0, off1, &he0, &he1, &hh, &x, &y, &z);
     nv0 = he_nv(he0);
     nv1 = he_nv(he1);
     nv = he_nv(hh);
     nt = he_nt(hh);
+    argv++;
     fargv(&argv);
     if ((fm = fopen(file_stat, "w")) == NULL) {
         ER("Failed to open '%s'", file_stat);
