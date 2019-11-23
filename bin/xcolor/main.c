@@ -31,7 +31,8 @@ static void
 usg(void)
 {
     fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
-    fprintf(stderr, "%s -a A.off lo hi B.off > C.off\n", me);
+    fprintf(stderr, "%s [-a] -v A.off lo hi B.off > C.vtk\n", me);
+    fprintf(stderr, "%s [-a] [-v] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr,
             "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
     fprintf(stderr,
@@ -87,7 +88,6 @@ main(int argc, char **a)
     else
         for (i = 0; i < n; i++)
             c[i] = (u[i] - min) / d;
-
     if (!Vtk)
         boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
     else {
