@@ -17,8 +17,6 @@
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/util.h>
-#include <co/off.h>
-#include <co/punto.h>
 #include <co/surface.h>
 #include <co/y.h>
 
