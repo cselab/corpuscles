@@ -21,7 +21,7 @@ BEGIN {
         line = $0
         print tab file[i]
     }
-    print tab "SaveScreenshot(Output, renderView1, TransparentBackground = 1)"
+    print tab "SaveScreenshot(Output, renderView1, TransparentBackground = 0)"
 }
 
 function empty(s)

@@ -17,7 +17,7 @@ def f(Input, Output):
     
     # Create a new 'Light'
     light1 = CreateLight()
-    light1.Intensity = 2.0
+    light1.Intensity = 20.0
     light1.Type = 'Positional'
     light1.Position = [4.816385193527325, -4.065172620623194, 15.0]
     light1.FocalPoint = [0.5, 0.5, 7.653097604113405e-17]
@@ -32,6 +32,8 @@ def f(Input, Output):
     
     # get the material library
     materialLibrary1 = GetMaterialLibrary()
+    mf = "material/ospray_mats.json"
+    materialLibrary1.LoadMaterials = mf
     
     # create light
     # create light
@@ -99,6 +101,7 @@ def f(Input, Output):
     generateSurfaceNormals1Display.ColorArrayName = ['POINTS', '']
     generateSurfaceNormals1Display.OSPRayScaleArray = 'color'
     generateSurfaceNormals1Display.OSPRayScaleFunction = 'PiecewiseFunction'
+    generateSurfaceNormals1Display.OSPRayMaterial = 'scratched'
     generateSurfaceNormals1Display.SelectOrientationVectors = 'None'
     generateSurfaceNormals1Display.ScaleFactor = 0.2
     generateSurfaceNormals1Display.SelectScaleArray = 'color'
@@ -143,4 +146,4 @@ def f(Input, Output):
     # finally, restore active source
     SetActiveSource(generateSurfaceNormals1)
     # ----------------------------------------------------------------
-    SaveScreenshot(Output, renderView1, TransparentBackground = 1)
+    SaveScreenshot(Output, renderView1, TransparentBackground = 0)
