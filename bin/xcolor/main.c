@@ -10,6 +10,7 @@
 #include <co/util.h>
 #include <co/off.h>
 #include <co/y.h>
+#include <co/vtk.h>
 #include <co/memory.h>
 
 static const char *me = "co.xcolor";
@@ -30,7 +31,8 @@ static void
 usg(void)
 {
     fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
-    fprintf(stderr, "%s -a A.off lo hi B.off > C.off\n", me);
+    fprintf(stderr, "%s [-a] -v A.off lo hi B.off > C.vtk\n", me);
+    fprintf(stderr, "%s [-a] [-v] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr,
             "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
     fprintf(stderr,
@@ -45,29 +47,33 @@ main(int argc, char **a)
     real *x, *y, *z, *c;
     real *u, *v, *w;
     He *p, *q;
-    int i, n, Abs;
+    int i, n, Abs, Vtk;
     real min, max, d;
     real lo, hi;
 
     err_set_ignore();
-    a++;
-    if (*a == NULL)
-        ER("not enougth arguments");
-    if (util_eq(*a, "-h"))
-        usg();
-    Abs = 0;
-    if (util_eq(*a, "-a")) {
-        Abs = 1;
-        a++;
-    }
+    Abs = Vtk = 0;
+    while (*++a != NULL && a[0][0] == '-')
+        switch (a[0][1]) {
+        case 'h':
+            usg();
+            break;
+        case 'v':
+            Vtk = 1;
+            break;
+        case 'a':
+            Abs = 1;
+            break;
+        default:
+            fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
+            exit(1);
+        }
     status = y_ini(*a, &q, &u, &v, &w);
     if (status != CO_OK)
         ER("not an off file '%s'", a[0]);
     scl(++a, &lo);
     scl(++a, &hi);
     a++;
-    if (*a == NULL)
-        ER("not enougth arguments");
     status = y_ini(*a, &p, &x, &y, &z);
     if (status != CO_OK)
         ER("not an off file '%s'", a[0]);
@@ -82,7 +88,13 @@ main(int argc, char **a)
     else
         for (i = 0; i < n; i++)
             c[i] = (u[i] - min) / d;
-    boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+    if (!Vtk)
+        boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+    else {
+        const real *scal[] = { c, NULL };
+        const char *name[] = { "color", NULL };
+        vtk_fwrite(p, x, y, z, scal, name, stdout);
+    }
     FREE(c);
     y_fin(p, x, y, z);
     y_fin(q, u, v, w);

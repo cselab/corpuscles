@@ -1,0 +1,53 @@
+{
+  "family" : "OSPRay",
+  "version" : "0.0",
+  "materials" : {
+    "glass" : {
+      "type": "Glass"
+    },
+    "thin glass" : {
+      "type": "ThinGlass"
+    },
+    "water" : {
+      "type": "Glass",
+      "doubles" : {
+          "attenuationColor" : [0.22, 0.34, 0.47],
+          "etaInside" : [1.33]
+      }
+    },
+    "copper" : {
+      "type" : "Metal",
+      "doubles" : {
+        "eta" : [0.1, 0.8, 1.1],
+        "k" : [3.5, 2.5, 2.4],
+        "roughness" : [0.2]
+      }
+    },
+    "aluminum" : {
+      "type" : "Metal"
+    },
+    "wood" : {
+      "type" : "OBJMaterial",
+      "textures" : {
+        "map_kd" : "wood.jpg"
+      }
+    },
+    "checker alpha" : {
+      "type" : "OBJMaterial",
+      "textures" : {
+        "map_d" : "checker.png"
+      }
+    },
+    "scratched": {
+      "type": "Principled",
+      "doubles" : {
+          "metallic" : [1.0]
+      },
+      "textures" : {
+          "normalMap" : "metal_Normal.jpg",
+          "baseColorMap" : "metal_Base_Color.jpg",
+          "roughnessMap" : "metal_Roughness.jpg"
+      }
+    }
+  }
+}

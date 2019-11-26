@@ -1,0 +1,31 @@
+#!/bin/sh
+
+${AWK=awk} '
+BEGIN {
+    tab = "    "
+    while (getline < ARGV[1] > 0)
+        file[++i] = $0
+
+    for (i = 1; i in file; i++) {
+        line = file[i]
+        sub(/#.*/, "", line)
+        if (!empty(line) && line !~ /import/)
+            break;
+        print file[i]
+    }
+    print "def f(Input, Output):"
+    File = "FileNames=[Input])"
+    for (; i in file; i++) {
+        if (!F && sub(/FileNames=\[.*/, File, file[i]))
+            F = 1
+        line = $0
+        print tab file[i]
+    }
+    print tab "SaveScreenshot(Output, renderView1, TransparentBackground = 0)"
+}
+
+function empty(s)
+{
+    return s ~ /^[\t ]*$/
+}
+' "$@"
