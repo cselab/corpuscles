@@ -94,7 +94,8 @@ then
     fi
     cd $folder
     
-    co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
+    #co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
+     co.run ../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file 
       
     
 else

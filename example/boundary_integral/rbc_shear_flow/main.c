@@ -20,6 +20,7 @@
 #include <co/f/volume.h>
 #include <co/f/juelicher_xin.h>
 #include <co/bi.h>
+#include <co/subst.h>
 
 static const char *me = "rbc_shear_flow";
 static const real pi  = 3.141592653589793115997964;
@@ -35,6 +36,7 @@ static Force *Fo[20] = {
 static HeFVolume *fvolume;
 static He *he;
 static BI *bi;
+static Subst *subst;
 static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
@@ -178,45 +180,10 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   array_zero3(nv, vx, vy, vz);
   for (i = 0; i < nv; i++) vx[i] += coef*gamdot*z[i];
   bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
-
-  //inner and outer viscosity has obvious contrast
-  if ( 1 - lambda > tol || 1 - lambda < -tol ) {
-    
-    array_zero3(nv, ux, uy, uz);
-    for (i = 0; i < nv; i++) ux[i] += coef*gamdot*z[i];
-    
-    for (k = 1; k<=iter_max; k++) {
-      
-      array_copy3(nv, vx, vy, vz, wx, wy, wz);
-      bi_double(bi, he, be, x, y, z, ux, uy, uz, wx, wy, wz);
-      
-      d=array_msq_3d(nv, ux, uy, uz);
-      dd=array_l2_3d(nv, wx, ux, wy, uy, wz, uz);
-      ratio = dd/d;
-      	
-      if ( ratio < tol ) {
-	
-	break;
-	
-      }
-      
-      if  ( k == iter_max ) {
-	  //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
-	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
-	    ER("Failed to open '%s'", file_msg);
-	  }
-	  
-	  fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
-	  fclose(fm);
-      }      
-      
-      array_copy3(nv, wx, wy, wz, ux, uy, uz);
-    }
-    
-    array_copy3(nv, ux, uy, uz, vx, vy, vz);
-    
-  }
-
+  subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
+  array_copy3(nv, ux, uy, uz, vx, vy, vz);
+  //if (subst_niter(subst) > 1)
+  //MSG("Subst.iiter: %d", subst_niter(subst));
   array_zero3(nv, Vx, Vy, Vz);
   he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
   array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
@@ -283,7 +250,11 @@ int main(__UNUSED int argc, char **argv) {
   if ( (fm = fopen(file_msg, "w") ) == NULL) {
     ER("Failed to open '%s'", file_msg);
   }
-  
+
+  real be;
+  be  = 2*(1 - lambda)/(1 + lambda);
+  subst_ini(nv, be, tol, iter_max, &subst);
+
   fprintf(fm, "A0 V0 v0 = %f %f %f\n", A0, V0, v0);
   fprintf(fm, "R D rho eta lambda gamdot = %f %f %f %f %f %f\n", R, D, rho, eta, lambda, gamdot);
   fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
@@ -382,6 +353,9 @@ int main(__UNUSED int argc, char **argv) {
   FREE3(ux, uy, uz);
   FREE3(wx, wy, wz);
   FREE3(fx, fy, fz);
+
+  subst_fin(subst);
+  
   ode3_fin(ode);
   bi_fin(bi);
   fin();
