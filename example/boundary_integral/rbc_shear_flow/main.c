@@ -164,14 +164,11 @@ static int fin(void) {
 
 static int F(__UNUSED real t, const real *x, const real *y, const real *z, real *vx,  real *vy, real *vz, __UNUSED void *p0) {
   
-  int i, k;
-  real coef, al, be;
-  real d;
-  real dd, ratio;
+  int i;
+  real coef, al;
 
   coef= 2/(1+lambda);
   al  = -2/(eta*(1 + lambda));
-  be  = 2*(1 - lambda)/(1 + lambda);
   	
   array_zero3(nv, fx, fy, fz);
   force(he, x, y, z, fx, fy, fz);
