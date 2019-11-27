@@ -101,7 +101,7 @@ def f(Input, Output):
     generateSurfaceNormals1Display.ColorArrayName = ['POINTS', '']
     generateSurfaceNormals1Display.OSPRayScaleArray = 'color'
     generateSurfaceNormals1Display.OSPRayScaleFunction = 'PiecewiseFunction'
-    generateSurfaceNormals1Display.OSPRayMaterial = 'scratched'
+    generateSurfaceNormals1Display.OSPRayMaterial = 'aluminum'
     generateSurfaceNormals1Display.SelectOrientationVectors = 'None'
     generateSurfaceNormals1Display.ScaleFactor = 0.2
     generateSurfaceNormals1Display.SelectScaleArray = 'color'
