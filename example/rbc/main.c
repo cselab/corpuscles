@@ -22,7 +22,7 @@
 
 static const char *me = "rbc";
 static const real pi = 3.141592653589793115997964;
-static const real tol = 0.001;
+static const real tol = 0.01;
 static const int iter_max = 100;
 
 static int num(char **, /**/ int *);

@@ -3,8 +3,14 @@
 . co.util
 
 prog=run.sh
-i=init/1280.off
-r=ref/1280.off
+
+case x"$1" in
+    x0) i=init/1280.off r=ref/1280.off ;;
+    x1) i=init/5120.off r=ref/5120.off ;;
+    *) echo >&2 "$0: unknown level: $1"
+    exit 2
+    ;;
+esac
 
 V=2.6892
 kv=20000
@@ -26,7 +32,7 @@ make
 co.run ./main volume $V $kv \
        garea $A $kga \
        juelicher_xin 1.0 0.0 0.63662 19.9933 \
-       strain ref/ref_v0.95.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
+       strain "$r" lim 278.521 139.260575205 -2 8 0.7 0.75 \
        cortez_zero \
        $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat \
        '<' "$i"
