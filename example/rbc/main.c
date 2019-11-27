@@ -46,7 +46,6 @@ static HeFVolume *fvolume;
 static He *he;
 static BI *bi;
 static Subst *subst;
-static real R, D;
 static real rho, eta, lambda, gamdot, dt;
 static int start, end, freq_out, freq_stat;
 static real *fx, *fy, *fz;
@@ -84,8 +83,6 @@ main(__UNUSED int argc, char **argv)
     real A0, V0, v0;
     real A, V, v;
     real a, e, reg;
-    real M, m;
-
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
@@ -107,8 +104,6 @@ main(__UNUSED int argc, char **argv)
     }
     v0 = reduced_volume(A0, V0);
 
-    M = rho * A0 * D * 2;
-    m = M / nv;
     a = A0 / nt;
     e = 2 * sqrt(a) / sqrt(sqrt(3.0));
     reg = 0.1 * e;
@@ -120,10 +115,10 @@ main(__UNUSED int argc, char **argv)
     alpha = 2 * (1 - lambda) / (1 + lambda);
     subst_ini(nv, alpha, tol, iter_max, &subst);
     fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
-    fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", R, D,
+    fprintf(fm, "rho eta lambda gamdot = %g %g %g %g\n",
             rho, eta, lambda, gamdot);
     fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-    fprintf(fm, "M m a e reg dt = %g %g %g %g %g %g\n", M, m, a, e, reg,
+    fprintf(fm, "a e reg dt = %g %g %g %g\n", a, e, reg,
             dt);
     fclose(fm);
 
@@ -266,10 +261,6 @@ fargv(char ***p, He * he)
     v++;
     bi_argv(name, &v, he, &bi);
 
-    scl(v, &R);
-    v++;
-    scl(v, &D);
-    v++;
     scl(v, &rho);
     v++;
     scl(v, &eta);
@@ -325,16 +316,13 @@ static int
 F(__UNUSED real t, const real * x, const real * y, const real * z, real * vx, real * vy, real * vz, __UNUSED void *p0)
 {
     int i;
-    real coef, al, be;
+    real coef, al;
 
     coef = 2 / (1 + lambda);
     al = -2 / (eta * (1 + lambda));
-    be = 2 * (1 - lambda) / (1 + lambda);
-
     array_zero3(nv, fx, fy, fz);
     force(he, x, y, z, fx, fy, fz);
     bi_update(bi, he, x, y, z);
-
     array_zero3(nv, vx, vy, vz);
     for (i = 0; i < nv; i++)
         vx[i] += coef * gamdot * z[i];
@@ -342,12 +330,10 @@ F(__UNUSED real t, const real * x, const real * y, const real * z, real * vx, re
     array_zero3(nv, ux, uy, uz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
-    if (subst_niter(subst) > 1)
-        MSG("Subst.iiter: %d", subst_niter(subst));
+    MSG("Subst.iiter: %d", subst_niter(subst));
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
-
     return CO_OK;
 }
 

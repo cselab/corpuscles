@@ -34,5 +34,5 @@ co.run ./main volume $V $kv \
        juelicher_xin 1.0 0.0 0.63662 19.9933 \
        strain "$r" lim 278.521 139.260575205 -2 8 0.7 0.75 \
        cortez_zero \
-       $R $D $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat \
+       $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat \
        '<' "$i"
