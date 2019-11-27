@@ -331,7 +331,8 @@ F(__UNUSED real t, const real * x, const real * y, const real * z, real * vx, re
     array_zero3(nv, ux, uy, uz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
-    MSG("Subst.iiter: %d", subst_niter(subst));
+    if (subst_niter(subst) > 1)
+	MSG("Subst.iiter: %d", subst_niter(subst));
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);

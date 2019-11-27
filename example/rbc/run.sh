@@ -23,11 +23,10 @@ eta=645.928652122
 lambda=5
 gamdot=0.576
 start=0
-end=1
-freq_out=1
+end=10
+freq_out=10
 freq_stat=100
-dt=`ae 1e-6*$gamdot`
-
+dt=`ae 0.1*$gamdot`
 make
 co.run ./main volume $V $kv \
        garea $A $kga \
