@@ -187,7 +187,7 @@ main(__UNUSED int argc, char **argv)
         t = time + dt;
         if (s > end)
             break;
-        ode3_apply(ode, &time, t, x, y, z);
+        ode3_apply_fixed(ode, &time, t, x, y, z);
     }
     FREE3(Vx, Vy, Vz);
     FREE3(ux, uy, uz);

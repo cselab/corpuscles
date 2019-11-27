@@ -2,6 +2,7 @@
 
 . co.util
 
+export EPSREL=0.01 EPSABS=0.01
 prog=run.sh
 
 case x"$1" in
@@ -23,10 +24,10 @@ eta=645.928652122
 lambda=5
 gamdot=0.576
 start=0
-end=10
-freq_out=10
+end=99999999
+freq_out=100
 freq_stat=100
-dt=`ae 0.1*$gamdot`
+dt=`ae 0.05*$gamdot`
 make
 co.run ./main volume $V $kv \
        garea $A $kga \
