@@ -3,7 +3,7 @@
 . co.util
 
 prog=run.sh
-i=init_orient/1280.off
+i=init/1280.off
 r=ref/1280.off
 
 V=2.6892
