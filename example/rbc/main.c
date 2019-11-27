@@ -86,36 +86,25 @@ main(__UNUSED int argc, char **argv)
     real a, e, reg;
     real M, m;
 
-    //err_set_ignore();
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
     nt = he_nt(he);
     fargv(&argv, he);
-
-
-    if ((fm = fopen(file_stat, "w")) == NULL) {
+    if ((fm = fopen(file_stat, "w")) == NULL)
         ER("Failed to open '%s'", file_stat);
-    }
     fputs("#dt s t A/A0 V/V0 v et ega ev eb ebl ebn es\n", fm);
     fclose(fm);
-
     V0 = he_f_volume_V0(fvolume);
-
     i = 0;
     A0 = -1;
     while (Fo[i]) {
-
         strcpy(name, force_name(Fo[i]));
-
         if (strcmp(name, "garea") == 0) {
             A0 = he_f_garea_A0(force_pointer(Fo[i]));
         }
-        //else if ( strcmp(name, "volume") == 0 ) {
-        //V0 = he_f_volume_V0(force_pointer(Fo[i]));}
         i++;
     }
-
     v0 = reduced_volume(A0, V0);
 
     M = rho * A0 * D * 2;
@@ -124,12 +113,10 @@ main(__UNUSED int argc, char **argv)
     e = 2 * sqrt(a) / sqrt(sqrt(3.0));
     reg = 0.1 * e;
 
-    if ((fm = fopen(file_msg, "w")) == NULL) {
+    if ((fm = fopen(file_msg, "w")) == NULL)
         ER("Failed to open '%s'", file_msg);
-    }
 
     real alpha;
-
     alpha = 2 * (1 - lambda) / (1 + lambda);
     subst_ini(nv, alpha, tol, iter_max, &subst);
     fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
@@ -145,19 +132,14 @@ main(__UNUSED int argc, char **argv)
     CALLOC3(nv, &ux, &uy, &uz);
     CALLOC3(nv, &wx, &wy, &wz);
     CALLOC3(nv, &fx, &fy, &fz);
-
     t = time = start * dt;
     s = start;
-
     while (1) {
-
         if (s % freq_out == 0) {
             sprintf(file_out, "%07d.off", s);
             off_he_xyz_write(he, x, y, z, file_out);
         }
-
         if (s % freq_stat == 0) {
-
             eng = 0.0;
             ega = 0.0;
             ev = 0.0;
@@ -168,27 +150,18 @@ main(__UNUSED int argc, char **argv)
             A = 0.0;
             V = 0.0;
             v = 0.0;
-
             et = 0.0;
-
             ev = he_f_volume_energy(fvolume, he, x, y, z);
             V = he_f_volume_V(fvolume);
-
             i = 0;
             while (Fo[i]) {
-
                 strcpy(name, force_name(Fo[i]));
                 eng = force_energy(Fo[i], he, x, y, z);
                 et += eng;
-
                 if (strcmp(name, "garea") == 0) {
                     ega = eng;
                     A = he_f_garea_A(force_pointer(Fo[i]));
                 }
-                //else if ( strcmp(name, "volume") == 0 ) {
-                //  ev = eng;
-                //  V  = he_f_volume_V(force_pointer(Fo[i]));
-                //}
                 else if (strcmp(name, "juelicher_xin") == 0) {
                     eb = eng;
                     ebl =
@@ -200,39 +173,27 @@ main(__UNUSED int argc, char **argv)
                 } else if (strcmp(name, "strain") == 0) {
                     es = eng;
                 }
-
                 i++;
             }
-
             v = reduced_volume(A, V);
-
             if (s % freq_stat == 0) {
                 MSG("dt s t = %g %i %g", dt, s, t);
                 MSG("A/A0 V/V0 v  = %g %g %g", A / A0, V / V0, v);
                 MSG("et ega ev eb ebl ebn es = %g %g %g %g %g %g %g", et,
                     ega, ev, eb, ebl, ebn, es);
             }
-
-            if ((fm = fopen(file_stat, "a")) == NULL) {
+            if ((fm = fopen(file_stat, "a")) == NULL)
                 ER("Failed to open '%s'", file_stat);
-            }
             fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g %g\n", dt, s,
                     t, A / A0, V / V0, v, et, ega, ev, eb, ebl, ebn, es);
             fclose(fm);
-
         }
-
-
         s++;
         t = time + dt;
-
         if (s > end)
             break;
-
         ode3_apply(ode, &time, t, x, y, z);
-
     }
-
     FREE3(Vx, Vy, Vz);
     FREE3(ux, uy, uz);
     FREE3(wx, wy, wz);
@@ -242,7 +203,6 @@ main(__UNUSED int argc, char **argv)
     fin();
     y_fin(he, x, y, z);
     he_f_volume_fin(fvolume);
-
 }
 
 static int
@@ -362,14 +322,10 @@ fin(void)
 }
 
 static int
-F(__UNUSED real t, const real * x, const real * y, const real * z,
-  real * vx, real * vy, real * vz, __UNUSED void *p0)
+F(__UNUSED real t, const real * x, const real * y, const real * z, real * vx, real * vy, real * vz, __UNUSED void *p0)
 {
-
-    int i, k;
+    int i;
     real coef, al, be;
-    real d;
-    real dd, ratio;
 
     coef = 2 / (1 + lambda);
     al = -2 / (eta * (1 + lambda));
