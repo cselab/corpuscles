@@ -3,10 +3,9 @@
 . co.util
 
 prog=run.sh
-if test $# -eq 0
-then err 'missing input file'
-fi
-i=$1; shift
+i=init_orient/1280.off
+r=ref/1280.off
+
 V=2.6892
 kv=20000
 A=12.5663706144
