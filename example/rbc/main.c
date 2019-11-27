@@ -197,6 +197,7 @@ main(__UNUSED int argc, char **argv)
     bi_fin(bi);
     fin();
     y_fin(he, x, y, z);
+    subst_fin(subst);
     he_f_volume_fin(fvolume);
 }
 
