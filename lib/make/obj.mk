@@ -9,10 +9,6 @@ list/a.o\
 list/c.o\
 list/i.o\
 memory.o\
-ode/2.o\
-ode/2v.o\
-ode/3.o\
-ode/3v.o\
 omp.o\
 predicate/main.o\
 read.o\
@@ -109,6 +105,10 @@ list/tri3.s.o\
 matrix.s.o\
 normal.s.o\
 obj.s.o\
+ode/2.s.o\
+ode/2v.s.o\
+ode/3.s.o\
+ode/3v.s.o\
 off.s.o\
 orient.s.o\
 oseen2.s.o\
@@ -240,6 +240,10 @@ list/tri3.d.o\
 matrix.d.o\
 normal.d.o\
 obj.d.o\
+ode/2.d.o\
+ode/2v.d.o\
+ode/3.d.o\
+ode/3v.d.o\
 off.d.o\
 orient.d.o\
 oseen2.d.o\
@@ -371,6 +375,10 @@ list/tri3.l.o\
 matrix.l.o\
 normal.l.o\
 obj.l.o\
+ode/2.l.o\
+ode/2v.l.o\
+ode/3.l.o\
+ode/3v.l.o\
 off.l.o\
 orient.l.o\
 oseen2.l.o\

@@ -1,12 +1,12 @@
 #include <stdio.h>
-#include <real.h>
+#include "real.h"
 #include <alg/ode.h>
-#include <co/array.h>
-#include <co/err.h>
-#include <co/macro.h>
-#include <co/memory.h>
-#include <co/ode/2v.h>
-#include <co/skel.h>
+#include "co/array.h"
+#include "co/err.h"
+#include "co/macro.h"
+#include "co/memory.h"
+#include "co/ode/2v.h"
+#include "co/skel.h"
 
 #define T Ode2v
 
