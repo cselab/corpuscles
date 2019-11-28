@@ -123,6 +123,7 @@ predicate.s.o\
 pre/visc.s.o\
 punto.s.o\
 real.s.o\
+remesh.s.o\
 restore.s.o\
 ring.s.o\
 segement.s.o\
@@ -258,6 +259,7 @@ predicate.d.o\
 pre/visc.d.o\
 punto.d.o\
 real.d.o\
+remesh.d.o\
 restore.d.o\
 ring.d.o\
 segement.d.o\
@@ -393,6 +395,7 @@ predicate.l.o\
 pre/visc.l.o\
 punto.l.o\
 real.l.o\
+remesh.l.o\
 restore.l.o\
 ring.l.o\
 segement.l.o\

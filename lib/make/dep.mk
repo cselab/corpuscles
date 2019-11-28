@@ -246,14 +246,10 @@ co/vec.h\
 
 curv/mean/ring.s.o:\
 co/prec/s/real.h\
-co/array.h\
 co/curv/mean/ring.h\
-co/dih.h\
-co/edg.h\
 co/err.h\
 co/he.h\
 co/memory.h\
-co/tri.h\
 co/ring.h\
 co/vec.h\
 
@@ -706,17 +702,17 @@ co/filter.h\
 juelicher_xin.s.o:\
 co/prec/s/real.h\
 co/argv.h\
-co/memory.h\
-co/err.h\
-co/he.h\
-co/vec.h\
-co/i/vec.h\
-co/dih.h\
 co/ddih.h\
 co/dedg.h\
-co/tri.h\
+co/dih.h\
 co/dtri.h\
+co/err.h\
+co/he.h\
+co/i/vec.h\
+co/memory.h\
 co/sum.h\
+co/tri.h\
+co/vec.h\
 co/f/juelicher_xin.h\
 
 kantor.s.o:\
@@ -1220,6 +1216,11 @@ co/memory.h\
 co/real.h\
 inc/s/real.inc\
 
+remesh.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+
 restore.s.o:\
 co/prec/s/real.h\
 co/memory.h\
@@ -1622,14 +1623,10 @@ co/vec.h\
 
 curv/mean/ring.d.o:\
 co/prec/d/real.h\
-co/array.h\
 co/curv/mean/ring.h\
-co/dih.h\
-co/edg.h\
 co/err.h\
 co/he.h\
 co/memory.h\
-co/tri.h\
 co/ring.h\
 co/vec.h\
 
@@ -2082,17 +2079,17 @@ co/filter.h\
 juelicher_xin.d.o:\
 co/prec/d/real.h\
 co/argv.h\
-co/memory.h\
-co/err.h\
-co/he.h\
-co/vec.h\
-co/i/vec.h\
-co/dih.h\
 co/ddih.h\
 co/dedg.h\
-co/tri.h\
+co/dih.h\
 co/dtri.h\
+co/err.h\
+co/he.h\
+co/i/vec.h\
+co/memory.h\
 co/sum.h\
+co/tri.h\
+co/vec.h\
 co/f/juelicher_xin.h\
 
 kantor.d.o:\
@@ -2596,6 +2593,11 @@ co/memory.h\
 co/real.h\
 inc/d/real.inc\
 
+remesh.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+
 restore.d.o:\
 co/prec/d/real.h\
 co/memory.h\
@@ -2998,14 +3000,10 @@ co/vec.h\
 
 curv/mean/ring.l.o:\
 co/prec/l/real.h\
-co/array.h\
 co/curv/mean/ring.h\
-co/dih.h\
-co/edg.h\
 co/err.h\
 co/he.h\
 co/memory.h\
-co/tri.h\
 co/ring.h\
 co/vec.h\
 
@@ -3458,17 +3456,17 @@ co/filter.h\
 juelicher_xin.l.o:\
 co/prec/l/real.h\
 co/argv.h\
-co/memory.h\
-co/err.h\
-co/he.h\
-co/vec.h\
-co/i/vec.h\
-co/dih.h\
 co/ddih.h\
 co/dedg.h\
-co/tri.h\
+co/dih.h\
 co/dtri.h\
+co/err.h\
+co/he.h\
+co/i/vec.h\
+co/memory.h\
 co/sum.h\
+co/tri.h\
+co/vec.h\
 co/f/juelicher_xin.h\
 
 kantor.l.o:\
@@ -3971,6 +3969,12 @@ co/macro.h\
 co/memory.h\
 co/real.h\
 inc/l/real.inc\
+
+remesh.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/remesh.h\
 
 restore.l.o:\
 co/prec/l/real.h\

@@ -130,6 +130,7 @@ co/pre/visc.h\
 co/punto.h\
 co/read.h\
 co/real.h\
+co/remesh.h\
 co/restore.h\
 co/ring.h\
 co/segment.h\
