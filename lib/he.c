@@ -271,9 +271,11 @@ he_edg_ij(T * q, int e, /**/ int *pi, int *pj)
 int
 he_dih_ijkl(T * q, int e, /**/ int *i, int *j, int *k, int *l)
 {
-    int h, n, nn, nnf;
+    int h, n, f, nn, nnf;
 
     h = he_hdg_edg(q, e);
+    if (he_bnd(q, h))
+      return 1;
     n = he_nxt(q, h);
     nn = he_nxt(q, he_nxt(q, h));
     nnf = he_nxt(q, he_nxt(q, he_flp(q, h)));
