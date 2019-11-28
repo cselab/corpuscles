@@ -1,0 +1,2 @@
+# TEST: ijkl
+./ijkl < `co.path`/sph/laplace/0.off > main.out.txt
