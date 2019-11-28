@@ -39,7 +39,8 @@ y_inif(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
 }
 
 int
-y_inif2b(FILE * f0, FILE * f1, /**/ He ** phe0, He **phe1, He **phe, real ** px, real ** py, real ** pz)
+y_inif2b(FILE * f0, FILE * f1, /**/ He ** phe0, He ** phe1, He ** phe,
+         real ** px, real ** py, real ** pz)
 {
     HeOff *off0, *off1;
     int nv0, nv1, nv, nt0, nt1, nt;
@@ -54,7 +55,7 @@ y_inif2b(FILE * f0, FILE * f1, /**/ He ** phe0, He **phe1, He **phe, real ** px,
     nv0 = off_nv(off0);
     nv1 = off_nv(off1);
     nt0 = off_nt(off0);
-    nt1 = off_nt(off1);    
+    nt1 = off_nt(off1);
     if (off_tri(off0, &tri0) != CO_OK)
         ERR(CO_IO, "off_tri failed");
     if (off_tri(off1, &tri1) != CO_OK)
@@ -64,7 +65,7 @@ y_inif2b(FILE * f0, FILE * f1, /**/ He ** phe0, He **phe1, He **phe, real ** px,
     if (he_tri_ini(nv1, nt1, tri1, &he1) != CO_OK)
         ERR(CO_IO, "he_tri_ini failed");
     if (he_merge2(he0, he1, &he) != CO_OK)
-	ERR(CO_IO, "he_merge2 failed");
+        ERR(CO_IO, "he_merge2 failed");
     nv = he_nv(he);
     MALLOC3(nv, &x, &y, &z);
     off_xyz(off0, x, y, z);
@@ -156,7 +157,7 @@ y_fin(He * he, real * x, real * y, real * z)
 }
 
 int
-y_fin2b(He * he0, He * he1, He *he, real * x, real * y, real * z)
+y_fin2b(He * he0, He * he1, He * he, real * x, real * y, real * z)
 {
     he_fin(he);
     he_fin(he0);
