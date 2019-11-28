@@ -11,7 +11,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-const char *me = "rotate/one";
+const char *me = "split/tri";
 static void
 usg()
 {

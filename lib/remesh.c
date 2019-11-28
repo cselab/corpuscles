@@ -37,6 +37,9 @@ remesh_tri_split (int nmax, int *tri, int n, He * he, real ** px, real ** py,
   real *y;
   real *z;
 
+  x = *px;
+  y = *py;
+  z = *pz;
   nt = he_nt (he);
   i = j = 0;
   CALLOC (nt, &killed);
@@ -57,7 +60,7 @@ remesh_tri_split (int nmax, int *tri, int n, He * he, real ** px, real ** py,
 	    killed[b] = 1;
 	  if (c < nt)
 	    killed[c] = 1;
-	  nv = he_nv (he);
+	  nv = he_nv(he);
 	  REALLOC (nv, &x);	/* TODO */
 	  REALLOC (nv, &y);
 	  REALLOC (nv, &z);
@@ -69,7 +72,6 @@ remesh_tri_split (int nmax, int *tri, int n, He * he, real ** px, real ** py,
 	}
       i++;
     }
-
   *px = x;
   *py = y;
   *pz = z;
