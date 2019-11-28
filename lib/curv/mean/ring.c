@@ -2,14 +2,10 @@
 #include <stdio.h>
 
 #include "real.h"
-#include "co/array.h"
 #include "co/curv/mean/ring.h"
-#include "co/dih.h"
-#include "co/edg.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/memory.h"
-#include "co/tri.h"
 #include "co/ring.h"
 #include "co/vec.h"
 
