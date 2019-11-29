@@ -59,14 +59,17 @@ function ini(   i) {
     split(rotate,    Rotate)
 }
 
-function parse(s,   a, n) {
+function parse(s,   a, n, key) {
     n = sub(/^\(/, "", s)
     if (n != 1) return ERR
     n = sub(/\)$/, "", s)
     if (n != 1) return ERR
     n = split(s, a)
-    if (a[1] == "rawevent")
+    key = a[1]
+    if (eq(key, "rawevent"))
        parse_key(a[2])
+    else if (eq(key, "pick"))
+        msg(s)
     return OK
 }
 
@@ -326,6 +329,7 @@ BEGIN {
     set_fov()
     draw()
     if (eq(output, "-")) {
+        g("interest (pick world)")
         for (;;) {
             if (getline s == ERR) break
             if (parse(s) != OK) {
