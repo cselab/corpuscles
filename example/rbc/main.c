@@ -1,11 +1,12 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
 #include <co/bi.h>
+#include <co/equiangulate.h>
 #include <co/err.h>
 #include <co/f/garea.h>
 #include <co/f/juelicher_xin.h>
@@ -74,15 +75,35 @@ usg(void)
 int
 main(__UNUSED int argc, char **argv)
 {
-    real *x, *y, *z;
-    Ode3 *ode;
-    real t, time;
-    int s, i;
-    real eng, et, ega, ev, eb, ebl, ebn, es;
     char name[99];
-    real A0, V0, v0;
-    real A, V, v;
-    real a, e, reg;
+    int i;
+    int j;
+    int s;
+    int cnt;
+    Ode3 *ode;
+    real a;
+    real A;
+    real A0;
+    real e;
+    real eb;
+    real ebl;
+    real ebn;
+    real ega;
+    real eng;
+    real es;
+    real et;
+    real ev;
+    real reg;
+    real t;
+    real time;
+    real v;
+    real V;
+    real v0;
+    real V0;
+    real *x;
+    real *y;
+    real *z;
+    
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
@@ -103,11 +124,9 @@ main(__UNUSED int argc, char **argv)
         i++;
     }
     v0 = reduced_volume(A0, V0);
-
     a = A0 / nt;
     e = 2 * sqrt(a) / sqrt(sqrt(3.0));
     reg = 0.1 * e;
-
     if ((fm = fopen(file_msg, "w")) == NULL)
         ER("Failed to open '%s'", file_msg);
 
@@ -121,9 +140,7 @@ main(__UNUSED int argc, char **argv)
     fprintf(fm, "a e reg dt = %g %g %g %g\n", a, e, reg,
             dt);
     fclose(fm);
-
     ode3_ini(RK4, nv, dt, F, NULL, &ode);
-
     CALLOC3(nv, &ux, &uy, &uz);
     CALLOC3(nv, &wx, &wy, &wz);
     CALLOC3(nv, &fx, &fy, &fz);
@@ -187,6 +204,13 @@ main(__UNUSED int argc, char **argv)
         t = time + dt;
         if (s > end)
             break;
+	for (cnt = j = 0; j < 10; j++) {
+	    he_equiangulate(he, x, y, z, &cnt);
+	    if (cnt == 0)
+		break;
+	}
+	if (cnt > 0)
+	    MSG("cnt: %d", cnt);
         ode3_apply_fixed(ode, &time, t, x, y, z);
     }
     FREE3(Vx, Vy, Vz);
