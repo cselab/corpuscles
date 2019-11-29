@@ -7,6 +7,7 @@ h_changequote(,)dnl
 
 prog=co.geomview
 prog0=co.geomview0
+: ${GEOMVIEW_ARGS=}
 
 usg () {
     cat <<EOF
@@ -41,6 +42,7 @@ Keys:
 Environment variables:
 WX, WY: resolution of the snapshot (default: 800x600)
 BACKGROUND: default ('1 1 1')
+GEOMVIEW_ARGS: pass to geomview
 
 Examples:
 $prog -t 0.25 0.25 0     data/rbc.off
@@ -81,7 +83,7 @@ gview () {
     translate="$tx $ty $tz"
     rotate="$rx $ry $rz"
     trap '' SIGHUP
-    "$GEOMVIEW" -wpos $WX,$WY -noinit -nopanels -b $BACKGROUND \
+    "$GEOMVIEW" $GEOMVIEW_ARGS -wpos $WX,$WY -noinit -nopanels -b $BACKGROUND \
      -run "$prog0" \
        foreach(Args, `\h_qsingle`'"$A"\h_qsingle`'') \
        "$@"
