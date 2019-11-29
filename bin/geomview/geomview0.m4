@@ -303,7 +303,7 @@ function snap(file,   c, out) {
 }
 
 function snap0(file,   cmd, reply, status) {
-    cmd = sprintf("snapshot default `%s` %s", file, Format)
+    cmd = sprintf("snapshot Camera `%s` %s", file, Format)
     g(cmd)
     g(cmd) # TODO
     g("echo done\\n") # synchronize
@@ -314,7 +314,7 @@ function snap0(file,   cmd, reply, status) {
 
 function oogl(file,   reply, status) {
     g(sprintf("write geometry `%s.geometry` self universe", file))
-    g(sprintf("write camera `%s.camera` default universe", file))
+    g(sprintf("write camera `%s.camera` Camera universe", file))
     g(sprintf("write transform `%s.transform` self universe", file))
     g("echo done\\n") # synchronize
     status = getline reply
