@@ -140,12 +140,8 @@ function run_ecommand(T, fov,   tx, ty, tz, rx, ry, rz, off, fmt, c) {
 }
 
 function parse_key(k,   s,  T, fov, file) {
-    if (k == KEY_Q) {
-        read_transform(T)
-        fov = read_fov()
-        write_command(T, fov)
+    if (k == KEY_Q)
         gexit(0)
-    }
     else if (k == KEY_P)
          g("ui-panel geomview on")
     else if (k == KEY_E) {
