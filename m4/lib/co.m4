@@ -29,6 +29,7 @@ h_rename_h(`eval')
 h_rename_h(`syscmd')
 h_rename_h(`esycmd')
 h_rename_h(`sysval')
+h_rename_h(`substr')
 h_copy(`m4exit', `h_exit')
 
 h_define(`h_location',

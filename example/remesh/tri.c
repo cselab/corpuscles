@@ -38,8 +38,8 @@ main(int __UNUSED argc, const char **argv)
     y_inif(stdin, &he, &x, &y, &z);
 
     int n, nmax;
-    int tri[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    nmax = n = 10;
+    int tri[] = {4194};
+    nmax = n = sizeof(tri)/sizeof(tri[0]);
     remesh_tri_split(nmax, tri, n, he, &x, &y, &z);
     if (he_invariant(he) != 0)
 	ER("he_invariant failed");

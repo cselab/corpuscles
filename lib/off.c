@@ -18,7 +18,7 @@
 enum { SIZE = MAX_STRING_SIZE };
 
 #define FWRITE(ptr, size)					     \
-    do							     \
+    do								     \
     if (size != (cnt = fwrite(ptr, sizeof((ptr)[0]), size, f)))	     \
 	ERR(CO_IO, "fwrite failed: need = %d, got = %d", size, cnt); \
     while (0)

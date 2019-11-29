@@ -59,7 +59,7 @@ function ini(   i) {
     split(rotate,    Rotate)
 }
 
-function parse(s,   a, n, key) {
+function parse(s,   a, n, key, pick, tri, ver, edg) {
     n = sub(/^\(/, "", s)
     if (n != 1) return ERR
     n = sub(/\)$/, "", s)
@@ -68,8 +68,15 @@ function parse(s,   a, n, key) {
     key = a[1]
     if (eq(key, "rawevent"))
        parse_key(a[2])
-    else if (eq(key, "pick"))
-        msg(s)
+    else if (eq(key, "pick")) {
+        parse_pick(s, pick)
+        msg0("")
+        msg0("tri " pick["FI"])
+        if ((ver = pick["VI"]) != -1)
+            msg0("ver " ver)
+        if (!eq(edg = pick["EI"], "nil"))
+            msg0("edg " edg)
+    }
     return OK
 }
 
@@ -381,6 +388,64 @@ function sys0(c,   s) {
 }
 function basename(s) {
     sub(/\.[^\.]*$/, "", s)
+    return s
+}
+
+function parse_pick(s, q,   f, vi, ei, fi) {
+    parse_lisp(s, f)
+    vi = f[9]
+    ei = f[10]
+    fi = f[11]
+    q["VI"] = vi + 0
+    q["EI"] = unbrackets(trim(ei))
+    q["FI"] = fi + 0
+}
+
+function parse_lisp(s, f,   n, nf, i, j, cnt, c) {
+    delete f
+    n = length(s)
+    for (;;) {
+        while (i < n && whitespace(c = ch(s, ++i))) ;
+        if (!(i < n))
+            break
+        if (eq(c, "(")) {
+            cnt = 1
+            j = i
+            do {
+                c = ch(s, ++i)
+                if (eq(c, "("))
+                    cnt++
+                else if (eq(c, ")"))
+                    cnt--
+            } while (i < n && cnt > 0)
+            f[++nf] = substr(s, j, i - j + 1)
+        } else {
+            j = i
+            do {
+                c = ch(s, ++i)
+            } while (i < n && !whitespace(c))
+            f[++nf] = substr(s, j, i - j + 1)            
+        }
+    }
+}
+
+function ch(s, i) {
+    return substr(s, i, 1)
+}
+
+function whitespace(s) {
+    return s ~ /^[ \t]$/
+}
+
+function trim(s) {
+    sub(/^[ \t]*/, "", s)
+    sub(/[ \t]*$/, "", s)
+    return s
+}
+
+function unbrackets(s) {
+    sub(/^\(/, "" ,s)
+    sub(/\)$/, "" ,s)
     return s
 }
 ' "$@"
