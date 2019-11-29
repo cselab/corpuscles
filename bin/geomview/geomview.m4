@@ -82,7 +82,7 @@ gview () {
     local status translate rotate background
     translate="$tx $ty $tz"
     rotate="$rx $ry $rz"
-    trap '' SIGHUP
+    trap 'exit 0' HUP
     "$GEOMVIEW" $GEOMVIEW_ARGS -wpos $WX,$WY -noinit -nopanels -b $BACKGROUND \
      -run "$prog0" \
        foreach(Args, `\h_qsingle`'"$A"\h_qsingle`'') \
