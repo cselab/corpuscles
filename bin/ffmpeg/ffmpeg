@@ -51,7 +51,7 @@ e ffmpeg \
   -safe 0 -f concat -i $t \
   -y \
   -loglevel error \
-  -vcodec libx264 -crf 0 -pix_fmt yuv420p "$Output"
+  -vcodec libx264 -crf 1 -pix_fmt yuv420p "$Output"
 code=$?
 rm -f $t
 exit $code
