@@ -223,7 +223,6 @@ function draw(   off, file) {
         } else
             err(sprintf("unknown SaveType \"%s\"", SaveType))
     }
-
     if (Report && Command)
         sys(command)
     else if (Report)
@@ -288,7 +287,7 @@ function set_fov() {
     g(sprintf("merge camera focus {fov %s}", fov))
 }
 
-function snap(file,   c, out) {
+function snap(file,   c, out, off) {
     off = "\"" offs[ioff] "\""
     out = "\"" file "\""
     input = Tmp
