@@ -340,7 +340,7 @@ BEGIN {
             if (getline s == ERR) break
             if (parse(s) != OK) {
                 msg("fail to parse: " quote(s))
-                break
+                gexit(1)
             }
         }
     } else if (eq(output, "-OO") || eq(output, "-O")) {
