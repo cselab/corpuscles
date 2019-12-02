@@ -287,7 +287,7 @@ function set_fov() {
     g(sprintf("merge camera focus {fov %s}", fov))
 }
 
-function snap(file,   c, out, off) {
+function snap(file,   off, out, input, c) {
     off = "\"" offs[ioff] "\""
     out = "\"" file "\""
     input = Tmp
