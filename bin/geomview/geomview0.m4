@@ -17,7 +17,7 @@ h_foreach_sep(`A', `
 ', Args, `A=`$1'; shift')dnl
 
 Tmp=/tmp/co.geomview.$$.ppm
-trap 'rm -f $Tmp; echo 2' 1 2 3 15
+trap 'rm -f $Tmp; exit 1' 1 2 3 15
 
 "$AWK" -v Q=\' -v prog="$prog" -v LOG="$LOG" -v Tmp=$Tmp \
 foreach(Args, `-v A="$A"') \
