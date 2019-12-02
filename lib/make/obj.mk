@@ -117,6 +117,7 @@ oseen3tri.s.o\
 oseen3zero.s.o\
 ply.s.o\
 polygon.s.o\
+povray.s.o\
 pre/cons.s.o\
 pre/density.s.o\
 predicate.s.o\
@@ -253,6 +254,7 @@ oseen3tri.d.o\
 oseen3zero.d.o\
 ply.d.o\
 polygon.d.o\
+povray.d.o\
 pre/cons.d.o\
 pre/density.d.o\
 predicate.d.o\
@@ -389,6 +391,7 @@ oseen3tri.l.o\
 oseen3zero.l.o\
 ply.l.o\
 polygon.l.o\
+povray.l.o\
 pre/cons.l.o\
 pre/density.l.o\
 predicate.l.o\

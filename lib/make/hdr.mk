@@ -120,6 +120,7 @@ co/oseen3tri.h\
 co/oseen3zero.h\
 co/ply.h\
 co/polygon.h\
+co/povray.h\
 co/prec/d/real.h\
 co/prec/l/real.h\
 co/pre/cons.h\

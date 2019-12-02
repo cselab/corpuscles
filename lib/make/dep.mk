@@ -1164,6 +1164,13 @@ co/list/edg1.h\
 co/vec2.h\
 co/polygon.h\
 
+povray.s.o:\
+co/prec/s/real.h\
+co/array.h\
+co/err.h\
+co/he.h\
+co/povray.h\
+
 pre/cons.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -1220,6 +1227,10 @@ remesh.s.o:\
 co/prec/s/real.h\
 co/err.h\
 co/he.h\
+co/vec.h\
+co/tri.h\
+co/remesh.h\
+co/memory.h\
 
 restore.s.o:\
 co/prec/s/real.h\
@@ -2541,6 +2552,13 @@ co/list/edg1.h\
 co/vec2.h\
 co/polygon.h\
 
+povray.d.o:\
+co/prec/d/real.h\
+co/array.h\
+co/err.h\
+co/he.h\
+co/povray.h\
+
 pre/cons.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -2597,6 +2615,10 @@ remesh.d.o:\
 co/prec/d/real.h\
 co/err.h\
 co/he.h\
+co/vec.h\
+co/tri.h\
+co/remesh.h\
+co/memory.h\
 
 restore.d.o:\
 co/prec/d/real.h\
@@ -3918,6 +3940,13 @@ co/list/edg1.h\
 co/vec2.h\
 co/polygon.h\
 
+povray.l.o:\
+co/prec/l/real.h\
+co/array.h\
+co/err.h\
+co/he.h\
+co/povray.h\
+
 pre/cons.l.o:\
 co/prec/l/real.h\
 co/err.h\
@@ -3974,7 +4003,10 @@ remesh.l.o:\
 co/prec/l/real.h\
 co/err.h\
 co/he.h\
+co/vec.h\
+co/tri.h\
 co/remesh.h\
+co/memory.h\
 
 restore.l.o:\
 co/prec/l/real.h\
