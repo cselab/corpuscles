@@ -34,7 +34,9 @@ usg(void)
     fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
     fprintf(stderr, "%s [-a] -v A.off lo hi B.off > C.vtk\n", me);
     fprintf(stderr, "%s [-n] -v A.off lo hi B.off > C.vtk\n", me);
-    fprintf(stderr, "%s [-a] -p A.off lo hi B.off > C.pov\n", me);
+    fprintf(stderr, "%s [-b] -v A.off lo hi B.off > C.vtk\n", me);
+    fprintf(stderr, "%s [-x] -v A.off lo hi B.off > C.vtk\n", me);
+   fprintf(stderr, "%s [-a] -p A.off lo hi B.off > C.pov\n", me);
     fprintf(stderr, "%s [-a] [-v] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr,
             "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
@@ -47,7 +49,7 @@ int
 main(int argc, char **a)
 {
     enum {POV, VTK, OFF};
-    enum {LIN, ABS, NABS, BIN};
+    enum {LIN, ABS, NABS, BIN, AXIS};
     int status, Output, Map;
     real *x, *y, *z, *c;
     real *u, *v, *w;
@@ -78,6 +80,9 @@ main(int argc, char **a)
 	    break;
 	case 'b':
 	    Map=BIN;
+	    break;
+	case 'x':
+	    Map=AXIS;
 	    break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
@@ -113,10 +118,21 @@ main(int argc, char **a)
 	break;
       case BIN:
 	for (i = 0; i < n; i++) {
-	  if ( fabs(u[i]) <= 0.1 )
-	    c[i]=0;
+	  if ( fabs(u[i]) >= 0.6 )
+	    c[i] = 0;
 	  else
 	    c[i] = 1;
+	}
+	break;
+      case AXIS:
+	max=0;
+	real t;
+	for (i = 0; i < n; i++) {
+	  t=sqrt(v[i]*v[i]+w[i]*w[i]);
+	  if (t<0.3)
+	    c[i] = 0;
+	  else
+	    c[i] = 1;	  
 	}
 	break;
 
