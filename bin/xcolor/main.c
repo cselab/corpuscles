@@ -7,6 +7,7 @@
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/force.h>
+#include <co/povray.h>
 #include <co/util.h>
 #include <co/off.h>
 #include <co/y.h>
@@ -32,6 +33,7 @@ usg(void)
 {
     fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
     fprintf(stderr, "%s [-a] -v A.off lo hi B.off > C.vtk\n", me);
+    fprintf(stderr, "%s [-a] -p A.off lo hi B.off > C.pov\n", me);
     fprintf(stderr, "%s [-a] [-v] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr,
             "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
@@ -43,7 +45,8 @@ usg(void)
 int
 main(int argc, char **a)
 {
-    int status;
+    enum {POV, VTK, OFF};
+    int status, Output;
     real *x, *y, *z, *c;
     real *u, *v, *w;
     He *p, *q;
@@ -52,15 +55,19 @@ main(int argc, char **a)
     real lo, hi;
 
     err_set_ignore();
-    Abs = Vtk = 0;
+    Abs = 0;
+    Output = OFF;
     while (*++a != NULL && a[0][0] == '-')
         switch (a[0][1]) {
         case 'h':
             usg();
             break;
         case 'v':
-            Vtk = 1;
+            Output = VTK;
             break;
+        case 'p':
+            Output = POV;
+            break;	    
         case 'a':
             Abs = 1;
             break;
@@ -88,12 +95,19 @@ main(int argc, char **a)
     else
         for (i = 0; i < n; i++)
             c[i] = (u[i] - min) / d;
-    if (!Vtk)
-        boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
-    else {
-        const real *scal[] = { c, NULL };
-        const char *name[] = { "color", NULL };
+
+    const real *scal[] = { c, NULL };
+    const char *name[] = { "color", NULL };
+    switch (Output) {
+    case VTK:
+	boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+	break;
+    case OFF:
         vtk_fwrite(p, x, y, z, scal, name, stdout);
+	break;
+    case POV:
+	povray_ver_mesh2(p, x, y, z, c, stdout);
+	break;
     }
     FREE(c);
     y_fin(p, x, y, z);
