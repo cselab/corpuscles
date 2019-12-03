@@ -73,7 +73,7 @@ povray_tri_mesh2(He * he, const real * x, const real * y, const real * z,
     nt = he_nt(he);
     lo = array_min(nt, color);
     hi = array_max(nt, color);
-    
+
     MALLOC3(nv, &nx, &ny, &nz);
     status = normal_mwa(he, x, y, z, nx, ny, nz);
     if (status != CO_OK)
@@ -117,21 +117,17 @@ povray_tri_mesh2(He * he, const real * x, const real * y, const real * z,
 }
 
 int
-povray_ver_mesh2(He * he, const real * x, const real * y, const real * z,
-		 const real *color,
-		 FILE * f)
+povray_lh_ver_mesh2(He * he, const real * x, const real * y, const real * z, real lo, real hi, const real *color, FILE * f)
 {
     int nv, nt;
     int i;
     int a, b, c, status;
-    real *nx, *ny, *nz, lo, hi;
+    real *nx, *ny, *nz;
     float red, blue, green;
 
     nv = he_nv(he);
     nt = he_nt(he);
-    lo = array_min(nv, color);
-    hi = array_max(nv, color);
-    
+
     MALLOC3(nv, &nx, &ny, &nz);
     status = normal_mwa(he, x, y, z, nx, ny, nz);
     if (status != CO_OK)
@@ -173,4 +169,14 @@ povray_ver_mesh2(He * he, const real * x, const real * y, const real * z,
     fprintf(f, "\n}\n");
     FREE3(nx, ny, nz);
     return CO_OK;
+}
+
+int
+povray_ver_mesh2(He * he, const real * x, const real * y, const real * z, const real *color, FILE * f) {
+    int nv;
+    real lo, hi;
+    nv = he_nv(he);
+    lo = array_min(nv, color);
+    hi = array_max(nv, color);
+    return povray_lh_ver_mesh2(he, x, y, z, lo, hi, color, f);
 }
