@@ -99,12 +99,12 @@ main(int argc, char **a)
     const real *scal[] = { c, NULL };
     const char *name[] = { "color", NULL };
     switch (Output) {
-    case VTK:
-	boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
-	break;
     case OFF:
-        vtk_fwrite(p, x, y, z, scal, name, stdout);
-	break;
+      boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+      break;
+    case VTK:
+      vtk_fwrite(p, x, y, z, scal, name, stdout);
+      break;
     case POV:
 	povray_ver_mesh2(p, x, y, z, c, stdout);
 	break;
