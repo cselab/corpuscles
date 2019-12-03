@@ -3,6 +3,7 @@ include ../../conf.mk
 M = \
 mesh2\
 tri\
+ver\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`

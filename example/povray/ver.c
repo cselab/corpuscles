@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <real.h>
+#include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/he/invariant.h>
@@ -12,7 +13,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-const char *me = "povray/tri";
+const char *me = "povray/ver";
 static void
 usg()
 {
@@ -25,9 +26,9 @@ main(int __UNUSED argc, const char **argv)
 {
     enum {X, Y, Z};
     He *he;
-    real *x, *y, *z, *tri;
-    int nt, i;
-
+    real *x, *y, *z, *ver;
+    int nv;
+    
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
@@ -38,19 +39,10 @@ main(int __UNUSED argc, const char **argv)
             exit(2);
         }
     y_inif(stdin, &he, &x, &y, &z);
-    nt = he_nt(he);
-    MALLOC(nt, &tri);
-
-    int u, v, w;
-    real a[3], b[3], c[3], r[3];
-    for (i = 0; i < nt; i++) {
-      he_tri_ijk(he, i, &u, &v, &w);
-      vec_get3(u, v, w, x, y, z, a, b, c);
-      tri_center(a, b, c, r);
-      tri[i] = r[X];
-    }
-    
-    povray_tri_mesh2(he, x, y, z, tri, stdout);
+    nv = he_nv(he);
+    MALLOC(nv, &ver);
+    array_copy(nv, x, ver);
+    povray_ver_mesh2(he, x, y, z, ver, stdout);
     y_fin(he, x, y, z);
-    FREE(tri);
+    FREE(ver);
 }
