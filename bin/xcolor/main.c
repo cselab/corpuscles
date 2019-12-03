@@ -47,7 +47,7 @@ int
 main(int argc, char **a)
 {
     enum {POV, VTK, OFF};
-    enum {LIN, ABS, NABS};
+    enum {LIN, ABS, NABS, BIN};
     int status, Output, Map;
     real *x, *y, *z, *c;
     real *u, *v, *w;
@@ -75,6 +75,9 @@ main(int argc, char **a)
             break;
 	case 'n':
 	    Map=NABS;
+	    break;
+	case 'b':
+	    Map=BIN;
 	    break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
@@ -108,6 +111,15 @@ main(int argc, char **a)
 	for (i = 0; i < n; i++)
 	  c[i] = (max-fabs(u[i])) / max;	
 	break;
+      case BIN:
+	for (i = 0; i < n; i++) {
+	  if ( fabs(u[i]) <= 0.1 )
+	    c[i]=0;
+	  else
+	    c[i] = 1;
+	}
+	break;
+
       }
     const real *scal[] = { c, NULL };
     const char *name[] = { "color", NULL };
