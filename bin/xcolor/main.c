@@ -33,6 +33,7 @@ usg(void)
 {
     fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
     fprintf(stderr, "%s [-a] -v A.off lo hi B.off > C.vtk\n", me);
+    fprintf(stderr, "%s [-n] -v A.off lo hi B.off > C.vtk\n", me);
     fprintf(stderr, "%s [-a] -p A.off lo hi B.off > C.pov\n", me);
     fprintf(stderr, "%s [-a] [-v] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr,
@@ -46,17 +47,18 @@ int
 main(int argc, char **a)
 {
     enum {POV, VTK, OFF};
-    int status, Output;
+    enum {LIN, ABS, NABS};
+    int status, Output, Map;
     real *x, *y, *z, *c;
     real *u, *v, *w;
     He *p, *q;
-    int i, n, Abs, Vtk;
+    int i, n;
     real min, max, d;
     real lo, hi;
 
     err_set_ignore();
-    Abs = 0;
     Output = OFF;
+    Map = LIN;
     while (*++a != NULL && a[0][0] == '-')
         switch (a[0][1]) {
         case 'h':
@@ -69,8 +71,11 @@ main(int argc, char **a)
             Output = POV;
             break;	    
         case 'a':
-            Abs = 1;
+	    Map=ABS;
             break;
+	case 'n':
+	    Map=NABS;
+	    break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
             exit(1);
@@ -89,13 +94,21 @@ main(int argc, char **a)
     min = array_min(n, u);
     max = array_max(n, u);
     d = max - min;
-    if (Abs)
-        for (i = 0; i < n; i++)
-            c[i] = fabs(u[i]) / max;
-    else
-        for (i = 0; i < n; i++)
-            c[i] = (u[i] - min) / d;
-
+    switch (Map)
+      {
+      case LIN:
+	for (i = 0; i < n; i++)
+	  c[i] = (u[i] - min) / d;
+	break;
+      case ABS:
+	for (i = 0; i < n; i++)
+	  c[i] = fabs(u[i]) / max;	
+	break;
+      case NABS:
+	for (i = 0; i < n; i++)
+	  c[i] = (max-fabs(u[i])) / max;	
+	break;
+      }
     const real *scal[] = { c, NULL };
     const char *name[] = { "color", NULL };
     switch (Output) {
