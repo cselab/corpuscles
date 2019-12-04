@@ -21,9 +21,8 @@ all: $M
 %: %.sh
 
 lint:; make CFLAGS='-Wall -Wextra -g -O2'
-test: $M; atest test/*
+test:
 install:
-run: $M; @co.run ./rbc
 
 .PHONY: clean test install run lint
 clean:; rm -f $M $(M:=.o)
