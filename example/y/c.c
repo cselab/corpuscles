@@ -22,17 +22,17 @@ usg()
 
 #define COORD(x)						\
     do {							\
-	printf("static double " Prefix #x "[%d] = {\\\n", nv);	\
+	printf("static double " Prefix #x "[%d] = {\n", nv);	\
 	for (i = 0; i < nv; i++)				\
-	    printf(TAB FMT ",\\\n", x[i]);			\
+	    printf(TAB FMT ",\n", x[i]);			\
 	puts("};");						\
     } while (0);						\
 
 #define INDEX(x)						\
     do {							\
-	printf("static int " Prefix #x "[%d] = {\\\n", nt);	\
+	printf("static int " Prefix #x "[%d] = {\n", nt);	\
 	for (i = 0; i < nt; i++)				\
-	    printf(TAB "%d" ",\\\n", x[i]);			\
+	    printf(TAB "%d" ",\n", x[i]);			\
 	puts("};");						\
     } while (0);						\
 
