@@ -48,8 +48,13 @@ usg(void)
 int
 main(int argc, char **a)
 {
+<<<<<<< HEAD
     enum {POV, VTK, OFF};
     enum {LIN, ABS, NABS, BIN, AXIS};
+=======
+    enum { POV, VTK, OFF };
+    enum { LIN, ABS, NABS, BIN };
+>>>>>>> 232996a7ec8b4ba45c987d640cca6c5d88a8a35e
     int status, Output, Map;
     real *x, *y, *z, *c;
     real *u, *v, *w;
@@ -58,6 +63,7 @@ main(int argc, char **a)
     real min, max, d;
     real lo, hi;
 
+    USED(argc);
     err_set_ignore();
     Output = OFF;
     Map = LIN;
@@ -71,10 +77,17 @@ main(int argc, char **a)
             break;
         case 'p':
             Output = POV;
-            break;	    
-        case 'a':
-	    Map=ABS;
             break;
+        case 'a':
+            Map = ABS;
+            break;
+        case 'n':
+            Map = NABS;
+            break;
+        case 'b':
+            Map = BIN;
+            break;
+<<<<<<< HEAD
 	case 'n':
 	    Map=NABS;
 	    break;
@@ -84,6 +97,8 @@ main(int argc, char **a)
 	case 'x':
 	    Map=AXIS;
 	    break;
+=======
+>>>>>>> 232996a7ec8b4ba45c987d640cca6c5d88a8a35e
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
             exit(1);
@@ -102,6 +117,7 @@ main(int argc, char **a)
     min = array_min(n, u);
     max = array_max(n, u);
     d = max - min;
+<<<<<<< HEAD
     switch (Map)
       {
       case LIN:
@@ -135,20 +151,43 @@ main(int argc, char **a)
 	    c[i] = 1;	  
 	}
 	break;
+=======
+    switch (Map) {
+    case LIN:
+        for (i = 0; i < n; i++)
+            c[i] = (u[i] - min) / d;
+        break;
+    case ABS:
+        for (i = 0; i < n; i++)
+            c[i] = fabs(u[i]) / max;
+        break;
+    case NABS:
+        for (i = 0; i < n; i++)
+            c[i] = (max - fabs(u[i])) / max;
+        break;
+    case BIN:
+        for (i = 0; i < n; i++) {
+            if (fabs(u[i]) <= 0.1)
+                c[i] = 0;
+            else
+                c[i] = 1;
+        }
+        break;
+>>>>>>> 232996a7ec8b4ba45c987d640cca6c5d88a8a35e
 
-      }
+    }
     const real *scal[] = { c, NULL };
     const char *name[] = { "color", NULL };
     switch (Output) {
     case VTK:
-        vtk_fwrite(p, x, y, z, scal, name, stdout);	
-	break;
+        vtk_fwrite(p, x, y, z, scal, name, stdout);
+        break;
     case OFF:
-	boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
-	break;
+        boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+        break;
     case POV:
-	povray_lh_ver_mesh2(p, x, y, z, lo, hi, c, stdout);
-	break;
+        povray_lh_ver_mesh2(p, x, y, z, lo, hi, c, stdout);
+        break;
     }
     FREE(c);
     y_fin(p, x, y, z);

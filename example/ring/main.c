@@ -128,6 +128,8 @@ int main(__UNUSED int argc, const char **v0) {
 	    printf(FMT "\n", ring_grad(n, wgrad, scalar_grid));
 	} else if (eq(op, "H")) {
 	    printf(FMT "\n", ring_H(n, xyz, C));
+	} else if (eq(op, "K")) {
+	    printf(FMT "\n", ring_K(n, xyz, C));
 	} else
 	    ER("unknown operation '%s'", op);
     }

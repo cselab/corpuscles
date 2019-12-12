@@ -1,14 +1,28 @@
+.POSIX:
 include ../../../conf.mk
-M = main
+M = \
+main\
+
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`
 
-$M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
-$M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
+LINK = $(CC)
 
-test: $M; atest test/*
+all: $M
+.o:
+	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+
+.c.o:
+	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
+
+.c:
+%: %.c
+%: %.sh
+
+lint:; make CFLAGS='-Wall -Wextra -g -O2'
+test:
 install:
 
-.PHONY: clean test install
-clean:; rm -f $M.o $M
+.PHONY: clean test install run lint
+clean:; rm -f $M $(M:=.o)
