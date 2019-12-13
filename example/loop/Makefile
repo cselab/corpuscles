@@ -5,6 +5,7 @@
 include ../../conf.mk
 M = \
 middle\
+spline\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
