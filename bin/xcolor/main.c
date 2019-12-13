@@ -34,7 +34,9 @@ usg(void)
     fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
     fprintf(stderr, "%s [-a] -v A.off lo hi B.off > C.vtk\n", me);
     fprintf(stderr, "%s [-n] -v A.off lo hi B.off > C.vtk\n", me);
-    fprintf(stderr, "%s [-a] -p A.off lo hi B.off > C.pov\n", me);
+    fprintf(stderr, "%s [-b] -v A.off lo hi B.off > C.vtk\n", me);
+    fprintf(stderr, "%s [-x] -v A.off lo hi B.off > C.vtk\n", me);
+   fprintf(stderr, "%s [-a] -p A.off lo hi B.off > C.pov\n", me);
     fprintf(stderr, "%s [-a] [-v] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr,
             "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
@@ -46,8 +48,13 @@ usg(void)
 int
 main(int argc, char **a)
 {
+<<<<<<< HEAD
+    enum {POV, VTK, OFF};
+    enum {LIN, ABS, NABS, BIN, AXIS};
+=======
     enum { POV, VTK, OFF };
     enum { LIN, ABS, NABS, BIN };
+>>>>>>> 232996a7ec8b4ba45c987d640cca6c5d88a8a35e
     int status, Output, Map;
     real *x, *y, *z, *c;
     real *u, *v, *w;
@@ -80,6 +87,18 @@ main(int argc, char **a)
         case 'b':
             Map = BIN;
             break;
+<<<<<<< HEAD
+	case 'n':
+	    Map=NABS;
+	    break;
+	case 'b':
+	    Map=BIN;
+	    break;
+	case 'x':
+	    Map=AXIS;
+	    break;
+=======
+>>>>>>> 232996a7ec8b4ba45c987d640cca6c5d88a8a35e
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
             exit(1);
@@ -98,6 +117,41 @@ main(int argc, char **a)
     min = array_min(n, u);
     max = array_max(n, u);
     d = max - min;
+<<<<<<< HEAD
+    switch (Map)
+      {
+      case LIN:
+	for (i = 0; i < n; i++)
+	  c[i] = (u[i] - min) / d;
+	break;
+      case ABS:
+	for (i = 0; i < n; i++)
+	  c[i] = fabs(u[i]) / max;	
+	break;
+      case NABS:
+	for (i = 0; i < n; i++)
+	  c[i] = (max-fabs(u[i])) / max;	
+	break;
+      case BIN:
+	for (i = 0; i < n; i++) {
+	  if ( fabs(u[i]) >= 0.6 )
+	    c[i] = 0;
+	  else
+	    c[i] = 1;
+	}
+	break;
+      case AXIS:
+	max=0;
+	real t;
+	for (i = 0; i < n; i++) {
+	  t=sqrt(v[i]*v[i]+w[i]*w[i]);
+	  if (t<0.3)
+	    c[i] = 0;
+	  else
+	    c[i] = 1;	  
+	}
+	break;
+=======
     switch (Map) {
     case LIN:
         for (i = 0; i < n; i++)
@@ -119,6 +173,7 @@ main(int argc, char **a)
                 c[i] = 1;
         }
         break;
+>>>>>>> 232996a7ec8b4ba45c987d640cca6c5d88a8a35e
 
     }
     const real *scal[] = { c, NULL };
