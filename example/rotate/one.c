@@ -8,7 +8,7 @@
 #include <co/off.h>
 #include <co/y.h>
 
-const char *me = "rotate/one";
+static const char *me = "rotate/one";
 static void
 usg()
 {

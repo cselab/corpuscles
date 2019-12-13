@@ -9,7 +9,7 @@
 #include <co/off.h>
 #include <co/y.h>
 
-const char *me = "y/2";
+static const char *me = "y/2";
 static void
 usg()
 {

@@ -11,7 +11,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-const char *me = "del/6";
+static const char *me = "del/6";
 static void
 usg()
 {

@@ -16,7 +16,7 @@
 #include <co/util.h>
 #include <co/y.h>
 
-const char *me = "co.align";
+static const char *me = "co.align";
 
 static void usg(void) {
     fprintf(stderr, "%s A.off B.off > C.off\n", me);

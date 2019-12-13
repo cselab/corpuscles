@@ -10,7 +10,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-const char *me = "loop/middle";
+static const char *me = "loop/middle";
 static void
 usg()
 {

@@ -13,7 +13,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-const char *me = "povray/ver";
+static const char *me = "povray/ver";
 static void
 usg()
 {

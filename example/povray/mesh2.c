@@ -12,7 +12,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-const char *me = "povray/mesh2";
+static const char *me = "povray/mesh2";
 static void
 usg()
 {

@@ -6,7 +6,7 @@
 #include <co/macro.h>
 #include <co/y.h>
 
-const char *me = "y/c";
+static const char *me = "y/c";
 #define TAB "  "
 #define Prefix "ico_"
 #define FMT CO_REAL_OUT

@@ -10,7 +10,7 @@
 #include <co/off.h>
 #include <co/y.h>
 
-const char *me = "y/merge";
+static const char *me = "y/merge";
 static void
 usg()
 {

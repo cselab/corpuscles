@@ -11,7 +11,7 @@
 #include <co/vec.h>
 #include <co/y.h>
 
-const char *me = "swap/tri";
+static const char *me = "swap/tri";
 static void
 usg()
 {

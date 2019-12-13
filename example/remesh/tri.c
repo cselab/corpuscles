@@ -12,7 +12,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-const char *me = "remesh/tri";
+static const char *me = "remesh/tri";
 static void
 usg()
 {
