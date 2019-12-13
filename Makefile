@@ -13,6 +13,7 @@ bin/eng\
 bin/ffmpeg\
 bin/geomview\
 bin/host\
+bin/loop\
 bin/maxima\
 bin/msh\
 bin/path\
