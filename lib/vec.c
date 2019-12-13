@@ -31,6 +31,15 @@ vec_get(int i, const real x[], const real y[], const real z[],
 }
 
 int
+vec_get2(int i, int j, const real x[], const real y[],
+         const real z[], /**/ real a[3], real b[3])
+{
+    vec_get(i, x, y, z, /**/ a);
+    vec_get(j, x, y, z, /**/ b);
+    return CO_OK;
+}
+
+int
 vec_get3(int i, int j, int k, const real x[], const real y[],
          const real z[], /**/ real a[3], real b[3], real c[3])
 {
