@@ -7,6 +7,7 @@
 #include <co/memory.h>
 #include <co/off.h>
 #include <co/vec.h>
+#include <co/edg.h>
 #include <co/tri.h>
 #include <co/y.h>
 
@@ -27,6 +28,7 @@ main(int argc, char **argv)
     USED(argc);
     He *he;
     He *he0;
+    int e;
     int eij;
     int ejk;
     int eki;
@@ -99,16 +101,11 @@ main(int argc, char **argv)
 
     for (e = 0; e < ne; e++) {
 	he_edg_ij(he, e, &i, &j);
-	vec_get(i, 
-	vec_
+	vec_get2(i, j, x, y, z, a, b);
+	edg_center(a, b, ab);
+	ij = nv + e;
+	vec_set(ab, ij, x0, y0, z0);
     }
-    vec_set(b, j, x0, y0, z0);
-    vec_set(c, k, x0, y0, z0);
-    vec_set(ab, ij, x0, y0, z0);
-    vec_set(bc, jk, x0, y0, z0);
-    vec_set(ca, ki, x0, y0, z0);
-
-    
     he_tri_ini(nv0, nt0, tri, &he0);
     if (off_he_xyz_fwrite(he0, x0, y0, z0, stdout) != CO_OK)
         ER("off_he_xyz_fwrite failed");
