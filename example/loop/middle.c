@@ -60,13 +60,13 @@ main(int argc, char **argv)
     real *z0;
 
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	default:
-	    ER("unknown option '%s'", argv[0]);
-	}
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        default:
+            ER("unknown option '%s'", argv[0]);
+        }
     y_inif(stdin, &he, &x, &y, &z);
     ne = he_ne(he);
     nv = he_nv(he);
@@ -95,16 +95,16 @@ main(int argc, char **argv)
         ER("i0=%d != nt0=%d", i0, nt0);
 
     for (i = 0; i < nv; i++) {
-	vec_get(i, x, y, z, a);
-	vec_set(a, i, x0, y0, z0);
+        vec_get(i, x, y, z, a);
+        vec_set(a, i, x0, y0, z0);
     }
 
     for (e = 0; e < ne; e++) {
-	he_edg_ij(he, e, &i, &j);
-	vec_get2(i, j, x, y, z, a, b);
-	edg_center(a, b, ab);
-	ij = nv + e;
-	vec_set(ab, ij, x0, y0, z0);
+        he_edg_ij(he, e, &i, &j);
+        vec_get2(i, j, x, y, z, a, b);
+        edg_center(a, b, ab);
+        ij = nv + e;
+        vec_set(ab, ij, x0, y0, z0);
     }
     he_tri_ini(nv0, nt0, tri, &he0);
     if (off_he_xyz_fwrite(he0, x0, y0, z0, stdout) != CO_OK)

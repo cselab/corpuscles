@@ -58,15 +58,20 @@ main(int argc, char **argv)
     real *y0;
     real *z;
     real *z0;
+    int nring;
+    int *ring;
+    real alpha;
+    real beta;
+    int l;
 
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	default:
-	    ER("unknown option '%s'", argv[0]);
-	}
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        default:
+            ER("unknown option '%s'", argv[0]);
+        }
     y_inif(stdin, &he, &x, &y, &z);
     ne = he_ne(he);
     nv = he_nv(he);
@@ -95,16 +100,33 @@ main(int argc, char **argv)
         ER("i0=%d != nt0=%d", i0, nt0);
 
     for (i = 0; i < nv; i++) {
-	vec_get(i, x, y, z, a);
-	vec_set(a, i, x0, y0, z0);
+        if (he_bnd_ver(he, i))
+            ER("i=%d is on the boundary", i);
+        vec_get(i, x, y, z, a);
+        he_ring(he, i, &nring, &ring);
+        vec_zero(b);
+        for (j = 0; j < nring; j++) {
+            vec_get(ring[j], x, y, z, c);
+            vec_add(c, b);
+        }
+        beta = nring == 3 ? 3.0 / 16 : 3.0 / (8 * nring);
+        alpha = 1 - nring * beta;
+        vec_linear_combination(alpha, a, beta, b, /**/ c);
+        vec_set(c, i, x0, y0, z0);
     }
 
+    real d[3], g[3];
+
     for (e = 0; e < ne; e++) {
-	he_edg_ij(he, e, &i, &j);
-	vec_get2(i, j, x, y, z, a, b);
-	edg_center(a, b, ab);
-	ij = nv + e;
-	vec_set(ab, ij, x0, y0, z0);
+        he_dih_ijkl(he, e, &i, &j, &k, &l);
+        vec_get4(i, j, k, l, x, y, z, a, b, c, d);
+        vec_zero(g);
+        vec_axpy(3.0 / 8, b, g);
+        vec_axpy(3.0 / 8, c, g);
+        vec_axpy(1.0 / 8, a, g);
+        vec_axpy(1.0 / 8, d, g);
+        ij = nv + e;
+        vec_set(g, ij, x0, y0, z0);
     }
     he_tri_ini(nv0, nt0, tri, &he0);
     if (off_he_xyz_fwrite(he0, x0, y0, z0, stdout) != CO_OK)
