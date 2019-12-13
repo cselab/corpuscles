@@ -89,7 +89,6 @@ main(int argc, char **argv)
         ADD(ij, jk, ki);
         ADD(ki, jk, k);
         vec_get3(i, j, k, x, y, z, a, b, c);
-        tri_edg_center(a, b, c, bc, ca, ab);
     }
     if (i0 != 3 * nt0)
         ER("i0=%d != nt0=%d", i0, nt0);
