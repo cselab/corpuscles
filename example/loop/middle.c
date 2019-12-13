@@ -22,15 +22,20 @@ static int t2edg(He * he, int t, int *, int *, int *);
 static int t2ver(He * he, int t, int *, int *, int *);
 
 int
-main()
+main(int argc, char **argv)
 {
+    USED(argc);
     He *he;
     He *he0;
+    int eij;
+    int ejk;
+    int eki;
     int i;
-    int j;
-    int k;
+    int i0;
     int ij;
+    int j;
     int jk;
+    int k;
     int ki;
     int ne;
     int nt;
@@ -39,17 +44,27 @@ main()
     int nv0;
     int t;
     int *tri;
+    real a[3];
+    real ab[3];
+    real b[3];
+    real bc[3];
+    real c[3];
+    real ca[3];
     real *x;
     real *x0;
     real *y;
     real *y0;
     real *z;
     real *z0;
-    int eij;
-    int ejk;
-    int eki;
-    int i0;
 
+    while (*++argv != NULL && argv[0][0] == '-')
+	switch (argv[0][1]) {
+	case 'h':
+	    usg();
+	    break;
+	default:
+	    ER("unknown option '%s'", argv[0]);
+	}
     y_inif(stdin, &he, &x, &y, &z);
     ne = he_ne(he);
     nv = he_nv(he);
@@ -60,15 +75,6 @@ main()
     MALLOC(nv0, &y0);
     MALLOC(nv0, &z0);
     MALLOC(3 * nt0, &tri);
-
-
-    real a[3];
-    real b[3];
-    real c[3];
-    real ab[3];
-    real bc[3];
-    real ca[3];
-
 #define ADD(i, j, k) tri[i0++] = (i), tri[i0++] = (j), tri[i0++] = (k)
     for (i0 = t = 0; t < nt; t++) {
         t2ver(he, t, &i, &j, &k);
