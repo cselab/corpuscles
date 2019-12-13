@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <real.h>
@@ -60,7 +61,6 @@ main(int argc, char **argv)
     real *z0;
     int nring;
     int *ring;
-
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
@@ -79,24 +79,29 @@ main(int argc, char **argv)
     MALLOC(nv0, &y0);
     MALLOC(nv0, &z0);
     MALLOC(3 * nt0, &tri);
+#define ADD(i, j, k) tri[i0++] = (i), tri[i0++] = (j), tri[i0++] = (k)
+    int v;
+    int v0;
+    int iring;
+    real g[3];
+    i0 = 0;
+    v0 = nv;
+    for (v = 0; v < nv; v++) {
+	he_tri_ring(he, v, &nring, &ring);
+	for (iring = 0; ring[iring + 1] != -1; iring++) {
+	    he_tri_ijk(he, ring[iring], &i, &j, &k);
+	    vec_get3(i, j, k, x, y, z, a, b, c);
+	    tri_center(a, b, c, g);
+	    vec_set(g, nv + ring[iring], x0, y0, z0);
+	    ADD(v, nv + ring[iring], nv + ring[iring + 1]);
+	}
+	ADD(v, nv + ring[iring], nv + ring[0]);
+    }
     for (i = 0; i < nv; i++) {
-	
-	he_ring(he, i, &nring, &ring);
-	for (
-	
-
-	
         vec_get(i, x, y, z, a);
         vec_set(a, i, x0, y0, z0);
     }
 
-    for (e = 0; e < ne; e++) {
-        he_edg_ij(he, e, &i, &j);
-        vec_get2(i, j, x, y, z, a, b);
-        edg_center(a, b, ab);
-        ij = nv + e;
-        vec_set(ab, ij, x0, y0, z0);
-    }
     he_tri_ini(nv0, nt0, tri, &he0);
     if (off_he_xyz_fwrite(he0, x0, y0, z0, stdout) != CO_OK)
         ER("off_he_xyz_fwrite failed");
