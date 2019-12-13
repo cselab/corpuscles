@@ -79,9 +79,14 @@ main()
 	ADD(ij, j, jk);
 	ADD(ij, jk, ki);
 	ADD(ki, jk, k);
-
 	vec_get3(i, j, k, x, y, z, a, b, c);
 	tri_edg_center(a, b, c, ab, bc, ca);
+	vec_set(a, i, x0, y0, z0);
+	vec_set(b, j, x0, y0, z0);
+	vec_set(c, k, x0, y0, z0);
+	vec_set(ab, ij, x0, y0, z0);
+	vec_set(bc, jk, x0, y0, z0);
+	vec_set(ca, ki, x0, y0, z0);
     }
     if (i0 != 3*nt0)
 	ER("i0=%d != nt0=%d", i0, nt0);
