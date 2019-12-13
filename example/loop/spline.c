@@ -39,30 +39,32 @@ main(int argc, char **argv)
     int jk;
     int k;
     int ki;
+    int l;
     int ne;
+    int nring;
     int nt;
     int nt0;
     int nv;
     int nv0;
+    int *ring;
     int t;
     int *tri;
     real a[3];
     real ab[3];
+    real alpha;
     real b[3];
     real bc[3];
+    real beta;
     real c[3];
     real ca[3];
+    real d[3];
+    real g[3];
     real *x;
     real *x0;
     real *y;
     real *y0;
     real *z;
     real *z0;
-    int nring;
-    int *ring;
-    real alpha;
-    real beta;
-    int l;
 
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
@@ -114,8 +116,6 @@ main(int argc, char **argv)
         vec_linear_combination(alpha, a, beta, b, /**/ c);
         vec_set(c, i, x0, y0, z0);
     }
-
-    real d[3], g[3];
 
     for (e = 0; e < ne; e++) {
         he_dih_ijkl(he, e, &i, &j, &k, &l);

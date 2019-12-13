@@ -12,7 +12,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-static const char *me = "sqrt3/middle";
+static const char *me = "sqrt3/spline";
 static void
 usg()
 {
@@ -97,8 +97,6 @@ main(int argc, char **argv)
 	}
 	ADD(v, nv + ring[iring], nv + ring[0]);
     }
-
-    
     for (i = 0; i < nv; i++) {
         vec_get(i, x, y, z, a);
         vec_set(a, i, x0, y0, z0);
