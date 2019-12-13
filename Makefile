@@ -20,6 +20,7 @@ bin/path\
 bin/q\
 bin/run\
 bin/shake\
+bin/sqrt3\
 bin/vtk\
 bin/xcolor\
 data\
