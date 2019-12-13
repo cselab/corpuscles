@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <real.h>
@@ -8,7 +8,6 @@
 #include <co/memory.h>
 #include <co/off.h>
 #include <co/vec.h>
-#include <co/edg.h>
 #include <co/tri.h>
 #include <co/y.h>
 
@@ -22,6 +21,7 @@ usg()
 
 static int t2edg(He * he, int t, int *, int *, int *);
 static int t2ver(He * he, int t, int *, int *, int *);
+static const real pi = 3.141592653589793;
 
 int
 main(int argc, char **argv)
@@ -47,6 +47,8 @@ main(int argc, char **argv)
     int nv0;
     int t;
     int *tri;
+    real alpha;
+    real beta;
     real a[3];
     real ab[3];
     real b[3];
@@ -61,6 +63,7 @@ main(int argc, char **argv)
     real *z0;
     int nring;
     int *ring;
+
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
@@ -84,22 +87,35 @@ main(int argc, char **argv)
     int v0;
     int iring;
     real g[3];
+
     i0 = 0;
     v0 = nv;
     for (v = 0; v < nv; v++) {
-	he_tri_ring(he, v, &nring, &ring);
-	for (iring = 0; ring[iring + 1] != -1; iring++) {
-	    he_tri_ijk(he, ring[iring], &i, &j, &k);
-	    vec_get3(i, j, k, x, y, z, a, b, c);
-	    tri_center(a, b, c, g);
-	    vec_set(g, nv + ring[iring], x0, y0, z0);
-	    ADD(v, nv + ring[iring], nv + ring[iring + 1]);
-	}
-	ADD(v, nv + ring[iring], nv + ring[0]);
+        he_tri_ring(he, v, &nring, &ring);
+        for (iring = 0; ring[iring + 1] != -1; iring++) {
+            he_tri_ijk(he, ring[iring], &i, &j, &k);
+            vec_get3(i, j, k, x, y, z, a, b, c);
+            tri_center(a, b, c, g);
+            vec_set(g, nv + ring[iring], x0, y0, z0);
+            ADD(v, nv + ring[iring], nv + ring[iring + 1]);
+        }
+        ADD(v, nv + ring[iring], nv + ring[0]);
     }
+
     for (i = 0; i < nv; i++) {
+        if (he_bnd_ver(he, i))
+            ER("i=%d is on the boundary", i);
         vec_get(i, x, y, z, a);
-        vec_set(a, i, x0, y0, z0);
+        he_ring(he, i, &nring, &ring);
+        vec_zero(b);
+        for (j = 0; j < nring; j++) {
+            vec_get(ring[j], x, y, z, c);
+            vec_add(c, b);
+        }
+        beta = (4 - 2 * cos(2 * pi / nring)) / 9;
+        alpha = 1 - beta;
+        vec_linear_combination(alpha, a, beta / nring, b, /**/ c);
+        vec_set(c, i, x0, y0, z0);
     }
 
     he_tri_ini(nv0, nt0, tri, &he0);
