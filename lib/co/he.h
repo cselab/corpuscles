@@ -50,5 +50,7 @@ int he_D(T *, int **, int **, int **, int **);
 
 int he_bnd_ver(T *, int v);
 int he_ring(T *, int v, /**/ int *n, int **ring);
+int he_hdg_ring(T *, int v, /**/ int *n, int **ring);
+int he_tri_ring(T *, int v, /**/ int *n, int **ring);
 
 #undef T

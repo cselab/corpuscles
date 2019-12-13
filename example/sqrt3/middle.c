@@ -58,6 +58,8 @@ main(int argc, char **argv)
     real *y0;
     real *z;
     real *z0;
+    int nring;
+    int *ring;
 
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
@@ -71,30 +73,19 @@ main(int argc, char **argv)
     ne = he_ne(he);
     nv = he_nv(he);
     nt = he_nt(he);
-    nv0 = nv + ne;
-    nt0 = 4 * nt;
+    nv0 = nv + nt;
+    nt0 = 3 * nt;
     MALLOC(nv0, &x0);
     MALLOC(nv0, &y0);
     MALLOC(nv0, &z0);
     MALLOC(3 * nt0, &tri);
-#define ADD(i, j, k) tri[i0++] = (i), tri[i0++] = (j), tri[i0++] = (k)
-    for (i0 = t = 0; t < nt; t++) {
-        t2ver(he, t, &i, &j, &k);
-        t2edg(he, t, &eij, &ejk, &eki);
-        ij = nv + eij;
-        jk = nv + ejk;
-        ki = nv + eki;
-        ADD(i, ij, ki);
-        ADD(ij, j, jk);
-        ADD(ij, jk, ki);
-        ADD(ki, jk, k);
-        vec_get3(i, j, k, x, y, z, a, b, c);
-        tri_edg_center(a, b, c, bc, ca, ab);
-    }
-    if (i0 != 3 * nt0)
-        ER("i0=%d != nt0=%d", i0, nt0);
-
     for (i = 0; i < nv; i++) {
+	
+	he_ring(he, i, &nring, &ring);
+	for (
+	
+
+	
         vec_get(i, x, y, z, a);
         vec_set(a, i, x0, y0, z0);
     }
