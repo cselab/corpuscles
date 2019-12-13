@@ -3,10 +3,7 @@
 #include <real.h>
 #include <co/err.h>
 #include <co/he.h>
-#include <co/he/multi.h>
 #include <co/macro.h>
-#include <co/memory.h>
-#include <co/off.h>
 #include <co/y.h>
 
 const char *me = "y/c";
