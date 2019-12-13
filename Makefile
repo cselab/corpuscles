@@ -32,12 +32,12 @@ example/ten\
 example/valid\
 example/vec\
 example/volume\
-maxima/lib
+maxima/lib\
 
 E = \
 bin/align\
 bin/cmoment\
-bin/orient
+bin/orient\
 
 install: show  dir
 test: dir
