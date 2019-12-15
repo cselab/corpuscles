@@ -70,7 +70,8 @@ function ini_edg(   e, h)
 
 function ini_tri(   t, h)
 {
-    t = TRI["F", "B", "D"]
+    # t = TRI["F", "B", "D"]
+    t = TRI["A", "B", "C"]
     h = hdg_tri[t]
     printf "%s = hdg_tri(%s);\n", h, t
     push_var(h)
@@ -79,7 +80,7 @@ function ini_tri(   t, h)
 
 function read(file, h, n, nn, f)
 {
-    h = ini_ver()
+    h = ini_tri()
     VISITED[h]
     walk(h)
     read0(hdg_ver, "ver")

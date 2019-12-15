@@ -80,7 +80,6 @@ int
 integral_quad_ini(T ** pq)
 {
     T *q;
-    int status;
 
     MALLOC(1, &q);
     *pq = q;
@@ -99,9 +98,10 @@ integral_quad_apply(T * q, const real a[3], const real b[3],
                     const real c[3], real(*f) (real, real, real, void *),
                     void *param, /**/ real * pres)
 {
+    USED(q);
     struct Param p;
     real A, u, v, w, res;
-    int i, status;
+    int i;
 
     p.f = f;
     p.param = param;
@@ -111,7 +111,7 @@ integral_quad_apply(T * q, const real a[3], const real b[3],
     A = tri_area(a, b, c);
 
     res = 0;
-    for (i = 0; i < sizeof(W) / sizeof(W[0]); i++) {
+    for (i = 0; i < (int)(sizeof(W) / sizeof(W[0])); i++) {
         u = U[i];
         v = V[i];
         w = W[i];

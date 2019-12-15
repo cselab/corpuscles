@@ -63,12 +63,11 @@ int
 bi_cortez_zero_update(T * q, He * he, const real * x, const real * y,
                       const real * z)
 {
-    struct Tensor *O, *K;
+    struct Tensor *O;
     int status, n, i;
     real coeff;
 
     O = &q->O;
-    K = &q->K;
     status =
         oseen3_zero_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz,
                           O->yy, O->yz, O->zz);
