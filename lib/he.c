@@ -14,6 +14,7 @@
 
 struct T {
     int nv, nt, ne, nh;
+    int NV, NT, NE, NH;
     int *nxt, *flp;
     int *ver, *tri, *edg;
     int *hdg_ver, *hdg_edg, *hdg_tri;
@@ -25,6 +26,7 @@ struct T {
 };
 
 static int alloc(T *, int nv, int ne, int nh, int nt);
+static int realloc0(T * q, int nv, int nt, int ne, int nh);
 
 enum { END = -1 };
 static int
@@ -61,10 +63,10 @@ he_ini(HeRead * r, T ** pq)
 
     MALLOC(1, &q);
 
-    nv = q->nv = he_read_nv(r);
-    nt = q->nt = he_read_nt(r);
-    ne = q->ne = he_read_ne(r);
-    nh = q->nh = he_read_nh(r);
+    nv = q->nv = q->NV = he_read_nv(r);
+    nt = q->nt = q->NT = he_read_nt(r);
+    ne = q->ne = q->NE = he_read_ne(r);
+    nh = q->nh = q->NH = he_read_nh(r);
     if (alloc(q, nv, ne, nh, nt) != CO_OK)
         ERR(CO_MEMORY, "alloc failed");
     he_read_nxt(r, &nxt);
@@ -613,23 +615,7 @@ he_edg_split(T * q, int e0)
     q->nh = nh;
 
     /* */
-    REALLOC(nh, &q->nxt);
-    REALLOC(nh, &q->flp);
-    REALLOC(nh, &q->ver);
-    REALLOC(nh, &q->tri);
-    REALLOC(nh, &q->edg);
-    REALLOC(nv, &q->hdg_ver);
-    REALLOC(ne, &q->hdg_edg);
-    REALLOC(nt, &q->hdg_tri);
-    REALLOC(ne, &q->E0);
-    REALLOC(ne, &q->E1);
-    REALLOC(nt, &q->T0);
-    REALLOC(nt, &q->T1);
-    REALLOC(nt, &q->T2);
-    REALLOC(ne, &q->D0);
-    REALLOC(ne, &q->D1);
-    REALLOC(ne, &q->D2);
-    REALLOC(ne, &q->D3);
+    realloc0(q, nv, nt, ne, nh);
     /* */
 
     s_nxt3(t0, h0, h1, h12);
@@ -652,7 +638,6 @@ he_edg_split(T * q, int e0)
     s_hdg_ver(v3, h5);
     s_hdg_ver(v4, h0);
     /* TODO */
-
     return CO_OK;
 }
 
@@ -2034,23 +2019,7 @@ he_tri_split(T * q, int BDF)
     q->ne = ne;
     q->nh = nh;
     /* */
-    REALLOC(nh, &q->nxt);
-    REALLOC(nh, &q->flp);
-    REALLOC(nh, &q->ver);
-    REALLOC(nh, &q->tri);
-    REALLOC(nh, &q->edg);
-    REALLOC(nv, &q->hdg_ver);
-    REALLOC(ne, &q->hdg_edg);
-    REALLOC(nt, &q->hdg_tri);
-    REALLOC(ne, &q->E0);
-    REALLOC(ne, &q->E1);
-    REALLOC(nt, &q->T0);
-    REALLOC(nt, &q->T1);
-    REALLOC(nt, &q->T2);
-    REALLOC(ne, &q->D0);
-    REALLOC(ne, &q->D1);
-    REALLOC(ne, &q->D2);
-    REALLOC(ne, &q->D3);
+    realloc0(q, nv, nt, ne, nh);
     /* */
     s_nxt(hCY, hYB);
     s_nxt(hYC, hCD);
@@ -2349,30 +2318,13 @@ he_tri_split3(T * q, int ABC)
     hCD = nh++;
     hDC = nh++;
 
-
     /* */
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
     q->nh = nh;
 
-     /**/ REALLOC(nh, &q->nxt);
-    REALLOC(nh, &q->flp);
-    REALLOC(nh, &q->ver);
-    REALLOC(nh, &q->tri);
-    REALLOC(nh, &q->edg);
-    REALLOC(nv, &q->hdg_ver);
-    REALLOC(ne, &q->hdg_edg);
-    REALLOC(nt, &q->hdg_tri);
-    REALLOC(ne, &q->E0);
-    REALLOC(ne, &q->E1);
-    REALLOC(nt, &q->T0);
-    REALLOC(nt, &q->T1);
-    REALLOC(nt, &q->T2);
-    REALLOC(ne, &q->D0);
-    REALLOC(ne, &q->D1);
-    REALLOC(ne, &q->D2);
-    REALLOC(ne, &q->D3);
+    realloc0(q, nv, nt, ne, nh);
      /**/ s_nxt(hAB, hBD);
     s_nxt(hCA, hAD);
     s_nxt(hAD, hDC);
@@ -2820,11 +2772,42 @@ he_merge2(T * q0, T * q1, T ** pq)
     CPH(hdg_edg, ne0, ne1);
     CPH(hdg_tri, nt0, nt1);
 
-    q->nv = nv;
-    q->nt = nt;
-    q->ne = ne;
-    q->nh = nh;
+    q->nv = q->NV = nv;
+    q->nt = q->NT = nt;
+    q->ne = q->NE = ne;
+    q->nh = q->NT = nh;
     q->magic = MAGIC;
     *pq = q;
+    return CO_OK;
+}
+
+static int
+realloc0(T * q, int nv, int nt, int ne, int nh)
+{
+    if (nv > q->NV)
+        q->NV *= 2;
+    if (nt > q->NT)
+        q->NT *= 2;
+    if (ne > q->NE)
+        q->NE *= 2;
+    if (nh > q->NH)
+        q->NH *= 2;
+    REALLOC(q->NH, &q->nxt);
+    REALLOC(q->NH, &q->flp);
+    REALLOC(q->NH, &q->ver);
+    REALLOC(q->NH, &q->tri);
+    REALLOC(q->NH, &q->edg);
+    REALLOC(q->NV, &q->hdg_ver);
+    REALLOC(q->NE, &q->hdg_edg);
+    REALLOC(q->NT, &q->hdg_tri);
+    REALLOC(q->NE, &q->E0);
+    REALLOC(q->NE, &q->E1);
+    REALLOC(q->NT, &q->T0);
+    REALLOC(q->NT, &q->T1);
+    REALLOC(q->NT, &q->T2);
+    REALLOC(q->NE, &q->D0);
+    REALLOC(q->NE, &q->D1);
+    REALLOC(q->NE, &q->D2);
+    REALLOC(q->NE, &q->D3);
     return CO_OK;
 }
