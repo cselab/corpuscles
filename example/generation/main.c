@@ -18,6 +18,35 @@ usg()
     exit(2);
 }
 
+#define T Generation
+struct T {
+    int *g;
+    int N;                      /* alloc size of g */
+};
+typedef struct T T;
+int
+generation_ini(He * he, T ** pq)
+{
+    T *q;
+    int n;
+
+    MALLOC(1, &q);
+    n = he_nt(he);
+    MALLOC(n, &q->g);
+    q->N = n;
+    *pq = q;
+    return CO_OK;
+}
+
+static int
+realloc0(T * q, int n)
+{
+    if (n > q->N)
+        q->N *= 2;
+    REALLOC(q->N, &q->g);
+    return CO_OK;
+}
+
 int
 main(int argc, char **argv)
 {
