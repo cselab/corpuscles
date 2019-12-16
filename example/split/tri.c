@@ -31,38 +31,39 @@ main(int __UNUSED argc, const char **argv)
 
     Tflag = 0;
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	case 't':
-	    argv++;
-	    if ((arg = *argv) == NULL) {
-		fprintf(stderr, "%s: -t needs an argument\n", me);
-		exit(2);
-	    }
-	    Tflag = 1;
-	    t = atoi(*argv);
-	    break;
-	default:
-	    fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
-	    exit(2);
-	}
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        case 't':
+            argv++;
+            if ((arg = *argv) == NULL) {
+                fprintf(stderr, "%s: -t needs an argument\n", me);
+                exit(2);
+            }
+            Tflag = 1;
+            t = atoi(*argv);
+            break;
+        default:
+            fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
+            exit(2);
+        }
     y_inif(stdin, &he, &x, &y, &z);
     nt = he_nt(he);
     if (!Tflag) {
-	fprintf(stderr, "%s: triangle (-t) is not set\n", me);
-	exit(2);
+        fprintf(stderr, "%s: triangle (-t) is not set\n", me);
+        exit(2);
     }
     if (t >= nt) {
-	fprintf(stderr, "%s: t=%d >= nt=%d\n", me, t, nt);
-	exit(2);
+        fprintf(stderr, "%s: t=%d >= nt=%d\n", me, t, nt);
+        exit(2);
     }
     MSG("he_nv: %d", he_nv(he));
     MSG("he_nt: %d", he_nt(he));
     he_tri_ijk(he, t, &i, &j, &k);
 
     int h, n, nn;
+
     h = he_hdg_tri(he, t);
     n = he_nxt(he, h);
     nn = he_nxt(he, n);
@@ -74,10 +75,10 @@ main(int __UNUSED argc, const char **argv)
 
     status = he_tri_split(he, t);
     if (status != CO_OK)
-	ER("he_tri_split failed");
+        ER("he_tri_split failed");
     status = he_invariant(he);
     if (status != CO_OK)
-      ER("he_invariant failed");
+        ER("he_invariant failed");
     nv = he_nv(he);
     nt = he_nt(he);
     REALLOC(nv, &x);
@@ -85,7 +86,7 @@ main(int __UNUSED argc, const char **argv)
     REALLOC(nv, &z);
     CALLOC(nt, &color);
     for (i = nt - 6; i < nt; i++)
-      color[i] = 1;
+        color[i] = 1;
     MSG("fnnn: %d %d %d", h, n, nn);
     color[t] = color[h] = color[n] = color[nn] = 1;
     tri_edg_center(a, b, c, u, v, w);

@@ -68,7 +68,7 @@ main(int __UNUSED argc, const char **argv)
 
     status = he_invariant(he);
     if (status != CO_OK)
-        ER("he_invariant failed");    
+        ER("he_invariant failed");
 
     h = he_hdg_edg(he, e);
     f = he_flp(he, h);
