@@ -2743,6 +2743,32 @@ he_bnd_ver(T * he, int v)
 }
 
 int
+he_rank(T * he, int v, int *prank)
+{
+    int h, h0, n, f, rank;
+
+    if (v >= he->nv)
+        ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
+    h = he_hdg_ver(he, v);
+    if (he_bnd(he, h))
+        ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
+    rank = 0;
+    h0 = h = he_nxt(he, h);
+    for (;;) {
+        if (rank >= RANK_MAX)
+            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+                RANK_MAX);
+        n = he_nxt(he, h);
+        f = he_flp(he, n);
+        h = he_nxt(he, f);
+        if (h == h0)
+            break;
+    }
+    *prank = rank;
+    return CO_OK;
+}
+
+int
 he_hdg_ring(T * he, int v, int *prank, int **pring)
 {
     int h, h0, n, f, rank;
