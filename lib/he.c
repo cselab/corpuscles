@@ -2451,12 +2451,17 @@ he_tri_join3(T * q, int X)
     int nt;
     int ne;
     int nh;
+    int rank;
 
-    nv = q->nv;
-    nt = q->nt;
-    ne = q->ne;
-    nh = q->nh;
-    
+    nv = he_nv(q);
+    nt = he_nt(q);
+    ne = he_ne(q);
+    nh = he_nh(q);
+
+    he_rank(q, X, &rank);
+    if (rank != 3)
+        ERR(CO_INDEX, "he_rank(q, %d)=%d", X, rank);
+
     INDEX;
 
     DEL_VER(X);
