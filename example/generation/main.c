@@ -26,11 +26,16 @@ static int tri_xyz(int t, He * he, const real * x, const real * y,
 struct T {
     int *g;
     int *mate;                  /* tri to hdg */
-    int NT;                     /* alloc size of g */
+    int NT;                     /* alloc sizes */
     int NV;
+    int *mbit;                  /* mate bit-flag */
 };
 typedef struct T T;
 static int tri_mate(T *, int, He *);
+
+static int bit_set(int generation, int *mbit);
+static int bit_clear(int generation, int *mbit);
+static int bit_get(int mbit, int generation, int *ans);
 
 int
 generation_ini(He * he, T ** pq)
@@ -43,10 +48,13 @@ generation_ini(He * he, T ** pq)
     n = he_nt(he);
     MALLOC(n, &q->g);
     MALLOC(n, &q->mate);
+    MALLOC(n, &q->mbit);
     q->NT = n;
     q->NV = he_nv(he);
-    for (i = 0; i < n; i++)
+    for (i = 0; i < n; i++) {
         q->g[i] = 0;
+        q->mbit[i] = 0;
+    }
     *pq = q;
     return CO_OK;
 }
@@ -56,6 +64,7 @@ generation_fin(T * q)
 {
     FREE(q->g);
     FREE(q->mate);
+    FREE(q->mbit);
     FREE(q);
     return CO_OK;
 }
@@ -119,13 +128,14 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
 {
     int a;
     int b;
+    int Bit;
     int c;
     int Generation;
+    int nt;
+    int nv;
     int u;
     int v;
     int w;
-    int nv;
-    int nt;
     real Center[3];
 
     if (q->g[t] % 2 != 0)
@@ -134,6 +144,7 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     b = he_nxt(he, a);
     c = he_nxt(he, b);
     Generation = q->g[t];
+    Bit = q->mbit[t];
     center(t, he, *x, *y, *z, Center);
     if (he_tri_split3(he, t) != CO_OK)
         ERR(CO_INDEX, "he_tri_split3 failed (t=%d)", t);
@@ -150,11 +161,13 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     q->g[u] = Generation + 1;
     q->g[v] = Generation + 1;
     q->g[w] = Generation + 1;
+    q->g[u] = Bit;
+    q->g[v] = Bit;
+    q->g[w] = Bit;
 
     *pu = u;
     *pv = v;
     *pw = w;
-
     return CO_OK;
 }
 
@@ -301,4 +314,40 @@ tri_xyz(int t, He * he, const real * x, const real * y, const real * z,
     *u = d[X];
     *v = d[Y];
     *w = d[Z];
+}
+
+
+static int
+bit_set(int n, int *mbit)
+{
+    if (n % 2 == 1)
+        ERR(CO_INDEX, "generation cannot be odd");
+    if (n > 50)
+        ERR(CO_INDEX, "generation is too big (n = %d)", n);
+    n /= 2;
+    (*mbit) |= 1 << n;
+    return CO_OK;
+}
+
+static int
+bit_clear(int n, int *mbit)
+{
+    if (n % 2 == 1)
+        ERR(CO_INDEX, "generation cannot be odd");
+    if (n > 50)
+        ERR(CO_INDEX, "generation is too big (n = %d)", n);
+    n /= 2;
+    (*mbit) &= ~(1 << n);
+    return CO_OK;
+}
+
+static int
+bit_get(int mbit, int n, int *ans)
+{
+    if (n % 2 == 1)
+        ERR(CO_INDEX, "generation cannot be odd");
+    if (n > 50)
+        ERR(CO_INDEX, "generation is too big (n = %d)", n);
+    n /= 2;
+    *ans = (mbit >> n) & 1;
 }
