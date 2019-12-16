@@ -173,12 +173,13 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     q->mbit[w] = Bit;
 
     if (Generation > 0) {
-        if (u == Mate)
+        if (a == Mate)
             bit_set(Generation, &q->mbit[u]);
-        if (v == Mate)
+        if (b == Mate)
             bit_set(Generation, &q->mbit[v]);
-        if (w == Mate)
+        if (c == Mate)
             bit_set(Generation, &q->mbit[w]);
+	MSG("%d %d %d", a == Mate, b == Mate, c == Mate);
     }
 
     *pu = u;
