@@ -74,15 +74,15 @@ realloc0(T * q, int nv, int nt, real ** x, real ** y, real ** z)
 {
     if (nt > q->NT) {
         q->NT *= 2;
-	REALLOC(q->NT, &q->g);
-	REALLOC(q->NT, &q->mate);
-	REALLOC(q->NT, &q->mbit);
+        REALLOC(q->NT, &q->g);
+        REALLOC(q->NT, &q->mate);
+        REALLOC(q->NT, &q->mbit);
     }
     if (nv > q->NV) {
         q->NV *= 2;
-	REALLOC(q->NV, x);
-	REALLOC(q->NV, y);
-	REALLOC(q->NV, z);
+        REALLOC(q->NV, x);
+        REALLOC(q->NV, y);
+        REALLOC(q->NV, z);
     }
     return CO_OK;
 }
@@ -110,7 +110,8 @@ swap0(T * q, int t, He * he, int *status)
     int m;                      /* triangle */
 
     if (q->g[t] % 2 == 0)
-        ERR(CO_INDEX, "cannot swap even triangle (t=%d, g[t]=%d)", t, q->g[t]);
+        ERR(CO_INDEX, "cannot swap even triangle (t=%d, g[t]=%d)", t,
+            q->g[t]);
     e = he_edg(he, q->mate[t]);
     m = tri_mate(q, t, he);
     if (q->g[t] != q->g[m]) {
@@ -134,6 +135,7 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     int Bit;
     int c;
     int Generation;
+    int Mate;
     int nt;
     int nv;
     int u;
@@ -148,6 +150,7 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     c = he_nxt(he, b);
     Generation = q->g[t];
     Bit = q->mbit[t];
+    Mate = q->mate[t];
     center(t, he, *x, *y, *z, Center);
     if (he_tri_split3(he, t) != CO_OK)
         ERR(CO_INDEX, "he_tri_split3 failed (t=%d)", t);
@@ -164,9 +167,19 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     q->g[u] = Generation + 1;
     q->g[v] = Generation + 1;
     q->g[w] = Generation + 1;
+
     q->mbit[u] = Bit;
     q->mbit[v] = Bit;
     q->mbit[w] = Bit;
+
+    if (Generation > 0) {
+        if (u == Mate)
+            bit_set(Generation, &q->mbit[u]);
+        if (v == Mate)
+            bit_set(Generation, &q->mbit[v]);
+        if (w == Mate)
+            bit_set(Generation, &q->mbit[w]);
+    }
 
     *pu = u;
     *pv = v;
@@ -213,7 +226,6 @@ generation_refine(T * q, int t, He * he, real ** x, real ** y, real ** z)
         return split(q, t, he, x, y, z);
     } else {
         m = tri_mate(q, t, he);
-	MSG("%d", m);
         if (q->g[m] == q->g[t] - 2) {
             generation_refine(q, m, he, x, y, z);
             m = tri_mate(q, t, he);
@@ -280,12 +292,12 @@ main(int argc, char **argv)
         if (u > 0)
             generation_refine(generation, i, he, &x, &y, &z);
     }
-//    nt = he_nt(he);
-//    for (i = 0; i < nt; i++) {
-//        tri_xyz(i, he, x, y, z, &u, &v, &w);
-//        if (v > 0)
-//            generation_refine(generation, i, he, &x, &y, &z);
-//    }
+    nt = he_nt(he);
+    for (i = 0; i < nt; i++) {
+        tri_xyz(i, he, x, y, z, &u, &v, &w);
+        if (v > 0)
+            generation_refine(generation, i, he, &x, &y, &z);
+    }
     generation_invariant(generation, he);
 
     nt = he_nt(he);
