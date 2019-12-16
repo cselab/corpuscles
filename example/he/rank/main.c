@@ -15,21 +15,18 @@ main()
     int nv, i, n, status;
 
     err_set_ignore();
-
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
     MALLOC(nv, &rank);
-
     for (i = 0; i < nv; i++) {
-        if (he_bnd_ver(he, i))
-            rank[i] = 0;
-        else {
-            status = he_rank(he, i, &n);
-            if (status != CO_OK)
-                ER("he_rank failed for i = %d", i);
-            rank[i] = n;
-        }
-	MSG("%g", (double)rank[i]);
+	if (he_bnd_ver(he, i))
+	    rank[i] = 0;
+	else {
+	    status = he_rank(he, i, &n);
+	    if (status != CO_OK)
+		ER("he_rank failed for i = %d", i);
+	    rank[i] = n;
+	}
     }
     boff_ver_fwrite(he, x, y, z, rank, stdout);
     FREE(rank);
