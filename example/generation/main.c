@@ -266,7 +266,7 @@ main(int argc, char **argv)
     nt = he_nt(he);
     for (i = 0; i < nt; i++) {
         tri_xyz(i, he, x, y, z, &u, &v, &w);
-        if (u > 0)
+        if (v > 0)
             generation_refine(generation, i, he, &x, &y, &z);
     }
     generation_invariant(generation, he);
