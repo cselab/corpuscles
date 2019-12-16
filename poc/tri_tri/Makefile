@@ -1,20 +1,13 @@
 .POSIX:
 include ../../conf.mk
-M = \
-main.o\
-
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
-CO_LDFLAGS = `co.conf --libs $(PREC)`
-
 LINK = $(CC)
+L = libtri_tri_$(PREC).a
+O = main.o
 
-all: $M
-.o:
-	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
-
-.c.o:
-	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
+$L: $O; ar rv $@ $O && ranlib $@
+.c.o:; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c
 
 .c:
 %: %.c
