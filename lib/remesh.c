@@ -197,6 +197,7 @@ remesh_sqrt3(He * he, real ** px, real ** py, real ** pz, He ** phe0)
     }
     if (he_tri_ini(nv0, nt0, tri, &he0) != CO_OK)
         ERR(CO_INDEX, "he_tri_ini failed");
+    FREE3(x, y, z);
     FREE(tri);
     *phe0 = he0;
     *px = x0;
