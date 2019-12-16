@@ -81,7 +81,7 @@ curv_mean_juelicher_apply(T * q, He * he, const real * x, const real * y,
     }
     for (i = 0; i < nv; i++) {
         if (area[i] == 0)
-	  ERR(CO_NUM, "area[%d] == 0", i);
+            ERR(CO_NUM, "area[%d] == 0", i);
         ans[i] /= 4 * area[i];
     }
     return CO_OK;

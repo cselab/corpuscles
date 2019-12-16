@@ -9,6 +9,7 @@
 #include "co/remesh.h"
 #include "co/memory.h"
 
+static const real pi = 3.141592653589793;
 static int tri_near(He * he, int t, int *i, int *j, int *k);
 static int t2edg(He * he, int t, int *, int *, int *);
 static int t2ver(He * he, int t, int *, int *, int *);
@@ -81,6 +82,7 @@ remesh_loop(He * he, real ** px, real ** py, real ** pz, He ** phe0)
         vec_get3(i, j, k, x, y, z, a, b, c);
         tri_edg_center(a, b, c, bc, ca, ab);
     }
+#undef ADD
     if (i0 != 3 * nt0)
         ERR(CO_INDEX, "i0=%d != nt0=%d", i0, nt0);
 
@@ -113,13 +115,94 @@ remesh_loop(He * he, real ** px, real ** py, real ** pz, He ** phe0)
     }
     if (he_tri_ini(nv0, nt0, tri, &he0) != CO_OK)
         ERR(CO_INDEX, "he_tri_ini failed");
-
     FREE3(x, y, z);
     FREE(tri);
     *phe0 = he0;
     *px = x0;
     *py = y0;
     *pz = z0;
+    return CO_OK;
+}
+
+int
+remesh_sqrt3(He * he, real ** px, real ** py, real ** pz, He ** phe0)
+{
+    He *he0;
+    int i;
+    int i0;
+    int j;
+    int k;
+    int nt;
+    int nt0;
+    int nv;
+    int nv0;
+    int *tri;
+    real alpha;
+    real beta;
+    real a[3];
+    real b[3];
+    real c[3];
+    real *x;
+    real *x0;
+    real *y;
+    real *y0;
+    real *z;
+    real *z0;
+    int nring;
+    int *ring;
+
+    x = *px;
+    y = *py;
+    z = *pz;
+    nv = he_nv(he);
+    nt = he_nt(he);
+    nv0 = nv + nt;
+    nt0 = 3 * nt;
+    MALLOC(nv0, &x0);
+    MALLOC(nv0, &y0);
+    MALLOC(nv0, &z0);
+    MALLOC(3 * nt0, &tri);
+    int v;
+    int iring;
+    real g[3];
+
+    i0 = 0;
+#define ADD(i, j, k) tri[i0++] = (i), tri[i0++] = (j), tri[i0++] = (k)
+    for (v = 0; v < nv; v++) {
+        he_tri_ring(he, v, &nring, &ring);
+        for (iring = 0; ring[iring + 1] != -1; iring++) {
+            he_tri_ijk(he, ring[iring], &i, &j, &k);
+            vec_get3(i, j, k, x, y, z, a, b, c);
+            tri_center(a, b, c, g);
+            vec_set(g, nv + ring[iring], x0, y0, z0);
+            ADD(v, nv + ring[iring], nv + ring[iring + 1]);
+        }
+        ADD(v, nv + ring[iring], nv + ring[0]);
+    }
+#undef ADD
+    for (i = 0; i < nv; i++) {
+        if (he_bnd_ver(he, i))
+            ERR(CO_INDEX, "i=%d is on the boundary", i);
+        vec_get(i, x, y, z, a);
+        he_ring(he, i, &nring, &ring);
+        vec_zero(b);
+        for (j = 0; j < nring; j++) {
+            vec_get(ring[j], x, y, z, c);
+            vec_add(c, b);
+        }
+        beta = (4 - 2 * cos(2 * pi / nring)) / 9;
+        alpha = 1 - beta;
+        vec_linear_combination(alpha, a, beta / nring, b, /**/ c);
+        vec_set(c, i, x0, y0, z0);
+    }
+    if (he_tri_ini(nv0, nt0, tri, &he0) != CO_OK)
+        ERR(CO_INDEX, "he_tri_ini failed");
+    FREE(tri);
+    *phe0 = he0;
+    *px = x0;
+    *py = y0;
+    *pz = z0;
+    return CO_OK;
     return CO_OK;
 }
 

@@ -1,6 +1,7 @@
 int vec_ini(real, real, real, /**/ real[3]);
 int vec_get(int, const real[], const real[], const real[], /**/ real[3]);
-int vec_get2(int i, int j, const real x[], const real y[], const real z[], /**/ real[3], real[3]);
+int vec_get2(int i, int j, const real x[], const real y[], const real z[],
+             /**/ real[3], real[3]);
 int vec_get3(int, int, int, const real[], const real[], const real[],
              /**/ real[3], real[3], real[3]);
 int vec_get4(int, int, int, int, const real[], const real[], const real[],
