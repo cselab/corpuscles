@@ -11,7 +11,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-static const char *me = "split/tri";
+static const char *me = "split/split3";
 static void
 usg()
 {

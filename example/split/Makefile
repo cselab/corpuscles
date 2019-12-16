@@ -1,9 +1,10 @@
 .POSIX:
 include ../../conf.mk
 M = \
+join3\
 one\
+split3\
 tri\
-tri3\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`

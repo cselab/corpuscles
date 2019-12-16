@@ -4,7 +4,7 @@
 #include <co/err.h>
 #include <co/he.h>
 #include <co/memory.h>
-#include <co/vtk.h>
+#include <co/off.h>
 #include <co/y.h>
 
 int
@@ -12,7 +12,7 @@ main()
 {
     real *x, *y, *z, *rank;
     He *he;
-    int nv, nt, i, j, n, *ring, status;
+    int nv, i, n, status;
 
     err_set_ignore();
 
@@ -24,16 +24,14 @@ main()
         if (he_bnd_ver(he, i))
             rank[i] = 0;
         else {
-            status = he_ring(he, i, &n, &ring);
+            status = he_rank(he, i, &n);
             if (status != CO_OK)
-                ER("he_ring failed for i = %d", i);
+                ER("he_rank failed for i = %d", i);
             rank[i] = n;
         }
+	MSG("%g", (double)rank[i]);
     }
-
-    const char *na[] = { "rank", NULL };
-    const real *sc[] = { rank, NULL };
-    vtk_fwrite(he, x, y, z, sc, na, stdout);
+    boff_ver_fwrite(he, x, y, z, rank, stdout);
     FREE(rank);
     return y_fin(he, x, y, z);
 }

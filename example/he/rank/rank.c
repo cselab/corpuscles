@@ -12,7 +12,7 @@ main()
 {
     real *x, *y, *z;
     He *he;
-    int nv, nt, i, j, n, *ring, status, *rank;
+    int nv, i, n, status, *rank;
 
     err_set_ignore();
 
@@ -24,9 +24,9 @@ main()
         if (he_bnd_ver(he, i))
             rank[i] = 0;
         else {
-            status = he_ring(he, i, &n, &ring);
+            status = he_rank(he, i, &n);
             if (status != CO_OK)
-                ER("he_ring failed for i = %d", i);
+                ER("he_rank failed for i = %d", i);
             rank[i] = n;
         }
     }

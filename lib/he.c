@@ -2763,6 +2763,7 @@ he_rank(T * he, int v, int *prank)
         if (rank >= RANK_MAX)
             ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
                 RANK_MAX);
+	rank++;
         n = he_nxt(he, h);
         f = he_flp(he, n);
         h = he_nxt(he, f);
