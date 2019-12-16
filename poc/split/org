@@ -80,7 +80,7 @@ function ini_tri(   t, h)
 
 function read(file, h, n, nn, f)
 {
-    h = ini_tri()
+    h = ini_ver()
     VISITED[h]
     walk(h)
     read0(hdg_ver, "ver")

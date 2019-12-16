@@ -2390,6 +2390,123 @@ he_tri_split3(T * q, int ABC)
     return CO_OK;
 }
 
+#define INDEX					\
+    do {					\
+	hXA = hdg_ver(X);			\
+	hAB = nxt(hXA);				\
+	hBX = nxt(hAB);				\
+	hXB = flp(hBX);				\
+	hBC = nxt(hXB);				\
+	hCX = nxt(hBC);				\
+	hXC = flp(hCX);				\
+	hCA = nxt(hXC);				\
+	hAX = nxt(hCA);				\
+	hAC = flp(hCA);				\
+	hCB = flp(hBC);				\
+	hBA = flp(hAB);				\
+	A = ver(hAB);				\
+	B = ver(hBX);				\
+	C = ver(hCX);				\
+	X = ver(hXA);				\
+	eAC = edg(hCA);				\
+	eBC = edg(hBC);				\
+	eAX = edg(hXA);				\
+	eBX = edg(hBX);				\
+	eCX = edg(hCX);				\
+	eAB = edg(hAB);				\
+	BCX = tri(hBC);				\
+	ABX = tri(hAB);				\
+	ACX = tri(hCA);				\
+	ABC = BCX;				\
+    } while (0)
+int
+he_tri_join3(T * q, int X)
+{
+    int A;
+    int ABC;
+    int ABX;
+    int ACX;
+    int B;
+    int BCX;
+    int C;
+    int eAB;
+    int eAC;
+    int eAX;
+    int eBC;
+    int eBX;
+    int eCX;
+    int hAB;
+    int hAC;
+    int hAX;
+    int hBA;
+    int hBC;
+    int hBX;
+    int hCA;
+    int hCB;
+    int hCX;
+    int hXA;
+    int hXB;
+    int hXC;
+    int nv;
+    int nt;
+    int ne;
+    int nh;
+
+    nv = q->nv;
+    nt = q->nt;
+    ne = q->ne;
+    nh = q->nh;
+    
+    INDEX;
+
+    DEL_VER(X);
+    DEL_EDG(eAX);
+    DEL_EDG(eBX);
+    DEL_EDG(eCX);
+    DEL_TRI(ABX);
+    DEL_TRI(ACX);
+    DEL_HDG(hAX);
+    DEL_HDG(hXA);
+    DEL_HDG(hXB);
+    DEL_HDG(hBX);
+    DEL_HDG(hXC);
+    DEL_HDG(hCX);
+
+    INDEX;
+
+    s_nxt(hAB, hBC);
+    s_nxt(hCA, hAB);
+    s_nxt(hBC, hCA);
+    s_flp(hBA, hAB);
+    s_flp(hAB, hBA);
+    s_flp(hAC, hCA);
+    s_flp(hCA, hAC);
+    s_flp(hCB, hBC);
+    s_flp(hBC, hCB);
+    s_ver(hAB, A);
+    s_ver(hCA, C);
+    s_ver(hBC, B);
+    s_tri(hAB, ABC);
+    s_tri(hCA, ABC);
+    s_tri(hBC, ABC);
+    s_edg(hAB, eAB);
+    s_edg(hCA, eAC);
+    s_edg(hBC, eBC);
+    s_hdg_ver(A, hAB);
+    s_hdg_ver(B, hBC);
+    s_hdg_ver(C, hCA);
+    s_hdg_edg(eAC, hCA);
+    s_hdg_edg(eBC, hBC);
+    s_hdg_edg(eAB, hAB);
+    s_hdg_tri(ABC, hAB);
+    q->nv = nv;
+    q->nt = nt;
+    q->ne = ne;
+    q->nh = nh;
+    return CO_OK;
+}
+
+
 int
 he_swap_tri(T * q, int i, int j)
 {

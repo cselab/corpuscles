@@ -39,6 +39,7 @@ int he_edg_rotate(T *, int e);  /* AKA flip edge */
 int he_edg_split(T *, int e);
 int he_tri_split(T *, int t);
 int he_tri_split3(T *, int t);
+int he_tri_join3(T *, int v); /* NB: vert */
 int he_ver_delete4(T *, int v);
 int he_ver_delete5(T *, int v);
 int he_ver_delete6(T *, int v);
