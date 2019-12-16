@@ -38,6 +38,13 @@ generation_ini(He * he, T ** pq)
     return CO_OK;
 }
 
+int
+generation_fin(T * q)
+{
+    FREE(q->g);
+    return CO_OK;
+}
+
 static int
 realloc0(T * q, int n)
 {
