@@ -52,6 +52,8 @@ char file_stat[99]="stat.dat";
 char file_msg[99]="msg.out";
 FILE *fm;
 
+static int (*ode3_step)(Ode3 * q, real * time, real t, real * x, real * y, real * z);
+  
 static void usg(void) {
   fprintf(stderr, "%s volume V Kv garea A Kga area a Ka \n", me);
   fprintf(stderr, "juelicher_xin Kb C0 Kad DA0D\n");
@@ -259,7 +261,14 @@ int main(__UNUSED int argc, char **argv) {
   fclose(fm);
   
   ode3_ini(RK4, nv, dt, F, NULL, &ode);
-  
+  if ( getenv("FIXED_STEP")) {
+    ode3_step=ode3_apply_fixed;
+    MSG("fixed step");
+  }else
+    {
+      ode3_step=ode3_apply;
+      MSG("adaptive step");
+    }
   CALLOC3(nv, &ux, &uy, &uz);
   CALLOC3(nv, &wx, &wy, &wz);
   CALLOC3(nv, &fx, &fy, &fz);
@@ -342,7 +351,7 @@ int main(__UNUSED int argc, char **argv) {
     
     if ( s > end ) break;
     
-    ode3_apply(ode, &time, t, x, y, z);
+    ode3_step(ode, &time, t, x, y, z);
     
   }
   
