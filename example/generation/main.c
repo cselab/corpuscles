@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <real.h>
-#include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
-#include <co/he/invariant.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/off.h>
@@ -27,13 +25,16 @@ typedef struct T T;
 int
 generation_ini(He * he, T ** pq)
 {
-    T *q;
+    int i;
     int n;
+    T *q;
 
     MALLOC(1, &q);
     n = he_nt(he);
     MALLOC(n, &q->g);
     q->N = n;
+    for (i = 0; i < n; i++)
+	q->g[i] = 0;
     *pq = q;
     return CO_OK;
 }
