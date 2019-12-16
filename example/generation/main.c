@@ -72,15 +72,18 @@ generation_fin(T * q)
 static int
 realloc0(T * q, int nv, int nt, real ** x, real ** y, real ** z)
 {
-    if (nt > q->NT)
+    if (nt > q->NT) {
         q->NT *= 2;
-    if (nv > q->NV)
+	REALLOC(q->NT, &q->g);
+	REALLOC(q->NT, &q->mate);
+	REALLOC(q->NT, &q->mbit);
+    }
+    if (nv > q->NV) {
         q->NV *= 2;
-    REALLOC(q->NT, &q->g);
-    REALLOC(q->NT, &q->mate);
-    REALLOC(q->NV, x);
-    REALLOC(q->NV, y);
-    REALLOC(q->NV, z);
+	REALLOC(q->NV, x);
+	REALLOC(q->NV, y);
+	REALLOC(q->NV, z);
+    }
     return CO_OK;
 }
 
@@ -107,7 +110,7 @@ swap0(T * q, int t, He * he, int *status)
     int m;                      /* triangle */
 
     if (q->g[t] % 2 == 0)
-        ERR(CO_INDEX, "cannot swap even triangle (t=%d)", t);
+        ERR(CO_INDEX, "cannot swap even triangle (t=%d, g[t]=%d)", t, q->g[t]);
     e = he_edg(he, q->mate[t]);
     m = tri_mate(q, t, he);
     if (q->g[t] != q->g[m]) {
@@ -161,9 +164,9 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     q->g[u] = Generation + 1;
     q->g[v] = Generation + 1;
     q->g[w] = Generation + 1;
-    q->g[u] = Bit;
-    q->g[v] = Bit;
-    q->g[w] = Bit;
+    q->mbit[u] = Bit;
+    q->mbit[v] = Bit;
+    q->mbit[w] = Bit;
 
     *pu = u;
     *pv = v;
@@ -206,10 +209,11 @@ generation_refine(T * q, int t, He * he, real ** x, real ** y, real ** z)
     int m;
     int status;
 
-    if (q->g[t] % 2 == 0)
+    if (q->g[t] % 2 == 0) {
         return split(q, t, he, x, y, z);
-    else {
+    } else {
         m = tri_mate(q, t, he);
+	MSG("%d", m);
         if (q->g[m] == q->g[t] - 2) {
             generation_refine(q, m, he, x, y, z);
             m = tri_mate(q, t, he);
@@ -276,12 +280,12 @@ main(int argc, char **argv)
         if (u > 0)
             generation_refine(generation, i, he, &x, &y, &z);
     }
-    nt = he_nt(he);
-    for (i = 0; i < nt; i++) {
-        tri_xyz(i, he, x, y, z, &u, &v, &w);
-        if (v > 0)
-            generation_refine(generation, i, he, &x, &y, &z);
-    }
+//    nt = he_nt(he);
+//    for (i = 0; i < nt; i++) {
+//        tri_xyz(i, he, x, y, z, &u, &v, &w);
+//        if (v > 0)
+//            generation_refine(generation, i, he, &x, &y, &z);
+//    }
     generation_invariant(generation, he);
 
     nt = he_nt(he);

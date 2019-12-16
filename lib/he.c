@@ -2285,10 +2285,10 @@ he_tri_split3(T * q, int ABC)
     int ne;
     int nh;
 
-    nv = q->nv;
-    nt = q->nt;
-    ne = q->ne;
-    nh = q->nh;
+    nv = he_nv(q);
+    nt = he_nt(q);
+    ne = he_ne(q);
+    nh = he_nh(q);
 
     hAB = hdg_tri(ABC);
     hBC = nxt(hAB);
@@ -2763,7 +2763,7 @@ he_rank(T * he, int v, int *prank)
         if (rank >= RANK_MAX)
             ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
                 RANK_MAX);
-	rank++;
+        rank++;
         n = he_nxt(he, h);
         f = he_flp(he, n);
         h = he_nxt(he, f);
@@ -2933,30 +2933,34 @@ he_merge2(T * q0, T * q1, T ** pq)
 static int
 realloc0(T * q, int nv, int nt, int ne, int nh)
 {
-    if (nv > q->NV)
+    if (nv > q->NV) {
         q->NV *= 2;
-    if (nt > q->NT)
+        REALLOC(q->NV, &q->hdg_ver);
+    }
+    if (nt > q->NT) {
         q->NT *= 2;
-    if (ne > q->NE)
+        REALLOC(q->NT, &q->hdg_tri);
+        REALLOC(q->NT, &q->T0);
+        REALLOC(q->NT, &q->T1);
+        REALLOC(q->NT, &q->T2);
+    }
+    if (ne > q->NE) {
         q->NE *= 2;
-    if (nh > q->NH)
+        REALLOC(q->NE, &q->E0);
+        REALLOC(q->NE, &q->E1);
+        REALLOC(q->NE, &q->hdg_edg);
+        REALLOC(q->NE, &q->D0);
+        REALLOC(q->NE, &q->D1);
+        REALLOC(q->NE, &q->D2);
+        REALLOC(q->NE, &q->D3);
+    }
+    if (nh > q->NH) {
         q->NH *= 2;
-    REALLOC(q->NH, &q->nxt);
-    REALLOC(q->NH, &q->flp);
-    REALLOC(q->NH, &q->ver);
-    REALLOC(q->NH, &q->tri);
-    REALLOC(q->NH, &q->edg);
-    REALLOC(q->NV, &q->hdg_ver);
-    REALLOC(q->NE, &q->hdg_edg);
-    REALLOC(q->NT, &q->hdg_tri);
-    REALLOC(q->NE, &q->E0);
-    REALLOC(q->NE, &q->E1);
-    REALLOC(q->NT, &q->T0);
-    REALLOC(q->NT, &q->T1);
-    REALLOC(q->NT, &q->T2);
-    REALLOC(q->NE, &q->D0);
-    REALLOC(q->NE, &q->D1);
-    REALLOC(q->NE, &q->D2);
-    REALLOC(q->NE, &q->D3);
+        REALLOC(q->NH, &q->nxt);
+        REALLOC(q->NH, &q->flp);
+        REALLOC(q->NH, &q->ver);
+        REALLOC(q->NH, &q->tri);
+        REALLOC(q->NH, &q->edg);
+    }
     return CO_OK;
 }
