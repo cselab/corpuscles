@@ -136,8 +136,8 @@ compute_force(He * he, real K, const real * edg,
 
 int
 he_f_repel_force(T * q, He * he,
-                  const real * x, const real * y, const real * z, /**/
-                  real * fx, real * fy, real * fz)
+                 const real * x, const real * y, const real * z, /**/
+                 real * fx, real * fy, real * fz)
 {
     int n;
     real *edg, K;
@@ -154,7 +154,7 @@ he_f_repel_force(T * q, He * he,
 
 real
 he_f_repel_energy(T * q, He * he,
-                   const real * x, const real * y, const real * z)
+                  const real * x, const real * y, const real * z)
 {
     int n;
     real *edg, v, K;

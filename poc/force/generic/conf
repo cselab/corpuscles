@@ -78,6 +78,14 @@ he_f_edg_sq_force
 he_f_edg_sq_energy
 he_f_edg_sq_argv
 
+#include "co/f/repel.h"
+repel
+HeFRepel
+he_f_repel_fin
+he_f_repel_force
+he_f_repel_energy
+he_f_repel_argv
+
 #include "co/f/harmonic.h"
 harmonic
 HeFHarmonic

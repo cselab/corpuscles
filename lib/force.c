@@ -21,6 +21,7 @@
 #include "co/f/rvolume.h"
 #include "co/f/juelicher_xin.h"
 #include "co/f/edg_sq.h"
+#include "co/f/repel.h"
 #include "co/f/harmonic.h"
 #include "co/f/wlc.h"
 #include "co/f/harmonic_ref.h"
@@ -47,6 +48,7 @@ static int force_dvolume_argv(char ***, He *, T **);
 static int force_rvolume_argv(char ***, He *, T **);
 static int force_juelicher_xin_argv(char ***, He *, T **);
 static int force_edg_sq_argv(char ***, He *, T **);
+static int force_repel_argv(char ***, He *, T **);
 static int force_harmonic_argv(char ***, He *, T **);
 static int force_wlc_argv(char ***, He *, T **);
 static int force_harmonic_ref_argv(char ***, He *, T **);
@@ -78,6 +80,7 @@ static const char *Name[] = {
     "rvolume",
     "juelicher_xin",
     "edg_sq",
+    "repel",
     "harmonic",
     "wlc",
     "harmonic_ref",
@@ -101,6 +104,7 @@ static const TypeArgv Argv[] = {
     force_rvolume_argv,
     force_juelicher_xin_argv,
     force_edg_sq_argv,
+    force_repel_argv,
     force_harmonic_argv,
     force_wlc_argv,
     force_harmonic_ref_argv,
@@ -803,6 +807,66 @@ force_edg_sq_argv(char ***p, He * he, /**/ T ** pq)
     q->force.vtable = &edg_sq_vtable;
     *pq = &q->force;
     return he_f_edg_sq_argv(p, he, &q->local);
+}
+
+typedef struct Repel Repel;
+struct Repel {
+    T force;
+    HeFRepel *local;
+};
+static int
+repel_fin(T * q)
+{
+    int status;
+    Repel *b = CONTAINER_OF(q, Repel, force);
+
+    status = he_f_repel_fin(b->local);
+    FREE(q);
+    return status;
+}
+
+static int
+repel_force(T * q, He * he, const real * x, const real * y, const real * z,
+            /**/ real * fx, real * fy, real * fz)
+{
+    Repel *b = CONTAINER_OF(q, Repel, force);
+
+    return he_f_repel_force(b->local, he, x, y, z, /**/ fx, fy, fz);
+}
+
+static real
+repel_energy(T * q, He * he, const real * x, const real * y,
+             const real * z)
+{
+    Repel *b = CONTAINER_OF(q, Repel, force);
+
+    return he_f_repel_energy(b->local, he, x, y, z);
+}
+
+static void *
+repel_pointer(T * q)
+{
+    Repel *b = CONTAINER_OF(q, Repel, force);
+
+    return b->local;
+}
+
+static Vtable repel_vtable = {
+    repel_fin,
+    repel_force,
+    repel_energy,
+    repel_pointer,
+};
+
+int
+force_repel_argv(char ***p, He * he, /**/ T ** pq)
+{
+    Repel *q;
+
+    MALLOC(1, &q);
+    q->force.vtable = &repel_vtable;
+    *pq = &q->force;
+    return he_f_repel_argv(p, he, &q->local);
 }
 
 typedef struct Harmonic Harmonic;

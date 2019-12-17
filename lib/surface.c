@@ -175,7 +175,7 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
 }
 
 int
-surface_ver2tri(He * he, const real *a, /**/ real **pb)
+surface_ver2tri(He * he, const real * a, /**/ real ** pb)
 {
     int i;
     int j;
@@ -184,12 +184,12 @@ surface_ver2tri(He * he, const real *a, /**/ real **pb)
     int t;
     real *b;
     real x;
-    
+
     n = he_nt(he);
     MALLOC(n, &b);
     for (t = 0; t < n; t++) {
-	he_tri_ijk(he, t, &i, &j, &k);
-	b[t] = (a[i] + a[j] + a[k])/3;
+        he_tri_ijk(he, t, &i, &j, &k);
+        b[t] = (a[i] + a[j] + a[k]) / 3;
     }
     *pb = b;
     return CO_OK;
