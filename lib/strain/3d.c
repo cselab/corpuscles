@@ -97,8 +97,11 @@ strain_force_3d(void *param,
               bx, cx, cy,
               ux, wx, wy,
               &dvx, &dvy, &dux, &duy, &dwx, &dwy, &I1, &I2, &area);
-    if (!small(dvx + dux + dwx))
-        ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvx, dux, dwx);
+    if (!small(dvx + dux + dwx)) {
+      tri_off(a0, b0, c0, stderr);
+      tri_off(a, b, c, stderr);
+      ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvx, dux, dwx);
+    }
 
     if (!small(dvy + duy + dwy))
         ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvy, duy, dwy);
