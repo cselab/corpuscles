@@ -8,6 +8,7 @@ prog=run.sh
 case x"$1" in
     x0) i=init/1280.off r=ref/1280.off ;;
     x1) i=init/5120.off r=ref/5120.off ;;
+    xl) i=init/lubrication.off r=ref/1280.off ;;
     *) echo >&2 "$0: unknown level: $1"
     exit 2
     ;;
