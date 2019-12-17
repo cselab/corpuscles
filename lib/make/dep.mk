@@ -793,6 +793,17 @@ co/f/gompper.h\
 co/f/strain.h\
 co/force.h\
 
+repel.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/edg.h\
+co/dedg.h\
+co/f/repel.h\
+
 rvolume.s.o:\
 co/prec/s/real.h\
 co/dtri.h\
@@ -1168,7 +1179,10 @@ povray.s.o:\
 co/prec/s/real.h\
 co/array.h\
 co/err.h\
+co/colormap.h\
 co/he.h\
+co/memory.h\
+co/normal.h\
 co/povray.h\
 
 pre/cons.s.o:\
@@ -1340,15 +1354,16 @@ co/prec/s/real.h\
 
 surface.s.o:\
 co/prec/s/real.h\
+co/array.h\
 co/bbox.h\
 co/err.h\
 co/he.h\
 co/list/tri2.h\
 co/memory.h\
 co/predicate.h\
+co/surface.h\
 co/tri.h\
 co/vec.h\
-co/surface.h\
 
 ten.s.o:\
 co/prec/s/real.h\
@@ -2181,6 +2196,17 @@ co/f/gompper.h\
 co/f/strain.h\
 co/force.h\
 
+repel.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/edg.h\
+co/dedg.h\
+co/f/repel.h\
+
 rvolume.d.o:\
 co/prec/d/real.h\
 co/dtri.h\
@@ -2556,7 +2582,10 @@ povray.d.o:\
 co/prec/d/real.h\
 co/array.h\
 co/err.h\
+co/colormap.h\
 co/he.h\
+co/memory.h\
+co/normal.h\
 co/povray.h\
 
 pre/cons.d.o:\
@@ -2728,15 +2757,16 @@ co/prec/d/real.h\
 
 surface.d.o:\
 co/prec/d/real.h\
+co/array.h\
 co/bbox.h\
 co/err.h\
 co/he.h\
 co/list/tri2.h\
 co/memory.h\
 co/predicate.h\
+co/surface.h\
 co/tri.h\
 co/vec.h\
-co/surface.h\
 
 ten.d.o:\
 co/prec/d/real.h\
@@ -3569,6 +3599,17 @@ co/f/gompper.h\
 co/f/strain.h\
 co/force.h\
 
+repel.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/vec.h\
+co/edg.h\
+co/dedg.h\
+co/f/repel.h\
+
 rvolume.l.o:\
 co/prec/l/real.h\
 co/dtri.h\
@@ -3944,7 +3985,10 @@ povray.l.o:\
 co/prec/l/real.h\
 co/array.h\
 co/err.h\
+co/colormap.h\
 co/he.h\
+co/memory.h\
+co/normal.h\
 co/povray.h\
 
 pre/cons.l.o:\
@@ -4116,15 +4160,16 @@ co/prec/l/real.h\
 
 surface.l.o:\
 co/prec/l/real.h\
+co/array.h\
 co/bbox.h\
 co/err.h\
 co/he.h\
 co/list/tri2.h\
 co/memory.h\
 co/predicate.h\
+co/surface.h\
 co/tri.h\
 co/vec.h\
-co/surface.h\
 
 ten.l.o:\
 co/prec/l/real.h\

@@ -82,6 +82,7 @@ f/meyer.s.o\
 f/meyer_xin.s.o\
 force2.s.o\
 force.s.o\
+f/repel.s.o\
 f/rvolume.s.o\
 f/strain.s.o\
 f/volume.s.o\
@@ -219,6 +220,7 @@ f/meyer.d.o\
 f/meyer_xin.d.o\
 force2.d.o\
 force.d.o\
+f/repel.d.o\
 f/rvolume.d.o\
 f/strain.d.o\
 f/volume.d.o\
@@ -356,6 +358,7 @@ f/meyer.l.o\
 f/meyer_xin.l.o\
 force2.l.o\
 force.l.o\
+f/repel.l.o\
 f/rvolume.l.o\
 f/strain.l.o\
 f/volume.l.o\
