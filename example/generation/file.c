@@ -11,6 +11,8 @@
 #include <co/tri.h>
 #include <co/y.h>
 
+#define SIZE (9999)
+
 static const char *me = "generation/file";
 static void
 usg()
@@ -177,7 +179,6 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
             bit_set(Generation, &q->mbit[v]);
         if (c == Mate)
             bit_set(Generation, &q->mbit[w]);
-	MSG("%d %d %d", a == Mate, b == Mate, c == Mate);
     }
     *pu = u;
     *pv = v;
@@ -260,7 +261,6 @@ int
 main(int argc, char **argv)
 {
     He *he;
-    real *color;
     real *x;
     real *y;
     real *z;
@@ -274,6 +274,7 @@ main(int argc, char **argv)
     const char *File;
     FILE *file;
     int *level;
+    char line[SIZE];
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -281,53 +282,48 @@ main(int argc, char **argv)
         case 'h':
             usg();
             break;
-	case 'f':
-	    argv++;
-	    if ((File = *argv) == NULL) {
-		fprintf(stderr, "%s: -f needs an argument\n", me);
-		exit(2);
-	    }
-	    break;
+        case 'f':
+            argv++;
+            if ((File = *argv) == NULL) {
+                fprintf(stderr, "%s: -f needs an argument\n", me);
+                exit(2);
+            }
+            break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(2);
         }
-    
+
     y_inif(stdin, &he, &x, &y, &z);
     if ((file = fopen(File, "r")) == NULL) {
-	fprintf(stderr, "%s: cannot read '%s'\n", me, File);
-	exit(2);	
+        fprintf(stderr, "%s: cannot read '%s'\n", me, File);
+        exit(2);
     }
     nt = he_nt(he);
     MALLOC(nt, &level);
     for (i = 0; i < nt; i++) {
-	if (fscanf(file, "%d", &level[i]) != 1) {
-	    fprintf(stderr, "%s: fail to read '%s'\n", me, File);
-	    exit(2);	
-	}
+        if (fgets(line, SIZE, file) == NULL) {
+            fprintf(stderr, "%s: fail to read '%s'\n", me, File);
+            exit(2);
+        }
+        if (sscanf(line, "%d", &level[i]) != 1) {
+            fprintf(stderr, "%s: fail to parse '%s' in '%s'\n", me, line,
+                    File);
+            exit(2);
+        }
     }
     fclose(file);
     generation_ini(he, &generation);
     for (i = 0; i < nt; i++) {
         tri_xyz(i, he, x, y, z, &u, &v, &w);
-        if (u > 0)
+        if (level[i])
             generation_refine(generation, i, he, &x, &y, &z);
     }
-    nt = he_nt(he);
-    for (i = 0; i < nt; i++) {
-        tri_xyz(i, he, x, y, z, &u, &v, &w);
-        if (v > 0)
-            generation_refine(generation, i, he, &x, &y, &z);
-    }
-    generation_invariant(generation, he);
 
     nt = he_nt(he);
-    MALLOC(nt, &color);
-    for (i = 0; i < nt; i++)
-        color[i] = generation->g[i];
-    if (boff_tri_fwrite(he, x, y, z, color, stdout) != CO_OK)
+    if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
         ER("boff_tri_fwrite failed");
-    FREE(color);
+    FREE(level);
     generation_fin(generation);
     y_fin(he, x, y, z);
 }

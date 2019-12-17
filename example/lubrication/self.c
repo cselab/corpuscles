@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <math.h>
 #include <real.h>
-#include <co/err.h>
 #include <co/edg.h>
+#include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/off.h>
+#include <co/surface.h>
 #include <co/vec.h>
 #include <co/y.h>
 
@@ -26,17 +27,22 @@ int
 main(int argc, char **argv)
 {
     He *he;
+    int i;
+    int InRing;
+    int j;
+    int k;
+    int nring;
+    int nv;
+    int nt;
+    int Punto;
+    int *ring;
+    real d;
+    real *distance;
+    real *distance_tri;
+    real dm;
     real *x;
     real *y;
     real *z;
-    real *distance;
-    int *ring;
-    int nring;
-    int i;
-    int j;
-    int nv;
-    real d;
-    int Punto;
 
     USED(argc);
     Punto = 0;
@@ -54,12 +60,8 @@ main(int argc, char **argv)
         }
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
+    nt = he_nt(he);
     MALLOC(nv, &distance);
-
-    int k;
-    int InRing;
-    real dm;
-
     for (i = 0; i < nv; i++) {
         dm = 1e32;
         he_ring(he, i, &nring, &ring);
@@ -76,16 +78,19 @@ main(int argc, char **argv)
             if (d < dm)
                 dm = d;
         }
-        distance[i] = dm;
+        distance[i] = 1/(dm*dm);
     }
+    surface_ver2tri(he, distance, &distance_tri);
     if (Punto) {
-	for (i = 0; i < nv; i++)
-	    printf(FMT "\n", distance[i]);
-    } else
-	boff_ver_fwrite(he, x, y, z, distance, stdout);
+	for (i = 0; i < nt; i++)
+	    printf(FMT "\n", distance_tri[i]);
+    } else {
+	boff_tri_fwrite(he, x, y, z, distance_tri, stdout);
+    }
     
     y_fin(he, x, y, z);
     FREE(distance);
+    FREE(distance_tri);
 }
 
 static real

@@ -2,16 +2,16 @@
 #include <math.h>
 #include "real.h"
 
+#include "co/array.h"
 #include "co/bbox.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/list/tri2.h"
 #include "co/memory.h"
 #include "co/predicate.h"
+#include "co/surface.h"
 #include "co/tri.h"
 #include "co/vec.h"
-
-#include "co/surface.h"
 
 enum {
     X, Y, Z
@@ -171,5 +171,26 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
         *p = -d;
     else
         *p = d;
+    return CO_OK;
+}
+
+int
+surface_ver2tri(He * he, const real *a, /**/ real **pb)
+{
+    int i;
+    int j;
+    int k;
+    int n;
+    int t;
+    real *b;
+    real x;
+    
+    n = he_nt(he);
+    MALLOC(n, &b);
+    for (t = 0; t < n; t++) {
+	he_tri_ijk(he, t, &i, &j, &k);
+	b[t] = (a[i] + a[j] + a[k])/3;
+    }
+    *pb = b;
     return CO_OK;
 }

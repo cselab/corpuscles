@@ -177,7 +177,7 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
             bit_set(Generation, &q->mbit[v]);
         if (c == Mate)
             bit_set(Generation, &q->mbit[w]);
-	MSG("%d %d %d", a == Mate, b == Mate, c == Mate);
+        MSG("%d %d %d", a == Mate, b == Mate, c == Mate);
     }
     *pu = u;
     *pv = v;
