@@ -12,13 +12,14 @@
 #include <co/y.h>
 
 static const char *me = "lubrication/self";
+#define FMT   CO_REAL_OUT
+
 static void
 usg()
 {
-    fprintf(stderr, "%s OFF OFF > OFF\n", me);
+    fprintf(stderr, "%s [-p] OFF OFF > OFF\n", me);
     exit(2);
 }
-
 static real dist_ij(int, int, const real *, const real *, const real *);
 
 int
@@ -35,13 +36,18 @@ main(int argc, char **argv)
     int j;
     int nv;
     real d;
+    int Punto;
 
     USED(argc);
+    Punto = 0;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
             usg();
             break;
+	case 'p':
+	    Punto = 1;
+	    break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(2);
@@ -66,24 +72,28 @@ main(int argc, char **argv)
                     InRing = 1;
             if (InRing)
                 continue;
-	    d = dist_ij(i, j, x, y, z);
-	    if (d < dm)
-	      dm = d;
+            d = dist_ij(i, j, x, y, z);
+            if (d < dm)
+                dm = d;
         }
-        distance[i] = 1/(dm*dm*dm);
-	MSG("%g", (double)dm);
+        distance[i] = dm;
     }
-    boff_ver_fwrite(he, x, y, z, distance, stdout);
+    if (Punto) {
+	for (i = 0; i < nv; i++)
+	    printf(FMT "\n", distance[i]);
+    } else
+	boff_ver_fwrite(he, x, y, z, distance, stdout);
+    
     y_fin(he, x, y, z);
     FREE(distance);
 }
 
 static real
-dist_ij(int i, int j, const real *x, const real *y, const real *z)
+dist_ij(int i, int j, const real * x, const real * y, const real * z)
 {
-  real a[3];
-  real b[3];
+    real a[3];
+    real b[3];
 
-  vec_get2(i, j, x, y, z, a, b);
-  return edg_abs(a, b);
+    vec_get2(i, j, x, y, z, a, b);
+    return edg_abs(a, b);
 }

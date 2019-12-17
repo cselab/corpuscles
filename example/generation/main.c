@@ -167,11 +167,9 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     q->g[u] = Generation + 1;
     q->g[v] = Generation + 1;
     q->g[w] = Generation + 1;
-
     q->mbit[u] = Bit;
     q->mbit[v] = Bit;
     q->mbit[w] = Bit;
-
     if (Generation > 0) {
         if (a == Mate)
             bit_set(Generation, &q->mbit[u]);
@@ -181,7 +179,6 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
             bit_set(Generation, &q->mbit[w]);
 	MSG("%d %d %d", a == Mate, b == Mate, c == Mate);
     }
-
     *pu = u;
     *pv = v;
     *pw = w;
