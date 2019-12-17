@@ -212,7 +212,8 @@ main(__UNUSED int argc, char **argv)
 	}
 	if (cnt > 0)
 	    MSG("cnt: %d", cnt);
-        ode3_apply_fixed(ode, &time, t, x, y, z);
+        if (ode3_apply_fixed(ode, &time, t, x, y, z) != CO_OK)
+	  ER("ode3_apply_fixed faild");
     }
     FREE3(Vx, Vy, Vz);
     FREE3(ux, uy, uz);
