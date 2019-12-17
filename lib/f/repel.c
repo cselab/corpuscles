@@ -92,8 +92,8 @@ he_f_repel_force(T * q, He * he,
 
     n = q->n;
     K = q->K;
-    if (he_ne(he) != n)
-        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+    if (he_nv(he) != n)
+        ERR(CO_INDEX, "he_nv(he)=%d != n = %d", he_nv(he), n);
     BEGIN {
 	force_ij(q, i, j, x, y, z, f0);
 	vec_scalar_append(f0, K, i, fx, fy, fz);
@@ -117,8 +117,8 @@ he_f_repel_energy(T * q, He * he,
     
     n = q->n;
     K = q->K;
-    if (he_ne(he) != n)
-        ERR(CO_INDEX, "he_ne(he)=%d != n = %d", he_ne(he), n);
+    if (he_nv(he) != n)
+        ERR(CO_INDEX, "he_nv(he)=%d != n = %d", he_nv(he), n);
     eng = 0;
     BEGIN {
 	eng += energy_ij(q, i, j, x, y, z);
@@ -140,7 +140,7 @@ energy_ij(T * q, int i, int j, const real * x, const real * y, const real * z)
     kernel = q->kernel;
     vec_get2(i, j, x, y, z, a, b);
     dist = edg_abs(a, b);
-    return kernel_dw(kernel, cutoff, dist);
+    return kernel_w(kernel, cutoff, dist);
 }
 
 static real
@@ -159,6 +159,7 @@ force_ij(T * q, int i, int j, const real * x, const real * y, const real * z, re
     dist = edg_abs(a, b);
     dw = kernel_dw(kernel, cutoff, dist);
     vec_minus(a, b, f);
-    vec_scale(dw, f);
+    vec_normalize(f);
+    vec_scale(dw/dist, f);
     return edg_abs(a, b);
 }
