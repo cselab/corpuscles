@@ -260,24 +260,27 @@ generation_invariant(T * q, He * he)
 int
 main(int argc, char **argv)
 {
+    char line[SIZE];
+    const char *File;
+    FILE *file;
+    Generation *generation;
     He *he;
-    real *x;
-    real *y;
-    real *z;
-    int t;
-    int nt;
     int i;
+    int Color;
+    int *level;
+    int nt;
+    int t;
+    real *color;
     real u;
     real v;
     real w;
-    Generation *generation;
-    const char *File;
-    FILE *file;
-    int *level;
-    char line[SIZE];
+    real *x;
+    real *y;
+    real *z;
 
     USED(argc);
     File = NULL;
+    Color = 0;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
@@ -290,14 +293,17 @@ main(int argc, char **argv)
                 exit(2);
             }
             break;
+        case 'c':
+            Color = 1;
+            break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(2);
         }
 
     if (File == NULL) {
-	fprintf(stderr, "%s: file (-f) is not given\n", me);
-	exit(1);
+        fprintf(stderr, "%s: file (-f) is not given\n", me);
+        exit(1);
     }
 
     y_inif(stdin, &he, &x, &y, &z);
@@ -325,10 +331,19 @@ main(int argc, char **argv)
         if (level[i])
             generation_refine(generation, i, he, &x, &y, &z);
     }
+    if (Color) {
+        nt = he_nt(he);
+        MALLOC(nt, &color);
+        for (i = 0; i < nt; i++)
+            color[i] = generation->g[i];
+        if (boff_tri_fwrite(he, x, y, z, color, stdout) != CO_OK)
+            ER("boff_tri_fwrite failed");
+        FREE(color);
+    } else {
+        if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
+            ER("off_he_xyz_fwrite");
+    }
 
-    nt = he_nt(he);
-    if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
-        ER("boff_tri_fwrite failed");
     FREE(level);
     generation_fin(generation);
     y_fin(he, x, y, z);
