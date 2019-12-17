@@ -98,13 +98,18 @@ strain_force_3d(void *param,
               ux, wx, wy,
               &dvx, &dvy, &dux, &duy, &dwx, &dwy, &I1, &I2, &area);
     if (!small(dvx + dux + dwx)) {
+      MSG("bx, cx, cy: " FMT " " FMT " " FMT, bx, cx, cy);
+      MSG("ux, wx, wy: " FMT " " FMT " " FMT, ux, wx, wy);
       tri_off(a0, b0, c0, stderr);
       tri_off(a, b, c, stderr);
       ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvx, dux, dwx);
     }
 
-    if (!small(dvy + duy + dwy))
+    if (!small(dvy + duy + dwy)) {
+        tri_off(a0, b0, c0, stderr);
+        tri_off(a, b, c, stderr);      
         ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvy, duy, dwy);
+    }
 
     tri_2to3(a, b, c, /**/ ex, ey);
     vec_linear_combination(dvx, ex, dvy, ey, /**/ da);
