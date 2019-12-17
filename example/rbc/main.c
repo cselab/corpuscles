@@ -103,7 +103,8 @@ main(__UNUSED int argc, char **argv)
     real *x;
     real *y;
     real *z;
-    
+
+    err_set_ignore();
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
