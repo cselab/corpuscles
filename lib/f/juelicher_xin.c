@@ -459,6 +459,7 @@ f_theta(Param param, He * he, Size size,
         const real * xx, const real * yy, const real * zz,
         /**/ real * fx, real * fy, real * fz)
 {
+    int status;
     int h, e, ne;
     int i, j, k, l;
     real coef, H0;
@@ -474,7 +475,9 @@ f_theta(Param param, He * he, Size size,
             continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        ddih_angle_sup(a, b, c, d, da, db, dc, dd);
+        status = ddih_angle_sup(a, b, c, d, da, db, dc, dd);
+	if (status != CO_OK)
+	  ERR(CO_NUM, "f_theta faield");
         coef = (H[j] + H[k] - 2 * H0) * len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
@@ -538,6 +541,7 @@ fad_theta(He * he, Size size, real coef,
           const real * xx, const real * yy, const real * zz,
           /**/ real * fx, real * fy, real * fz)
 {
+    int status;
     int h, e, ne;
     int i, j, k, l;
     real a[3], b[3], c[3], d[3];
@@ -550,7 +554,9 @@ fad_theta(He * he, Size size, real coef,
             continue;
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        ddih_angle_sup(a, b, c, d, da, db, dc, dd);
+        status = ddih_angle_sup(a, b, c, d, da, db, dc, dd);
+	if (status != CO_OK)
+	  ERR(CO_NUM, "fad_theta faield");
         vec_scalar_append(da, coef * len[e], i, fx, fy, fz);
         vec_scalar_append(db, coef * len[e], j, fx, fy, fz);
         vec_scalar_append(dc, coef * len[e], k, fx, fy, fz);
@@ -586,6 +592,7 @@ he_f_juelicher_xin_force(T * q, He * he,
                          const real * x, const real * y, const real * z,
                          /**/ real * fx_tot, real * fy_tot, real * fz_tot)
 {
+    int status;
     Size size;
     Param param;
     int nv;
@@ -630,7 +637,9 @@ he_f_juelicher_xin_force(T * q, He * he,
     scale(nv, 0.25, /**/ H);
 
     f_len(param, he, size, theta, H, x, y, z, /**/ fx, fy, fz);
-    f_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
+    status = f_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
+    if (status != CO_OK)
+      ERR(CO_NUM, "he_f_juelicher_xin_force");
     f_area(param, he, size, H, x, y, z, /**/ fx, fy, fz);
     scale(nv, K, fx);
     scale(nv, K, fy);
@@ -644,7 +653,9 @@ he_f_juelicher_xin_force(T * q, He * he,
     scurv = (len_theta_tot / 2 - DA0D) / area_tot;
 
     fad_len(he, size, scurv, theta, x, y, z, /**/ fxad, fyad, fzad);
-    fad_theta(he, size, scurv, len, x, y, z, /**/ fxad, fyad, fzad);
+    status = fad_theta(he, size, scurv, len, x, y, z, /**/ fxad, fyad, fzad);
+    if (status != CO_OK)
+      ERR(CO_NUM, "he_f_juelicher_xin_force");
     fad_area(he, size, -scurv * scurv / 2, x, y, z, /**/ fxad, fyad, fzad);
     scale(nv, pi * Kad, fxad);
     scale(nv, pi * Kad, fyad);
