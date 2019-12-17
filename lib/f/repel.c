@@ -2,7 +2,6 @@
 
 #include "real.h"
 #include "co/argv.h"
-#include "co/dedg.h"
 #include "co/edg.h"
 #include "co/err.h"
 #include "co/he.h"
@@ -17,9 +16,7 @@
 #define BEGIN                                                   \
     for (i = 0; i < n; i++) {					\
     he_ring(he, i, &nring, &ring);				\
-    for (j = 0; j < n; j++) {					\
-    if (j == i)							\
-	continue;						\
+    for (j = i + 1; j < n; j++) {				\
     InRing = 0;							\
     for (k = 0; k < nring; k++)					\
 	if (ring[k] == j)					\
@@ -96,7 +93,8 @@ he_f_repel_force(T * q, He * he,
         ERR(CO_INDEX, "he_nv(he)=%d != n = %d", he_nv(he), n);
     BEGIN {
 	force_ij(q, i, j, x, y, z, f0);
-	vec_scalar_append(f0, K, i, fx, fy, fz);
+	vec_scalar_append(f0,  K, i, fx, fy, fz);
+	vec_scalar_append(f0, -K, j, fx, fy, fz);
     END }
     return CO_OK;
 }
@@ -160,6 +158,6 @@ force_ij(T * q, int i, int j, const real * x, const real * y, const real * z, re
     dw = kernel_dw(kernel, cutoff, dist);
     vec_minus(a, b, f);
     vec_normalize(f);
-    vec_scale(dw/dist, f);
-    return edg_abs(a, b);
+    vec_scale(dw, f);
+    return CO_OK;
 }
