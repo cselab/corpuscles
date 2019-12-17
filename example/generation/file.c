@@ -17,7 +17,7 @@ static const char *me = "generation/file";
 static void
 usg()
 {
-    fprintf(stderr, "%s OFF OFF > OFF\n", me);
+    fprintf(stderr, "%s -f file < OFF > OFF\n", me);
     exit(2);
 }
 
@@ -277,6 +277,7 @@ main(int argc, char **argv)
     char line[SIZE];
 
     USED(argc);
+    File = NULL;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
@@ -293,6 +294,11 @@ main(int argc, char **argv)
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(2);
         }
+
+    if (File == NULL) {
+	fprintf(stderr, "%s: file (-f) is not given\n", me);
+	exit(1);
+    }
 
     y_inif(stdin, &he, &x, &y, &z);
     if ((file = fopen(File, "r")) == NULL) {
