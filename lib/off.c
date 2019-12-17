@@ -89,7 +89,6 @@ static int
 read_binary(T * q, int Color, FILE * f)
 {
     enum { X, Y, Z };
-    char line[SIZE];
     int i, j, nv, nt, ibuf[1 + 3], np, nc;
     real *ver;
     int *tri;

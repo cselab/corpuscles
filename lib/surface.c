@@ -144,7 +144,7 @@ surface_distance(T * q, /**/ real x0, real y0, real z0, real * p)
     real a[3], b[3], c[3], r[3], d, m;
     He *he;
     const real *x, *y, *z;
-    int status, First;
+    int status;
 
     if (q->Update == 0)
         ERR(CO_NUM, "surface_update was not called");
@@ -183,7 +183,6 @@ surface_ver2tri(He * he, const real * a, /**/ real ** pb)
     int n;
     int t;
     real *b;
-    real x;
 
     n = he_nt(he);
     MALLOC(n, &b);

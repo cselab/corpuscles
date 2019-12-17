@@ -12,7 +12,6 @@
 #include "co/tensor.h"
 
 #define T BiCortezZero
-static const real pi = 3.141592653589793115997964;
 struct T {
     BiSelfCircle *self;
     Oseen3Zero *oseen;
@@ -64,8 +63,7 @@ bi_cortez_zero_update(T * q, He * he, const real * x, const real * y,
                       const real * z)
 {
     struct Tensor *O;
-    int status, n, i;
-    real coeff;
+    int status;
 
     O = &q->O;
     status =
