@@ -103,7 +103,8 @@ main(__UNUSED int argc, char **argv)
     real *x;
     real *y;
     real *z;
-    
+
+    err_set_ignore();
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
@@ -131,14 +132,14 @@ main(__UNUSED int argc, char **argv)
         ER("Failed to open '%s'", file_msg);
 
     real alpha;
+
     alpha = 2 * (1 - lambda) / (1 + lambda);
     subst_ini(nv, alpha, tol, iter_max, &subst);
     fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
     fprintf(fm, "rho eta lambda gamdot = %g %g %g %g\n",
             rho, eta, lambda, gamdot);
     fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-    fprintf(fm, "a e reg dt = %g %g %g %g\n", a, e, reg,
-            dt);
+    fprintf(fm, "a e reg dt = %g %g %g %g\n", a, e, reg, dt);
     fclose(fm);
     ode3_ini(RK4, nv, dt, F, NULL, &ode);
     CALLOC3(nv, &ux, &uy, &uz);
@@ -173,8 +174,7 @@ main(__UNUSED int argc, char **argv)
                 if (strcmp(name, "garea") == 0) {
                     ega = eng;
                     A = he_f_garea_A(force_pointer(Fo[i]));
-                }
-                else if (strcmp(name, "juelicher_xin") == 0) {
+                } else if (strcmp(name, "juelicher_xin") == 0) {
                     eb = eng;
                     ebl =
                         he_f_juelicher_xin_energy_bend(force_pointer
@@ -204,14 +204,15 @@ main(__UNUSED int argc, char **argv)
         t = time + dt;
         if (s > end)
             break;
-	for (cnt = j = 0; j < 10; j++) {
-	    he_equiangulate(he, x, y, z, &cnt);
-	    if (cnt == 0)
-		break;
-	}
-	if (cnt > 0)
-	    MSG("cnt: %d", cnt);
-        ode3_apply_fixed(ode, &time, t, x, y, z);
+        for (cnt = j = 0; j < 10; j++) {
+            he_equiangulate(he, x, y, z, &cnt);
+            if (cnt == 0)
+                break;
+        }
+        if (cnt > 0)
+            MSG("cnt: %d", cnt);
+        if (ode3_apply_fixed(ode, &time, t, x, y, z) != CO_OK)
+            ER("ode3_apply_fixed faild");
     }
     FREE3(Vx, Vy, Vz);
     FREE3(ux, uy, uz);
@@ -314,10 +315,13 @@ force(He * he, const real * x, const real * y, const real * z, real * fx,
       real * fy, real * fz)
 {
     int i;
+    int status;
 
     i = 0;
     while (Fo[i]) {
-        force_force(Fo[i], he, x, y, z, fx, fy, fz);
+        status = force_force(Fo[i], he, x, y, z, fx, fy, fz);
+        if (status != CO_OK)
+            ER("force failed");
         i++;
     }
     return CO_OK;
@@ -338,15 +342,20 @@ fin(void)
 }
 
 static int
-F(__UNUSED real t, const real * x, const real * y, const real * z, real * vx, real * vy, real * vz, __UNUSED void *p0)
+F(__UNUSED real t, const real * x, const real * y, const real * z,
+  real * vx, real * vy, real * vz, __UNUSED void *p0)
 {
     int i;
+    int status;
     real coef, al;
 
     coef = 2 / (1 + lambda);
     al = -2 / (eta * (1 + lambda));
     array_zero3(nv, fx, fy, fz);
-    force(he, x, y, z, fx, fy, fz);
+
+    status = force(he, x, y, z, fx, fy, fz);
+    if (status != CO_OK)
+        ER("force faield");
     bi_update(bi, he, x, y, z);
     array_zero3(nv, vx, vy, vz);
     for (i = 0; i < nv; i++)
@@ -356,7 +365,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z, real * vx, re
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
     if (subst_niter(subst) > 1)
-	MSG("Subst.iiter: %d", subst_niter(subst));
+        MSG("Subst.iiter: %d", subst_niter(subst));
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);

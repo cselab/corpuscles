@@ -80,7 +80,8 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
         SET(i, i, 0, ozz);
         for (j = i + 1; j < n; j++) {
             i_vec_get(j, x, y, z, b);
-            oseen(a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+	    if (oseen(a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
+	      ERR(CO_NUM, "ossen failed (i=%d, j=%d)", i, j);
             SET(i, j, xx, oxx);
             SET(i, j, xy, oxy);
             SET(i, j, xz, oxz);

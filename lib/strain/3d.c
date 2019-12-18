@@ -89,26 +89,28 @@ strain_force_3d(void *param,
     real dvx, dvy, dux, duy, dwx, dwy;
     real area, I1, I2;
     real ex[3], ey[3], deng;
+    int status;
 
     tri_3to2(a0, b0, c0, /**/ &bx, &cx, &cy);
     tri_3to2(a, b, c, /**/ &ux, &wx, &wy);
 
-    strain_2d(param, F1, F2,
-              bx, cx, cy,
-              ux, wx, wy,
-              &dvx, &dvy, &dux, &duy, &dwx, &dwy, &I1, &I2, &area);
+    status = strain_2d(param, F1, F2,
+                       bx, cx, cy,
+                       ux, wx, wy,
+                       &dvx, &dvy, &dux, &duy, &dwx, &dwy, &I1, &I2,
+                       &area);
+    if (status != CO_OK)
+        goto err;
     if (!small(dvx + dux + dwx))
-        ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvx, dux, dwx);
-
+        goto err;
     if (!small(dvy + duy + dwy))
-        ERR(CO_NUM, "2d force fails: " FMT " " FMT " " FMT, dvy, duy, dwy);
-
+        goto err;
     tri_2to3(a, b, c, /**/ ex, ey);
     vec_linear_combination(dvx, ex, dvy, ey, /**/ da);
     vec_linear_combination(dux, ex, duy, ey, /**/ db);
     vec_linear_combination(dwx, ex, dwy, ey, /**/ dc);
     if (!assert_force_3d(a, b, c, da, db, dc))
-        ERR(CO_NUM, "bad 3d forces in triangle");
+        goto err;
     area = fabs(area);
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
@@ -121,6 +123,12 @@ strain_force_3d(void *param,
         vec_axpy(deng, dc, dc_tot);
     }
     return CO_OK;
+  err:
+    MSG("bx, cx, cy: " FMT " " FMT " " FMT, bx, cx, cy);
+    MSG("ux, wx, wy: " FMT " " FMT " " FMT, ux, wx, wy);
+    tri_off(a0, b0, c0, stderr);
+    tri_off(a, b, c, stderr);
+    ERR(CO_NUM, "strain_force_3d failed");
 }
 
 static real

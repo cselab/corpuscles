@@ -2,12 +2,15 @@
 
 . co.util
 
-export EPSREL=0.01 EPSABS=0.01
+export EPSREL=0.001 EPSABS=0.001
 prog=run.sh
 
 case x"$1" in
     x0) i=init/1280.off r=ref/1280.off ;;
     x1) i=init/5120.off r=ref/5120.off ;;
+    xl) i=init/lubrication.off r=ref/1280.off ;;
+    xl2) i=init/lubrication2.off r=ref/lubrication2.off ;;
+    xa) i=init/amr.off r=ref/amr.off ;;
     *) echo >&2 "$0: unknown level: $1"
     exit 2
     ;;
@@ -17,8 +20,6 @@ V=2.6892
 kv=20000
 A=12.5663706144
 kga=20000
-R=1
-D=0.000898798148042
 rho=1
 eta=645.928652122
 lambda=5
