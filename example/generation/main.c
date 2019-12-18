@@ -267,12 +267,6 @@ generation_write(T * q, He * he, const real * x, const real * y,
     int v;
     int *mver;
 
-    if (fprintf(file, "LIST\n") < 0)
-        ERR(CO_IO, "generation_write failed");
-    fprintf(file, "{\n");
-    status = off_he_xyz_fwrite(he, x, y, z, file);
-    if (status != CO_OK)
-        ERR(CO_IO, "off_he_xyz_fwrite failed");
     n = he_nt(he);
     MALLOC(n, &mver);
     for (t = 0; t < n; t++)
@@ -283,8 +277,14 @@ generation_write(T * q, He * he, const real * x, const real * y,
             h = he_nxt(he, h);
             h = he_nxt(he, h);
             v = he_ver(he, h);
-            MSG("%d", v);
         }
+    fprintf(file, "{  ");
+    if (fprintf(file, "LIST\n") < 0)
+        ERR(CO_IO, "generation_write failed");
+    fprintf(file, "{  ");
+    if (off_he_xyz_fwrite(he, x, y, z, file) != CO_OK)
+        ERR(CO_IO, "off_he_xyz_fwrite failed");
+    fprintf(file, "}\n");
     write_tri(n, q->g, "g", file);
     write_tri(n, q->mbit, "mbit", file);
     write_tri(n, mver, "mver", file);   /* "mate ver" */
@@ -410,7 +410,7 @@ write_tri(int n, int *a, const char *name, FILE * file)
 {
     int i;
 
-    if (fprintf(file, "{\n") < 0)
+    if (fprintf(file, "{  ") < 0)
         ERR(CO_INDEX, "write_tri faield");
     fprintf(file, "COMMENT TRI_INT %s\n", name);
     fprintf(file, "{\n");
