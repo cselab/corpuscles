@@ -4,3 +4,5 @@ int vtk_fwrite(He *, const real *, const real *, const real *,
                const real **, const char **, /**/ FILE *);
 int vtk_tri_fwrite(He *, const real *, const real *, const real *,
                    const real **, const char **, /**/ FILE *);
+int vtk_tri_int_fwrite(He *, const real *, const real *, const real *,
+		       const int **, const char **, /**/ FILE *);

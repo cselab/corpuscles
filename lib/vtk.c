@@ -83,6 +83,28 @@ vtk_tri_fwrite(He * he, const real * x, const real * y, const real * z,
     return status;
 }
 
+int
+vtk_tri_int_fwrite(He * he, const real * x, const real * y, const real * z,
+		   const int * scalars[], const char *names[], /**/ FILE * f)
+{
+    int i;
+    int n;
+    int status;
+    int *type;
+    const void **data;
+
+    n = count(names);
+    MALLOC(n, &type);
+    MALLOC(n, &data);
+    for (i = 0; i < n; i++) {
+        type[i] = VTK_INT;
+        data[i] = (void *) scalars[i];
+    }
+    status = tri_fwrite(he, x, y, z, type, names, data, f);
+    FREE(type);
+    return status;
+}
+
 static int
 tri_fwrite(He * he, const real * x, const real * y, const real * z,
            const int type[], const char *names[], const void *scalars[],
