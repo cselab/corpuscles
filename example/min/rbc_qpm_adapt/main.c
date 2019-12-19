@@ -470,11 +470,11 @@ static int main0(real *vx, real *vy, real *vz,
             fm = fopen(fullpath(filemsg), "a");
             static int First = 1;
             if (First) {
-                fputs("dt s t v ca cv et ea ev ek eb ebl ebn es\n", fm);
+                fputs("dt s t v ca cv Kc et ea ev ek eb ebl ebn es\n", fm);
                 First = 0;
             }
             fprintf(fm, "%g %d %g %g %g %g %g %g %g %g %g %g %g %g %g \n",
-                    dt, i, time, ca, cv, vc, Kc, et, ea, ev, ek, eb, ebl, ebn, es);
+                    dt, i, time, vc, ca, cv, Kc, et, ea, ev, ek, eb, ebl, ebn, es);
             fclose(fm);
 
         }//i%freq_screen
