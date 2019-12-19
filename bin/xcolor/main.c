@@ -141,7 +141,7 @@ main(int argc, char **a)
     const char *name[] = { "color", NULL };
     switch (Output) {
     case VTK:
-        vtk_fwrite(p, x, y, z, scal, name, stdout);
+        vtk_write(p, x, y, z, scal, name, stdout);
         break;
     case OFF:
         boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);

@@ -19,7 +19,7 @@ static int tri_fwrite(He *, const real *, const real *, const real *,
                       /**/ FILE * f);
 
 int
-vtk_fwrite(He * he, const real * x, const real * y, const real * z,
+vtk_write(He * he, const real * x, const real * y, const real * z,
            const real * scalars[], const char *names[], /**/ FILE * f)
 {
     int np, nv, nt, r, i, n_sc, i_sc;
@@ -84,7 +84,7 @@ vtk_tri_write(He * he, const real * x, const real * y, const real * z,
 }
 
 int
-vtk_tri_int_fwrite(He * he, const real * x, const real * y, const real * z,
+vtk_tri_int_write(He * he, const real * x, const real * y, const real * z,
 		   const int * scalars[], const char *names[], /**/ FILE * f)
 {
     int i;

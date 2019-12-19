@@ -29,7 +29,7 @@ int main0() {
     MSG("min: " FMT, array_min(nv, area));
     MSG("max: " FMT, array_max(nv, area));
 
-    vtk_fwrite(he, x, y, z, sc, na, stdout);
+    vtk_write(he, x, y, z, sc, na, stdout);
 
     return CO_OK;
 }

@@ -43,7 +43,7 @@ main(int argc, char **argv)
     
     const int *scalars[] = {id, NULL};
     const char *names[] = {"id", NULL};
-    vtk_tri_int_fwrite(he, x, y, z, scalars, names, stdout);
+    vtk_tri_int_write(he, x, y, z, scalars, names, stdout);
     FREE(id);
     y_fin(he, x, y, z);
 }

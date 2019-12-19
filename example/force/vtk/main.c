@@ -57,7 +57,7 @@ static void main0() {
 
     const char *na[] = {"fm", "fx", "fy", "fz", "area", NULL};
     const real *sc[] = {fm, fx, fy, fz, area, NULL};
-    vtk_fwrite(he, x, y, z, sc, na, stdout);
+    vtk_write(he, x, y, z, sc, na, stdout);
     force_fin(force);
 }
 
