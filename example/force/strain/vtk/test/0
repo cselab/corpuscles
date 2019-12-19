@@ -1,3 +1,0 @@
-# nTEST: 0
-co.run ./main  $(co.path)/sph/icosahedron/0.off lim  1 2 3 4 5 6 < $(co.path)/rbc/icosahedron/0.off
-uscale 1e6 tri.vtk ver.vtk > main.out.txt
