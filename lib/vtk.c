@@ -15,12 +15,12 @@
 
 static int count(const char *a[]);
 static int tri_write(He *, const real *, const real *, const real *,
-                      const int type[], const char *[], const void *[],
-                      /**/ FILE * f);
+                     const int type[], const char *[], const void *[],
+                     /**/ FILE * f);
 
 int
 vtk_write(He * he, const real * x, const real * y, const real * z,
-           const real * scalars[], const char *names[], /**/ FILE * f)
+          const real * scalars[], const char *names[], /**/ FILE * f)
 {
     int np, nv, nt, r, i, n_sc, i_sc;
     int a, b, c;
@@ -63,7 +63,7 @@ vtk_write(He * he, const real * x, const real * y, const real * z,
 
 int
 vtk_tri_write(He * he, const real * x, const real * y, const real * z,
-               const real * scalars[], const char *names[], /**/ FILE * f)
+              const real * scalars[], const char *names[], /**/ FILE * f)
 {
     int i;
     int n;
@@ -85,7 +85,7 @@ vtk_tri_write(He * he, const real * x, const real * y, const real * z,
 
 int
 vtk_tri_int_write(He * he, const real * x, const real * y, const real * z,
-		   const int * scalars[], const char *names[], /**/ FILE * f)
+                  const int *scalars[], const char *names[], /**/ FILE * f)
 {
     int i;
     int n;
@@ -106,16 +106,23 @@ vtk_tri_int_write(He * he, const real * x, const real * y, const real * z,
 }
 
 int
-vtk_tri_int_read(FILE * f, const char *names[], He **he, const real ** x, const real ** y, const real ** z, const int ** scalars[])
+vtk_tri_int_read(FILE * f, const char *names[], He ** he, const real ** x,
+                 const real ** y, const real ** z, const int **scalars[])
 {
+    int NLINE;
+    int nline;
+    int iline;
+
+    iline = nline = NLINE = 0;
+
     return CO_OK;
 }
 
 
 static int
 tri_write(He * he, const real * x, const real * y, const real * z,
-           const int type[], const char *names[], const void *scalars[],
-           /**/ FILE * f)
+          const int type[], const char *names[], const void *scalars[],
+          /**/ FILE * f)
 {
     int np, nv, nt, r, i, n_sc, i_sc;
     int a, b, c;
