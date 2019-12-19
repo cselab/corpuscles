@@ -6,9 +6,9 @@
 #include <co/he/invariant.h>
 #include <co/macro.h>
 #include <co/memory.h>
-#include <co/off.h>
 #include <co/vec.h>
 #include <co/tri.h>
+#include <co/vtk.h>
 #include <co/y.h>
 
 static const char *me = "generation/main";
@@ -36,7 +36,6 @@ static int tri_mate(T *, int, He *);
 static int bit_set(int generation, int *mbit);
 static int bit_clear(int generation, int *mbit);
 static int bit_get(int mbit, int generation, int *ans);
-static int write_tri(int n, int *a, const char *name, FILE * file);
 
 int
 generation_ini(He * he, T ** pq)
@@ -277,18 +276,14 @@ generation_write(T * q, He * he, const real * x, const real * y,
             h = he_nxt(he, h);
             h = he_nxt(he, h);
             v = he_ver(he, h);
+	    mver[t] = v;
         }
-    fprintf(file, "{  ");
-    if (fprintf(file, "LIST\n") < 0)
-        ERR(CO_IO, "generation_write failed");
-    fprintf(file, "{  ");
-    if (off_he_xyz_fwrite(he, x, y, z, file) != CO_OK)
-        ERR(CO_IO, "off_he_xyz_fwrite failed");
-    fprintf(file, "}\n");
-    write_tri(n, q->g, "g", file);
-    write_tri(n, q->mbit, "mbit", file);
-    write_tri(n, mver, "mver", file);   /* "mate ver" */
-    fprintf(file, "}\n");
+
+    const char *names[] = {"g", "mbit", "mver", NULL};
+    const int *scalars[] = {q->g, q->mbit, mver, NULL};
+    status = vtk_tri_int_write(he, x, y, z, scalars, names, stdout);
+    if (status != CO_OK)
+	ERR(CO_IO, "vtk_tri_int_write faield");
     FREE(mver);
     return CO_OK;
 }
@@ -340,8 +335,8 @@ main(int argc, char **argv)
     MALLOC(nt, &color);
     for (i = 0; i < nt; i++)
         color[i] = generation->g[i];
-    /* if (boff_tri_fwrite(he, x, y, z, color, stdout) != CO_OK)
-       ER("boff_tri_fwrite failed"); */
+    /* if (boff_tri_write(he, x, y, z, color, stdout) != CO_OK)
+       ER("boff_tri_write failed"); */
     generation_write(generation, he, x, y, z, stdout);
     FREE(color);
     generation_fin(generation);
@@ -403,20 +398,4 @@ bit_get(int mbit, int n, int *ans)
         ERR(CO_INDEX, "generation is too big (n = %d)", n);
     n /= 2;
     *ans = (mbit >> n) & 1;
-}
-
-static int
-write_tri(int n, int *a, const char *name, FILE * file)
-{
-    int i;
-
-    if (fprintf(file, "{  ") < 0)
-        ERR(CO_INDEX, "write_tri faield");
-    fprintf(file, "COMMENT TRI_INT %s\n", name);
-    fprintf(file, "{\n");
-    for (i = 0; i < n; i++)
-        fprintf(file, "%d\n", a[i]);
-    fprintf(file, "}\n");
-    fprintf(file, "}\n");
-    return CO_OK;
 }
