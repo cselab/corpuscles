@@ -62,8 +62,9 @@ then
 
     Re=$(echo $gamdot $R $rho ${eta_out} | awk '{print $1*$2*$3/$4}')
     echo Re=$Re
-    
-    in_file=../ref/ini_F100_l3_s.off
+
+    #in_file=../ref/ini_F100_l3_s.off
+    in_file=../ref/stretch_H1979_d01_s.off
     ref_file=../ref/reference_s.off
     
     echo "input file:" $in_file
@@ -85,7 +86,7 @@ then
     echo "fdt="$fdt
     echo "Kc="$Kc
     
-    folder="lam${flam}_num${num}_dt${fdt}_Kc${Kc}"
+    folder="lam${flam}_num${num}_dt${fdt}_Kc${Kc}b"
     
     if [ ! -d $folder ]; then
 	mkdir $folder
