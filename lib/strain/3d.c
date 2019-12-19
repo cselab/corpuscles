@@ -118,7 +118,7 @@ int
 strain_energy_3d(void *param, real(*F) (void *, real, real),
                  const real a0[3], const real b0[3], const real c0[3],
                  const real a[3], const real b[3], const real c[3],
-                 real * p_eng, real * p_deng)
+                 real * p_eng)
 {
     real bx, cx, cy, ux, wx, wy;
     real I1, I2, A, eng, deng;
@@ -132,7 +132,31 @@ strain_energy_3d(void *param, real(*F) (void *, real, real),
     deng = F(param, I1, I2);
     eng = deng * fabs(A);
     *p_eng = eng;
-    *p_deng = deng;
+    return CO_OK;
+}
+
+int
+strain_energy_3d_ab(void *param, int(*G) (void *, real, real, real*, real*),
+		    const real a0[3], const real b0[3], const real c0[3],
+		    const real a[3], const real b[3], const real c[3],
+		    real * pa, real * pb)
+{
+    real bx, cx, cy, ux, wx, wy;
+    real I1, I2, A, eng, deng;
+    real ea;
+    real eb;
+
+    tri_3to2(a0, b0, c0, /**/ &bx, &cx, &cy);
+    tri_3to2(a, b, c, /**/ &ux, &wx, &wy);
+    strain_2d(param, Dummy, Dummy,
+              bx, cx, cy,
+              ux, wx, wy, NULL, NULL, NULL, NULL, NULL, NULL, &I1, &I2,
+              &A);
+    G(param, I1, I2, &ea, &eb);
+    ea *= fabs(A);
+    eb *= fabs(A);
+    *pa = ea;
+    *pb = eb;
     return CO_OK;
 }
 

@@ -229,7 +229,6 @@ strain_energy(T * q, const real a0[3], const real b0[3], const real c0[3],
 
     param = &q->param;
     F = q->F;
-    strain_energy_3d((void *) param, F, a0, b0, c0, a, b, c, /**/ &eng,
-		     &deng);
+    strain_energy_3d((void *) param, F, a0, b0, c0, a, b, c, /**/ &eng);
     return eng;
 }
