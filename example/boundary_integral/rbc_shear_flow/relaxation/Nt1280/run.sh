@@ -85,14 +85,14 @@ then
     echo "fdt="$fdt
     echo "Kc="$Kc
     
-    folder="lam${flam}_num${num}_dt${fdt}_Kc${Kc}a"
+    folder="lam${flam}_num${num}_dt${fdt}_Kc${Kc}"
     
     if [ ! -d $folder ]; then
 	mkdir $folder
     fi
     cd $folder
     
-    co.run EPSREL=0.1 EPSABS=0.1 ../../../mains volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
+    co.run EPSREL=0.1 EPSABS=0.1 ../../../main volume $V $Kv garea $A $Kga juelicher_xin $Kb $C0 $Kad $DA0D strain $ref_file lim $Ka $mub $a3 $a4 $b1 $b2 cortez_zero $R $D $rho ${eta_out} $lambda $gamdot $dt $start $end $freq_out $freq_stat '<' $in_file '1>/dev/null' '2>/dev/null'
     
 else
     
