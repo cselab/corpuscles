@@ -1435,9 +1435,11 @@ co/endian.h\
 
 vtk.s.o:\
 co/prec/s/real.h\
-inc/def.h\
 co/err.h\
 co/he.h\
+co/memory.h\
+inc/def.h\
+co/vtk.h\
 
 y.s.o:\
 co/prec/s/real.h\
@@ -2813,9 +2815,11 @@ co/endian.h\
 
 vtk.d.o:\
 co/prec/d/real.h\
-inc/def.h\
 co/err.h\
 co/he.h\
+co/memory.h\
+inc/def.h\
+co/vtk.h\
 
 y.d.o:\
 co/prec/d/real.h\
@@ -4191,9 +4195,11 @@ co/endian.h\
 
 vtk.l.o:\
 co/prec/l/real.h\
-inc/def.h\
 co/err.h\
 co/he.h\
+co/memory.h\
+inc/def.h\
+co/vtk.h\
 
 y.l.o:\
 co/prec/l/real.h\
