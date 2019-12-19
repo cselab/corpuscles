@@ -13,10 +13,12 @@
 #define T Strain
 #define P StrainParam
 
+typedef int(*TypeGun) (void *, real, real, /**/ real *, real *);
 typedef real(*TypeFun) (void *, real, real);
 
 struct T {
     TypeFun F, F1, F2;
+    TypeGun G;
     P param;
 };
 
@@ -24,81 +26,6 @@ static real
 sq(real x)
 {
     return x * x;
-}
-
-static real
-F_skalak(void *p0, real I1, real I2)
-{
-    P *p;
-    real Ks, Ka, I1s, I2s;
-
-    p = (P *) p0;
-    Ks = p->Ks;
-    Ka = p->Ka;
-    I1s = 2 * I1;
-    I2s = 4 * I2 + 2 * I1;
-    return Ks * (sq(I1s) / 2 + I1s - I2s) / 4 + Ka * sq(I2s) / 8;
-}
-
-static real
-F1_skalak(void *p0, real I1, __UNUSED real I2)
-{
-    P *p;
-    real Ks, Ka;
-
-    p = (P *) p0;
-    Ks = p->Ks;
-    Ka = p->Ka;
-    return I1 * Ks + Ka / 4;
-}
-
-static real
-F2_skalak(void *p0, __UNUSED real I1, __UNUSED real I2)
-{
-    P *p;
-    real Ka, Ks;
-
-    p = (P *) p0;
-    Ka = p->Ka;
-    Ks = p->Ks;
-    return -(2 * Ks - Ka) / 2;
-}
-
-static real
-F_evans(void *p0, __UNUSED real I1, __UNUSED real I2)
-{
-    P *p;
-    real Ks, Ka, I1s, I2s;
-
-    p = (P *) p0;
-    Ka = p->Ka;
-    Ks = p->Ks;
-    I1s = I2s = 0;
-    return Ks * (sq(I1s) / 2 + I1s - I2s) / 4 + Ka * sq(I2s) / 8;
-}
-
-static real
-F1_evans(void *p0, real I1, __UNUSED real I2)
-{
-    P *p;
-    real Ks, Ka;
-
-    p = (P *) p0;
-    Ks = p->Ks;
-    Ka = p->Ka;
-    return I1 * Ks + Ka / 4;
-}
-
-static real
-F2_evans(void *p0, __UNUSED real I1, __UNUSED real I2)
-{
-    P *p;
-    real Ka, Ks;
-
-    p = (P *) p0;
-    Ka = p->Ka;
-    Ks = p->Ks;
-    return -(2 * Ks - Ka) / 2;
 }
 
 static real
@@ -116,6 +43,24 @@ F_linear(void *p0, real al, real be)
     A = Ka * al * al / 2;
     B = mu * be;
     return A + B;
+#undef G
+}
+
+static int
+G_linear(void *p0, real al, real be, real *a, real *b)
+{
+#define G(s) s = p->s
+    real A, B;
+    P *p;
+    real Ka, mu;
+
+    p = (P *) p0;
+    G(Ka);
+    G(mu);
+
+    *a = Ka * al * al / 2;
+    *b = mu * be;
+    return CO_OK;
 #undef G
 }
 
@@ -142,6 +87,28 @@ F2_linear(__UNUSED void *p0, __UNUSED real al, __UNUSED real be)
     p = (P *) p0;
     G(mu);
     return mu;
+#undef G
+}
+
+static int
+G_lim(void *p0, real al, real be, real * a, real * b)
+{
+#define G(s) s = p->s
+    real A, B;
+    P *p;
+    real Ka, mu, a3, a4, b1, b2;
+
+    p = (P *) p0;
+    G(Ka);
+    G(mu);
+    G(a3);
+    G(a4);
+    G(b1);
+    G(b2);
+
+    *a = Ka / 2 * (al * al + a3 * al * al * al + a4 * al * al * al * al);
+    *b = mu * (be + b1 * al * be + b2 * be * be);
+    return CO_OK;
 #undef G
 }
 
@@ -210,24 +177,18 @@ strain_ini(const char *name, P param, /**/ T ** pq)
     T *q;
 
     MALLOC(1, &q);
-    if (util_eq(name, "skalak")) {
-        q->F = F_skalak;
-        q->F1 = F1_skalak;
-        q->F2 = F2_skalak;
-    } else if (util_eq(name, "evans")) {
-        q->F = F_evans;
-        q->F1 = F1_evans;
-        q->F2 = F2_evans;
-    } else if (util_eq(name, "linear")) {
-        q->F = F_linear;
-        q->F1 = F1_linear;
-        q->F2 = F2_linear;
+    if (util_eq(name, "linear")) {
+	q->G = G_linear;
+	q->F = F_linear;
+	q->F1 = F1_linear;
+	q->F2 = F2_linear;
     } else if (util_eq(name, "lim")) {
-        q->F = F_lim;
-        q->F1 = F1_lim;
-        q->F2 = F2_lim;
+	q->G = G_lim;
+	q->F = F_lim;
+	q->F1 = F1_lim;
+	q->F2 = F2_lim;
     } else
-        ERR(CO_INDEX, "unknown strain model: '%s'", name);
+	ERR(CO_INDEX, "unknown strain model: '%s'", name);
     q->param = param;
     *pq = q;
     return CO_OK;
@@ -242,9 +203,9 @@ strain_fin(T * q)
 
 int
 strain_force(T * q,
-             const real a0[3], const real b0[3], const real c0[3],
-             const real a[3], const real b[3], const real c[3], /**/
-             real da[3], real db[3], real dc[3])
+	     const real a0[3], const real b0[3], const real c0[3],
+	     const real a[3], const real b[3], const real c[3], /**/
+	     real da[3], real db[3], real dc[3])
 {
     P *param;
     TypeFun F, F1, F2;
@@ -254,13 +215,13 @@ strain_force(T * q,
     F1 = q->F1;
     F2 = q->F2;
     strain_force_3d((void *) param, F, F1, F2, a0, b0, c0, a, b, c, da, db,
-                    dc);
+		    dc);
     return CO_OK;
 }
 
 real
 strain_energy(T * q, const real a0[3], const real b0[3], const real c0[3],
-              const real a[3], const real b[3], const real c[3])
+	      const real a[3], const real b[3], const real c[3])
 {
     real eng, deng;
     P *param;
@@ -269,6 +230,6 @@ strain_energy(T * q, const real a0[3], const real b0[3], const real c0[3],
     param = &q->param;
     F = q->F;
     strain_energy_3d((void *) param, F, a0, b0, c0, a, b, c, /**/ &eng,
-                     &deng);
+		     &deng);
     return eng;
 }
