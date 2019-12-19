@@ -36,6 +36,7 @@ static int tri_mate(T *, int, He *);
 static int bit_set(int generation, int *mbit);
 static int bit_clear(int generation, int *mbit);
 static int bit_get(int mbit, int generation, int *ans);
+static int write_tri(int n, int *a, const char *name, FILE * file);
 
 int
 generation_ini(He * he, T ** pq)
@@ -177,7 +178,6 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
             bit_set(Generation, &q->mbit[v]);
         if (c == Mate)
             bit_set(Generation, &q->mbit[w]);
-        MSG("%d %d %d", a == Mate, b == Mate, c == Mate);
     }
     *pu = u;
     *pv = v;
@@ -256,6 +256,44 @@ generation_invariant(T * q, He * he)
     return CO_OK;
 }
 
+static int
+generation_write(T * q, He * he, const real * x, const real * y,
+                 const real * z, FILE * file)
+{
+    int status;
+    int h;
+    int n;
+    int t;
+    int v;
+    int *mver;
+
+    n = he_nt(he);
+    MALLOC(n, &mver);
+    for (t = 0; t < n; t++)
+        mver[t] = -1;
+    for (t = 0; t < n; t++)
+        if (q->g[t] % 2 == 1) {
+            h = q->mate[t];
+            h = he_nxt(he, h);
+            h = he_nxt(he, h);
+            v = he_ver(he, h);
+        }
+    fprintf(file, "{  ");
+    if (fprintf(file, "LIST\n") < 0)
+        ERR(CO_IO, "generation_write failed");
+    fprintf(file, "{  ");
+    if (off_he_xyz_fwrite(he, x, y, z, file) != CO_OK)
+        ERR(CO_IO, "off_he_xyz_fwrite failed");
+    fprintf(file, "}\n");
+    write_tri(n, q->g, "g", file);
+    write_tri(n, q->mbit, "mbit", file);
+    write_tri(n, mver, "mver", file);   /* "mate ver" */
+    fprintf(file, "}\n");
+    FREE(mver);
+    return CO_OK;
+}
+
+
 int
 main(int argc, char **argv)
 {
@@ -302,8 +340,9 @@ main(int argc, char **argv)
     MALLOC(nt, &color);
     for (i = 0; i < nt; i++)
         color[i] = generation->g[i];
-    if (boff_tri_fwrite(he, x, y, z, color, stdout) != CO_OK)
-        ER("boff_tri_fwrite failed");
+    /* if (boff_tri_fwrite(he, x, y, z, color, stdout) != CO_OK)
+       ER("boff_tri_fwrite failed"); */
+    generation_write(generation, he, x, y, z, stdout);
     FREE(color);
     generation_fin(generation);
     y_fin(he, x, y, z);
@@ -364,4 +403,20 @@ bit_get(int mbit, int n, int *ans)
         ERR(CO_INDEX, "generation is too big (n = %d)", n);
     n /= 2;
     *ans = (mbit >> n) & 1;
+}
+
+static int
+write_tri(int n, int *a, const char *name, FILE * file)
+{
+    int i;
+
+    if (fprintf(file, "{  ") < 0)
+        ERR(CO_INDEX, "write_tri faield");
+    fprintf(file, "COMMENT TRI_INT %s\n", name);
+    fprintf(file, "{\n");
+    for (i = 0; i < n; i++)
+        fprintf(file, "%d\n", a[i]);
+    fprintf(file, "}\n");
+    fprintf(file, "}\n");
+    return CO_OK;
 }
