@@ -15,8 +15,8 @@ include(`co.m4')dnl
 
 enum {X, Y, Z};
 struct Sum3 {
-    HeSum *x, *y, *z;
-    HeSum *a;
+    Sum *x, *y, *z;
+    Sum *a;
 };
 typedef struct Sum3 Sum3;
 
@@ -29,31 +29,31 @@ static int sum3_ini(Sum3 *s) {
 }
 
 static int sum3_fin(Sum3 s) {
-    he_sum_fin(s.x);
-    he_sum_fin(s.y);
-    he_sum_fin(s.z);
-    he_sum_fin(s.a);
+    sum_fin(s.x);
+    sum_fin(s.y);
+    sum_fin(s.z);
+    sum_fin(s.a);
     return CO_OK;
 }
 
 static int sum3_scalar_add(Sum3 s, real a, const real r[3]) {
-    he_sum_add(s.x, a*r[X]);
-    he_sum_add(s.y, a*r[Y]);
-    he_sum_add(s.z, a*r[Z]);
-    he_sum_add(s.a, a);
+    sum_add(s.x, a*r[X]);
+    sum_add(s.y, a*r[Y]);
+    sum_add(s.z, a*r[Z]);
+    sum_add(s.a, a);
     return CO_OK;
 }
 
 static int sum3_get(Sum3 s, /**/ real r[3]) {
     enum {X, Y, Z};
     real a;
-    a = he_sum_get(s.a);
+    a = sum_get(s.a);
     if (a == 0)
         ERR(CO_NUM, "a = 0");
     
-    r[X] = he_sum_get(s.x)/a;
-    r[Y] = he_sum_get(s.y)/a;
-    r[Z] = he_sum_get(s.z)/a;
+    r[X] = sum_get(s.x)/a;
+    r[Y] = sum_get(s.y)/a;
+    r[Z] = sum_get(s.z)/a;
 
     return CO_OK;
 }
