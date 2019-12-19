@@ -14,7 +14,7 @@
 #define SIZE (MAX_STRING_SIZE)
 
 static int count(const char *a[]);
-static int tri_fwrite(He *, const real *, const real *, const real *,
+static int tri_write(He *, const real *, const real *, const real *,
                       const int type[], const char *[], const void *[],
                       /**/ FILE * f);
 
@@ -78,7 +78,7 @@ vtk_tri_write(He * he, const real * x, const real * y, const real * z,
         type[i] = VTK_REAL;
         data[i] = (void *) scalars[i];
     }
-    status = tri_fwrite(he, x, y, z, type, names, data, f);
+    status = tri_write(he, x, y, z, type, names, data, f);
     FREE(type);
     return status;
 }
@@ -100,13 +100,20 @@ vtk_tri_int_write(He * he, const real * x, const real * y, const real * z,
         type[i] = VTK_INT;
         data[i] = (void *) scalars[i];
     }
-    status = tri_fwrite(he, x, y, z, type, names, data, f);
+    status = tri_write(he, x, y, z, type, names, data, f);
     FREE(type);
     return status;
 }
 
+int
+vtk_tri_int_read(FILE * f, const char *names[], He **he, const real ** x, const real ** y, const real ** z, const int ** scalars[])
+{
+    return CO_OK;
+}
+
+
 static int
-tri_fwrite(He * he, const real * x, const real * y, const real * z,
+tri_write(He * he, const real * x, const real * y, const real * z,
            const int type[], const char *names[], const void *scalars[],
            /**/ FILE * f)
 {
