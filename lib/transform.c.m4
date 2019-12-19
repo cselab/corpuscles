@@ -21,10 +21,10 @@ struct Sum3 {
 typedef struct Sum3 Sum3;
 
 static int sum3_ini(Sum3 *s) {
-    he_sum_ini(&s->x);
-    he_sum_ini(&s->y);
-    he_sum_ini(&s->z);
-    he_sum_ini(&s->a);
+    sum_ini(&s->x);
+    sum_ini(&s->y);
+    sum_ini(&s->z);
+    sum_ini(&s->a);
     return CO_OK;
 }
 
