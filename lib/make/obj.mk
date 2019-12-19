@@ -149,7 +149,6 @@ vec.s.o\
 volume.s.o\
 vtk2.s.o\
 vtk.s.o\
-x.s.o\
 y.s.o\
 
 O_D = \
@@ -287,7 +286,6 @@ vec.d.o\
 volume.d.o\
 vtk2.d.o\
 vtk.d.o\
-x.d.o\
 y.d.o\
 
 O_L = \
@@ -425,6 +423,5 @@ vec.l.o\
 volume.l.o\
 vtk2.l.o\
 vtk.l.o\
-x.l.o\
 y.l.o\
 

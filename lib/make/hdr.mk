@@ -71,6 +71,7 @@ co/f/meyer.h\
 co/f/meyer_xin.h\
 co/force2.h\
 co/force.h\
+co/f/repel.h\
 co/f/rvolume.h\
 co/f/strain.h\
 co/f/volume.h\
