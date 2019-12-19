@@ -97,7 +97,7 @@ h_changequote(,)dnl
 
 off0() {
     test -f "$1" &&
-        "$AWK" '{ if ("" $0 ~ /OFF/) exit 0; else exit 1 }' "$1"
+        "$AWK" '{ if ($0 ~ /(OFF)|(LIST)/ ) exit 0; else exit 1 }' "$1"
 }
 off()   { if ! off0 "$1"; then err "not an off file '$1'"; fi; }
 filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
