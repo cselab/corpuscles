@@ -21,14 +21,18 @@ static int nv, nt;
 static HeFStrain *strain;
 static He *he, *he0;
 
+#define FMT   CO_REAL_OUT
 static real energy() { return he_f_strain_energy(strain, he, x, y, z); }
 
-int main0() {
-    real *eng, e, *al, *be;
+int
+main0()
+{
+    real *eng, e, *al, *be, ea, eb;
     he_f_strain_argv(&argv, he, &strain);
 
     he_f_strain_force(strain, he, x, y, z, /**/ fx, fy, fz);
     e = he_f_strain_energy(strain, he, x, y, z);
+    he_f_strain_energies(strain, &ea, &eb);
     he_f_strain_energy_ver(strain, &eng);
 
     he_f_strain_invariants(strain, x, y, z, &al, &be);
@@ -41,6 +45,8 @@ int main0() {
 
     puts("x y z fx fy fz eng area area0 al be");
     punto_fwrite(nv, sc, stdout);
+
+    MSG(FMT " " FMT " " FMT, e, ea, eb);
 
     he_f_strain_fin(strain);
 
