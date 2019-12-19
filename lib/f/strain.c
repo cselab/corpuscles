@@ -213,7 +213,6 @@ he_f_strain_energy(T * q, He * he0, const real * x, const real * y, const real *
     real a[3], b[3], c[3];
     int nv, nt, t;
     int i, j, k;
-    real e0, e;
     real ea;
     real eb;
     He *he;
@@ -225,7 +224,6 @@ he_f_strain_energy(T * q, He * he0, const real * x, const real * y, const real *
 	ERR(CO_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
     if (nt != he_nt(he0))
 	ERR(CO_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
-    e = 0;
     array_zero(nv, q->eng);
     array_zero(nv, q->ea);
     array_zero(nv, q->eb);
@@ -239,64 +237,5 @@ he_f_strain_energy(T * q, He * he0, const real * x, const real * y, const real *
 	q->eb[k] += eb / 3;
     }
     END;
-    return sum_array(nv, q->ea) + sum_array(nv, q->eb);
-}
-
-int
-he_f_strain_invariants(T * q, const real * x, const real * y,
-		       const real * z, /**/ real ** pI1, real ** pI2)
-{
-    real a0[3], b0[3], c0[3];
-    real a[3], b[3], c[3];
-    int nt, nv, t;
-    int i, j, k;
-    real *I1, *I2, I10, I20;
-    He *he;
-
-    he = q->he;
-    nv = he_nv(he);
-    nt = he_nt(he);
-
-    I1 = q->I1;
-    I2 = q->I2;
-    array_zero(nv, I1);
-    array_zero(nv, I2);
-
-    BEGIN {
-	strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
-	I1[i] += I10 / 3;
-	I1[j] += I10 / 3;
-	I1[k] += I10 / 3;
-	I2[i] += I10 / 3;
-	I2[j] += I20 / 3;
-	I2[k] += I20 / 3;
-    } END;
-    *pI1 = I1;
-    *pI2 = I2;
-    return CO_OK;
-}
-
-int
-he_f_strain_energy_ver(T * q, /**/ real ** pa)
-{
-    *pa = q->eng;
-    return CO_OK;
-}
-
-int
-he_f_strain_energies_ver(T * q, /**/ real ** pa, real ** pb)
-{
-    *pa = q->ea;
-    *pb = q->eb;
-    return CO_OK;
-}
-
-int
-he_f_strain_energies(T * q, /**/ real * pa, real * pb)
-{
-    int n;
-    n = he_nv(q->he);
-    *pa = sum_array(n, q->ea);
-    *pb = sum_array(n, q->eb);
-    return CO_OK;
+    return sum_array(nv, q->eb);
 }

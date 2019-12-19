@@ -66,7 +66,7 @@ bi_self_circle_update(T * q, He * he, const real * x, const real * y,
                       const real * z)
 {
     real *area, *area0, *nx, *ny, *nz, *h;
-    int i, n, status;
+    int n, status;
 
     area = q->area;
     nx = q->nx;
@@ -91,11 +91,14 @@ bi_self_circle_single(T * q, He * he, real al, const real * x,
                       const real * fy, const real * fz, /*io */ real * ux,
                       real * uy, real * uz)
 {
-    real *wx, *wy, *wz, *nx, *ny, *nz, *area, *h, normal[3], force[3],
+    real *wx, *wy, *wz, *nx, *ny, *nz, *area, normal[3], force[3],
         reject[3];
     real A, fX, fZ, wX, wZ;
-    int n, i, status;
+    int n, i;
 
+    USED(x);
+    USED(y);
+    USED(z);
     nx = q->nx;
     ny = q->ny;
     nz = q->nz;
@@ -103,7 +106,6 @@ bi_self_circle_single(T * q, He * he, real al, const real * x,
     wy = q->wy;
     wz = q->wz;
     area = q->area;
-    h = q->h;
     n = he_nv(he);
     array_zero3(n, wx, wy, wz);
     for (i = 0; i < n; i++) {
@@ -121,8 +123,6 @@ bi_self_circle_single(T * q, He * he, real al, const real * x,
         vec_scalar_append(reject, fX * wX / (8 * pi), i, wx, wy, wz);
         vec_scalar_append(normal, fZ * wZ / (8 * pi), i, wx, wy, wz);
     }
-    if (status != CO_OK)
-        ERR(CO_NUM, "fm_single failed");
     array_axpy3(n, al, wx, wy, wz, ux, uy, uz);
     return CO_OK;
 }
@@ -133,9 +133,9 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
                       const real * uy, const real * uz, /*io */ real * vx,
                       real * vy, real * vz)
 {
-    int i, n, status;
-    real *wx, *wy, *wz, *ax, *ay, *az, *h;
-    const real *nx, *ny, *nz, *area;
+    int i, n;
+    real *wx, *wy, *wz, *h;
+    const real *area;
     real normal[3], velocity[3], reject[3];
     real uX, p, A;
 
@@ -145,9 +145,6 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
-    nx = q->nx;
-    ny = q->ny;
-    nz = q->nz;
     area = q->area;
     h = q->h;
     n = he_nv(he);
