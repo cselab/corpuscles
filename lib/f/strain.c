@@ -221,16 +221,13 @@ he_f_strain_energy(T * q, He * he0, const real * x, const real * y,
     he = q->he;
     nv = he_nv(he);
     nt = he_nt(he);
-
     if (nv != he_nv(he0))
         ERR(CO_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
     if (nt != he_nt(he0))
         ERR(CO_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
-
     e = 0;
     eng = q->eng;
     engt = q->engt;
-
     array_zero(nv, eng);
     BEGIN {
         e0 = strain_energy(q->strain, a0, b0, c0, a, b, c);
