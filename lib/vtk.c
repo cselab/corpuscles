@@ -60,22 +60,6 @@ vtk_fwrite(He * he, const real * x, const real * y, const real * z,
 }
 
 int
-vtk_write(He * he, const real * x, const real * y, const real * z,
-	  const real * scalars[], const char *names[],
-	  /**/ const char *path)
-{
-    FILE *f;
-
-    if ((f = fopen(path, "w")) == NULL)
-	ERR(CO_IO, "fail to open '%s'", path);
-    if (vtk_fwrite(he, x, y, z, scalars, names, f) != CO_OK)
-	ERR(CO_IO, "fail to write to '%s", path);
-    if (fclose(f) != 0)
-	ERR(CO_IO, "fail to close '%s'", path);
-    return CO_OK;
-}
-
-int
 vtk_tri_fwrite(He * he, const real * x, const real * y, const real * z,
 	       const real * scalars[], const char *names[], /**/ FILE * f)
 {
@@ -95,22 +79,6 @@ vtk_tri_fwrite(He * he, const real * x, const real * y, const real * z,
     status = tri_fwrite(he, x, y, z, type, names, data, f);
     FREE(type);
     return status;
-}
-
-int
-vtk_tri_write(He * he, const real * x, const real * y, const real * z,
-	      const real * scalars[], const char *names[],
-	      /**/ const char *path)
-{
-    FILE *f;
-
-    if ((f = fopen(path, "w")) == NULL)
-	ERR(CO_IO, "fail to open '%s'", path);
-    if (vtk_tri_fwrite(he, x, y, z, scalars, names, f) != CO_OK)
-	ERR(CO_IO, "fail to write to '%s", path);
-    if (fclose(f) != 0)
-	ERR(CO_IO, "fail to close '%s'", path);
-    return CO_OK;
 }
 
 static int
