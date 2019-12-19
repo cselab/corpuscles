@@ -57,7 +57,7 @@ ddih_angle_sup(const real a[3], const real b[3], const real c[3],
 
     status = ddih_angle(a, b, c, d, /**/ da, db, dc, dd);
     if (status != CO_OK)
-      ERR(CO_NUM, "ddih_angle failed");
+        ERR(CO_NUM, "ddih_angle failed");
 
     vec_negative(da, da_s);
     vec_negative(db, db_s);

@@ -24,14 +24,14 @@ oseen(__UNUSED real e, const real a[2], const real b[2], real * xx,
       real * xy, real * yy)
 {
     enum {
-	X, Y
+        X, Y
     };
     real d[2], r, r2, l;
 
     vec2_minus(a, b, d);
     r = vec2_abs(d);
     if (r == 0)
-	ERR(CO_NUM, "r == 0");
+        ERR(CO_NUM, "r == 0");
     r2 = r * r;
     l = log(r);
     *xx = -l + d[X] * d[X] / r2;
@@ -72,7 +72,7 @@ oseen2_fin(T * q)
 
 int
 oseen2_apply(T * q, Skel * skel, const real * x, const real * y,
-	     real * oxx, real * oxy, real * oyy)
+             real * oxx, real * oxy, real * oyy)
 {
     int n, i;
     real e, s;
@@ -81,23 +81,23 @@ oseen2_apply(T * q, Skel * skel, const real * x, const real * y,
     e = q->e;
 #pragma omp parallel for
     for (i = 0; i < n; i++) {
-	int j;
-	real a[2], b[2], xx, xy, yy;
+        int j;
+        real a[2], b[2], xx, xy, yy;
 
-	vec2_get(i, x, y, a);
-	oseen0(e, &xx, &xy, &yy);
-	matrix_set(n, n, i, i, xx, oxx);
-	matrix_set(n, n, i, i, xy, oxy);
-	matrix_set(n, n, i, i, yy, oyy);
-	for (j = 0; j < n; j++) {
-	    if (i == j)
-		continue;
-	    vec2_get(j, x, y, b);
-	    oseen(e, a, b, &xx, &xy, &yy);
-	    matrix_set(n, n, i, j, xx, oxx);
-	    matrix_set(n, n, i, j, xy, oxy);
-	    matrix_set(n, n, i, j, yy, oyy);
-	}
+        vec2_get(i, x, y, a);
+        oseen0(e, &xx, &xy, &yy);
+        matrix_set(n, n, i, i, xx, oxx);
+        matrix_set(n, n, i, i, xy, oxy);
+        matrix_set(n, n, i, i, yy, oyy);
+        for (j = 0; j < n; j++) {
+            if (i == j)
+                continue;
+            vec2_get(j, x, y, b);
+            oseen(e, a, b, &xx, &xy, &yy);
+            matrix_set(n, n, i, j, xx, oxx);
+            matrix_set(n, n, i, j, xy, oxy);
+            matrix_set(n, n, i, j, yy, oyy);
+        }
     }
     s = 1 / (4 * pi);
     matrix_scale(n, n, s, oxx);
@@ -108,7 +108,7 @@ oseen2_apply(T * q, Skel * skel, const real * x, const real * y,
 
 int
 oseen2_stresslet(T * q, Skel * skel, const real * x, const real * y,
-		 real * oxx, real * oxy, real * oyy)
+                 real * oxx, real * oxy, real * oyy)
 {
     USED(q);
     USED(skel);
@@ -122,7 +122,7 @@ oseen2_stresslet(T * q, Skel * skel, const real * x, const real * y,
 
 real
 oseen2_pressure(T * q, Skel * skel, const real * x, const real * y,
-		const real * fx, const real * fy, const real r[2])
+                const real * fx, const real * fy, const real r[2])
 {
     USED(q);
     int n, i;
@@ -132,10 +132,10 @@ oseen2_pressure(T * q, Skel * skel, const real * x, const real * y,
     n = skel_nv(skel);
     sum_ini(&sum);
     for (i = 0; i < n; i++) {
-	vec2_get(i, x, y, a);
-	vec2_get(i, fx, fy, f);
-	vec2_minus(r, a, d);
-	sum_add(sum, vec2_dot(f, d) / vec2_dot(d, d));
+        vec2_get(i, x, y, a);
+        vec2_get(i, fx, fy, f);
+        vec2_minus(r, a, d);
+        sum_add(sum, vec2_dot(f, d) / vec2_dot(d, d));
     }
     p = sum_get(sum);
     sum_fin(sum);
@@ -145,8 +145,8 @@ oseen2_pressure(T * q, Skel * skel, const real * x, const real * y,
 
 int
 oseen2_velocity(T * q, Skel * skel, real mu, const real * x,
-		const real * y, const real * fx, const real * fy,
-		const real r[2], real u[2])
+                const real * y, const real * fx, const real * fy,
+                const real r[2], real u[2])
 {
     USED(q);
     int n, i;
@@ -155,14 +155,14 @@ oseen2_velocity(T * q, Skel * skel, real mu, const real * x,
     n = skel_nv(skel);
     vec2_zero(u);
     for (i = 0; i < n; i++) {
-	vec2_get(i, x, y, a);
-	vec2_get(i, fx, fy, f);
-	vec2_minus(r, a, d);
-	rk = vec2_abs(d);
-	rk2 = rk * rk;
-	l = log(rk);
-	vec2_scalar_add(f, -l, u);
-	vec2_scalar_add(d, vec2_dot(f, d) / rk2, u);
+        vec2_get(i, x, y, a);
+        vec2_get(i, fx, fy, f);
+        vec2_minus(r, a, d);
+        rk = vec2_abs(d);
+        rk2 = rk * rk;
+        l = log(rk);
+        vec2_scalar_add(f, -l, u);
+        vec2_scalar_add(d, vec2_dot(f, d) / rk2, u);
     }
     s = 1 / (4 * pi * mu);
     vec2_scale(s, u);

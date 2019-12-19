@@ -13,6 +13,7 @@ int array_neg(int, real[]);
 int array_one(int, real[]);
 int array_scale3(int, real, real[], real[], real[]);
 int array_scale(int, real, real[]);
+int array_sum(int, const real[], const real[], real[]);
 int array_zero3(int, real[], real[], real[]);
 int array_zero(int, real[]);
 real array_diff3(int, const real[], const real[], const real[],

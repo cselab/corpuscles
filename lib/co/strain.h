@@ -15,8 +15,8 @@ real strain_energy(T *,
                    const real a0[3], const real b0[3], const real c0[3],
                    const real a[3], const real b[3], const real c[3]);
 int strain_energy_ab(T *,
-		      const real a0[3], const real b0[3], const real c0[3],
-		      const real a[3], const real b[3], const real c[3],
-		      real *ea, real *eb);
+                     const real a0[3], const real b0[3], const real c0[3],
+                     const real a[3], const real b[3], const real c[3],
+                     real * ea, real * eb);
 #undef T
 #undef P

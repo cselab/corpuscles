@@ -476,8 +476,8 @@ f_theta(Param param, He * he, Size size,
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         status = ddih_angle_sup(a, b, c, d, da, db, dc, dd);
-	if (status != CO_OK)
-	  ERR(CO_NUM, "f_theta faield");
+        if (status != CO_OK)
+            ERR(CO_NUM, "f_theta faield");
         coef = (H[j] + H[k] - 2 * H0) * len[e];
         vec_scalar_append(da, coef, i, fx, fy, fz);
         vec_scalar_append(db, coef, j, fx, fy, fz);
@@ -555,8 +555,8 @@ fad_theta(He * he, Size size, real coef,
         get_ijkl(h, he, /**/ &i, &j, &k, &l);
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         status = ddih_angle_sup(a, b, c, d, da, db, dc, dd);
-	if (status != CO_OK)
-	  ERR(CO_NUM, "fad_theta faield");
+        if (status != CO_OK)
+            ERR(CO_NUM, "fad_theta faield");
         vec_scalar_append(da, coef * len[e], i, fx, fy, fz);
         vec_scalar_append(db, coef * len[e], j, fx, fy, fz);
         vec_scalar_append(dc, coef * len[e], k, fx, fy, fz);
@@ -639,7 +639,7 @@ he_f_juelicher_xin_force(T * q, He * he,
     f_len(param, he, size, theta, H, x, y, z, /**/ fx, fy, fz);
     status = f_theta(param, he, size, len, H, x, y, z, /**/ fx, fy, fz);
     if (status != CO_OK)
-      ERR(CO_NUM, "he_f_juelicher_xin_force");
+        ERR(CO_NUM, "he_f_juelicher_xin_force");
     f_area(param, he, size, H, x, y, z, /**/ fx, fy, fz);
     scale(nv, K, fx);
     scale(nv, K, fy);
@@ -653,9 +653,10 @@ he_f_juelicher_xin_force(T * q, He * he,
     scurv = (len_theta_tot / 2 - DA0D) / area_tot;
 
     fad_len(he, size, scurv, theta, x, y, z, /**/ fxad, fyad, fzad);
-    status = fad_theta(he, size, scurv, len, x, y, z, /**/ fxad, fyad, fzad);
+    status =
+        fad_theta(he, size, scurv, len, x, y, z, /**/ fxad, fyad, fzad);
     if (status != CO_OK)
-      ERR(CO_NUM, "he_f_juelicher_xin_force");
+        ERR(CO_NUM, "he_f_juelicher_xin_force");
     fad_area(he, size, -scurv * scurv / 2, x, y, z, /**/ fxad, fyad, fzad);
     scale(nv, pi * Kad, fxad);
     scale(nv, pi * Kad, fyad);

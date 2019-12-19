@@ -136,10 +136,11 @@ strain_energy_3d(void *param, real(*F) (void *, real, real),
 }
 
 int
-strain_energy_3d_ab(void *param, int(*G) (void *, real, real, real*, real*),
-		    const real a0[3], const real b0[3], const real c0[3],
-		    const real a[3], const real b[3], const real c[3],
-		    real * pa, real * pb)
+strain_energy_3d_ab(void *param,
+                    int (*G)(void *, real, real, real *, real *),
+                    const real a0[3], const real b0[3], const real c0[3],
+                    const real a[3], const real b[3], const real c[3],
+                    real * pa, real * pb)
 {
     real bx, cx, cy, ux, wx, wy;
     real I1, I2, A, eng, deng;

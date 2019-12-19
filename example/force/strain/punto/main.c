@@ -22,12 +22,17 @@ static HeFStrain *strain;
 static He *he, *he0;
 
 #define FMT   CO_REAL_OUT
-static real energy() { return he_f_strain_energy(strain, he, x, y, z); }
+static real
+energy()
+{
+    return he_f_strain_energy(strain, he, x, y, z);
+}
 
 int
 main0()
 {
     real *eng, e, *al, *be, ea, eb;
+
     he_f_strain_argv(&argv, he, &strain);
 
     he_f_strain_force(strain, he, x, y, z, /**/ fx, fy, fz);
@@ -40,8 +45,11 @@ main0()
     he_area_ver(he, x, y, z, /**/ area);
     he_area_ver(he0, x0, y0, z0, /**/ area0);
 
-    const real *sc[] = {x, y, z, fx, fy, fz, eng, area, area0, al, be, NULL};
-    const char *na[] = {"x", "y", "z", "fx", "fy", "fz", "eng", "area", "area0", "al", "be", NULL};
+    const real *sc[] =
+        { x, y, z, fx, fy, fz, eng, area, area0, al, be, NULL };
+    const char *na[] =
+        { "x", "y", "z", "fx", "fy", "fz", "eng", "area", "area0", "al",
+"be", NULL };
 
     puts("x y z fx fy fz eng area area0 al be");
     punto_fwrite(nv, sc, stdout);
@@ -53,21 +61,32 @@ main0()
     return CO_OK;
 }
 
-int main(int __UNUSED argc, char *v[]) {
-    argv = v; argv++;
+int
+main(int __UNUSED argc, char *v[])
+{
+    argv = v;
+    argv++;
 
     y_inif(stdin, /**/ &he, &x, &y, &z);
     y_ini(*argv, /**/ &he0, &x0, &y0, &z0);
 
     nv = he_nv(he);
 
-    CALLOC(nv, &fm); CALLOC(nv, &fx);  CALLOC(nv, &fy); CALLOC(nv, &fz);
-    MALLOC(nv, &area); MALLOC(nv, &area0);
+    CALLOC(nv, &fm);
+    CALLOC(nv, &fx);
+    CALLOC(nv, &fy);
+    CALLOC(nv, &fz);
+    MALLOC(nv, &area);
+    MALLOC(nv, &area0);
 
     main0();
 
-    FREE(fm); FREE(fx); FREE(fy); FREE(fz);
-    FREE(area); FREE(area0);
+    FREE(fm);
+    FREE(fx);
+    FREE(fy);
+    FREE(fz);
+    FREE(area);
+    FREE(area0);
 
     y_fin(he, x, y, z);
     y_fin(he0, x0, y0, z0);

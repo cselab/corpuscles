@@ -13,7 +13,7 @@
 #define T Strain
 #define P StrainParam
 
-typedef int(*TypeGun) (void *, real, real, /**/ real *, real *);
+typedef int (*TypeGun)(void *, real, real, /**/ real *, real *);
 typedef real(*TypeFun) (void *, real, real);
 
 struct T {
@@ -47,7 +47,7 @@ F_linear(void *p0, real al, real be)
 }
 
 static int
-G_linear(void *p0, real al, real be, real *a, real *b)
+G_linear(void *p0, real al, real be, real * a, real * b)
 {
 #define G(s) s = p->s
     real A, B;
@@ -178,17 +178,17 @@ strain_ini(const char *name, P param, /**/ T ** pq)
 
     MALLOC(1, &q);
     if (util_eq(name, "linear")) {
-	q->G = G_linear;
-	q->F = F_linear;
-	q->F1 = F1_linear;
-	q->F2 = F2_linear;
+        q->G = G_linear;
+        q->F = F_linear;
+        q->F1 = F1_linear;
+        q->F2 = F2_linear;
     } else if (util_eq(name, "lim")) {
-	q->G = G_lim;
-	q->F = F_lim;
-	q->F1 = F1_lim;
-	q->F2 = F2_lim;
+        q->G = G_lim;
+        q->F = F_lim;
+        q->F1 = F1_lim;
+        q->F2 = F2_lim;
     } else
-	ERR(CO_INDEX, "unknown strain model: '%s'", name);
+        ERR(CO_INDEX, "unknown strain model: '%s'", name);
     q->param = param;
     *pq = q;
     return CO_OK;
@@ -203,9 +203,9 @@ strain_fin(T * q)
 
 int
 strain_force(T * q,
-	     const real a0[3], const real b0[3], const real c0[3],
-	     const real a[3], const real b[3], const real c[3], /**/
-	     real da[3], real db[3], real dc[3])
+             const real a0[3], const real b0[3], const real c0[3],
+             const real a[3], const real b[3], const real c[3], /**/
+             real da[3], real db[3], real dc[3])
 {
     P *param;
     TypeFun F, F1, F2;
@@ -215,13 +215,13 @@ strain_force(T * q,
     F1 = q->F1;
     F2 = q->F2;
     strain_force_3d((void *) param, F, F1, F2, a0, b0, c0, a, b, c, da, db,
-		    dc);
+                    dc);
     return CO_OK;
 }
 
 real
 strain_energy(T * q, const real a0[3], const real b0[3], const real c0[3],
-	      const real a[3], const real b[3], const real c[3])
+              const real a[3], const real b[3], const real c[3])
 {
     real eng, deng;
     P *param;
@@ -234,9 +234,9 @@ strain_energy(T * q, const real a0[3], const real b0[3], const real c0[3],
 }
 
 int
-strain_energy_ab(T * q, const real a0[3], const real b0[3], const real c0[3],
-		 const real a[3], const real b[3], const real c[3],
-		 real *ea, real *eb)
+strain_energy_ab(T * q, const real a0[3], const real b0[3],
+                 const real c0[3], const real a[3], const real b[3],
+                 const real c[3], real * ea, real * eb)
 {
     real eng, deng;
     P *param;
@@ -244,6 +244,7 @@ strain_energy_ab(T * q, const real a0[3], const real b0[3], const real c0[3],
 
     param = &q->param;
     G = q->G;
-    strain_energy_3d_ab((void *) param, G, a0, b0, c0, a, b, c, /**/ ea, eb);
+    strain_energy_3d_ab((void *) param, G, a0, b0, c0, a, b, c, /**/ ea,
+                        eb);
     return eng;
 }

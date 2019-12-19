@@ -318,6 +318,16 @@ array_scale(int n, real s, real * a)
 }
 
 int
+array_sum(int n, const real * a, const real * b, real * c)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+        c[i] = a[i] + b[i];
+    return CO_OK;
+}
+
+int
 array_scale3(int n, real s, real * x, real * y, real * z)
 {
     array_scale(n, s, x);
