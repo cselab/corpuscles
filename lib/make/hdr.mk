@@ -155,7 +155,6 @@ co/vec.h\
 co/volume.h\
 co/vtk2.h\
 co/vtk.h\
-co/x.h\
 co/y.h\
 inc/def.h\
 
