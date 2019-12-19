@@ -16,17 +16,6 @@
 static const real EPS = 1e-8;
 
 static int
-env_area(void)
-{
-    enum { UNSET, YES, NO };
-    static int f = UNSET;
-
-    if (f == UNSET)
-        f = getenv("AREA") ? YES : NO;
-    return f == YES;
-}
-
-static int
 small_v(const real a[3])
 {
     return vec_abs(a) < EPS;
@@ -110,13 +99,6 @@ strain_force_3d(void *param,
     vec_scalar(da, area, /**/ da_tot);
     vec_scalar(db, area, /**/ db_tot);
     vec_scalar(dc, area, /**/ dc_tot);
-    if (env_area()) {
-        deng = F(param, I1, I2);
-        dtri_area(a, b, c, da, db, dc);
-        vec_axpy(deng, da, da_tot);
-        vec_axpy(deng, db, db_tot);
-        vec_axpy(deng, dc, dc_tot);
-    }
     return CO_OK;
   err:
     MSG("bx, cx, cy: " FMT " " FMT " " FMT, bx, cx, cy);
