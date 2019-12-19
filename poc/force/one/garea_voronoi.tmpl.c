@@ -98,7 +98,7 @@ real he_f_%name%_energy(T *q, He *he,
     da_compute_area(da, he, x, y, z);
     da_area(da, &area);
 
-    A = he_sum_array(nv, area);
+    A = sum_array(nv, area);
     d = A - A0;
     C = K/A0;
     return C*d*d;
@@ -130,7 +130,7 @@ int he_f_%name%_force(T *q, He *he,
     da_force(da, param, he, x, y, z, /**/ fx, fy, fz);
     da_area(da, &area);
 
-    A = he_sum_array(nv, area);
+    A = sum_array(nv, area);
     C = 2*(K/A0)*(A - A0);
     scale(C, nv, fx); scale(C, nv, fy); scale(C, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);

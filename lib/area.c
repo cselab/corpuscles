@@ -44,15 +44,15 @@ he_area(He * he, const real * x, const real * y, const real * z)
     HeSum *sum;
 
     n = he_nt(he);
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b, c);
         s = tri_area(a, b, c);
-        he_sum_add(sum, s);
+        sum_add(sum, s);
     }
 
-    s = he_sum_get(sum);
-    he_sum_fin(sum);
+    s = sum_get(sum);
+    sum_fin(sum);
     return s;
 }
 

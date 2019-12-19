@@ -158,10 +158,10 @@ real he_f_gompper_xin_energy(T *q, He *he,
 
     compute_energy(H0, nv, area, h, energy);
     scale(2*Kb, nv, energy);
-    local = he_sum_array(nv, energy);
+    local = sum_array(nv, energy);
 
-    Area = he_sum_array(nv, area);
-    Ha = he_sum_array(nv, h);
+    Area = sum_array(nv, area);
+    Ha = sum_array(nv, h);
     diff = Ha - DA0D/2;
     global = (2*pi*Kad)*e_global(Area, diff);
 
@@ -204,8 +204,8 @@ int he_f_gompper_xin_force(T *q, He *he,
     scale(2*Kb, nv, fx); scale(2*Kb, nv, fy); scale(2*Kb, nv, fz);
     plus(nv, fx, hx); plus(nv, fy, hy); plus(nv, fz, hz);
 
-    Area = he_sum_array(nv, area);
-    Ha = he_sum_array(nv, h);
+    Area = sum_array(nv, area);
+    Ha = sum_array(nv, h);
     diff = Ha - DA0D/2;
     d_over_A = diff/Area;
 

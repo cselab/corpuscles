@@ -32,14 +32,14 @@ he_volume_tri(He * he, const real * x, const real * y, const real * z)
     real a[3], b[3], c[3];
     HeSum *sum;
 
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     n = he_nt(he);
     for (m = 0; m < n; m++) {
         get(m, he, x, y, z, /**/ a, b, c);
         v = tri_volume(a, b, c);
-        he_sum_add(sum, v);
+        sum_add(sum, v);
     }
-    V = he_sum_get(sum);
-    he_sum_fin(sum);
+    V = sum_get(sum);
+    sum_fin(sum);
     return V;
 }

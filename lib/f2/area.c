@@ -64,16 +64,16 @@ compute_area(Skel * skel, const real * x, const real * y)
     real a[2], b[2], A;
 
     n = skel_ne(skel);
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (e = 0; e < n; e++) {
         skel_edg_ij(skel, e, &i, &j);
         vec2_get(i, x, y, a);
         vec2_get(j, x, y, b);
-        he_sum_add(sum, vec2_cross(b, a));
+        sum_add(sum, vec2_cross(b, a));
     }
-    A = he_sum_get(sum);
+    A = sum_get(sum);
     A = fabs(A);
-    he_sum_fin(sum);
+    sum_fin(sum);
     return A / 2;
 }
 

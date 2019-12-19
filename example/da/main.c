@@ -42,7 +42,7 @@ int main() {
         rr[i] = vec_cylindrical_r(r);
         ff[i] = vec_abs(f);
     }
-    MSG("area: %g", he_sum_array(n, area));
+    MSG("area: %g", sum_array(n, area));
 
     puts("x y z r fx fy fz ff area");
     const real *queue[] = {x, y, z, rr, fx, fy, fz, ff, area, NULL};

@@ -140,7 +140,7 @@ he_f_garea_voronoi_energy(T * q, He * he,
     da_compute_area(da, he, x, y, z);
     da_area(da, &area);
 
-    A = he_sum_array(nv, area);
+    A = sum_array(nv, area);
     d = A - A0;
     C = K / A0;
     return C * d * d;
@@ -179,7 +179,7 @@ he_f_garea_voronoi_force(T * q, He * he,
     da_force(da, param, he, x, y, z, /**/ fx, fy, fz);
     da_area(da, &area);
 
-    A = he_sum_array(nv, area);
+    A = sum_array(nv, area);
     C = 2 * (K / A0) * (A - A0);
     scale(C, nv, fx);
     scale(C, nv, fy);

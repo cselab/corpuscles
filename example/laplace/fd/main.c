@@ -21,9 +21,9 @@ enum {X, Y, Z};
 
 static int Energy_sum(real s[3]) {
     laplace_apply(laplace, he, x, y, z, /**/ &lx, &ly, &lz, &area);
-    s[X] = he_sum_array(n, lx);
-    s[Y] = he_sum_array(n, ly);
-    s[Z] = he_sum_array(n, lz);
+    s[X] = sum_array(n, lx);
+    s[Y] = sum_array(n, ly);
+    s[Z] = sum_array(n, lz);
     return CO_OK;
 }
 

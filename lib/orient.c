@@ -21,7 +21,7 @@ struct T {
 static real
 sum(int n, real * a)
 {
-    return he_sum_array(n, a);
+    return sum_array(n, a);
 }
 
 int

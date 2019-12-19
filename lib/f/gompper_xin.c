@@ -227,10 +227,10 @@ he_f_gompper_xin_energy(T * q, He * he,
 
     compute_energy(H0, nv, area, h, energy);
     scale(2 * Kb, nv, energy);
-    eng_bend = he_sum_array(nv, energy);
+    eng_bend = sum_array(nv, energy);
 
-    Area = he_sum_array(nv, area);
-    Ha = he_sum_array(nv, h);
+    Area = sum_array(nv, area);
+    Ha = sum_array(nv, h);
     diff = Ha - DA0D / 2;
     eng_ad = (2 * pi * Kad) * e_global(Area, diff);
 
@@ -293,8 +293,8 @@ he_f_gompper_xin_force(T * q, He * he,
     plus(nv, fy, hy);
     plus(nv, fz, hz);
 
-    Area = he_sum_array(nv, area);
-    Ha = he_sum_array(nv, h);
+    Area = sum_array(nv, area);
+    Ha = sum_array(nv, h);
     diff = Ha - DA0D / 2;
     d_over_A = diff / Area;
 

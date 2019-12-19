@@ -68,7 +68,7 @@ compute_p(Skel * skel, const real * x, const real * y)
     real a[2], b[2], c[2], p, P;
 
     n = skel_nv(skel);
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (v = 0; v < n; v++) {
         if (skel_bnd(skel, v))
             continue;
@@ -77,10 +77,10 @@ compute_p(Skel * skel, const real * x, const real * y)
         vec2_get(j, x, y, b);
         vec2_get(k, x, y, c);
         p = tri2_angle_sup(a, b, c);
-        he_sum_add(sum, p);
+        sum_add(sum, p);
     }
-    P = he_sum_get(sum);
-    he_sum_fin(sum);
+    P = sum_get(sum);
+    sum_fin(sum);
     return P;
 }
 

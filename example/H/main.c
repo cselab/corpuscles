@@ -21,7 +21,7 @@ static real *x, *y, *z;
 static real Energy_sum() {
     real *hh, *area;
     H_apply(h, he, x, y, z, /**/ &hh, &area);
-    return he_sum_array(n, hh);
+    return sum_array(n, hh);
 }
 
 static real Energy_one() {
@@ -74,7 +74,7 @@ int main() {
     const real *queue[] = {x, y, z, rr, hh, area, fx, fy, fz, ff, NULL};
     puts("x y z r H area fx fy fz ff");
     punto_fwrite(n, queue, stdout);
-    s = he_sum_array(n, hh);
+    s = sum_array(n, hh);
 
     MSG("%g", ff[0]/area[0]);
     FREE(rr);

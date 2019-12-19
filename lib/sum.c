@@ -14,7 +14,7 @@ struct T {
 };
 
 int
-he_sum_ini( /**/ T ** pq)
+sum_ini( /**/ T ** pq)
 {
     T *q;
 
@@ -25,14 +25,14 @@ he_sum_ini( /**/ T ** pq)
 }
 
 int
-he_sum_fin(T * q)
+sum_fin(T * q)
 {
     FREE(q);
     return CO_OK;
 }
 
 int
-he_sum_add(T * q, real input)
+sum_add(T * q, real input)
 {
     real t;
     real y, c, sum;
@@ -51,28 +51,28 @@ he_sum_add(T * q, real input)
 }
 
 real
-he_sum_get(const T * q)
+sum_get(const T * q)
 {
     return q->sum;
 }
 
 int
-he_sum_compensation(const T * q)
+sum_compensation(const T * q)
 {
     return q->c;
 }
 
 real
-he_sum_array(int n, const real a[])
+sum_array(int n, const real a[])
 {
     int i;
     real v;
     T *sum;
 
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (i = 0; i < n; i++)
-        he_sum_add(sum, a[i]);
-    v = he_sum_get(sum);
-    he_sum_fin(sum);
+        sum_add(sum, a[i]);
+    v = sum_get(sum);
+    sum_fin(sum);
     return v;
 }

@@ -44,7 +44,7 @@ int main() {
         ff[i] = vec_abs(f);
     }
 
-    MSG("area: %g", he_sum_array(n, area));
+    MSG("area: %g", sum_array(n, area));
 
     puts("x y z r fx fy fz ff area H");
     const real *queue[] = {x, y, z, rr, fx, fy, fz, ff, area, H, NULL};

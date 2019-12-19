@@ -43,7 +43,7 @@ static int scl(/**/ real *p) {
 }
 
 static real mean(int n, real *x) {
-    return he_sum_array(n, x)/n;
+    return sum_array(n, x)/n;
 }
 
 static void main0() {

@@ -20,9 +20,9 @@ enum {X, Y, Z};
 
 static int Energy(real s[3]) {
     normal_mwa(he, x, y, z, /**/ nx, ny, nz);
-    s[X] = he_sum_array(n, nx);
-    s[Y] = he_sum_array(n, ny);
-    s[Z] = he_sum_array(n, nz);
+    s[X] = sum_array(n, nx);
+    s[Y] = sum_array(n, ny);
+    s[Z] = sum_array(n, nz);
     return CO_OK;
 }
 

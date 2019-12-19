@@ -93,7 +93,7 @@ f2_len_energy(T * q, Skel * skel0, const real * x, const real * y)
     if (n != skel_ne(skel0))
         ERR(CO_INDEX, "n=%d != skel_ne(skel0)=%d", n, skel_ne(skel0));
 
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (e = 0; e < n; e++) {
         skel_edg_ij(skel, e, &i, &j);
         vec2_get(i, x, y, a);
@@ -101,10 +101,10 @@ f2_len_energy(T * q, Skel * skel0, const real * x, const real * y)
         vec2_get(i, x0, y0, a0);
         vec2_get(j, x0, y0, b0);
         E0 = edg2_strain(Ka, a3, a4, a0, b0, a, b);
-        he_sum_add(sum, E0);
+        sum_add(sum, E0);
     }
-    E = he_sum_get(sum);
-    he_sum_fin(sum);
+    E = sum_get(sum);
+    sum_fin(sum);
     return E;
 }
 

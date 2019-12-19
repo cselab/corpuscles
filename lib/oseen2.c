@@ -123,15 +123,15 @@ oseen2_pressure(T * q, Skel * skel, const real * x, const real * y,
     HeSum *sum;
 
     n = skel_nv(skel);
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (i = 0; i < n; i++) {
         vec2_get(i, x, y, a);
         vec2_get(i, fx, fy, f);
         vec2_minus(r, a, d);
-        he_sum_add(sum, vec2_dot(f, d) / vec2_dot(d, d));
+        sum_add(sum, vec2_dot(f, d) / vec2_dot(d, d));
     }
-    p = he_sum_get(sum);
-    he_sum_fin(sum);
+    p = sum_get(sum);
+    sum_fin(sum);
     s = 1 / (2 * pi);
     return s * p;
 }

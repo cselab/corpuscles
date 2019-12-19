@@ -81,7 +81,7 @@ mc(real d0)
 
 	d = d0;
 	lo = -1; hi = 1;
-	he_sum_ini(&sum);
+	sum_ini(&sum);
 	alg_rng_ini(&rng);
 	for (i = 0, s = 0; i < N; i++) {
 		x = alg_rng_uniform(rng, lo, hi);
@@ -92,12 +92,12 @@ mc(real d0)
 		if (r2 > R*R) continue;
 		r = sqrt(r2);
 		g = f(r, x, y, z);
-		he_sum_add(sum, g);
+		sum_add(sum, g);
 	}
 	l = hi - lo;
 	V = l*l*l;
-	s = V*he_sum_get(sum)/N;	
-	he_sum_fin(sum);
+	s = V*sum_get(sum)/N;
+	sum_fin(sum);
 	alg_rng_fin(rng);
 	return s;
 }
@@ -117,7 +117,7 @@ main(int argc, char **argv)
 		break;
 	case 'x':
 		f = fdx;
-		break;	
+		break;
 	} ARGEND
 	lo = 0; hi = 1;
 	for (i = 0; i < n; i++) {

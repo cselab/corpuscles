@@ -239,7 +239,7 @@ he_f_strain_energy(T * q, He * he0, const real * x, const real * y, const real *
 	q->eb[k] += eb / 3;
     }
     END;
-    return he_sum_array(nv, q->ea) + he_sum_array(nv, q->eb);
+    return sum_array(nv, q->ea) + sum_array(nv, q->eb);
 }
 
 int
@@ -296,7 +296,7 @@ he_f_strain_energies(T * q, /**/ real * pa, real * pb)
 {
     int n;
     n = he_nv(q->he);
-    *pa = he_sum_array(n, q->ea);
-    *pb = he_sum_array(n, q->eb);
+    *pa = sum_array(n, q->ea);
+    *pb = sum_array(n, q->eb);
     return CO_OK;
 }

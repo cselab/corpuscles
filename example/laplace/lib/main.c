@@ -26,10 +26,10 @@ int main() {
     puts("x y z lx ly lz area");
     punto_fwrite(n, queue, stdout);
 
-    sx = he_sum_array(n, lx);
-    sy = he_sum_array(n, ly);
-    sz = he_sum_array(n, lz);
-    A  = he_sum_array(n, area);
+    sx = sum_array(n, lx);
+    sy = sum_array(n, ly);
+    sz = sum_array(n, lz);
+    A  = sum_array(n, area);
 
     MSG("l[0]: %g %g %g", lx[0], ly[0], lz[0]);
     MSG("l[n - 1]: %g %g %g", lx[n - 1], ly[n - 1], lz[n - 1]);

@@ -66,7 +66,7 @@ compute_energy(real H0, Skel * skel, const real * x, const real * y)
     real a[2], b[2], c[2], u, w, p, h, E, k0, dh;
 
     n = skel_nv(skel);
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (v = 0; v < n; v++) {
         if (skel_bnd(skel, v))
             continue;
@@ -81,10 +81,10 @@ compute_energy(real H0, Skel * skel, const real * x, const real * y)
         p = tri2_angle_sup(a, b, c);
         h = p / (u + w);
         dh = h - H0;
-        he_sum_add(sum, dh * dh);
+        sum_add(sum, dh * dh);
     }
-    E = he_sum_get(sum);
-    he_sum_fin(sum);
+    E = sum_get(sum);
+    sum_fin(sum);
     return E;
 }
 

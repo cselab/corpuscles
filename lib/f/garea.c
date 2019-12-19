@@ -152,7 +152,7 @@ he_f_garea_force(T * q, He * he,
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(he, x, y, z, /**/ area);
-    A = he_sum_array(n, area);
+    A = sum_array(n, area);
     q->A = A;
     compute_force(K, A0, A, he, x, y, z, /**/ fx, fy, fz);
 
@@ -175,7 +175,7 @@ he_f_garea_energy(T * q, He * he,
         ERR(CO_INDEX, "he_nt(he)=%d != n = %d", he_nt(he), n);
 
     compute_area(he, x, y, z, /**/ area);
-    A = he_sum_array(n, area);
+    A = sum_array(n, area);
     q->A = A;
     return K / A0 * (A - A0) * (A - A0);
 }

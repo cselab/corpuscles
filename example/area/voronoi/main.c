@@ -27,7 +27,7 @@ static void main1() {
     real A, A0;
     HeSum *sum;
 
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (v = 0; v < NV; v++) {
         h0 = h = hdg_ver(v);
         do {
@@ -40,15 +40,15 @@ static void main1() {
             vec_minus(b, c,  u);
             u2 = vec_dot(u, u);
             A0 = (ci + cl) * u2;
-            he_sum_add(sum, A0);
+            sum_add(sum, A0);
             h = nxt(flp(h));
         } while (h != h0);
     }
 
-    A = he_sum_get(sum)/8;
+    A = sum_get(sum)/8;
 
     printf("NT=%i, traverse halfedge A = %.10g\n", NT, A);
-    he_sum_fin(sum);
+    sum_fin(sum);
 }
 
 static void main2() {
@@ -59,7 +59,7 @@ static void main2() {
     real A, A0;
     HeSum *sum;    
 
-    he_sum_ini(&sum);    
+    sum_ini(&sum);    
     for (e = 0; e < NE; e++) {
       if (bnd(e)) continue;
 
@@ -71,13 +71,13 @@ static void main2() {
       vec_minus(b, c,  u);
       u2 = vec_dot(u, u);
       A0 = (ci + cl) * u2;
-      he_sum_add(sum, 2*A0);
+      sum_add(sum, 2*A0);
     }
     
-    A = he_sum_get(sum)/8;
+    A = sum_get(sum)/8;
     printf("NT=%i, traverse edge     A = %.10g\n", NT, A);
 
-    he_sum_fin(sum);
+    sum_fin(sum);
 }
 
 

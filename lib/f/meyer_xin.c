@@ -133,7 +133,7 @@ area_voronoi(He * he,
     nv = he_nv(he);
 
     he_T(he, &T0, &T1, &T2);
-    he_sum_ini(&sum);
+    sum_ini(&sum);
 
     zero(nv, area);
 
@@ -146,7 +146,7 @@ area_voronoi(He * he,
         get3(x, y, z, i, j, k, a, b, c);
         area0 = tri_area(a, b, c);
 
-        he_sum_add(sum, area0);
+        sum_add(sum, area0);
 
         vec_minus(a, b, u);
         ab2 = vec_dot(u, u);
@@ -167,9 +167,9 @@ area_voronoi(He * he,
 
     }                           /*end for loop */
 
-    area_tot_tri = he_sum_get(sum);
+    area_tot_tri = sum_get(sum);
 
-    he_sum_fin(sum);
+    sum_fin(sum);
     return area_tot_tri;
 }
 
@@ -191,7 +191,7 @@ area_mix(He * he,
     nt = he_nt(he);
     nv = he_nv(he);
     he_T(he, &T0, &T1, &T2);
-    he_sum_ini(&sum);
+    sum_ini(&sum);
 
     zero(nv, area);
 
@@ -204,7 +204,7 @@ area_mix(He * he,
         get3(x, y, z, i, j, k, a, b, c);
         area0 = tri_area(a, b, c);
 
-        he_sum_add(sum, area0);
+        sum_add(sum, area0);
 
         theta_a = tri_angle(c, a, b);
         theta_b = tri_angle(a, b, c);
@@ -242,9 +242,9 @@ area_mix(He * he,
         }
 
     }                           /*end for loop */
-    area_tot_tri = he_sum_get(sum);
+    area_tot_tri = sum_get(sum);
 
-    he_sum_fin(sum);
+    sum_fin(sum);
     return area_tot_tri;
 }
 
@@ -657,7 +657,7 @@ he_f_meyer_xin_force(T * q, He * he,
     compute_K(q, he, x, y, z, K);
     compute_lb(q, he, H, lbH);
 
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (v = 0; v < nv; v++) {
         fm = +2 * 2 * Kb * (H[v] - H0) * (H[v] * H[v] + H[v] * H0 - K[v]) +
             2 * Kb * lbH[v];
@@ -665,10 +665,10 @@ he_f_meyer_xin_force(T * q, He * he,
         fx[v] += fm * normx[v];
         fy[v] += fm * normy[v];
         fz[v] += fm * normz[v];
-        he_sum_add(sum, H[v] * area[v]);
+        sum_add(sum, H[v] * area[v]);
     }
-    mH1 = he_sum_get(sum);
-    he_sum_fin(sum);
+    mH1 = sum_get(sum);
+    sum_fin(sum);
     tt = 2 * mH1 - DA0D;
 
     for (v = 0; v < nv; v++) {

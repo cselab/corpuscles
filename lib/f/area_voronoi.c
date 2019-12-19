@@ -172,7 +172,7 @@ he_f_area_voronoi_energy(T * q, He * he,
 
     compute_energy(nv, a0, area, /**/ energy);
     scale(K / a0, nv, energy);
-    return he_sum_array(nv, energy);
+    return sum_array(nv, energy);
 
 #undef A
 #undef S

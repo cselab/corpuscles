@@ -58,13 +58,13 @@ sum_sq(int n, real * x, real * y, real * z)
     int i;
     HeSum *sum;
 
-    he_sum_ini(&sum);
+    sum_ini(&sum);
     for (i = 0; i < n; i++) {
         w = x[i] * x[i] + y[i] * y[i] + z[i] * z[i];
-        he_sum_add(sum, w);
+        sum_add(sum, w);
     }
-    v = he_sum_get(sum);
-    he_sum_fin(sum);
+    v = sum_get(sum);
+    sum_fin(sum);
     return v;
 }
 

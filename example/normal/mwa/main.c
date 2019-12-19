@@ -27,9 +27,9 @@ int main() {
     puts("x y z nx ny nz");
     punto_fwrite(n, queue, stdout);
 
-    sx = he_sum_array(n, nx);
-    sy = he_sum_array(n, ny);
-    sz = he_sum_array(n, nz);
+    sx = sum_array(n, nx);
+    sy = sum_array(n, ny);
+    sz = sum_array(n, nz);
 
     MSG("n[0]: %g %g %g", nx[0], ny[0], nz[0]);
     MSG("n[n - 1]: %g %g %g", nx[n - 1], ny[n - 1], nz[n - 1]);

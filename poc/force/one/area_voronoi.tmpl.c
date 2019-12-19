@@ -119,7 +119,7 @@ real he_f_%name%_energy(T *q, He *he,
 
     compute_energy(nv, a0, area, /**/ energy);
     scale(K/a0, nv, energy);
-    return he_sum_array(nv, energy);
+    return sum_array(nv, energy);
 
 #   undef A
 #   undef S
