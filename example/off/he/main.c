@@ -6,7 +6,7 @@
 #include <co/read.h>
 #include <co/he.h>
 
-static HeOff *off;
+static Off *off;
 static HeRead *read;
 static real *ver;
 static int  nv, nt, *tri;

@@ -8,7 +8,7 @@
 
 #include <co/y.h>
 
-static HeOff *off;
+static Off *off;
 static real *x, *y, *z, *c;
 static real lo, hi;
 static He *he;

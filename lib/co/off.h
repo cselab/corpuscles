@@ -1,4 +1,4 @@
-#define T HeOff
+#define T Off
 typedef struct He He;
 typedef struct T T;
 int off_ini(const char *, T **);

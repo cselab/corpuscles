@@ -6,7 +6,7 @@
 
 #include <co/y.h>
 
-static HeOff *off;
+static Off *off;
 static real *x, *y, *z;
 static He *he;
 

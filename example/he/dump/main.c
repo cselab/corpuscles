@@ -8,7 +8,7 @@
 
 int main() {
     He      *he;
-    HeOff *off;
+    Off *off;
     HeRead *read;
     int *tri;
     int nv, nt, nh;

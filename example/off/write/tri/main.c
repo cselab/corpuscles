@@ -4,7 +4,7 @@
 #include <co/err.h>
 #include <co/off.h>
 
-static HeOff *off;
+static Off *off;
 static real *ver;
 static int  nv, nt, *tri;
 

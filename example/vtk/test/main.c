@@ -8,7 +8,7 @@
 #include <co/bending.h>
 #include <co/he.h>
 
-static HeOff *read;
+static Off *read;
 static Bending *bending;
 static He *he;
 static real *x, *y, *z, *eng, e0;

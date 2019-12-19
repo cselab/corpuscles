@@ -119,7 +119,7 @@ static void main0() {
 int main(int __UNUSED argc, const char *v[]) {
     int *tri;
     const char path[] = "/dev/stdin";
-    static HeOff *off;
+    static Off *off;
     argv = v; argv++;
     arg();
 

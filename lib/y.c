@@ -12,7 +12,7 @@
 int
 y_inif(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
 {
-    HeOff *off;
+    Off *off;
     int nv, nt;
     int *tri;
     He *he;
@@ -42,7 +42,7 @@ int
 y_inif2b(FILE * f0, FILE * f1, /**/ He ** phe0, He ** phe1, He ** phe,
          real ** px, real ** py, real ** pz)
 {
-    HeOff *off0, *off1;
+    Off *off0, *off1;
     int nv0, nv1, nv, nt0, nt1, nt;
     int *tri0, *tri1, *tri;
     He *he, *he0, *he1;
@@ -85,7 +85,7 @@ int
 y_inif2(FILE * f0, FILE * f1, /**/ He ** phe, real ** px, real ** py,
         real ** pz)
 {
-    HeOff *off0, *off1;
+    Off *off0, *off1;
     int nv0, nt0, nv1, nt1, nv, nt, i, j;
     int *tri0, *tri1, *tri;
     He *he;

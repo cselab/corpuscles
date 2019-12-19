@@ -14,7 +14,7 @@
 
 #include "co/off.h"
 
-#define T HeOff
+#define T Off
 enum { SIZE = MAX_STRING_SIZE };
 
 #define FWRITE(ptr, size)					     \

@@ -6,7 +6,7 @@
 #include <co/off.h>
 
 static HeRead *read;
-static HeOff *off;
+static Off *off;
 
 void ini() {
     int nv, nt, *tri;

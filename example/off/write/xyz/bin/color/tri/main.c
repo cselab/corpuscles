@@ -9,7 +9,7 @@
 
 #include <co/y.h>
 
-static HeOff *off;
+static Off *off;
 static int nt;
 static real *x, *y, *z;
 static He *he;

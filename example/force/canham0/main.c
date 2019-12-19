@@ -12,7 +12,7 @@
 typedef struct Param Param;
 struct Param { real Kb, C0, Kad, DA0D; };
 
-static HeOff *read;
+static Off *read;
 static HeFCanham *bending;
 static He *he;
 static real *x, *y, *z, *r, *eng, e0;
