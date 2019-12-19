@@ -127,7 +127,7 @@ area_voronoi(He * he,
     real area0;
     real cota, cotb, cotc;
     real ab2, bc2, ca2, area_tot_tri;
-    HeSum *sum;
+    Sum *sum;
 
     nt = he_nt(he);
     nv = he_nv(he);
@@ -186,7 +186,7 @@ area_mix(He * he,
     real theta_a, theta_b, theta_c;
     real cota, cotb, cotc;
     real ab2, bc2, ca2, area_tot_tri;
-    HeSum *sum;
+    Sum *sum;
 
     nt = he_nt(he);
     nv = he_nv(he);
@@ -621,7 +621,7 @@ he_f_meyer_xin_force(T * q, He * he,
     real H0;
     real mH0, mH1;
     real tt;
-    HeSum *sum;
+    Sum *sum;
 
     Kb = q->Kb;
     C0 = q->C0;

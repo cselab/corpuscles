@@ -62,7 +62,7 @@ sum(int n, const real * a)
 {
     int i;
     real s;
-    HeSum *sum;
+    Sum *sum;
 
     sum_ini(&sum);
     s = 0;

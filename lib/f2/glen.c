@@ -59,7 +59,7 @@ real
 compute_len(Skel * skel, const real * x, const real * y)
 {
     int e, i, j, n;
-    HeSum *sum;
+    Sum *sum;
     real a[2], b[2], L;
 
     n = skel_ne(skel);

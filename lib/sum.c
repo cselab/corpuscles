@@ -6,7 +6,7 @@
 
 #include "real.h"
 
-#define T HeSum
+#define T Sum
 
 typedef struct T T;
 struct T {

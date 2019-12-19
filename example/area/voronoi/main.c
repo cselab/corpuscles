@@ -25,7 +25,7 @@ static void main1() {
     int h0, h, n, nn, fnn;
     real a[3], b[3], c[3], d[3], u[3], u2, ci, cl;
     real A, A0;
-    HeSum *sum;
+    Sum *sum;
 
     sum_ini(&sum);
     for (v = 0; v < NV; v++) {
@@ -57,7 +57,7 @@ static void main2() {
     int i, j, k, l;
     real a[3], b[3], c[3], d[3], u[3], u2, ci, cl;
     real A, A0;
-    HeSum *sum;    
+    Sum *sum;    
 
     sum_ini(&sum);    
     for (e = 0; e < NE; e++) {

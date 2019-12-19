@@ -80,7 +80,7 @@ f2_len_energy(T * q, Skel * skel0, const real * x, const real * y)
     real *x0, *y0;
     real E, E0;
     Skel *skel;
-    HeSum *sum;
+    Sum *sum;
     int n, e, i, j;
 
     Ka = q->Ka;

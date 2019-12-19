@@ -75,7 +75,7 @@ real
 mc(real d0)
 {
 	AlgRng *rng;
-	HeSum *sum;
+	Sum *sum;
 	int i;
 	real x, y, z, s, r2, r, V, l, g;
 

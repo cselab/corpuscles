@@ -56,7 +56,7 @@ sum_sq(int n, real * x, real * y, real * z)
 {
     real v, w;
     int i;
-    HeSum *sum;
+    Sum *sum;
 
     sum_ini(&sum);
     for (i = 0; i < n; i++) {

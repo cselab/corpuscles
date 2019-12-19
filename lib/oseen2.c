@@ -120,7 +120,7 @@ oseen2_pressure(T * q, Skel * skel, const real * x, const real * y,
 {
     int n, i;
     real p, s, a[2], f[2], d[2];
-    HeSum *sum;
+    Sum *sum;
 
     n = skel_nv(skel);
     sum_ini(&sum);

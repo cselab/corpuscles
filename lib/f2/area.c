@@ -60,7 +60,7 @@ real
 compute_area(Skel * skel, const real * x, const real * y)
 {
     int e, i, j, n;
-    HeSum *sum;
+    Sum *sum;
     real a[2], b[2], A;
 
     n = skel_ne(skel);

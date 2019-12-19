@@ -64,7 +64,7 @@ static real
 compute_p(Skel * skel, const real * x, const real * y)
 {
     int v, i, j, k, n;
-    HeSum *sum;
+    Sum *sum;
     real a[2], b[2], c[2], p, P;
 
     n = skel_nv(skel);

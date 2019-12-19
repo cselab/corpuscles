@@ -30,7 +30,7 @@ he_volume_tri(He * he, const real * x, const real * y, const real * z)
     int n, m;
     real v, V;
     real a[3], b[3], c[3];
-    HeSum *sum;
+    Sum *sum;
 
     sum_ini(&sum);
     n = he_nt(he);

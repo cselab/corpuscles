@@ -1,4 +1,4 @@
-#define T HeSum
+#define T Sum
 typedef struct T T;
 int sum_ini(T **);
 int sum_fin(T *);

@@ -41,7 +41,7 @@ he_area(He * he, const real * x, const real * y, const real * z)
     int n, m;
     real s;
     real a[3], b[3], c[3];
-    HeSum *sum;
+    Sum *sum;
 
     n = he_nt(he);
     sum_ini(&sum);

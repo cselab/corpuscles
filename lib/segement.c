@@ -11,7 +11,7 @@
 real
 segment_average(He * he, const real * x, const real * y, const real * z)
 {
-    HeSum *sum;
+    Sum *sum;
     int n, e, i, j;
     real a[3], b[3], s;
 
