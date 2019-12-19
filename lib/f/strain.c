@@ -4,16 +4,17 @@
 
 #include "co/argv.h"
 #include "co/array.h"
-#include "co/macro.h"
-#include "co/memory.h"
 #include "co/err.h"
 #include "co/he.h"
-#include "co/vec.h"
-#include "co/tri.h"
-#include "co/y.h"
-#include "co/util.h"
-#include "co/strain.h"
+#include "co/macro.h"
+#include "co/memory.h"
 #include "co/strain/3d.h"
+#include "co/strain.h"
+#include "co/sum.h"
+#include "co/tri.h"
+#include "co/util.h"
+#include "co/vec.h"
+#include "co/y.h"
 
 #include "inc/def.h"
 
@@ -33,8 +34,8 @@ static const real EPS = 1e-8;
 
 struct T {
     He *he;
-    real *x, *y, *z, *eng, *I1, *I2;
-    real *I1t, *I2t, *engt;     /* on triangles */
+    real *x, *y, *z, *eng, *ea, *eb, *I1, *I2;
+    real *I1t, *I2t;     /* on triangles */
     Strain *strain;
 };
 
@@ -50,7 +51,7 @@ get3(const real * x, const real * y, const real * z,
 
 int
 he_f_strain_ini(const char *off, const char *name, StrainParam param,
-                T ** pq)
+		T ** pq)
 {
     T *q;
     int nv, nt, status;
@@ -61,7 +62,7 @@ he_f_strain_ini(const char *off, const char *name, StrainParam param,
 
     status = y_ini(off, &he, &x, &y, &z);
     if (status != CO_OK)
-        ERR(CO_IO, "y_ini failed");
+	ERR(CO_IO, "y_ini failed");
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -69,18 +70,15 @@ he_f_strain_ini(const char *off, const char *name, StrainParam param,
     MALLOC(nv, &q->eng);
     MALLOC(nv, &q->I1);
     MALLOC(nv, &q->I2);
-
     MALLOC(nt, &q->I1t);
     MALLOC(nt, &q->I2t);
-    MALLOC(nt, &q->engt);
-
+    MALLOC(nt, &q->ea);
+    MALLOC(nt, &q->eb);
     strain_ini(name, param, &q->strain);
-
     q->he = he;
     q->x = x;
     q->y = y;
     q->z = z;
-
     *pq = q;
     return CO_OK;
 }
@@ -91,7 +89,7 @@ he_f_strain_argv(char ***p, __UNUSED He * he, T ** pq)
 #define PAR(f)                                       \
     do {                                                \
     if ((status = argv_real(p, &param.f)) != CO_OK)     \
-        return status;                                  \
+	return status;                                  \
     } while (0)
 
     int status;
@@ -99,23 +97,23 @@ he_f_strain_argv(char ***p, __UNUSED He * he, T ** pq)
     char off[MAX_STRING_SIZE], name[MAX_STRING_SIZE];
 
     if ((status = argv_str(p, off)) != CO_OK)
-        return status;
+	return status;
 
     if ((status = argv_str(p, name)) != CO_OK)
-        return status;
+	return status;
 
     if (util_eq(name, "linear")) {
-        PAR(Ka);
-        PAR(mu);
+	PAR(Ka);
+	PAR(mu);
     } else if (util_eq(name, "lim")) {
-        PAR(Ka);
-        PAR(mu);
-        PAR(a3);
-        PAR(a4);
-        PAR(b1);
-        PAR(b2);
+	PAR(Ka);
+	PAR(mu);
+	PAR(a3);
+	PAR(a4);
+	PAR(b1);
+	PAR(b2);
     } else
-        ERR(CO_IO, "unknown strain model '%s'", name);
+	ERR(CO_IO, "unknown strain model '%s'", name);
 
     status = he_f_strain_ini(off, name, param, pq);
     return status;
@@ -128,11 +126,12 @@ he_f_strain_fin(T * q)
     y_fin(q->he, q->x, q->y, q->z);
     strain_fin(q->strain);
     FREE(q->eng);
+    FREE(q->ea);
+    FREE(q->eb);
     FREE(q->I1);
     FREE(q->I2);
     FREE(q->I1t);
     FREE(q->I2t);
-    FREE(q->engt);
     FREE(q);
     return CO_OK;
 }
@@ -145,7 +144,7 @@ small(const real a[3])
 
 static int
 assert_force(const real a[3], const real b[3], const real c[3],
-             const real da[3], const real db[3], const real dc[3])
+	     const real da[3], const real db[3], const real dc[3])
 {
     /* check force and  torque */
     real m[3], f[3], t[3], ma[3], mb[3], mc[3];
@@ -163,21 +162,21 @@ assert_force(const real a[3], const real b[3], const real c[3],
     vec_mean3(ta, tb, tc, /**/ t);
 
     if (!small(f) || !small(t)) {
-        MSG("bad triangle in strain");
-        MSG("a, b, c, f, t:");
-        vec_fprintf(a, stderr, OUT);
-        vec_fprintf(b, stderr, OUT);
-        vec_fprintf(c, stderr, OUT);
-        vec_fprintf(f, stderr, OUT);
-        vec_fprintf(t, stderr, OUT);
-        return 0;
+	MSG("bad triangle in strain");
+	MSG("a, b, c, f, t:");
+	vec_fprintf(a, stderr, OUT);
+	vec_fprintf(b, stderr, OUT);
+	vec_fprintf(c, stderr, OUT);
+	vec_fprintf(f, stderr, OUT);
+	vec_fprintf(t, stderr, OUT);
+	return 0;
     } else
-        return 1;
+	return 1;
 }
 
 int
 he_f_strain_force(T * q, __UNUSED He * he0, const real * x, const real * y,
-                  const real * z, /**/ real * fx, real * fy, real * fz)
+		  const real * z, /**/ real * fx, real * fy, real * fz)
 {
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3], da[3], db[3], dc[3];
@@ -190,60 +189,62 @@ he_f_strain_force(T * q, __UNUSED He * he0, const real * x, const real * y,
     nt = he_nt(he);
 
     if (nv != he_nv(he0))
-        ERR(CO_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
+	ERR(CO_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
     if (nt != he_nt(he0))
-        ERR(CO_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
+	ERR(CO_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
     BEGIN {
-        strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
-        if (!assert_force(a, b, c, da, db, dc))
-            ERR(CO_NUM, "bad forces in triangle: %d [%d %d %d]", t, i, j,
-                k);
-        vec_append(da, i, /**/ fx, fy, fz);
-        vec_append(db, j, /**/ fx, fy, fz);
-        vec_append(dc, k, /**/ fx, fy, fz);
+	strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
+	if (!assert_force(a, b, c, da, db, dc))
+	    ERR(CO_NUM, "bad forces in triangle: %d [%d %d %d]", t, i, j,
+		k);
+	vec_append(da, i, /**/ fx, fy, fz);
+	vec_append(db, j, /**/ fx, fy, fz);
+	vec_append(dc, k, /**/ fx, fy, fz);
     }
     END;
     return CO_OK;
 }
 
 real
-he_f_strain_energy(T * q, He * he0, const real * x, const real * y,
-                   const real * z)
+he_f_strain_energy(T * q, He * he0, const real * x, const real * y, const real * z)
 {
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
     int nv, nt, t;
     int i, j, k;
-    real e0, e, *eng, *engt;
+    real e0, e;
+    real ea;
+    real eb;
     He *he;
 
     he = q->he;
     nv = he_nv(he);
     nt = he_nt(he);
     if (nv != he_nv(he0))
-        ERR(CO_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
+	ERR(CO_INDEX, "nv=%d != he_nv(he0)=%d", nv, he_nv(he0));
     if (nt != he_nt(he0))
-        ERR(CO_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
+	ERR(CO_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
     e = 0;
-    eng = q->eng;
-    engt = q->engt;
-    array_zero(nv, eng);
+    array_zero(nv, q->eng);
+    array_zero(nv, q->ea);
+    array_zero(nv, q->eb);
     BEGIN {
-        e0 = strain_energy(q->strain, a0, b0, c0, a, b, c);
-        engt[t] = e0;
-        eng[i] += e0 / 3;
-        eng[j] += e0 / 3;
-        eng[k] += e0 / 3;
-        e += e0;
+	strain_energy_ab(q->strain, a0, b0, c0, a, b, c, &ea, &eb);
+	q->ea[i] += ea / 3;
+	q->ea[j] += ea / 3;
+	q->ea[k] += ea / 3;
+	q->eb[i] += eb / 3;
+	q->eb[j] += eb / 3;
+	q->eb[k] += eb / 3;
     }
     END;
-    return e;
+    return he_sum_array(nv, q->ea) + he_sum_array(nv, q->eb);
 }
 
 int
 he_f_strain_invariants(T * q, const real * x, const real * y,
-                       const real * z, /**/ real ** pI1, real ** pI2)
+		       const real * z, /**/ real ** pI1, real ** pI2)
 {
     real a0[3], b0[3], c0[3];
     real a[3], b[3], c[3];
@@ -262,47 +263,16 @@ he_f_strain_invariants(T * q, const real * x, const real * y,
     array_zero(nv, I2);
 
     BEGIN {
-        strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
-        I1[i] += I10 / 3;
-        I1[j] += I10 / 3;
-        I1[k] += I10 / 3;
-        I2[i] += I10 / 3;
-        I2[j] += I20 / 3;
-        I2[k] += I20 / 3;
+	strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
+	I1[i] += I10 / 3;
+	I1[j] += I10 / 3;
+	I1[k] += I10 / 3;
+	I2[i] += I10 / 3;
+	I2[j] += I20 / 3;
+	I2[k] += I20 / 3;
     } END;
-
     *pI1 = I1;
     *pI2 = I2;
-
-    return CO_OK;
-}
-
-int
-he_f_strain_invariants_tri(T * q, const real * x, const real * y,
-                           const real * z, /**/ real ** pI1, real ** pI2)
-{
-    real a0[3], b0[3], c0[3];
-    real a[3], b[3], c[3];
-    int nt, t;
-    int i, j, k;
-    real *I1t, *I2t, I10, I20;
-    He *he;
-
-    he = q->he;
-    nt = he_nt(he);
-
-    I1t = q->I1t;
-    I2t = q->I2t;
-
-    BEGIN {
-        strain_invariants(a0, b0, c0, a, b, c, &I10, &I20);
-        I1t[t] = I10;
-        I2t[t] = I20;
-    } END;
-
-    *pI1 = I1t;
-    *pI2 = I2t;
-
     return CO_OK;
 }
 
@@ -314,8 +284,19 @@ he_f_strain_energy_ver(T * q, /**/ real ** pa)
 }
 
 int
-he_f_strain_energy_tri(T * q, /**/ real ** pa)
+he_f_strain_energies_ver(T * q, /**/ real ** pa, real ** pb)
 {
-    *pa = q->engt;
+    *pa = q->ea;
+    *pb = q->eb;
+    return CO_OK;
+}
+
+int
+he_f_strain_energies(T * q, /**/ real * pa, real * pb)
+{
+    int n;
+    n = he_nv(q->he);
+    *pa = he_sum_array(n, q->ea);
+    *pb = he_sum_array(n, q->eb);
     return CO_OK;
 }

@@ -232,3 +232,18 @@ strain_energy(T * q, const real a0[3], const real b0[3], const real c0[3],
     strain_energy_3d((void *) param, F, a0, b0, c0, a, b, c, /**/ &eng);
     return eng;
 }
+
+int
+strain_energy_ab(T * q, const real a0[3], const real b0[3], const real c0[3],
+		 const real a[3], const real b[3], const real c[3],
+		 real *ea, real *eb)
+{
+    real eng, deng;
+    P *param;
+    TypeGun G;
+
+    param = &q->param;
+    G = q->G;
+    strain_energy_3d_ab((void *) param, G, a0, b0, c0, a, b, c, /**/ ea, eb);
+    return eng;
+}
