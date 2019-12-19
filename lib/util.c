@@ -39,6 +39,12 @@ util_fgets(char *s, FILE * stream)
     return s;
 }
 
+char *
+util_strcpy(char *a, const char *b)
+{
+    return strncpy(a, b, SIZE - 1);
+}
+
 enum { NO, YES };
 static int
 commentp(const char *s)
