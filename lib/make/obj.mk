@@ -88,6 +88,7 @@ f/strain.s.o\
 f/volume.s.o\
 f/volume_normal.s.o\
 f/wlc.s.o\
+generation.s.o\
 gts.s.o\
 H.s.o\
 integral/circle_line.s.o\
@@ -225,6 +226,7 @@ f/strain.d.o\
 f/volume.d.o\
 f/volume_normal.d.o\
 f/wlc.d.o\
+generation.d.o\
 gts.d.o\
 H.d.o\
 integral/circle_line.d.o\
@@ -362,6 +364,7 @@ f/strain.l.o\
 f/volume.l.o\
 f/volume_normal.l.o\
 f/wlc.l.o\
+generation.l.o\
 gts.l.o\
 H.l.o\
 integral/circle_line.l.o\

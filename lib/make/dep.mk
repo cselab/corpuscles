@@ -876,6 +876,17 @@ co/vec.h\
 co/argv.h\
 co/f/wlc.h\
 
+generation.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/vec.h\
+co/tri.h\
+co/vtk.h\
+co/generation.h\
+
 gts.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -1438,8 +1449,9 @@ co/prec/s/real.h\
 co/err.h\
 co/he.h\
 co/memory.h\
-inc/def.h\
+co/util.h\
 co/vtk.h\
+inc/def.h\
 
 y.s.o:\
 co/prec/s/real.h\
@@ -2256,6 +2268,17 @@ co/vec.h\
 co/argv.h\
 co/f/wlc.h\
 
+generation.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/vec.h\
+co/tri.h\
+co/vtk.h\
+co/generation.h\
+
 gts.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -2818,8 +2841,9 @@ co/prec/d/real.h\
 co/err.h\
 co/he.h\
 co/memory.h\
-inc/def.h\
+co/util.h\
 co/vtk.h\
+inc/def.h\
 
 y.d.o:\
 co/prec/d/real.h\
@@ -3636,6 +3660,17 @@ co/vec.h\
 co/argv.h\
 co/f/wlc.h\
 
+generation.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/vec.h\
+co/tri.h\
+co/vtk.h\
+co/generation.h\
+
 gts.l.o:\
 co/prec/l/real.h\
 co/err.h\
@@ -4198,8 +4233,9 @@ co/prec/l/real.h\
 co/err.h\
 co/he.h\
 co/memory.h\
-inc/def.h\
+co/util.h\
 co/vtk.h\
+inc/def.h\
 
 y.l.o:\
 co/prec/l/real.h\

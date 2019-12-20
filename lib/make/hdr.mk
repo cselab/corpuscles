@@ -77,6 +77,7 @@ co/f/strain.h\
 co/f/volume.h\
 co/f/volume_normal.h\
 co/f/wlc.h\
+co/generation.h\
 co/gts.h\
 co/hash.h\
 co/he.h\

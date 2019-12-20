@@ -2,6 +2,7 @@
 include ../../conf.mk
 M = \
 main\
+read\
 file\
 
 PREC = d
