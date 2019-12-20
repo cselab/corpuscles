@@ -171,7 +171,7 @@ vtk_tri_int_read(FILE * file, const char *names[], He ** phe, real ** px,
 	tri[j++] = t1;
 	tri[j++] = t2;
     }
-    if (he_tri_ini(nv, nt, tri, he) != CO_OK)
+    if (he_tri_ini(nv, nt, tri, &he) != CO_OK)
       ERR(CO_IO, "he_tri_in failed (nv=%d, nt=%d)", nv, nt);
     
 
