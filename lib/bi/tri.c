@@ -56,12 +56,10 @@ int
 bi_tri_update(T * q, He * he, const real * x, const real * y,
               const real * z)
 {
-    struct Tensor *O, *K;
-    int status, n, i;
-    real coeff;
+    struct Tensor *O;
+    int status;
 
     O = &q->O;
-    K = &q->K;
     status =
         oseen3_tri_apply(q->oseen, he, x, y, z, O->xx, O->xy, O->xz, O->yy,
                          O->yz, O->zz);
