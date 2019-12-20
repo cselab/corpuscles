@@ -21,10 +21,10 @@ main(int argc, char **argv)
 {
     USED(argc);
     He *he;
-    int i;
     int *id;
-    int *neg;
     int n;
+    int i;
+    int *neg;
     real *x;
     real *y;
     real *z;
@@ -39,6 +39,9 @@ main(int argc, char **argv)
     const char *names[] = { "id", "neg", NULL };
     vtk_tri_int_read(stdin, names, &he, &x, &y, &z, scalars);
     off_he_xyz_fwrite(he, x, y, z, stdout);
+    n = he_nt(he);
+    for (i = 0; i < n; i++)
+        MSG("%d %d", id[i], neg[i]);
     he_fin(he);
     FREE3(x, y, z);
     FREE2(id, neg);
