@@ -43,8 +43,8 @@ main(int argc, char **argv)
 	    exit(2);
 	}
     generation_read(stdin, &he, &x, &y, &z, &generation);
-
-    generation_refine(generation, 1197, he, &x, &y, &z);
+    generation_coarsen(generation, 3098, he, &x, &y, &z);
+    generation_invariant(generation, he);
 
     nt = he_nt(he);
     MALLOC(nt, &color);

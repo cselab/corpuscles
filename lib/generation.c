@@ -218,6 +218,76 @@ generation_refine(T * q, int t, He * he, real ** x, real ** y, real ** z)
 }
 
 int
+generation_coarsen(T * q, int t, He * he, real ** x, real ** y, real ** z)
+{
+    int b;
+    int b0;
+    int b1;
+    int cnt;
+    int *g;
+    int Generation;
+    int h;
+    int Mate;
+    int *mbit;
+    int nt;
+    int t0;
+    int t1;
+    int v;
+
+    enum {CNT = 100};
+    g = q->g;
+    mbit = q->mbit;
+    nt = he_nt(he);
+    if (t < 0 || t >= nt)
+	ERR(CO_INDEX, "%d is not in [0, %d)", t, nt);
+    if (g[t] == 0) {
+	MSG("g[%d] == 0", t);
+	return CO_OK;
+    }
+    Generation = q->g[t];
+    Mate = q->mate[t];
+    if (Generation % 2 == 1) {
+	for (cnt = 0; cnt < CNT; cnt++) {
+	    h = he_nxt(he, Mate);
+	    if (he_bnd(he, h))
+		ERR(CO_INDEX, "he_bnd(%d)", h);
+	    t0 = he_tri(he, he_flp(he, h));
+	    if (g[t0] < Generation)
+		ERR(CO_INDEX, "g[%d]=%d < g[%d]=%d", t0, g[t0], t, Generation);
+	    if (g[t0] == Generation) break;
+	    generation_coarsen(q, t0, he, x, y, z);
+	}
+	if (cnt == CNT)
+	    ERR(CO_INDEX, "cnt > CNT, t = %d, Mate = %d", t, Mate);
+
+	for (cnt = 0; cnt < CNT; cnt++) {
+	    h = he_nxt(he, he_nxt(he, Mate));
+	    if (he_bnd(he, h))
+		ERR(CO_INDEX, "he_bnd(%d)", h);
+	    t1 = he_tri(he, he_flp(he, h));
+	    if (g[t1] < Generation)
+		ERR(CO_INDEX, "g[%d]=%d < g[%d]=%d", t1, g[t1], t, Generation);
+	    if (g[t1] == Generation) break;
+	    generation_coarsen(q, t1, he, x, y, z);
+	}
+	if (cnt == CNT)
+	    ERR(CO_INDEX, "t = %d, Mate = %d", t, Mate);
+	bit_get(mbit[t], Generation - 1, &b);
+	bit_get(mbit[t0], Generation - 1, &b0);
+	bit_get(mbit[t1], Generation - 1, &b1);
+	h = he_nxt(he, he_nxt(he, Mate));
+	v = he_ver(he, h);
+	if (he_tri_join3(he, v) != CO_OK)
+	    ERR(CO_INDEX, "he_tri_join3 failed (t = %d)", t);
+	//t = he_tri_joi(he, Mate);
+	MSG("b: %d %d %d", b, b0, b1);
+    } else {
+	MSG("TODO");
+    }
+    return CO_OK;
+}
+
+int
 generation_invariant(T * q, He * he)
 {
     int ne;
