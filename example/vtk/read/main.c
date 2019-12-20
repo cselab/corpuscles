@@ -30,16 +30,15 @@ main(int argc, char **argv)
     real *z;
 
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	}
-
-    int **scalars[] = {&id, &neg, NULL};
-    const char *names[] = {"id", "neg", NULL};
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        }
+    int **scalars[] = { &id, &neg, NULL };
+    const char *names[] = { "id", "neg", NULL };
     vtk_tri_int_read(stdin, names, &he, &x, &y, &z, scalars);
-
+    off_he_xyz_fwrite(he, x, y, z, stdout);
     he_fin(he);
     FREE3(x, y, z);
     FREE2(id, neg);
