@@ -108,7 +108,7 @@ vtk_tri_int_write(He * he, const real * x, const real * y, const real * z,
 }
 
 int
-vtk_tri_int_read(FILE * file, const char *names[], He ** he, real ** px,
+vtk_tri_int_read(FILE * file, const char *names[], He ** phe, real ** px,
 		 real ** py, real ** pz, int **scalars[])
 {
 #define NXT						\
@@ -129,11 +129,17 @@ vtk_tri_int_read(FILE * file, const char *names[], He ** he, real ** px,
     char prev[SIZE];
     const char *fmt;
     int i;
-    int nv;
+    int j;
     int nt;
+    int nv;
+    int *tri;
+    int t0;
+    int t1;
+    int t2;
     real *x;
     real *y;
     real *z;
+    He *he;
 
     EAT("# vtk DataFile Version 2.0");
     NXT;                        /* comment */
@@ -150,6 +156,27 @@ vtk_tri_int_read(FILE * file, const char *names[], He ** he, real ** px,
 	if (sscanf(line, fmt, &x[i], &y[i], &z[i]) != 3)
 	    ERR(CO_IO, "expected '%s', got '%s'", fmt, line);
     }
+    NXT;
+    fmt = "POLYGONS %d %*d";
+    if (sscanf(line, fmt, &nt) != 1)
+      ERR(CO_IO, "expected '%s', got '%s'", fmt, line);
+
+    MALLOC(3*nt, &tri);
+    fmt = "%*d %d %d %d";
+    for (i = j = 0; i < nt; i++) {
+	NXT;
+	if (sscanf(line, fmt, &t0, &t1, &t2) != 3)
+	  ERR(CO_IO, "expected '%s', got '%s'", fmt, line);
+	tri[j++] = t0;
+	tri[j++] = t1;
+	tri[j++] = t2;
+    }
+    if (he_tri_ini(nv, nt, tri, he) != CO_OK)
+      ERR(CO_IO, "he_tri_in failed (nv=%d, nt=%d)", nv, nt);
+    
+
+    FREE(tri);
+    *phe = he;
     *px = x;
     *py = y;
     *pz = z;
