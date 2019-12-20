@@ -11,7 +11,6 @@
 #include "co/tensor.h"
 
 #define T BiTri
-static const real pi = 3.141592653589793115997964;
 struct T {
     Oseen3Tri *oseen;
     struct Tensor O, K;
@@ -76,7 +75,7 @@ bi_tri_single(T * q, He * he, real al,
               /*io */ real * ux, real * uy, real * uz)
 {
     struct Tensor *O;
-    int n, status;
+    int n;
 
     USED(x);
     USED(y);

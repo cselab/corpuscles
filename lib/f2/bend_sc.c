@@ -63,7 +63,7 @@ compute_energy(real H0, Skel * skel, const real * x, const real * y)
 {
     int v, i, j, k, n;
     Sum *sum;
-    real a[2], b[2], c[2], u, w, p, h, E, k0, dh;
+    real a[2], b[2], c[2], u, w, p, h, E, dh;
 
     n = skel_nv(skel);
     sum_ini(&sum);

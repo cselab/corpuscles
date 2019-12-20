@@ -165,7 +165,6 @@ moment_tri(He * he, const real * xx, const real * yy, const real * zz,
         ZZ
     };
     real a[3], b[3], c[3], area;
-    real x, y, z;
     int nt, t, i, j, k;
     real uu, uv, uw, vv, vw, ww;
 

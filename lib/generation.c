@@ -241,7 +241,7 @@ generation_invariant(T * q, He * he)
     return CO_OK;
 }
 
-static int
+int
 generation_write(T * q, He * he, const real * x, const real * y,
                  const real * z, FILE * file)
 {

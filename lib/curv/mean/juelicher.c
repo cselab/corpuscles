@@ -23,7 +23,6 @@ int
 curv_mean_juelicher_ini(He * he, T ** pq)
 {
     T *q;
-    int status;
     int nv;
 
     nv = he_nv(he);
