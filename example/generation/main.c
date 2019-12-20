@@ -217,7 +217,6 @@ int
 generation_refine(T * q, int t, He * he, real ** x, real ** y, real ** z)
 {
     int m;
-    int status;
 
     if (q->g[t] % 2 == 0) {
         return split(q, t, he, x, y, z);
@@ -276,14 +275,55 @@ generation_write(T * q, He * he, const real * x, const real * y,
             h = he_nxt(he, h);
             h = he_nxt(he, h);
             v = he_ver(he, h);
-	    mver[t] = v;
+            mver[t] = v;
         }
-
-    const char *names[] = {"g", "mbit", "mver", NULL};
-    const int *scalars[] = {q->g, q->mbit, mver, NULL};
-    status = vtk_tri_int_write(he, x, y, z, scalars, names, stdout);
+    const char *names[] = { "g", "mbit", "mver", NULL };
+    const int *scalars[] = { q->g, q->mbit, mver, NULL };
+    status = vtk_tri_int_write(he, x, y, z, scalars, names, file);
     if (status != CO_OK)
-	ERR(CO_IO, "vtk_tri_int_write faield");
+        ERR(CO_IO, "vtk_tri_int_write faield");
+    FREE(mver);
+    return CO_OK;
+}
+
+int
+generation_read(FILE * file, He ** phe, real ** x, real ** y, real ** z,
+                T ** pq)
+{
+    He *he;
+    int *mver;
+    int nt;
+    int t;
+    int cnt;
+    int h;
+    int v;
+    T *q;
+
+    MALLOC(1, &q);
+    const char *names[] = { "g", "mbit", "mver", NULL };
+    int **scalars[] = { &q->g, &q->mbit, &mver, NULL };
+    if (vtk_tri_int_read(file, names, &he, x, y, z, scalars) != CO_OK)
+        ERR(CO_IO, "vtk_tri_int_read failed");
+    nt = he_nt(he);
+    MALLOC(nt, &q->mate);
+    for (t = 0; t < nt; t++)
+        if (q->g[t] % 2 == 1) {
+            v = mver[t];
+            h = he_hdg_tri(he, t);
+            for (cnt = 0;; cnt++) {
+                if (he_ver(he, h) == v)
+                    break;
+                h = he_nxt(he, h);
+                if (cnt > 3)
+                    ERR(CO_IO, "v = %d, h = %d, t = %d", v, h, t);
+            }
+            h = he_nxt(he, h);
+            q->mate[t] = h;
+        }
+    q->NT = nt;
+    q->NV = he_nv(he);
+    *phe = he;
+    *pq = q;
     FREE(mver);
     return CO_OK;
 }
@@ -297,7 +337,6 @@ main(int argc, char **argv)
     real *x;
     real *y;
     real *z;
-    int t;
     int nt;
     int i;
     real u;
@@ -362,8 +401,8 @@ tri_xyz(int t, He * he, const real * x, const real * y, const real * z,
     *u = d[X];
     *v = d[Y];
     *w = d[Z];
+    return CO_OK;
 }
-
 
 static int
 bit_set(int n, int *mbit)

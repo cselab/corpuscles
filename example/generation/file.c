@@ -219,7 +219,6 @@ int
 generation_refine(T * q, int t, He * he, real ** x, real ** y, real ** z)
 {
     int m;
-    int status;
 
     if (q->g[t] % 2 == 0) {
         return split(q, t, he, x, y, z);
@@ -269,7 +268,6 @@ main(int argc, char **argv)
     int Color;
     int *level;
     int nt;
-    int t;
     real *color;
     real u;
     real v;
@@ -368,6 +366,7 @@ tri_xyz(int t, He * he, const real * x, const real * y, const real * z,
     *u = d[X];
     *v = d[Y];
     *w = d[Z];
+    return CO_OK;
 }
 
 
