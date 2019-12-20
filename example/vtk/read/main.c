@@ -5,14 +5,14 @@
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
+#include <co/off.h>
 #include <co/vtk.h>
-#include <co/y.h>
 
 static const char *me = "vtk/int";
 static void
 usg()
 {
-    fprintf(stderr, "%s < OFF > VTK\n", me);
+    fprintf(stderr, "%s < VTK > OFF\n", me);
     exit(2);
 }
 
@@ -20,14 +20,14 @@ int
 main(int argc, char **argv)
 {
     USED(argc);
-    real *x;
-    real *y;
-    real *z;
     He *he;
+    int i;
     int *id;
     int *neg;
     int n;
-    int i;
+    real *x;
+    real *y;
+    real *z;
 
     while (*++argv != NULL && argv[0][0] == '-')
 	switch (argv[0][1]) {
@@ -35,20 +35,12 @@ main(int argc, char **argv)
 	    usg();
 	    break;
 	}
-    y_inif(stdin, &he, &x, &y, &z);
-    n = he_nt(he);
 
-    MALLOC(n, &id);
-    MALLOC(n, &neg);
-    for (i = 0; i < n; i++) {
-	id[i] = i;
-	neg[i] = -i;
-    }
-    
-    const int *scalars[] = {id, neg, NULL};
+    int **scalars[] = {&id, &neg, NULL};
     const char *names[] = {"id", "neg", NULL};
-    vtk_tri_int_write(he, x, y, z, scalars, names, stdout);
-    FREE(id);
-    FREE(neg);
-    y_fin(he, x, y, z);
+    vtk_tri_int_read(stdin, names, &he, &x, &y, &z, scalars);
+
+    he_fin(he);
+    FREE3(x, y, z);
+    FREE2(id, neg);
 }
