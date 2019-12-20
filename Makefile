@@ -24,14 +24,10 @@ bin/sqrt3\
 bin/vtk\
 bin/xcolor\
 data\
-example/area/tri\
-example/area/voronoi\
 example/he/dump\
 example/punto\
 example/ten\
-example/valid\
 example/vec\
-example/volume\
 maxima/lib\
 
 E = \
