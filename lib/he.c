@@ -2390,35 +2390,6 @@ he_tri_split3(T * q, int ABC)
     return CO_OK;
 }
 
-#define INDEX					\
-    do {					\
-	hXA = hdg_ver(X);			\
-	hAB = nxt(hXA);				\
-	hBX = nxt(hAB);				\
-	hXB = flp(hBX);				\
-	hBC = nxt(hXB);				\
-	hCX = nxt(hBC);				\
-	hXC = flp(hCX);				\
-	hCA = nxt(hXC);				\
-	hAX = nxt(hCA);				\
-	hAC = flp(hCA);				\
-	hCB = flp(hBC);				\
-	hBA = flp(hAB);				\
-	A = ver(hAB);				\
-	B = ver(hBX);				\
-	C = ver(hCX);				\
-	X = ver(hXA);				\
-	eAC = edg(hCA);				\
-	eBC = edg(hBC);				\
-	eAX = edg(hXA);				\
-	eBX = edg(hBX);				\
-	eCX = edg(hCX);				\
-	eAB = edg(hAB);				\
-	BCX = tri(hBC);				\
-	ABX = tri(hAB);				\
-	ACX = tri(hCA);				\
-	ABC = BCX;				\
-    } while (0)
 int
 he_tri_join3(T * q, int X)
 {
@@ -2462,7 +2433,32 @@ he_tri_join3(T * q, int X)
     if (rank != 3)
         ERR(CO_INDEX, "he_rank(q, %d)=%d", X, rank);
 
-    INDEX;
+    hXA = hdg_ver(X);
+    hAB = nxt(hXA);
+    hBX = nxt(hAB);
+    hXB = flp(hBX);
+    hBC = nxt(hXB);
+    hCX = nxt(hBC);
+    hXC = flp(hCX);
+    hCA = nxt(hXC);
+    hAX = nxt(hCA);
+    hAC = flp(hCA);
+    hCB = flp(hBC);
+    hBA = flp(hAB);
+    A = ver(hAB);
+    B = ver(hBX);
+    C = ver(hCX);
+    X = ver(hXA);
+    eAC = edg(hCA);
+    eBC = edg(hBC);
+    eAX = edg(hXA);
+    eBX = edg(hBX);
+    eCX = edg(hCX);
+    eAB = edg(hAB);
+    BCX = tri(hBC);
+    ABX = tri(hAB);
+    ACX = tri(hCA);
+    ABC = BCX;
 
     DEL_VER(X);
     DEL_EDG(eAX);
@@ -2476,8 +2472,6 @@ he_tri_join3(T * q, int X)
     DEL_HDG(hBX);
     DEL_HDG(hXC);
     DEL_HDG(hCX);
-
-    INDEX;
 
     s_nxt(hAB, hBC);
     s_nxt(hCA, hAB);
