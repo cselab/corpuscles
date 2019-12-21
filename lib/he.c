@@ -388,10 +388,10 @@ set_hdg_tri(T * q, int t, int i)
 #define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
 #define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
 
-#define DEL_VER(i) he_swap_ver(q, (i), --nv)
-#define DEL_EDG(i) he_swap_edg(q, (i), --ne)
-#define DEL_TRI(i) he_swap_tri(q, (i), --nt)
-#define DEL_HDG(i) he_swap_hdg(q, (i), --nh)
+#define DEL_VER(i) (he_swap_ver(q, (i), --nv), nv)
+#define DEL_EDG(i) (he_swap_edg(q, (i), --ne), ne)
+#define DEL_TRI(i) (he_swap_tri(q, (i), --nt), nt)
+#define DEL_HDG(i) (he_swap_hdg(q, (i), --nh), nh)
 
 int
 he_edg_rotate(T * q, int e0)
