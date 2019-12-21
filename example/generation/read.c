@@ -42,9 +42,15 @@ main(int argc, char **argv)
 	    fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
 	    exit(2);
 	}
-    generation_read(stdin, &he, &x, &y, &z, &generation);
+
+    if (generation_read(stdin, &he, &x, &y, &z, &generation) != CO)
+	ER("generation_read failed");
+    if (he_invariant(he) != CO_OK)
+	ER("he_invariant failed");
+    generation_invariant(generation, he);
     generation_coarsen(generation, 3098, he, &x, &y, &z);
     generation_invariant(generation, he);
+    he_invariant(he);
 
     nt = he_nt(he);
     MALLOC(nt, &color);

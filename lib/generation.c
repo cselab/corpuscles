@@ -229,17 +229,16 @@ generation_coarsen(T * q, int t, He * he, real ** x, real ** y, real ** z)
     int h;
     int Mate;
     int *mbit;
-    int nt;
     int t0;
     int t1;
     int v;
 
+    MSG("t: %d", t);
     enum {CNT = 100};
     g = q->g;
     mbit = q->mbit;
-    nt = he_nt(he);
-    if (t < 0 || t >= nt)
-	ERR(CO_INDEX, "%d is not in [0, %d)", t, nt);
+    if (t < 0 || t >= he_nt(he))
+	ERR(CO_INDEX, "%d is not in [0, %d)", t, he_nt(he));
     if (g[t] == 0) {
 	MSG("g[%d] == 0", t);
 	return CO_OK;
@@ -275,12 +274,13 @@ generation_coarsen(T * q, int t, He * he, real ** x, real ** y, real ** z)
 	bit_get(mbit[t], Generation - 1, &b);
 	bit_get(mbit[t0], Generation - 1, &b0);
 	bit_get(mbit[t1], Generation - 1, &b1);
+	if (b + b0 + b1 != 1)
+	    ERR(CO_INDEX, "b: %d %d %d (t = %d)", b, b0, b1, t);
 	h = he_nxt(he, he_nxt(he, Mate));
 	v = he_ver(he, h);
 	if (he_tri_join3(he, v) != CO_OK)
 	    ERR(CO_INDEX, "he_tri_join3 failed (t = %d)", t);
 	//t = he_tri_joi(he, Mate);
-	MSG("b: %d %d %d", b, b0, b1);
     } else {
 	MSG("TODO");
     }

@@ -30,35 +30,35 @@ main(int __UNUSED argc, const char **argv)
 
     Tflag = 0;
     while (*++argv != NULL && argv[0][0] == '-')
-        switch (argv[0][1]) {
-        case 'h':
-            usg();
-            break;
-        case 't':
-            argv++;
-            if ((arg = *argv) == NULL) {
-                fprintf(stderr, "%s: -t needs an argument\n", me);
-                exit(2);
-            }
-            Tflag = 1;
-            t = atoi(*argv);
-            break;
-        default:
-            fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
-            exit(2);
-        }
+	switch (argv[0][1]) {
+	case 'h':
+	    usg();
+	    break;
+	case 't':
+	    argv++;
+	    if ((arg = *argv) == NULL) {
+		fprintf(stderr, "%s: -t needs an argument\n", me);
+		exit(2);
+	    }
+	    Tflag = 1;
+	    t = atoi(*argv);
+	    break;
+	default:
+	    fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
+	    exit(2);
+	}
     y_inif(stdin, &he, &x, &y, &z);
     nt = he_nt(he);
     if (!Tflag) {
-        fprintf(stderr, "%s: triangle (-t) is not set\n", me);
-        exit(2);
+	fprintf(stderr, "%s: triangle (-t) is not set\n", me);
+	exit(2);
     }
     if (t >= nt) {
-        fprintf(stderr, "%s: t=%d >= nt=%d\n", me, t, nt);
-        exit(2);
+	fprintf(stderr, "%s: t=%d >= nt=%d\n", me, t, nt);
+	exit(2);
     }
-    MSG("he_nv: %d", he_nv(he));
-    MSG("he_nt: %d", he_nt(he));
+    MSG("nv: %d", he_nv(he));
+    MSG("nt: %d", he_nt(he));
     he_tri_ijk(he, t, &i, &j, &k);
 
     he_tri_ijk(he, t, &i, &j, &k);
@@ -66,10 +66,9 @@ main(int __UNUSED argc, const char **argv)
     tri_center(a, b, c, d);
     status = he_tri_split3(he, t);
     if (status != CO_OK)
-        ER("he_tri_split failed");
-    status = he_invariant(he);
-    if (status != CO_OK)
-        ER("he_invariant failed");
+	ER("he_tri_split failed");
+    if (he_invariant(he) != CO_OK)
+	ER("he_invariant failed");
     nv = he_nv(he);
     nt = he_nt(he);
     REALLOC(nv, &x);
@@ -77,12 +76,14 @@ main(int __UNUSED argc, const char **argv)
     REALLOC(nv, &z);
     CALLOC(nt, &color);
     for (i = nt - 2; i < nt; i++)
-        color[i] = 1;
+	color[i] = 1;
     color[t] = 1;
     vec_set(d, nv - 1, x, y, z);
     he_tri_join3(he, nv - 1);
-    MSG("nv: %d", nv);
-    MSG("nt: %d", nt);
+    if (he_invariant(he) != CO_OK)
+	ER("he_invariant failed");
+    MSG("nv: %d", he_nv(he));
+    MSG("nt: %d", he_nt(he));
     boff_tri_fwrite(he, x, y, z, color, stdout);
     FREE(color);
     y_fin(he, x, y, z);
