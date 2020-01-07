@@ -101,7 +101,7 @@ main(int argc, char **argv)
     if (Color) {
         nt = he_nt(he);
         MALLOC(nt, &color);
-	generation_color(generation, he, color);
+        generation_color(generation, he, color);
         if (boff_tri_fwrite(he, x, y, z, color, stdout) != CO_OK)
             ER("boff_tri_fwrite failed");
         FREE(color);
