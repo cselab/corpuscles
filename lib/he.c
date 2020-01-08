@@ -33,6 +33,11 @@ static void sort6(int *, int *, int *, int *, int *, int *);
 static int compar(const void *, const void *);
 static void swap(int *a, int *b);
 
+static int copy_ver(T *, int, int);
+static int copy_edg(T *, int, int);
+static int copy_hdg(T *, int, int);
+static int copy_tri(T *, int, int);
+
 enum { END = -1 };
 static int
 distinct(const int a[])
@@ -393,10 +398,10 @@ set_hdg_tri(T * q, int t, int i)
 #define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
 #define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
 
-#define DEL_VER(i) (he_swap_ver(q, (i), --nv), (i) = nv)
-#define DEL_EDG(i) (he_swap_edg(q, (i), --ne), (i) = ne)
-#define DEL_TRI(i) (he_swap_tri(q, (i), --nt), (i) = nt)
-#define DEL_HDG(i) (he_swap_hdg(q, (i), --nh), (i) = nh)
+#define DEL_VER(i) (copy_ver(q, --nv, (i)))
+#define DEL_EDG(i) (copy_edg(q, --ne, (i)))
+#define DEL_TRI(i) (copy_tri(q, --nt, (i)))
+#define DEL_HDG(i) (copy_hdg(q, --nh, (i)))
 
 int
 he_edg_rotate(T * q, int e0)
@@ -2395,35 +2400,6 @@ he_tri_split3(T * q, int ABC)
     return CO_OK;
 }
 
-#define DEF					\
-    do {					\
-	hXA = hdg_ver(X);			\
-	hAB = nxt(hXA);				\
-	hBX = nxt(hAB);				\
-	hXB = flp(hBX);				\
-	hBC = nxt(hXB);				\
-	hCX = nxt(hBC);				\
-	hXC = flp(hCX);				\
-	hCA = nxt(hXC);				\
-	hAX = nxt(hCA);				\
-	hAC = flp(hCA);				\
-	hCB = flp(hBC);				\
-	hBA = flp(hAB);				\
-	A = ver(hAB);				\
-	B = ver(hBX);				\
-	C = ver(hCX);				\
-	eAC = edg(hCA);				\
-	eBC = edg(hBC);				\
-	eAX = edg(hXA);				\
-	eBX = edg(hBX);				\
-	eCX = edg(hCX);				\
-	eAB = edg(hAB);				\
-	BCX = tri(hBC);				\
-	ABX = tri(hAB);				\
-	ACX = tri(hCA);				\
-	ABC = BCX;				\
-    } while (0)
-
 int
 he_tri_join3(T * q, int X)
 {
@@ -2466,27 +2442,31 @@ he_tri_join3(T * q, int X)
     if (rank != 3)
 	ERR(CO_INDEX, "he_rank(q, %d)=%d", X, rank);
 
-    DEF;
-
-    sort3(&eAX, &eBX, &eCX);
-    sort2(&ABX, &ACX);
-    sort6(&hAX, &hXA, &hXB, &hBX, &hXC, &hCX);
-    MSG("tri: %d %d", ABX, ACX);
-    
-    DEL_VER(X);
-    DEL_EDG(eCX);
-    DEL_EDG(eBX);
-    DEL_EDG(eAX);
-    DEL_TRI(ACX);
-    DEL_TRI(ABX);
-    DEL_HDG(hCX);
-    DEL_HDG(hXC);
-    DEL_HDG(hBX);
-    DEL_HDG(hXB);
-    DEL_HDG(hXA);
-    DEL_HDG(hAX);
-    
-    //DEF;
+    hXA = hdg_ver(X);
+    hAB = nxt(hXA);
+    hBX = nxt(hAB);
+    hXB = flp(hBX);
+    hBC = nxt(hXB);
+    hCX = nxt(hBC);
+    hXC = flp(hCX);
+    hCA = nxt(hXC);
+    hAX = nxt(hCA);
+    hAC = flp(hCA);
+    hCB = flp(hBC);
+    hBA = flp(hAB);
+    A = ver(hAB);
+    B = ver(hBX);
+    C = ver(hCX);
+    eAC = edg(hCA);
+    eBC = edg(hBC);
+    eAX = edg(hXA);
+    eBX = edg(hBX);
+    eCX = edg(hCX);
+    eAB = edg(hAB);
+    BCX = tri(hBC);
+    ABX = tri(hAB);
+    ACX = tri(hCA);
+    ABC = BCX;
     
     s_nxt(hAB, hBC);
     s_nxt(hCA, hAB);
@@ -2513,6 +2493,22 @@ he_tri_join3(T * q, int X)
     s_hdg_edg(eBC, hBC);
     s_hdg_edg(eAB, hAB);
     s_hdg_tri(ABC, hAB);
+
+    sort3(&eAX, &eBX, &eCX);
+    sort2(&ABX, &ACX);
+    sort6(&hAX, &hXA, &hXB, &hBX, &hXC, &hCX);
+    DEL_VER(X);
+    DEL_EDG(eCX);
+    DEL_EDG(eBX);
+    DEL_EDG(eAX);
+    DEL_TRI(ACX);
+    DEL_TRI(ABX);
+    DEL_HDG(hCX);
+    DEL_HDG(hXC);
+    DEL_HDG(hBX);
+    DEL_HDG(hXB);
+    DEL_HDG(hXA);
+    DEL_HDG(hAX);
 
     q->nv = nv;
     q->nt = nt;
@@ -3014,4 +3010,138 @@ sort6(int * a0, int * a1, int * a2, int * a3, int * a4, int * a5)
     *a3 = a[3];
     *a4 = a[4];
     *a5 = a[5];
+}
+
+static int
+copy_ver(T * q, int i, int j)
+{
+    int hi, nv, h;
+
+    if (bnd_ver(i))
+	ERR(CO_INDEX, "bnd_ver(%d)", i);
+    if (bnd_ver(j))
+	ERR(CO_INDEX, "bnd_ver(%d)", j);
+    if (i == j)
+	return CO_OK;
+    nv = he_nv(q);
+    if (i >= nv)
+	ERR(CO_INDEX, "i=%d >= nv=%d", i, nv);
+    if (j >= nv)
+	ERR(CO_INDEX, "j=%d >= nv=%d", j, nv);
+    hi = hdg_ver(i);
+    h = hi;
+    do {
+	assert(ver(h) == i);
+	s_ver(h, j);
+	h = flp(nxt(nxt(h)));
+    } while (h != hi);
+    s_hdg_ver(j, hi);
+    return CO_OK;
+}
+
+static int
+copy_edg(T * q, int i, int j)
+{
+    int hi, ne, fi;
+
+    if (i == j)
+	return CO_OK;
+    ne = he_ne(q);
+    if (i >= ne)
+	ERR(CO_INDEX, "i=%d >= ne=%d", i, ne);
+    if (j >= ne)
+	ERR(CO_INDEX, "j=%d >= ne=%d", j, ne);
+    hi = hdg_edg(i);
+    if (bnd(hi))
+	ERR(CO_INDEX, "bnd(%d)", i);
+    fi = flp(hi);
+    assert(edg(fi) == i);
+    s_edg(fi, j);
+    s_edg(hi, j);
+    s_hdg_edg(j, hi);
+    return CO_OK;
+}
+
+static int
+copy_tri(T * q, int i, int j)
+{
+    int hi, nt, h;
+
+    if (i == j)
+	return CO_OK;
+    nt = he_nt(q);
+    if (i >= nt)
+	ERR(CO_INDEX, "i=%d >= nt=%d", i, nt);
+    if (j >= nt)
+	ERR(CO_INDEX, "j=%d >= nt=%d", j, nt);
+
+    hi = hdg_tri(i);
+    h = hi;
+    do {
+	assert(tri(h) == i);
+	s_tri(h, j);
+	h = nxt(h);
+    } while (h != hi);
+    s_hdg_tri(j, hi);
+    return CO_OK;
+}
+
+int
+copy_hdg(T * q, int i, int j)
+{
+#define MAP(v, i, j) if ((v) == (j)) (v) = (i)
+    int nh;
+    int ni, nni, fi, vi, ti, ei;
+    int nj, nnj, fj, vj, tj, ej;
+
+    if (i == j)
+	return CO_OK;
+    nh = he_nh(q);
+    if (i >= nh)
+	ERR(CO_INDEX, "i=%d >= nh=%d", i, nh);
+    if (j >= nh)
+	ERR(CO_INDEX, "j=%d >= nh=%d", j, nh);
+    ni = nxt(i);
+    nni = nxt(ni);
+    fi = flp(i);
+    MAP(ni, i, j);
+    MAP(nni, i, j);
+    MAP(fi, i, j);
+    vi = ver(i);
+    ti = tri(i);
+    ei = edg(i);
+
+    nj = nxt(j);
+    nnj = nxt(nj);
+    fj = flp(j);
+    MAP(nj, j, i);
+    MAP(nnj, j, i);
+    MAP(fj, j, i);
+    vj = ver(j);
+    tj = tri(j);
+    ej = edg(j);
+
+    s_nxt(i, nj);
+    s_nxt(nnj, i);
+    s_flp(i, fj);
+    s_flp(fj, i);
+    s_ver(i, vj);
+    s_tri(i, tj);
+    s_edg(i, ej);
+    s_hdg_ver(vj, i);
+    s_hdg_tri(tj, i);
+    s_hdg_edg(ej, i);
+
+    s_nxt(j, ni);
+    s_nxt(nni, j);
+    s_flp(j, fi);
+    s_flp(fi, j);
+    s_ver(j, vi);
+    s_tri(j, ti);
+    s_edg(j, ei);
+    s_hdg_ver(vi, j);
+    s_hdg_tri(ti, j);
+    s_hdg_edg(ei, j);
+
+    return CO_OK;
 }
