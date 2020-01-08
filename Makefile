@@ -35,7 +35,7 @@ bin/align\
 bin/cmoment\
 bin/orient\
 
-install: show  dir
+install: dir
 test: dir
 clean: dir
 
@@ -47,7 +47,7 @@ README.md: m4/util.m4
 html: README.md
 	$(PANDOC) --css=css/swiss.css --standalone README.md --resource-path=docs --metadata pagetitle=corpuscles --output=docs/index.html
 
-.PHONY: tool bin/m4 m4/lib lib test install clean show
+.PHONY: tool bin/m4 m4/lib lib test install clean
 
 .md.m4.md:; co.m4 -o $@ $<
 .SUFFIXES: .md.m4 .md
