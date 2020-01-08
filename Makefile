@@ -38,10 +38,12 @@ bin/orient\
 install: dir
 test: dir
 clean: dir
+	-rm TAGS
 
 lib: bin/m4 m4/lib
 
 include make/dir.mk
+TAGS:; etags `find lib -name '*.c' -or -name '*.h' -or -name '*.m4'`
 
 README.md: m4/util.m4
 html: README.md
