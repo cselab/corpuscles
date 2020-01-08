@@ -27,6 +27,8 @@ struct T {
 
 static int alloc(T *, int nv, int ne, int nh, int nt);
 static int realloc0(T * q, int nv, int nt, int ne, int nh);
+static void sort3(int *, int *, int *);
+static void sort2(int *, int *);
 
 enum { END = -1 };
 static int
@@ -2428,11 +2430,9 @@ he_tri_join3(T * q, int X)
     nt = he_nt(q);
     ne = he_ne(q);
     nh = he_nh(q);
-
     he_rank(q, X, &rank);
     if (rank != 3)
         ERR(CO_INDEX, "he_rank(q, %d)=%d", X, rank);
-
     hXA = hdg_ver(X);
     hAB = nxt(hXA);
     hBX = nxt(hAB);
@@ -2448,7 +2448,6 @@ he_tri_join3(T * q, int X)
     A = ver(hAB);
     B = ver(hBX);
     C = ver(hCX);
-    X = ver(hXA);
     eAC = edg(hCA);
     eBC = edg(hBC);
     eAX = edg(hXA);
@@ -2459,20 +2458,6 @@ he_tri_join3(T * q, int X)
     ABX = tri(hAB);
     ACX = tri(hCA);
     ABC = BCX;
-
-    DEL_VER(X);
-    DEL_EDG(eAX);
-    DEL_EDG(eBX);
-    DEL_EDG(eCX);
-    DEL_TRI(ABX);
-    DEL_TRI(ACX);
-    DEL_HDG(hAX);
-    DEL_HDG(hXA);
-    DEL_HDG(hXB);
-    DEL_HDG(hBX);
-    DEL_HDG(hXC);
-    DEL_HDG(hCX);
-
     s_nxt(hAB, hBC);
     s_nxt(hCA, hAB);
     s_nxt(hBC, hCA);
@@ -2498,6 +2483,24 @@ he_tri_join3(T * q, int X)
     s_hdg_edg(eBC, hBC);
     s_hdg_edg(eAB, hAB);
     s_hdg_tri(ABC, hAB);
+
+    DEL_VER(X);
+    sort3(&eAX, &eBX, &eCX);
+    DEL_EDG(eAX);
+    DEL_EDG(eBX);
+    DEL_EDG(eCX);
+
+    sort2(&ABX, &ACX);
+    DEL_TRI(ABX);
+    DEL_TRI(ACX);
+    
+    DEL_HDG(hAX);
+    DEL_HDG(hXA);
+    DEL_HDG(hXB);
+    DEL_HDG(hBX);
+    DEL_HDG(hXC);
+    DEL_HDG(hCX);
+
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
@@ -2957,4 +2960,23 @@ realloc0(T * q, int nv, int nt, int ne, int nh)
         REALLOC(q->NH, &q->edg);
     }
     return CO_OK;
+}
+
+static void
+sort2(int * a, int * b)
+{
+  int t;
+  if (*a < *b) {
+    t = *a;
+    *a = *b;
+    *b = t;
+  }
+}
+
+static void
+sort3(int * a, int * b, int * c)
+{
+  sort2(b, c);
+  sort2(a, b);
+  sort2(b, c);
 }

@@ -43,7 +43,7 @@ main(int argc, char **argv)
 	    exit(2);
 	}
 
-    if (generation_read(stdin, &he, &x, &y, &z, &generation) != CO)
+    if (generation_read(stdin, &he, &x, &y, &z, &generation) != CO_OK)
 	ER("generation_read failed");
     if (he_invariant(he) != CO_OK)
 	ER("he_invariant failed");
