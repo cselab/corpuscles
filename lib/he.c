@@ -761,19 +761,6 @@ he_ver_delete5(T * q, int X)
     hCE = hXE;
     hEC = hEX;
 
-    DEL_VER(X);
-    DEL_EDG(eCX);
-    DEL_EDG(eDX);
-    DEL_EDG(eEX);
-    DEL_TRI(CDX);
-    DEL_TRI(ABX);
-    DEL_HDG(hAX);
-    DEL_HDG(hXA);
-    DEL_HDG(hXB);
-    DEL_HDG(hBX);
-    DEL_HDG(hXC);
-    DEL_HDG(hCX);
-
     s_nxt(hAB, hBC);
     s_nxt(hAC, hCE);
     s_nxt(hCA, hAB);
@@ -839,6 +826,20 @@ he_ver_delete5(T * q, int X)
     s_hdg_tri(ABC, hAB);
     s_hdg_tri(CDE, hCD);
     s_hdg_tri(ACE, hAC);
+
+    DEL_VER(X);
+    DEL_EDG(eCX);
+    DEL_EDG(eDX);
+    DEL_EDG(eEX);
+    DEL_TRI(CDX);
+    DEL_TRI(ABX);
+    DEL_HDG(hAX);
+    DEL_HDG(hXA);
+    DEL_HDG(hXB);
+    DEL_HDG(hBX);
+    DEL_HDG(hXC);
+    DEL_HDG(hCX);
+
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
@@ -978,18 +979,6 @@ he_ver_delete6(T * q, int X)
     hFC = hEX;
     hDF = hXF;
     hFD = hFX;
-    DEL_VER(X);
-    DEL_EDG(eCX);
-    DEL_EDG(eDX);
-    DEL_EDG(eEX);
-    DEL_TRI(CDX);
-    DEL_TRI(ABX);
-    DEL_HDG(hAX);
-    DEL_HDG(hXA);
-    DEL_HDG(hXB);
-    DEL_HDG(hBX);
-    DEL_HDG(hXC);
-    DEL_HDG(hCX);
     s_nxt(hAB, hBC);
     s_nxt(hAC, hCF);
     s_nxt(hCA, hAB);
@@ -1075,6 +1064,18 @@ he_ver_delete6(T * q, int X)
     s_hdg_tri(CDF, hCD);
     s_hdg_tri(ACF, hAC);
     s_hdg_tri(DEF, hDE);
+    DEL_VER(X);
+    DEL_EDG(eCX);
+    DEL_EDG(eDX);
+    DEL_EDG(eEX);
+    DEL_TRI(CDX);
+    DEL_TRI(ABX);
+    DEL_HDG(hAX);
+    DEL_HDG(hXA);
+    DEL_HDG(hXB);
+    DEL_HDG(hBX);
+    DEL_HDG(hXC);
+    DEL_HDG(hCX);
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
@@ -1222,20 +1223,6 @@ he_ver_delete7(T * q, int X)
     EFX = tri(hEF);
     CDX = tri(hCD);
     ABX = tri(hAB);
-
-    DEL_VER(X);
-    DEL_EDG(eCX);
-    DEL_EDG(eDX);
-    DEL_EDG(eEX);
-    DEL_TRI(CDX);
-    DEL_TRI(ABX);
-    DEL_HDG(hAX);
-    DEL_HDG(hXA);
-    DEL_HDG(hXB);
-    DEL_HDG(hBX);
-    DEL_HDG(hXC);
-    DEL_HDG(hCX);
-
     eAC = eFX;
     eCG = eGX;
     eDF = eAX;
@@ -1358,6 +1345,18 @@ he_ver_delete7(T * q, int X)
     s_hdg_tri(CDG, hCD);
     s_hdg_tri(ACG, hAC);
     s_hdg_tri(DEF, hDE);
+    DEL_VER(X);
+    DEL_EDG(eCX);
+    DEL_EDG(eDX);
+    DEL_EDG(eEX);
+    DEL_TRI(CDX);
+    DEL_TRI(ABX);
+    DEL_HDG(hAX);
+    DEL_HDG(hXA);
+    DEL_HDG(hXB);
+    DEL_HDG(hBX);
+    DEL_HDG(hXC);
+    DEL_HDG(hCX);
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
@@ -1444,21 +1443,7 @@ he_ver_delete4(T * q, int X)
     BCX = tri(hBC);
     CDX = tri(hCD);
     ABX = tri(hAB);
-
-    DEL_VER(X);
-    DEL_EDG(eBX);
-    DEL_EDG(eCX);
-    DEL_EDG(eDX);
-    DEL_TRI(CDX);
-    DEL_TRI(ABX);
-    DEL_HDG(hAX);
-    DEL_HDG(hXA);
-    DEL_HDG(hXB);
-    DEL_HDG(hBX);
-    DEL_HDG(hXC);
-    DEL_HDG(hCX);
-
-     /**/ eBD = eAX;
+    eBD = eAX;
     ABD = ADX;
     BCD = BCX;
     hBD = hXD;
@@ -1508,6 +1493,18 @@ he_ver_delete4(T * q, int X)
     s_hdg_edg(eAB, hAB);
     s_hdg_tri(ABD, hAB);
     s_hdg_tri(BCD, hBC);
+    DEL_VER(X);
+    DEL_EDG(eBX);
+    DEL_EDG(eCX);
+    DEL_EDG(eDX);
+    DEL_TRI(CDX);
+    DEL_TRI(ABX);
+    DEL_HDG(hAX);
+    DEL_HDG(hXA);
+    DEL_HDG(hXB);
+    DEL_HDG(hBX);
+    DEL_HDG(hXC);
+    DEL_HDG(hCX);
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
@@ -1674,19 +1671,6 @@ he_ver_delete8(T * q, int X)
     EFX = tri(hEF);
     CDX = tri(hCD);
     ABX = tri(hAB);
-     /**/ DEL_VER(X);
-    DEL_EDG(eCX);
-    DEL_EDG(eDX);
-    DEL_EDG(eEX);
-    DEL_TRI(CDX);
-    DEL_TRI(ABX);
-    DEL_HDG(hAX);
-    DEL_HDG(hXA);
-    DEL_HDG(hXB);
-    DEL_HDG(hBX);
-    DEL_HDG(hXC);
-    DEL_HDG(hCX);
-
     eAC = eFX;
     eCH = eGX;
     eDG = eHX;
@@ -1833,7 +1817,18 @@ he_ver_delete8(T * q, int X)
     s_hdg_tri(CDH, hCD);
     s_hdg_tri(ACH, hAC);
     s_hdg_tri(DEG, hDE);
-
+    DEL_VER(X);
+    DEL_EDG(eCX);
+    DEL_EDG(eDX);
+    DEL_EDG(eEX);
+    DEL_TRI(CDX);
+    DEL_TRI(ABX);
+    DEL_HDG(hAX);
+    DEL_HDG(hXA);
+    DEL_HDG(hXB);
+    DEL_HDG(hBX);
+    DEL_HDG(hXC);
+    DEL_HDG(hCX);
     q->nv = nv;
     q->nt = nt;
     q->ne = ne;
@@ -3089,11 +3084,8 @@ copy_tri(T * q, int i, int j)
 int
 copy_hdg(T * q, int i, int j)
 {
-#define MAP(v, i, j) if ((v) == (j)) (v) = (i)
     int nh;
     int ni, nni, fi, vi, ti, ei;
-    int nj, nnj, fj, vj, tj, ej;
-
     if (i == j)
 	return CO_OK;
     nh = he_nh(q);
@@ -3104,33 +3096,9 @@ copy_hdg(T * q, int i, int j)
     ni = nxt(i);
     nni = nxt(ni);
     fi = flp(i);
-    MAP(ni, i, j);
-    MAP(nni, i, j);
-    MAP(fi, i, j);
     vi = ver(i);
     ti = tri(i);
     ei = edg(i);
-
-    nj = nxt(j);
-    nnj = nxt(nj);
-    fj = flp(j);
-    MAP(nj, j, i);
-    MAP(nnj, j, i);
-    MAP(fj, j, i);
-    vj = ver(j);
-    tj = tri(j);
-    ej = edg(j);
-
-    s_nxt(i, nj);
-    s_nxt(nnj, i);
-    s_flp(i, fj);
-    s_flp(fj, i);
-    s_ver(i, vj);
-    s_tri(i, tj);
-    s_edg(i, ej);
-    s_hdg_ver(vj, i);
-    s_hdg_tri(tj, i);
-    s_hdg_edg(ej, i);
 
     s_nxt(j, ni);
     s_nxt(nni, j);
