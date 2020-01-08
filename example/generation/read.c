@@ -51,7 +51,6 @@ main(int argc, char **argv)
     generation_coarsen(generation, 3098, he, &x, &y, &z);
     generation_invariant(generation, he);
     he_invariant(he);
-
     nt = he_nt(he);
     MALLOC(nt, &color);
     generation_color(generation, he, color);

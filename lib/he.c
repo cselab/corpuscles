@@ -1,12 +1,12 @@
-#include <stdio.h>
 #include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "co/err.h"
+#include "co/he.h"
 #include "co/memory.h"
 #include "co/read.h"
 #include "inc/def.h"
-
-#include "co/he.h"
 
 #define T He
 
@@ -30,6 +30,8 @@ static int realloc0(T * q, int nv, int nt, int ne, int nh);
 static void sort2(int *, int *);
 static void sort3(int *, int *, int *);
 static void sort6(int *, int *, int *, int *, int *, int *);
+static int compar(const void *, const void *);
+static void swap(int *a, int *b);
 
 enum { END = -1 };
 static int
@@ -391,10 +393,10 @@ set_hdg_tri(T * q, int t, int i)
 #define  s_hdg_edg(e, i) set_hdg_edg(q, (e), (i))
 #define  s_hdg_tri(t, i) set_hdg_tri(q, (t), (i))
 
-#define DEL_VER(i) (he_swap_ver(q, (i), --nv), nv)
-#define DEL_EDG(i) (he_swap_edg(q, (i), --ne), ne)
-#define DEL_TRI(i) (he_swap_tri(q, (i), --nt), nt)
-#define DEL_HDG(i) (he_swap_hdg(q, (i), --nh), nh)
+#define DEL_VER(i) (he_swap_ver(q, (i), --nv), (i) = nv)
+#define DEL_EDG(i) (he_swap_edg(q, (i), --ne), (i) = ne)
+#define DEL_TRI(i) (he_swap_tri(q, (i), --nt), (i) = nt)
+#define DEL_HDG(i) (he_swap_hdg(q, (i), --nh), (i) = nh)
 
 int
 he_edg_rotate(T * q, int e0)
@@ -2393,6 +2395,35 @@ he_tri_split3(T * q, int ABC)
     return CO_OK;
 }
 
+#define DEF					\
+    do {					\
+	hXA = hdg_ver(X);			\
+	hAB = nxt(hXA);				\
+	hBX = nxt(hAB);				\
+	hXB = flp(hBX);				\
+	hBC = nxt(hXB);				\
+	hCX = nxt(hBC);				\
+	hXC = flp(hCX);				\
+	hCA = nxt(hXC);				\
+	hAX = nxt(hCA);				\
+	hAC = flp(hCA);				\
+	hCB = flp(hBC);				\
+	hBA = flp(hAB);				\
+	A = ver(hAB);				\
+	B = ver(hBX);				\
+	C = ver(hCX);				\
+	eAC = edg(hCA);				\
+	eBC = edg(hBC);				\
+	eAX = edg(hXA);				\
+	eBX = edg(hBX);				\
+	eCX = edg(hCX);				\
+	eAB = edg(hAB);				\
+	BCX = tri(hBC);				\
+	ABX = tri(hAB);				\
+	ACX = tri(hCA);				\
+	ABC = BCX;				\
+    } while (0)
+
 int
 he_tri_join3(T * q, int X)
 {
@@ -2434,31 +2465,29 @@ he_tri_join3(T * q, int X)
     he_rank(q, X, &rank);
     if (rank != 3)
 	ERR(CO_INDEX, "he_rank(q, %d)=%d", X, rank);
-    hXA = hdg_ver(X);
-    hAB = nxt(hXA);
-    hBX = nxt(hAB);
-    hXB = flp(hBX);
-    hBC = nxt(hXB);
-    hCX = nxt(hBC);
-    hXC = flp(hCX);
-    hCA = nxt(hXC);
-    hAX = nxt(hCA);
-    hAC = flp(hCA);
-    hCB = flp(hBC);
-    hBA = flp(hAB);
-    A = ver(hAB);
-    B = ver(hBX);
-    C = ver(hCX);
-    eAC = edg(hCA);
-    eBC = edg(hBC);
-    eAX = edg(hXA);
-    eBX = edg(hBX);
-    eCX = edg(hCX);
-    eAB = edg(hAB);
-    BCX = tri(hBC);
-    ABX = tri(hAB);
-    ACX = tri(hCA);
-    ABC = BCX;
+
+    DEF;
+
+    sort3(&eAX, &eBX, &eCX);
+    sort2(&ABX, &ACX);
+    sort6(&hAX, &hXA, &hXB, &hBX, &hXC, &hCX);
+    MSG("tri: %d %d", ABX, ACX);
+    
+    DEL_VER(X);
+    DEL_EDG(eCX);
+    DEL_EDG(eBX);
+    DEL_EDG(eAX);
+    DEL_TRI(ACX);
+    DEL_TRI(ABX);
+    DEL_HDG(hCX);
+    DEL_HDG(hXC);
+    DEL_HDG(hBX);
+    DEL_HDG(hXB);
+    DEL_HDG(hXA);
+    DEL_HDG(hAX);
+    
+    //DEF;
+    
     s_nxt(hAB, hBC);
     s_nxt(hCA, hAB);
     s_nxt(hBC, hCA);
@@ -2484,24 +2513,6 @@ he_tri_join3(T * q, int X)
     s_hdg_edg(eBC, hBC);
     s_hdg_edg(eAB, hAB);
     s_hdg_tri(ABC, hAB);
-
-    DEL_VER(X);
-    sort3(&eAX, &eBX, &eCX);
-    DEL_EDG(eCX);
-    DEL_EDG(eBX);
-    DEL_EDG(eAX);
-
-    sort2(&ABX, &ACX);
-    DEL_TRI(ACX);
-    DEL_TRI(ABX);
-
-    sort6(&hAX, &hXA, &hXB, &hBX, &hXC, &hCX);
-    DEL_HDG(hCX);
-    DEL_HDG(hXC);
-    DEL_HDG(hBX);
-    DEL_HDG(hXB);
-    DEL_HDG(hXA);
-    DEL_HDG(hAX);
 
     q->nv = nv;
     q->nt = nt;
@@ -2582,7 +2593,6 @@ he_swap_hdg(T * q, int i, int j)
     s_nxt(nnj, i);
     s_flp(i, fj);
     s_flp(fj, i);
-
     s_ver(i, vj);
     s_tri(i, tj);
     s_edg(i, ej);
@@ -2983,16 +2993,25 @@ sort3(int * a, int * b, int * c)
   sort2(b, c);
 }
 
+static int
+compar(const void *va, const void *vb)
+{
+    int *a;
+    int *b;
+    a = (int*)va;
+    b = (int*)vb;
+    return *a > *b;
+}
+
 static void
 sort6(int * a0, int * a1, int * a2, int * a3, int * a4, int * a5)
 {
-    int *a[6];
-    a[0] = a0;
-    a[1] = a1;
-    a[2] = a2;
-    a[3] = a3;
-    a[4] = a4;
-    a[5] = a5;
-
-//    qsort(a, 6, sizeof(*a),
+    int a[6] = {*a0, *a1, *a2, *a3, *a4, *a5};
+    qsort(a, 6, sizeof(*a), compar);
+    *a0 = a[0];
+    *a1 = a[1];
+    *a2 = a[2];
+    *a3 = a[3];
+    *a4 = a[4];
+    *a5 = a[5];
 }

@@ -18,6 +18,7 @@ bin/maxima\
 bin/msh\
 bin/path\
 bin/q\
+bin/obj\
 bin/run\
 bin/shake\
 bin/sqrt3\

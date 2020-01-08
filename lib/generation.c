@@ -233,7 +233,6 @@ generation_coarsen(T * q, int t, He * he, real ** x, real ** y, real ** z)
     int t1;
     int v;
 
-    MSG("t: %d", t);
     enum {CNT = 100};
     g = q->g;
     mbit = q->mbit;
