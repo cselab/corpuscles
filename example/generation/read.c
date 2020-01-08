@@ -34,19 +34,19 @@ main(int argc, char **argv)
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	default:
-	    fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
-	    exit(2);
-	}
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        default:
+            fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
+            exit(2);
+        }
 
     if (generation_read(stdin, &he, &x, &y, &z, &generation) != CO_OK)
 	ER("generation_read failed");
     if (he_invariant(he) != CO_OK)
-	ER("he_invariant failed");
+        ER("he_invariant failed");
     generation_invariant(generation, he);
     generation_coarsen(generation, 3098, he, &x, &y, &z);
     generation_invariant(generation, he);
