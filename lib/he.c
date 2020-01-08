@@ -27,8 +27,9 @@ struct T {
 
 static int alloc(T *, int nv, int ne, int nh, int nt);
 static int realloc0(T * q, int nv, int nt, int ne, int nh);
-static void sort3(int *, int *, int *);
 static void sort2(int *, int *);
+static void sort3(int *, int *, int *);
+static void sort6(int *, int *, int *, int *, int *, int *);
 
 enum { END = -1 };
 static int
@@ -37,9 +38,9 @@ distinct(const int a[])
     int i, j;
 
     for (i = 0; a[i] != END; i++)
-        for (j = i + 1; a[j] != END; j++)
-            if (a[i] == a[j])
-                return 0;
+	for (j = i + 1; a[j] != END; j++)
+	    if (a[i] == a[j])
+		return 0;
     return 1;
 }
 
@@ -49,7 +50,7 @@ he_file_ini(const char *path, T ** pq)
     HeRead *read;
 
     if (he_read_ini(path, &read) != CO_OK)
-        ERR(CO_IO, "he_read_ini failed");
+	ERR(CO_IO, "he_read_ini failed");
     he_ini(read, /**/ pq);
     he_read_fin(read);
     return CO_OK;
@@ -70,7 +71,7 @@ he_ini(HeRead * r, T ** pq)
     ne = q->ne = q->NE = he_read_ne(r);
     nh = q->nh = q->NH = he_read_nh(r);
     if (alloc(q, nv, ne, nh, nt) != CO_OK)
-        ERR(CO_MEMORY, "alloc failed");
+	ERR(CO_MEMORY, "alloc failed");
     he_read_nxt(r, &nxt);
     he_read_flp(r, &flp);
     he_read_ver(r, &ver);
@@ -112,7 +113,7 @@ int
 he_fin(T * q)
 {
     if (q->magic != MAGIC)
-        ERR(CO_MEMORY, "wrong fin() call");
+	ERR(CO_MEMORY, "wrong fin() call");
     FREE(q->nxt);
     FREE(q->flp);
     FREE(q->ver);
@@ -177,7 +178,7 @@ he_flp(T * q, int h)
 
     V(h, q->nh);
     if ((f = q->flp[h]) == -1)
-        ERR(CO_INDEX, "no flip for %d", h);
+	ERR(CO_INDEX, "no flip for %d", h);
     return f;
 }
 
@@ -279,7 +280,7 @@ he_dih_ijkl(T * q, int e, /**/ int *i, int *j, int *k, int *l)
 
     h = he_hdg_edg(q, e);
     if (he_bnd(q, h))
-        return 1;
+	return 1;
     n = he_nxt(q, h);
     nn = he_nxt(q, he_nxt(q, h));
     nnf = he_nxt(q, he_nxt(q, he_flp(q, h)));
@@ -435,13 +436,13 @@ he_edg_rotate(T * q, int e0)
 
     const int set[] = { h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, END };
     if (!distinct(set)) {
-        MSG("v: %d %d %d %d", v0, v1, v2, v3);
-        MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
-        MSG("t: %d %d", t0, t1);
-        MSG("t: h2 = %d   h8 = %d", h2, h8);
-        MSG("t: h4 = %d   h7 = %d", h4, h7);
-        ERR(CO_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
-            h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
+	MSG("v: %d %d %d %d", v0, v1, v2, v3);
+	MSG("e: %d %d %d %d", e0, e1, e2, e3, e4);
+	MSG("t: %d %d", t0, t1);
+	MSG("t: h2 = %d   h8 = %d", h2, h8);
+	MSG("t: h4 = %d   h7 = %d", h4, h7);
+	ERR(CO_INDEX, "h: %d %d %d %d %d %d %d %d %d %d",
+	    h0, h1, h2, h3, h4, h5, h6, h7, h8, h9);
     }
 
     assert(v0 == ver(h4));
@@ -2225,29 +2226,29 @@ he_swap_ver(T * q, int i, int j)
     int hi, hj, nv, h;
 
     if (bnd_ver(i))
-        ERR(CO_INDEX, "bnd_ver(%d)", i);
+	ERR(CO_INDEX, "bnd_ver(%d)", i);
     if (bnd_ver(j))
-        ERR(CO_INDEX, "bnd_ver(%d)", j);
+	ERR(CO_INDEX, "bnd_ver(%d)", j);
     if (i == j)
-        return CO_OK;
+	return CO_OK;
     nv = he_nv(q);
     if (i >= nv)
-        ERR(CO_INDEX, "i=%d >= nv=%d", i, nv);
+	ERR(CO_INDEX, "i=%d >= nv=%d", i, nv);
     if (j >= nv)
-        ERR(CO_INDEX, "j=%d >= nv=%d", j, nv);
+	ERR(CO_INDEX, "j=%d >= nv=%d", j, nv);
     hi = hdg_ver(i);
     hj = hdg_ver(j);
     h = hi;
     do {
-        assert(ver(h) == i);
-        s_ver(h, j);
-        h = flp(nxt(nxt(h)));
+	assert(ver(h) == i);
+	s_ver(h, j);
+	h = flp(nxt(nxt(h)));
     } while (h != hi);
     h = hj;
     do {
-        assert(ver(h) == j);
-        s_ver(h, i);
-        h = flp(nxt(nxt(h)));
+	assert(ver(h) == j);
+	s_ver(h, i);
+	h = flp(nxt(nxt(h)));
     } while (h != hj);
     s_hdg_ver(i, hj);
     s_hdg_ver(j, hi);
@@ -2432,7 +2433,7 @@ he_tri_join3(T * q, int X)
     nh = he_nh(q);
     he_rank(q, X, &rank);
     if (rank != 3)
-        ERR(CO_INDEX, "he_rank(q, %d)=%d", X, rank);
+	ERR(CO_INDEX, "he_rank(q, %d)=%d", X, rank);
     hXA = hdg_ver(X);
     hAB = nxt(hXA);
     hBX = nxt(hAB);
@@ -2486,20 +2487,21 @@ he_tri_join3(T * q, int X)
 
     DEL_VER(X);
     sort3(&eAX, &eBX, &eCX);
-    DEL_EDG(eAX);
-    DEL_EDG(eBX);
     DEL_EDG(eCX);
+    DEL_EDG(eBX);
+    DEL_EDG(eAX);
 
     sort2(&ABX, &ACX);
-    DEL_TRI(ABX);
     DEL_TRI(ACX);
-    
-    DEL_HDG(hAX);
-    DEL_HDG(hXA);
-    DEL_HDG(hXB);
-    DEL_HDG(hBX);
-    DEL_HDG(hXC);
+    DEL_TRI(ABX);
+
+    sort6(&hAX, &hXA, &hXB, &hBX, &hXC, &hCX);
     DEL_HDG(hCX);
+    DEL_HDG(hXC);
+    DEL_HDG(hBX);
+    DEL_HDG(hXB);
+    DEL_HDG(hXA);
+    DEL_HDG(hAX);
 
     q->nv = nv;
     q->nt = nt;
@@ -2515,26 +2517,26 @@ he_swap_tri(T * q, int i, int j)
     int hi, hj, nt, h;
 
     if (i == j)
-        return CO_OK;
+	return CO_OK;
     nt = he_nt(q);
     if (i >= nt)
-        ERR(CO_INDEX, "i=%d >= nt=%d", i, nt);
+	ERR(CO_INDEX, "i=%d >= nt=%d", i, nt);
     if (j >= nt)
-        ERR(CO_INDEX, "j=%d >= nt=%d", j, nt);
+	ERR(CO_INDEX, "j=%d >= nt=%d", j, nt);
 
     hi = hdg_tri(i);
     hj = hdg_tri(j);
     h = hi;
     do {
-        assert(tri(h) == i);
-        s_tri(h, j);
-        h = nxt(h);
+	assert(tri(h) == i);
+	s_tri(h, j);
+	h = nxt(h);
     } while (h != hi);
     h = hj;
     do {
-        assert(tri(h) == j);
-        s_tri(h, i);
-        h = nxt(h);
+	assert(tri(h) == j);
+	s_tri(h, i);
+	h = nxt(h);
     } while (h != hj);
     s_hdg_tri(i, hj);
     s_hdg_tri(j, hi);
@@ -2550,12 +2552,12 @@ he_swap_hdg(T * q, int i, int j)
     int nj, nnj, fj, vj, tj, ej;
 
     if (i == j)
-        return CO_OK;
+	return CO_OK;
     nh = he_nh(q);
     if (i >= nh)
-        ERR(CO_INDEX, "i=%d >= nh=%d", i, nh);
+	ERR(CO_INDEX, "i=%d >= nh=%d", i, nh);
     if (j >= nh)
-        ERR(CO_INDEX, "j=%d >= nh=%d", j, nh);
+	ERR(CO_INDEX, "j=%d >= nh=%d", j, nh);
     ni = nxt(i);
     nni = nxt(ni);
     fi = flp(i);
@@ -2608,18 +2610,18 @@ he_swap_edg(T * q, int i, int j)
     int hi, hj, ne, fi, fj;
 
     if (i == j)
-        return CO_OK;
+	return CO_OK;
     ne = he_ne(q);
     if (i >= ne)
-        ERR(CO_INDEX, "i=%d >= ne=%d", i, ne);
+	ERR(CO_INDEX, "i=%d >= ne=%d", i, ne);
     if (j >= ne)
-        ERR(CO_INDEX, "j=%d >= ne=%d", j, ne);
+	ERR(CO_INDEX, "j=%d >= ne=%d", j, ne);
     hi = hdg_edg(i);
     hj = hdg_edg(j);
     if (bnd(hi))
-        ERR(CO_INDEX, "bnd(%d)", i);
+	ERR(CO_INDEX, "bnd(%d)", i);
     if (bnd(hj))
-        ERR(CO_INDEX, "bnd(%d)", j);
+	ERR(CO_INDEX, "bnd(%d)", j);
     fi = flp(hi);
     fj = flp(hj);
     assert(edg(fi) == i);
@@ -2647,14 +2649,14 @@ he_E(T * he, int **pE0, int **pE1)
     ne = he_ne(he);
 
     for (e = 0; e < ne; e++) {
-        h = he_hdg_edg(he, e);
-        if (he_bnd(he, h)) {
-            E0[e] = E1[e] = -1;
-        } else {
-            n = he_nxt(he, h);
-            E0[e] = he_ver(he, h);
-            E1[e] = he_ver(he, n);
-        }
+	h = he_hdg_edg(he, e);
+	if (he_bnd(he, h)) {
+	    E0[e] = E1[e] = -1;
+	} else {
+	    n = he_nxt(he, h);
+	    E0[e] = he_ver(he, h);
+	    E1[e] = he_ver(he, n);
+	}
     }
     *pE0 = E0;
     *pE1 = E1;
@@ -2673,12 +2675,12 @@ he_T(T * he, int **pT0, int **pT1, int **pT2)
     nt = he_nt(he);
 
     for (t = 0; t < nt; t++) {
-        h = he_hdg_tri(he, t);
-        n = he_nxt(he, h);
-        nn = he_nxt(he, n);
-        T0[t] = he_ver(he, h);
-        T1[t] = he_ver(he, n);
-        T2[t] = he_ver(he, nn);
+	h = he_hdg_tri(he, t);
+	n = he_nxt(he, h);
+	nn = he_nxt(he, n);
+	T0[t] = he_ver(he, h);
+	T1[t] = he_ver(he, n);
+	T2[t] = he_ver(he, nn);
     }
 
     *pT0 = T0;
@@ -2700,19 +2702,19 @@ he_D(T * he, int **pD0, int **pD1, int **pD2, int **pD3)
     ne = he_ne(he);
 
     for (e = 0; e < ne; e++) {
-        h = he_hdg_edg(he, e);
-        if (he_bnd(he, h)) {
-            D0[e] = D1[e] = D2[e] = D3[e] = -1;
-        } else {
-            h = he_hdg_edg(he, e);
-            n = he_nxt(he, h);
-            nn = he_nxt(he, he_nxt(he, h));
-            nnf = he_nxt(he, he_nxt(he, he_flp(he, h)));
-            D1[e] = he_ver(he, h);
-            D2[e] = he_ver(he, n);
-            D0[e] = he_ver(he, nn);
-            D3[e] = he_ver(he, nnf);
-        }
+	h = he_hdg_edg(he, e);
+	if (he_bnd(he, h)) {
+	    D0[e] = D1[e] = D2[e] = D3[e] = -1;
+	} else {
+	    h = he_hdg_edg(he, e);
+	    n = he_nxt(he, h);
+	    nn = he_nxt(he, he_nxt(he, h));
+	    nnf = he_nxt(he, he_nxt(he, he_flp(he, h)));
+	    D1[e] = he_ver(he, h);
+	    D2[e] = he_ver(he, n);
+	    D0[e] = he_ver(he, nn);
+	    D3[e] = he_ver(he, nnf);
+	}
     }
     *pD0 = D0;
     *pD1 = D1;
@@ -2730,17 +2732,17 @@ he_bnd_ver(T * he, int v)
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
-        if (rank >= RANK_MAX)
-            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
-                RANK_MAX);
-        rank++;
-        n = he_nxt(he, h);
-        if (he_bnd(he, n))
-            return 1;
-        f = he_flp(he, n);
-        h = he_nxt(he, f);
-        if (h == h0)
-            return 0;
+	if (rank >= RANK_MAX)
+	    ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+		RANK_MAX);
+	rank++;
+	n = he_nxt(he, h);
+	if (he_bnd(he, n))
+	    return 1;
+	f = he_flp(he, n);
+	h = he_nxt(he, f);
+	if (h == h0)
+	    return 0;
     }
 }
 
@@ -2750,22 +2752,22 @@ he_rank(T * he, int v, int *prank)
     int h, h0, n, f, rank;
 
     if (v >= he->nv)
-        ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
+	ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
     h = he_hdg_ver(he, v);
     if (he_bnd(he, h))
-        ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
+	ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
-        if (rank >= RANK_MAX)
-            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
-                RANK_MAX);
-        rank++;
-        n = he_nxt(he, h);
-        f = he_flp(he, n);
-        h = he_nxt(he, f);
-        if (h == h0)
-            break;
+	if (rank >= RANK_MAX)
+	    ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+		RANK_MAX);
+	rank++;
+	n = he_nxt(he, h);
+	f = he_flp(he, n);
+	h = he_nxt(he, f);
+	if (h == h0)
+	    break;
     }
     *prank = rank;
     return CO_OK;
@@ -2779,22 +2781,22 @@ he_hdg_ring(T * he, int v, int *prank, int **pring)
 
     ring = he->ring;
     if (v >= he->nv)
-        ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
+	ERR(CO_INDEX, "v=%d >= q->nv=%d", v, he->nv);
     h = he_hdg_ver(he, v);
     if (he_bnd(he, h))
-        ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
+	ERR(CO_INDEX, "call ring for boundary v = %d, h = %d", v, h);
     rank = 0;
     h0 = h = he_nxt(he, h);
     for (;;) {
-        if (rank >= RANK_MAX)
-            ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
-                RANK_MAX);
-        ring[rank++] = h;
-        n = he_nxt(he, h);
-        f = he_flp(he, n);
-        h = he_nxt(he, f);
-        if (h == h0)
-            break;
+	if (rank >= RANK_MAX)
+	    ERR(CO_INDEX, "v=%d, rank=%d >= RANK_MAX=%d", v, rank,
+		RANK_MAX);
+	ring[rank++] = h;
+	n = he_nxt(he, h);
+	f = he_flp(he, n);
+	h = he_nxt(he, f);
+	if (h == h0)
+	    break;
     }
     ring[rank] = -1;
     *prank = rank;
@@ -2812,9 +2814,9 @@ he_ring(T * he, int v, int *prank, int **pring)
 
     status = he_hdg_ring(he, v, &rank, &ring);
     if (status != CO_OK)
-        ERR(CO_INDEX, "he_hdg_ring failed");
+	ERR(CO_INDEX, "he_hdg_ring failed");
     for (i = 0; i < rank; i++)
-        ring[i] = he_ver(he, ring[i]);
+	ring[i] = he_ver(he, ring[i]);
     *prank = rank;
     *pring = ring;
     return CO_OK;
@@ -2830,9 +2832,9 @@ he_tri_ring(T * he, int v, int *prank, int **pring)
 
     status = he_hdg_ring(he, v, &rank, &ring);
     if (status != CO_OK)
-        ERR(CO_INDEX, "he_hdg_ring failed");
+	ERR(CO_INDEX, "he_hdg_ring failed");
     for (i = 0; i < rank; i++)
-        ring[i] = he_tri(he, ring[i]);
+	ring[i] = he_tri(he, ring[i]);
     *prank = rank;
     *pring = ring;
     return CO_OK;
@@ -2901,18 +2903,18 @@ he_merge2(T * q0, T * q1, T ** pq)
   } while(0)
 
     for (i = j = 0; i < nh0; i++, j++) {
-        CP0(nxt);
-        CP0(flp);
-        CP0(ver);
-        CP0(tri);
-        CP0(edg);
+	CP0(nxt);
+	CP0(flp);
+	CP0(ver);
+	CP0(tri);
+	CP0(edg);
     }
     for (i = 0; i < nh1; i++, j++) {
-        CP1(nxt, nh0);
-        CP1(flp, nh0);
-        CP1(ver, nv0);
-        CP1(tri, nt0);
-        CP1(edg, ne0);
+	CP1(nxt, nh0);
+	CP1(flp, nh0);
+	CP1(ver, nv0);
+	CP1(tri, nt0);
+	CP1(edg, ne0);
     }
     CPH(hdg_ver, nv0, nv1);
     CPH(hdg_edg, ne0, ne1);
@@ -2931,33 +2933,33 @@ static int
 realloc0(T * q, int nv, int nt, int ne, int nh)
 {
     if (nv > q->NV) {
-        q->NV *= 2;
-        REALLOC(q->NV, &q->hdg_ver);
+	q->NV *= 2;
+	REALLOC(q->NV, &q->hdg_ver);
     }
     if (nt > q->NT) {
-        q->NT *= 2;
-        REALLOC(q->NT, &q->hdg_tri);
-        REALLOC(q->NT, &q->T0);
-        REALLOC(q->NT, &q->T1);
-        REALLOC(q->NT, &q->T2);
+	q->NT *= 2;
+	REALLOC(q->NT, &q->hdg_tri);
+	REALLOC(q->NT, &q->T0);
+	REALLOC(q->NT, &q->T1);
+	REALLOC(q->NT, &q->T2);
     }
     if (ne > q->NE) {
-        q->NE *= 2;
-        REALLOC(q->NE, &q->E0);
-        REALLOC(q->NE, &q->E1);
-        REALLOC(q->NE, &q->hdg_edg);
-        REALLOC(q->NE, &q->D0);
-        REALLOC(q->NE, &q->D1);
-        REALLOC(q->NE, &q->D2);
-        REALLOC(q->NE, &q->D3);
+	q->NE *= 2;
+	REALLOC(q->NE, &q->E0);
+	REALLOC(q->NE, &q->E1);
+	REALLOC(q->NE, &q->hdg_edg);
+	REALLOC(q->NE, &q->D0);
+	REALLOC(q->NE, &q->D1);
+	REALLOC(q->NE, &q->D2);
+	REALLOC(q->NE, &q->D3);
     }
     if (nh > q->NH) {
-        q->NH *= 2;
-        REALLOC(q->NH, &q->nxt);
-        REALLOC(q->NH, &q->flp);
-        REALLOC(q->NH, &q->ver);
-        REALLOC(q->NH, &q->tri);
-        REALLOC(q->NH, &q->edg);
+	q->NH *= 2;
+	REALLOC(q->NH, &q->nxt);
+	REALLOC(q->NH, &q->flp);
+	REALLOC(q->NH, &q->ver);
+	REALLOC(q->NH, &q->tri);
+	REALLOC(q->NH, &q->edg);
     }
     return CO_OK;
 }
@@ -2966,7 +2968,7 @@ static void
 sort2(int * a, int * b)
 {
   int t;
-  if (*a < *b) {
+  if (*a > *b) {
     t = *a;
     *a = *b;
     *b = t;
@@ -2979,4 +2981,18 @@ sort3(int * a, int * b, int * c)
   sort2(b, c);
   sort2(a, b);
   sort2(b, c);
+}
+
+static void
+sort6(int * a0, int * a1, int * a2, int * a3, int * a4, int * a5)
+{
+    int *a[6];
+    a[0] = a0;
+    a[1] = a1;
+    a[2] = a2;
+    a[3] = a3;
+    a[4] = a4;
+    a[5] = a5;
+
+//    qsort(a, 6, sizeof(*a),
 }
