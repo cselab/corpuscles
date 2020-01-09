@@ -229,6 +229,7 @@ generation_coarsen(T * q, int t, He * he, real ** x, real ** y, real ** z)
     int h;
     int Mate;
     int *mbit;
+    int nv;
     int t0;
     int t1;
     int v;
@@ -279,6 +280,10 @@ generation_coarsen(T * q, int t, He * he, real ** x, real ** y, real ** z)
 	v = he_ver(he, h);
 	if (he_tri_join3(he, v) != CO_OK)
 	    ERR(CO_INDEX, "he_tri_join3 failed (t = %d)", t);
+	nv = he_nv(he);
+	(*x)[v] = (*x)[nv];
+	(*y)[v] = (*y)[nv];
+	(*z)[v] = (*z)[nv];
 	//t = he_tri_joi(he, Mate);
     } else {
 	MSG("TODO");

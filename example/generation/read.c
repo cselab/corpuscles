@@ -49,6 +49,7 @@ main(int argc, char **argv)
         ER("he_invariant failed");
     generation_invariant(generation, he);
     generation_coarsen(generation, 3098, he, &x, &y, &z);
+    //generation_coarsen(generation, 1742, he, &x, &y, &z);
     generation_invariant(generation, he);
     he_invariant(he);
     nt = he_nt(he);
