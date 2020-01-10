@@ -15,8 +15,10 @@
 struct T {
     int nv, nt, ne, nh;
     int NV, NT, NE, NH;
+    long long ID;
     int *nxt, *flp;
     int *ver, *tri, *edg;
+    long long *id;
     int *hdg_ver, *hdg_edg, *hdg_tri;
     int *E0, *E1;
     int *T0, *T1, *T2;
@@ -208,6 +210,23 @@ he_edg(T * q, int h)
 {
     V(h, q->nh);
     return q->edg[h];
+}
+
+long long
+he_id(T * q, int h)
+{
+    V(h, q->nh);
+    return q->id[h];
+}
+
+int
+he_set_id(T * q, int h, long long i)
+{
+    V(h, q->nh);
+    if (q->ID < i)
+	q->ID = i + 1;
+    q->id[i] = i;
+    return CO_OK;
 }
 
 int
@@ -2849,6 +2868,7 @@ alloc(T * q, int nv, int ne, int nh, int nt)
     MALLOC(nh, &q->ver);
     MALLOC(nh, &q->tri);
     MALLOC(nh, &q->edg);
+    MALLOC(nh, &q->id);
     MALLOC(nv, &q->hdg_ver);
     MALLOC(ne, &q->hdg_edg);
     MALLOC(nt, &q->hdg_tri);
@@ -2961,6 +2981,7 @@ realloc0(T * q, int nv, int nt, int ne, int nh)
         REALLOC(q->NH, &q->ver);
         REALLOC(q->NH, &q->tri);
         REALLOC(q->NH, &q->edg);
+	REALLOC(q->NH, &q->id);
     }
     return CO_OK;
 }
