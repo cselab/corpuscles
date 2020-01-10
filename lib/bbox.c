@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "real.h"
 #include "co/array.h"
+#include "co/edg.h"
 #include "co/err.h"
 #include "co/memory.h"
 #include "co/bbox.h"
@@ -82,4 +83,10 @@ real
 bbox_zhi(T * q)
 {
     return q->hi[Z];
+}
+
+int
+bbox_center(T * q, real r[3])
+{
+    return edg_center(q->lo, q->hi, r);
 }

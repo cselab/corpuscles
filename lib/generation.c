@@ -39,8 +39,8 @@ generation_ini(He * he, T ** pq)
     q->NT = n;
     q->NV = he_nv(he);
     for (i = 0; i < n; i++) {
-	q->g[i] = 0;
-	q->mbit[i] = 0;
+        q->g[i] = 0;
+        q->mbit[i] = 0;
     }
     *pq = q;
     return CO_OK;
@@ -60,16 +60,16 @@ static int
 realloc0(T * q, int nv, int nt, real ** x, real ** y, real ** z)
 {
     if (nt > q->NT) {
-	q->NT *= 2;
-	REALLOC(q->NT, &q->g);
-	REALLOC(q->NT, &q->mate);
-	REALLOC(q->NT, &q->mbit);
+        q->NT *= 2;
+        REALLOC(q->NT, &q->g);
+        REALLOC(q->NT, &q->mate);
+        REALLOC(q->NT, &q->mbit);
     }
     if (nv > q->NV) {
-	q->NV *= 2;
-	REALLOC(q->NV, x);
-	REALLOC(q->NV, y);
-	REALLOC(q->NV, z);
+        q->NV *= 2;
+        REALLOC(q->NV, x);
+        REALLOC(q->NV, y);
+        REALLOC(q->NV, z);
     }
     return CO_OK;
 }
@@ -97,16 +97,16 @@ swap0(T * q, int t, He * he, int *status)
     int m;                      /* triangle */
 
     if (q->g[t] % 2 == 0)
-	ERR(CO_INDEX, "cannot swap even triangle (t=%d, g[t]=%d)", t,
-	    q->g[t]);
+        ERR(CO_INDEX, "cannot swap even triangle (t=%d, g[t]=%d)", t,
+            q->g[t]);
     e = he_edg(he, q->mate[t]);
     m = tri_mate(q, t, he);
     if (q->g[t] != q->g[m]) {
-	*status = 1;
-	return CO_OK;
+        *status = 1;
+        return CO_OK;
     }
     if (he_edg_rotate(he, e) != CO_OK)
-	ERR(CO_INDEX, "he_edg_rotate failed (e=%d)", e);
+        ERR(CO_INDEX, "he_edg_rotate failed (e=%d)", e);
     q->g[t] += 1;
     q->g[m] += 1;
     *status = 0;
@@ -131,7 +131,7 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     real Center[3];
 
     if (q->g[t] % 2 != 0)
-	ERR(CO_INDEX, "cannot split odd triangle (t=%d)", t);
+        ERR(CO_INDEX, "cannot split odd triangle (t=%d)", t);
     a = he_hdg_tri(he, t);      /* half edges */
     b = he_nxt(he, a);
     c = he_nxt(he, b);
@@ -140,7 +140,7 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     Mate = q->mate[t];
     center(t, he, *x, *y, *z, Center);
     if (he_tri_split3(he, t) != CO_OK)
-	ERR(CO_INDEX, "he_tri_split3 failed (t=%d)", t);
+        ERR(CO_INDEX, "he_tri_split3 failed (t=%d)", t);
     nv = he_nv(he);
     nt = he_nt(he);
     realloc0(q, nv, nt, x, y, z);
@@ -158,12 +158,12 @@ split0(T * q, int t, He * he, real ** x, real ** y, real ** z, int *pu,
     q->mbit[v] = Bit;
     q->mbit[w] = Bit;
     if (Generation > 0) {
-	if (a == Mate)
-	    bit_set(Generation, &q->mbit[u]);
-	if (b == Mate)
-	    bit_set(Generation, &q->mbit[v]);
-	if (c == Mate)
-	    bit_set(Generation, &q->mbit[w]);
+        if (a == Mate)
+            bit_set(Generation, &q->mbit[u]);
+        if (b == Mate)
+            bit_set(Generation, &q->mbit[v]);
+        if (c == Mate)
+            bit_set(Generation, &q->mbit[w]);
     }
     *pu = u;
     *pv = v;
@@ -180,7 +180,7 @@ split(T * q, int t, He * he, real ** x, real ** y, real ** z)
     int status;
 
     if (split0(q, t, he, x, y, z, &a, &b, &c) != CO_OK)
-	ERR(CO_INDEX, "split0 failed (t = %d)", t);
+        ERR(CO_INDEX, "split0 failed (t = %d)", t);
     swap0(q, a, he, &status);
     swap0(q, b, he, &status);
     swap0(q, c, he, &status);
@@ -194,7 +194,7 @@ tri_mate(T * q, int t, He * he)
 
     m = q->mate[t];
     if (he_bnd(he, m))
-	ERR(CO_INDEX, "cannot swap on the boundary (t=%d, m=%d)", t, m);
+        ERR(CO_INDEX, "cannot swap on the boundary (t=%d, m=%d)", t, m);
     m = he_flp(he, m);
     m = he_tri(he, m);
     return m;
@@ -206,14 +206,14 @@ generation_refine(T * q, int t, He * he, real ** x, real ** y, real ** z)
     int m;
 
     if (q->g[t] % 2 == 0) {
-	return split(q, t, he, x, y, z);
+        return split(q, t, he, x, y, z);
     } else {
-	m = tri_mate(q, t, he);
-	if (q->g[m] == q->g[t] - 2) {
-	    generation_refine(q, m, he, x, y, z);
-	    m = tri_mate(q, t, he);
-	}
-	return generation_refine(q, m, he, x, y, z);
+        m = tri_mate(q, t, he);
+        if (q->g[m] == q->g[t] - 2) {
+            generation_refine(q, m, he, x, y, z);
+            m = tri_mate(q, t, he);
+        }
+        return generation_refine(q, m, he, x, y, z);
     }
 }
 
@@ -234,59 +234,64 @@ generation_coarsen(T * q, int t, He * he, real ** x, real ** y, real ** z)
     int t1;
     int v;
 
-    enum {CNT = 100};
+    enum { CNT = 100 };
+
     g = q->g;
     mbit = q->mbit;
     if (t < 0 || t >= he_nt(he))
-	ERR(CO_INDEX, "%d is not in [0, %d)", t, he_nt(he));
+        ERR(CO_INDEX, "%d is not in [0, %d)", t, he_nt(he));
     if (g[t] == 0) {
-	MSG("g[%d] == 0", t);
-	return CO_OK;
+        MSG("g[%d] == 0", t);
+        return CO_OK;
     }
     Generation = q->g[t];
     Mate = q->mate[t];
     if (Generation % 2 == 1) {
-	for (cnt = 0; cnt < CNT; cnt++) {
-	    h = he_nxt(he, Mate);
-	    if (he_bnd(he, h))
-		ERR(CO_INDEX, "he_bnd(%d)", h);
-	    t0 = he_tri(he, he_flp(he, h));
-	    if (g[t0] < Generation)
-		ERR(CO_INDEX, "g[%d]=%d < g[%d]=%d", t0, g[t0], t, Generation);
-	    if (g[t0] == Generation) break;
-	    generation_coarsen(q, t0, he, x, y, z);
-	}
-	if (cnt == CNT)
-	    ERR(CO_INDEX, "cnt > CNT, t = %d, Mate = %d", t, Mate);
+        for (cnt = 0; cnt < CNT; cnt++) {
+            h = he_nxt(he, Mate);
+            if (he_bnd(he, h))
+                ERR(CO_INDEX, "he_bnd(%d)", h);
+            t0 = he_tri(he, he_flp(he, h));
+            if (g[t0] < Generation)
+                ERR(CO_INDEX, "g[%d]=%d < g[%d]=%d", t0, g[t0], t,
+                    Generation);
+            if (g[t0] == Generation)
+                break;
+            generation_coarsen(q, t0, he, x, y, z);
+        }
+        if (cnt == CNT)
+            ERR(CO_INDEX, "cnt > CNT, t = %d, Mate = %d", t, Mate);
 
-	for (cnt = 0; cnt < CNT; cnt++) {
-	    h = he_nxt(he, he_nxt(he, Mate));
-	    if (he_bnd(he, h))
-		ERR(CO_INDEX, "he_bnd(%d)", h);
-	    t1 = he_tri(he, he_flp(he, h));
-	    if (g[t1] < Generation)
-		ERR(CO_INDEX, "g[%d]=%d < g[%d]=%d", t1, g[t1], t, Generation);
-	    if (g[t1] == Generation) break;
-	    generation_coarsen(q, t1, he, x, y, z);
-	}
-	if (cnt == CNT)
-	    ERR(CO_INDEX, "t = %d, Mate = %d", t, Mate);
-	bit_get(mbit[t], Generation - 1, &b);
-	bit_get(mbit[t0], Generation - 1, &b0);
-	bit_get(mbit[t1], Generation - 1, &b1);
-	if (b + b0 + b1 != 1)
-	    ERR(CO_INDEX, "b: %d %d %d (t = %d)", b, b0, b1, t);
-	h = he_nxt(he, he_nxt(he, Mate));
-	v = he_ver(he, h);
-	if (he_tri_join3(he, v) != CO_OK)
-	    ERR(CO_INDEX, "he_tri_join3 failed (t = %d)", t);
-	nv = he_nv(he);
-	(*x)[v] = (*x)[nv];
-	(*y)[v] = (*y)[nv];
-	(*z)[v] = (*z)[nv];
-	//t = he_tri_joi(he, Mate);
+        for (cnt = 0; cnt < CNT; cnt++) {
+            h = he_nxt(he, he_nxt(he, Mate));
+            if (he_bnd(he, h))
+                ERR(CO_INDEX, "he_bnd(%d)", h);
+            t1 = he_tri(he, he_flp(he, h));
+            if (g[t1] < Generation)
+                ERR(CO_INDEX, "g[%d]=%d < g[%d]=%d", t1, g[t1], t,
+                    Generation);
+            if (g[t1] == Generation)
+                break;
+            generation_coarsen(q, t1, he, x, y, z);
+        }
+        if (cnt == CNT)
+            ERR(CO_INDEX, "t = %d, Mate = %d", t, Mate);
+        bit_get(mbit[t], Generation - 1, &b);
+        bit_get(mbit[t0], Generation - 1, &b0);
+        bit_get(mbit[t1], Generation - 1, &b1);
+        if (b + b0 + b1 != 1)
+            ERR(CO_INDEX, "b: %d %d %d (t = %d)", b, b0, b1, t);
+        h = he_nxt(he, he_nxt(he, Mate));
+        v = he_ver(he, h);
+        if (he_tri_join3(he, v) != CO_OK)
+            ERR(CO_INDEX, "he_tri_join3 failed (t = %d)", t);
+        nv = he_nv(he);
+        (*x)[v] = (*x)[nv];
+        (*y)[v] = (*y)[nv];
+        (*z)[v] = (*z)[nv];
+        //t = he_tri_joi(he, Mate);
     } else {
-	MSG("TODO");
+        MSG("TODO");
     }
     return CO_OK;
 }
@@ -303,21 +308,21 @@ generation_invariant(T * q, He * he)
 
     ne = he_ne(he);
     for (e = 0; e < ne; e++) {
-	h = he_hdg_edg(he, e);
-	f = he_flp(he, h);
-	i = he_tri(he, h);
-	j = he_tri(he, f);
-	if (q->g[i] + 2 < q->g[j])
-	    ERR(CO_INDEX, "ij: %d %d", i, j);
-	if (q->g[j] + 2 < q->g[i])
-	    ERR(CO_INDEX, "ij: %d %d", i, j);
+        h = he_hdg_edg(he, e);
+        f = he_flp(he, h);
+        i = he_tri(he, h);
+        j = he_tri(he, f);
+        if (q->g[i] + 2 < q->g[j])
+            ERR(CO_INDEX, "ij: %d %d", i, j);
+        if (q->g[j] + 2 < q->g[i])
+            ERR(CO_INDEX, "ij: %d %d", i, j);
     }
     return CO_OK;
 }
 
 int
 generation_write(T * q, He * he, const real * x, const real * y,
-		 const real * z, FILE * file)
+                 const real * z, FILE * file)
 {
     int status;
     int h;
@@ -329,39 +334,39 @@ generation_write(T * q, He * he, const real * x, const real * y,
     n = he_nt(he);
     MALLOC(n, &mver);
     for (t = 0; t < n; t++)
-	mver[t] = -1;
+        mver[t] = -1;
     for (t = 0; t < n; t++)
-	if (q->g[t] % 2 == 1) {
-	    h = q->mate[t];
-	    h = he_nxt(he, h);
-	    h = he_nxt(he, h);
-	    v = he_ver(he, h);
-	    mver[t] = v;
-	}
+        if (q->g[t] % 2 == 1) {
+            h = q->mate[t];
+            h = he_nxt(he, h);
+            h = he_nxt(he, h);
+            v = he_ver(he, h);
+            mver[t] = v;
+        }
     const char *names[] = { "g", "mbit", "mver", NULL };
     const int *scalars[] = { q->g, q->mbit, mver, NULL };
     status = vtk_tri_int_write(he, x, y, z, scalars, names, file);
     if (status != CO_OK)
-	ERR(CO_IO, "vtk_tri_int_write faield");
+        ERR(CO_IO, "vtk_tri_int_write faield");
     FREE(mver);
     return CO_OK;
 }
 
 int
-generation_color(T *q, He *he, real *color)
+generation_color(T * q, He * he, real * color)
 {
     int i;
     int n;
 
     n = he_nt(he);
     for (i = 0; i < n; i++)
-	color[i] = q->g[i];
+        color[i] = q->g[i];
     return CO_OK;
 }
 
 int
 generation_read(FILE * file, He ** phe, real ** x, real ** y, real ** z,
-		T ** pq)
+                T ** pq)
 {
     He *he;
     int *mver;
@@ -376,23 +381,23 @@ generation_read(FILE * file, He ** phe, real ** x, real ** y, real ** z,
     const char *names[] = { "g", "mbit", "mver", NULL };
     int **scalars[] = { &q->g, &q->mbit, &mver, NULL };
     if (vtk_tri_int_read(file, names, &he, x, y, z, scalars) != CO_OK)
-	ERR(CO_IO, "vtk_tri_int_read failed");
+        ERR(CO_IO, "vtk_tri_int_read failed");
     nt = he_nt(he);
     MALLOC(nt, &q->mate);
     for (t = 0; t < nt; t++)
-	if (q->g[t] % 2 == 1) {
-	    v = mver[t];
-	    h = he_hdg_tri(he, t);
-	    for (cnt = 0;; cnt++) {
-		if (he_ver(he, h) == v)
-		    break;
-		h = he_nxt(he, h);
-		if (cnt > 3)
-		    ERR(CO_IO, "v = %d, h = %d, t = %d", v, h, t);
-	    }
-	    h = he_nxt(he, h);
-	    q->mate[t] = h;
-	}
+        if (q->g[t] % 2 == 1) {
+            v = mver[t];
+            h = he_hdg_tri(he, t);
+            for (cnt = 0;; cnt++) {
+                if (he_ver(he, h) == v)
+                    break;
+                h = he_nxt(he, h);
+                if (cnt > 3)
+                    ERR(CO_IO, "v = %d, h = %d, t = %d", v, h, t);
+            }
+            h = he_nxt(he, h);
+            q->mate[t] = h;
+        }
     q->NT = nt;
     q->NV = he_nv(he);
     *phe = he;
@@ -405,9 +410,9 @@ static int
 bit_set(int n, int *mbit)
 {
     if (n % 2 == 1)
-	ERR(CO_INDEX, "generation cannot be odd");
+        ERR(CO_INDEX, "generation cannot be odd");
     if (n > 50)
-	ERR(CO_INDEX, "generation is too big (n = %d)", n);
+        ERR(CO_INDEX, "generation is too big (n = %d)", n);
     n /= 2;
     (*mbit) |= 1 << n;
     return CO_OK;
@@ -417,9 +422,9 @@ static int
 bit_clear(int n, int *mbit)
 {
     if (n % 2 == 1)
-	ERR(CO_INDEX, "generation cannot be odd");
+        ERR(CO_INDEX, "generation cannot be odd");
     if (n > 50)
-	ERR(CO_INDEX, "generation is too big (n = %d)", n);
+        ERR(CO_INDEX, "generation is too big (n = %d)", n);
     n /= 2;
     (*mbit) &= ~(1 << n);
     return CO_OK;
@@ -429,9 +434,9 @@ static int
 bit_get(int mbit, int n, int *ans)
 {
     if (n % 2 == 1)
-	ERR(CO_INDEX, "generation cannot be odd");
+        ERR(CO_INDEX, "generation cannot be odd");
     if (n > 50)
-	ERR(CO_INDEX, "generation is too big (n = %d)", n);
+        ERR(CO_INDEX, "generation is too big (n = %d)", n);
     n /= 2;
     *ans = (mbit >> n) & 1;
 }

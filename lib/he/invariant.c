@@ -69,8 +69,9 @@ he_invariant_tri(He * he)
 
     for (t = 0; t < nt; t++) {
         h = he_hdg_tri(he, t);
-	if (h >= nh || h < 0)
-	    ERR(CO_NUM, "h=%d is not in [0, %d) (t=%d, nt=%d)", h, nh, t, nt);
+        if (h >= nh || h < 0)
+            ERR(CO_NUM, "h=%d is not in [0, %d) (t=%d, nt=%d)", h, nh, t,
+                nt);
         tt = he_tri(he, h);
         if (tt != t)
             ERR(CO_NUM, "tt=%d != t=%d, h=%d", tt, t, h);
