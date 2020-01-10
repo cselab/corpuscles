@@ -7,14 +7,17 @@
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
-#include <co/transform.h>
 #include <co/off.h>
+#include <co/transform.h>
 #include <co/util.h>
+#include <co/vec.h>
 #include <co/y.h>
 
+#define FMT CO_REAL_OUT
 #define radian(x) (0.0174532925199433*(x))
 static const char *me = "co.transform";
 static const real FV = 40;      /* default field of view  */
+
 
 static void
 usg(void)
@@ -34,13 +37,27 @@ eq(const char **a, const char *b)
 int
 main(__UNUSED int argc, char **argv)
 {
-    real *x, *y, *z;
-    real tx, ty, tz, rx, ry, rz, sx, sy, sz, f;
-    He *he;
     char *arg;
-    int n, i, Center;
-    FILE *file;
     char name[999];
+    FILE *file;
+    He *he;
+    int Center;
+    int i;
+    int n;
+    real com[3];
+    real f;
+    real rx;
+    real ry;
+    real rz;
+    real sx;
+    real sy;
+    real sz;
+    real tx;
+    real ty;
+    real tz;
+    real *x;
+    real *y;
+    real *z;
 
     err_set_ignore();
     argv++;
@@ -104,21 +121,20 @@ main(__UNUSED int argc, char **argv)
     if (y_inif(stdin, &he, &x, &y, &z) != CO_OK)
         ER("fail to open input file");
     n = he_nv(he);
-    if (Center)
-        transform_center(n, x, y, z);
-
+    if (Center) {
+	transform_centroid(he, x, y, z, com);
+	vec_neg(com);
+        transform_tran(com, n, x, y, z);
+    }
     transform_rotx(radian(-rx), n, x, y, z);
     transform_roty(radian(-ry), n, x, y, z);
     transform_rotz(radian(-rz), n, x, y, z);
-
     transform_scalx(sx, n, x, y, z);
     transform_scaly(sy, n, x, y, z);
     transform_scalz(sz, n, x, y, z);
-
     transform_tranx(tx, n, x, y, z);
     transform_trany(ty, n, x, y, z);
     transform_tranz(tz, n, x, y, z);
-
     if (i == -1) {
         if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
             ER("fail to write");
