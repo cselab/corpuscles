@@ -1,0 +1,2 @@
+la(u):= [diff(u, x, 2), diff(u, y, 2), diff(u, z, 2)];
+grad(p):= [diff(p, x), diff(p, y), diff(p, z)];
