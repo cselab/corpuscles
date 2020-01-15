@@ -1,2 +1,12 @@
 la(u):= [diff(u, x, 2), diff(u, y, 2), diff(u, z, 2)];
 grad(p):= [diff(p, x), diff(p, y), diff(p, z)];
+
+sxx: 1/r + x*x/r^3;
+syx: y*x/r^3;
+szx: z*x/r^3;
+
+u: 1/(8*%pi)*g*sxx;
+v: 1/(8*%pi)*g*syx;
+w: 1/(8*%pi)*g*szx;
+
+p: 2*mu/(8*%pi)*g*x/r^3;
