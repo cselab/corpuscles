@@ -17,13 +17,15 @@ int he_nh(T *);
 int he_nxt(T *, int h);         /* return half-edg */
 int he_flp(T *, int h);
 
-int he_ver(T *, int h);         /* return ver, tri, or edg */
+int he_ver(T *, int h);         /* return ver, tri, edg, or id */
 int he_tri(T *, int h);
 int he_edg(T *, int h);
+long long he_id(T *, int h);
 int he_hdg_ver(T *, int v);     /* return half-edg */
 int he_hdg_edg(T *, int e);
 int he_hdg_tri(T *, int t);
 
+int he_set_id(T *, int h, long long);
 int he_swap_ver(T *, int, int);
 int he_swap_tri(T *, int, int);
 int he_swap_edg(T *, int, int);

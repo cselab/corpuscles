@@ -36,4 +36,3 @@ loop_ver2(he, [numer: true],
   O[i][ii,jj] += 6/(8*%pi)*T(a - b, ii, jj, kk) * area[i]*n[i][kk]);
 
 O[nv-1][1][1], numer;
-
