@@ -128,6 +128,7 @@ he_fin(T * q)
     FREE(q->ver);
     FREE(q->tri);
     FREE(q->edg);
+    FREE(q->id);
     FREE(q->hdg_ver);
     FREE(q->hdg_edg);
     FREE(q->hdg_tri);
