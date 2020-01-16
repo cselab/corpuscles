@@ -1,4 +1,3 @@
-load('scifac)$
 assume(r >= 0, e >= 0);
 
 gradef(r, x, x/r);
@@ -8,22 +7,35 @@ gradef(r, z, z/r);
 sxx: (r^2 + 2*e^2)/(r^2 + e^2)^(3/2) + x*x/(r^2 + e^2)^(3/2);
 syx: y*x/(r^2 + e^2)^(3/2);
 szx: z*x/(r^2 + e^2)^(3/2);
+syy: (r^2 + 2*e^2)/(r^2 + e^2)^(3/2) + y*y/(r^2 + e^2)^(3/2);
+szy: z*y/(r^2 + e^2)^(3/2);
+szz: (r^2 + 2*e^2)/(r^2 + e^2)^(3/2) + z*z/(r^2 + e^2)^(3/2);
 
-u: 1/(8*%pi*mu)*g*sxx;
-v: 1/(8*%pi*mu)*g*syx;
-w: 1/(8*%pi*mu)*g*szx;
+sxz: szx;
+sxy: syx;
+syz: szy;
+
+u: 1/(8*%pi*mu)*(gx*sxx + gy*sxy + gz*sxz);
+v: 1/(8*%pi*mu)*(gx*syx + gy*syy + gz*syz);
+w: 1/(8*%pi*mu)*(gx*szx + gy*szy + gz*szz);
 
 Px: x * (2*r^2 + 5*e^2)/(r^2 + e^2)^(5/2);
-p: 1/(8*%pi)*g*Px;
+Py: y * (2*r^2 + 5*e^2)/(r^2 + e^2)^(5/2);
+Pz: z * (2*r^2 + 5*e^2)/(r^2 + e^2)^(5/2);
 
-D: factor(mu*(diff(u, x, 2) + diff(u, y, 2) + diff(u, z, 2)) - diff(p, x));
-gcfac(D), r = sqrt(x^2 + y^2 + z^2), factor;
+p: 1/(8*%pi)*(gx*Px + gy*Py + gz*Pz);
+Dx: factor(mu*(diff(u, x, 2) + diff(u, y, 2) + diff(u, z, 2)) - diff(p, x));
+Dy: factor(mu*(diff(v, x, 2) + diff(v, y, 2) + diff(v, z, 2)) - diff(p, y));
+Dz: factor(mu*(diff(w, x, 2) + diff(w, y, 2) + diff(w, z, 2)) - diff(p, z));
 
-p, e = 0;
-[u, v, w], e = 0;
+%r: r = sqrt(x^2 + y^2 + z^2);
+[Dx, Dy, Dz], %r, factor;
+
+p, e = 0, factor;
+[u, v, w], e = 0, factor;
 
 D: diff(u, x) + diff(v, y) + diff(w, z);
-D, factor, r = sqrt(x^2 + y^2 + z^2);
+D, factor, %r;
 
 Txxx: -Px + (diff(sxx, x) + diff(sxx, x));
 Txxx, factor;

@@ -1,0 +1,9 @@
+assume(r >= 0, e >= 0);
+
+gradef(r, x, x/r);
+gradef(r, y, y/r);
+gradef(r, z, z/r);
+
+sxx: (r^2 + 2*e^2)/(r^2 + e^2)^(3/2) + x*x/(r^2 + e^2)^(3/2);
+syx: y*x/(r^2 + e^2)^(3/2);
+szx: z*x/(r^2 + e^2)^(3/2);
