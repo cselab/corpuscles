@@ -6,8 +6,8 @@ int oseen3_zero_fin(T *);
 int oseen3_zero_apply(T *, He *, const real *, const real *, const real *,
                       real * xx, real * xy, real * xz, real * yy,
                       real * yz, real * zz);
-int oseen3_zero_s(const real[3], const real[3], real *, real *, real *, real *, real *, real *);
-int oseen3_zero_t(const real[3], const real normal[3], const real[3], real *, real *, real *, real *, real *, real *);
+int oseen3_zero_s(T *, const real[3], const real[3], real *, real *, real *, real *, real *, real *);
+int oseen3_zero_t(T *, const real[3], const real normal[3], const real[3], real *, real *, real *, real *, real *, real *);
 int oseen3_zero_stresslet(T *, He *, const real *, const real *,
                           const real *, real * xx, real * xy, real * xz,
                           real * yy, real * yz, real * zz);

@@ -75,7 +75,7 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
         SET(i, i, 0, ozz);
         for (j = i + 1; j < n; j++) {
             i_vec_get(j, x, y, z, b);
-            if (oseen3_zero_s(a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
+            if (oseen3_zero_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
                 ERR(CO_NUM, "ossen failed (i=%d, j=%d)", i, j);
             SET(i, j, xx, oxx);
             SET(i, j, xy, oxy);
@@ -122,7 +122,7 @@ oseen3_zero_single_velocity(T * q, He * he,
     for (i = 0; i < n; i++) {
         i_vec_get(i, x, y, z, b);
         i_vec_get(i, fx, fy, fz, f);
-        oseen3_zero_s(a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+        oseen3_zero_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
         dx += xx * f[X] + xy * f[Y] + xz * f[Z];
         dy += xy * f[X] + yy * f[Y] + yz * f[Z];
         dz += xz * f[X] + yz * f[Y] + zz * f[Z];
@@ -171,7 +171,7 @@ oseen3_zero_stresslet(T * q, He * he, const real * x, const real * y,
             i_vec_get(j, nx, ny, nz, u);
             i_vec_get(j, x, y, z, b);
             A = 3 * area[j] / (4 * pi);
-            oseen3_zero_t(a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
+            oseen3_zero_t(q, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
             SET(i, j, A * xx, oxx);
             SET(i, j, A * xy, oxy);
             SET(i, j, A * xz, oxz);
@@ -213,7 +213,7 @@ oseen3_zero_double_velocity(T * q, He * he,
         i_vec_get(i, x, y, z, b);
         i_vec_get(i, ux, uy, uz, u);
         A = area[i];
-        oseen3_zero_t(r, normal, b, &xx, &xy, &xz, &yy, &yz, &zz);
+        oseen3_zero_t(q, r, normal, b, &xx, &xy, &xz, &yy, &yz, &zz);
         dx += A * (xx * u[X] + xy * u[Y] + xz * u[Z]);
         dy += A * (xy * u[X] + yy * u[Y] + yz * u[Z]);
         dz += A * (xz * u[X] + yz * u[Y] + zz * u[Z]);
@@ -226,7 +226,7 @@ oseen3_zero_double_velocity(T * q, He * he,
 }
 
 int
-oseen3_zero_s(const real a[3], const real b[3],
+oseen3_zero_s(T * q, const real a[3], const real b[3],
 	      real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
 {
     enum {
@@ -234,6 +234,7 @@ oseen3_zero_s(const real a[3], const real b[3],
     };
     real d[3], r, r3, l;
 
+    USED(q);
     i_vec_minus(a, b, d);
     r = i_vec_abs(d);
     r3 = r * r * r;
@@ -250,7 +251,7 @@ oseen3_zero_s(const real a[3], const real b[3],
 }
 
 int
-oseen3_zero_t(const real a[3], const real n[3], const real b[3],
+oseen3_zero_t(T * q, const real a[3], const real n[3], const real b[3],
           real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
 {
     enum {
@@ -258,6 +259,7 @@ oseen3_zero_t(const real a[3], const real n[3], const real b[3],
     };
     real d[3], r, p, l;
 
+    USED(q);
     i_vec_minus(a, b, d);
     r = i_vec_abs(d);
     p = i_vec_dot(d, n);
