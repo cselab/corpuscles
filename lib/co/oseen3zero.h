@@ -10,14 +10,14 @@ int oseen3_zero_stresslet(T *, He *, const real *, const real *,
                           const real *, real * xx, real * xy, real * xz,
                           real * yy, real * yz, real * zz);
 
-int oseen3zero_single_velocity(T * q, He * he,
-                               const real * x, const real * y,
+int oseen3_zero_single_velocity(T * q, He * he,
+				const real * x, const real * y,
                                const real * z, const real * fx,
                                const real * fy, const real * fz,
                                const real r[3], /**/ real v[3]);
-int oseen3zero_double_velocity(T * q, He * he,
-                               const real * x, const real * y,
-                               const real * z, const real * ux,
-                               const real * uy, const real * uz,
-                               const real r[3], /**/ real v[3]);
+int oseen3_zero_double_velocity(T * q, He * he,
+				const real * x, const real * y,
+				const real * z, const real * ux,
+				const real * uy, const real * uz,
+				const real r[3], /**/ real v[3]);
 #undef T

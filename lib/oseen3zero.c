@@ -108,7 +108,7 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
 }
 
 int
-oseen3zero_single_velocity(T * q, He * he,
+oseen3_zero_single_velocity(T * q, He * he,
                            const real * x, const real * y, const real * z,
                            const real * fx, const real * fy,
                            const real * fz, const real a[3],
@@ -189,11 +189,11 @@ oseen3_zero_stresslet(T * q, He * he, const real * x, const real * y,
 }
 
 int
-oseen3zero_double_velocity(T * q, He * he,
-                           const real * x, const real * y, const real * z,
-                           const real * ux, const real * uy,
-                           const real * uz, const real r[3],
-                           /**/ real v[3])
+oseen3_zero_double_velocity(T * q, He * he,
+			    const real * x, const real * y, const real * z,
+			    const real * ux, const real * uy,
+			    const real * uz, const real r[3],
+			    /**/ real v[3])
 {
     enum { X, Y, Z };
     real *nx, *ny, *nz, *area, A, s;
