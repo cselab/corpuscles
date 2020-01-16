@@ -1,4 +1,5 @@
 load('scifac)$
+assume(r >= 0, e >= 0);
 
 gradef(r, x, x/r);
 gradef(r, y, y/r);
@@ -13,11 +14,16 @@ v: 1/(8*%pi*mu)*g*syx;
 w: 1/(8*%pi*mu)*g*szx;
 
 Px: x * (2*r^2 + 5*e^2)/(r^2 + e^2)^(5/2);
-
 p: 1/(8*%pi)*g*Px;
 
 D: factor(mu*(diff(u, x, 2) + diff(u, y, 2) + diff(u, z, 2)) - diff(p, x));
-
-diff(u, x) + diff(v, y) + diff(w, z), factor;
-
 gcfac(D), r = sqrt(x^2 + y^2 + z^2), factor;
+
+p, e = 0;
+[u, v, w], e = 0;
+
+D: diff(u, x) + diff(v, y) + diff(w, z);
+D, factor, r = sqrt(x^2 + y^2 + z^2);
+
+Txxx: -Px + (diff(sxx, x) + diff(sxx, x));
+Txxx, factor;
