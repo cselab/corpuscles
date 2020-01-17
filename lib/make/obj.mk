@@ -116,6 +116,7 @@ orient.s.o\
 oseen/2.s.o\
 oseen/3.s.o\
 oseen/3tri.s.o\
+oseen/3wall.s.o\
 oseen/3zero.s.o\
 ply.s.o\
 polygon.s.o\
@@ -254,6 +255,7 @@ orient.d.o\
 oseen/2.d.o\
 oseen/3.d.o\
 oseen/3tri.d.o\
+oseen/3wall.d.o\
 oseen/3zero.d.o\
 ply.d.o\
 polygon.d.o\
@@ -392,6 +394,7 @@ orient.l.o\
 oseen/2.l.o\
 oseen/3.l.o\
 oseen/3tri.l.o\
+oseen/3wall.l.o\
 oseen/3zero.l.o\
 ply.l.o\
 polygon.l.o\

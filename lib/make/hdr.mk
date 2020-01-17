@@ -119,6 +119,7 @@ co/orient.h\
 co/oseen/2.h\
 co/oseen/3.h\
 co/oseen/3tri.h\
+co/oseen/3wall.h\
 co/oseen/3zero.h\
 co/ply.h\
 co/polygon.h\
