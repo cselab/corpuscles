@@ -8,7 +8,7 @@
 #include "co/i/matrix.h"
 #include "co/macro.h"
 #include "co/memory.h"
-#include "co/oseen3zero.h"
+#include "co/oseen/3zero.h"
 #include "co/tensor.h"
 
 #define T BiCortezZero

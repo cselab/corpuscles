@@ -6,7 +6,7 @@
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
-#include "co/oseen3.h"
+#include "co/oseen/3.h"
 #include "co/tensor.h"
 #include "co/bi/cortez.h"
 

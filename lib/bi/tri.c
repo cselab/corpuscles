@@ -7,7 +7,7 @@
 #include "co/i/matrix.h"
 #include "co/macro.h"
 #include "co/memory.h"
-#include "co/oseen3tri.h"
+#include "co/oseen/3tri.h"
 #include "co/tensor.h"
 
 #define T BiTri

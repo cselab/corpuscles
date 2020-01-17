@@ -10,7 +10,7 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/normal.h"
-#include "co/oseen3tri.h"
+#include "co/oseen/3tri.h"
 #include "co/matrix.h"
 #include "co/i/matrix.h"
 #include "co/i/vec.h"

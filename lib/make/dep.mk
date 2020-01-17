@@ -12,10 +12,10 @@ co/hash.h\
 
 he.o:\
 co/err.h\
+co/he.h\
 co/memory.h\
 co/read.h\
 inc/def.h\
-co/he.h\
 
 he/invariant.o:\
 co/err.h\
@@ -116,6 +116,7 @@ co/bbox2.h\
 bbox.s.o:\
 co/prec/s/real.h\
 co/array.h\
+co/edg.h\
 co/err.h\
 co/memory.h\
 co/bbox.h\
@@ -154,7 +155,7 @@ co/he.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
-co/oseen3.h\
+co/oseen/3.h\
 co/tensor.h\
 co/bi/cortez.h\
 
@@ -182,7 +183,7 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3zero.h\
+co/oseen/3zero.h\
 co/tensor.h\
 
 bi/self_circle.s.o:\
@@ -208,7 +209,7 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3tri.h\
+co/oseen/3tri.h\
 co/tensor.h\
 
 cell2.s.o:\
@@ -1116,38 +1117,38 @@ co/sum.h\
 co/ten.h\
 co/orient.h\
 
-oseen2.s.o:\
+oseen/2.s.o:\
 co/prec/s/real.h\
 co/err.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
-co/oseen2.h\
+co/oseen/2.h\
 co/skel.h\
 co/vec2.h\
 co/sum.h\
 
-oseen3.s.o:\
+oseen/3.s.o:\
 co/prec/s/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3.h\
+co/oseen/3.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
 
-oseen3tri.s.o:\
+oseen/3tri.s.o:\
 co/prec/s/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3tri.h\
+co/oseen/3tri.h\
 co/matrix.h\
 co/i/matrix.h\
 co/i/vec.h\
@@ -1155,14 +1156,14 @@ co/i/tri.h\
 co/tri.h\
 co/i/area.h\
 
-oseen3zero.s.o:\
+oseen/3zero.s.o:\
 co/prec/s/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3zero.h\
+co/oseen/3zero.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
@@ -1508,6 +1509,7 @@ co/bbox2.h\
 bbox.d.o:\
 co/prec/d/real.h\
 co/array.h\
+co/edg.h\
 co/err.h\
 co/memory.h\
 co/bbox.h\
@@ -1546,7 +1548,7 @@ co/he.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
-co/oseen3.h\
+co/oseen/3.h\
 co/tensor.h\
 co/bi/cortez.h\
 
@@ -1574,7 +1576,7 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3zero.h\
+co/oseen/3zero.h\
 co/tensor.h\
 
 bi/self_circle.d.o:\
@@ -1600,7 +1602,7 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3tri.h\
+co/oseen/3tri.h\
 co/tensor.h\
 
 cell2.d.o:\
@@ -2508,38 +2510,38 @@ co/sum.h\
 co/ten.h\
 co/orient.h\
 
-oseen2.d.o:\
+oseen/2.d.o:\
 co/prec/d/real.h\
 co/err.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
-co/oseen2.h\
+co/oseen/2.h\
 co/skel.h\
 co/vec2.h\
 co/sum.h\
 
-oseen3.d.o:\
+oseen/3.d.o:\
 co/prec/d/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3.h\
+co/oseen/3.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
 
-oseen3tri.d.o:\
+oseen/3tri.d.o:\
 co/prec/d/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3tri.h\
+co/oseen/3tri.h\
 co/matrix.h\
 co/i/matrix.h\
 co/i/vec.h\
@@ -2547,14 +2549,14 @@ co/i/tri.h\
 co/tri.h\
 co/i/area.h\
 
-oseen3zero.d.o:\
+oseen/3zero.d.o:\
 co/prec/d/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3zero.h\
+co/oseen/3zero.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
@@ -2900,6 +2902,7 @@ co/bbox2.h\
 bbox.l.o:\
 co/prec/l/real.h\
 co/array.h\
+co/edg.h\
 co/err.h\
 co/memory.h\
 co/bbox.h\
@@ -2938,7 +2941,7 @@ co/he.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
-co/oseen3.h\
+co/oseen/3.h\
 co/tensor.h\
 co/bi/cortez.h\
 
@@ -2966,7 +2969,7 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3zero.h\
+co/oseen/3zero.h\
 co/tensor.h\
 
 bi/self_circle.l.o:\
@@ -2992,7 +2995,7 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen3tri.h\
+co/oseen/3tri.h\
 co/tensor.h\
 
 cell2.l.o:\
@@ -3900,38 +3903,38 @@ co/sum.h\
 co/ten.h\
 co/orient.h\
 
-oseen2.l.o:\
+oseen/2.l.o:\
 co/prec/l/real.h\
 co/err.h\
 co/macro.h\
 co/matrix.h\
 co/memory.h\
-co/oseen2.h\
+co/oseen/2.h\
 co/skel.h\
 co/vec2.h\
 co/sum.h\
 
-oseen3.l.o:\
+oseen/3.l.o:\
 co/prec/l/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3.h\
+co/oseen/3.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
 
-oseen3tri.l.o:\
+oseen/3tri.l.o:\
 co/prec/l/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3tri.h\
+co/oseen/3tri.h\
 co/matrix.h\
 co/i/matrix.h\
 co/i/vec.h\
@@ -3939,14 +3942,14 @@ co/i/tri.h\
 co/tri.h\
 co/i/area.h\
 
-oseen3zero.l.o:\
+oseen/3zero.l.o:\
 co/prec/l/real.h\
 co/err.h\
 co/he.h\
 co/macro.h\
 co/memory.h\
 co/normal.h\
-co/oseen3zero.h\
+co/oseen/3zero.h\
 co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\

@@ -8,7 +8,7 @@
 #include "co/macro.h"
 #include "co/matrix.h"
 #include "co/memory.h"
-#include "co/oseen2.h"
+#include "co/oseen/2.h"
 #include "co/skel.h"
 #include "co/vec2.h"
 #include "co/sum.h"
