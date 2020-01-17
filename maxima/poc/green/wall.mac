@@ -41,8 +41,8 @@ SSD(d):= block([xx, xy, xz, yx, yy, yz, zx, zy, zz, r3],
   zz: 0,
   d[Z] * SD(d) + [xx, xy, -xz, yx, yy, -yz, zx, zy, -zz]);
 
-d: [x - x0, y, z];
-e: [x - x0, y, z - 2*w0];
+d: [x, y, z];
+e: [x, y, z - 2*w0];
 h: -w0;
 
 [xx, xy, xz, yx, yy, yz, zx, zy, zz] : Sfs(d) - Sfs(e) + 2*h^2*SD(e) - 2*h*SSD(e) $
