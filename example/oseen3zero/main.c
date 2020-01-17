@@ -6,7 +6,7 @@
 #include <co/he.h>
 #include <co/matrix.h>
 #include <co/memory.h>
-#include <co/oseen3zero.h>
+#include <co/oseen/3zero.h>
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT

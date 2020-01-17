@@ -3,7 +3,7 @@
 #include <real.h>
 #include <co/array.h>
 #include <co/err.h>
-#include <co/oseen2.h>
+#include <co/oseen/2.h>
 #include <co/skel.h>
 #include <co/memory.h>
 #include <co/matrix.h>

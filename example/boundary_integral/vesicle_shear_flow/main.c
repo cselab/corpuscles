@@ -10,7 +10,7 @@
 #include <co/matrix.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
-#include <co/oseen3.h>
+#include <co/oseen/3.h>
 #include <co/he.h>
 #include <co/punto.h>
 #include <co/y.h>

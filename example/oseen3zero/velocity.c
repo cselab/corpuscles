@@ -5,7 +5,7 @@
 #include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
-#include <co/oseen3zero.h>
+#include <co/oseen/3zero.h>
 #include <co/vec.h>
 #include <co/y.h>
 
