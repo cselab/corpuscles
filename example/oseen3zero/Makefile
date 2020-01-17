@@ -1,6 +1,10 @@
 .POSIX:
 include ../../conf.mk
-M = main velocity
+M = \
+main\
+velocity\
+stress\
+
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`

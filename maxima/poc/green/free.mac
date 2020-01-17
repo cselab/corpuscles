@@ -37,6 +37,7 @@ D: diff(u, x) + diff(v, y) + diff(w, z);
 D, factor, %r;
 
 Txxx: -Px + (diff(sxx, x) + diff(sxx, x));
-Txxx, factor;
 
-[u, v, w], %r, e = 0, mu = 1, x = 1, y = 2, z = 3, gx = 1, gy = 0, gz = 0, numer, infeval;
+[u, v, w], %r, e = 0, mu = 1, x = 1, y = 2, z = 3, gx = 10, gy = 20, gz = 30, numer, infeval;
+
+mu*Txxx/(8*%pi), %r, e = 0, mu = 1, x = 1, y = 0, z = 0, numer, infeval;
