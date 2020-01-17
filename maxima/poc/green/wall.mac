@@ -4,12 +4,35 @@ gradef(r, x, x/r);
 gradef(r, y, y/r);
 gradef(r, z, z/r);
 
-sxx: (r^2 + 2*e^2)/(r^2 + e^2)^(3/2) + x*x/(r^2 + e^2)^(3/2);
-syx: y*x/(r^2 + e^2)^(3/2);
-szx: z*x/(r^2 + e^2)^(3/2);
-syy: (r^2 + 2*e^2)/(r^2 + e^2)^(3/2) + y*y/(r^2 + e^2)^(3/2);
-szy: z*y/(r^2 + e^2)^(3/2);
-szz: (r^2 + 2*e^2)/(r^2 + e^2)^(3/2) + z*z/(r^2 + e^2)^(3/2);
-sxz: szx;
-sxy: syx;
-syz: szy;
+Sfs(d):= block([xx, yy, zz, xy, xz, yz, l, r3],
+  l: 1/r(d),
+  r3: r(d)^3,
+  xx: l + d[X] * d[X] / r3,
+  yy: l + d[Y] * d[Y] / r3,
+  zz: l + d[Z] * d[Z] / r3,
+  xy: d[X] * d[Y] / r3,
+  xz: d[X] * d[Z] / r3,
+  yz: d[Y] * d[Z] / r3,
+  [xx, xy, xz, yy, yz, zz]);
+
+SD(d):= block([xx, yy, zz, xy, xz, yz, l, r5],
+  l: 1/r(d)^3,
+  r5: r(d)^5,
+  xx:   l - 3* d[X] * d[X] / r5,
+  yy:   l - 3 * d[Y] * d[Y] / r5,
+  zz: -(l - 3 * d[Z] * d[Z] / r5),
+  xy: - 3 * d[X] * d[Y] / r5,
+  xz:   3 * d[X] * d[Z] / r5,
+  yz:   3 * d[Y] * d[Z] / r5,
+  [xx, xy, xz, yy, yz, zz]);
+
+SSD(d):= block([xx, yy, zz, xy, xz, yz, l, r5],
+  l: 1/r(d)^3,
+  r5: r(d)^5,
+  xx:   l - 3* d[X] * d[X] / r5,
+  yy:   l - 3 * d[Y] * d[Y] / r5,
+  zz: -(l - 3 * d[Z] * d[Z] / r5),
+  xy: - 3 * d[X] * d[Y] / r5,
+  xz:   3 * d[X] * d[Z] / r5,
+  yz:   3 * d[Y] * d[Z] / r5,
+  [xx, xy, xz, yy, yz, zz]);
