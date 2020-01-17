@@ -43,30 +43,31 @@ SSD(d):= block([xx, xy, xz, yx, yy, yz, zx, zy, zz, r3],
   d[Z] * SD(d) + [xx, xy, -xz, yx, yy, -yz, zx, zy, -zz]);
 
 d: [x, y, z];
-e: [x, y, z - 2*w0];
-h: -w0;
+e: [x, y, z - 2*w];
+h: -w;
 
 [xx, xy, xz, yx, yy, yz, zx, zy, zz] : Sfs(d) - Sfs(e) + 2*h^2*SD(e) - 2*h*SSD(e) $
 /* [xx, xy, xz, yx, yy, yz, zx, zy, zz] : SSD(e); */
 
-u: 1/(8*%pi*mu)*(gx*xx + gy*xy + gz*xz) $
-v: 1/(8*%pi*mu)*(gx*yx + gy*yy + gz*yz) $
-w: 1/(8*%pi*mu)*(gx*zx + gy*zy + gz*zz) $
+ux: 1/(8*%pi*mu)*(gx*xx + gy*xy + gz*xz) $
+uy: 1/(8*%pi*mu)*(gx*yx + gy*yy + gz*yz) $
+uz: 1/(8*%pi*mu)*(gx*zx + gy*zy + gz*zz) $
+D: diff(ux, x) + diff(uy, y) + diff(uz, z) $
+/*
 %r: r = lambda([x, y, z], sqrt(x^2 + y^2 + z^2));
-D: diff(u, x) + diff(v, y) + diff(w, z);
-/* D, %r, factor; */
-/* xx, z = w0, %r, infeval; */
+D, %r, factor;
+[ux, uy, uz], z = w, expand, %r; */
 
 %s: [r(x, y, z) = 1/r0,
-r(x, y, z - 2*w0) = 1/r1,
+r(x, y, z - 2*w) = 1/r1,
 r1^3 = r13,
 r1^5 = r15,
 r0^3 = r03,
-w0^2 = w02,
+w^2 = w2,
 x^2 = x2,
 y^2 = y2,
 z^2 = z2,
-z - 2*w0 = zw,
+z - 2*w = zw,
 zw^2 = zw2
 ];
 

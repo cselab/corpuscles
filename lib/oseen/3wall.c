@@ -18,6 +18,7 @@
 #define T Oseen3Wall
 static const real pi = 3.141592653589793115997964;
 struct T {
+    real w;
     real *nx, *ny, *nz, *area;
 };
 
@@ -233,8 +234,10 @@ oseen3_wall_s(T * q, const real a[3], const real b[3],
         X, Y, Z
     };
     real d[3], r, r3, l;
+    real *yx, *zy, *zx;
+    real w;
 
-    USED(q);
+    w = q->w;
     i_vec_minus(a, b, d);
     r = i_vec_abs(d);
     r3 = r * r * r;
