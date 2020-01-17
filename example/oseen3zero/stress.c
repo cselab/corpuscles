@@ -27,7 +27,7 @@ main(int argc, const char **argv)
     Oseen3Zero *oseen;
     real *x, *y, *z, a[3], b[3], g[3], n[3];
     real xx, xy, xz, yy, yz, zz;
-    real u, v, w;
+    real u, v, w, coeff;
     enum {X, Y, Z};
 
     err_set_ignore();
@@ -68,7 +68,8 @@ main(int argc, const char **argv)
     v = g[X]*xx + g[Y]*xy + g[Z]*xz;
     u = g[X]*xy + g[Y]*yy + g[Z]*yz;
     w = g[X]*xz + g[Y]*yz + g[Z]*zz;
-    printf(FMT " " FMT " " FMT "\n", v/(8*pi), u/(8*pi), w/(8*pi));
+    coeff = 3/(4*pi);
+    printf(FMT " " FMT " " FMT "\n", coeff*v, coeff*u, coeff*w);
     
     oseen3_zero_fin(oseen);
     y_fin(he, x, y, z);
