@@ -1,38 +1,58 @@
 assume(r >= 0, e >= 0);
 
-gradef(r, x, x/r);
-gradef(r, y, y/r);
-gradef(r, z, z/r);
+gradef(r(x, y, z), x/r(x, y, z), y/r(x, y, z), z/r(x, y, z));
 
-Sfs(d):= block([xx, yy, zz, xy, xz, yz, l, r3],
-  l: 1/r(d),
-  r3: r(d)^3,
+(X: 1, Y: 2, Z: 3) $
+Sfs(d):= block([xx, xy, xz, yy, yz, zz, l, r3],
+  l: 1/r(d[X], d[Y], d[Z]),
+  r3: r(d[X], d[Y], d[Z])^3,
   xx: l + d[X] * d[X] / r3,
   yy: l + d[Y] * d[Y] / r3,
   zz: l + d[Z] * d[Z] / r3,
   xy: d[X] * d[Y] / r3,
   xz: d[X] * d[Z] / r3,
   yz: d[Y] * d[Z] / r3,
-  [xx, xy, xz, yy, yz, zz]);
+  [xx, xy, xz, xy, yy, yz, xz, yz, zz]);
 
-SD(d):= block([xx, yy, zz, xy, xz, yz, l, r5],
-  l: 1/r(d)^3,
-  r5: r(d)^5,
-  xx:   l - 3* d[X] * d[X] / r5,
+SD(d):= block([xx, xy, xz, yx, yy, yz, zx, zy, zz, l, r5],
+  l: 1/r(d[X], d[Y], d[Z])^3,
+  r5: r(d[X], d[Y], d[Z])^5,
+  xx:   l - 3 * d[X] * d[X] / r5,
+  xy:     - 3 * d[X] * d[Y] / r5,
+  yx:     - 3 * d[Y] * d[X] / r5,
   yy:   l - 3 * d[Y] * d[Y] / r5,
-  zz: -(l - 3 * d[Z] * d[Z] / r5),
-  xy: - 3 * d[X] * d[Y] / r5,
-  xz:   3 * d[X] * d[Z] / r5,
-  yz:   3 * d[Y] * d[Z] / r5,
-  [xx, xy, xz, yy, yz, zz]);
+  yz:     - 3 * d[Y] * d[Z] / r5,
+  zx:     - 3 * d[Z] * d[X] / r5,
+  zy:     - 3 * d[Z] * d[Y] / r5,
+  zz:   l - 3 * d[Z] * d[Z] / r5,
+  xz:     - 3 * d[X] * d[Z] / r5,
+  [xx, xy, -xz, yx, yy, -yz, zx, zy, -zz]);
 
-SSD(d):= block([xx, yy, zz, xy, xz, yz, l, r5],
-  l: 1/r(d)^3,
-  r5: r(d)^5,
-  xx:   l - 3* d[X] * d[X] / r5,
-  yy:   l - 3 * d[Y] * d[Y] / r5,
-  zz: -(l - 3 * d[Z] * d[Z] / r5),
-  xy: - 3 * d[X] * d[Y] / r5,
-  xz:   3 * d[X] * d[Z] / r5,
-  yz:   3 * d[Y] * d[Z] / r5,
-  [xx, xy, xz, yy, yz, zz]);
+SSD(d):= block([xx, xy, xz, yx, yy, yz, zx, zy, zz, r3],
+  r3: r(d[X], d[Y], d[Z])^3,
+  xx: 0,
+  xy: 0,
+  xz: x/r3,
+  yx: 0,
+  yy: 0,
+  yz: y/r3,
+  zx: -x/r3,
+  zy: -y/r3,
+  zz: 0,
+  z * SD(d) + [xx, xy, -xz, yx, yy, -yz, zx, zy, -zz]);
+
+d: [x, y, z];
+e: [x, y, z - 2*w0];
+h: -w0;
+
+[xx, xy, xz, yx, yy, yz, zx, zy, zz] : Sfs(d) - Sfs(e) + 2*h^2*SD(e) - 2*h*SSD(e);
+/* [xx, xy, xz, yx, yy, yz, zx, zy, zz] : SSD(e); */
+
+u: 1/(8*%pi*mu)*(gx*xx + gy*xy + gz*xz);
+v: 1/(8*%pi*mu)*(gx*yx + gy*yy + gz*yz);
+w: 1/(8*%pi*mu)*(gx*zx + gy*zy + gz*zz);
+%r: r = lambda([x, y, z], sqrt(x^2 + y^2 + z^2));
+D: diff(u, x) + diff(v, y) + diff(w, z);
+D, %r, factor;
+
+xy, z = w0, infeval, %r;
