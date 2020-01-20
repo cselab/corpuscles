@@ -6,7 +6,7 @@
 #include <co/he.h>
 #include <co/matrix.h>
 #include <co/memory.h>
-#include <co/oseen/3wall.h>
+#include <co/green/3wall.h>
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT
@@ -15,7 +15,7 @@ int
 main(void)
 {
     He *he;
-    Oseen3Wall *oseen;
+    Green3Wall *green;
     real *x, *y, *z;
     real *S, *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
     real xx, yy, zz, s;
@@ -33,8 +33,8 @@ main(void)
     matrix_ini(n, n, &Oyy);
     matrix_ini(n, n, &Oyz);
     matrix_ini(n, n, &Ozz);
-    oseen3_wall_ini(he, &oseen);
-    oseen3_wall_apply(oseen, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
+    green3_wall_ini(he, &green);
+    green3_wall_apply(green, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
 
     for (i = 0; i < n; i++)
         for (j = 0; j < n; j++) {
@@ -57,6 +57,6 @@ main(void)
     matrix_fin(Oyy);
     matrix_fin(Oyz);
     matrix_fin(Ozz);
-    oseen3_wall_fin(oseen);
+    green3_wall_fin(green);
     y_fin(he, x, y, z);
 }

@@ -5,14 +5,14 @@
 #include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
-#include <co/oseen/3wall.h>
+#include <co/green/3wall.h>
 #include <co/vec.h>
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT
 static real pi = 3.141592653589793115997964;
 
-static char me[] = "oseen3wall/stress";
+static char me[] = "green3wall/stress";
 static void
 usg()
 {
@@ -24,7 +24,7 @@ int
 main(int argc, const char **argv)
 {
     He *he;
-    Oseen3Wall *oseen;
+    Green3Wall *green;
     real *x, *y, *z, a[3], b[3], g[3], n[3];
     real xx, xy, xz, yy, yz, zz;
     real u, v, w, coeff;
@@ -62,8 +62,8 @@ main(int argc, const char **argv)
         fprintf(stdin, "%s: too many arguments\n", me);
         exit(1);
     }
-    oseen3_wall_ini(he, &oseen);
-    oseen3_wall_t(oseen, a, n, b, &xx, &xy, &xz, &yy, &yz, &zz);
+    green3_wall_ini(he, &green);
+    green3_wall_t(green, a, n, b, &xx, &xy, &xz, &yy, &yz, &zz);
 
     v = g[X]*xx + g[Y]*xy + g[Z]*xz;
     u = g[X]*xy + g[Y]*yy + g[Z]*yz;
@@ -71,6 +71,6 @@ main(int argc, const char **argv)
     coeff = 3/(4*pi);
     printf(FMT " " FMT " " FMT "\n", coeff*v, coeff*u, coeff*w);
     
-    oseen3_wall_fin(oseen);
+    green3_wall_fin(green);
     y_fin(he, x, y, z);
 }
