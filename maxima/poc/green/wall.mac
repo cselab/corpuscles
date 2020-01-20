@@ -72,8 +72,10 @@ zw^2 = zw2
 ];
 
 g(e)::=buildq([e: e, f: ev(e, %s, infeval, gcfac)],
-printf(true, "~a = ~a;~%", 'e, f));
+  printf(true, "~a = ~a;~%", 'e, f));
 
 (g(xx), g(yy), g(zz));
 (g(xy), g(xz), g(yz));
 (g(zx), g(zy));
+
+for s in %s do printf(true, "~a~%", rhs(s) = lhs(s));
