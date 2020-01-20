@@ -147,6 +147,7 @@ co/subst.h\
 co/sum.h\
 co/surface.h\
 co/ten.h\
+co/tensor3x3.h\
 co/tensor.h\
 co/transform.h\
 co/tri2.h\

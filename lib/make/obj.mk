@@ -142,6 +142,7 @@ subst.s.o\
 sum.s.o\
 surface.s.o\
 ten.s.o\
+tensor3x3.s.o\
 tensor.s.o\
 transform.s.o\
 tri2.s.o\
@@ -281,6 +282,7 @@ subst.d.o\
 sum.d.o\
 surface.d.o\
 ten.d.o\
+tensor3x3.d.o\
 tensor.d.o\
 transform.d.o\
 tri2.d.o\
@@ -420,6 +422,7 @@ subst.l.o\
 sum.l.o\
 surface.l.o\
 ten.l.o\
+tensor3x3.l.o\
 tensor.l.o\
 transform.l.o\
 tri2.l.o\

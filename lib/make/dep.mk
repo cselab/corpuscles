@@ -1399,6 +1399,13 @@ co/err.h\
 inc/def.h\
 co/ten.h\
 
+tensor3x3.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/matrix.h\
+co/i/matrix.h\
+co/tensor3x3.h\
+
 tensor.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -2805,6 +2812,13 @@ co/err.h\
 inc/def.h\
 co/ten.h\
 
+tensor3x3.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/matrix.h\
+co/i/matrix.h\
+co/tensor3x3.h\
+
 tensor.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -4210,6 +4224,13 @@ co/prec/l/real.h\
 co/err.h\
 inc/def.h\
 co/ten.h\
+
+tensor3x3.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/matrix.h\
+co/i/matrix.h\
+co/tensor3x3.h\
 
 tensor.l.o:\
 co/prec/l/real.h\
