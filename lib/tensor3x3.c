@@ -11,7 +11,7 @@
 enum {XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ};
 
 int
-tensor3x3_ini(int n, struct Tensor *t)
+tensor3x3_ini(int n, struct Tensor3x3 *t)
 {
     int i;
     int status;
@@ -24,7 +24,7 @@ tensor3x3_ini(int n, struct Tensor *t)
 }
 
 int
-tensor3x3_fin(struct Tensor *t)
+tensor3x3_fin(struct Tensor3x3 *t)
 {
     int i;
     for (i = 0; i < 3*3; i++)
@@ -34,7 +34,7 @@ tensor3x3_fin(struct Tensor *t)
 
 int
 tensor3x3_vector(int n, real s, const real * x, const real * y,
-		 const real * z, struct Tensor *T, real * u, real * v,
+		 const real * z, struct Tensor3x3 *T, real * u, real * v,
 		 real * w)
 {
     int i;

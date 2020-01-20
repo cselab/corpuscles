@@ -1,8 +1,8 @@
-struct Tensor {
+struct Tensor3x3 {
     real *d[3*3];
 };
 
-int tensor3x3_ini(int, struct Tensor *);
-int tensor3x3_fin(struct Tensor *);
+int tensor3x3_ini(int, struct Tensor3x3 *);
+int tensor3x3_fin(struct Tensor3x3 *);
 int tensor3x3_vector(int, real, const real *, const real *, const real *,
-		     struct Tensor *, /**/ real *, real *, real *);
+		     struct Tensor3x3 *, /**/ real *, real *, real *);
