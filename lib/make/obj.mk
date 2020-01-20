@@ -89,6 +89,7 @@ f/volume.s.o\
 f/volume_normal.s.o\
 f/wlc.s.o\
 generation.s.o\
+green/3wall.s.o\
 gts.s.o\
 H.s.o\
 integral/circle_line.s.o\
@@ -116,7 +117,6 @@ orient.s.o\
 oseen/2.s.o\
 oseen/3.s.o\
 oseen/3tri.s.o\
-oseen/3wall.s.o\
 oseen/3zero.s.o\
 ply.s.o\
 polygon.s.o\
@@ -228,6 +228,7 @@ f/volume.d.o\
 f/volume_normal.d.o\
 f/wlc.d.o\
 generation.d.o\
+green/3wall.d.o\
 gts.d.o\
 H.d.o\
 integral/circle_line.d.o\
@@ -255,7 +256,6 @@ orient.d.o\
 oseen/2.d.o\
 oseen/3.d.o\
 oseen/3tri.d.o\
-oseen/3wall.d.o\
 oseen/3zero.d.o\
 ply.d.o\
 polygon.d.o\
@@ -367,6 +367,7 @@ f/volume.l.o\
 f/volume_normal.l.o\
 f/wlc.l.o\
 generation.l.o\
+green/3wall.l.o\
 gts.l.o\
 H.l.o\
 integral/circle_line.l.o\
@@ -394,7 +395,6 @@ orient.l.o\
 oseen/2.l.o\
 oseen/3.l.o\
 oseen/3tri.l.o\
-oseen/3wall.l.o\
 oseen/3zero.l.o\
 ply.l.o\
 polygon.l.o\

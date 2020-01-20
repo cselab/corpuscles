@@ -78,6 +78,7 @@ co/f/volume.h\
 co/f/volume_normal.h\
 co/f/wlc.h\
 co/generation.h\
+co/green/3wall.h\
 co/gts.h\
 co/hash.h\
 co/he.h\
@@ -119,7 +120,6 @@ co/orient.h\
 co/oseen/2.h\
 co/oseen/3.h\
 co/oseen/3tri.h\
-co/oseen/3wall.h\
 co/oseen/3zero.h\
 co/ply.h\
 co/polygon.h\

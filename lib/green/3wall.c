@@ -9,13 +9,13 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/normal.h"
-#include "co/oseen/3wall.h"
+#include "co/green/3wall.h"
 #include "co/i/matrix.h"
 #include "co/i/vec.h"
 #include "co/i/tri.h"
 #include "co/i/area.h"
 
-#define T Oseen3Wall
+#define T Green3Wall
 static const real pi = 3.141592653589793115997964;
 struct T {
     real w;
@@ -23,7 +23,7 @@ struct T {
 };
 
 int
-oseen3_wall_ini(He * he, T ** pq)
+green3_wall_ini(He * he, T ** pq)
 {
     T *q;
     real *nx, *ny, *nz, *area;
@@ -42,7 +42,7 @@ oseen3_wall_ini(He * he, T ** pq)
 }
 
 int
-oseen3_wall_fin(T * q)
+green3_wall_fin(T * q)
 {
     FREE3(q->nx, q->ny, q->nz);
     FREE(q->area);
@@ -52,7 +52,7 @@ oseen3_wall_fin(T * q)
 
 #define SET(i, j, s, a) i_matrix_set(n, n, i, j, s, a)
 int
-oseen3_wall_apply(T * q, He * he, const real * x, const real * y,
+green3_wall_apply(T * q, He * he, const real * x, const real * y,
                   const real * z, real * oxx, real * oxy, real * oxz,
                   real * oyy, real * oyz, real * ozz)
 {
@@ -76,7 +76,7 @@ oseen3_wall_apply(T * q, He * he, const real * x, const real * y,
         SET(i, i, 0, ozz);
         for (j = i + 1; j < n; j++) {
             i_vec_get(j, x, y, z, b);
-            if (oseen3_wall_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
+            if (green3_wall_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
                 ERR(CO_NUM, "ossen failed (i=%d, j=%d)", i, j);
             SET(i, j, xx, oxx);
             SET(i, j, xy, oxy);
@@ -104,7 +104,7 @@ oseen3_wall_apply(T * q, He * he, const real * x, const real * y,
 }
 
 int
-oseen3_wall_single_velocity(T * q, He * he,
+green3_wall_single_velocity(T * q, He * he,
                            const real * x, const real * y, const real * z,
                            const real * fx, const real * fy,
                            const real * fz, const real a[3],
@@ -123,7 +123,7 @@ oseen3_wall_single_velocity(T * q, He * he,
     for (i = 0; i < n; i++) {
         i_vec_get(i, x, y, z, b);
         i_vec_get(i, fx, fy, fz, f);
-        oseen3_wall_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+        green3_wall_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
         dx += xx * f[X] + xy * f[Y] + xz * f[Z];
         dy += xy * f[X] + yy * f[Y] + yz * f[Z];
         dz += xz * f[X] + yz * f[Y] + zz * f[Z];
@@ -136,7 +136,7 @@ oseen3_wall_single_velocity(T * q, He * he,
 }
 
 int
-oseen3_wall_stresslet(T * q, He * he, const real * x, const real * y,
+green3_wall_stresslet(T * q, He * he, const real * x, const real * y,
                       const real * z, real * oxx, real * oxy, real * oxz,
                       real * oyy, real * oyz, real * ozz)
 {
@@ -172,7 +172,7 @@ oseen3_wall_stresslet(T * q, He * he, const real * x, const real * y,
             i_vec_get(j, nx, ny, nz, u);
             i_vec_get(j, x, y, z, b);
             A = 3 * area[j] / (4 * pi);
-            oseen3_wall_t(q, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
+            green3_wall_t(q, a, u, b, &xx, &xy, &xz, &yy, &yz, &zz);
             SET(i, j, A * xx, oxx);
             SET(i, j, A * xy, oxy);
             SET(i, j, A * xz, oxz);
@@ -185,7 +185,7 @@ oseen3_wall_stresslet(T * q, He * he, const real * x, const real * y,
 }
 
 int
-oseen3_wall_double_velocity(T * q, He * he,
+green3_wall_double_velocity(T * q, He * he,
 			    const real * x, const real * y, const real * z,
 			    const real * ux, const real * uy,
 			    const real * uz, const real r[3],
@@ -214,7 +214,7 @@ oseen3_wall_double_velocity(T * q, He * he,
         i_vec_get(i, x, y, z, b);
         i_vec_get(i, ux, uy, uz, u);
         A = area[i];
-        oseen3_wall_t(q, r, normal, b, &xx, &xy, &xz, &yy, &yz, &zz);
+        green3_wall_t(q, r, normal, b, &xx, &xy, &xz, &yy, &yz, &zz);
         dx += A * (xx * u[X] + xy * u[Y] + xz * u[Z]);
         dy += A * (xy * u[X] + yy * u[Y] + yz * u[Z]);
         dz += A * (xz * u[X] + yz * u[Y] + zz * u[Z]);
@@ -227,7 +227,7 @@ oseen3_wall_double_velocity(T * q, He * he,
 }
 
 int
-oseen3_wall_s(T * q, const real a[3], const real b[3],
+green3_wall_s(T * q, const real a[3], const real b[3],
 	      real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
 {
     enum {
@@ -254,7 +254,7 @@ oseen3_wall_s(T * q, const real a[3], const real b[3],
 }
 
 int
-oseen3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
+green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
           real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
 {
     enum {

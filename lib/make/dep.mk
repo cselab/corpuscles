@@ -888,6 +888,19 @@ co/tri.h\
 co/vtk.h\
 co/generation.h\
 
+green/3wall.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/green/3wall.h\
+co/i/matrix.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+
 gts.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -1154,19 +1167,6 @@ co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
 co/tri.h\
-co/i/area.h\
-
-oseen/3wall.s.o:\
-co/prec/s/real.h\
-co/err.h\
-co/he.h\
-co/macro.h\
-co/memory.h\
-co/normal.h\
-co/oseen/3wall.h\
-co/i/matrix.h\
-co/i/vec.h\
-co/i/tri.h\
 co/i/area.h\
 
 oseen/3zero.s.o:\
@@ -2294,6 +2294,19 @@ co/tri.h\
 co/vtk.h\
 co/generation.h\
 
+green/3wall.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/green/3wall.h\
+co/i/matrix.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+
 gts.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -2560,19 +2573,6 @@ co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
 co/tri.h\
-co/i/area.h\
-
-oseen/3wall.d.o:\
-co/prec/d/real.h\
-co/err.h\
-co/he.h\
-co/macro.h\
-co/memory.h\
-co/normal.h\
-co/oseen/3wall.h\
-co/i/matrix.h\
-co/i/vec.h\
-co/i/tri.h\
 co/i/area.h\
 
 oseen/3zero.d.o:\
@@ -3700,6 +3700,19 @@ co/tri.h\
 co/vtk.h\
 co/generation.h\
 
+green/3wall.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/green/3wall.h\
+co/i/matrix.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+
 gts.l.o:\
 co/prec/l/real.h\
 co/err.h\
@@ -3966,19 +3979,6 @@ co/i/matrix.h\
 co/i/vec.h\
 co/i/tri.h\
 co/tri.h\
-co/i/area.h\
-
-oseen/3wall.l.o:\
-co/prec/l/real.h\
-co/err.h\
-co/he.h\
-co/macro.h\
-co/memory.h\
-co/normal.h\
-co/oseen/3wall.h\
-co/i/matrix.h\
-co/i/vec.h\
-co/i/tri.h\
 co/i/area.h\
 
 oseen/3zero.l.o:\
