@@ -1,11 +1,11 @@
 #define T Green3Wall
 typedef struct T T;
 typedef struct He He;
+struct Tensor3x3;
 int green3_wall_ini(He *, T **);
 int green3_wall_fin(T *);
 int green3_wall_apply(T *, He *, const real *, const real *, const real *,
-                      real * xx, real * xy, real * xz, real * yy,
-                      real * yz, real * zz);
+		      struct Tensor3x3 *);
 int green3_wall_s(T *, const real[3], const real[3], real *, real *, real *, real *, real *, real *);
 int green3_wall_t(T *, const real[3], const real normal[3], const real[3], real *, real *, real *, real *, real *, real *);
 int green3_wall_stresslet(T *, He *, const real *, const real *,

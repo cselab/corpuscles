@@ -24,6 +24,26 @@ tensor3x3_ini(int n, struct Tensor3x3 *t)
 }
 
 int
+tensor3x3_zero(int n, struct Tensor3x3 *t)
+{
+    int i;
+    int status;
+    for (i = 0; i < 3*3; i++)
+	matrix_zero(n, n, t->d[i]);
+    return CO_OK;
+}
+
+int
+tensor3x3_scale(int n, real s, struct Tensor3x3 *t)
+{
+    int i;
+    int status;
+    for (i = 0; i < 3*3; i++)
+	matrix_scale(n, n, s, t->d[i]);
+    return CO_OK;
+}
+
+int
 tensor3x3_fin(struct Tensor3x3 *t)
 {
     int i;
