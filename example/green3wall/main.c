@@ -6,6 +6,7 @@
 #include <co/he.h>
 #include <co/matrix.h>
 #include <co/memory.h>
+#include <co/tensor3x3.h>
 #include <co/green/3wall.h>
 #include <co/y.h>
 
@@ -17,46 +18,19 @@ main(void)
     He *he;
     Green3Wall *green;
     real *x, *y, *z;
-    real *S, *Oxx, *Oxy, *Oxz, *Oyy, *Oyz, *Ozz;
-    real xx, yy, zz, s;
-    int n, nt, i, j, k, t;
+    real w;
+    struct Tensor3x3 tensor;
+    int n;
 
+    w = -2.0;
     err_set_ignore();
     y_inif(stdin, &he, &x, &y, &z);
     n = he_nv(he);
-    nt = he_nt(he);
+    tensor3x3_ini(n, &tensor);
+    green3_wall_ini(he, w, &green);
+    green3_wall_apply(green, he, x, y, z, &tensor);
 
-    matrix_ini(n, n, &S);
-    matrix_ini(n, n, &Oxx);
-    matrix_ini(n, n, &Oxy);
-    matrix_ini(n, n, &Oxz);
-    matrix_ini(n, n, &Oyy);
-    matrix_ini(n, n, &Oyz);
-    matrix_ini(n, n, &Ozz);
-    green3_wall_ini(he, &green);
-    green3_wall_apply(green, he, x, y, z, Oxx, Oxy, Oxz, Oyy, Oyz, Ozz);
-
-    for (i = 0; i < n; i++)
-        for (j = 0; j < n; j++) {
-            xx = matrix_get(n, n, i, j, Oxx);
-            yy = matrix_get(n, n, i, j, Oyy);
-            zz = matrix_get(n, n, i, j, Ozz);
-            s = xx + yy + zz;
-            matrix_set(n, n, i, j, s, S);
-        }
-
-    for (t = 0; t < nt; t++) {
-        he_tri_ijk(he, t, &i, &j, &k);
-        printf(FMT "\n", matrix_get(n, n, i, j, S));
-        printf(FMT "\n", matrix_get(n, n, i, k, S));
-    }
-    matrix_fin(S);
-    matrix_fin(Oxx);
-    matrix_fin(Oxy);
-    matrix_fin(Oxz);
-    matrix_fin(Oyy);
-    matrix_fin(Oyz);
-    matrix_fin(Ozz);
     green3_wall_fin(green);
+    tensor3x3_fin(&tensor);
     y_fin(he, x, y, z);
 }
