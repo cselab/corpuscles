@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <real.h>
+#include <co/argv.h>
 #include <co/array.h>
 #include <co/ten.h>
 #include <co/err.h>
@@ -18,7 +18,7 @@ static char me[] = "green3wall/velocity";
 static void
 usg()
 {
-    fprintf(stderr, "%s x0 y0 z0 gx gy gz x y z < OFF\n", me);
+    fprintf(stderr, "%s [-w wall] x0 y0 z0 gx gy gz x y z < OFF\n", me);
     exit(1);
 }
 
@@ -34,13 +34,21 @@ main(int argc, const char **argv)
     enum {X, Y, Z};
     USED(argc);
 
-    w = -10;
+    w = 0;
     err_set_ignore();
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
             usg();
             break;
+	case 'w':
+	    argv++;
+	    if (argv[0] == NULL) {
+		fprintf(stderr, "%s: -w needs an argument\n", me);
+		exit(1);
+	    }
+	    w = atof(argv[0]);
+	    break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(1);
@@ -51,11 +59,11 @@ main(int argc, const char **argv)
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, b) != CO_OK) {
+    if (vec_argv(&argv, g) != CO_OK) {
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, g) != CO_OK) {
+    if (vec_argv(&argv, b) != CO_OK) {
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
@@ -65,12 +73,12 @@ main(int argc, const char **argv)
     }
     green3_wall_ini(he, w, &green);
     green3_wall_s(green, a, b, &ten);
+    vec_printf(a, FMT);
+    vec_printf(b, FMT);    
     ten_printf(&ten, FMT);
-
-    ten_vec(&ten, g, u);
-//    vec_scale(1/(8*pi), u);
-//    vec_printf(u, FMT);
-    
+    //vec_ten(g, &ten, u);
+    //vec_scale(1/(8*pi), u);
+    //vec_printf(u, FMT);
     green3_wall_fin(green);
     y_fin(he, x, y, z);
 }

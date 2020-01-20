@@ -87,7 +87,13 @@ green3_wall_apply(T * q, He * he, const real * x, const real * y,
 static real
 rad(real x, real y, real z)
 {
-    return sqrt(x*x + y*y + z*z);
+    real r;
+    real eps;
+    eps = 1e-32;
+    r = x*x + y*y + z*z;
+    if (r < eps)
+	ERR(CO_NUM, "r < eps");
+    return sqrt(r);
 }
 
 int
@@ -121,8 +127,9 @@ green3_wall_s(T * q, const real a[3], const real b[3], Ten *t0)
     x = d[X];
     y = d[Y];
     z = d[Z];
-
     zw = z-2*w;
+    MSG("xyz: %g %g %g", (double)x, (double)y, (double)z);
+    MSG("zw: %g", (double)zw);
     r0 = 1/rad(x, y, z);
     r1 = 1/rad(x, y, zw);
     r13 = r1*r1*r1;
