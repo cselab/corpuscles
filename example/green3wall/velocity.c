@@ -3,10 +3,12 @@
 #include <math.h>
 #include <real.h>
 #include <co/array.h>
+#include <co/ten.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/green/3wall.h>
 #include <co/vec.h>
+#include <co/macro.h>
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT
@@ -26,10 +28,13 @@ main(int argc, const char **argv)
     He *he;
     Green3Wall *green;
     real *x, *y, *z, a[3], b[3], g[3];
-    real xx, xy, xz, yy, yz, zz;
-    real u, v, w;
+    real u[3];
+    real w;
+    Ten ten;
     enum {X, Y, Z};
+    USED(argc);
 
+    w = -10;
     err_set_ignore();
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
@@ -58,13 +63,13 @@ main(int argc, const char **argv)
         fprintf(stdin, "%s: too many arguments\n", me);
         exit(1);
     }
-    green3_wall_ini(he, &green);
-    green3_wall_s(green, a, b, &xx, &xy, &xz, &yy, &yz, &zz);
+    green3_wall_ini(he, w, &green);
+    green3_wall_s(green, a, b, &ten);
+    ten_printf(&ten, FMT);
 
-    v = g[X]*xx + g[Y]*xy + g[Z]*xz;
-    u = g[X]*xy + g[Y]*yy + g[Z]*yz;
-    w = g[X]*xz + g[Y]*yz + g[Z]*zz;
-    printf(FMT " " FMT " " FMT "\n", v/(8*pi), u/(8*pi), w/(8*pi));
+    ten_vec(&ten, g, u);
+//    vec_scale(1/(8*pi), u);
+//    vec_printf(u, FMT);
     
     green3_wall_fin(green);
     y_fin(he, x, y, z);

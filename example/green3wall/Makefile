@@ -2,6 +2,7 @@
 include ../../conf.mk
 M = \
 main\
+velocity\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`

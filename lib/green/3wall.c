@@ -36,7 +36,7 @@ green3_wall_ini(He * he, real w, T ** pq)
     n = he_nv(he);
     MALLOC3(n, &nx, &ny, &nz);
     MALLOC(n, &area);
-    w = q->w;
+    q->w = w;
     q->nx = nx;
     q->ny = ny;
     q->nz = nz;
