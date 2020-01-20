@@ -39,7 +39,7 @@ tensor3x3_vector(int n, real s, const real * x, const real * y,
 {
     int i;
 
-#define GET(K) i_matrix_get(n, n, i, j, (T->d[0]))
+#define GET(K) i_matrix_get(n, n, i, j, (T->d[K]))
 #pragma omp parallel for
     for (i = 0; i < n; i++) {
         int j;
@@ -54,8 +54,8 @@ tensor3x3_vector(int n, real s, const real * x, const real * y,
             yx = GET(YX);
             yy = GET(YY);
             yz = GET(YZ);
-	    zx = GET(XZ);
-	    zy = GET(XY);
+	    zx = GET(ZX);
+	    zy = GET(ZY);
 	    zz = GET(ZZ);
             du = xx * x[j] + xy * y[j] + xz * z[j];
             dv = yx * x[j] + yy * y[j] + yz * z[j];
