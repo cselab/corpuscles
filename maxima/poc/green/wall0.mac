@@ -1,0 +1,81 @@
+load("scifac");
+assume(r >= 0, e >= 0);
+
+gradef(r(x, y, z), x/r(x, y, z), y/r(x, y, z), z/r(x, y, z));
+
+(X: 1, Y: 2, Z: 3) $
+Sfs(d):= block([xx, xy, xz, yy, yz, zz, l, r3],
+  l: 1/r(d[X], d[Y], d[Z]),
+  r3: r(d[X], d[Y], d[Z])^3,
+  xx: l + d[X]*d[X] / r3,
+  yy: l + d[Y]*d[Y] / r3,
+  zz: l + d[Z]*d[Z] / r3,
+  xy: d[X]*d[Y] / r3,
+  xz: d[X]*d[Z] / r3,
+  yz: d[Y]*d[Z] / r3,
+  [xx, xy, xz, xy, yy, yz, xz, yz, zz]);
+
+SD(d):= block([xx, xy, xz, yx, yy, yz, zx, zy, zz, l, r5],
+  l: 1/r(d[X], d[Y], d[Z])^3,
+  r5: r(d[X], d[Y], d[Z])^5,
+  xx:   l - 3*d[X]*d[X] / r5,
+  xy:     - 3*d[X]*d[Y] / r5,
+  xz:     - 3*d[X]*d[Z] / r5,
+  yx:     - 3*d[Y]*d[X] / r5,
+  yy:   l - 3*d[Y]*d[Y] / r5,
+  yz:     - 3*d[Y]*d[Z] / r5,
+  zx:     - 3*d[Z]*d[X] / r5,
+  zy:     - 3*d[Z]*d[Y] / r5,
+  zz:   l - 3*d[Z]*d[Z] / r5,
+  [xx, xy, -xz, yx, yy, -yz, zx, zy, -zz]);
+
+SSD(d):= block([xx, xy, xz, yx, yy, yz, zx, zy, zz, r3],
+  r3: r(d[X], d[Y], d[Z])^3,
+  xx: 0,
+  xy: 0,
+  xz: d[X]/r3,
+  yx: 0,
+  yy: 0,
+  yz: d[Y]/r3,
+  zx: -d[X]/r3,
+  zy: -d[Y]/r3,
+  zz: 0,
+  d[Z] * SD(d) + [xx, xy, -xz, yx, yy, -yz, zx, zy, -zz]);
+
+d: [0, 0, 0];
+e: [0, 0, 0 - 2*w];
+h: -w;
+
+[xx, xy, xz, yx, yy, yz, zx, zy, zz] : - Sfs(e) + 2*h^2*SD(e) - 2*h*SSD(e) $
+/* [xx, xy, xz, yx, yy, yz, zx, zy, zz] : SSD(e); */
+
+ux: 1/(8*%pi*mu)*(gx*xx + gy*xy + gz*xz) $
+uy: 1/(8*%pi*mu)*(gx*yx + gy*yy + gz*yz) $
+uz: 1/(8*%pi*mu)*(gx*zx + gy*zy + gz*zz) $
+D: diff(ux, x) + diff(uy, y) + diff(uz, z) $
+%r: r = lambda([x, y, z], sqrt(x^2 + y^2 + z^2));
+/*
+D, %r, factor;
+[ux, uy, uz], z = w, expand, %r; */
+
+%s: [
+r(0, 0, 0 - 2*w) = 1/r1,
+r1^3 = r13,
+r1^5 = r15,
+r0^3 = r03,
+w^2 = w2,
+x^2 = x2,
+y^2 = y2,
+z^2 = z2,
+z - 2*w = zw,
+zw^2 = zw2
+];
+
+g(e)::=buildq([e: e, f: ev(e, %s, infeval, gcfac)],
+  printf(true, "~a = ~a;~%", 'e, f));
+
+(g(xx), g(yy), g(zz));
+(g(xy), g(xz), g(yz));
+(g(zx), g(zy));
+
+for s in %s do printf(true, "~a~%", rhs(s) = lhs(s));
