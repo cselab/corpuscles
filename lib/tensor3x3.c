@@ -5,6 +5,7 @@
 #include "real.h"
 #include "co/err.h"
 #include "co/matrix.h"
+#include "co/ten.h"
 #include "co/i/matrix.h"
 #include "co/tensor3x3.h"
 

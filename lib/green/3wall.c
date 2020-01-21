@@ -25,6 +25,8 @@ struct T {
     real *nx, *ny, *nz, *area;
 };
 
+static int s0(T *, const real[3], Ten *);
+
 int
 green3_wall_ini(He * he, real w, T ** pq)
 {
@@ -71,14 +73,16 @@ green3_wall_apply(T * q, He * he, const real * x, const real * y,
     for (i = 0; i < n; i++) {
 	real a[3], b[3];
 	int j;
-
 	i_vec_get(i, x, y, z, a);
 	for (j = 0; j < n; j++) {
 	    if (i == j)
-		continue;
-	    i_vec_get(j, x, y, z, b);
-	    if (green3_wall_s(q, a, b, &t0) != CO_OK)
-		ERR(CO_NUM, "ossen failed (i=%d, j=%d)", i, j);
+		s0(q, a, &t0);
+	    else {
+		i_vec_get(j, x, y, z, b);
+		if (green3_wall_s(q, a, b, &t0) != CO_OK)
+		    ERR(CO_NUM, "ossen failed (i=%d, j=%d)", i, j);
+	    }
+	    
 	}
     }
     s = 1 / (8 * pi);
