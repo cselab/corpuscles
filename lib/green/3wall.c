@@ -121,15 +121,13 @@ green3_wall_s(T * q, const real a[3], const real b[3], Ten *t0)
     real zw2;
 
     t = t0->t;
-    w = q->w;
+    w = q->w - b[Z];
     i_vec_minus(a, b, d);
 
     x = d[X];
     y = d[Y];
     z = d[Z];
     zw = z-2*w;
-    MSG("xyz: %g %g %g", (double)x, (double)y, (double)z);
-    MSG("zw: %g", (double)zw);
     r0 = 1/rad(x, y, z);
     r1 = 1/rad(x, y, zw);
     r13 = r1*r1*r1;

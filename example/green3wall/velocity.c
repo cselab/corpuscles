@@ -73,12 +73,9 @@ main(int argc, const char **argv)
     }
     green3_wall_ini(he, w, &green);
     green3_wall_s(green, a, b, &ten);
-    vec_printf(a, FMT);
-    vec_printf(b, FMT);    
-    ten_printf(&ten, FMT);
-    //vec_ten(g, &ten, u);
-    //vec_scale(1/(8*pi), u);
-    //vec_printf(u, FMT);
+    ten_vec(&ten, g, u);
+    vec_scale(1/(8*pi), u);
+    vec_printf(u, FMT);
     green3_wall_fin(green);
     y_fin(he, x, y, z);
 }
