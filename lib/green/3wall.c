@@ -18,7 +18,7 @@
 #include "co/tensor3x3.h"
 
 #define T Green3Wall
-enum {XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ};
+enum { XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ };
 static const real pi = 3.141592653589793115997964;
 struct T {
     real w;
@@ -71,9 +71,11 @@ green3_wall_apply(T * q, He * he, const real * x, const real * y,
     for (i = 0; i < n; i++) {
         real a[3], b[3], xx, xy, xz, yy, yz, zz;
         int j;
+
         i_vec_get(i, x, y, z, a);
         for (j = 0; j < n; j++) {
-	    if (i == j) continue;
+            if (i == j)
+                continue;
             i_vec_get(j, x, y, z, b);
             if (green3_wall_s(q, a, b, &t0) != CO_OK)
                 ERR(CO_NUM, "ossen failed (i=%d, j=%d)", i, j);
@@ -89,15 +91,16 @@ rad(real x, real y, real z)
 {
     real r;
     real eps;
+
     eps = 1e-32;
-    r = x*x + y*y + z*z;
+    r = x * x + y * y + z * z;
     if (r < eps)
-	ERR(CO_NUM, "r < eps");
+        ERR(CO_NUM, "r < eps");
     return sqrt(r);
 }
 
 int
-green3_wall_s(T * q, const real a[3], const real b[3], Ten *t0)
+green3_wall_s(T * q, const real a[3], const real b[3], Ten * t0)
 {
     enum {
         X, Y, Z
@@ -127,33 +130,51 @@ green3_wall_s(T * q, const real a[3], const real b[3], Ten *t0)
     x = d[X];
     y = d[Y];
     z = d[Z];
-    zw = z-2*w;
-    r0 = 1/rad(x, y, z);
-    r1 = 1/rad(x, y, zw);
-    r13 = r1*r1*r1;
-    r15 = r1*r1*r1*r1*r1;
-    r03 = r0*r0*r0;
-    w2 = w*w;
-    x2 = x*x;
-    y2 = y*y;
-    z2 = z*z;
-    zw2 = zw*zw;
+    zw = z - 2 * w;
+    r0 = 1 / rad(x, y, z);
+    r1 = 1 / rad(x, y, zw);
+    r13 = r1 * r1 * r1;
+    r15 = r1 * r1 * r1 * r1 * r1;
+    r03 = r0 * r0 * r0;
+    w2 = w * w;
+    x2 = x * x;
+    y2 = y * y;
+    z2 = z * z;
+    zw2 = zw * zw;
 
-    t[XX] = 2*w*(r13-3*r15*x2)*zw+2*w2*(r13-3*r15*x2)-r13*x2+r03*x2-r1+r0;
-    t[YY] = 2*w*(r13-3*r15*y2)*zw+2*w2*(r13-3*r15*y2)-r13*y2+r03*y2-r1+r0;
-    t[ZZ] = 2*w*zw*(3*r15*zw2-r13)+2*w2*(3*r15*zw2-r13)-r13*zw2+r03*z2-r1+r0;
-    t[XY] = (-6*r15*w*x*y*zw)-6*r15*w2*x*y-r13*x*y+r03*x*y;
-    t[XZ] = 2*w*(3*r15*x*zw2-r13*x)+6*r15*w2*x*zw-r13*x*zw+r03*x*z;
-    t[ZX] = 2*w*((-3*r15*x*zw2)-r13*x)-6*r15*w2*x*zw-r13*x*zw+r03*x*z;
+    t[XX] =
+        2 * w * (r13 - 3 * r15 * x2) * zw + 2 * w2 * (r13 - 3 * r15 * x2) -
+        r13 * x2 + r03 * x2 - r1 + r0;
+    t[YY] =
+        2 * w * (r13 - 3 * r15 * y2) * zw + 2 * w2 * (r13 - 3 * r15 * y2) -
+        r13 * y2 + r03 * y2 - r1 + r0;
+    t[ZZ] =
+        2 * w * zw * (3 * r15 * zw2 - r13) + 2 * w2 * (3 * r15 * zw2 -
+                                                       r13) - r13 * zw2 +
+        r03 * z2 - r1 + r0;
+    t[XY] =
+        (-6 * r15 * w * x * y * zw) - 6 * r15 * w2 * x * y - r13 * x * y +
+        r03 * x * y;
+    t[XZ] =
+        2 * w * (3 * r15 * x * zw2 - r13 * x) + 6 * r15 * w2 * x * zw -
+        r13 * x * zw + r03 * x * z;
+    t[ZX] =
+        2 * w * ((-3 * r15 * x * zw2) - r13 * x) - 6 * r15 * w2 * x * zw -
+        r13 * x * zw + r03 * x * z;
     t[YX] = t[XY];
-    t[YZ] = 2*w*(3*r15*y*zw2-r13*y)+6*r15*w2*y*zw-r13*y*zw+r03*y*z;
-    t[ZY] = 2*w*((-3*r15*y*zw2)-r13*y)-6*r15*w2*y*zw-r13*y*zw+r03*y*z;
+    t[YZ] =
+        2 * w * (3 * r15 * y * zw2 - r13 * y) + 6 * r15 * w2 * y * zw -
+        r13 * y * zw + r03 * y * z;
+    t[ZY] =
+        2 * w * ((-3 * r15 * y * zw2) - r13 * y) - 6 * r15 * w2 * y * zw -
+        r13 * y * zw + r03 * y * z;
     return CO_OK;
 }
 
 int
 green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
-          real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
+              real * xx, real * xy, real * xz, real * yy, real * yz,
+              real * zz)
 {
     enum {
         X, Y, Z

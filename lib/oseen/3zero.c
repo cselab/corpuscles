@@ -75,7 +75,8 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
         SET(i, i, 0, ozz);
         for (j = i + 1; j < n; j++) {
             i_vec_get(j, x, y, z, b);
-            if (oseen3_zero_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz) != CO_OK)
+            if (oseen3_zero_s(q, a, b, &xx, &xy, &xz, &yy, &yz, &zz) !=
+                CO_OK)
                 ERR(CO_NUM, "ossen failed (i=%d, j=%d)", i, j);
             SET(i, j, xx, oxx);
             SET(i, j, xy, oxy);
@@ -104,10 +105,10 @@ oseen3_zero_apply(T * q, He * he, const real * x, const real * y,
 
 int
 oseen3_zero_single_velocity(T * q, He * he,
-                           const real * x, const real * y, const real * z,
-                           const real * fx, const real * fy,
-                           const real * fz, const real a[3],
-                           /**/ real v[3])
+                            const real * x, const real * y, const real * z,
+                            const real * fx, const real * fy,
+                            const real * fz, const real a[3],
+                            /**/ real v[3])
 {
     int n, i;
     real s, xx, xy, xz, yy, yz, zz, b[3], f[3];
@@ -185,10 +186,10 @@ oseen3_zero_stresslet(T * q, He * he, const real * x, const real * y,
 
 int
 oseen3_zero_double_velocity(T * q, He * he,
-			    const real * x, const real * y, const real * z,
-			    const real * ux, const real * uy,
-			    const real * uz, const real r[3],
-			    /**/ real v[3])
+                            const real * x, const real * y, const real * z,
+                            const real * ux, const real * uy,
+                            const real * uz, const real r[3],
+                            /**/ real v[3])
 {
     enum { X, Y, Z };
     real *nx, *ny, *nz, *area, A, s;
@@ -227,7 +228,8 @@ oseen3_zero_double_velocity(T * q, He * he,
 
 int
 oseen3_zero_s(T * q, const real a[3], const real b[3],
-	      real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
+              real * xx, real * xy, real * xz, real * yy, real * yz,
+              real * zz)
 {
     enum {
         X, Y, Z
@@ -252,7 +254,8 @@ oseen3_zero_s(T * q, const real a[3], const real b[3],
 
 int
 oseen3_zero_t(T * q, const real a[3], const real n[3], const real b[3],
-          real * xx, real * xy, real * xz, real * yy, real * yz, real * zz)
+              real * xx, real * xy, real * xz, real * yy, real * yz,
+              real * zz)
 {
     enum {
         X, Y, Z

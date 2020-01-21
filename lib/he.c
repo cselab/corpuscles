@@ -225,7 +225,7 @@ he_set_id(T * q, int h, long long i)
 {
     V(h, q->nh);
     if (q->ID < i)
-	q->ID = i + 1;
+        q->ID = i + 1;
     q->id[i] = i;
     return CO_OK;
 }
@@ -2982,7 +2982,7 @@ realloc0(T * q, int nv, int nt, int ne, int nh)
         REALLOC(q->NH, &q->ver);
         REALLOC(q->NH, &q->tri);
         REALLOC(q->NH, &q->edg);
-	REALLOC(q->NH, &q->id);
+        REALLOC(q->NH, &q->id);
     }
     return CO_OK;
 }
