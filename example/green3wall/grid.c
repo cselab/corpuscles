@@ -20,7 +20,7 @@ static char me[] = "green3wall/grid";
 static void
 usg()
 {
-    fprintf(stderr, "%s [-w wall] x0 y0 z0 gx gy gz x y z < OFF\n", me);
+    fprintf(stderr, "%s [-w wall] x0 y0 z0 gx gy gz < OFF\n", me);
     exit(1);
 }
 
@@ -54,7 +54,7 @@ main(int argc, const char **argv)
     w = 0;
     lo = -2;
     hi = 2;
-    nx = 20;
+    nx = 100;
     n = (nx + 1)*(nx + 1)*(nx + 1);
     dx = (hi - lo) / nx;
     MALLOC3(n, &ux, &uy, &uz);
@@ -79,11 +79,11 @@ main(int argc, const char **argv)
 	}
     y_inif(stdin, &he, &x, &y, &z);
 
-    if (vec_argv(&argv, g) != CO_OK) {
+    if (vec_argv(&argv, b) != CO_OK) {
 	fprintf(stdin, "%s: fail to read vector\n", me);
 	exit(1);
     }
-    if (vec_argv(&argv, b) != CO_OK) {
+    if (vec_argv(&argv, g) != CO_OK) {
 	fprintf(stdin, "%s: fail to read vector\n", me);
 	exit(1);
     }
