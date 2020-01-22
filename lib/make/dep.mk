@@ -212,6 +212,19 @@ co/memory.h\
 co/oseen/3tri.h\
 co/tensor.h\
 
+bi/wall.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/bi/wall.h\
+co/bi/self_circle.h\
+co/err.h\
+co/he.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/oseen/3zero.h\
+co/tensor.h\
+
 cell2.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -891,15 +904,17 @@ co/generation.h\
 green/3wall.s.o:\
 co/prec/s/real.h\
 co/err.h\
-co/he.h\
-co/macro.h\
-co/memory.h\
-co/normal.h\
 co/green/3wall.h\
-co/i/matrix.h\
+co/he.h\
 co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/ten.h\
+co/tensor3x3.h\
 
 gts.s.o:\
 co/prec/s/real.h\
@@ -1403,6 +1418,7 @@ tensor3x3.s.o:\
 co/prec/s/real.h\
 co/err.h\
 co/matrix.h\
+co/ten.h\
 co/i/matrix.h\
 co/tensor3x3.h\
 
@@ -1623,6 +1639,19 @@ co/i/matrix.h\
 co/macro.h\
 co/memory.h\
 co/oseen/3tri.h\
+co/tensor.h\
+
+bi/wall.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/bi/wall.h\
+co/bi/self_circle.h\
+co/err.h\
+co/he.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/oseen/3zero.h\
 co/tensor.h\
 
 cell2.d.o:\
@@ -2304,15 +2333,17 @@ co/generation.h\
 green/3wall.d.o:\
 co/prec/d/real.h\
 co/err.h\
-co/he.h\
-co/macro.h\
-co/memory.h\
-co/normal.h\
 co/green/3wall.h\
-co/i/matrix.h\
+co/he.h\
 co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/ten.h\
+co/tensor3x3.h\
 
 gts.d.o:\
 co/prec/d/real.h\
@@ -2816,6 +2847,7 @@ tensor3x3.d.o:\
 co/prec/d/real.h\
 co/err.h\
 co/matrix.h\
+co/ten.h\
 co/i/matrix.h\
 co/tensor3x3.h\
 
@@ -3036,6 +3068,19 @@ co/i/matrix.h\
 co/macro.h\
 co/memory.h\
 co/oseen/3tri.h\
+co/tensor.h\
+
+bi/wall.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/bi/wall.h\
+co/bi/self_circle.h\
+co/err.h\
+co/he.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/oseen/3zero.h\
 co/tensor.h\
 
 cell2.l.o:\
@@ -3717,15 +3762,17 @@ co/generation.h\
 green/3wall.l.o:\
 co/prec/l/real.h\
 co/err.h\
-co/he.h\
-co/macro.h\
-co/memory.h\
-co/normal.h\
 co/green/3wall.h\
-co/i/matrix.h\
+co/he.h\
 co/i/vec.h\
 co/i/tri.h\
 co/i/area.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/ten.h\
+co/tensor3x3.h\
 
 gts.l.o:\
 co/prec/l/real.h\
@@ -4229,6 +4276,7 @@ tensor3x3.l.o:\
 co/prec/l/real.h\
 co/err.h\
 co/matrix.h\
+co/ten.h\
 co/i/matrix.h\
 co/tensor3x3.h\
 

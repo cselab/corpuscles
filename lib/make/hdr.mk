@@ -14,6 +14,7 @@ co/bi/cortez_zero.h\
 co/bi.h\
 co/bi/self_circle.h\
 co/bi/tri.h\
+co/bi/wall.h\
 co/cell2.h\
 co/cell3.h\
 co/colormap.h\
