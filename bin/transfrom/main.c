@@ -15,9 +15,14 @@
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT
-#define radian(x) (0.0174532925199433*(x))
 static const char *me = "co.transform";
 static const real FV = 40;      /* default field of view  */
+
+static real
+radian(real x)
+{
+    return 0.0174532925199433*x;
+}
 
 static void
 usg(void)
