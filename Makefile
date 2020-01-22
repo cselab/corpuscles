@@ -26,6 +26,7 @@ bin/shake\
 bin/sqrt3\
 bin/vtk\
 bin/xcolor\
+bin/wall\
 data\
 example/he/dump\
 example/punto\

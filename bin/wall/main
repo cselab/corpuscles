@@ -1,0 +1,53 @@
+#!/bin/sh
+
+. co.util
+prog=co.wall
+num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
+num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
+
+usg () {
+cat >&2 <<!
+$prog -w z [-x x] [-y y] < OFF > OFF
+!
+exit 2
+}
+
+x=2 y=2
+while test $# -ne 0
+do case "$1" in
+       -h) usg ;;
+       -w) shift
+           if test $# -eq 0; then err '-w needs a value'; fi
+           w=$1; shift
+           if ! num "$w"; then err "not a number '$w'"; fi
+           ;;
+       -x) shift
+           if test $# -eq 0; then err '-x needs a value'; fi
+           x=$1; shift
+           if ! num "$x"; then err "not a number '$x'"; fi
+           ;;
+       -y) shift
+           if test $# -eq 0; then err '-y needs a value'; fi
+           y=$1; shift
+           if ! num "$y"; then err "not a number '$y'"; fi
+           ;;       
+       -*) err "unknown option '$1'" ;;
+       *)  err "unknown argument '$1'" ;;
+   esac
+done
+
+t=/tmp/co.wall.$$.off
+trap 'rm $t; exit 2' 1 2 3 15
+cat > "$t" <<!
+OFF
+4 1 0
+-$x -$y $w
+$x -$y $w
+$x $y $w
+-$x $y $w
+4 0 1 2 3
+!
+
+co.list $t
+
+rm $t
