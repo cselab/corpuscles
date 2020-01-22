@@ -15,4 +15,7 @@ int ply_fwrite(T *, FILE *, int *ban);
 int ply_vtk_txt(T *, FILE *, int *ban, real * scalar);
 int ply_vtk_bin(T *, FILE *, int *ban, real * scalar);
 
+int ply_he_ini(FILE * f, /**/ He ** phe, real **px, real **py, real **pz);
+int ply_he_fin(He *, real *, real *, real *);
+
 #undef T
