@@ -195,7 +195,7 @@ main(__UNUSED int c, char **v)
     }
 
     argv_str(&argv, q);
-    y_ini("/dev/stdin", &he, &x, &y, &z);
+    y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
     nt = he_nt(he);
     MALLOC(nv, &area);
