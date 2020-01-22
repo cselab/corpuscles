@@ -424,9 +424,9 @@ ply_vtk_bin(T * q, FILE * f, int *b, real * scalar)
 }
 
 int
-ply_ini_he(FILE * f, /**/ He ** phe, real **px, real **py, real **pz)
+ply_he_ini(FILE * f, /**/ He ** phe, real **px, real **py, real **pz)
 {
-    int nb, nv, nt, nm, cnt, i, j, k, nvar;
+    int nv, nt, cnt, i, j, k, nvar;
     char line[SIZE];
     Work w;
     real *x;
@@ -458,23 +458,18 @@ ply_ini_he(FILE * f, /**/ He ** phe, real **px, real **py, real **pz)
     } else {
         nvar = 3;
     }
-
     if (sscanf(line, "element face %d", &nt) != 1)
         ERR(CO_IO, "fail to parse: '%s'", line);
     if (nt < 0)
         ERR(CO_IO, "nt=%d < 0", nt);
     MATCH("property list int int vertex_index");
     MATCH("end_header");
-    
-
     MALLOC(6 * nv, &w.ver);
     MALLOC(4 * nt, &w.tri);
     MALLOC(nv, &w.scalar);
     MALLOC(nt, &w.tscalar);
-
     FREAD(w.ver, nvar * nv);
     FREAD(w.tri, 4 * nt);
-
     MALLOC(nv, &x);
     MALLOC(nv, &y);
     MALLOC(nv, &z);
@@ -488,17 +483,6 @@ ply_ini_he(FILE * f, /**/ He ** phe, real **px, real **py, real **pz)
             j++;                /* skip uvw */
         }
     }
-
-    nb = get_nb();
-    if (nv % nb != 0)
-        ERR(CO_IO, "nv=%d %% nb=%d != 0", nv, nb);
-
-    nm = nv / nb;
-    if (nt % nm != 0)
-        ERR(CO_IO, "nt=%d %% nm=%d != 0", nv, nm);
-    nt /= nm;
-    nv /= nm;
-
     MALLOC(3 * nt, &tri);
     for (i = j = k = 0; i < nt; i++) {
         j++;
@@ -508,39 +492,11 @@ ply_ini_he(FILE * f, /**/ He ** phe, real **px, real **py, real **pz)
     }
     if (he_tri_ini(nv, nt, tri, &he) != CO_OK)
         ERR(CO_IO, "he_tri_ini failed");
-
-    if (sscanf(line, "element face %d", &nt) != 1)
-        ERR(CO_IO, "fail to parse: '%s'", line);
-    if (nt < 0)
-        ERR(CO_IO, "nt=%d < 0", nt);
-    MATCH("property list int int vertex_index");
-    MATCH("end_header");
-
-    MALLOC(nv, &w.scalar);
-    MALLOC(nt, &w.tscalar);
-    FREAD(w.ver, nvar * nv);
-    FREAD(w.tri, 4 * nt);
-
-    MALLOC(nv, &x);
-    MALLOC(nv, &y);
-    MALLOC(nv, &z);
-    for (i = j = 0; i < nv; i++) {
-        x[i] = w.ver[j++];
-        y[i] = w.ver[j++];
-        z[i] = w.ver[j++];
-        if (nvar == 6) {
-            j++;
-            j++;
-            j++;                /* skip uvw */
-        }
-    }
-
     FREE(tri);
     FREE(w.ver);
     FREE(w.scalar);
     FREE(w.tscalar);
     FREE(w.tri);
-
     *px = x;
     *py = y;
     *pz = z;

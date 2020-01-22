@@ -8,15 +8,14 @@
 #include <co/off.h>
 #include <co/util.h>
 
-static const char **argv;
-static const char *me = "ply/read";
+static const char *me = "ply2off";
 static real *x, *y, *z;
 static He *he;
 
 static void
 usg(void)
 {
-    fprintf(stderr, "%s [CELL INDEX] < PLY > OFF\n", me);
+    fprintf(stderr, "%s < PLY > OFF\n", me);
     exit(2);
 }
 
@@ -44,7 +43,6 @@ main(__UNUSED int c, const char **v)
 {
     if (*++v != NULL && util_eq(*v, "-h"))
         usg();
-    argv = v;
     ini();
     write();
     fin();

@@ -20,6 +20,7 @@ bin/path\
 bin/q\
 bin/obj\
 bin/run\
+bin/ply2off\
 bin/shake\
 bin/sqrt3\
 bin/vtk\
