@@ -19,6 +19,7 @@ bin/msh\
 bin/path\
 bin/q\
 bin/obj\
+bin/list\
 bin/run\
 bin/ply2off\
 bin/shake\

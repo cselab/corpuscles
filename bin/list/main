@@ -1,0 +1,36 @@
+#!/bin/sh
+
+. co.util
+
+prog=co.list
+usg () {
+cat >&2 <<!
+$prog OFF < OFF > OFF
+!
+exit 2
+}
+
+for i
+do case "$i" in
+   -h) usg ;;
+   *) f="$i" ;;
+   esac
+done
+
+if test x = x"$f"
+then err 'needs argument OFF'
+fi
+
+if ! test -f "$f"
+then err "$f is not a file"
+fi
+
+cat <<!
+LIST
+{
+`cat "$f"`
+}
+{
+`cat`
+}
+!
