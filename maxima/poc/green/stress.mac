@@ -15,7 +15,7 @@ Tfs(d, i, j, k):= block([r5],
 TD(d, i, j, k):=block([r5, r7],
   r5: r(d[X], d[Y], d[Z])^5,
   r7: r(d[X], d[Y], d[Z])^7,
-  sg(j) * (
+  sg(j) * 6 * (
   5*d[i]*d[j]*d[k]/r7
   - (kd(i, k)*d[j] + kd(i, j)*d[k] + kd(k, j)*d[i])/r5
   ));
@@ -30,11 +30,14 @@ e: [x, y, z - 2*w];
 h: -w;
 
 T(i, j, k) := Tfs(d, i, j, k) - Tfs(e, i, j, k) + 2*h^2*TD(e, i, j, k) - 2*h*TSD(e, i, j, k);
-/* T(i, j, k) := Tfs(d, i, j, k); */
 
 s(i, k) := mu/(8*%pi) * (gx*T(i, X, k) + gy*T(i, Y, k) + gz*T(i, Z, k));
 
 P: -(s(X, X) + s(Y, Y) + s(Z, Z))/3;
-P: gcfac(P), factor, y = 0;
-gcfac(P);
-grind(%);
+P0: gcfac(P), y = 0;
+grind(P0);
+
+for i in [X, Y, Z] do (
+D: diff(s(i, X), x) + diff(s(i, Y), y) +  diff(s(i, Z), z),
+disp(ev(D, infeval, %r, factor)));
+
