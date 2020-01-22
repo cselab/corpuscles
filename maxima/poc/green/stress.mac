@@ -1,6 +1,7 @@
 load("scifac");
 assume(r >= 0, e >= 0);
 
+%r: r = lambda([x, y, z], sqrt(x^2 + y^2 + z^2));
 gradef(r(x, y, z), x/r(x, y, z), y/r(x, y, z), z/r(x, y, z));
 
 kd(i, j):=kron_delta(i, j);
@@ -29,3 +30,11 @@ e: [x, y, z - 2*w];
 h: -w;
 
 T(i, j, k) := Tfs(d, i, j, k) - Tfs(e, i, j, k) + 2*h^2*TD(e, i, j, k) - 2*h*TSD(e, i, j, k);
+/* T(i, j, k) := Tfs(d, i, j, k); */
+
+s(i, k) := mu/(8*%pi) * (gx*T(i, X, k) + gy*T(i, Y, k) + gz*T(i, Z, k));
+
+P: -(s(X, X) + s(Y, Y) + s(Z, Z))/3;
+P: gcfac(P), factor, y = 0;
+gcfac(P);
+grind(%);
