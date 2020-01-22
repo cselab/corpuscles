@@ -23,7 +23,7 @@ static void
 usg(void)
 {
     fprintf(stderr,
-            "%s [-c] -t x y z -r ox oy oz -s sx sy sz -f [field of view] < IN.off > OUT.off\n",
+            "%s [-c|-b] [-l] [-t x y z] [-r ox oy oz] [-s sx sy sz] [-f field of view] < IN.off > OUT.off\n",
             me);
     exit(2);
 }
@@ -42,7 +42,9 @@ main(__UNUSED int argc, char **argv)
     char name[999];
     FILE *file;
     He *he;
+    int Center;
     int i;
+    int Log;
     int n;
     real com[3];
     real f;
@@ -58,7 +60,6 @@ main(__UNUSED int argc, char **argv)
     real *x;
     real *y;
     real *z;
-    int Center;
 
     err_set_ignore();
     argv++;
@@ -68,6 +69,7 @@ main(__UNUSED int argc, char **argv)
     i = -1;
     n = -1;
     Center = NONE;
+    Log = 0;
     while (*argv != NULL) {
         arg = argv++[0];
         if (arg[0] != '-')
@@ -76,6 +78,9 @@ main(__UNUSED int argc, char **argv)
         case 'h':
             usg();
             break;
+	case 'l':
+	    Log = 1;
+	    break;
         case 'c':
             Center = COM;
             break;
@@ -131,6 +136,8 @@ main(__UNUSED int argc, char **argv)
     switch (Center) {
     case COM:
         transform_centroid(he, x, y, z, com);
+	if (Log)
+	    vec_fprintf(com, stderr, FMT);
         vec_neg(com);
         transform_tran(com, n, x, y, z);
         break;
@@ -139,6 +146,8 @@ main(__UNUSED int argc, char **argv)
         bbox_update(box, n, x, y, z);
         bbox_center(box, com);
         bbox_fin(box);
+	if (Log)
+	    vec_fprintf(com, stderr, FMT);	
         vec_neg(com);
         transform_tran(com, n, x, y, z);
         break;
