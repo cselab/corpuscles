@@ -41,3 +41,4 @@ for i in [X, Y, Z] do (
 D: diff(s(i, X), x) + diff(s(i, Y), y) +  diff(s(i, Z), z),
 disp(ev(D, infeval, %r, factor)));
 
+T(i, j, k) - T(k, j, i), i = X, j = Y, k = Z;
