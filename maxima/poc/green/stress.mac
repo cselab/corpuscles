@@ -1,0 +1,31 @@
+load("scifac");
+assume(r >= 0, e >= 0);
+
+gradef(r(x, y, z), x/r(x, y, z), y/r(x, y, z), z/r(x, y, z));
+
+kd(i, j):=kron_delta(i, j);
+sg(i):=if equal(i, Z) then -1 else 1;
+
+(X: 1, Y: 2, Z: 3) $
+Tfs(d, i, j, k):= block([r5],
+  r5: r(d[X], d[Y], d[Z])^5,
+  -6*d[i]*d[j]*d[k]/r5);
+
+TD(d, i, j, k):=block([r5, r7],
+  r5: r(d[X], d[Y], d[Z])^5,
+  r7: r(d[X], d[Y], d[Z])^7,
+  sg(j) * (
+  5*d[i]*d[j]*d[k]/r7
+  - (kd(i, k)*d[j] + kd(i, j)*d[k] + kd(k, j)*d[i])/r5
+  ));
+
+TSD(d, i, j, k):=block([r5],
+  r5: r(d[X], d[Y], d[Z])^5,
+  d[Z] * TD(d, i, j, k) + sg(j) *
+  6 * ( kd(i, k)*d[j]*d[Z] - kd(j, Z) *d[i]*d[k] ) / r5);
+
+d: [x, y, z];
+e: [x, y, z - 2*w];
+h: -w;
+
+T(i, j, k) := Tfs(d, i, j, k) - Tfs(e, i, j, k) + 2*h^2*TD(e, i, j, k) - 2*h*TSD(e, i, j, k);
