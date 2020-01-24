@@ -9,10 +9,9 @@ int green3_wall_apply(T *, He *, const real *, const real *, const real *,
                       struct Tensor3x3 *);
 int green3_wall_s(T *, const real[3], const real[3], Ten *);
 int green3_wall_t(T *, const real[3], const real normal[3], const real[3],
-                  real *, real *, real *, real *, real *, real *);
+                  Ten *);
 int green3_wall_stresslet(T *, He *, const real *, const real *,
-                          const real *, real * xx, real * xy, real * xz,
-                          real * yy, real * yz, real * zz);
+                          const real *, struct Tensor3x3 *);
 int green3_wall_single_velocity(T * q, He * he, const real * x,
                                 const real * y, const real * z,
                                 const real * fx, const real * fy,

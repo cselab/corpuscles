@@ -213,9 +213,7 @@ green3_wall_s(T * q, const real a[3], const real b[3], Ten * t0)
 }
 
 int
-green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
-              real * xx, real * xy, real * xz, real * yy, real * yz,
-              real * zz)
+green3_wall_t(T * q, const real a[3], const real n[3], const real b[3], Ten * t0)
 {
     enum {
         X, Y, Z
@@ -229,11 +227,13 @@ green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
     if (r == 0)
         ERR(CO_NUM, "r == 0");
     l = p / (r * r * r * r * r);
+
+    /*
     *xx = d[X] * d[X] * l;
     *xy = d[X] * d[Y] * l;
     *xz = d[X] * d[Z] * l;
     *yy = d[Y] * d[Y] * l;
     *yz = d[Y] * d[Z] * l;
-    *zz = d[Z] * d[Z] * l;
+    *zz = d[Z] * d[Z] * l; */
     return CO_OK;
 }

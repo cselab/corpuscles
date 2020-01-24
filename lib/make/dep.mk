@@ -222,7 +222,8 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen/3zero.h\
+co/green/3wall.h\
+co/tensor3x3.h\
 co/tensor.h\
 
 cell2.s.o:\
@@ -1651,7 +1652,8 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen/3zero.h\
+co/green/3wall.h\
+co/tensor3x3.h\
 co/tensor.h\
 
 cell2.d.o:\
@@ -3080,7 +3082,8 @@ co/he.h\
 co/i/matrix.h\
 co/macro.h\
 co/memory.h\
-co/oseen/3zero.h\
+co/green/3wall.h\
+co/tensor3x3.h\
 co/tensor.h\
 
 cell2.l.o:\

@@ -37,12 +37,10 @@ P: -(s(X, X) + s(Y, Y) + s(Z, Z))/3;
 P0: gcfac(P), y = 0;
 grind(P0);
 
-for i in [X, Y, Z] do (
+/* for i in [X, Y, Z] do (
 D: diff(s(i, X), x) + diff(s(i, Y), y) +  diff(s(i, Z), z),
-disp(ev(D, infeval, %r, factor)));
-
-T(i, j, k) - T(k, j, i), i = X, j = Y, k = Z;
+disp(ev(D, infeval, %r, factor))); */
 
 t(i, j):=T(i, j, X)*nx + T(i, j, Y)*ny + T(i, j, Z)*nz;
 
-t(X, Y), infeval, %r;
+
