@@ -26,6 +26,7 @@ struct T {
 };
 
 static int s0(T *, const real[3], Ten *);
+static int t0(T *, const real[3], const real[3], Ten *);
 
 int
 green3_wall_ini(He * he, real w, T ** pq)
@@ -137,6 +138,38 @@ s0(T * q, const real a[3], Ten * t0)
     t[YX] = 0;
     t[YZ] = 0;
     t[ZY] = 0;
+    return CO_OK;
+}
+
+static int
+t0(T * q, const real a[3], const real n[3], Ten * t0)
+{
+    enum {
+        X, Y, Z
+    };
+    real aw;
+    real nx;
+    real ny;
+    real nz;
+    real *t;    
+    real w;
+
+    t = t0->t;
+    w = q->w - a[Z];
+    aw = fabs(w);
+    nx = n[X];
+    ny = n[Y];
+    nz = n[Z];
+
+    t[XX] = -(3*nz)/(4*aw*w);
+    t[XY] = 0;
+    t[XZ] = -(3*nx)/(4*aw*w);
+    t[YX] = 0;
+    t[YY] = -(3*nz)/(4*aw*w);
+    t[YZ] = -(3*ny)/(4*aw*w);
+    t[ZX] = -(3*nx)/(4*aw*w);
+    t[ZY] = -(3*ny)/(4*aw*w);
+    t[ZZ] = -(3*nz)/(aw*w);
     return CO_OK;
 }
 
