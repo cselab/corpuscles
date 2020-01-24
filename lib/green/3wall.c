@@ -26,7 +26,7 @@ struct T {
 };
 
 static int s0(T *, const real[3], Ten *);
-static int t0(T *, const real[3], const real[3], Ten *);
+static int d0(T *, const real[3], const real[3], Ten *);
 
 int
 green3_wall_ini(He * he, real w, T ** pq)
@@ -57,7 +57,6 @@ green3_wall_fin(T * q)
     return CO_OK;
 }
 
-#define SET(i, j, s, K) i_matrix_set(n, n, i, j, s, t->d[K])
 int
 green3_wall_apply(T * q, He * he, const real * x, const real * y,
                   const real * z, struct Tensor3x3 *t)
@@ -66,14 +65,12 @@ green3_wall_apply(T * q, He * he, const real * x, const real * y,
     int i;
     int k;
     real s;
-    Ten t0;
-
-    USED(q);
 
     n = he_nv(he);
     tensor3x3_zero(n, t);
 #pragma omp parallel for
     for (i = 0; i < n; i++) {
+        Ten t0;
         real a[3], b[3];
         int j;
 
@@ -88,6 +85,59 @@ green3_wall_apply(T * q, He * he, const real * x, const real * y,
             }
             for (k = 0; k < 3 * 3; k++)
                 i_matrix_set(n, n, i, j, t0.t[k], t->d[k]);
+        }
+    }
+    s = 1 / (8 * pi);
+    tensor3x3_scale(n, s, t);
+    return CO_OK;
+}
+
+int
+green3_zero_stresslet(T * q, He * he, const real * x, const real * y,
+                      const real * z, struct Tensor3x3 *t)
+{
+    int n;
+    int i;
+    int k;
+    int status;
+    real *nx;
+    real *ny;
+    real *nz;
+    real *area;
+    real A;
+    real s;
+
+    nx = q->nx;
+    ny = q->ny;
+    nz = q->nz;
+    area = q->area;
+    status = normal_mwa(he, x, y, z, nx, ny, nz);
+    if (status != CO_OK)
+        ERR(CO_NUM, "normal_mwa failed");
+    status = i_area_ver(he, x, y, z, area);
+    if (status != CO_OK)
+        ERR(CO_NUM, "area_ver failed");
+    n = he_nv(he);
+    tensor3x3_zero(n, t);
+#pragma omp parallel for
+    for (i = 0; i < n; i++) {
+        int j;
+        real a[3], b[3], u[3];
+        Ten t0;
+
+        i_vec_get(i, x, y, z, a);
+        for (j = 0; j < n; j++) {
+            A = 3 * area[j] / (4 * pi);
+            i_vec_get(j, nx, ny, nz, u);
+            if (i == j) {
+                d0(q, a, u, &t0);
+            } else {
+                i_vec_get(j, x, y, z, b);
+                if (green3_wall_t(q, a, u, b, &t0) != CO_OK)
+                    ERR(CO_NUM, "green3_wall_s failed (i=%d, j=%d)", i, j);
+            }
+            for (k = 0; k < 3 * 3; k++)
+                i_matrix_set(n, n, i, j, A * t0.t[k], t->d[k]);
         }
     }
     s = 1 / (8 * pi);
@@ -142,7 +192,7 @@ s0(T * q, const real a[3], Ten * t0)
 }
 
 static int
-t0(T * q, const real a[3], const real n[3], Ten * t0)
+d0(T * q, const real a[3], const real n[3], Ten * t0)
 {
     enum {
         X, Y, Z
@@ -151,7 +201,7 @@ t0(T * q, const real a[3], const real n[3], Ten * t0)
     real nx;
     real ny;
     real nz;
-    real *t;    
+    real *t;
     real w;
 
     t = t0->t;
@@ -161,15 +211,15 @@ t0(T * q, const real a[3], const real n[3], Ten * t0)
     ny = n[Y];
     nz = n[Z];
 
-    t[XX] = -(3*nz)/(4*aw*w);
+    t[XX] = -(3 * nz) / (4 * aw * w);
     t[XY] = 0;
-    t[XZ] = -(3*nx)/(4*aw*w);
+    t[XZ] = -(3 * nx) / (4 * aw * w);
     t[YX] = 0;
-    t[YY] = -(3*nz)/(4*aw*w);
-    t[YZ] = -(3*ny)/(4*aw*w);
-    t[ZX] = -(3*nx)/(4*aw*w);
-    t[ZY] = -(3*ny)/(4*aw*w);
-    t[ZZ] = -(3*nz)/(aw*w);
+    t[YY] = -(3 * nz) / (4 * aw * w);
+    t[YZ] = -(3 * ny) / (4 * aw * w);
+    t[ZX] = -(3 * nx) / (4 * aw * w);
+    t[ZY] = -(3 * ny) / (4 * aw * w);
+    t[ZZ] = -(3 * nz) / (aw * w);
     return CO_OK;
 }
 
@@ -300,7 +350,9 @@ green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
     y2 = y * y;
     y3 = y * y * y;
     z2 = z * z;
+    z3 = z * z * z;
     zw2 = zw * zw;
+    zw3 = zw * zw * zw;
 
     t[XX] =
         6 * (zw *
