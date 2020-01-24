@@ -66,6 +66,6 @@ g(i, j)::=buildq([i, j],
   printf(true, "~a = ~a;~%", t[concat('i, 'j)],
     ev(gcfac(fullratsimp(ev(t(i, j), %s, infeval))), %s, infeval)));
 
-(g(X, X), g(Y, Y), g(Z, Z),
-g(X, Y), g(X, Z),
-g(Y, Z));
+(g(X, X), g(X, Y), g(X, Z),
+ g(Y, X), g(Y, Y), g(Y, Z),
+ g(Z, X), g(Z, Y), g(Z, Z));
