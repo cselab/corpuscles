@@ -213,27 +213,130 @@ green3_wall_s(T * q, const real a[3], const real b[3], Ten * t0)
 }
 
 int
-green3_wall_t(T * q, const real a[3], const real n[3], const real b[3], Ten * t0)
+green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
+              Ten * t0)
 {
     enum {
         X, Y, Z
     };
-    real d[3], r, p, l;
+    real d[3];
+    real nx;
+    real ny;
+    real nz;
+    real r0;
+    real r03;
+    real r05;
+    real r1;
+    real r15;
+    real r17;
+    real *t;
+    real w;
+    real w2;
+    real x;
+    real x2;
+    real x3;
+    real y;
+    real y2;
+    real y3;
+    real z;
+    real z2;
+    real z3;
+    real zw;
+    real zw2;
+    real zw3;
 
-    USED(q);
+    t = t0->t;
+    w = q->w - b[Z];
     i_vec_minus(a, b, d);
-    r = i_vec_abs(d);
-    p = i_vec_dot(d, n);
-    if (r == 0)
-        ERR(CO_NUM, "r == 0");
-    l = p / (r * r * r * r * r);
 
-    /*
-    *xx = d[X] * d[X] * l;
-    *xy = d[X] * d[Y] * l;
-    *xz = d[X] * d[Z] * l;
-    *yy = d[Y] * d[Y] * l;
-    *yz = d[Y] * d[Z] * l;
-    *zz = d[Z] * d[Z] * l; */
+    x = d[X];
+    y = d[Y];
+    z = d[Z];
+    nx = n[X];
+    ny = n[Y];
+    nz = n[Z];
+
+    zw = z - 2 * w;
+    r0 = 1 / rad(x, y, z);
+    r1 = 1 / rad(x, y, zw);
+    r15 = r1 * r1 * r1 * r1 * r1;
+    r03 = r0 * r0 * r0;
+    w2 = w * w;
+    x2 = x * x;
+    y2 = y * y;
+    z2 = z * z;
+    zw2 = zw * zw;
+
+    t[XX] =
+        6 * (zw *
+             (2 * w *
+              ((5 * r17 * x2 - r15) * (nz * zw + ny * y) +
+               5 * nx * r17 * x3) + nz * (10 * r17 * w2 + r15) * x2 -
+              2 * r15 * (2 * nx * w * x + nz * w2)) - nz * r05 * x2 * z +
+             ny * ((10 * r17 * w2 + r15 - r05) * x2 - 2 * r15 * w2) * y +
+             nx * ((10 * r17 * w2 + r15 - r05) * x3 - 6 * r15 * w2 * x));
+    t[YY] =
+        6 * (zw *
+             (2 * w *
+              (nz * (5 * r17 * y2 - r15) * zw + 5 * ny * r17 * y3) +
+              (10 * nx * r17 * w * x + nz * (10 * r17 * w2 + r15)) * y2 -
+              2 * r15 * (w * (2 * ny * y + nx * x) + nz * w2)) -
+             nz * r05 * y2 * z + (10 * r17 * w2 + r15 - r05) * (ny * y3 +
+                                                                nx * x *
+                                                                y2) -
+             2 * r15 * w2 * (3 * ny * y + nx * x));
+    t[ZZ] =
+        -6 * (nz * (10 * r17 * (w * zw + w2) - r15) * zw3 +
+              (ny * y + nx * x) * (10 * r17 * w * zw + 10 * r17 * w2 -
+                                   r15) * zw2 - 2 * r15 * w * (3 * nz * z +
+                                                               2 * (ny *
+                                                                    y +
+                                                                    nx *
+                                                                    x -
+                                                                    3 *
+                                                                    nz *
+                                                                    w)) *
+              zw + r05 * (nz * z3 + (ny * y + nx * x) * z2) -
+              2 * r15 * w2 * (3 * nz * z + ny * y + nx * x - 6 * nz * w));
+    t[XY] =
+        6 * (10 * nz * r17 * w * x * y * zw2 +
+             (10 * ny * r17 * w * x * y2 +
+              (10 * nx * r17 * w * x2 +
+               nz * (10 * r17 * w2 + r15) * x) * y -
+              2 * ny * r15 * w * x) * zw + x * (ny * (10 * r17 * w2 + r15 -
+                                                      r05) * y2 -
+                                                nz * r05 * y * z) +
+             nx * ((10 * r17 * w2 + r15 - r05) * x2 - 2 * r15 * w2) * y -
+             2 * ny * r15 * w2 * x);
+    t[XZ] =
+        -6 *
+        ((x *
+          (10 * r17 * w * (nz * zw + ny * y) -
+           nz * (r15 - 10 * r17 * w2)) + 2 * nx * r15 * w) * zw2 -
+         zw * (2 * nx * w * (r15 - 5 * r17 * x2) * zw +
+               (r15 - 10 * r17 * w2) * (ny * x * y + nx * x2) +
+               2 * r15 * (2 * nz * w * x + nx * w2)) + r05 * (nz * x * z2 +
+                                                              (ny * x * y +
+                                                               nx * x2) *
+                                                              z) -
+         2 * r15 * (w * (ny * x * y + nx * x2) + nz * w2 * x));
+    t[YZ] =
+        -6 *
+        ((y *
+          (10 * r17 * w * (nz * zw + nx * x) +
+           nz * (10 * r17 * w2 - r15)) + 2 * ny * r15 * w) * zw2 -
+         zw * (ny *
+               (2 * w * (r15 - 5 * r17 * y2) * zw +
+                (r15 - 10 * r17 * w2) * y2) + (nx * (r15 -
+                                                     10 * r17 * w2) * x +
+                                               4 * nz * r15 * w) * y +
+               2 * ny * r15 * w2) + r05 * (nz * y * z2 + (ny * y2 +
+                                                          nx * x * y) *
+                                           z) - 2 * r15 * (ny * w * y2 +
+                                                           (nx * w * x +
+                                                            nz * w2) * y));
+    t[YX] = t[XY];
+    t[ZX] = t[XZ];
+    t[ZY] = t[YZ];
     return CO_OK;
 }

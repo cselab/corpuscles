@@ -43,4 +43,29 @@ disp(ev(D, infeval, %r, factor))); */
 
 t(i, j):=T(i, j, X)*nx + T(i, j, Y)*ny + T(i, j, Z)*nz;
 
+%s: [r(x, y, z) = 1/r0,
+r(x, y, z - 2*w) = 1/r1,
+r1^3 = r13,
+r1^5 = r15,
+r1^7 = r17,
+r0^3 = r03,
+r0^5 = r05,
+w^2 = w2,
+x^2 = x2,
+x^3 = x3,
+y^2 = y2,
+y^3 = y3,
+z^2 = z2,
+z^3 = z3,
+z - 2*w = zw,
+zw^2 = zw2,
+zw^3 = zw3
+];
 
+g(i, j)::=buildq([i, j],
+  printf(true, "~a = ~a;~%", t[concat('i, 'j)],
+    ev(gcfac(fullratsimp(ev(t(i, j), %s, infeval))), %s, infeval)));
+
+(g(X, X), g(Y, Y), g(Z, Z),
+g(X, Y), g(X, Z),
+g(Y, Z));
