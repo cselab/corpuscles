@@ -224,7 +224,6 @@ green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
     real ny;
     real nz;
     real r0;
-    real r03;
     real r05;
     real r1;
     real r15;
@@ -260,10 +259,13 @@ green3_wall_t(T * q, const real a[3], const real n[3], const real b[3],
     r0 = 1 / rad(x, y, z);
     r1 = 1 / rad(x, y, zw);
     r15 = r1 * r1 * r1 * r1 * r1;
-    r03 = r0 * r0 * r0;
+    r17 = r1 * r1 * r1 * r1 * r1 * r1 * r1;
+    r05 = r0 * r0 * r0 * r0 * r0;
     w2 = w * w;
     x2 = x * x;
+    x3 = x * x * x;
     y2 = y * y;
+    y3 = y * y * y;
     z2 = z * z;
     zw2 = zw * zw;
 
