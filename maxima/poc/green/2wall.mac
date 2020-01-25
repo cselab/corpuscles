@@ -1,3 +1,5 @@
+gradef(r(x, y), x/r(x, y), y/r(x, y));
+
 J0(x):=bessel_j(0, x);
 J1(x):=bessel_j(1, x);
 
@@ -31,20 +33,24 @@ rpp(q, z, z0):=block([],
   (-2*exp(-u)*cosh(v)/cosh(u))*cosh(w)
   +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w));
 
+/*
+u: q*W;
+v: q*z0;
+w: q*z;
+*/
+
+/*
 Ap: u + sinh(u)*exp(-u);
 Am: u - sinh(u)*exp(-u);
-
 Bp: u + cosh(u)*exp(-u);
 Bm: u - cosh(u)*exp(-u);
-
 Cp: u*(1 + u) + sinh(u)*exp(-u);
 Cm: u*(1 + u) - sinh(u)*exp(-u);
-
 Dp: u*(1 + u) + cosh(u)*exp(-u);
 Dm: u*(1 + u) - cosh(u)*exp(-u);
-
 Ep: 1/(sinh(u)*cosh(u) + u);
 Em: 1/(sinh(u)*cosh(u) - u);
+*/
 
 /*
 Ap - (u + (1 - exp(-2*u))/2), exponentialize, expand;
@@ -59,7 +65,9 @@ Dm - (u*(1+u) - (1 + exp(-2*u))/2), exponentialize, expand;
 
 */
 
-Gzz(q):=block([s],
+qzz(q):=block([s: r(x, y)],
   J0(q*s)*tnn(q, z, z0));
 
-Gzz(q), infeval;
+Gzz: 'integrate(qzz(q), q, 0, +inf);
+
+diff(Gzz, x);
