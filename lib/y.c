@@ -177,11 +177,11 @@ y_tocm(He * he, real * x, real * y, real * z)
     int status;
     real com[3];
 
-    vec_neg(com);
     n = he_nv(he);
     status = transform_centroid(he, x, y, z, com);
     if (status != CO_OK)
         ERR(CO_NUM, "transform_centroid failed, n = %d", n);
+    vec_neg(com);
     status = transform_tran(com, n, x, y, z);
     if (status != CO_OK)
         ERR(CO_OK, "transform_tran failed, n = %d");

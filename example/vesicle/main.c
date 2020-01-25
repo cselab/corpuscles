@@ -384,9 +384,8 @@ main(__UNUSED int argc, char **argv)
 
         if (s > end)
             break;
-
         ode3_apply(ode, &time, t, x, y, z);
-
+	y_tocm(he, x, y, z);
     }
     FREE3(Vx, Vy, Vz);
     FREE3(ux, uy, uz);
