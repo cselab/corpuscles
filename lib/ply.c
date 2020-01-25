@@ -424,7 +424,7 @@ ply_vtk_bin(T * q, FILE * f, int *b, real * scalar)
 }
 
 int
-ply_he_ini(FILE * f, /**/ He ** phe, real **px, real **py, real **pz)
+ply_he_ini(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
 {
     int nv, nt, cnt, i, j, k, nvar;
     char line[SIZE];

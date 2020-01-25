@@ -6,6 +6,8 @@
 #include "co/err.h"
 #include "co/he.h"
 #include "co/memory.h"
+#include "co/transform.h"
+#include "co/vec.h"
 #include "co/off.h"
 #include "co/y.h"
 
@@ -43,10 +45,10 @@ y_inif2b(FILE * f0, FILE * f1, /**/ He ** phe0, He ** phe1, He ** phe,
          real ** px, real ** py, real ** pz)
 {
     Off *off0, *off1;
-    int nv0, nv1, nv, nt0, nt1, nt;
-    int *tri0, *tri1, *tri;
+    int nv0, nv1, nv, nt0, nt1;
+    int *tri0, *tri1;
     He *he, *he0, *he1;
-    real *x0, *y0, *z0, *x1, *y1, *z1, *x, *y, *z;
+    real *x, *y, *z;
 
     if (off_inif(f0, &off0) != CO_OK)
         ERR(CO_IO, "off_inif failed");
@@ -165,5 +167,23 @@ y_fin2b(He * he0, He * he1, He * he, real * x, real * y, real * z)
     FREE(x);
     FREE(y);
     FREE(z);
+    return CO_OK;
+}
+
+int
+y_tocm(He * he, real * x, real * y, real * z)
+{
+    int n;
+    int status;
+    real com[3];
+
+    vec_neg(com);
+    n = he_nv(he);
+    status = transform_centroid(he, x, y, z, com);
+    if (status != CO_OK)
+        ERR(CO_NUM, "transform_centroid failed, n = %d", n);
+    status = transform_tran(com, n, x, y, z);
+    if (status != CO_OK)
+        ERR(CO_OK, "transform_tran failed, n = %d");
     return CO_OK;
 }

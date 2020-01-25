@@ -23,12 +23,6 @@ struct T {
 };
 
 static real
-sq(real x)
-{
-    return x * x;
-}
-
-static real
 F_linear(void *p0, real al, real be)
 {
 #define G(s) s = p->s
@@ -50,7 +44,6 @@ static int
 G_linear(void *p0, real al, real be, real * a, real * b)
 {
 #define G(s) s = p->s
-    real A, B;
     P *p;
     real Ka, mu;
 
@@ -94,7 +87,6 @@ static int
 G_lim(void *p0, real al, real be, real * a, real * b)
 {
 #define G(s) s = p->s
-    real A, B;
     P *p;
     real Ka, mu, a3, a4, b1, b2;
 
@@ -223,7 +215,7 @@ real
 strain_energy(T * q, const real a0[3], const real b0[3], const real c0[3],
               const real a[3], const real b[3], const real c[3])
 {
-    real eng, deng;
+    real eng;
     P *param;
     TypeFun F;
 
@@ -238,7 +230,6 @@ strain_energy_ab(T * q, const real a0[3], const real b0[3],
                  const real c0[3], const real a[3], const real b[3],
                  const real c[3], real * ea, real * eb)
 {
-    real eng, deng;
     P *param;
     TypeGun G;
 
@@ -246,5 +237,5 @@ strain_energy_ab(T * q, const real a0[3], const real b0[3],
     G = q->G;
     strain_energy_3d_ab((void *) param, G, a0, b0, c0, a, b, c, /**/ ea,
                         eb);
-    return eng;
+    return CO_OK;
 }

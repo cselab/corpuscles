@@ -111,10 +111,10 @@ bi_wall_double(T * q, He * he, real al,
 {
     int n, status;
     struct Tensor3x3 *K;
+
     K = &q->K;
     if (q->KReady == 0) {
-        status =
-           green3_wall_stresslet(q->green, he, x, y, z, K);
+        status = green3_wall_stresslet(q->green, he, x, y, z, K);
         if (status != CO_OK)
             ERR(CO_NUM, "green3_wall_stresslet failed");
         q->KReady = 1;

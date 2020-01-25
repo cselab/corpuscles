@@ -1497,6 +1497,8 @@ co/array.h\
 co/err.h\
 co/he.h\
 co/memory.h\
+co/transform.h\
+co/vec.h\
 co/off.h\
 co/y.h\
 
@@ -2927,6 +2929,8 @@ co/array.h\
 co/err.h\
 co/he.h\
 co/memory.h\
+co/transform.h\
+co/vec.h\
 co/off.h\
 co/y.h\
 
@@ -4357,6 +4361,8 @@ co/array.h\
 co/err.h\
 co/he.h\
 co/memory.h\
+co/transform.h\
+co/vec.h\
 co/off.h\
 co/y.h\
 

@@ -6,3 +6,4 @@ int y_inif2b(FILE *, FILE *, /**/ He **, He ** h0, He ** h1, real ** h,
              real **, real **);
 int y_fin2b(He * h0, He * h1, He * h, real *, real *, real *);
 int y_fin(He *, real *, real *, real *);
+int y_tocm(He *, real *, real *, real *);
