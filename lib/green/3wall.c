@@ -105,7 +105,6 @@ green3_zero_stresslet(T * q, He * he, const real * x, const real * y,
     real *nz;
     real *area;
     real A;
-    real s;
 
     nx = q->nx;
     ny = q->ny;
@@ -140,7 +139,6 @@ green3_zero_stresslet(T * q, He * he, const real * x, const real * y,
                 i_matrix_set(n, n, i, j, A * t0.t[k], t->d[k]);
         }
     }
-    tensor3x3_scale(n, s, t);
     return CO_OK;
 }
 
