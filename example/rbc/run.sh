@@ -29,11 +29,12 @@ end=99999999
 freq_out=100
 freq_stat=100
 dt=`ae 0.05*$gamdot`
+w=-1.5
 make
 co.run ./main volume $V $kv \
        garea $A $kga \
        juelicher_xin 1.0 0.0 0.63662 19.9933 \
        strain "$r" lim 278.521 139.260575205 -2 8 0.7 0.75 \
-       cortez_zero \
+       wall $w \
        $rho $eta $lambda $gamdot $dt $start $end $freq_out $freq_stat \
        '<' "$i"
