@@ -1,0 +1,46 @@
+tnn(q, z, z0):= block([],
+  Em*(-v*cosh(v) + Bp*sinh(v))*w*cosh(w)
+  + Ep*(-v*sinh(v) + Ap*cosh(v))*w*sinh(w)
+  + Ep*(Ap*v*sinh(v) - Cp*cosh(v))*cosh(w)
+  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(w));
+
+tnp(q, z, z0):= block([],
+  Em*(v*sinh(v) - Ap*cosh(v))*w*cosh(w)
+  + Ep*(v*cosh(v) - Bp*sinh(v))*w*sinh(w)
+  + Ep*(-Am*v*cosh(v) + u^2*sinh(v))*cosh(w)
+  + Em*(-Bm*v*sinh(v) + u^2*cosh(v))*sinh(w));
+
+tpn(q, z, z0):= block([],
+  Em*(-v*sinh(v) + Ap*cosh(v))*w*cosh(w)
+  + Ep*(-v*cosh(v) + Bp*sinh(v))*w*sinh(w)
+  + Ep*(Am*v*cosh(v) - u^2*sinh(v))*cosh(w)
+  + Em*(Bm*v*sinh(v) - u^2*cosh(v))*sinh(w));
+
+tpp(q, z, z0):= block([],
+  Ep*(v*cosh(v) - Bm*sinh(v))*w*cosh(w)
+  + Em*(v*sinh(v) - Am*cosh(v))*w*sinh(w)
+  + Ep*(-Am*v*sinh(v) + Cm*cosh(v)
+      -2*u*tnh(u)*cosh(v))*cosh(w)
+    + Em*(-Bm*v*cosh(v) + Dm*sinh(v)
+      - 2*u*coth(u)*sinh(v))*sinh(w));
+
+rpp(q, z, z0):=block([],
+  (-2*exp(-u)*cosh(v)/cosh(u))*cosh(w)
+  +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w));
+
+Ap: u + sinh(u)*exp(-u);
+Am: u - sinh(u)*exp(-u);
+
+Bp: u + cosh(u)*exp(-u);
+Bm: u - cosh(u)*exp(-u);
+
+Cp: u*(1 + u) + sinh(u)*exp(-u);
+Cm: u*(1 + u) - sinh(u)*exp(-u);
+
+/*
+Ap - (u + (1 - exp(-2*u))/2), exponentialize, expand;
+Am - (u - (1 - exp(-2*u))/2), exponentialize, expand;
+Bp - (u + (1 + exp(-2*u))/2), exponentialize, expand;
+Bm - (u - (1 + exp(-2*u))/2), exponentialize, expand;
+Cp - (u*(1+u) + (1-exp(-2*u))/2), exponentialize, expand;
+Cm - (u*(1+u) - (1-exp(-2*u))/2), exponentialize, expand; */
