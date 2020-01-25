@@ -80,15 +80,15 @@ main(int argc, const char **argv)
     y_inif(stdin, &he, &x, &y, &z);
 
     if (vec_argv(&argv, b) != CO_OK) {
-	fprintf(stdin, "%s: fail to read vector\n", me);
+	fprintf(stderr, "%s: fail to read vector\n", me);
 	exit(1);
     }
     if (vec_argv(&argv, g) != CO_OK) {
-	fprintf(stdin, "%s: fail to read vector\n", me);
+	fprintf(stderr, "%s: fail to read vector\n", me);
 	exit(1);
     }
     if (*argv != NULL) {
-	fprintf(stdin, "%s: too many arguments\n", me);
+	fprintf(stderr, "%s: too many arguments\n", me);
 	exit(1);
     }
 
