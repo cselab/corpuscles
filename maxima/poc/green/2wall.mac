@@ -1,3 +1,6 @@
+J0(x):=bessel_j(0, x);
+J1(x):=bessel_j(1, x);
+
 tnn(q, z, z0):= block([],
   Em*(-v*cosh(v) + Bp*sinh(v))*w*cosh(w)
   + Ep*(-v*sinh(v) + Ap*cosh(v))*w*sinh(w)
@@ -37,10 +40,26 @@ Bm: u - cosh(u)*exp(-u);
 Cp: u*(1 + u) + sinh(u)*exp(-u);
 Cm: u*(1 + u) - sinh(u)*exp(-u);
 
+Dp: u*(1 + u) + cosh(u)*exp(-u);
+Dm: u*(1 + u) - cosh(u)*exp(-u);
+
+Ep: 1/(sinh(u)*cosh(u) + u);
+Em: 1/(sinh(u)*cosh(u) - u);
+
 /*
 Ap - (u + (1 - exp(-2*u))/2), exponentialize, expand;
 Am - (u - (1 - exp(-2*u))/2), exponentialize, expand;
 Bp - (u + (1 + exp(-2*u))/2), exponentialize, expand;
 Bm - (u - (1 + exp(-2*u))/2), exponentialize, expand;
 Cp - (u*(1+u) + (1-exp(-2*u))/2), exponentialize, expand;
-Cm - (u*(1+u) - (1-exp(-2*u))/2), exponentialize, expand; */
+Cm - (u*(1+u) - (1-exp(-2*u))/2), exponentialize, expand;
+
+Dp - (u*(1+u) + (1 + exp(-2*u))/2), exponentialize, expand;
+Dm - (u*(1+u) - (1 + exp(-2*u))/2), exponentialize, expand;
+
+*/
+
+Gzz(q):=block([s],
+  J0(q*s)*tnn(q, z, z0));
+
+Gzz(q), infeval;
