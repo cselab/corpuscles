@@ -111,9 +111,6 @@ bi_wall_double(T * q, He * he, real al,
 {
     int n, status;
     struct Tensor3x3 *K;
-
-    ERR(CO_NUM, "not implimented");
-
     K = &q->K;
     if (q->KReady == 0) {
         status =
