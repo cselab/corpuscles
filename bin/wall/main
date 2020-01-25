@@ -49,5 +49,7 @@ $x $y $w
 !
 
 co.list $t
+status=$?
 
 rm $t
+exit $status

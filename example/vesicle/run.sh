@@ -3,7 +3,7 @@
 set -eu
 
 gdot=0.5
-lambda=1
+lambda=5.7
 start=0
 end=1000000
 freq=10
