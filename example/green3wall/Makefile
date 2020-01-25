@@ -3,6 +3,7 @@ include ../../conf.mk
 M = \
 grid\
 main\
+stress\
 velocity\
 
 PREC = d

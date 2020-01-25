@@ -4,8 +4,10 @@
 #include <real.h>
 #include <co/array.h>
 #include <co/err.h>
-#include <co/he.h>
 #include <co/green/3wall.h>
+#include <co/he.h>
+#include <co/macro.h>
+#include <co/ten.h>
 #include <co/vec.h>
 #include <co/y.h>
 
@@ -16,7 +18,7 @@ static char me[] = "green3wall/stress";
 static void
 usg()
 {
-    fprintf(stderr, "%s x0 y0 z0 nx ny nz gx gy gz x y z < OFF\n", me);
+    fprintf(stderr, "%s [-w w] x0 y0 z0 nx ny nz gx gy gz x y z < OFF\n", me);
     exit(1);
 }
 
@@ -26,16 +28,26 @@ main(int argc, const char **argv)
     He *he;
     Green3Wall *green;
     real *x, *y, *z, a[3], b[3], g[3], n[3];
-    real xx, xy, xz, yy, yz, zz;
-    real u, v, w, coeff;
-    enum {X, Y, Z};
-
+    real u[3];
+    real coeff;
+    real w;
+    Ten ten;
+    USED(argc);
     err_set_ignore();
+    w = 0;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
             usg();
             break;
+	case 'w':
+	    argv++;
+	    if (argv[0] == NULL) {
+		fprintf(stderr, "%s: -w needs an argument\n", me);
+		exit(1);
+	    }
+	    w = atof(argv[0]);
+	    break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(1);
@@ -50,11 +62,11 @@ main(int argc, const char **argv)
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, b) != CO_OK) {
+    if (vec_argv(&argv, g) != CO_OK) {
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, g) != CO_OK) {
+    if (vec_argv(&argv, b) != CO_OK) {
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
@@ -62,15 +74,12 @@ main(int argc, const char **argv)
         fprintf(stdin, "%s: too many arguments\n", me);
         exit(1);
     }
-    green3_wall_ini(he, &green);
-    green3_wall_t(green, a, n, b, &xx, &xy, &xz, &yy, &yz, &zz);
-
-    v = g[X]*xx + g[Y]*xy + g[Z]*xz;
-    u = g[X]*xy + g[Y]*yy + g[Z]*yz;
-    w = g[X]*xz + g[Y]*yz + g[Z]*zz;
+    green3_wall_ini(he, w, &green);
+    green3_wall_t(green, a, n, b, &ten);
+    ten_vec(&ten, g, u);
     coeff = 3/(4*pi);
-    printf(FMT " " FMT " " FMT "\n", coeff*v, coeff*u, coeff*w);
-    
+    vec_scale(coeff, u);
+    vec_printf(u, FMT);
     green3_wall_fin(green);
     y_fin(he, x, y, z);
 }
