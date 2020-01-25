@@ -41,7 +41,7 @@ grind(P0);
 D: diff(s(i, X), x) + diff(s(i, Y), y) +  diff(s(i, Z), z),
 disp(ev(D, infeval, %r, factor))); */
 
-t(i, j):=T(i, j, X)*nx + T(i, j, Y)*ny + T(i, j, Z)*nz;
+t(i, j):= T(i, j, X)*nx + T(i, j, Y)*ny + T(i, j, Z)*nz;
 
 %s: [r(x, y, z) = 1/r0,
 r(x, y, z - 2*w) = 1/r1,

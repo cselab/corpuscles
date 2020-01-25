@@ -140,7 +140,6 @@ green3_zero_stresslet(T * q, He * he, const real * x, const real * y,
                 i_matrix_set(n, n, i, j, A * t0.t[k], t->d[k]);
         }
     }
-    s = 1 / (8 * pi);
     tensor3x3_scale(n, s, t);
     return CO_OK;
 }

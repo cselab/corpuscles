@@ -53,7 +53,6 @@ main(int argc, const char **argv)
             exit(1);
         }
     y_inif(stdin, &he, &x, &y, &z);
-
     if (vec_argv(&argv, a) != CO_OK) {
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);

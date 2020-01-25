@@ -50,11 +50,11 @@ main(int argc, const char **argv)
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, b) != CO_OK) {
+    if (vec_argv(&argv, g) != CO_OK) {
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, g) != CO_OK) {
+    if (vec_argv(&argv, b) != CO_OK) {
         fprintf(stdin, "%s: fail to read vector\n", me);
         exit(1);
     }
