@@ -93,7 +93,7 @@ green3_wall_apply(T * q, He * he, const real * x, const real * y,
 }
 
 int
-green3_zero_stresslet(T * q, He * he, const real * x, const real * y,
+green3_wall_stresslet(T * q, He * he, const real * x, const real * y,
                       const real * z, struct Tensor3x3 *t)
 {
     int n;
