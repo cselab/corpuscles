@@ -53,9 +53,26 @@ Ep: 1/(sinh(u)*cosh(u) + u);
 Em: 1/(sinh(u)*cosh(u) - u);
 */
 
+/*
 qzz(q):=block([s: r(x, y)],
   J0(q*s)*tnn(q, z, z0));
-
 Gzz: 'integrate(qzz(q), q, 0, +inf);
+qzz(q); */
 
-qzz(q);
+t0nn(q, z, z0):=block([],
+  ((-2*(W - z)*(W - z0))*q^2 + (-2*W + z + z0)*q - 1)
+ *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
+  + (-2*W - z - z0)*q - 1)*exp((-z - z0 - 2*W)*q));
+
+t0np(q, z, z0):=block([],
+  ((-2*(W - z)*(W - z0))*q^2 + (z - z0)*q)
+ *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
+  +  (z - z0)*q)*exp((-z - z0 - 2*W)*q));
+
+t0pp(q, z, z0):=block([],
+  ((-2*(W - z)*(W - z0))*q^2 + (-2*W + z + z0)*q - 1)
+ *exp((z + z0 - 2*W)*q) + ((2*(W + z)*(W + z0))*q^2
+  + (-2*W - z - z0)*q - 1)*exp((-z - z0 - 2*W)*q));
+
+rpp = block([],
+  -2*exp((z - z0 - 2*W)*q) - 2*exp((-z - z0 - 2*W)*q));
