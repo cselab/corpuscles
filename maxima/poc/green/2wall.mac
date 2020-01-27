@@ -33,6 +33,13 @@ rpp(q, z, z0):=block([],
   (-2*exp(-u)*cosh(v)/cosh(u))*cosh(w)
   +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w));
 
+/*
+b0([L])::=buildq([u: gensym(), v: gensym(), w: gensym(), L: L],
+  block([
+    u: q*W,
+    v: q*z0,
+    w: q*z],
+  block(splice(L)))); */
 
 /*
 u: q*W;
