@@ -1,0 +1,10 @@
+awk -v FS='[ \t]*=[ \t]*' '
+NF {
+    printf \
+"static real\n"\
+"f%s(real u)\n"\
+"{\n"\
+"    return %s;\n"\
+"}\n\n", $1, $2
+}
+'

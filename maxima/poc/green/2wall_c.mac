@@ -1,0 +1,67 @@
+load("cgrind");
+b0([L])::=buildq([L: L], block(splice(L)));
+
+tnn(q, z, z0):=b0([],
+  Em*(-v*cosh(v) + Bp*sinh(v))*w*cosh(w)
+  + Ep*(-v*sinh(v) + Ap*cosh(v))*w*sinh(w)
+  + Ep*(Ap*v*sinh(v) - Cp*cosh(v))*cosh(w)
+  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(w));
+
+tnp(q, z, z0):=b0([],
+  Em*(v*sinh(v) - Am*cosh(v))*w*cosh(w)
+  + Ep*(v*cosh(v) - Bm*sinh(v))*w*sinh(w)
+  + Ep*(-Ap*v*cosh(v) + u^2*sinh(v))*cosh(w)
+  + Em*(-Bp*v*sinh(v) + u^2*cosh(v))*sinh(w));
+
+tpn(q, z, z0):=b0([],
+  Ep*(-v*sinh(v) + Ap*cosh(v))*w*cosh(w)
+  + Em*(-v*cosh(v) + Bp*sinh(v))*w*sinh(w)
+  + Em*(Am*v*cosh(v) - u^2*sinh(v))*cosh(w)
+  + Ep*(Bm*v*sinh(v) - u^2*cosh(v))*sinh(w));
+
+tpp(q, z, z0):= b0([],
+  Ep*(v*cosh(v) - Bm*sinh(v))*w*cosh(w)
+  + Em*(v*sinh(v) - Am*cosh(v))*w*sinh(w)
+  + Em*(-Am*v*sinh(v) + Cm*cosh(v)
+      -2*u*tanh(u)*cosh(v))*cosh(w)
+    + Ep*(-Bm*v*cosh(v) + Dm*sinh(v)
+      - 2*u*coth(u)*sinh(v))*sinh(w));
+
+rpp(q, z, z0):=b0([],
+  -2*exp(-u)/cosh(u)*cosh(w)*cosh(v)
+  -2*exp(-u)/sinh(u)*sinh(w)*sinh(v)
+  );
+
+%u : [
+    u = q*W,
+    v = q*z0,
+    w = q*z];
+
+%v : [
+    Ap = u + sinh(u)*exp(-u),
+    Am = u - sinh(u)*exp(-u),
+    Bp = u + cosh(u)*exp(-u),
+    Bm = u - cosh(u)*exp(-u),
+    Cp = u*(1 + u) + sinh(u)*exp(-u),
+    Cm = u*(1 + u) - sinh(u)*exp(-u),
+    Dp = u*(1 + u) + cosh(u)*exp(-u),
+    Dm = u*(1 + u) - cosh(u)*exp(-u),
+    Ep = 1/(sinh(u)*cosh(u) + u),
+    Em = 1/(sinh(u)*cosh(u) - u)];
+
+
+one(f):=
+with_stdout(string(f),
+e: apply(f, [q, z, z0]),
+l: listofvars(e),
+printf(true, "static real~%~a(real q, real z, real z0, real W)~%{~%", f),
+printf(true, "real u;~%"),
+for v in %u do if member(lhs(v), l) then printf(true, "real ~a;~%", lhs(v)),
+for v in %v do if member(lhs(v), l) then printf(true, "real ~a;~%", lhs(v)),
+printf(true, "~%"),
+printf(true, "~a;~%", u = q*W),
+for v in %u do if member(lhs(v), l) then printf(true, "~a;~%", v),
+for v in %v do if member(lhs(v), l) then printf(true, "~a = f~a(u);~%", lhs(v), lhs(v)),
+printf(true, "return ~a;~%}~%", e));
+
+for i in ['tnn, 'tnp, 'tpn, 'tpp, 'rpp] do one(i);
