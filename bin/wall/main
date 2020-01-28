@@ -7,12 +7,12 @@ num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
 
 usg () {
 cat >&2 <<!
-$prog -w z [-x x] [-y y] < OFF > OFF
+$prog -w z [-x x] [-y y] [-c] < OFF > OFF
 !
 exit 2
 }
 
-x=2 y=2
+x=2 y=2 type=BLACK
 while test $# -ne 0
 do case "$1" in
        -h) usg ;;
@@ -20,6 +20,9 @@ do case "$1" in
            if test $# -eq 0; then err '-w needs a value'; fi
            w=$1; shift
            if ! num "$w"; then err "not a number '$w'"; fi
+           ;;
+       -c) shift
+           type=COLOR
            ;;
        -x) shift
            if test $# -eq 0; then err '-x needs a value'; fi
@@ -30,7 +33,7 @@ do case "$1" in
            if test $# -eq 0; then err '-y needs a value'; fi
            y=$1; shift
            if ! num "$y"; then err "not a number '$y'"; fi
-           ;;       
+           ;;
        -*) err "unknown option '$1'" ;;
        *)  err "unknown argument '$1'" ;;
    esac
@@ -38,7 +41,9 @@ done
 
 t=/tmp/co.wall.$$.off
 trap 'rm $t; exit 2' 1 2 3 15
-cat > "$t" <<!
+case "$type" in
+    BLACK )
+        cat > "$t" <<!
 OFF
 4 1 0
 -$x -$y $w
@@ -47,6 +52,19 @@ $x $y $w
 -$x $y $w
 4 0 1 2 3
 !
+;;
+    COLOR )
+        cat > "$t" <<!
+OFF
+4 1 0
+-$x -$y $w
+$x -$y $w
+$x $y $w
+-$x $y $w
+4 0 1 2 3 0 0 255 128
+!
+;;
+esac
 
 co.list $t
 status=$?
