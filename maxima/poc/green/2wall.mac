@@ -49,8 +49,9 @@ tpp(q, z, z0):= b0([],
 
 rpp(q, z, z0):=b0([],
   (-2*exp(-u)*cosh(v)/cosh(u))*cosh(w)
-  +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w)
+  +(-2*exp(-u)*sinh(w)/sinh(u))*sinh(v)
   );
+
 
 /*
 u: q*W;
@@ -114,5 +115,5 @@ r_r(e):=apply2(e, r_0, r_1, r_2);
   define(r1pp(q), rpp(q, z, z0) - r0pp(q, z, z0))), z = 1, z0 = 2/10, W = 11/10 $
 
 draw2d(logy = true, xrange = [0, 12], yrange = [1e-15, 1],
-  explicit(abs(t1pp(q)), q, 0.1, 10)
+  explicit(abs(t1nn(q)), q, 0.1, 10)
   );
