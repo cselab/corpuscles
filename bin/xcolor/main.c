@@ -22,16 +22,16 @@ static int
 scl(char **v, /**/ real * p)
 {
     if (*v == NULL)
-        ER("%s: not enough args", me);
+	ER("%s: not enough args", me);
     if (sscanf(*v, FMT_IN, p) != 1)
-        ER("not a number '%s'", *v);
+	ER("not a number '%s'", *v);
     return CO_OK;
 }
 
 static void
 usg(void)
 {
-    fprintf(stderr, "%s A.off lo hi B.off > C.off\n", me);
+    fprintf(stderr, "%s [-t] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr, "%s [-a] -v A.off lo hi B.off > C.vtk\n", me);
     fprintf(stderr, "%s [-n] -v A.off lo hi B.off > C.vtk\n", me);
     fprintf(stderr, "%s [-b] -v A.off lo hi B.off > C.vtk\n", me);
@@ -39,16 +39,16 @@ usg(void)
     fprintf(stderr, "%s [-a] -p A.off lo hi B.off > C.pov\n", me);
     fprintf(stderr, "%s [-a] [-v] A.off lo hi B.off > C.off\n", me);
     fprintf(stderr,
-            "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
+	    "color vertices in B acording to (x-x_min)/(x_max-x_min) in A\n");
     fprintf(stderr,
-            "if -a is given color vertices in B acording to abs(x)/x_max in A\n");
+	    "if -a is given color vertices in B acording to abs(x)/x_max in A\n");
     exit(2);
 }
 
 int
 main(int argc, char **a)
 {
-    enum { POV, VTK, OFF };
+    enum { POV, TXT, VTK, OFF };
     enum { LIN, ABS, NABS, BIN, AXIS };
     int status, Output, Map;
     real *x, *y, *z, *c;
@@ -63,41 +63,44 @@ main(int argc, char **a)
     Output = OFF;
     Map = LIN;
     while (*++a != NULL && a[0][0] == '-')
-        switch (a[0][1]) {
-        case 'h':
-            usg();
-            break;
-        case 'v':
-            Output = VTK;
-            break;
-        case 'p':
-            Output = POV;
-            break;
-        case 'a':
-            Map = ABS;
-            break;
-        case 'n':
-            Map = NABS;
-            break;
-        case 'b':
-            Map = BIN;
-            break;
-        case 'x':
-            Map = AXIS;
-            break;
-        default:
-            fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
-            exit(1);
-        }
+	switch (a[0][1]) {
+	case 'h':
+	    usg();
+	    break;
+	case 'v':
+	    Output = VTK;
+	    break;
+	case 'p':
+	    Output = POV;
+	    break;
+	case 't':
+	    Output = TXT;
+	    break;
+	case 'a':
+	    Map = ABS;
+	    break;
+	case 'n':
+	    Map = NABS;
+	    break;
+	case 'b':
+	    Map = BIN;
+	    break;
+	case 'x':
+	    Map = AXIS;
+	    break;
+	default:
+	    fprintf(stderr, "%s: unknown option '%s'\n", me, a[0]);
+	    exit(1);
+	}
     status = y_ini(*a, &q, &u, &v, &w);
     if (status != CO_OK)
-        ER("not an off file '%s'", a[0]);
+	ER("not an off file '%s'", a[0]);
     scl(++a, &lo);
     scl(++a, &hi);
     a++;
     status = y_ini(*a, &p, &x, &y, &z);
     if (status != CO_OK)
-        ER("not an off file '%s'", a[0]);
+	ER("not an off file '%s'", a[0]);
     n = he_nv(q);
     CALLOC(n, &c);
     min = array_min(n, u);
@@ -105,50 +108,53 @@ main(int argc, char **a)
     d = max - min;
     switch (Map) {
     case LIN:
-        for (i = 0; i < n; i++)
-            c[i] = (u[i] - min) / d;
-        break;
+	for (i = 0; i < n; i++)
+	    c[i] = (u[i] - min) / d;
+	break;
     case ABS:
-        for (i = 0; i < n; i++)
-            c[i] = fabs(u[i]) / max;
-        break;
+	for (i = 0; i < n; i++)
+	    c[i] = fabs(u[i]) / max;
+	break;
     case NABS:
-        for (i = 0; i < n; i++)
-            c[i] = (max - fabs(u[i])) / max;
-        break;
+	for (i = 0; i < n; i++)
+	    c[i] = (max - fabs(u[i])) / max;
+	break;
     case BIN:
-        for (i = 0; i < n; i++) {
-            if (fabs(u[i]) >= 0.6)
-                c[i] = 0;
-            else
-                c[i] = 1;
-        }
-        break;
+	for (i = 0; i < n; i++) {
+	    if (fabs(u[i]) >= 0.6)
+		c[i] = 0;
+	    else
+		c[i] = 1;
+	}
+	break;
     case AXIS:
-        max = 0;
-        real t;
+	max = 0;
+	real t;
 
-        for (i = 0; i < n; i++) {
-            t = sqrt(v[i] * v[i] + w[i] * w[i]);
-            if (t < 0.3)
-                c[i] = 0;
-            else
-                c[i] = 1;
-        }
-        break;
+	for (i = 0; i < n; i++) {
+	    t = sqrt(v[i] * v[i] + w[i] * w[i]);
+	    if (t < 0.3)
+		c[i] = 0;
+	    else
+		c[i] = 1;
+	}
+	break;
     }
     const real *scal[] = { c, NULL };
     const char *name[] = { "color", NULL };
     switch (Output) {
     case VTK:
-        vtk_write(p, x, y, z, scal, name, stdout);
-        break;
+	vtk_write(p, x, y, z, scal, name, stdout);
+	break;
+    case TXT:
+	off_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+	break;
     case OFF:
-        boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
-        break;
+	boff_lh_ver_fwrite(p, x, y, z, lo, hi, c, stdout);
+	break;
     case POV:
-        povray_lh_ver_mesh2(p, x, y, z, lo, hi, c, stdout);
-        break;
+	povray_lh_ver_mesh2(p, x, y, z, lo, hi, c, stdout);
+	break;
     }
     FREE(c);
     y_fin(p, x, y, z);

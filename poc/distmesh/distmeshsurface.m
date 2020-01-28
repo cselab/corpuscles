@@ -41,8 +41,6 @@ function [p,t]=distmeshsurface(fd,fh,h0,bbox,varargin)
 pv=isosurface(x,y,z,reshape(fd([x(:),y(:),z(:)],varargin{:}),size(x)),0);
 p=pv.vertices;
 t=pv.faces;
-return
-fjdkfj
 
 % Connectivities (for trisurfupd)
 [t2t,t2n]=mkt2t(t);

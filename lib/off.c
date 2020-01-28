@@ -596,6 +596,34 @@ boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
 }
 
 int
+off_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
+                   real lo, real hi, const real * a, /**/ FILE * f)
+{
+    int nv, nt, ne, npv, m, i, j, k;
+    float red, green, blue, alpha;
+
+    if (fputs("COFF\n", f) == EOF)
+        ERR(CO_IO, "fail to write");
+    nv = he_nv(he);
+    nt = he_nt(he);
+    ne = 0;
+    npv = 3;
+    alpha = 0.5;
+
+    fprintf(f, "%d %d %d\n", nv, nt, ne);
+    for (m = 0; m < nv; m++) {
+        colormap(a[m], lo, hi, &red, &green, &blue);
+	fprintf(f, FMT " " FMT " " FMT " %.16g %.16g %.16g %.16g\n",
+		x[m], y[m], z[m], red, green, blue, alpha);
+    }
+    for (m = 0; m < nt; m++) {
+	he_tri_ijk(he, m, &i, &j, &k);
+	fprintf(f, "%d %d %d %d\n", npv, i, j, k);
+    }
+    return CO_OK;
+}
+
+int
 boff_ver_fwrite(He * he, const real * x, const real * y, const real * z,
                 const real * a, /**/ FILE * f)
 {
