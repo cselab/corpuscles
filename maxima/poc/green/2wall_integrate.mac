@@ -1,0 +1,94 @@
+gradef(r(x, y), x/r(x, y), y/r(x, y));
+
+J0(x):=bessel_j(0, x);
+J1(x):=bessel_j(1, x);
+J2(x):=bessel_j(2, x);
+
+b0([L])::=buildq([L: L],
+  block([
+    u: q*W,
+    v: q*z0,
+    w: q*z],
+    block([
+      Ap: u + sinh(u)*exp(-u),
+      Am: u - sinh(u)*exp(-u),
+      Bp: u + cosh(u)*exp(-u),
+      Bm: u - cosh(u)*exp(-u),
+      Cp: u*(1 + u) + sinh(u)*exp(-u),
+      Cm: u*(1 + u) - sinh(u)*exp(-u),
+      Dp: u*(1 + u) + cosh(u)*exp(-u),
+      Dm: u*(1 + u) - cosh(u)*exp(-u),
+      Ep: 1/(sinh(u)*cosh(u) + u),
+      Em: 1/(sinh(u)*cosh(u) - u)],
+  block(splice(L)))));
+
+tnn(q, z, z0):=b0([],
+  Em*(-v*cosh(v) + Bp*sinh(v))*w*cosh(w)
+  + Ep*(-v*sinh(v) + Ap*cosh(v))*w*sinh(w)
+  + Ep*(Ap*v*sinh(v) - Cp*cosh(v))*cosh(w)
+  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(w));
+
+tnp(q, z, z0):=b0([],
+  Em*(v*sinh(v) - Am*cosh(v))*w*cosh(w)
+  + Ep*(v*cosh(v) - Bm*sinh(v))*w*sinh(w)
+  + Ep*(-Ap*v*cosh(v) + u^2*sinh(v))*cosh(w)
+  + Em*(-Bp*v*sinh(v) + u^2*cosh(v))*sinh(w));
+
+tpn(q, z, z0):=b0([],
+  Ep*(-v*sinh(v) + Ap*cosh(v))*w*cosh(w)
+  + Em*(-v*cosh(v) + Bp*sinh(v))*w*sinh(w)
+  + Em*(Am*v*cosh(v) - u^2*sinh(v))*cosh(w)
+  + Ep*(Bm*v*sinh(v) - u^2*cosh(v))*sinh(w));
+
+tpp(q, z, z0):= b0([],
+  Ep*(v*cosh(v) - Bm*sinh(v))*w*cosh(w)
+  + Em*(v*sinh(v) - Am*cosh(v))*w*sinh(w)
+  + Em*(-Am*v*sinh(v) + Cm*cosh(v)
+      -2*u*tanh(u)*cosh(v))*cosh(w)
+    + Ep*(-Bm*v*cosh(v) + Dm*sinh(v)
+      - 2*u*coth(u)*sinh(v))*sinh(w));
+
+rpp(q, z, z0):=b0([],
+  -2*exp(-u)/cosh(u)*cosh(w)*cosh(v)
+  -2*exp(-u)/sinh(u)*sinh(w)*sinh(v)
+  );
+
+
+W: 2;
+z: 2;
+z0: 0.2;
+x: 0.2;
+y: 0.4;
+s: sqrt(x^2 + y^2);
+r: sqrt(x^2 + y^2 + (z - z0)^2);
+
+ixx0(q):=(J0(q*s) + (y^2 - x^2)/s^2*J2(q*s))*tpp(q, z, z0);
+iyy0(q):=(J0(q*s) + (x^2 - y^2)/s^2*J2(q*s))*tpp(q, z, z0);
+ixx1(q):=J0(q*s)*rpp(q, z, z0);
+izz(q):=J0(q*s)*tnn(q, z, z0);
+ixy(q):=J2(q*s)*tpp(q, z, z0);
+ixz(q):=J1(q*s)*tpn(q, z, z0);
+izx(q):=J1(q*s)*tnp(q, z, z0);
+
+Gxx: 1/r + x*x/r^3;
+Gyy: 1/r + y*y/r^3;
+Gxy: x*y/r^3;
+Gxz: x*(z - z0)/r^3;
+Gzz: 1/r + (z - z0)*(z - z0)/r^3;
+
+Gzx: Gxz;
+Gyx: Gxy;
+
+
+gxx: quad_qags(-1/2*ixx0(q) + ixx1(q), q, 0, 100)[1];
+gyy: quad_qags(-1/2*iyy0(q) + ixx1(q), q, 0, 100)[1];
+gzz: quad_qags(izz(q), q, 0, 100)[1];
+gxy: quad_qags(x*y/s^2*ixy(q), q, 0, 100)[1];
+gxz: quad_qags(-x/s*ixz(q), q, 0, 100)[1];
+gzx: quad_qags(-x/s*izx(q), q, 0, 100)[1];
+
+gxx + Gxx;
+gzz + Gzz;
+gxz + Gxz;
+gyy + Gyy;
+gzx + Gzx;

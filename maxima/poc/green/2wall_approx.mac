@@ -17,8 +17,8 @@ b0([L])::=buildq([L: L],
       Cm: u*(1 + u) - sinh(u)*exp(-u),
       Dp: u*(1 + u) + cosh(u)*exp(-u),
       Dm: u*(1 + u) - cosh(u)*exp(-u),
-      Ep: 1/(sinh(u)*cosh(u) + u),
-      Em: 1/(sinh(u)*cosh(u) - u)],
+      Ep: 4*exp(-2*u),
+      Em: 4*exp(-2*u)],
   block(splice(L)))));
 
 tnn(q, z, z0):=b0([],
@@ -48,34 +48,9 @@ tpp(q, z, z0):= b0([],
       - 2*u*coth(u)*sinh(v))*sinh(w));
 
 rpp(q, z, z0):=b0([],
-  -2*exp(-u)/cosh(u)*cosh(w)*cosh(v)
-  -2*exp(-u)/sinh(u)*sinh(w)*sinh(v)
+  (-2*exp(-u)*exp(v)/exp(u))*exp(w)
+  +(-2*exp(-u)*exp(v)/exp(u))*exp(w)
   );
-
-/*
-u: q*W;
-v: q*z0;
-w: q*z;
-*/
-
-/*
-Ap: u + sinh(u)*exp(-u);
-Am: u - sinh(u)*exp(-u);
-Bp: u + cosh(u)*exp(-u);
-Bm: u - cosh(u)*exp(-u);
-Cp: u*(1 + u) + sinh(u)*exp(-u);
-Cm: u*(1 + u) - sinh(u)*exp(-u);
-Dp: u*(1 + u) + cosh(u)*exp(-u);
-Dm: u*(1 + u) - cosh(u)*exp(-u);
-Ep: 1/(sinh(u)*cosh(u) + u);
-Em: 1/(sinh(u)*cosh(u) - u);
-*/
-
-/*
-qzz(q):=block([s: r(x, y)],
-  J0(q*s)*tnn(q, z, z0));
-Gzz: 'integrate(qzz(q), q, 0, +inf);
-qzz(q); */
 
 t0nn(q, z, z0):=b0([],
   ((-2*(W - z)*(W - z0))*q^2 + (-2*W + z + z0)*q - 1)
@@ -105,15 +80,3 @@ defrule(r_0, sinh(x), exp(x)/2);
 defrule(r_1, cosh(x), exp(x)/2);
 defrule(r_2, tanh(x), 1);
 r_r(e):=apply2(e, r_0, r_1, r_2);
-
-(
-  define(t1nn(q), tnn(q, z, z0) - t0nn(q, z, z0)),
-  define(t1np(q), tnp(q, z, z0) - t0np(q, z, z0)),
-  define(t1pn(q), tpn(q, z, z0) - t0pn(q, z, z0)),
-  define(t1pp(q), tpp(q, z, z0) - t0pp(q, z, z0)),
-  define(r1pp(q), rpp(q, z, z0) - r0pp(q, z, z0))), z = 1, z0 = 2/10, W = 11/10 $
-
-/*
-draw2d(logy = true, xrange = [0, 12], yrange = [1e-15, 1],
-  explicit(abs(t1nn(q)), q, 0.1, 10)
-  ); */
