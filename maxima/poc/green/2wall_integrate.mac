@@ -53,14 +53,13 @@ rpp(q, z, z0):=b0([],
   -2*exp(-u)/sinh(u)*sinh(w)*sinh(v)
   );
 
-
-/*W: 2;
-z: 2;
-z0: 0.2;
-x: 0.2;
-y: 0.4;
+x: 0.1;
+y: 0.2;
+z: 0.3;
+z0: 0.4;
+W: 1.0;
 s: sqrt(x^2 + y^2);
-r: sqrt(x^2 + y^2 + (z - z0)^2); */
+r: sqrt(x^2 + y^2 + (z - z0)^2);
 
 ixx0(q):=(J0(q*s) + (y^2 - x^2)/s^2*J2(q*s))*tpp(q, z, z0);
 iyy0(q):=(J0(q*s) + (x^2 - y^2)/s^2*J2(q*s))*tpp(q, z, z0);
@@ -75,19 +74,24 @@ Gyy: 1/r + y*y/r^3;
 Gxy: x*y/r^3;
 Gxz: x*(z - z0)/r^3;
 Gzz: 1/r + (z - z0)*(z - z0)/r^3;
+Gyz: y*(z - z0)/r^3;
 
 Gzx: Gxz;
 Gyx: Gxy;
+qmax: 100;
 
-gxx: quad_qags(-1/2*ixx0(q) + ixx1(q), q, 0, 100)[1];
-gyy: quad_qags(-1/2*iyy0(q) + ixx1(q), q, 0, 100)[1];
-gzz: quad_qags(izz(q), q, 0, 100)[1];
-gxy: quad_qags(x*y/s^2*ixy(q), q, 0, 100)[1];
-gxz: quad_qags(-x/s*ixz(q), q, 0, 100)[1];
-gzx: quad_qags(-x/s*izx(q), q, 0, 100)[1];
+gxx: quad_qags(-1/2*ixx0(q) + ixx1(q), q, 0, qmax)[1];
+gyy: quad_qags(-1/2*iyy0(q) + ixx1(q), q, 0, qmax)[1];
+gzz: quad_qags(izz(q), q, 0, qmax)[1];
+gxy: quad_qags(x*y/s^2*ixy(q), q, 0, qmax)[1];
+gxz: quad_qags(-x/s*ixz(q), q, 0, qmax)[1];
+gyz: quad_qags(-y/s*ixz(q), q, 0, qmax)[1];
+gzx: -x/s*quad_qags(izx(q), q, 0, qmax)[1];
 
 gxx + Gxx;
 gzz + Gzz;
 gxz + Gxz;
 gyy + Gyy;
 gzx + Gzx;
+gyz + Gyz;
+gxz + Gxz;
