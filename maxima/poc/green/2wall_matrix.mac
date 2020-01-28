@@ -1,0 +1,120 @@
+gradef(r(x, y), x/r(x, y), y/r(x, y));
+
+J0(x):=bessel_j(0, x);
+J1(x):=bessel_j(1, x);
+
+b0([L])::=buildq([L: L],
+  block([
+    u: q*W,
+    v: q*z0,
+    w: q*z],
+    block([
+      Ap: u + sinh(u)*exp(-u),
+      Am: u - sinh(u)*exp(-u),
+      Bp: u + cosh(u)*exp(-u),
+      Bm: u - cosh(u)*exp(-u),
+      Cp: u*(1 + u) + sinh(u)*exp(-u),
+      Cm: u*(1 + u) - sinh(u)*exp(-u),
+      Dp: u*(1 + u) + cosh(u)*exp(-u),
+      Dm: u*(1 + u) - cosh(u)*exp(-u),
+      Ep: 1/(sinh(u)*cosh(u) + u),
+      Em: 1/(sinh(u)*cosh(u) - u)],
+    block(splice(L)))));
+
+b0([L])::=buildq([L: L], block(splice(L)));
+
+tnn(q, z, z0):=b0([],
+  Em*(-v*cosh(v) + Bp*sinh(v))*w*cosh(w)
+  + Ep*(-v*sinh(v) + Ap*cosh(v))*w*sinh(w)
+  + Ep*(Ap*v*sinh(v) - Cp*cosh(v))*cosh(w)
+  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(w));
+
+tnp(q, z, z0):=b0([],
+  Em*(v*sinh(v) - Am*cosh(v))*w*cosh(w)
+  + Ep*(v*cosh(v) - Bm*sinh(v))*w*sinh(w)
+  + Ep*(-Ap*v*cosh(v) + u^2*sinh(v))*cosh(w)
+  + Em*(-Bp*v*sinh(v) + u^2*cosh(v))*sinh(w));
+
+tpn(q, z, z0):=b0([],
+  Ep*(-v*sinh(v) + Ap*cosh(v))*w*cosh(w)
+  + Em*(-v*cosh(v) + Bp*sinh(v))*w*sinh(w)
+  + Em*(Am*v*cosh(v) - u^2*sinh(v))*cosh(w)
+  + Ep*(Bm*v*sinh(v) - u^2*cosh(v))*sinh(w));
+
+tpp(q, z, z0):= b0([],
+  Ep*(v*cosh(v) - Bm*sinh(v))*w*cosh(w)
+  + Em*(v*sinh(v) - Am*cosh(v))*w*sinh(w)
+  + Em*(-Am*v*sinh(v) + Cm*cosh(v)
+      -2*u*tanh(u)*cosh(v))*cosh(w)
+    + Ep*(-Bm*v*cosh(v) + Dm*sinh(v)
+      - 2*u*coth(u)*sinh(v))*sinh(w));
+
+rpp(q, z, z0):=b0([],
+  (-2*exp(-u)*cosh(v)/cosh(u))*cosh(w)
+  +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w)
+  );
+
+/*
+u: q*W;
+v: q*z0;
+w: q*z;
+*/
+
+/*
+Ap: u + sinh(u)*exp(-u);
+Am: u - sinh(u)*exp(-u);
+Bp: u + cosh(u)*exp(-u);
+Bm: u - cosh(u)*exp(-u);
+Cp: u*(1 + u) + sinh(u)*exp(-u);
+Cm: u*(1 + u) - sinh(u)*exp(-u);
+Dp: u*(1 + u) + cosh(u)*exp(-u);
+Dm: u*(1 + u) - cosh(u)*exp(-u);
+Ep: 1/(sinh(u)*cosh(u) + u);
+Em: 1/(sinh(u)*cosh(u) - u);
+*/
+
+/*
+qzz(q):=block([s: r(x, y)],
+  J0(q*s)*tnn(q, z, z0));
+Gzz: 'integrate(qzz(q), q, 0, +inf);
+qzz(q); */
+
+t0nn(q, z, z0):=b0([],
+  ((-2*(W - z)*(W - z0))*q^2 + (-2*W + z + z0)*q - 1)
+ *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
+  + (-2*W - z - z0)*q - 1)*exp((-z - z0 - 2*W)*q));
+
+t0np(q, z, z0):=b0([],
+  ((2*(W - z)*(W - z0))*q^2 + (z - z0)*q)
+ *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
+   +(z - z0)*q)*exp((-z - z0 - 2*W)*q));
+
+t0pn(q, z, z0):=b0([],
+  ((-2*(W - z)*(W - z0))*q^2 + (z - z0)*q)
+ *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
+  +(z - z0)*q)*exp((-z - z0 - 2*W)*q));
+
+t0pp(q, z, z0):=b0([],
+  ((2*(W - z)*(W - z0))*q^2 + (-2*W + z + z0)*q - 1)
+ *exp((z + z0 - 2*W)*q) + ((2*(W + z)*(W + z0))*q^2
+  +(-2*W - z - z0)*q - 1)*exp((- z - z0 - 2*W)*q));
+
+r0pp(q, z, z0):=b0([],
+  -2*exp((z + z0 - 2*W)*q) - 2*exp((-z - z0 - 2*W)*q));
+
+matchdeclare(x, all);
+defrule(r_0, sinh(x), exp(x)/2);
+defrule(r_1, cosh(x), exp(x)/2);
+defrule(r_2, tanh(x), 1);
+r_r(e):=apply2(e, r_0, r_1, r_2);
+
+(
+  define(t1nn(q), tnn(q, z, z0) - t0nn(q, z, z0)),
+  define(t1np(q), tnp(q, z, z0) - t0np(q, z, z0)),
+  define(t1pn(q), tpn(q, z, z0) - t0pn(q, z, z0)),
+  define(t1pp(q), tpp(q, z, z0) - t0pp(q, z, z0)),
+  define(r1pp(q), rpp(q, z, z0) - r0pp(q, z, z0))), z = 1, z0 = 2/10, W = 11/10 $
+
+draw2d(logy = true, xrange = [0, 12], yrange = [1e-15, 1],
+  explicit(abs(t1nn(q)), q, 0.1, 10)
+  );
