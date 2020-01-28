@@ -1,26 +1,3 @@
-gradef(r(x, y), x/r(x, y), y/r(x, y));
-
-J0(x):=bessel_j(0, x);
-J1(x):=bessel_j(1, x);
-
-b0([L])::=buildq([L: L],
-  block([
-    u: q*W,
-    v: q*z0,
-    w: q*z],
-    block([
-      Ap: u + sinh(u)*exp(-u),
-      Am: u - sinh(u)*exp(-u),
-      Bp: u + cosh(u)*exp(-u),
-      Bm: u - cosh(u)*exp(-u),
-      Cp: u*(1 + u) + sinh(u)*exp(-u),
-      Cm: u*(1 + u) - sinh(u)*exp(-u),
-      Dp: u*(1 + u) + cosh(u)*exp(-u),
-      Dm: u*(1 + u) - cosh(u)*exp(-u),
-      Ep: 1/(sinh(u)*cosh(u) + u),
-      Em: 1/(sinh(u)*cosh(u) - u)],
-    block(splice(L)))));
-
 b0([L])::=buildq([L: L], block(splice(L)));
 
 tnn(q, z, z0):=b0([],
@@ -54,67 +31,35 @@ rpp(q, z, z0):=b0([],
   +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w)
   );
 
-/*
-u: q*W;
-v: q*z0;
-w: q*z;
-*/
+load("partition");
 
-/*
-Ap: u + sinh(u)*exp(-u);
-Am: u - sinh(u)*exp(-u);
-Bp: u + cosh(u)*exp(-u);
-Bm: u - cosh(u)*exp(-u);
-Cp: u*(1 + u) + sinh(u)*exp(-u);
-Cm: u*(1 + u) - sinh(u)*exp(-u);
-Dp: u*(1 + u) + cosh(u)*exp(-u);
-Dm: u*(1 + u) - cosh(u)*exp(-u);
-Ep: 1/(sinh(u)*cosh(u) + u);
-Em: 1/(sinh(u)*cosh(u) - u);
-*/
+matchdeclare(qq, partition_expression("*", lambda([e], freeof('w, 'v, e)), 1, "*", "[", 'ANSqq));
+defrule(r, qq, ANSqq);
 
-/*
-qzz(q):=block([s: r(x, y)],
-  J0(q*s)*tnn(q, z, z0));
-Gzz: 'integrate(qzz(q), q, 0, +inf);
-qzz(q); */
 
-t0nn(q, z, z0):=b0([],
-  ((-2*(W - z)*(W - z0))*q^2 + (-2*W + z + z0)*q - 1)
- *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
-  + (-2*W - z - z0)*q - 1)*exp((-z - z0 - 2*W)*q));
+f[1](v):=cosh(v);
+f[2](v):=sinh(v);
+f[3](v):=v*cosh(v);
+f[4](v):=v*sinh(v);
+table[otherwise]:= false;
+for i thru 4 do for j thru 4 do table[radcan(f[i](v)*f[j](w))]: [i, j];
 
-t0np(q, z, z0):=b0([],
-  ((2*(W - z)*(W - z0))*q^2 + (z - z0)*q)
- *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
-   +(z - z0)*q)*exp((-z - z0 - 2*W)*q));
+gmatrix(f):= block([E, e, t, i, j], local(E),
+E: zeromatrix(4, 4),
+for e in expand(apply(f, ['q, 'z, 'z0])) do (
+    t: r(e),
+    [i, j]: table[second(t)],
+    E[i, j]: first(t)
+    ),
+  E);
 
-t0pn(q, z, z0):=b0([],
-  ((-2*(W - z)*(W - z0))*q^2 + (z - z0)*q)
- *exp((z + z0 - 2*W)*q) + ((-2*(W + z)*(W + z0))*q^2
-  +(z - z0)*q)*exp((-z - z0 - 2*W)*q));
+Enn: gmatrix(tnn);
+Epp: gmatrix(tpp);
+Enp: gmatrix(tnp);
+Epn: gmatrix(tpn);
+Rpp: gmatrix(rpp);
 
-t0pp(q, z, z0):=b0([],
-  ((2*(W - z)*(W - z0))*q^2 + (-2*W + z + z0)*q - 1)
- *exp((z + z0 - 2*W)*q) + ((2*(W + z)*(W + z0))*q^2
-  +(-2*W - z - z0)*q - 1)*exp((- z - z0 - 2*W)*q));
-
-r0pp(q, z, z0):=b0([],
-  -2*exp((z + z0 - 2*W)*q) - 2*exp((-z - z0 - 2*W)*q));
-
-matchdeclare(x, all);
-defrule(r_0, sinh(x), exp(x)/2);
-defrule(r_1, cosh(x), exp(x)/2);
-defrule(r_2, tanh(x), 1);
-r_r(e):=apply2(e, r_0, r_1, r_2);
-
-(
-  define(t1nn(q), tnn(q, z, z0) - t0nn(q, z, z0)),
-  define(t1np(q), tnp(q, z, z0) - t0np(q, z, z0)),
-  define(t1pn(q), tpn(q, z, z0) - t0pn(q, z, z0)),
-  define(t1pp(q), tpp(q, z, z0) - t0pp(q, z, z0)),
-  define(r1pp(q), rpp(q, z, z0) - r0pp(q, z, z0))), z = 1, z0 = 2/10, W = 11/10 $
-
-draw2d(logy = true, xrange = [0, 12], yrange = [1e-15, 1],
-  explicit(abs(t1nn(q)), q, 0.1, 10)
-  );
+Enn - transpose(Enn);
+Epp - transpose(Epp);
+Enp + transpose(Epn);
+Rpp - transpose(Rpp);
