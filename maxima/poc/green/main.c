@@ -203,5 +203,14 @@ rpp(real q, real z, real z0, real W)
 int
 main()
 {
-    printf("%g\n", tnn(1.4, 1.2, 1.8, 1.0));
+    real q;
+    real z;
+    real z0;
+    real W;
+
+    q = 1.4;
+    z = 1.2;
+    z0 = 1.8;
+    W = 1.0;
+    printf("%g %g %g %g %g\n", tnn(q, z, z0, W), tnp(q, z, z0, W), tpn(q, z, z0, W), tpp(q, z, z0, W), rpp(q, z, z0, W));
 }
