@@ -22,7 +22,7 @@
 #define T Green3Wall2
 enum { XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ };
 static const real pi = 3.141592653589793115997964;
-enum {INTEGRATION_TYPE = QAGS};
+enum { INTEGRATION_TYPE = QAGS };
 static const real qmax = 100;
 
 struct Param {
@@ -45,7 +45,7 @@ struct Input {
 struct T {
     real w;
     real *nx, *ny, *nz, *area;
-    AlgIntegration * integration;
+    AlgIntegration *integration;
 };
 
 static int s0(T *, const real[3], Ten *);
@@ -68,10 +68,11 @@ static real tpn(real q, real z, real z0, real W);
 static real tpp(real q, real z, real z0, real W);
 static real rpp(real q, real z, real z0, real W);
 static int f_xx_yy(struct Input *, AlgIntegration *, real *, real *);
-static int f_zz(struct Input *, AlgIntegration *, real * );
-static int f_xy(struct Input *, AlgIntegration *, real * );
+static int f_zz(struct Input *, AlgIntegration *, real *);
+static int f_xy(struct Input *, AlgIntegration *, real *);
 static int f_xz_yz(struct Input *, AlgIntegration *, real * xz, real * yz);
-static int f_zx_zy(struct Input *i, AlgIntegration *, real * zx, real * zy);
+static int f_zx_zy(struct Input *i, AlgIntegration *, real * zx,
+                   real * zy);
 
 int
 green3_wall2_ini(He * he, real w, T ** pq)
@@ -90,7 +91,7 @@ green3_wall2_ini(He * he, real w, T ** pq)
     q->nz = nz;
     q->area = area;
     if (alg_integration_ini(INTEGRATION_TYPE, &q->integration) != CO_OK)
-	ERR(CO_MEMORY, "alg_integration_ini failed");
+        ERR(CO_MEMORY, "alg_integration_ini failed");
     *pq = q;
     return CO_OK;
 }
@@ -100,14 +101,14 @@ green3_wall2_fin(T * q)
 {
     FREE3(q->nx, q->ny, q->nz);
     FREE(q->area);
-    alg_integration_fin(q->integration);    
+    alg_integration_fin(q->integration);
     FREE(q);
     return CO_OK;
 }
 
 int
 green3_wall2_apply(T * q, He * he, const real * x, const real * y,
-                  const real * z, struct Tensor3x3 *t)
+                   const real * z, struct Tensor3x3 *t)
 {
     int n;
     int i;
@@ -129,7 +130,8 @@ green3_wall2_apply(T * q, He * he, const real * x, const real * y,
             else {
                 i_vec_get(j, x, y, z, b);
                 if (green3_wall2_s(q, a, b, &t0) != CO_OK)
-                    ERR(CO_NUM, "green3_wall2_s failed (i=%d, j=%d)", i, j);
+                    ERR(CO_NUM, "green3_wall2_s failed (i=%d, j=%d)", i,
+                        j);
             }
             for (k = 0; k < 3 * 3; k++)
                 i_matrix_set(n, n, i, j, t0.t[k], t->d[k]);
@@ -142,7 +144,7 @@ green3_wall2_apply(T * q, He * he, const real * x, const real * y,
 
 int
 green3_wall2_stresslet(T * q, He * he, const real * x, const real * y,
-                      const real * z, struct Tensor3x3 *t)
+                       const real * z, struct Tensor3x3 *t)
 {
     int n;
     int i;
@@ -181,7 +183,8 @@ green3_wall2_stresslet(T * q, He * he, const real * x, const real * y,
             } else {
                 i_vec_get(j, x, y, z, b);
                 if (green3_wall2_t(q, a, u, b, &t0) != CO_OK)
-                    ERR(CO_NUM, "green3_wall2_s failed (i=%d, j=%d)", i, j);
+                    ERR(CO_NUM, "green3_wall2_s failed (i=%d, j=%d)", i,
+                        j);
             }
             for (k = 0; k < 3 * 3; k++)
                 i_matrix_set(n, n, i, j, A * t0.t[k], t->d[k]);
@@ -275,74 +278,34 @@ green3_wall2_s(T * q, const real a[3], const real b[3], Ten * t0)
         X, Y, Z
     };
     real d[3];
-    real w;
+    real W;
     real *t;
-    real r0;
-    real r1;
-    real x;
-    real y;
-    real z;
-    real r13;
-    real r15;
-    real r03;
-    real w2;
-    real x2;
-    real y2;
-    real z2;
-    real zw;
-    real zw2;
+    struct Input i;
+    AlgIntegration *integration;
 
     t = t0->t;
-    w = q->w - b[Z];
+    integration = q->integration;
+    W = q->w;
+
     i_vec_minus(a, b, d);
 
-    x = d[X];
-    y = d[Y];
-    z = d[Z];
-    zw = z - 2 * w;
-    r0 = 1 / rad(x, y, z);
-    r1 = 1 / rad(x, y, zw);
-    r13 = r1 * r1 * r1;
-    r15 = r1 * r1 * r1 * r1 * r1;
-    r03 = r0 * r0 * r0;
-    w2 = w * w;
-    x2 = x * x;
-    y2 = y * y;
-    z2 = z * z;
-    zw2 = zw * zw;
-
-    t[XX] =
-        2 * w * (r13 - 3 * r15 * x2) * zw + 2 * w2 * (r13 - 3 * r15 * x2) -
-        r13 * x2 + r03 * x2 - r1 + r0;
-    t[YY] =
-        2 * w * (r13 - 3 * r15 * y2) * zw + 2 * w2 * (r13 - 3 * r15 * y2) -
-        r13 * y2 + r03 * y2 - r1 + r0;
-    t[ZZ] =
-        2 * w * zw * (3 * r15 * zw2 - r13) + 2 * w2 * (3 * r15 * zw2 -
-                                                       r13) - r13 * zw2 +
-        r03 * z2 - r1 + r0;
-    t[XY] =
-        (-6 * r15 * w * x * y * zw) - 6 * r15 * w2 * x * y - r13 * x * y +
-        r03 * x * y;
-    t[XZ] =
-        2 * w * (3 * r15 * x * zw2 - r13 * x) + 6 * r15 * w2 * x * zw -
-        r13 * x * zw + r03 * x * z;
-    t[ZX] =
-        2 * w * ((-3 * r15 * x * zw2) - r13 * x) - 6 * r15 * w2 * x * zw -
-        r13 * x * zw + r03 * x * z;
+    i.x = d[X];
+    i.y = d[Y];
+    i.z = d[Z];
+    i.z0 = b[Z];
+    i.W = W;
+    f_xx_yy(&i, integration, &t[XX], &t[YY]);
+    f_zz(&i, integration, &t[ZZ]);
+    f_xy(&i, integration, &t[XY]);
+    f_xz_yz(&i, integration, &t[XZ], &t[YZ]);
+    f_zx_zy(&i, integration, &t[ZX], &t[ZY]);
     t[YX] = t[XY];
-    t[YZ] =
-        2 * w * (3 * r15 * y * zw2 - r13 * y) + 6 * r15 * w2 * y * zw -
-        r13 * y * zw + r03 * y * z;
-    t[ZY] =
-        2 * w * ((-3 * r15 * y * zw2) - r13 * y) - 6 * r15 * w2 * y * zw -
-        r13 * y * zw + r03 * y * z;
     return CO_OK;
 }
 
 int
 green3_wall2_t(T * q, const real a[3], const real n[3], const real b[3],
-              Ten * t0)
+               Ten * t0)
 {
     enum {
         X, Y, Z
@@ -716,7 +679,8 @@ rpp(real q, real z, real z0, real W)
 }
 
 static int
-f_xx_yy(struct Input *i, AlgIntegration * integration, real * xx, real * yy)
+f_xx_yy(struct Input *i, AlgIntegration * integration, real * xx,
+        real * yy)
 {
     real a;
     real b;
@@ -769,7 +733,8 @@ f_zz(struct Input *i, AlgIntegration * integration, real * result)
     p.W = i->W;
     p.j = alg_special_bessel_J0;
     p.f = tnn;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
     return CO_OK;
 }
@@ -793,7 +758,8 @@ f_xy(struct Input *i, AlgIntegration * integration, real * result)
     p.W = i->W;
     p.j = alg_special_bessel_J2;
     p.f = tpp;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
 
     *result *= (i->x * i->y) / s2;
@@ -801,7 +767,8 @@ f_xy(struct Input *i, AlgIntegration * integration, real * result)
 }
 
 static int
-f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz, real * yz)
+f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz,
+        real * yz)
 {
     real s2;
     real x2;
@@ -821,15 +788,17 @@ f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz, real * yz)
     p.W = i->W;
     p.j = alg_special_bessel_J1;
     p.f = tpn;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
-    *xz = - (i->x) * result  / s;
-    *yz = - (i->y) * result  / s;
+    *xz = -(i->x) * result / s;
+    *yz = -(i->y) * result / s;
     return CO_OK;
 }
 
 static int
-f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx, real * zy)
+f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx,
+        real * zy)
 {
     real s2;
     real x2;
@@ -849,9 +818,10 @@ f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx, real * zy)
     p.W = i->W;
     p.j = alg_special_bessel_J1;
     p.f = tnp;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
-    *zx = - (i->x) * result  / s;
-    *zy = - (i->y) * result  / s;
+    *zx = -(i->x) * result / s;
+    *zy = -(i->y) * result / s;
     return CO_OK;
 }
