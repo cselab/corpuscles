@@ -26,6 +26,63 @@ struct Input {
     real W;
 };
 
+static real F(real q, void *v);
+static real coth(real x);
+static real fAp(real u);
+static real fAm(real u);
+static real fBp(real u);
+static real fBm(real u);
+static real fCp(real u);
+static real fCm(real u);
+static real fDp(real u);
+static real fDm(real u);
+static real fEp(real u);
+static real fEm(real u);
+static real tnn(real q, real z, real z0, real W);
+static real tnp(real q, real z, real z0, real W);
+static real tpn(real q, real z, real z0, real W);
+static real tpp(real q, real z, real z0, real W);
+static real rpp(real q, real z, real z0, real W);
+static int f_xx_yy(struct Input *i, AlgIntegration * integration, real * xx, real * yy);
+static int f_zz(struct Input *i, AlgIntegration * integration, real * result);
+static int f_xy(struct Input *i, AlgIntegration * integration, real * result);
+static int f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz, real * yz);
+static int f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx, real * zy);
+
+int
+main()
+{
+    real xx;
+    real xy;
+    real xz;
+    real yx;
+    real yy;
+    real yz;
+    real zx;
+    real zy;
+    real zz;
+    struct Input i;
+    AlgIntegration *integration;
+
+    i.x = 0.1;
+    i.y = 0.2;
+    i.z = 0.3;
+    i.z0 = 0.4;
+    i.W = 1.0;
+    alg_integration_ini(QAGS, &integration);
+
+    f_xx_yy(&i, integration, &xx, &yy);
+    f_zz(&i, integration, &zz);
+    f_xy(&i, integration, &xy);
+    yx = xy;
+    f_xz_yz(&i, integration, &xz, &yz);
+    f_zx_zy(&i, integration, &zx, &zy);
+    printf(FMT " " FMT " " FMT "\n", xx, xy, xz);
+    printf(FMT " " FMT " " FMT "\n", yx, yy, yz);
+    printf(FMT " " FMT " " FMT "\n", zx, zy, zz);
+    alg_integration_fin(integration);
+}
+
 static real
 F(real q, void *v)
 {
@@ -385,38 +442,4 @@ f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx, real * zy)
     *zx = - (i->x) * result  / s;
     *zy = - (i->y) * result  / s;
     return CO_OK;
-}
-
-int
-main()
-{
-    real xx;
-    real xy;
-    real xz;
-    real yx;
-    real yy;
-    real yz;
-    real zx;
-    real zy;
-    real zz;
-    struct Input i;
-    AlgIntegration *integration;
-
-    i.x = 0.1;
-    i.y = 0.2;
-    i.z = 0.3;
-    i.z0 = 0.4;
-    i.W = 1.0;
-    alg_integration_ini(QAGS, &integration);
-
-    f_xx_yy(&i, integration, &xx, &yy);
-    f_zz(&i, integration, &zz);
-    f_xy(&i, integration, &xy);
-    yx = xy;
-    f_xz_yz(&i, integration, &xz, &yz);
-    f_zx_zy(&i, integration, &zx, &zy);
-    printf(FMT " " FMT " " FMT "\n", xx, xy, xz);
-    printf(FMT " " FMT " " FMT "\n", yx, yy, yz);
-    printf(FMT " " FMT " " FMT "\n", zx, zy, zz);
-    alg_integration_fin(integration);
 }
