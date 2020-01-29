@@ -902,6 +902,21 @@ co/tri.h\
 co/vtk.h\
 co/generation.h\
 
+green/3wall2.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/green/3wall2.h\
+co/he.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/ten.h\
+co/tensor3x3.h\
+
 green/3wall.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -2334,6 +2349,21 @@ co/tri.h\
 co/vtk.h\
 co/generation.h\
 
+green/3wall2.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/green/3wall2.h\
+co/he.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/ten.h\
+co/tensor3x3.h\
+
 green/3wall.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -3765,6 +3795,21 @@ co/vec.h\
 co/tri.h\
 co/vtk.h\
 co/generation.h\
+
+green/3wall2.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/green/3wall2.h\
+co/he.h\
+co/i/vec.h\
+co/i/tri.h\
+co/i/area.h\
+co/i/matrix.h\
+co/macro.h\
+co/memory.h\
+co/normal.h\
+co/ten.h\
+co/tensor3x3.h\
 
 green/3wall.l.o:\
 co/prec/l/real.h\

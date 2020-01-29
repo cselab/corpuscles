@@ -90,6 +90,7 @@ f/volume.s.o\
 f/volume_normal.s.o\
 f/wlc.s.o\
 generation.s.o\
+green/3wall2.s.o\
 green/3wall.s.o\
 gts.s.o\
 H.s.o\
@@ -231,6 +232,7 @@ f/volume.d.o\
 f/volume_normal.d.o\
 f/wlc.d.o\
 generation.d.o\
+green/3wall2.d.o\
 green/3wall.d.o\
 gts.d.o\
 H.d.o\
@@ -372,6 +374,7 @@ f/volume.l.o\
 f/volume_normal.l.o\
 f/wlc.l.o\
 generation.l.o\
+green/3wall2.l.o\
 green/3wall.l.o\
 gts.l.o\
 H.l.o\
