@@ -6,7 +6,7 @@
 #include <co/ten.h>
 #include <co/err.h>
 #include <co/he.h>
-#include <co/green/3wall.h>
+#include <co/green/3wall2.h>
 #include <co/vec.h>
 #include <co/macro.h>
 #include <co/y.h>
@@ -14,7 +14,7 @@
 #define FMT CO_REAL_OUT
 static real pi = 3.141592653589793115997964;
 
-static char me[] = "green3wall/velocity";
+static char me[] = "green3wall/velocity2";
 static void
 usg()
 {
@@ -26,7 +26,7 @@ int
 main(int argc, const char **argv)
 {
     He *he;
-    Green3Wall *green;
+    Green3Wall2 *green;
     real *x, *y, *z, a[3], b[3], g[3];
     real u[3];
     real w;
@@ -54,7 +54,6 @@ main(int argc, const char **argv)
             exit(1);
         }
     y_inif(stdin, &he, &x, &y, &z);
-
     if (vec_argv(&argv, b) != CO_OK) {
         fprintf(stderr, "%s: fail to read vector\n", me);
         exit(1);
@@ -71,11 +70,11 @@ main(int argc, const char **argv)
         fprintf(stderr, "%s: too many arguments\n", me);
         exit(1);
     }
-    green3_wall_ini(he, w, &green);
-    green3_wall_s(green, a, b, &ten);
+    green3_wall2_ini(he, w, &green);
+    green3_wall2_s(green, a, b, &ten);
     ten_vec(&ten, g, u);
     vec_scale(1/(8*pi), u);
     vec_printf(u, FMT);
-    green3_wall_fin(green);
+    green3_wall2_fin(green);
     y_fin(he, x, y, z);
 }

@@ -2,13 +2,20 @@
 include ../../conf.mk
 M = \
 grid\
+grid2\
 main\
 stress\
 velocity\
+velocity2\
 
 PREC = d
-CO_CFLAGS = `co.conf --cflags $(PREC)`
-CO_LDFLAGS = `co.conf --libs $(PREC)`
+CO_CFLAGS = \
+`co.conf --cflags $(PREC)`\
+`alg.conf --cflags $(PREC)`\
+
+CO_LDFLAGS = \
+`co.conf --libs $(PREC)`\
+`alg.conf --libs $(PREC)`\
 
 LINK = $(CC)
 

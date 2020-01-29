@@ -277,9 +277,20 @@ green3_wall2_s(T * q, const real a[3], const real b[3], Ten * t0)
     enum {
         X, Y, Z
     };
-    real d[3];
     real W;
     real *t;
+    real u;
+    real v;
+    real w;
+    real uu;
+    real uv;
+    real uw;
+    real vv;
+    real vw;
+    real ww;
+    real r1;
+    real r2;
+    real r3;
     struct Input i;
     AlgIntegration *integration;
 
@@ -287,11 +298,19 @@ green3_wall2_s(T * q, const real a[3], const real b[3], Ten * t0)
     integration = q->integration;
     W = q->w;
 
-    i_vec_minus(a, b, d);
+    u = a[X] - b[X];
+    v = a[Y] - b[Y];
+    w = a[Z] - b[Z];
+    r2 = u*u + v*v + w*w;
+    if (r2 == 0)
+	ERR(CO_NUM, "r2 == 0");
+    r1 = 1/sqrt(r2);
+    r3 = r1/r2;
 
-    i.x = d[X];
-    i.y = d[Y];
-    i.z = d[Z];
+    /* walls */
+    i.x = a[X] - b[X];
+    i.y = a[Y] - b[Y];
+    i.z = a[Z];
     i.z0 = b[Z];
     i.W = W;
     f_xx_yy(&i, integration, &t[XX], &t[YY]);
@@ -300,6 +319,18 @@ green3_wall2_s(T * q, const real a[3], const real b[3], Ten * t0)
     f_xz_yz(&i, integration, &t[XZ], &t[YZ]);
     f_zx_zy(&i, integration, &t[ZX], &t[ZY]);
     t[YX] = t[XY];
+
+    /* free */
+    uu = r1 + u*u*r3;
+    vv = r1 + v*v*r3;
+    ww = r1 + w*w*r3;
+    uv = u*v*r3;
+    uw = u*w*r3;
+    vw = v*w*r3;
+    t[XX] += uu; t[XY] += uv; t[XZ] += uw;
+    t[YX] += uv; t[YY] += vv; t[YZ] += vw;
+    t[ZX] += uw; t[ZY] += vw; t[ZZ] += ww;
+
     return CO_OK;
 }
 
