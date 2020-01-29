@@ -55,7 +55,7 @@ rpp(q, z, z0):=b0([],
 
 x: 0.1;
 y: 0.2;
-z: 0.3;
+z: 1.0;
 z0: 0.4;
 W: 1.0;
 s: sqrt(x^2 + y^2);
@@ -78,6 +78,7 @@ Gyz: y*(z - z0)/r^3;
 
 Gzx: Gxz;
 Gyx: Gxy;
+Gzy: Gyz;
 qmax: 100;
 
 gxx: quad_qags(-1/2*ixx0(q) + ixx1(q), q, 0, qmax)[1];
@@ -87,6 +88,7 @@ gxy: quad_qags(x*y/s^2*ixy(q), q, 0, qmax)[1];
 gxz: quad_qags(-x/s*ixz(q), q, 0, qmax)[1];
 gyz: quad_qags(-y/s*ixz(q), q, 0, qmax)[1];
 gzx: -x/s*quad_qags(izx(q), q, 0, qmax)[1];
+gzy: -y/s*quad_qags(izx(q), q, 0, qmax)[1];
 
 gxx + Gxx;
 gzz + Gzz;
@@ -95,3 +97,4 @@ gyy + Gyy;
 gzx + Gzx;
 gyz + Gyz;
 gxz + Gxz;
+gzy + Gzy;

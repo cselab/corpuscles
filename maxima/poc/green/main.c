@@ -391,13 +391,14 @@ int
 main()
 {
     real xx;
-    real yy;
-    real zz;
     real xy;
     real xz;
+    real yx;
+    real yy;
     real yz;
     real zx;
     real zy;
+    real zz;
     struct Input i;
     AlgIntegration *integration;
 
@@ -411,11 +412,11 @@ main()
     f_xx_yy(&i, integration, &xx, &yy);
     f_zz(&i, integration, &zz);
     f_xy(&i, integration, &xy);
+    yx = xy;
     f_xz_yz(&i, integration, &xz, &yz);
-    f_xz_yz(&i, integration, &zx, &zy);
-    printf(FMT " " FMT " " FMT "\n", xx, yy, zz);
-    printf(FMT " " FMT " " FMT "\n", xy, xz, yz);
-    printf(FMT " " FMT "\n", zx, zy);
-
+    f_zx_zy(&i, integration, &zx, &zy);
+    printf(FMT " " FMT " " FMT "\n", xx, xy, xz);
+    printf(FMT " " FMT " " FMT "\n", yx, yy, yz);
+    printf(FMT " " FMT " " FMT "\n", zx, zy, zz);
     alg_integration_fin(integration);
 }
