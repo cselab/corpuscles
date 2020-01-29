@@ -206,36 +206,23 @@ rad(real x, real y, real z)
     return sqrt(r);
 }
 
-static int
+int
 s0(T * q, const real a[3], Ten * t0)
 {
     enum {
         X, Y, Z
     };
-    real w;
+    real W;
     real *t;
-    real r1;
-    real r13;
-    real r15;
-    real w2;
-    real zw;
+    struct Input i;
+    AlgIntegration *integration;
 
     t = t0->t;
-    w = q->w - a[Z];
-    zw = -2 * w;
-    r1 = 1 / fabs(zw);
-    r13 = r1 * r1 * r1;
-    r15 = r1 * r1 * r1 * r1 * r1;
-    w2 = w * w;
-    t[XX] = (-2 * r13 * w2) - r1;
-    t[YY] = t[XX];
-    t[ZZ] = (-2 * w2 * (12 * r15 * w2 - r13)) - 4 * r13 * w2 - r1;
-    t[XY] = 0;
-    t[XZ] = 0;
-    t[ZX] = 0;
-    t[YX] = 0;
-    t[YZ] = 0;
-    t[ZY] = 0;
+    integration = q->integration;
+    W = q->w;
+
+    /* walls */
+    t[XY] = t[YX] = t[XZ] = t[ZX] = t[YZ] = t[ZY] = 0;
     return CO_OK;
 }
 
