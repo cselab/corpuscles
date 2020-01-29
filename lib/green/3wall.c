@@ -217,6 +217,7 @@ d0(T * q, const real a[3], const real n[3], Ten * t0)
     t[ZX] = nx / (8 * aw * w);
     t[ZY] = ny / (8 * aw * w);
     t[ZZ] = nz / (2 * aw * w);
+    return CO_OK;
 }
 
 int

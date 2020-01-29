@@ -26,28 +26,28 @@ struct Input {
     real W;
 };
 
-static real F(real q, void *v);
-static real coth(real x);
-static real fAp(real u);
-static real fAm(real u);
-static real fBp(real u);
-static real fBm(real u);
-static real fCp(real u);
-static real fCm(real u);
-static real fDp(real u);
-static real fDm(real u);
-static real fEp(real u);
-static real fEm(real u);
+static real F(real, void *);
+static real coth(real);
+static real fAp(real);
+static real fAm(real);
+static real fBp(real);
+static real fBm(real);
+static real fCp(real);
+static real fCm(real);
+static real fDp(real);
+static real fDm(real);
+static real fEp(real);
+static real fEm(real);
 static real tnn(real q, real z, real z0, real W);
 static real tnp(real q, real z, real z0, real W);
 static real tpn(real q, real z, real z0, real W);
 static real tpp(real q, real z, real z0, real W);
 static real rpp(real q, real z, real z0, real W);
-static int f_xx_yy(struct Input *i, AlgIntegration * integration, real * xx, real * yy);
-static int f_zz(struct Input *i, AlgIntegration * integration, real * result);
-static int f_xy(struct Input *i, AlgIntegration * integration, real * result);
-static int f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz, real * yz);
-static int f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx, real * zy);
+static int f_xx_yy(struct Input *, AlgIntegration *, real *, real *);
+static int f_zz(struct Input *, AlgIntegration *, real * );
+static int f_xy(struct Input *, AlgIntegration *, real * );
+static int f_xz_yz(struct Input *, AlgIntegration *, real * xz, real * yz);
+static int f_zx_zy(struct Input *i, AlgIntegration *, real * zx, real * zy);
 
 int
 main()
