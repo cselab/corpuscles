@@ -517,7 +517,8 @@ boff_lh_tri_fwrite(He * he, const real * x, const real * y, const real * z,
         big_endian_int(n, ib);
         FWRITE(ib, n);
 
-        colormap(a[m], lo, hi, &red, &green, &blue);
+        if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
+	    ERR(CO_IO, "colormap failed");
         n = 0;
         db[n++] = red;
         db[n++] = green;
@@ -568,7 +569,8 @@ boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
     big_endian_int(n, ib);
     FWRITE(ib, n);
     for (m = 0; m < nv; m++) {
-        colormap(a[m], lo, hi, &red, &green, &blue);
+        if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
+	    ERR(CO_IO, "colormap failed");
         n = 0;
         db[n++] = x[m];
         db[n++] = y[m];
@@ -612,7 +614,9 @@ off_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
 
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (m = 0; m < nv; m++) {
-        colormap(a[m], lo, hi, &red, &green, &blue);
+        if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
+	    ERR(CO_IO, "colormap failed");
+	
 	fprintf(f, FMT " " FMT " " FMT " %.16g %.16g %.16g %.16g\n",
 		x[m], y[m], z[m], red, green, blue, alpha);
     }
@@ -759,7 +763,8 @@ boff_lh_point_fwrite(He * he, const real * x, const real * y,
 
     m = 0;
     for (i = 0; i < n; i++) {
-        colormap(a[i], lo, hi, &red, &green, &blue);
+        if (colormap(a[i], lo, hi, &red, &green, &blue) != CO_OK)
+	    ERR(CO_IO, "colormap failed");
         fb[m++] = red;
         fb[m++] = green;
         fb[m++] = blue;
