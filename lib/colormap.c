@@ -539,6 +539,7 @@ DEC(jet);
 DEC(palura);
 DEC(spring);
 DEC(summer);
+DEC(ukraine);
 DEC(viridis);
 DEC(white);
 DEC(winter);
@@ -551,6 +552,7 @@ static const CType Maps[] = {
     palura,
     spring,
     summer,
+    ukraine,
     viridis,
     white,
     winter,
@@ -565,6 +567,7 @@ static const char *Names[] = {
     "palura",
     "spring",
     "summer",
+    "ukraine",
     "viridis",
     "white",
     "winter",
@@ -583,21 +586,21 @@ colormap(real v, real l, real h, float *r, float *g, float *b)
         if (name == NULL)
             map = jet;
         else {
-	    n = sizeof(Names) / sizeof(*Names);
+            n = sizeof(Names) / sizeof(*Names);
             for (i = 0;; i++) {
                 if (i == n) {
                     MSG("unknown colormap '%s'", name);
-		    MSG("possible values:");
-		    for (i = 0; i < n; i++)
-			MSG("%s", Names[i]);
-		    ERR(CO_INDEX, "");
-		}
+                    MSG("possible values:");
+                    for (i = 0; i < n; i++)
+                        MSG("%s", Names[i]);
+                    ERR(CO_INDEX, "");
+                }
                 if (util_eq(name, Names[i])) {
                     map = Maps[i];
                     break;
                 }
             }
-	}
+        }
     }
     return map(v, l, h, r, g, b);;
 }
@@ -830,5 +833,32 @@ spring(real v, real l, real h, float *pR, float *pG, float *pB)
     *pR = 1;
     *pG = v;
     *pB = 1 - v;
+    return CO_OK;
+}
+
+static int
+ukraine(real v, real l, real h, float *pR, float *pG, float *pB)
+{
+    /* FFC36C
+       77BCFF
+     */
+    real al;
+    real be;
+    const real a[] = { 0.4667, 0.7373, 1.0000 };
+    const real b[] = { 1.0000, 0.7647, 0.4235 };
+    if (v < l)
+        v = l;
+    if (v > h)
+        v = h;
+    if (l != h)
+        v = (v - l) / (h - l);
+    else
+        v = 0;
+    al = v;
+    be = 1 - v;
+
+    *pR = al * a[0] + be * b[0];
+    *pG = al * a[1] + be * b[1];
+    *pB = al * a[2] + be * b[2];
     return CO_OK;
 }
