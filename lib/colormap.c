@@ -663,10 +663,13 @@ viridis(real v, real l, real h, float *pR, float *pG, float *pB)
     if (i < 0)
         i = 0;
     j = i + 1;
-    if (j > n - 1)
+    if (j > n - 1) {
         j = n - 1;
-    al = v - i;
-    be = j - v;
+        al = be = 0.5;
+    } else {
+        al = v - i;
+        be = j - v;
+    }
     *pR = al * Viridis[i][0] + be * Viridis[j][0];
     *pG = al * Viridis[i][1] + be * Viridis[j][1];
     *pB = al * Viridis[i][2] + be * Viridis[j][2];
@@ -797,10 +800,13 @@ palura(real v, real l, real h, float *pR, float *pG, float *pB)
     if (i < 0)
         i = 0;
     j = i + 1;
-    if (j > n - 1)
+    if (j > n - 1) {
         j = n - 1;
-    al = v - i;
-    be = j - v;
+        al = be = 0.5;
+    } else {
+        al = v - i;
+        be = j - v;
+    }
     *pR = al * Palura[i][0] + be * Palura[j][0];
     *pG = al * Palura[i][1] + be * Palura[j][1];
     *pB = al * Palura[i][2] + be * Palura[j][2];
