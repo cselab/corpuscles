@@ -1,7 +1,6 @@
 #!/bin/sh
 
 . co.util
-
 prog=co.list
 usg () {
 cat >&2 <<!
