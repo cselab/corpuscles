@@ -4,7 +4,6 @@
 prog=co.wall
 num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
 num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
-
 usg () {
 cat >&2 <<!
 $prog -w z [-x x] [-y y] [-c] < OFF > OFF
