@@ -8,4 +8,4 @@ install: $M
 test: install; atest test/*
 
 .PHONY: clean test install
-clean:; rm -f $M.o $M
+clean:
