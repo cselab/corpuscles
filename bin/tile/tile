@@ -6,10 +6,9 @@ prog=co.tile
 : ${FFMPEG=ffmpeg}
 
 usg () {
-    msg "$prog -o OUTPUT.mp4 [-x int] -nx int -ny int [files.mp4 row major order]"
+    msg "$prog -o OUTPUT.mp4 -nx int -ny int [files.mp4 row major order]"
     msg "tile video files"
     msg "-nx|-ny tiling dimensions"
-    msg "-x ouptut image resolution"
     exit
 }
 filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
@@ -45,11 +44,6 @@ do case "$1" in
            if test $# -eq 0; then err '-o needs a file'; fi
            Output="$1"; shift
            ;;
-       -x) shift
-           if test $# -eq 0; then err '-x needs an argument'; fi
-           x="$1"; shift
-           if ! intp "$x"; then err "not an integer '$x'"; fi
-           ;;
        -nx) shift
            if test $# -eq 0; then err '-nx needs an argument'; fi
            nx="$1"; shift
@@ -84,15 +78,15 @@ if ! r=`rate "$1"`
 then err "ffprobe failed on '$1'"
 fi
 
-if ! sx=`width "$1"`
+if ! x0=`width "$1"`
 then err "ffprobe failed on '$1'"
 fi
 
-if ! sy=`height "$1"`
+if ! y0=`height "$1"`
 then err "ffprobe failed on '$1'"
 fi
 
-if ! c=`co.tile0 "$r" "$x" "$sx" "$sy" "$nx" "$ny" "$@" "$Output"`
+if ! c=`co.tile0 "$r" "$x0" "$y0" "$nx" "$ny" "$@" "$Output"`
 then err "co.tile0 failed"
 fi
 eval "$c"
