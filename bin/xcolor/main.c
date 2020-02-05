@@ -102,8 +102,10 @@ main(int argc, char **a)
 	status = y_inif(stdin, &p, &x, &y, &z);
     } else
 	status = y_ini(*a, &p, &x, &y, &z);
-    if (status != CO_OK)
-	ER("not an off file '%s'", a[0]);
+    if (status != CO_OK) {
+	fprintf(stderr, "%s: fail to read an OFF file\n", me);
+	exit(1);
+    }
     n = he_nv(q);
     CALLOC(n, &c);
     min = array_min(n, u);

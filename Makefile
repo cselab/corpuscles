@@ -17,6 +17,7 @@ bin/loop\
 bin/maxima\
 bin/msh\
 bin/path\
+bin/tile\
 bin/q\
 bin/obj\
 bin/list\
