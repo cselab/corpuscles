@@ -98,7 +98,10 @@ main(int argc, char **a)
     scl(++a, &lo);
     scl(++a, &hi);
     a++;
-    status = y_ini(*a, &p, &x, &y, &z);
+    if (*a == NULL) {
+	status = y_inif(stdin, &p, &x, &y, &z);
+    } else
+	status = y_ini(*a, &p, &x, &y, &z);
     if (status != CO_OK)
 	ER("not an off file '%s'", a[0]);
     n = he_nv(q);
