@@ -7,6 +7,7 @@ pkgconfig\
 bin/m4\
 m4/lib\
 lib\
+bin/app\
 bin/bead\
 bin/2vtk\
 bin/eigenvector\

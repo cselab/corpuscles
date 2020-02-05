@@ -1,0 +1,34 @@
+#!/bin/sh
+
+. co.util
+prog=co.app
+usg () {
+cat >&2 <<!
+$prog APPEARANCES < OOGL > OOGL
+add APPEARANCES to OOGL file
+!
+exit 2
+}
+
+AddOrg=1
+while test $# -ne 0
+do case "$1" in
+       -h) usg ;;
+       -*) err "unknown option '$1'" ;;
+       *) break
+   esac
+done
+
+if test $# -eq 0
+then err 'needs argument appearances'
+fi
+
+if ! test -f "$1"
+then err "not a file '$1'"
+fi
+
+echo '{'
+cat "$1"
+echo
+cat
+echo '}'
