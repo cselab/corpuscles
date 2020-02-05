@@ -28,7 +28,7 @@ do case "$1" in
 	   Output="$1"; shift
 	   ;;
        -r) shift
-	   if test $# -eq 0; then err '-o needs a number'; fi
+	   if test $# -eq 0; then err '-r needs an argument'; fi
 	   R="$1"; shift
 	   ;;
        -*) err "unknown option '$1'" ;;

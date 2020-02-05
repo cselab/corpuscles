@@ -1,5 +1,43 @@
-#!/bin/bash
+#!/bin/sh
 
-c=`./tile.py 2 1 a.mp4 b.mp4 tile.mp4`
-echo "$c"
+. co.util
+prog=co.tile
+: ${FFPROBE=ffprobe}
+: ${FFMPEG=ffmpeg}
+
+rate () {
+    "$FFPROBE" 2>/dev/null -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate "$1"
+}
+
+if ! e $FFMPEG -version '>/dev/null' '2>/dev/null'
+then err "$FFMPEG command not found"
+fi
+
+if ! e $FFPROBE -version '>/dev/null' '2>/dev/null'
+then err "$FFPROBE command not found"
+fi
+
+x=1460 y=720
+if ! r=`rate "$1"`
+then err "ffprobe failed on '$1'"
+fi
+while test $# -ne 0
+do case "$1" in
+       -o) shift
+	   if test $# -eq 0; then err '-o needs a file'; fi
+	   Output="$1"; shift
+	   ;;
+       -r) shift
+	   if test $# -eq 0; then err '-r needs a number'; fi
+	   R="$1"; shift
+	   ;;
+       -*) err "unknown option '$1'" ;;
+       *) break ;;
+   esac
+done
+
+output=tile.mpg
+
+c=`./tile.py "$r" "$x" "$y" 2 1 "$1" "$2" "$output"`
+#echo "$c"
 eval "$c"

@@ -3,13 +3,15 @@
 import sys
 import subprocess as sp
 
-
 usg = '''tile list of movies
 ./tile.py nx ny [nx*ny paths, row major] out
 '''
-
 av = sys.argv
 m = 1
+
+rate = av[m]; m += 1
+rx = int(av[m]); m += 1
+ry = int(av[m]); m += 1
 
 if len(av) <= 1:
     sys.stderr.write(usg)
@@ -27,8 +29,6 @@ for k in range(n):
 out = av[m]; m += 1
 
 # output resolution
-rx = 1460
-ry = 720
 
 # tiles
 sx = rx // nx
@@ -58,12 +58,7 @@ for j in range(ny):
         if k + 1 < n:
             o += " [{:}]; ".format(t)
         pr = t
-o += "' -r 30 -c:v libx264 {:}".format(out)
+o += "' -loglevel error -y -r {:} -c:v libx264 {:}".format(rate, out)
 
 print(o)
-
 #sp.check_call(o, shell=True)
-
-
-
-
