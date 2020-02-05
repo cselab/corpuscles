@@ -6,7 +6,7 @@ prog=co.tile
 : ${FFMPEG=ffmpeg}
 
 usg () {
-    msg "$prog -o OUTPUT.mp4 [-x int] [-y int] -nx int -ny int [files.mp4 row major order]"
+    msg "$prog -o OUTPUT.mp4 [-x int] -nx int -ny int [files.mp4 row major order]"
     msg "tile video files"
     msg "-nx|-ny tiling dimensions"
     msg "-x ouptut image resolution"
@@ -92,7 +92,7 @@ if ! sy=`height "$1"`
 then err "ffprobe failed on '$1'"
 fi
 
-if ! c=`./tile.py "$r" "$x" "$sx" "$sy" "$nx" "$ny" "$@" "$Output"`
-then err "./tile.py failed"
+if ! c=`co.tile0 "$r" "$x" "$sx" "$sy" "$nx" "$ny" "$@" "$Output"`
+then err "co.tile0 failed"
 fi
 eval "$c"
