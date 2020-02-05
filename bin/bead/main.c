@@ -30,6 +30,7 @@ static int tri(int, He *, const real *, const real *, const real *, /**/ real[3]
 int
 main(int argc, char **argv)
 {
+    enum {MAX_X, MAX_Y, MAX_Z};
     He *bead;
     He *current;
     He *reference;
@@ -50,8 +51,10 @@ main(int argc, char **argv)
     int i;
     int j;
     int n;
+    int Type;
 
     Bead = Reference = NULL;
+    Type = MAX_X;
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
 	switch (argv[0][1]) {
@@ -65,6 +68,15 @@ main(int argc, char **argv)
 		exit(2);
 	    }
 	    break;
+	case 'x':
+	    Type = MAX_X;
+	    break;
+	case 'y':
+	    Type = MAX_Y;
+	    break;
+	case 'z':
+	    Type = MAX_Z;
+	    break;	    	    
 	case 'r':
 	    argv++;
 	    if ((Reference = *argv) == NULL) {
@@ -103,6 +115,10 @@ main(int argc, char **argv)
     n = he_nt(reference);
     for (j = i = 0; i < n; i++) {
 	tri(i, reference, p, q, r, pos);
+	switch (Type) {
+	case MAX_X:
+	    
+	}
 	if (i == 0 || pos[X] > mpos[X]) {
 	    j = i;
 	    vec_copy(pos, mpos);
