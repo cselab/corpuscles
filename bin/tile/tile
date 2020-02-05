@@ -45,11 +45,6 @@ do case "$1" in
            if test $# -eq 0; then err '-o needs a file'; fi
            Output="$1"; shift
            ;;
-       -r) shift
-           if test $# -eq 0; then err '-r needs an argument'; fi
-           R="$1"; shift
-           if ! intp "$R"; then err "not an integer '$R'"; fi
-           ;;
        -x) shift
            if test $# -eq 0; then err '-x needs an argument'; fi
            x="$1"; shift
