@@ -4,15 +4,25 @@
 prog=co.list
 usg () {
 cat >&2 <<!
-$prog OFF [OFF..] < OFF > OFF
+$prog [-n] file|command [file|command..] < ORG.off > OFF
+create OOGL list from files or commands. If an argment has a form
+"(command)" a standard output of a command:
+$ (command) < ORG.off
+is added to a list. Default is to add ORG.off to the list, this can be
+supressed if -n is given.
 !
 exit 2
 }
 
-for i
-do case "$i" in
+AddOrg=1
+while test $# -ne 0
+do case "$1" in
        -h) usg ;;
-       -*) err "unknown option '$i'" ;;
+       -n) shift
+           AddOrg=0
+           ;;
+       -*) err "unknown option '$1'" ;;
+       *) break
    esac
 done
 
@@ -21,18 +31,39 @@ then err 'needs argument OFF'
 fi
 
 for i
-do if ! test -f "$i"
-   then err "$i is not a file"
-   fi
+do case "$i" in
+       '('*')') ;;
+       *) if ! test -f "$i"
+          then err "$i is not a file or command"
+          fi
+          ;;
+   esac
 done
 
+t=/tmp/list.$$.off
+cat>$t
+trap 'rm -f $t; exit 2' 1 2 3 4 15
 
 echo LIST
 for i
 do echo '{'
-   cat "$i"
+   case "$i" in
+       '('*')')
+           if ! eval "$i" '<' "$t"
+           then
+               rm -f $t
+               err "command '$i' failed"
+           fi
+           ;;
+       *) cat "$i"
+          ;;
+   esac
    echo '}'
 done
-echo '{'
-cat
-echo '}'
+if test $AddOrg -eq 1
+then echo '{'
+     cat "$t"
+     echo '}'
+fi
+rm -f $t
+exit
