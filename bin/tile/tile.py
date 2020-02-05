@@ -4,22 +4,23 @@ import sys
 import subprocess as sp
 
 usg = '''tile list of movies
-./tile.py nx ny [nx*ny paths, row major] out
+./tile.py
 '''
 av = sys.argv
 m = 1
 
 rate = av[m]; m += 1
 rx = int(av[m]); m += 1
-ry = int(av[m]); m += 1
+sx = int(av[m]); m += 1
+sy = int(av[m]); m += 1
 
 if len(av) <= 1:
     sys.stderr.write(usg)
     exit(1)
-
 nx = int(av[m]); m += 1
 ny = int(av[m]); m += 1
 
+ry = rx*sy*ny//(sx*nx)
 n = nx * ny
 
 vs = []
@@ -38,7 +39,7 @@ o = "ffmpeg"
 for k in range(n):
     o += " -i {:}".format(vs[k])
 
-dx = 290
+dx = 0
 
 o += " -filter_complex 'nullsrc=size={:}x{:} [base]; \n".format(rx, ry)
 for k in range(n):

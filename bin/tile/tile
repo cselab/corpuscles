@@ -5,9 +5,30 @@ prog=co.tile
 : ${FFPROBE=ffprobe}
 : ${FFMPEG=ffmpeg}
 
+usg () {
+    msg "$prog -o OUTPUT.mp4 [-x int] [-y int] -nx int -ny int [files.mp4 row major order]"
+    msg "tile video files"
+    msg "-nx|-ny tiling dimensions"
+    msg "-x ouptut image resolution"
+    exit
+}
+filep() { if test ! -f "$1"; then err "not a file '$1'"; fi; }
+intp()  { echo "$1" | grep -q '^[0-9][0-9]*$'; }
+mult()  { awk -v x="$1" -v y="$2" 'BEGIN {print x * y}'; }
+
 rate () {
     "$FFPROBE" 2>/dev/null -v 0 -of csv=p=0 -select_streams v:0 -show_entries stream=r_frame_rate "$1"
 }
+
+height () {
+    "$FFPROBE" 2>/dev/null -v 0 -select_streams v:0 -show_entries stream=height -of default=nw=1:nk=1 "$1"
+}
+
+width () {
+    "$FFPROBE" 2>/dev/null -v 0 -select_streams v:0 -show_entries stream=width -of default=nw=1:nk=1 "$1"
+}
+
+if test $# -ne 0 && test "$1" = -h; then usg; fi
 
 if ! e $FFMPEG -version '>/dev/null' '2>/dev/null'
 then err "$FFMPEG command not found"
@@ -17,27 +38,66 @@ if ! e $FFPROBE -version '>/dev/null' '2>/dev/null'
 then err "$FFPROBE command not found"
 fi
 
-x=1460 y=720
-if ! r=`rate "$1"`
-then err "ffprobe failed on '$1'"
-fi
+x=1600 nx= ny= Output=
 while test $# -ne 0
 do case "$1" in
        -o) shift
-	   if test $# -eq 0; then err '-o needs a file'; fi
-	   Output="$1"; shift
-	   ;;
+           if test $# -eq 0; then err '-o needs a file'; fi
+           Output="$1"; shift
+           ;;
        -r) shift
-	   if test $# -eq 0; then err '-r needs a number'; fi
-	   R="$1"; shift
-	   ;;
+           if test $# -eq 0; then err '-r needs an argument'; fi
+           R="$1"; shift
+           if ! intp "$R"; then err "not an integer '$R'"; fi
+           ;;
+       -x) shift
+           if test $# -eq 0; then err '-x needs an argument'; fi
+           x="$1"; shift
+           if ! intp "$x"; then err "not an integer '$x'"; fi
+           ;;
+       -nx) shift
+           if test $# -eq 0; then err '-nx needs an argument'; fi
+           nx="$1"; shift
+           if ! intp "$nx"; then err "not an integer '$nx'"; fi
+           ;;
+       -ny) shift
+           if test $# -eq 0; then err '-ny needs an argument'; fi
+           ny="$1"; shift
+           if ! intp "$ny"; then err "not an integer '$ny'"; fi
+           ;;       
        -*) err "unknown option '$1'" ;;
        *) break ;;
    esac
 done
 
-output=tile.mpg
+if test x"$nx" = x; then err "-nx should be given"; fi
+if test x"$ny" = x; then err "-ny should be given"; fi
+if test x"$Output" = x; then err "-o should be given"; fi
 
-c=`./tile.py "$r" "$x" "$y" 2 1 "$1" "$2" "$output"`
-#echo "$c"
+n=`mult $nx $ny`
+if test $# -ne $n
+then err "wrong number of files "$#" should be $nx x $ny = $n"
+fi
+
+for i
+do if ! test -f "$i"
+   then err "not a file '$i'"
+   fi
+done
+
+if ! r=`rate "$1"`
+then err "ffprobe failed on '$1'"
+fi
+
+if ! sx=`width "$1"`
+then err "ffprobe failed on '$1'"
+fi
+
+if ! sy=`height "$1"`
+then err "ffprobe failed on '$1'"
+fi
+
+if ! c=`./tile.py "$r" "$x" "$sx" "$sy" "$nx" "$ny" "$@" "$Output"`
+then err "./tile.py failed"
+fi
 eval "$c"
