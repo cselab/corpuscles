@@ -616,12 +616,12 @@ off_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
     for (m = 0; m < nv; m++) {
         if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
 	    ERR(CO_IO, "colormap failed");
-	
 	fprintf(f, FMT " " FMT " " FMT " %.16g %.16g %.16g %.16g\n",
 		x[m], y[m], z[m], red, green, blue, alpha);
     }
     for (m = 0; m < nt; m++) {
-	he_tri_ijk(he, m, &i, &j, &k);
+	if (he_tri_ijk(he, m, &i, &j, &k) != CO_OK)
+	    ERR(CO_OK, "hi_tri_ikj failed for t = %d", m);
 	fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
     return CO_OK;
