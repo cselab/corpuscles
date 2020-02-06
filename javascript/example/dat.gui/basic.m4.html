@@ -3,32 +3,28 @@ include(mh.m4)dnl
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>OFF</title>
+		<title>Basic</title>
 	</head>
-	<style>
-		body { margin : 0;}
-		canvas { width: 100%; hight: 100%; }
-	</style>
-	<body>		
-	</body>
-	<script>
+        <body>
+          <p id="demo"></p>
+        </body>
+<script>
 "use strict";
 mh_include(dat.gui.js)dnl
-var FizzyText = function() {
-    this.message = 'dat.gui'
-    this.speed = 0.8
-    this.displayOutline = false
-    this.explode = function() {
-        consol.log("preved")
-    }
-}
+var i
 window.onload = function() {
-  var text = new FizzyText()
-  var gui = new dat.GUI()
-  gui.add(text, 'message')
-  gui.add(text, 'speed', -5, 5)
-  gui.add(text, 'displayOutline')
-  gui.add(text, 'explode')
+    var gui
+    var obj
+    obj = {
+        'add' : 
+        function() {
+            document.getElementById("demo").innerHTML = i++
+            console.log(i)
+        }
+    }
+    i = 0
+    gui = new dat.GUI();
+    gui.add(obj, 'add')
 }
-	</script>
+</script>
 </html>
