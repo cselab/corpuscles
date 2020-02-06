@@ -59,6 +59,7 @@ main(int argc, char **a)
     real min, max, d;
     real lo, hi;
     real opacity;
+    real t;
 
     USED(argc);
     err_set_ignore();
@@ -112,6 +113,7 @@ main(int argc, char **a)
     status = y_ini(*a, &q, &u, &v, &w);
     if (status != CO_OK)
         ER("not an off file '%s'", a[0]);
+
     scl(++a, &lo);
     scl(++a, &hi);
     a++;
@@ -151,8 +153,6 @@ main(int argc, char **a)
         break;
     case AXIS:
         max = 0;
-        real t;
-
         for (i = 0; i < n; i++) {
             t = sqrt(v[i] * v[i] + w[i] * w[i]);
             if (t < 0.3)
@@ -162,6 +162,12 @@ main(int argc, char **a)
         }
         break;
     }
+    if (lo > hi) {
+        hi = -hi;
+        lo = -lo;
+        array_neg(n, c);
+    }
+
     const real *scal[] = { c, NULL };
     const char *name[] = { "color", NULL };
     switch (Output) {
