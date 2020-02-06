@@ -1,12 +1,14 @@
 var loader, camera, scene, renderer, params, gui
 
 if (THREE.WEBGL.isWebGLAvailable()) {
-        gui = new dat.GUI()
-	params = { file : '0'}
-        gui.add(params, 'file', [ '0', '1', '2' ] )
-        gui.open()
-	loader = new THREE.FileLoader()
-	loader.load('data/rbc.off', load, progress, err)
+    gui = new dat.GUI()
+    params = { file : '0'}
+    gui.add(params, 'file', [ '0', '1', '2' ] )
+    gui.open()
+    loader = new THREE.FileLoader()
+    loader.load('data/rbc.off', load, progress, err)
+    var obj = { add:function(){ console.log("clicked") }};
+    gui.add(obj,'add');
 } else {
 	var warning = THREE.WEBGL.getWebGLErrorMessage()
         document.body.appendChild(warning)

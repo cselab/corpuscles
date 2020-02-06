@@ -2,7 +2,7 @@ S = ../..
 include $S/make/js.mk
 include $S/make/html.mk
 
-M = area he off vec tri hello.html
+M = area he off0 vec tri hello.html
 all: $M
 hello.html: load.js
 
