@@ -546,12 +546,21 @@ boff_tri_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
-                   real lo, real hi, const real * a, /**/ FILE * f)
+			 real lo, real hi, const real * a, /**/ FILE * f)
+{
+    real alpha;
+    alpha = 0.5;
+    return boff_lh_ver_alpha_fwrite(he, x, y, z, lo, hi, alpha, a, f);
+}
+
+int
+boff_lh_ver_alpha_fwrite(He * he, const real * x, const real * y, const real * z,
+			 real lo, real hi, real alpha, const real * a, /**/ FILE * f)
 {
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
     float db[7];
-    float red, green, blue, alpha;
+    float red, green, blue;
 
     if (fputs("COFF BINARY\n", f) == EOF)
         ERR(CO_IO, "fail to write");
@@ -560,7 +569,6 @@ boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
     ne = 0;
     npv = 3;
     nc = 0;
-    alpha = 0.5;
 
     n = 0;
     ib[n++] = nv;
@@ -598,25 +606,26 @@ boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
 }
 
 int
-off_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
-                   real lo, real hi, const real * a, /**/ FILE * f)
+off_lh_ver_alpha_fwrite(He * he, const real * x, const real * y, const real * z,
+			real lo, real hi, real alpha, const real * a, /**/ FILE * f)
 {
     int nv, nt, ne, npv, m, i, j, k;
-    float red, green, blue, alpha;
+    float red, green, blue;
 
+    if (alpha < 0 && alpha > 1)
+	ERR(CO_IO, "alpha = " OUT " is not in [0, 1]", alpha);
     if (fputs("COFF\n", f) == EOF)
         ERR(CO_IO, "fail to write");
     nv = he_nv(he);
     nt = he_nt(he);
     ne = 0;
     npv = 3;
-    alpha = 0.5;
 
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (m = 0; m < nv; m++) {
         if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
 	    ERR(CO_IO, "colormap failed");
-	fprintf(f, FMT " " FMT " " FMT " %.16g %.16g %.16g %.16g\n",
+	fprintf(f, FMT " " FMT " " FMT " %.16g %.16g %.16g " FMT "\n",
 		x[m], y[m], z[m], red, green, blue, alpha);
     }
     for (m = 0; m < nt; m++) {
@@ -625,6 +634,14 @@ off_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
 	fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
     return CO_OK;
+}
+
+int
+off_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
+		  real lo, real hi, const real * a, /**/ FILE * f) {
+    real alpha;
+    alpha = 0.5;
+    return off_lh_ver_alpha_fwrite(he, x, y, z, lo, hi, alpha, a, f);
 }
 
 int
