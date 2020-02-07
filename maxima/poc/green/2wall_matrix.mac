@@ -1,56 +1,53 @@
-b0([L])::=buildq([L: L], block(splice(L)));
+load("partition") $
 
-tnn(q, z, z0):=b0([],
+tnn:
   Em*(-v*cosh(v) + Bp*sinh(v))*w*cosh(w)
   + Ep*(-v*sinh(v) + Ap*cosh(v))*w*sinh(w)
   + Ep*(Ap*v*sinh(v) - Cp*cosh(v))*cosh(w)
-  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(w));
+  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(w)$
 
-tnp(q, z, z0):=b0([],
+tnp:
   Em*(v*sinh(v) - Am*cosh(v))*w*cosh(w)
   + Ep*(v*cosh(v) - Bm*sinh(v))*w*sinh(w)
   + Ep*(-Ap*v*cosh(v) + u^2*sinh(v))*cosh(w)
-  + Em*(-Bp*v*sinh(v) + u^2*cosh(v))*sinh(w));
+  + Em*(-Bp*v*sinh(v) + u^2*cosh(v))*sinh(w)$
 
-tpn(q, z, z0):=b0([],
+tpn:
   Ep*(-v*sinh(v) + Ap*cosh(v))*w*cosh(w)
   + Em*(-v*cosh(v) + Bp*sinh(v))*w*sinh(w)
   + Em*(Am*v*cosh(v) - u^2*sinh(v))*cosh(w)
-  + Ep*(Bm*v*sinh(v) - u^2*cosh(v))*sinh(w));
+  + Ep*(Bm*v*sinh(v) - u^2*cosh(v))*sinh(w)$
 
-tpp(q, z, z0):= b0([],
+tpp:
   Ep*(v*cosh(v) - Bm*sinh(v))*w*cosh(w)
   + Em*(v*sinh(v) - Am*cosh(v))*w*sinh(w)
   + Em*(-Am*v*sinh(v) + Cm*cosh(v)
       -2*u*tanh(u)*cosh(v))*cosh(w)
     + Ep*(-Bm*v*cosh(v) + Dm*sinh(v)
-      - 2*u*coth(u)*sinh(v))*sinh(w));
+      - 2*u*coth(u)*sinh(v))*sinh(w)$
 
-rpp(q, z, z0):=b0([],
+rpp:
   (-2*exp(-u)*cosh(v)/cosh(u))*cosh(w)
-  +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w)
-  );
+  +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w)$
 
-load("partition");
+matchdeclare(qq, partition_expression("*", lambda([e], freeof('w, 'v, e)), 1, "*", "[", 'ANSqq))$
+defrule(r, qq, ANSqq)$
 
-matchdeclare(qq, partition_expression("*", lambda([e], freeof('w, 'v, e)), 1, "*", "[", 'ANSqq));
-defrule(r, qq, ANSqq);
-
-f[1](v):=cosh(v);
-f[2](v):=sinh(v);
-f[3](v):=v*cosh(v);
-f[4](v):=v*sinh(v);
-table[otherwise]:= false;
-for i thru 4 do for j thru 4 do table[radcan(f[i](v)*f[j](w))]: [i, j];
+f[1](v):=cosh(v)$
+f[2](v):=sinh(v)$
+f[3](v):=v*cosh(v)$
+f[4](v):=v*sinh(v)$
+table[otherwise]:= false$
+for i thru 4 do for j thru 4 do table[radcan(f[i](v)*f[j](w))]: [i, j]$
 
 gmatrix(f):= block([E, e, t, i, j], local(E),
 E: zeromatrix(4, 4),
-for e in expand(apply(f, ['q, 'z, 'z0])) do (
+for e in expand(f) do (
     t: r(e),
     [i, j]: table[second(t)],
     E[i, j]: first(t)
     ),
-  E);
+  E)$
 
 Enn: gmatrix(tnn);
 Epp: gmatrix(tpp);
@@ -62,3 +59,6 @@ Enn - transpose(Enn);
 Epp - transpose(Epp);
 Enp + transpose(Epn);
 Rpp - transpose(Rpp);
+
+%v: create_list(f[i](v), i, 1, 4);
+%u: create_list(f[i](w), i, 1, 4);

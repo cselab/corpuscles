@@ -1,12 +1,24 @@
 #include <math.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 #include <real.h>
-#include <co/err.h>
 #include <alg/integration.h>
 #include <alg/special.h>
+#include <co/argv.h>
+#include <co/err.h>
+#include <co/macro.h>
 
 #define FMT CO_REAL_OUT
+static char me[] = "tensor";
+
+static void
+usg()
+{
+    fprintf(stderr, "%s -x float -y float -z float -0 float -W float\n",
+            me);
+    exit(1);
+}
 
 static const real qmax = 100;
 struct Param {
@@ -44,13 +56,14 @@ static real tpn(real q, real z, real z0, real W);
 static real tpp(real q, real z, real z0, real W);
 static real rpp(real q, real z, real z0, real W);
 static int f_xx_yy(struct Input *, AlgIntegration *, real *, real *);
-static int f_zz(struct Input *, AlgIntegration *, real * );
-static int f_xy(struct Input *, AlgIntegration *, real * );
+static int f_zz(struct Input *, AlgIntegration *, real *);
+static int f_xy(struct Input *, AlgIntegration *, real *);
 static int f_xz_yz(struct Input *, AlgIntegration *, real * xz, real * yz);
-static int f_zx_zy(struct Input *i, AlgIntegration *, real * zx, real * zy);
+static int f_zx_zy(struct Input *i, AlgIntegration *, real * zx,
+                   real * zy);
 
 int
-main()
+main(int argc, char **argv)
 {
     real xx;
     real xy;
@@ -64,13 +77,42 @@ main()
     struct Input i;
     AlgIntegration *integration;
 
+    USED(argc);
     i.x = 0.1;
     i.y = 0.2;
     i.z = 0.3;
     i.z0 = 0.4;
     i.W = 1.0;
+    while (*++argv != NULL && argv[0][0] == '-') {
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        case 'x':
+	    argv_str2real(*++argv, &i.x);
+            break;
+        case 'y':
+	    argv_str2real(*++argv, &i.x);
+            break;
+        case 'z':
+	    argv_str2real(*++argv, &i.z);
+            break;
+        case '0':
+	    argv_str2real(*++argv, &i.z0);
+            break;
+        case 'w':
+	    argv_str2real(*++argv, &i.W);
+            break;	    	    
+        default:
+            fprintf(stderr, "%s: unknown option '%s'\n", me, *argv);
+            exit(2);
+        }
+    }
+    if (*argv != NULL) {
+	fprintf(stderr, "%s: unexpected argument '%s'\n", me, *argv);
+	exit(2);
+    }
     alg_integration_ini(QAGS, &integration);
-
     f_xx_yy(&i, integration, &xx, &yy);
     f_zz(&i, integration, &zz);
     f_xy(&i, integration, &xy);
@@ -304,7 +346,8 @@ rpp(real q, real z, real z0, real W)
 }
 
 static int
-f_xx_yy(struct Input *i, AlgIntegration * integration, real * xx, real * yy)
+f_xx_yy(struct Input *i, AlgIntegration * integration, real * xx,
+        real * yy)
 {
     real a;
     real b;
@@ -357,7 +400,8 @@ f_zz(struct Input *i, AlgIntegration * integration, real * result)
     p.W = i->W;
     p.j = alg_special_bessel_J0;
     p.f = tnn;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
     return CO_OK;
 }
@@ -381,7 +425,8 @@ f_xy(struct Input *i, AlgIntegration * integration, real * result)
     p.W = i->W;
     p.j = alg_special_bessel_J2;
     p.f = tpp;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
 
     *result *= (i->x * i->y) / s2;
@@ -389,7 +434,8 @@ f_xy(struct Input *i, AlgIntegration * integration, real * result)
 }
 
 static int
-f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz, real * yz)
+f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz,
+        real * yz)
 {
     real s2;
     real x2;
@@ -409,15 +455,17 @@ f_xz_yz(struct Input *i, AlgIntegration * integration, real * xz, real * yz)
     p.W = i->W;
     p.j = alg_special_bessel_J1;
     p.f = tpn;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
-    *xz = - (i->x) * result  / s;
-    *yz = - (i->y) * result  / s;
+    *xz = -(i->x) * result / s;
+    *yz = -(i->y) * result / s;
     return CO_OK;
 }
 
 static int
-f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx, real * zy)
+f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx,
+        real * zy)
 {
     real s2;
     real x2;
@@ -437,9 +485,10 @@ f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx, real * zy)
     p.W = i->W;
     p.j = alg_special_bessel_J1;
     p.f = tnp;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F, &p, &result) !=
+        CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
-    *zx = - (i->x) * result  / s;
-    *zy = - (i->y) * result  / s;
+    *zx = -(i->x) * result / s;
+    *zy = -(i->y) * result / s;
     return CO_OK;
 }
