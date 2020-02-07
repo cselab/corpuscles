@@ -48,6 +48,7 @@ struct T {
     AlgIntegration *integration;
 };
 
+static real sq(real);
 static int s0(T *, const real[3], Ten *);
 static int d0(T *, const real[3], const real[3], Ten *);
 static real F(real, void *);
@@ -67,6 +68,9 @@ static real tnp(real q, real z, real z0, real W);
 static real tpn(real q, real z, real z0, real W);
 static real tpp(real q, real z, real z0, real W);
 static real rpp(real q, real z, real z0, real W);
+static real tnn0(real q, real z, real W);
+static real tpp0(real q, real z, real W);
+static real rpp0(real q, real z, real W);
 static int f_xx_yy(struct Input *, AlgIntegration *, real *, real *);
 static int f_zz(struct Input *, AlgIntegration *, real *);
 static int f_xy(struct Input *, AlgIntegration *, real *);
@@ -288,11 +292,11 @@ green3_wall2_s(T * q, const real a[3], const real b[3], Ten * t0)
     u = a[X] - b[X];
     v = a[Y] - b[Y];
     w = a[Z] - b[Z];
-    r2 = u*u + v*v + w*w;
+    r2 = u * u + v * v + w * w;
     if (r2 == 0)
-	ERR(CO_NUM, "r2 == 0");
-    r1 = 1/sqrt(r2);
-    r3 = r1/r2;
+        ERR(CO_NUM, "r2 == 0");
+    r1 = 1 / sqrt(r2);
+    r3 = r1 / r2;
 
     /* walls */
     i.x = a[X] - b[X];
@@ -308,15 +312,21 @@ green3_wall2_s(T * q, const real a[3], const real b[3], Ten * t0)
     t[YX] = t[XY];
 
     /* free */
-    uu = r1 + u*u*r3;
-    vv = r1 + v*v*r3;
-    ww = r1 + w*w*r3;
-    uv = u*v*r3;
-    uw = u*w*r3;
-    vw = v*w*r3;
-    t[XX] += uu; t[XY] += uv; t[XZ] += uw;
-    t[YX] += uv; t[YY] += vv; t[YZ] += vw;
-    t[ZX] += uw; t[ZY] += vw; t[ZZ] += ww;
+    uu = r1 + u * u * r3;
+    vv = r1 + v * v * r3;
+    ww = r1 + w * w * r3;
+    uv = u * v * r3;
+    uw = u * w * r3;
+    vw = v * w * r3;
+    t[XX] += uu;
+    t[XY] += uv;
+    t[XZ] += uw;
+    t[YX] += uv;
+    t[YY] += vv;
+    t[YZ] += vw;
+    t[ZX] += uw;
+    t[ZY] += vw;
+    t[ZZ] += ww;
 
     return CO_OK;
 }
@@ -842,4 +852,76 @@ f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx,
     *zx = -(i->x) * result / s;
     *zy = -(i->y) * result / s;
     return CO_OK;
+}
+
+static real
+tnn0(real q, real z, real W)
+{
+    real u;
+    real v;
+    real Ap;
+    real Bp;
+    real Cp;
+    real Dp;
+    real Ep;
+    real Em;
+
+    u = W * q;
+    v = q * z;
+    Ap = fAp(u);
+    Bp = fBp(u);
+    Cp = fCp(u);
+    Dp = fDp(u);
+    Ep = fEp(u);
+    Em = fEm(u);
+    return Ep * cosh(v) * (Ap * v * sinh(v) - Cp * cosh(v)) +
+        Ep * v * sinh(v) * (Ap * cosh(v) - v * sinh(v)) +
+        Em * sinh(v) * (Bp * v * cosh(v) - Dp * sinh(v)) +
+        Em * v * cosh(v) * (Bp * sinh(v) - v * cosh(v));
+}
+
+static real
+rpp0(real q, real z, real W)
+{
+    real u;
+    real v;
+
+    u = W * q;
+    v = q * z;
+    return (-(2 * exp(-u) * sq(sinh(v))) / sinh(u)) -
+        (2 * exp(-u) * sq(cosh(v))) / cosh(u);
+}
+
+static real
+tpp0(real q, real z, real W)
+{
+    real u;
+    real v;
+    real Am;
+    real Bm;
+    real Cm;
+    real Dm;
+    real Ep;
+    real Em;
+
+    u = W * q;
+    v = q * z;
+    Am = fAm(u);
+    Bm = fBm(u);
+    Cm = fCm(u);
+    Dm = fDm(u);
+    Ep = fEp(u);
+    Em = fEm(u);
+    return Em * cosh(v) * ((-Am * v * sinh(v)) -
+                           2 * u * tanh(u) * cosh(v) + Cm * cosh(v)) +
+        Em * v * sinh(v) * (v * sinh(v) - Am * cosh(v)) +
+        Ep * sinh(v) * ((-2 * u * coth(u) * sinh(v)) + Dm * sinh(v) -
+                        Bm * v * cosh(v)) +
+        Ep * v * cosh(v) * (v * cosh(v) - Bm * sinh(v));
+}
+
+static real
+sq(real x)
+{
+    return x * x;
 }
