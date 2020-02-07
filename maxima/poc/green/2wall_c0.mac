@@ -2,28 +2,28 @@ load("cgrind");
 b0([L])::=buildq([L: L], block(splice(L)));
 
 tnn(q, z):=b0([],
-  Em*(-v*cosh(v) + Bp*sinh(v))*w*cosh(w)
-  + Ep*(-v*sinh(v) + Ap*cosh(v))*w*sinh(w)
-  + Ep*(Ap*v*sinh(v) - Cp*cosh(v))*cosh(w)
-  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(w));
+  Em*(-v*cosh(v) + Bp*sinh(v))*v*cosh(v)
+  + Ep*(-v*sinh(v) + Ap*cosh(v))*v*sinh(v)
+  + Ep*(Ap*v*sinh(v) - Cp*cosh(v))*cosh(v)
+  + Em*(Bp*v*cosh(v) - Dp*sinh(v))*sinh(v));
 
 tpp(q, z):= b0([],
-  Ep*(v*cosh(v) - Bm*sinh(v))*w*cosh(w)
-  + Em*(v*sinh(v) - Am*cosh(v))*w*sinh(w)
+  Ep*(v*cosh(v) - Bm*sinh(v))*v*cosh(v)
+  + Em*(v*sinh(v) - Am*cosh(v))*v*sinh(v)
   + Em*(-Am*v*sinh(v) + Cm*cosh(v)
-      -2*u*tanh(u)*cosh(v))*cosh(w)
+      -2*u*tanh(u)*cosh(v))*cosh(v)
     + Ep*(-Bm*v*cosh(v) + Dm*sinh(v)
-      - 2*u*coth(u)*sinh(v))*sinh(w));
+      - 2*u*coth(u)*sinh(v))*sinh(v));
 
 rpp(q, z):=b0([],
-  -2*exp(-u)/cosh(u)*cosh(w)*cosh(v)
-  -2*exp(-u)/sinh(u)*sinh(w)*sinh(v)
+  -2*exp(-u)/cosh(u)*cosh(v)*cosh(v)
+  -2*exp(-u)/sinh(u)*sinh(v)*sinh(v)
   );
 
 %u : [
     u = q*W,
-    v = q*z0,
-    w = q*z];
+    v = q*z
+    ];
 
 %v : [
     Ap = u + sinh(u)*exp(-u),
@@ -37,12 +37,15 @@ rpp(q, z):=b0([],
     Ep = 1/(sinh(u)*cosh(u) + u),
     Em = 1/(sinh(u)*cosh(u) - u)];
 
+matchdeclare(x, true);
+defrule(r_exp, exp(x), 'e0xp(x));
+f_exp(e):=apply2(e, r_exp);
 
 one(f):=
 with_stdout(string(f),
 e: apply(f, [q, z]),
 l: listofvars(e),
-printf(true, "static real~%~a(real q, real z, real W)~%{~%", f),
+printf(true, "static real~%~a0(real q, real z, real W)~%{~%", f),
 printf(true, "real u;~%"),
 for v in %u do if member(lhs(v), l) then printf(true, "real ~a;~%", lhs(v)),
 for v in %v do if member(lhs(v), l) then printf(true, "real ~a;~%", lhs(v)),
@@ -50,6 +53,6 @@ printf(true, "~%"),
 printf(true, "~a;~%", u = q*W),
 for v in %u do if member(lhs(v), l) then printf(true, "~a;~%", v),
 for v in %v do if member(lhs(v), l) then printf(true, "~a = f~a(u);~%", lhs(v), lhs(v)),
-printf(true, "return ~a;~%}~%", e));
+printf(true, "return ~a;~%}~%", f_exp(e)));
 
 for i in ['tnn, 'tpp, 'rpp] do one(i);
