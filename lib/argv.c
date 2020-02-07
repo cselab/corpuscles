@@ -60,3 +60,13 @@ argv_str(char ***pargv, char *p)
     *pargv = argv;
     return CO_OK;
 }
+
+int
+argv_str2real(const char *s, real * p)
+{
+    if (s == NULL)
+        ERR(CO_IO, "s == NULL");
+    if (sscanf(s, CO_REAL_IN, p) != 1)
+        ERR(CO_IO, "not a number '%s'", s);
+    return CO_OK;
+}
