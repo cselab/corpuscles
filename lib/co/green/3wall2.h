@@ -8,6 +8,7 @@ int green3_wall2_fin(T *);
 int green3_wall2_apply(T *, He *, const real *, const real *, const real *,
                       struct Tensor3x3 *);
 int green3_wall2_s(T *, const real[3], const real[3], Ten *);
+int green3_wall2_s0(T *, const real[3], Ten *);
 int green3_wall2_t(T *, const real[3], const real normal[3], const real[3],
                   Ten *);
 int green3_wall2_stresslet(T *, He *, const real *, const real *,

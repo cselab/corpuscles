@@ -60,7 +60,6 @@ struct T {
 };
 
 static real sq(real);
-static int s0(T *, const real[3], Ten *);
 static int d0(T *, const real[3], const real[3], Ten *);
 static real F(real, void *);
 static real F0(real, void *);
@@ -144,7 +143,7 @@ green3_wall2_apply(T * q, He * he, const real * x, const real * y,
         i_vec_get(i, x, y, z, a);
         for (j = 0; j < n; j++) {
             if (i == j)
-                s0(q, a, &t0);
+                green3_wall2_s0(q, a, &t0);
             else {
                 i_vec_get(j, x, y, z, b);
                 if (green3_wall2_s(q, a, b, &t0) != CO_OK)
@@ -225,7 +224,7 @@ rad(real x, real y, real z)
 }
 
 int
-s0(T * q, const real a[3], Ten * t0)
+green3_wall2_s0(T * q, const real a[3], Ten * t0)
 {
     enum {
         X, Y, Z
