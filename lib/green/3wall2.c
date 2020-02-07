@@ -31,7 +31,13 @@ struct Param {
     real z;
     real z0;
     real W;
-     real(*f) (real, real, real, real);
+    real(*f) (real, real, real, real);
+};
+
+struct Param0 {
+    real z;
+    real W;
+    real(*f) (real, real, real);
 };
 
 struct Input {
@@ -39,6 +45,11 @@ struct Input {
     real y;
     real z;
     real z0;
+    real W;
+};
+
+struct Input0 {
+    real z;
     real W;
 };
 
@@ -52,6 +63,7 @@ static real sq(real);
 static int s0(T *, const real[3], Ten *);
 static int d0(T *, const real[3], const real[3], Ten *);
 static real F(real, void *);
+static real F0(real, void *);
 static real coth(real);
 static real fAp(real);
 static real fAm(real);
@@ -77,6 +89,8 @@ static int f_xy(struct Input *, AlgIntegration *, real *);
 static int f_xz_yz(struct Input *, AlgIntegration *, real * xz, real * yz);
 static int f_zx_zy(struct Input *i, AlgIntegration *, real * zx,
                    real * zy);
+static int f_xx_yy0(struct Input0 *, AlgIntegration *, real *, real *);
+static int f_zz0(struct Input0 *, AlgIntegration *, real *);
 
 int
 green3_wall2_ini(He * he, real w, T ** pq)
@@ -218,12 +232,17 @@ s0(T * q, const real a[3], Ten * t0)
     };
     real W;
     real *t;
-    struct Input i;
+    struct Input0 i;
     AlgIntegration *integration;
 
     t = t0->t;
     integration = q->integration;
     W = q->w;
+
+    i.z = a[Z];
+    i.W = W;
+    f_xx_yy0(&i, integration, &t[XX], &t[YY]);
+    f_zz0(&i, integration, &t[ZZ]);
 
     /* walls */
     t[XY] = t[YX] = t[XZ] = t[ZX] = t[YZ] = t[ZY] = 0;
@@ -506,6 +525,24 @@ F(real q, void *v)
     W = p->W;
     f = p->f;
     return j(q * s) * f(q, z, z0, W);
+}
+
+static real
+F0(real q, void *v)
+{
+    real s;
+    real z;
+    real z0;
+    real W;
+    struct Param0 *p;
+
+    real(*f) (real, real, real);
+
+    p = v;
+    z = p->z;
+    W = p->W;
+    f = p->f;
+    return f(q, z, W);
 }
 
 static real
@@ -851,6 +888,42 @@ f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx,
         ERR(CO_NUM, "alg_integration_apply failed");
     *zx = -(i->x) * result / s;
     *zy = -(i->y) * result / s;
+    return CO_OK;
+}
+
+static int
+f_xx_yy0(struct Input0 *i, AlgIntegration * integration, real * xx,
+	 real * yy)
+{
+    real a;
+    real b;
+    real s2;
+    real x2;
+    real y2;
+    struct Param0 p;
+
+    p.z = i->z;
+    p.W = i->W;
+    p.f = tpp0;
+    if (alg_integration_apply(integration, 0, qmax, F, &p, &a) != CO_OK)
+        ERR(CO_NUM, "alg_integration_apply failed");
+    p.f = rpp0;
+    if (alg_integration_apply(integration, 0, qmax, F, &p, &b) != CO_OK)
+        ERR(CO_NUM, "alg_integration_apply failed");
+    *yy = *xx = -a/2 + b;
+    return CO_OK;
+}
+
+static int
+f_zz0(struct Input0 *i, AlgIntegration * integration, real * zz)
+{
+    struct Param0 p;
+
+    p.z = i->z;
+    p.W = i->W;
+    p.f = tnn0;
+    if (alg_integration_apply(integration, 0, qmax, F, &p, zz) != CO_OK)
+        ERR(CO_NUM, "alg_integration_apply failed");
     return CO_OK;
 }
 
