@@ -53,9 +53,9 @@ rpp(q, z, z0):=b0([],
   -2*exp(-u)/sinh(u)*sinh(w)*sinh(v)
   );
 
-x: 0.1;
-y: 0.2;
-z: 1.0;
+x: 1e-5;
+y: 1e-5;
+z: 0.0;
 z0: 0.4;
 W: 1.0;
 s: sqrt(x^2 + y^2);
@@ -99,4 +99,4 @@ gyz + Gyz;
 gxz + Gxz;
 gzy + Gzy;
 
-gxx;
+gxx/(8*%pi), numer;

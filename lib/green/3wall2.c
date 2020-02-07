@@ -21,6 +21,9 @@
 
 #define T Green3Wall2
 enum { XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ };
+enum {
+    X, Y, Z
+};
 static const real pi = 3.141592653589793115997964;
 enum { INTEGRATION_TYPE = QAGS };
 static const real qmax = 100;
@@ -226,9 +229,6 @@ rad(real x, real y, real z)
 int
 green3_wall2_s0(T * q, const real a[3], Ten * t0)
 {
-    enum {
-        X, Y, Z
-    };
     real W;
     real *t;
     struct Input0 i;
@@ -251,9 +251,6 @@ green3_wall2_s0(T * q, const real a[3], Ten * t0)
 static int
 d0(T * q, const real a[3], const real n[3], Ten * t0)
 {
-    enum {
-        X, Y, Z
-    };
     real aw;
     real nx;
     real ny;
@@ -283,9 +280,6 @@ d0(T * q, const real a[3], const real n[3], Ten * t0)
 int
 green3_wall2_s(T * q, const real a[3], const real b[3], Ten * t0)
 {
-    enum {
-        X, Y, Z
-    };
     real W;
     real *t;
     real u;
@@ -353,9 +347,6 @@ int
 green3_wall2_t(T * q, const real a[3], const real n[3], const real b[3],
                Ten * t0)
 {
-    enum {
-        X, Y, Z
-    };
     real d[3];
     real nx;
     real ny;
