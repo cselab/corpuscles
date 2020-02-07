@@ -36,7 +36,6 @@ load("partition");
 matchdeclare(qq, partition_expression("*", lambda([e], freeof('w, 'v, e)), 1, "*", "[", 'ANSqq));
 defrule(r, qq, ANSqq);
 
-
 f[1](v):=cosh(v);
 f[2](v):=sinh(v);
 f[3](v):=v*cosh(v);
