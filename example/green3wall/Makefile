@@ -2,10 +2,10 @@
 include ../../conf.mk
 M = \
 grid\
-grid2\
 main\
 stress\
 velocity\
+velocity0\
 velocity2\
 
 PREC = d

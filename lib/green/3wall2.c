@@ -31,13 +31,13 @@ struct Param {
     real z;
     real z0;
     real W;
-    real(*f) (real, real, real, real);
+     real(*f) (real, real, real, real);
 };
 
 struct Param0 {
     real z;
     real W;
-    real(*f) (real, real, real);
+     real(*f) (real, real, real);
 };
 
 struct Input {
@@ -63,7 +63,6 @@ static real sq(real);
 static int d0(T *, const real[3], const real[3], Ten *);
 static real F(real, void *);
 static real F0(real, void *);
-static real coth(real);
 static real fAp(real);
 static real fAm(real);
 static real fBp(real);
@@ -90,6 +89,7 @@ static int f_zx_zy(struct Input *i, AlgIntegration *, real * zx,
                    real * zy);
 static int f_xx_yy0(struct Input0 *, AlgIntegration *, real *, real *);
 static int f_zz0(struct Input0 *, AlgIntegration *, real *);
+static real xcoth(real);
 
 int
 green3_wall2_ini(He * he, real w, T ** pq)
@@ -533,6 +533,7 @@ F0(real q, void *v)
     real z;
     real z0;
     real W;
+    real ans;
     struct Param0 *p;
 
     real(*f) (real, real, real);
@@ -541,73 +542,68 @@ F0(real q, void *v)
     z = p->z;
     W = p->W;
     f = p->f;
-    return f(q, z, W);
-}
 
-static real
-coth(real x)
-{
-    return 1 / tanh(x);
+    return f(q, z, W);
 }
 
 static real
 fAp(real u)
 {
-    return u + sinh(u) * exp(-u);
+    return u - exp(-2 * u) / 2 + 0.5;
 }
 
 static real
 fAm(real u)
 {
-    return u - sinh(u) * exp(-u);
+    return u + exp(-2 * u) / 2 - 0.5;
 }
 
 static real
 fBp(real u)
 {
-    return u + cosh(u) * exp(-u);
+    return u + exp(-2 * u) / 2 + 0.5;
 }
 
 static real
 fBm(real u)
 {
-    return u - cosh(u) * exp(-u);
+    return u - exp(-2 * u) / 2 - 0.5;
 }
 
 static real
 fCp(real u)
 {
-    return u * (1 + u) + sinh(u) * exp(-u);
+    return sq(u) + u - exp(-2 * u) / 2 + 0.5;
 }
 
 static real
 fCm(real u)
 {
-    return u * (1 + u) - sinh(u) * exp(-u);
+    return sq(u) + u + exp(-2 * u) / 2 - 0.5;
 }
 
 static real
 fDp(real u)
 {
-    return u * (1 + u) + cosh(u) * exp(-u);
+    return sq(u) + u + exp(-2 * u) / 2 + 0.5;
 }
 
 static real
 fDm(real u)
 {
-    return u * (1 + u) - cosh(u) * exp(-u);
+    return sq(u) + u - exp(-2 * u) / 2 - 0.5;
 }
 
 static real
 fEp(real u)
 {
-    return 1 / (sinh(u) * cosh(u) + u);
+    return 1 / (exp(-2 * u) / 4 + u - exp(-2 * u) / 4);
 }
 
 static real
 fEm(real u)
 {
-    return 1 / (sinh(u) * cosh(u) - u);
+    return 1 / (exp(2 * u) / 4 - u - exp(-2 * u) / 4);
 }
 
 static real
@@ -710,7 +706,6 @@ tpp(real q, real z, real z0, real W)
     real Em;
 
     u = W * q;
-    u = W * q;
     v = q * z0;
     w = q * z;
     Am = fAm(u);
@@ -719,8 +714,11 @@ tpp(real q, real z, real z0, real W)
     Dm = fDm(u);
     Ep = fEp(u);
     Em = fEm(u);
+
+    if (u == 0)
+        ERR(CO_NUM, "u == 0");
     return Em * (v * sinh(v) - Am * cosh(v)) * w * sinh(w) +
-        Ep * ((-2 * u * coth(u) * sinh(v)) + Dm * sinh(v) -
+        Ep * ((-2 * xcoth(u) * sinh(v)) + Dm * sinh(v) -
               Bm * v * cosh(v)) * sinh(w) + Ep * (v * cosh(v) -
                                                   Bm * sinh(v)) * w *
         cosh(w) + Em * ((-Am * v * sinh(v)) - 2 * u * tanh(u) * cosh(v) +
@@ -892,7 +890,7 @@ f_zx_zy(struct Input *i, AlgIntegration * integration, real * zx,
 
 static int
 f_xx_yy0(struct Input0 *i, AlgIntegration * integration, real * xx,
-	 real * yy)
+         real * yy)
 {
     real a;
     real b;
@@ -904,12 +902,12 @@ f_xx_yy0(struct Input0 *i, AlgIntegration * integration, real * xx,
     p.z = i->z;
     p.W = i->W;
     p.f = tpp0;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, &a) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F0, &p, &a) != CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
     p.f = rpp0;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, &b) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F0, &p, &b) != CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
-    *yy = *xx = -a/2 + b;
+    *yy = *xx = -a / 2 + b;
     return CO_OK;
 }
 
@@ -921,7 +919,7 @@ f_zz0(struct Input0 *i, AlgIntegration * integration, real * zz)
     p.z = i->z;
     p.W = i->W;
     p.f = tnn0;
-    if (alg_integration_apply(integration, 0, qmax, F, &p, zz) != CO_OK)
+    if (alg_integration_apply(integration, 0, qmax, F0, &p, zz) != CO_OK)
         ERR(CO_NUM, "alg_integration_apply failed");
     return CO_OK;
 }
@@ -984,10 +982,11 @@ tpp0(real q, real z, real W)
     Dm = fDm(u);
     Ep = fEp(u);
     Em = fEm(u);
+
     return Em * cosh(v) * ((-Am * v * sinh(v)) -
                            2 * u * tanh(u) * cosh(v) + Cm * cosh(v)) +
         Em * v * sinh(v) * (v * sinh(v) - Am * cosh(v)) +
-        Ep * sinh(v) * ((-2 * u * coth(u) * sinh(v)) + Dm * sinh(v) -
+        Ep * sinh(v) * ((-2 * xcoth(u) * sinh(v)) + Dm * sinh(v) -
                         Bm * v * cosh(v)) +
         Ep * v * cosh(v) * (v * cosh(v) - Bm * sinh(v));
 }
@@ -996,4 +995,11 @@ static real
 sq(real x)
 {
     return x * x;
+}
+
+static
+    real
+xcoth(real x)
+{                               /* x*coth(x) */
+    return fabs(x) > 0.25 ? x / tanh(x) : 1 + sq(x) / 3;
 }

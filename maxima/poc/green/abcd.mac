@@ -1,0 +1,30 @@
+%v : [
+Ap = u + sinh(u)*exp(-u),
+Am = u - sinh(u)*exp(-u),
+Bp = u + cosh(u)*exp(-u),
+Bm = u - cosh(u)*exp(-u),
+Cp = u*(1 + u) + sinh(u)*exp(-u),
+Cm = u*(1 + u) - sinh(u)*exp(-u),
+Dp = u*(1 + u) + cosh(u)*exp(-u),
+Dm = u*(1 + u) - cosh(u)*exp(-u),
+Ep = 1/(sinh(u)*cosh(u) + u),
+Em = 1/(sinh(u)*cosh(u) - u)
+];
+
+matchdeclare(x, true);
+matchdeclare([a, b], integerp);
+defrule(r_exp, exp(x), exp0(x));
+defrule(r_sq, x*x, sq(x));
+defrule(r_div, a/b, float(a)/b), simp = false;
+f_div(e)::=buildq([e: e], block([simp: false], apply2(e, r_div)));
+f_exp(e):=apply2(e, r_exp, r_sq, r_div);
+
+with_stdout("abcd.c",
+  for e in %v do (
+    printf(true, "static real~%"),
+    printf(true, "f~a(real u)~%", lhs(e)),
+    printf(true, "{~%"),
+    printf(true, "return ~a;~%", (e: f_exp(expand(exponentialize(rhs(e)))), f_div(e))),
+    printf(true, "}~%")));
+
+  
