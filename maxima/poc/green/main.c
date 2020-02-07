@@ -75,44 +75,74 @@ main(int argc, char **argv)
     real zy;
     real zz;
     struct Input i;
+    int xSet;
+    int ySet;
+    int zSet;
+    int z0Set;
+    int wSet;
     AlgIntegration *integration;
 
     USED(argc);
-    i.x = 0.1;
-    i.y = 0.2;
-    i.z = 0.3;
-    i.z0 = 0.4;
-    i.W = 1.0;
+
+    xSet = ySet = zSet = z0Set = wSet = 0;
     while (*++argv != NULL && argv[0][0] == '-') {
         switch (argv[0][1]) {
         case 'h':
             usg();
             break;
         case 'x':
-	    argv_str2real(*++argv, &i.x);
+            argv_str2real(*++argv, &i.x);
+            xSet = 1;
             break;
         case 'y':
-	    argv_str2real(*++argv, &i.x);
+            argv_str2real(*++argv, &i.y);
+            ySet = 1;
             break;
         case 'z':
-	    argv_str2real(*++argv, &i.z);
+            argv_str2real(*++argv, &i.z);
+            zSet = 1;
             break;
         case '0':
-	    argv_str2real(*++argv, &i.z0);
+            argv_str2real(*++argv, &i.z0);
+            z0Set = 1;
             break;
         case 'w':
-	    argv_str2real(*++argv, &i.W);
-            break;	    	    
+            argv_str2real(*++argv, &i.W);
+            wSet = 1;
+            break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, *argv);
             exit(2);
         }
     }
     if (*argv != NULL) {
-	fprintf(stderr, "%s: unexpected argument '%s'\n", me, *argv);
-	exit(2);
+        fprintf(stderr, "%s: unexpected argument '%s'\n", me, *argv);
+        exit(2);
     }
-    alg_integration_ini(QAGS, &integration);
+    if (!xSet || !ySet || !zSet) {
+        fprintf(stderr, "%s: one of -x, -y, or -z is not set\n", me);
+        exit(2);
+    }
+    if (!wSet) {
+        fprintf(stderr, "%s: -w is not set\n", me);
+        exit(2);
+    }
+    if (!z0Set) {
+        fprintf(stderr, "%s: -0 is not set\n", me);
+        exit(2);
+    }
+    if (i.z > i.W || i.z < -i.W) {
+        fprintf(stderr, "%s: z=" FMT " is not in [" FMT ", " FMT "]\n", me,
+                i.z, -i.W, i.W);
+        exit(2);
+    }
+    if (i.z0 > i.W || i.z < -i.W) {
+        fprintf(stderr, "%s: z0=" FMT " is not in [" FMT ", " FMT "]\n",
+                me, i.z0, -i.W, i.W);
+        exit(2);
+    }
+
+    alg_integration_ini(GAUSS15, &integration);
     f_xx_yy(&i, integration, &xx, &yy);
     f_zz(&i, integration, &zz);
     f_xy(&i, integration, &xy);

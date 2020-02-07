@@ -53,14 +53,13 @@ rpp(q, z, z0):=b0([],
   -2*exp(-u)/sinh(u)*sinh(w)*sinh(v)
   );
 
-x: 1e-5;
-y: 1e-5;
-z: 0.9;
-z0: 0.9;
-W: 1.0;
+x: 0.1;
+y: 0.2;
+z: 0.3;
+z0: 0.4;
+W: 0.5;
 s: sqrt(x^2 + y^2);
 r: sqrt(x^2 + y^2 + (z - z0)^2);
-
 ixx0(q):=(J0(q*s) + (y^2 - x^2)/s^2*J2(q*s))*tpp(q, z, z0);
 iyy0(q):=(J0(q*s) + (x^2 - y^2)/s^2*J2(q*s))*tpp(q, z, z0);
 ixx1(q):=J0(q*s)*rpp(q, z, z0);
@@ -68,7 +67,6 @@ izz(q):=J0(q*s)*tnn(q, z, z0);
 ixy(q):=J2(q*s)*tpp(q, z, z0);
 ixz(q):=J1(q*s)*tpn(q, z, z0);
 izx(q):=J1(q*s)*tnp(q, z, z0);
-
 Gxx: 1/r + x*x/r^3;
 Gyy: 1/r + y*y/r^3;
 Gxy: x*y/r^3;
@@ -99,4 +97,4 @@ gyz + Gyz;
 gxz + Gxz;
 gzy + Gzy;
 
-gxx/(8*%pi), numer;
+gxy;
