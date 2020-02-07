@@ -1,5 +1,5 @@
 .POSIX:
-include ../../../conf.mk
+include ../../../../conf.mk
 M = \
 main\
 
