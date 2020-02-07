@@ -24,7 +24,5 @@ with_stdout("abcd.c",
     printf(true, "static real~%"),
     printf(true, "f~a(real u)~%", lhs(e)),
     printf(true, "{~%"),
-    printf(true, "return ~a;~%", (e: f_exp(expand(exponentialize(rhs(e)))), f_div(e))),
+    printf(true, "return ~a;~%", f_exp(expand(exponentialize(rhs(e))))),
     printf(true, "}~%")));
-
-  
