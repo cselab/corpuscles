@@ -2,14 +2,12 @@
 #include <stdlib.h>
 #include <math.h>
 #include <real.h>
-#include <co/argv.h>
 #include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/force.h>
 #include <co/povray.h>
-#include <co/util.h>
 #include <co/off.h>
 #include <co/y.h>
 #include <co/vtk.h>
