@@ -1,0 +1,11 @@
+appearance {
+    -edge
+    -transparent
+    shading smooth
+    material {
+      ks 0.5
+      kd 0.5
+      ambient 1. 0. 0.
+      diffuse 1. 0. 0. 
+    }
+}

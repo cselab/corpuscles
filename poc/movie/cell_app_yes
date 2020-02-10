@@ -1,0 +1,17 @@
+appearance {
+    -edge
+    transparent blending
+    linewidth 1
+    shading smooth
+    material {
+      ks 0.0
+      kd 0.5
+      alpha 0.5
+    }
+    lighting {
+        light {
+	   position 2 0 1 0
+    	   location camera
+	}
+     }	
+}
