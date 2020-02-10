@@ -4,7 +4,6 @@ appearance {
     linewidth 1
     shading smooth
     material {
-      #shininess 15
       ka 0.5
       kd 0.8
       ks 0.3
