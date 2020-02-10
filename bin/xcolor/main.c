@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <real.h>
+#include <co/argv.h>
 #include <co/array.h>
 #include <co/err.h>
 #include <co/he.h>
@@ -29,11 +30,55 @@ scl(char **v, /**/ real * p)
     return CO_OK;
 }
 
+static int
+filter(He * p, real * c)
+{
+    int i;
+    int j;
+    int k;
+    int nt;
+    int nv;
+    int *rank;
+    int t;
+    real *c0;
+
+    nv = he_nv(p);
+    nt = he_nt(p);
+
+    CALLOC(nv, &c0);
+    CALLOC(nv, &rank);
+    for (t = 0; t < nt; t++) {
+        he_tri_ijk(p, t, &i, &j, &k);
+        c0[i] += c[j];
+        rank[i]++;
+        c0[i] += c[k];
+        rank[i]++;
+        c0[j] += c[i];
+        rank[j]++;
+        c0[j] += c[k];
+        rank[j]++;
+        c0[k] += c[i];
+        rank[k]++;
+        c0[k] += c[j];
+        rank[k]++;
+    }
+    for (i = 0; i < nv; i++) {
+        if (rank[i] == 0) {
+            fprintf(stderr, "%s: rank[%d] == 0\n", me, i);
+            exit(2);
+        }
+        c[i] = c0[i] / rank[i];
+    }
+    FREE(rank);
+    FREE(c0);
+    return CO_OK;
+}
+
 static void
 usg(void)
 {
     fprintf(stderr,
-            "%s [-a|t|p|n|b|x] [-o float] A.off lo hi B.off > C.off\n",
+            "%s [-a|t|p|n|b] [-f int] [-s float] [-o float] A.off lo hi B.off > C.off\n",
             me);
     fprintf(stderr,
             "color vertices in B acording to (x-x_min)/(x_max-x_min) in A.off\n");
@@ -50,22 +95,29 @@ int
 main(int argc, char **a)
 {
     enum { POV, TXT, VTK, OFF };
-    enum { LIN, ABS, NABS, BIN, AXIS };
-    int status, Output, Map;
-    real *x, *y, *z, *c;
-    real *u, *v, *w;
+    enum { LIN, ABS, NABS, BIN };
     He *p, *q;
+    int Filter;
     int i, n;
+    int Map;
+    int Output;
+    int status;
+    real hi;
+    real lo;
     real min, max, d;
-    real lo, hi;
     real opacity;
-    real t;
+    real *u, *v, *w;
+    real *x, *y, *z, *c;
+    real sharp;
+    int Sharp;
 
     USED(argc);
     err_set_ignore();
     Output = OFF;
     Map = LIN;
+    Filter = 0;
     opacity = 0.5;
+    Sharp = 0;
     while (*++a != NULL && a[0][0] == '-')
         switch (a[0][1]) {
         case 'h':
@@ -89,8 +141,13 @@ main(int argc, char **a)
         case 'b':
             Map = BIN;
             break;
-        case 'x':
-            Map = AXIS;
+        case 'f':
+            a++;
+            if (*a == NULL) {
+                fprintf(stderr, "%s: filter (-f) needs a value\n", me);
+                exit(2);
+            }
+            argv_int(&a, &Filter);
             break;
         case 'o':
             a++;
@@ -105,6 +162,16 @@ main(int argc, char **a)
                         me, opacity);
                 exit(2);
             }
+            break;
+        case 's':
+            a++;
+            if (*a == NULL) {
+                fprintf(stderr, "%s: sharp (-s) needs a value\n",
+                        me);
+                exit(2);
+            }
+            scl(a, &sharp);
+            Sharp = 1;
             break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, *a);
@@ -151,22 +218,19 @@ main(int argc, char **a)
                 c[i] = 1;
         }
         break;
-    case AXIS:
-        max = 0;
-        for (i = 0; i < n; i++) {
-            t = sqrt(v[i] * v[i] + w[i] * w[i]);
-            if (t < 0.3)
-                c[i] = 0;
-            else
-                c[i] = 1;
-        }
-        break;
     }
+
     if (lo > hi) {
         hi = -hi;
         lo = -lo;
         array_neg(n, c);
     }
+    if (Sharp) {
+        for (i = 0; i < n; i++)
+            c[i] = c[i] < sharp ? lo : hi;
+    }
+    for (i = 0; i < Filter; i++)
+        filter(p, c);
 
     const real *scal[] = { c, NULL };
     const char *name[] = { "color", NULL };
