@@ -4,14 +4,21 @@ appearance {
     linewidth 1
     shading smooth
     material {
-      ks 0.0
-      kd 0.5
-      alpha 0.5
+      #shininess 15
+      ka 0.5
+      kd 0.8
+      ks 0.3
     }
     lighting {
-        light {
-	   position 2 0 1 0
-    	   location camera
-	}
-     }	
+       replacelights
+       light {
+          position 2 2 0.5  0
+          location camera
+       }
+       light {
+          position -1 -1 5  0
+          color 0.5 0.5 0.5
+          location camera
+       }       
+    }
 }
