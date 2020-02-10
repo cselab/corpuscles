@@ -1,12 +1,11 @@
 appearance {
     -edge
     transparent blending
-    linewidth 1
     shading smooth
     material {
       ka 0.5
       kd 0.8
-      ks 0.3
+      ks 0.2
     }
     lighting {
        replacelights
