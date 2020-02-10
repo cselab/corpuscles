@@ -147,7 +147,7 @@ main(int argc, char **a)
                 fprintf(stderr, "%s: filter (-f) needs a value\n", me);
                 exit(2);
             }
-            argv_int(&a, &Filter);
+	    Filter = atoi(*a);
             break;
         case 'o':
             a++;
