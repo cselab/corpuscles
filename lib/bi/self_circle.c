@@ -81,7 +81,7 @@ bi_self_circle_update(T * q, He * he, const real * x, const real * y,
     n = he_nv(he);
     status = curv_mean_juelicher_area(q->H, &area0);
     if (status != CO_OK)
-	ERR(CO_NUM, "curv_mean_juelicher_area failed");
+        ERR(CO_NUM, "curv_mean_juelicher_area failed");
     array_copy(n, area0, area);
     status = normal_mwa(he, x, y, z, nx, ny, nz);
     if (status != CO_OK)
@@ -105,7 +105,7 @@ bi_self_circle_single(T * q, He * he, real al, const real * x,
     USED(y);
     USED(z);
     if (q->Ready == 0)
-	ERR(CO_NUM, "*_single is called before *_update");
+        ERR(CO_NUM, "*_single is called before *_update");
     nx = q->nx;
     ny = q->ny;
     nz = q->nz;
@@ -157,7 +157,7 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
     USED(y);
     USED(z);
     if (q->Ready == 0)
-	ERR(CO_NUM, "*_double is called before *_update");
+        ERR(CO_NUM, "*_double is called before *_update");
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
