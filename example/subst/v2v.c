@@ -67,7 +67,7 @@ main(int argc, char **argv)
     for (i = 0; i < n; i++) {
         ux[i] = y[i];
         uy[i] = -x[i];
-        uz[i] = 0;
+        uz[i] = 1;
     }
     array_scale3(n, coef, ux, uy, uz);
     
