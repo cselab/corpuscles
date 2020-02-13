@@ -58,16 +58,16 @@ main(int argc, char **argv)
     real tol;
     real coef;
     int iter_max;
-    lambda = 0.2;
+    lambda = 5;
     tol = 0.01;
     coef =  2 / (1 + lambda);
     alpha = 2 * (1 - lambda) / (1 + lambda);
     iter_max = 100;    
     subst_ini(n, alpha, tol, iter_max, &subst);
     for (i = 0; i < n; i++) {
-        ux[i] = 1;
-        uy[i] = 2;
-        uz[i] = 3;
+        ux[i] = y[i];
+        uy[i] = -x[i];
+        uz[i] = 0;
     }
     array_scale3(n, coef, ux, uy, uz);
     
