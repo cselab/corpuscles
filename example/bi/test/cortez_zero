@@ -3,3 +3,6 @@
 
 # nTEST: cortez_zero_double
 ./double cortez_zero 0.01 < `co.path`/sph/laplace/0.off | uscale 1e3 > double.out.txt
+
+# nTEST: cortez_zero_double_rbc
+./double cortez_zero 0.01 < `co.path`/rbc/laplace/0.off | uscale 1e3 > double.out.txt
