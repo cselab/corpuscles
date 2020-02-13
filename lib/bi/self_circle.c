@@ -21,6 +21,7 @@ struct T {
     real *wx, *wy, *wz, *area;
     real *nx, *ny, *nz;
     real *h;
+    int Ready;
 };
 
 int
@@ -38,6 +39,7 @@ bi_self_circle_ini(He * he, /**/ T ** pq)
     MALLOC3(n, &q->nx, &q->ny, &q->nz);
     MALLOC(n, &q->area);
     MALLOC(n, &q->h);
+    q->Ready = 0;
     *pq = q;
     return CO_OK;
 }
@@ -84,6 +86,7 @@ bi_self_circle_update(T * q, He * he, const real * x, const real * y,
     status = normal_mwa(he, x, y, z, nx, ny, nz);
     if (status != CO_OK)
         ERR(CO_NUM, "normal_mwa failed");
+    q->Ready = 1;
     return CO_OK;
 }
 
@@ -101,6 +104,8 @@ bi_self_circle_single(T * q, He * he, real al, const real * x,
     USED(x);
     USED(y);
     USED(z);
+    if (q->Ready == 0)
+	ERR(CO_NUM, "*_single is called before *_update");
     nx = q->nx;
     ny = q->ny;
     nz = q->nz;
@@ -138,15 +143,21 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
     int i, n;
     real *wx, *wy, *wz, *h;
     const real *area;
-    real normal[3], velocity[3], reject[3];
+    real normal[3];
+    real velocity[3];
+    real reject[3];
     const real *nx;
     const real *ny;
     const real *nz;
-    real uX, p, A;
+    real uX;
+    real p;
+    real A;
 
     USED(x);
     USED(y);
     USED(z);
+    if (q->Ready == 0)
+	ERR(CO_NUM, "*_double is called before *_update");
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
