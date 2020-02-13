@@ -17,11 +17,47 @@
 #define FMT   CO_REAL_OUT
 
 static const char *me = "co.q";
+static int q_id(void);
+static int q_x(void);
+static int q_y(void);
+static int q_z(void);
+static int q_area(void);
+static int q_bending(void);
+static int q_al(void);
+static int q_be(void);
+static int eputs(const char*);
+
+static const char *Name[] = {
+    "al",
+    "area",
+    "be",
+    "bending",
+    "id",
+    "x",
+    "y",
+    "z",
+};
+
+static int (*Func[])(void) = {
+    q_al,
+    q_area,
+    q_be,
+    q_bending,
+    q_id,
+    q_x,
+    q_y,
+    q_z,
+};
+
 static void
 usg(void)
 {
+    int i;
     fprintf(stderr, "%s query [ARGS..] < IN.off > OUT.off\n", me);
     fputs("color off file\n", stderr);
+    fputs("possible queries:\n", stderr);
+    for (i = 0; i < sizeof(Name)/sizeof(Name[0]); i++)
+      eputs(Name[i]);
     exit(2);
 }
 
@@ -64,6 +100,72 @@ tri(const real * a)
                 array_min(nt, a), array_max(nt, a));
         return boff_tri_fwrite(he, x, y, z, a, stdout);
     }
+}
+
+static int
+nxt(const char *b)
+{
+    return (argv[0] != NULL) && util_eq(argv[0], b);
+};
+
+int
+main(__UNUSED int c, char **v)
+{
+    char q[1024];
+    int n, i;
+
+    argv = v;
+    argv++;
+    if (nxt("-h"))
+        usg();
+
+    if (nxt("-l")) {
+        Lim = 1;
+        argv++;
+        argv_real(&argv, &lo);
+        if (!nxt("-h"))
+            ER("expecting -h, got '%s'", argv[0] ? argv[0] : "null");
+        argv++;
+        argv_real(&argv, &hi);
+    }
+
+    argv_str(&argv, q);
+    y_inif(stdin, &he, &x, &y, &z);
+    nv = he_nv(he);
+    nt = he_nt(he);
+    MALLOC(nv, &area);
+    he_area_ver(he, x, y, z, area);
+
+    n = sizeof(Name) / sizeof(Name[0]);
+    for (i = 0; i < n; i++) {
+        if (util_eq(q, Name[i])) {
+            Func[i] ();
+            goto ok;
+        }
+    }
+
+    MSG("unknown query: '%s'", q);
+    eputs("possible values are:");
+    for (i = 0; i < n; i++)
+        eputs(Name[i]);
+    return 1;
+  ok:
+    FREE(area);
+    y_fin(he, x, y, z);
+    return 0;
+}
+
+static int
+q_id(void)
+{
+    int i;
+    real *a;
+    MALLOC(nv, &a);
+    for (i = 0; i < nv; i++)
+        a[i] = i;
+    ver(a);
+    FREE(a);
+    return CO_OK;
 }
 
 static int
@@ -151,71 +253,10 @@ q_be(void)
     return CO_OK;
 }
 
-static const char *Name[] = {
-    "x", "y", "z", "area", "bending", "al", "be"
-};
-
-static int (*Func[])(void) = {
-    q_x, q_y, q_z, q_area, q_bending, q_al, q_be
-};
-
 int
 eputs(const char *s)
 {
     fputs(s, stderr);
     fputs("\n", stderr);
     return CO_OK;
-}
-
-static int
-nxt(const char *b)
-{
-    return (argv[0] != NULL) && util_eq(argv[0], b);
-};
-
-int
-main(__UNUSED int c, char **v)
-{
-    char q[1024];
-    int n, i;
-
-    argv = v;
-    argv++;
-    if (nxt("-h"))
-        usg();
-
-    if (nxt("-l")) {
-        Lim = 1;
-        argv++;
-        argv_real(&argv, &lo);
-        if (!nxt("-h"))
-            ER("expecting -h, got '%s'", argv[0] ? argv[0] : "null");
-        argv++;
-        argv_real(&argv, &hi);
-    }
-
-    argv_str(&argv, q);
-    y_inif(stdin, &he, &x, &y, &z);
-    nv = he_nv(he);
-    nt = he_nt(he);
-    MALLOC(nv, &area);
-    he_area_ver(he, x, y, z, area);
-
-    n = sizeof(Name) / sizeof(Name[0]);
-    for (i = 0; i < n; i++) {
-        if (util_eq(q, Name[i])) {
-            Func[i] ();
-            goto ok;
-        }
-    }
-
-    MSG("unknown query: '%s'", q);
-    eputs("possible values are:");
-    for (i = 0; i < n; i++)
-        eputs(Name[i]);
-    return 1;
-  ok:
-    FREE(area);
-    y_fin(he, x, y, z);
-    return 0;
 }
