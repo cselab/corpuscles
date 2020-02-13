@@ -137,6 +137,9 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
     real *wx, *wy, *wz, *h;
     const real *area;
     real normal[3], velocity[3], reject[3];
+    const real *nx;
+    const real *ny;
+    const real *nz;
     real uX, p, A;
 
     USED(x);
@@ -145,6 +148,9 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
     wx = q->wx;
     wy = q->wy;
     wz = q->wz;
+    nx = q->nx;
+    ny = q->ny;
+    nz = q->nz;
     area = q->area;
     h = q->h;
     n = he_nv(he);
@@ -152,7 +158,7 @@ bi_self_circle_double(T * q, He * he, real alpha, const real * x,
     for (i = 0; i < n; i++) {
         A = area[i];
         p = sqrt(A) / sqrt(pi) * h[i];
-        vec_get(i, x, y, z, normal);
+        vec_get(i, nx, ny, nz, normal);
         vec_get(i, ux, uy, uz, velocity);
         uX = vec_reject_scalar(velocity, normal);
         vec_reject(velocity, normal, reject);
