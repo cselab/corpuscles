@@ -77,7 +77,9 @@ bi_self_circle_update(T * q, He * he, const real * x, const real * y,
     if (status != CO_OK)
         ERR(CO_NUM, "curv_mean_juelicher_apply failed");
     n = he_nv(he);
-    curv_mean_juelicher_area(q->H, &area0);
+    status = curv_mean_juelicher_area(q->H, &area0);
+    if (status != CO_OK)
+	ERR(CO_NUM, "curv_mean_juelicher_area failed");
     array_copy(n, area0, area);
     status = normal_mwa(he, x, y, z, nx, ny, nz);
     if (status != CO_OK)
