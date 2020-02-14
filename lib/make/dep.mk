@@ -5,8 +5,6 @@ inc/def.h\
 co/macro.h\
 co/err.h\
 
-git.o:\
-
 hash.o:\
 co/memory.h\
 co/err.h\
