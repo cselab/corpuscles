@@ -148,7 +148,7 @@ h_define(`capitalize',
   `_arg1(_to_alt()patsubst(<<[<<[$*]>>]>>, <<[\w+]>>,
     _from_alt()`]>>_$0_alt(<<[\&]>>)<<['_to_alt())_from_alt())')
 h_define(`h_cmd',
-`h_syscmd($1)dnl
+`h_esyscmd($1)dnl
 h_ifelse(h_sysval, `0', `', `h_fatal(command "`$1'" failed)')')
 h_define(`h_backtick', h_changequote([,
  ])[h_changequote([,])`h_changequote(`,')]h_changequote(`,')))
