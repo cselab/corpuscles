@@ -20,19 +20,31 @@ h_define(`h_rename_h',
 
 h_rename_h(`changecom')
 h_rename_h(`changequote')
+h_rename_h(`decr')
 h_rename_h(`dumpdef')
 h_rename_h(`errprint')
 h_rename_h(`esyscmd')
 h_rename_h(`eval')
+h_rename_h(`ifdef')
 h_rename_h(`ifelse')
+h_rename_h(`include')
+h_rename_h(`incr')
 h_rename_h(`index')
+h_rename_h(`indir')
+h_rename_h(`len')
+h_rename_h(`maketemp')
+h_rename_h(`mkstemp')
+h_rename_h(`patsubst')
 h_rename_h(`popdef')
 h_rename_h(`pushdef')
+h_rename_h(`regexp')
 h_rename_h(`shift')
-h_rename_h(`len')
+h_rename_h(`sinclude')
 h_rename_h(`substr')
 h_rename_h(`syscmd')
 h_rename_h(`sysval')
+h_rename_h(`traceoff')
+h_rename_h(`traceon')
 h_rename_h(`translit')
 h_copy(`m4exit', `h_exit')
 
@@ -142,10 +154,10 @@ h_define(`_from_alt', `h_changequote(<<[`]>>, <<[']>>)')
 h_define(`_upcase_alt', `h_translit(<<[$*]>>, <<[a-z]>>, <<[A-Z]>>)')
 h_define(`_downcase_alt', `h_translit(<<[$*]>>, <<[A-Z]>>, <<[a-z]>>)')
 h_define(`_capitalize_alt',
-  `regexp(<<[$1]>>, <<[^\(\w\)\(\w*\)]>>,
+  `h_regexp(<<[$1]>>, <<[^\(\w\)\(\w*\)]>>,
     <<[_upcase_alt(<<[<<[\1]>>]>>)_downcase_alt(<<[<<[\2]>>]>>)]>>)')
 h_define(`capitalize',
-  `_arg1(_to_alt()patsubst(<<[<<[$*]>>]>>, <<[\w+]>>,
+  `_arg1(_to_alt()h_patsubst(<<[<<[$*]>>]>>, <<[\w+]>>,
     _from_alt()`]>>_$0_alt(<<[\&]>>)<<['_to_alt())_from_alt())')
 h_define(`h_cmd',
 `h_esyscmd($1)dnl
