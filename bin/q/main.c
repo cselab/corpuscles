@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+
 #include <real.h>
 #include <co/area.h>
 #include <co/argv.h>
@@ -17,21 +19,36 @@
 #define FMT   CO_REAL_OUT
 
 static const char *me = "co.q";
+static int q_al(void);
+static int q_area(void);
+static int q_bending(void);
+static int q_be(void);
+static int q_bfs(void);
 static int q_id(void);
 static int q_x(void);
 static int q_y(void);
 static int q_z(void);
-static int q_area(void);
-static int q_bending(void);
-static int q_al(void);
-static int q_be(void);
 static int eputs(const char *);
+static int adj(He *, int, int *, int *, int *);
+
+struct {
+    int n;
+    int i;
+    int j;
+    int *q;
+} Queue;
+static int queue_ini(int);
+static int queue_fin();
+static int queue_enqueue(int);
+static int queue_dequeue(int *);
+static int queue_empty(int *);
 
 static const char *Name[] = {
     "al",
     "area",
     "be",
     "bending",
+    "bfs",
     "id",
     "x",
     "y",
@@ -43,6 +60,7 @@ static int (*Func[])(void) = {
     q_area,
     q_be,
     q_bending,
+    q_bfs,
     q_id,
     q_x,
     q_y,
@@ -162,10 +180,10 @@ q_id(void)
     int i;
     real *a;
 
-    MALLOC(nv, &a);
-    for (i = 0; i < nv; i++)
+    MALLOC(nt, &a);
+    for (i = 0; i < nt; i++)
         a[i] = i;
-    ver(a);
+    tri(a);
     FREE(a);
     return CO_OK;
 }
@@ -255,10 +273,138 @@ q_be(void)
     return CO_OK;
 }
 
+static int
+q_bfs(void)
+{
+#define VISIT(i)		   \
+    if (distance[i] == -1) {	   \
+	distance[i] = distance[t] + 1;		\
+	queue_enqueue(i);			\
+    }
+
+    int *distance;
+    real *a;
+    int status;
+    int t;
+    int i;
+    int j;
+    int k;
+
+    t = 0;
+    for (; *argv != NULL && argv[0][0] == '-'; argv++)
+        switch (argv[0][1]) {
+        case 't':
+            if (*++argv == NULL) {
+                fprintf(stderr, "%s: -t needs an argument\n", me);
+                exit(2);
+            }
+            argv_int(&argv, &t);
+            break;
+        default:
+            fprintf(stderr, "%s: unknown bfs option '%s'\n", me, argv[0]);
+            exit(2);
+            break;
+        }
+    if (t < 0 && t >= nt) {
+        fprintf(stderr, "%s: t=%d is not in [0, %d)\n", me, t, nt);
+        exit(2);
+    }
+    MALLOC(nt, &distance);
+    for (i = 0; i < nt; i++)
+        distance[i] = -1;
+    MALLOC(nt, &a);
+    queue_ini(nt);
+    queue_enqueue(t);
+    distance[t] = 0;
+    for (;;) {
+        queue_empty(&status);
+        if (status == 1)
+            break;
+        queue_dequeue(&t);
+        adj(he, t, &i, &j, &k);
+        VISIT(i);
+        VISIT(j);
+        VISIT(k);
+    }
+    for (i = 0; i < nt; i++) {
+        assert(distance[i] != -1);
+        a[i] = distance[i];
+    }
+    queue_fin();
+    FREE(distance);
+    tri(a);
+    FREE(a);
+    return CO_OK;
+}
+
 int
 eputs(const char *s)
 {
     fputs(s, stderr);
     fputs("\n", stderr);
+    return CO_OK;
+}
+
+static int
+queue_ini(int n)
+{
+    MALLOC(n, &Queue.q);
+    Queue.n = n;
+    Queue.i = 0;
+    Queue.j = 0;
+    return CO_OK;
+}
+
+static int
+queue_fin()
+{
+    FREE(Queue.q);
+    return CO_OK;
+}
+
+static int
+queue_enqueue(int x)
+{
+    assert(Queue.j <= Queue.n);
+    Queue.q[Queue.j++] = x;
+    return CO_OK;
+}
+
+static int
+queue_dequeue(int *x)
+{
+    assert(Queue.i <= Queue.n);
+    assert(Queue.i <= Queue.j);
+    *x = Queue.q[Queue.i++];
+    return CO_OK;
+}
+
+static int
+queue_empty(int *status)
+{
+    *status = Queue.i == Queue.j;
+    return CO_OK;
+}
+
+static int
+adj(He * he, int t, int *pi, int *pj, int *pk)
+{
+    int i;
+    int j;
+    int k;
+
+    i = he_hdg_tri(he, t);
+    j = he_nxt(he, i);
+    k = he_nxt(he, j);
+    if (he_bnd(he, i) || he_bnd(he, j) || he_bnd(he, k)) {
+        fprintf(stderr, "%s: does not work for open surface\n", me);
+        exit(2);
+    }
+    i = he_flp(he, i);
+    j = he_flp(he, j);
+    k = he_flp(he, k);
+    *pi = he_tri(he, i);
+    *pj = he_tri(he, j);
+    *pk = he_tri(he, k);
     return CO_OK;
 }
