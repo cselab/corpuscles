@@ -1,2 +1,4 @@
 include(`co.m4')dnl
-int __git_`'h_cmd(`git rev-parse HEAD') = 1;
+h_define(Git, h_translit(h_esyscmd(`git rev-parse HEAD'), `
+'))dnl
+int __git_`'Git = 1;
