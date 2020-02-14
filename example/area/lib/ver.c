@@ -2,15 +2,18 @@
 #include <math.h>
 
 #include <real.h>
+#include <co/git.h>
 #include <co/area.h>
 #include <co/err.h>
 #include <co/he.h>
-#include <co/i/area.h>
-#include <co/i/tri.h>
 #include <co/i/vec.h>
+#include <co/i/tri.h>
+#include <co/i/area.h>
 #include <co/memory.h>
 #include <co/punto.h>
 #include <co/y.h>
+
+GIT_SYMBOL;
 
 int main() {
     He *he;
