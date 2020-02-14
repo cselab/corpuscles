@@ -19,4 +19,5 @@ clean:; rm -f $O $(O_S) $(O_D) $(O_L) $L
 test:
 lint:; $(MAKE) CFLAGS='-Wall -Wextra -O2' lib$(P)_d.a
 
-.PHONY: clean install test lint lib hdr
+git.c: git
+.PHONY: clean install test lint lib hdr git

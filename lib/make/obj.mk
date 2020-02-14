@@ -1,6 +1,7 @@
 O = \
 endian.o\
 err.o\
+git.o\
 hash.o\
 he.o\
 he/invariant.o\

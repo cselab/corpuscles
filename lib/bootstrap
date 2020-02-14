@@ -37,7 +37,7 @@ format () {
 
 name () {
     s=$1; shift
-    sed -e "s,\.c$,.$s,1" -e "s,\.c.m4$,.$s,1"
+    sed -e "s,\.c$,.$s,1" -e "s,\.c\.m4$,.$s,1"
 }
 
 src () { find . -name '*.c' -or -name '*.c.m4' | sort ; }

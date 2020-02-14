@@ -5,6 +5,8 @@ inc/def.h\
 co/macro.h\
 co/err.h\
 
+git.o:\
+
 hash.o:\
 co/memory.h\
 co/err.h\
@@ -121,7 +123,7 @@ co/err.h\
 co/memory.h\
 co/bbox.h\
 
-bending.c.m4:\
+bending.s.o:\
 co/prec/s/real.h\
 co/memory.h\
 co/err.h\
@@ -138,7 +140,7 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
-bi.c.m4:\
+bi.s.o:\
 co/prec/s/real.h\
 co/container.h\
 co/err.h\
@@ -244,8 +246,10 @@ co/cell3.h\
 
 colormap.s.o:\
 co/prec/s/real.h\
-co/err.h\
 co/colormap.h\
+co/err.h\
+co/macro.h\
+co/util.h\
 
 curv/mean/juelicher.s.o:\
 co/prec/s/real.h\
@@ -769,7 +773,7 @@ co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
 
-force2.c.m4:\
+force2.s.o:\
 co/prec/s/real.h\
 co/container.h\
 co/err.h\
@@ -1445,7 +1449,7 @@ co/matrix.h\
 co/i/matrix.h\
 co/tensor.h\
 
-transform.c.m4:\
+transform.s.o:\
 co/prec/s/real.h\
 co/array.h\
 co/err.h\
@@ -1568,7 +1572,7 @@ co/err.h\
 co/memory.h\
 co/bbox.h\
 
-bending.c.m4:\
+bending.d.o:\
 co/prec/d/real.h\
 co/memory.h\
 co/err.h\
@@ -1585,7 +1589,7 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
-bi.c.m4:\
+bi.d.o:\
 co/prec/d/real.h\
 co/container.h\
 co/err.h\
@@ -1691,8 +1695,10 @@ co/cell3.h\
 
 colormap.d.o:\
 co/prec/d/real.h\
-co/err.h\
 co/colormap.h\
+co/err.h\
+co/macro.h\
+co/util.h\
 
 curv/mean/juelicher.d.o:\
 co/prec/d/real.h\
@@ -2216,7 +2222,7 @@ co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
 
-force2.c.m4:\
+force2.d.o:\
 co/prec/d/real.h\
 co/container.h\
 co/err.h\
@@ -2892,7 +2898,7 @@ co/matrix.h\
 co/i/matrix.h\
 co/tensor.h\
 
-transform.c.m4:\
+transform.d.o:\
 co/prec/d/real.h\
 co/array.h\
 co/err.h\
@@ -3015,7 +3021,7 @@ co/err.h\
 co/memory.h\
 co/bbox.h\
 
-bending.c.m4:\
+bending.l.o:\
 co/prec/l/real.h\
 co/memory.h\
 co/err.h\
@@ -3032,7 +3038,7 @@ co/f/meyer_xin.h\
 co/f/meyer.h\
 co/bending.h\
 
-bi.c.m4:\
+bi.l.o:\
 co/prec/l/real.h\
 co/container.h\
 co/err.h\
@@ -3138,8 +3144,10 @@ co/cell3.h\
 
 colormap.l.o:\
 co/prec/l/real.h\
-co/err.h\
 co/colormap.h\
+co/err.h\
+co/macro.h\
+co/util.h\
 
 curv/mean/juelicher.l.o:\
 co/prec/l/real.h\
@@ -3663,7 +3671,7 @@ co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
 
-force2.c.m4:\
+force2.l.o:\
 co/prec/l/real.h\
 co/container.h\
 co/err.h\
@@ -4339,7 +4347,7 @@ co/matrix.h\
 co/i/matrix.h\
 co/tensor.h\
 
-transform.c.m4:\
+transform.l.o:\
 co/prec/l/real.h\
 co/array.h\
 co/err.h\
