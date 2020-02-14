@@ -12,7 +12,9 @@
 #include <co/punto.h>
 #include <co/y.h>
 
-int main() {
+int
+main()
+{
     He *he;
     int n;
     real *x, *y, *z;
@@ -29,7 +31,7 @@ int main() {
 
     MSG("area: " CO_REAL_OUT, A);
 
-    const real *queue[] = {area, NULL};
+    const real *queue[] = { area, NULL };
     puts("area");
     punto_fwrite(n, queue, stdout);
 
