@@ -25,7 +25,7 @@ static int q_area(void);
 static int q_bending(void);
 static int q_al(void);
 static int q_be(void);
-static int eputs(const char*);
+static int eputs(const char *);
 
 static const char *Name[] = {
     "al",
@@ -53,11 +53,12 @@ static void
 usg(void)
 {
     int i;
+
     fprintf(stderr, "%s query [ARGS..] < IN.off > OUT.off\n", me);
     fputs("color off file\n", stderr);
     fputs("possible queries:\n", stderr);
-    for (i = 0; i < sizeof(Name)/sizeof(Name[0]); i++)
-      eputs(Name[i]);
+    for (i = 0; i < sizeof(Name) / sizeof(Name[0]); i++)
+        eputs(Name[i]);
     exit(2);
 }
 
@@ -160,6 +161,7 @@ q_id(void)
 {
     int i;
     real *a;
+
     MALLOC(nv, &a);
     for (i = 0; i < nv; i++)
         a[i] = i;
