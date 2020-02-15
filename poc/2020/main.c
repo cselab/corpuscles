@@ -200,12 +200,12 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
       }
       
       if  ( k == iter_max ) {
-	  //MSG("t d dd ratio k = %f %f %f %f %i", t, d, dd, ratio, k);
+	  //MSG("t d dd ratio k = %g %g %g %g %i", t, d, dd, ratio, k);
 	  if ( (fm = fopen(file_msg, "a") ) == NULL) {
 	    ER("Failed to open '%s'", file_msg);
 	  }
 	  
-	  fprintf(fm, "t d dd ratio k = %f %f %f %f %i\n", t, d, dd, ratio, k);
+	  fprintf(fm, "t d dd ratio k = %g %g %g %g %i\n", t, d, dd, ratio, k);
 	  fclose(fm);
       }      
       
@@ -298,10 +298,10 @@ int main(__UNUSED int argc, char **argv) {
     ER("Failed to open '%s'", file_msg);
   }
   
-  fprintf(fm, "A0 V0 v0 = %f %f %f\n", A0, V0, v0);
-  fprintf(fm, "R D rho eta lambda gamdot = %f %f %f %f %f %f\n", R, D, rho, eta, lambda, gamdot);
+  fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
+  fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", R, D, rho, eta, lambda, gamdot);
   fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-  fprintf(fm, "M m a e reg dt = %f %f %f %f %f %f\n", M, m, a, e, reg, dt);
+  fprintf(fm, "M m a e reg dt = %g %g %g %g %g %g\n", M, m, a, e, reg, dt);
   fclose(fm);
   
   ode3_ini(RK4, nv, dt, F, NULL, &ode);
@@ -369,15 +369,15 @@ int main(__UNUSED int argc, char **argv) {
       v = reduced_volume(A, V);
       
       if ( s % freq_stat == 0 ) {
-	MSG("dt s t = %f %i %f", dt, s, t);
-	MSG("A/A0 V/V0 v  = %f %f %f", A/A0, V/V0, v);
-	MSG("et ega ev eb ebl ebn es = %f %f %f %f %f %f %f", et, ega, ev, eb, ebl, ebn, es);
+	MSG("dt s t = %g %i %g", dt, s, t);
+	MSG("A/A0 V/V0 v  = %g %g %g", A/A0, V/V0, v);
+	MSG("et ega ev eb ebl ebn es = %g %g %g %g %g %g %g", et, ega, ev, eb, ebl, ebn, es);
       }
       
       if ( (fm = fopen(file_stat, "a") ) == NULL) {
 	ER("Failed to open '%s'", file_stat);
       }
-      fprintf(fm, "%f %i %f %f %f %f %f %f %f %f %f %f %f\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn, es);
+      fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g %g\n", dt, s, t, A/A0, V/V0, v, et, ega, ev, eb, ebl, ebn, es);
       fclose(fm);
       
     }
