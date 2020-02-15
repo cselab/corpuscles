@@ -1,0 +1,14 @@
+load("co/vec.mac");
+
+vec_ini(n);
+vec_ini(p);
+vec_ini(a);
+vec_ini(b);
+
+r: [x, y, z];
+
+plane(r):= vec_dot(vec_minus(r, p), n);
+
+r: a * (1 - t) + t * b;
+
+factor(solve(plane(r), t)), ax = 0, ay = 0, az = 0;
