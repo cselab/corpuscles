@@ -2,24 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <omp.h>
 #include <real.h>
 #include <alg/ode.h>
 #include <co/array.h>
-#include <co/len.h>
+#include <co/bi.h>
 #include <co/err.h>
+#include <co/f/garea.h>
+#include <co/f/juelicher_xin.h>
 #include <co/force.h>
+#include <co/f/volume.h>
+#include <co/he.h>
+#include <co/len.h>
 #include <co/macro.h>
 #include <co/memory.h>
 #include <co/ode/3.h>
-#include <co/he.h>
-#include <co/punto.h>
-#include <co/y.h>
 #include <co/off.h>
-#include <co/f/garea.h>
-#include <co/f/volume.h>
-#include <co/f/juelicher_xin.h>
-#include <co/bi.h>
+#include <co/punto.h>
+#include <co/vec.h>
+#include <co/y.h>
 
 static const char *me = "sde_rho_eta_shear_flow";
 static const real pi  = 3.141592653589793115997964;
@@ -28,7 +28,6 @@ static const int iter_max=100;
   
 #define FMT_IN CO_REAL_IN
 #define FMT_OUT CO_REAL_OUT
-
 static Force *Fo[20] = {
     NULL
   };
@@ -42,13 +41,13 @@ static real *fx, *fy, *fz;
 static real *ux, *uy, *uz;
 static real *wx, *wy, *wz;
 static real *Vx, *Vy, *Vz;
-
 static int nv, nt;
-
 char file_out[999];
 char file_stat[99]="stat.dat";
 char file_msg[99]="msg.out";
 FILE *fm;
+static int compute_moment(int, const real *, const real *, const real *,
+		   const real *, const real *, const real *, real[3]);
 
 static void usg(void) {
   fprintf(stderr, "%s volume V Kv garea A Kga area a Ka \n", me);
@@ -221,6 +220,21 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
   array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
 
+  real Moment[3];
+  compute_moment(nv, x, y, z, vx, vy, vz, Moment);
+  vec_fprintf(Moment, stderr, FMT_OUT);
+  real rad[3];
+  real vel[3];
+  real moment[3];
+  for (i = 0; i < nv; i++) {
+    vec_get(i, x, y, z, rad);
+    vec_cross(rad, Moment, vel);
+    vec_substr(vel, i, vx, vy, vz);
+  }
+  compute_moment(nv, x, y, z, vx, vy, vz, Moment);
+  vec_fprintf(Moment, stderr, FMT_OUT);
+  exit(2);
+
   return CO_OK;
 }
 
@@ -388,4 +402,23 @@ int main(__UNUSED int argc, char **argv) {
   y_fin(he, x, y, z);
   he_f_volume_fin(fvolume);
 
+}
+
+static int
+compute_moment(int n, const real *x, const real *y, const real *z,
+	       const real *vx, const real *vy, const real *vz, real Moment[3])
+{
+  int i;
+  real rad[3];
+  real vel[3];
+  real moment[3];
+  vec_zero(Moment);
+  for (i = 0; i < n; i++) {
+    vec_get(i, x, y, z, rad);
+    vec_get(i, vx, vy, vz, vel);
+    vec_cross(vel, rad, moment);
+    vec_add(moment, Moment);
+  }
+  vec_scale(1.0/n, Moment);
+  return CO_OK;
 }
