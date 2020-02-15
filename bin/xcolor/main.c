@@ -4,29 +4,21 @@
 #include <real.h>
 #include <co/array.h>
 #include <co/err.h>
+#include <co/force.h>
 #include <co/he.h>
 #include <co/macro.h>
-#include <co/force.h>
-#include <co/povray.h>
-#include <co/off.h>
-#include <co/y.h>
-#include <co/vtk.h>
 #include <co/memory.h>
+#include <co/off.h>
+#include <co/povray.h>
+#include <co/vtk.h>
+#include <co/y.h>
 
 static const char *me = "co.xcolor";
 
 #define IN CO_REAL_IN
 #define OUT CO_REAL_OUT
 
-static int
-scl(char **v, /**/ real * p)
-{
-    if (*v == NULL)
-        ER("%s: not enough args", me);
-    if (sscanf(*v, IN, p) != 1)
-        ER("not a number '%s'", *v);
-    return CO_OK;
-}
+static int scl(char **, real *);
 
 static int
 filter(He * p, real * c)
@@ -145,7 +137,7 @@ main(int argc, char **a)
                 fprintf(stderr, "%s: filter (-f) needs a value\n", me);
                 exit(2);
             }
-	    Filter = atoi(*a);
+            Filter = atoi(*a);
             break;
         case 'o':
             a++;
@@ -164,8 +156,7 @@ main(int argc, char **a)
         case 's':
             a++;
             if (*a == NULL) {
-                fprintf(stderr, "%s: sharp (-s) needs a value\n",
-                        me);
+                fprintf(stderr, "%s: sharp (-s) needs a value\n", me);
                 exit(2);
             }
             scl(a, &sharp);
@@ -175,6 +166,8 @@ main(int argc, char **a)
             fprintf(stderr, "%s: unknown option '%s'\n", me, *a);
             exit(2);
         }
+    if (*a == NULL)
+        ER("not enough arguments");
     status = y_ini(*a, &q, &u, &v, &w);
     if (status != CO_OK)
         ER("not an off file '%s'", a[0]);
@@ -191,6 +184,13 @@ main(int argc, char **a)
         exit(1);
     }
     n = he_nv(q);
+    if (n != he_nv(p)) {
+        fprintf(stderr,
+                "%s: number of vertices miss-match (%d != %d)\n", me, n,
+                he_nv(p));
+        exit(2);
+    }
+
     CALLOC(n, &c);
     min = array_min(n, u);
     max = array_max(n, u);
@@ -249,4 +249,14 @@ main(int argc, char **a)
     FREE(c);
     y_fin(p, x, y, z);
     y_fin(q, u, v, w);
+}
+
+static int
+scl(char **v, /**/ real * p)
+{
+    if (*v == NULL)
+        ER("%s: not enough args", me);
+    if (sscanf(*v, IN, p) != 1)
+        ER("not a number '%s'", *v);
+    return CO_OK;
 }
