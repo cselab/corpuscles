@@ -1,6 +1,6 @@
 include(`co.m4')dnl
-include(`args.m4')dnl
-include(`util.m4')dnl
+h_include(`args.m4')dnl
+h_include(`util.m4')dnl
 h_changequote(,)dnl
 #!/bin/sh
 . co.util
