@@ -47,57 +47,11 @@ rpp:
   (-2*exp(-u)*cosh(v)/cosh(u))*cosh(w)
   +(-2*exp(-u)*sinh(v)/sinh(u))*sinh(w)$
 
-matchdeclare(qq, partition_expression("*", lambda([e], freeof('w, 'v, e)), 1, "*", "[", 'ANSqq))$
-defrule(r, qq, ANSqq)$
 
-f[1](v):=cosh(v)$
-f[2](v):=sinh(v)$
-f[3](v):=v*cosh(v)$
-f[4](v):=v*sinh(v)$
-table[otherwise]:= false$
-for i thru 4 do for j thru 4 do table[radcan(f[i](v)*f[j](w))]: [i, j]$
+tpp: exponentialize(ev(tpp, %d)) $
+tpp: expand(tpp) $
 
-gmatrix(f):= block([E, e, t, i, j], local(E),
-E: zeromatrix(4, 4),
-for e in expand(f) do (
-    t: r(e),
-    [i, j]: table[second(t)],
-    E[i, j]: first(t)
-    ),
-  E)$
-
-Enn: gmatrix(tnn);
-Epp: gmatrix(tpp);
-Enp: gmatrix(tnp);
-Epn: gmatrix(tpn);
-Rpp: gmatrix(rpp);
-
-Enn - transpose(Enn);
-Epp - transpose(Epp);
-Enp + transpose(Epn);
-Rpp - transpose(Rpp);
-
-%v: create_list(f[i](v), i, 1, 4);
-%u: create_list(f[i](w), i, 1, 4);
-
-n: length(Enn);
-
-with_stdout("q",
-for i thru n do
-printf(true, "real ~a;~%", concat('w, i)),
-
-for i thru n do
-printf(true, "real ~a;~%", concat('v, i)),
-
-for i thru n do
-for j thru n do
-if Epp[i][j] # 0 then printf(true, "real ~a;~%", concat('m, i, j)),
-
-for i thru n do
-for j thru n do
-if Epp[i][j] # 0 then printf(true, "~a;~%", concat('m, i, j) = Epp[i][j]),
-
-for i thru n do
-for j thru n do
-
-if Epp[i][j] # 0 then printf(true, "+ ~a*~a*~a~%", concat('m, i, j), concat('v, i), concat('w, j)));
+tpp: subst(log(W) - u, w, tpp) $
+tpp: subst(log(V) - u, v, tpp) $
+tpp: subst(log(U), u, tpp) $
+tpp: expand(tpp);
