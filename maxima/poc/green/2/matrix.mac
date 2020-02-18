@@ -79,3 +79,12 @@ Rpp - transpose(Rpp);
 
 %v: create_list(f[i](v), i, 1, 4);
 %u: create_list(f[i](w), i, 1, 4);
+
+n: length(Enn);
+for i thru n do
+for j thru n do
+if Enp[i][j] # 0 then printf(true, "~a;~%", concat('m, i, j) = Enp[i][j]);
+
+for i thru n do
+for j thru n do
+if Enp[i][j] # 0 then printf(true, "+ ~a*~a*~a~%", concat('m, i, j), concat('v, i), concat('w, j));
