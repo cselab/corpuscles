@@ -26,7 +26,7 @@ all: $M
 %: %.c
 
 lint:; make CFLAGS='-Wall -Wextra -g -O2'
-test:; atest test/*
+test: all; atest test/*
 
 .PHONY: clean lint test
 clean:; rm -f $M $(M:=.o)

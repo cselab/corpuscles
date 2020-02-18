@@ -1,5 +1,5 @@
 # nTEST: 0
-./main -x 1 -y 2 -z 3 -w 4 -0 2 | uscale 1000 > o.out.txt
+co.run ./main -x 1 -y 2 -z 3 -w 4 -0 2 | uscale 1000 > o.out.txt
 
 # nTEST: 1
-./main -x 0.5 -y 0.5 -z 0.8 -w 1 -0 0.2 | uscale 1000 > o.out.txt
+co.run ./main -x 0.5 -y 0.5 -z 0.8 -w 1 -0 0.2 | uscale 1000 > o.out.txt
