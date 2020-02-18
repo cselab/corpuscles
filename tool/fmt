@@ -1,6 +1,13 @@
 #!/bin/sh
 
-awk -v suffix="$1" '
+. co.util
+prog=co.fmt
+
+if test $# -ne 1
+then err 'wrong number of arguments'
+fi
+
+"$AWK" -v suffix="$1" '
 BEGIN {
     RS = ""
     FS = "\n"
@@ -16,7 +23,12 @@ BEGIN {
 
 function write(f)
 {
-    sub(/.c$/, "." suffix, f)
+    if (!sub(/\.c$/, "." suffix, f) &&
+        !sub(/\.c\.m4$/, "." suffix, f)) {
+        print "wrong suffix " f | "cat >&2"
+        exit(2)
+    }
+    
     sub(/^.\//, "", f)
     print f ":\\"
     for (i = 2; i <= NF; i++)

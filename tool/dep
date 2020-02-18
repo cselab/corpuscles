@@ -4,7 +4,7 @@ prog=co.dep
 
 usg () {
     msg "$prog [-Idir].. [FILE]..."
-    msg 'dump dependencies as multiline regord'
+    msg 'dump dependencies as multiline record'
     exit
 }
 

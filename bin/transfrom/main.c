@@ -18,26 +18,24 @@
 static const char *me = "co.transform";
 static const real FV = 40;      /* default field of view  */
 
-static real
-radian(real x)
-{
-    return 0.0174532925199433*x;
-}
+static int t_gamma(real, int, real *, real *, real *);
+static real radian(real);
 
 static void
 usg(void)
 {
     fprintf(stderr,
-            "%s [-c|-b] [-l] [-t x y z] [-r ox oy oz] [-s sx sy sz] [-f field of view] < IN.off > OUT.off\n",
+            "%s [-c|-b] [-l] [-g gamma] [-t x y z] [-r ox oy oz] [-s sx sy sz] [-f field of view] < IN.off > OUT.off\n",
             me);
+    fprintf(stderr, "-c move to the center of the mass\n");
+    fprintf(stderr, "-b move to the center of the bounding box\n");
+    fprintf(stderr, "-g float stretch x += gamma*z\n");
+    fprintf(stderr, "-s sx sy sz scale\n");
+    fprintf(stderr, "-t tx ty tz translate\n");
+    fprintf(stderr, "-r rx ry rz rotate (degree)\n");
+    fprintf(stderr, "-l log\n");
     exit(2);
 }
-
-static int
-eq(const char **a, const char *b)
-{
-    return (*a != NULL) && util_eq(*a, b);
-};
 
 int
 main(__UNUSED int argc, char **argv)
@@ -51,6 +49,7 @@ main(__UNUSED int argc, char **argv)
     int i;
     int Log;
     int n;
+    int Gamma;
     real com[3];
     real f;
     real rx;
@@ -65,6 +64,7 @@ main(__UNUSED int argc, char **argv)
     real *x;
     real *y;
     real *z;
+    real gamma;
 
     err_set_ignore();
     argv++;
@@ -75,6 +75,7 @@ main(__UNUSED int argc, char **argv)
     n = -1;
     Center = NONE;
     Log = 0;
+    Gamma = 0;
     while (*argv != NULL) {
         arg = argv++[0];
         if (arg[0] != '-')
@@ -83,9 +84,14 @@ main(__UNUSED int argc, char **argv)
         case 'h':
             usg();
             break;
-	case 'l':
-	    Log = 1;
-	    break;
+        case 'g':
+            if (argv_real(&argv, &gamma) != CO_OK)
+                ER("wrong -g option");
+            Gamma = 1;
+            break;
+        case 'l':
+            Log = 1;
+            break;
         case 'c':
             Center = COM;
             break;
@@ -141,8 +147,8 @@ main(__UNUSED int argc, char **argv)
     switch (Center) {
     case COM:
         transform_centroid(he, x, y, z, com);
-	if (Log)
-	    vec_fprintf(com, stderr, FMT);
+        if (Log)
+            vec_fprintf(com, stderr, FMT);
         vec_neg(com);
         transform_tran(com, n, x, y, z);
         break;
@@ -151,8 +157,8 @@ main(__UNUSED int argc, char **argv)
         bbox_update(box, n, x, y, z);
         bbox_center(box, com);
         bbox_fin(box);
-	if (Log)
-	    vec_fprintf(com, stderr, FMT);	
+        if (Log)
+            vec_fprintf(com, stderr, FMT);
         vec_neg(com);
         transform_tran(com, n, x, y, z);
         break;
@@ -166,6 +172,9 @@ main(__UNUSED int argc, char **argv)
     transform_tranx(tx, n, x, y, z);
     transform_trany(ty, n, x, y, z);
     transform_tranz(tz, n, x, y, z);
+    if (Gamma)
+        t_gamma(gamma, n, x, y, z);
+
     if (i == -1) {
         if (off_he_xyz_fwrite(he, x, y, z, stdout) != CO_OK)
             ER("fail to write");
@@ -182,4 +191,20 @@ main(__UNUSED int argc, char **argv)
 
     y_fin(he, x, y, z);
     return 0;
+}
+
+static int
+t_gamma(real gamma, int n, real * x, real * y, real * z)
+{
+    int i;
+
+    for (i = 0; i < n; i++)
+        x[i] += gamma * z[i];
+    return CO_OK;
+}
+
+static real
+radian(real x)
+{
+    return 0.0174532925199433 * x;
 }

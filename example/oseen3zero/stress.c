@@ -12,7 +12,7 @@
 #define FMT CO_REAL_OUT
 static real pi = 3.141592653589793115997964;
 
-static char me[] = "oseen3zero/rad";
+static char me[] = "oseen3zero/stress";
 static void
 usg()
 {

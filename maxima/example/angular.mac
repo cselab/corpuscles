@@ -1,0 +1,21 @@
+load("co/vec.mac");
+
+rad: [x, y, z];
+vel: [u, v, w];
+om : [p, q, r];
+
+declare(s, linear);
+tellsimp(s(x^2), x2);
+tellsimp(s(y^2), y2);
+tellsimp(s(z^2), z2);
+tellsimp(s(x*y), xy);
+tellsimp(s(x*z), xz);
+tellsimp(s(y*z), yz);
+
+block(local(p, q, r),
+  declare([p, q, r], constant),
+  X: expand(map(s, vec_cross(vel, rad))),
+  Y: expand(map(s, vec_cross(vec_cross(om, rad), rad))));
+
+D: X - Y;
+augcoefmatrix(D, om);

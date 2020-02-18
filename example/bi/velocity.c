@@ -116,8 +116,8 @@ main(int argc, char **argv)
             "ASCII\n"
             "DATASET STRUCTURED_POINTS\n"
             "DIMENSIONS %d %d %d\n"
-            "ORIGIN %.16g %.16g %.16g\n"
-            "SPACING %.16g %.16g %.16g\n",
+            "ORIGIN " FMT " " FMT " " FMT "\n"
+            "SPACING " FMT " " FMT " " FMT "\n",
             me, nx + 1, ny + 1, nz + 1, lx, ly, lz, dx, dy, dz);
     fprintf(f, "POINT_DATA %d\n", n);
     fputs("VECTORS v double\n", f);
