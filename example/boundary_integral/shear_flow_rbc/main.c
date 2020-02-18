@@ -369,6 +369,7 @@ int main(__UNUSED int argc, char **argv) {
     if ( s > step_end ) break;
     
     ode3_step(ode, &time, t, x, y, z);
+    y_tocm(he, x, y, z);
     
   }
   
