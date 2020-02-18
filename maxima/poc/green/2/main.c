@@ -27,8 +27,32 @@ struct Param {
     real z;
     real z0;
     real W;
-     real(*f) (real, real, real, real);
+    real(*f) (real, real, real, real);
 };
+
+static real
+f1(real v)
+{
+    return cosh(v);
+}
+
+static real
+f2(real v)
+{
+    return sinh(v);
+}
+
+static real
+f3(real v)
+{
+    return v*cosh(v);
+}
+
+static real
+f4(real v)
+{
+    return v*sinh(v);
+}
 
 struct Input {
     real x;
@@ -265,6 +289,7 @@ tnn(real q, real z, real z0, real W)
     Dp = fDp(u);
     Ep = fEp(u);
     Em = fEm(u);
+    
     return Ep * (Ap * cosh(v) - v * sinh(v)) * w * sinh(w) +
         Em * (Bp * v * cosh(v) - Dp * sinh(v)) * sinh(w) +
         Em * (Bp * sinh(v) - v * cosh(v)) * w * cosh(w) +
