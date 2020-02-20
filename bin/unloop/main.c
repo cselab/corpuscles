@@ -12,7 +12,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-static const char *me = "loop";
+static const char *me = "unloop";
 static void
 usg()
 {
