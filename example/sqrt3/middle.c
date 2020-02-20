@@ -14,7 +14,7 @@
 
 static const char *me = "sqrt3/middle";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s OFF > OFF\n", me);
     exit(2);

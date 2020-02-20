@@ -14,7 +14,7 @@
 
 static const char *me = "remesh/tri";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s < OFF\n", me);
     exit(2);
