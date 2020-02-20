@@ -13,7 +13,7 @@
 static char me[] = "tensor";
 
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s -x float -y float -z float -0 float -w float\n",
             me);

@@ -18,7 +18,7 @@ static real pi = 3.141592653589793115997964;
 
 static char me[] = "green3wall/grid";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s [-w wall] x0 y0 z0 gx gy gz < OFF\n", me);
     exit(1);

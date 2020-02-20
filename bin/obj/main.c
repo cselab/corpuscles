@@ -9,7 +9,7 @@
 
 static const char *me = "co.obj";
 static void
-usg()
+usg(void)
 {
   fprintf(stderr, "%s < OFF > OBJ\n", me);
   exit(2);

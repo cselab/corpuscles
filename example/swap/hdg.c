@@ -13,7 +13,7 @@
 
 static const char *me = "swap/hdg";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s int int < OFF\n", me);
     exit(2);

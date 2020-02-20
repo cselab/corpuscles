@@ -12,7 +12,7 @@
 
 static const char *me = "y/merge";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s OFF OFF > OFF\n", me);
     exit(2);

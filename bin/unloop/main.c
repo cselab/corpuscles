@@ -15,7 +15,7 @@
 
 static const char *me = "unloop";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s OFF > OFF\n", me);
     exit(2);

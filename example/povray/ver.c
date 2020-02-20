@@ -15,7 +15,7 @@
 
 static const char *me = "povray/ver";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s < OFF > POV\n", me);
     exit(2);

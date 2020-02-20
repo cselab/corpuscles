@@ -19,7 +19,7 @@ GIT_SYMBOL;
 static char me[] = "area/ver";
 
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s < OFF\n", me);
     fprintf(stderr, "git: " GIT_STRING "\n");

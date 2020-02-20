@@ -16,7 +16,7 @@
 
 static const char *me = "generation/file";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s -f file < OFF > OFF\n", me);
     exit(2);

@@ -14,7 +14,7 @@
 
 static const char *me = "generation/main";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s < OFF > OFF\n", me);
     exit(2);

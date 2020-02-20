@@ -16,7 +16,7 @@ static real pi = 3.141592653589793115997964;
 
 static char me[] = "green3wall/stress";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s [-w w] x0 y0 z0 nx ny nz gx gy gz x y z < OFF\n", me);
     exit(1);

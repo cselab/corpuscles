@@ -17,7 +17,7 @@
 
 static char me[] = "bi/velocity";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s -b lx ly lz hx hy hz -n nx ny nz < OFF > VTK\n",
             me);

@@ -26,7 +26,7 @@ static Bending *bending;
 static BendingParam param;
 static const char *me = "co.cmoment";
 
-static void usg() {
+static void usg(void) {
     const char *list;
     list = bending_list();
     fprintf(stderr, "%s %s < OFF \n", me, list);

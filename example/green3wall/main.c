@@ -15,7 +15,7 @@
 #define FMT CO_REAL_OUT
 static char me[] = "green3wall/velocity";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s [-w wall] < OFF\n", me);
     exit(1);

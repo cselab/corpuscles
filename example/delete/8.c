@@ -13,7 +13,7 @@
 
 static const char *me = "del/8";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s < OFF\n", me);
     exit(2);
