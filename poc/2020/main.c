@@ -221,7 +221,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
 
-    real Moment[3];
+    /*real Moment[3];
     real Inertia[6];
     real Omega[3];
     real rad[3];
@@ -235,7 +235,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 	vec_cross(rad, Omega, vel);
 	vec_substr(vel, i, vx, vy, vz);
     }
-    compute_moment(nv, x, y, z, vx, vy, vz, Moment);
+    compute_moment(nv, x, y, z, vx, vy, vz, Moment); */
     return CO_OK;
 }
 
