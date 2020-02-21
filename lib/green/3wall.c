@@ -25,8 +25,6 @@ struct T {
     real *nx, *ny, *nz, *area;
 };
 
-static int s0(T *, const real[3], Ten *);
-static int d0(T *, const real[3], const real[3], Ten *);
 
 int
 green3_wall_ini(He * he, real w, T ** pq)
@@ -77,7 +75,7 @@ green3_wall_apply(T * q, He * he, const real * x, const real * y,
         i_vec_get(i, x, y, z, a);
         for (j = 0; j < n; j++) {
             if (i == j)
-                s0(q, a, &t0);
+                green3_wall_s0(q, a, &t0);
             else {
                 i_vec_get(j, x, y, z, b);
                 if (green3_wall_s(q, a, b, &t0) != CO_OK)
@@ -129,7 +127,7 @@ green3_wall_stresslet(T * q, He * he, const real * x, const real * y,
             A = 3 * area[j] / (4 * pi);
             i_vec_get(j, nx, ny, nz, u);
             if (i == j) {
-                d0(q, a, u, &t0);
+                green3_wall_t0(q, a, u, &t0);
             } else {
                 i_vec_get(j, x, y, z, b);
                 if (green3_wall_t(q, a, u, b, &t0) != CO_OK)
@@ -155,8 +153,8 @@ rad(real x, real y, real z)
     return sqrt(r);
 }
 
-static int
-s0(T * q, const real a[3], Ten * t0)
+int
+green3_wall_s0(T * q, const real a[3], Ten * t0)
 {
     enum {
         X, Y, Z
@@ -188,8 +186,8 @@ s0(T * q, const real a[3], Ten * t0)
     return CO_OK;
 }
 
-static int
-d0(T * q, const real a[3], const real n[3], Ten * t0)
+int
+green3_wall_t0(T * q, const real a[3], const real n[3], Ten * t0)
 {
     enum {
         X, Y, Z

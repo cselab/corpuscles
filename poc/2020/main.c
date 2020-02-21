@@ -429,7 +429,8 @@ main(__UNUSED int argc, char **argv)
 	if (s > end)
 	    break;
 
-	ode3_apply(ode, &time, t, x, y, z);
+	ode3_apply_fixed(ode, &time, t, x, y, z);
+	//ode3_apply(ode, &time, t, x, y, z);
 
     }
 

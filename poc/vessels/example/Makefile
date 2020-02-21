@@ -17,4 +17,4 @@ all: $M
 %: %.c
 
 lint:; make CFLAGS='-Wall -Wextra -g -Og'
-clean:; rm -f $M $(M:=.o) $(M:=.c)
+clean:; rm -f $M $(M:=.o)

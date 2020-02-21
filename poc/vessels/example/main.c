@@ -67,7 +67,7 @@ main(int argc, char **argv)
 	    red = (*inptr++) & 0xff >> COLOR_SHIFT;
 	    green = (*inptr++) & 0xff >> COLOR_SHIFT;
 	    blue = (*inptr++) & 0xff >> COLOR_SHIFT;
-	    printf("%d\n", blue);
+	    printf("%d %d %d\n", red, green, blue);
 	}
     }
     _TIFFfree(buf);
