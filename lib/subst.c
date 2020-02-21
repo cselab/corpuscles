@@ -6,6 +6,7 @@
 #include "co/memory.h"
 #include "co/subst.h"
 
+#define FMT CO_REAL_OUT
 #define T Subst
 struct T {
     int n, niter;
@@ -46,6 +47,7 @@ subst_apply(T * q, He * he, BI * bi,
 {
     int status, n, niter, iiter;
     real *wx, *wy, *wz, *vx, *vy, *vz, alpha, tol, diff, norm;
+    int i;
 
     alpha = q->alpha;
     tol = q->tol;
