@@ -1,7 +1,7 @@
 load("partition") $
 
 %s:[
-u = W * q,
+u = q * W,
 v = q * z0,
 w = q * z] $
 
@@ -101,3 +101,5 @@ for i thru n do
 for j thru n do
 
 if Epp[i][j] # 0 then printf(true, "+ ~a*~a*~a~%", concat('m, i, j), concat('v, i), concat('w, j)));
+%w: create_list(f[i](w), i, 1, 4);
+
