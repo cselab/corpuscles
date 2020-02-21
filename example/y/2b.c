@@ -11,7 +11,7 @@
 
 static const char *me = "y/2b";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s OFF OFF > OFF\n", me);
     exit(2);

@@ -13,14 +13,14 @@
 static char me[] = "tensor";
 
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s -x float -y float -z float -0 float -w float\n",
             me);
     exit(1);
 }
 
-static const real qmax = 100;
+static const real qmax = 15;
 struct Param {
     real(*j) (real);
     real s;
@@ -29,6 +29,37 @@ struct Param {
     real W;
      real(*f) (real, real, real, real);
 };
+
+static real
+sq(real x)
+{
+    return x * x;
+}
+
+
+static real
+f1(real v)
+{
+    return cosh(v);
+}
+
+static real
+f2(real v)
+{
+    return sinh(v);
+}
+
+static real
+f3(real v)
+{
+    return v * cosh(v);
+}
+
+static real
+f4(real v)
+{
+    return v * sinh(v);
+}
 
 struct Input {
     real x;
@@ -255,6 +286,22 @@ tnn(real q, real z, real z0, real W)
     real Dp;
     real Ep;
     real Em;
+    real v1;
+    real v2;
+    real v3;
+    real v4;
+    real w1;
+    real w2;
+    real w3;
+    real w4;
+    real m11;
+    real m14;
+    real m22;
+    real m23;
+    real m32;
+    real m33;
+    real m41;
+    real m44;
 
     u = W * q;
     v = q * z0;
@@ -265,10 +312,27 @@ tnn(real q, real z, real z0, real W)
     Dp = fDp(u);
     Ep = fEp(u);
     Em = fEm(u);
-    return Ep * (Ap * cosh(v) - v * sinh(v)) * w * sinh(w) +
-        Em * (Bp * v * cosh(v) - Dp * sinh(v)) * sinh(w) +
-        Em * (Bp * sinh(v) - v * cosh(v)) * w * cosh(w) +
-        Ep * (Ap * v * sinh(v) - Cp * cosh(v)) * cosh(w);
+
+    v1 = f1(v);
+    v2 = f2(v);
+    v3 = f3(v);
+    v4 = f4(v);
+    w1 = f1(w);
+    w2 = f2(w);
+    w3 = f3(w);
+    w4 = f4(w);
+
+    m11 = -Cp * Ep;
+    m14 = Ap * Ep;
+    m22 = -Dp * Em;
+    m23 = Bp * Em;
+    m32 = Bp * Em;
+    m33 = -Em;
+    m41 = Ap * Ep;
+    m44 = -Ep;
+
+    return m11 * w1 * v1 + m14 * w1 * v4 + m22 * w2 * v2 + m23 * w2 * v3 +
+        m32 * w3 * v2 + m33 * w3 * v3 + m41 * w4 * v1 + m44 * w4 * v4;
 }
 
 static real
@@ -283,6 +347,22 @@ tnp(real q, real z, real z0, real W)
     real Bm;
     real Ep;
     real Em;
+    real v1;
+    real v2;
+    real v3;
+    real v4;
+    real w1;
+    real w2;
+    real w3;
+    real w4;
+    real m12;
+    real m13;
+    real m21;
+    real m24;
+    real m31;
+    real m34;
+    real m42;
+    real m43;
 
     u = W * q;
     u = W * q;
@@ -294,10 +374,26 @@ tnp(real q, real z, real z0, real W)
     Bm = fBm(u);
     Ep = fEp(u);
     Em = fEm(u);
-    return Ep * (v * cosh(v) - Bm * sinh(v)) * w * sinh(w) +
-        Em * (u * u * cosh(v) - Bp * v * sinh(v)) * sinh(w) +
-        Em * (v * sinh(v) - Am * cosh(v)) * w * cosh(w) +
-        Ep * (u * u * sinh(v) - Ap * v * cosh(v)) * cosh(w);
+    v1 = f1(v);
+    v2 = f2(v);
+    v3 = f3(v);
+    v4 = f4(v);
+    w1 = f1(w);
+    w2 = f2(w);
+    w3 = f3(w);
+    w4 = f4(w);
+
+    m12 = Em * sq(u);
+    m13 = -Am * Em;
+    m21 = Ep * sq(u);
+    m24 = -Bm * Ep;
+    m31 = -Ap * Ep;
+    m34 = Ep;
+    m42 = -Bp * Em;
+    m43 = Em;
+
+    return m12 * v1 * w2 + m13 * v1 * w3 + m21 * v2 * w1 + m24 * v2 * w4 +
+        m31 * v3 * w1 + m34 * v3 * w4 + m42 * v4 * w2 + m43 * v4 * w3;
 }
 
 static real
@@ -312,6 +408,22 @@ tpn(real q, real z, real z0, real W)
     real Bm;
     real Ep;
     real Em;
+    real w1;
+    real w2;
+    real w3;
+    real w4;
+    real v1;
+    real v2;
+    real v3;
+    real v4;
+    real m12;
+    real m13;
+    real m21;
+    real m24;
+    real m31;
+    real m34;
+    real m42;
+    real m43;
 
     u = W * q;
     u = W * q;
@@ -323,10 +435,27 @@ tpn(real q, real z, real z0, real W)
     Bm = fBm(u);
     Ep = fEp(u);
     Em = fEm(u);
-    return Em * (Bp * sinh(v) - v * cosh(v)) * w * sinh(w) +
-        Ep * (Bm * v * sinh(v) - u * u * cosh(v)) * sinh(w) +
-        Ep * (Ap * cosh(v) - v * sinh(v)) * w * cosh(w) +
-        Em * (Am * v * cosh(v) - u * u * sinh(v)) * cosh(w);
+
+    v1 = f1(v);
+    v2 = f2(v);
+    v3 = f3(v);
+    v4 = f4(v);
+    w1 = f1(w);
+    w2 = f2(w);
+    w3 = f3(w);
+    w4 = f4(w);
+
+    m12 = -Ep * sq(u);
+    m13 = Ap * Ep;
+    m21 = -Em * sq(u);
+    m24 = Bp * Em;
+    m31 = Am * Em;
+    m34 = -Em;
+    m42 = Bm * Ep;
+    m43 = -Ep;
+
+    return m12 * v1 * w2 + m13 * v1 * w3 + m21 * v2 * w1 + m24 * v2 * w4 +
+        m31 * v3 * w1 + m34 * v3 * w4 + m42 * v4 * w2 + m43 * v4 * w3;
 }
 
 static real
@@ -341,8 +470,23 @@ tpp(real q, real z, real z0, real W)
     real Dm;
     real Ep;
     real Em;
+    real w1;
+    real w2;
+    real w3;
+    real w4;
+    real v1;
+    real v2;
+    real v3;
+    real v4;
+    real m11;
+    real m14;
+    real m22;
+    real m23;
+    real m32;
+    real m33;
+    real m41;
+    real m44;
 
-    u = W * q;
     u = W * q;
     v = q * z0;
     w = q * z;
@@ -352,12 +496,32 @@ tpp(real q, real z, real z0, real W)
     Dm = fDm(u);
     Ep = fEp(u);
     Em = fEm(u);
+
+    v1 = f1(v);
+    v2 = f2(v);
+    v3 = f3(v);
+    v4 = f4(v);
+    w1 = f1(w);
+    w2 = f2(w);
+    w3 = f3(w);
+    w4 = f4(w);
+
+    m11 = Cm * Em;
+    m14 = -Am * Em;
+    m22 = Dm * Ep;
+    m23 = -Bm * Ep;
+    m32 = -Bm * Ep;
+    m33 = Ep;
+    m41 = -Am * Em;
+    m44 = Em;
     return Em * (v * sinh(v) - Am * cosh(v)) * w * sinh(w) +
         Ep * ((-2 * u * coth(u) * sinh(v)) + Dm * sinh(v) -
               Bm * v * cosh(v)) * sinh(w) + Ep * (v * cosh(v) -
                                                   Bm * sinh(v)) * w *
         cosh(w) + Em * ((-Am * v * sinh(v)) - 2 * u * tanh(u) * cosh(v) +
                         Cm * cosh(v)) * cosh(w);
+    return m11 * v1 * w1 + m14 * v1 * w4 + m22 * v2 * w2 + m23 * v2 * w3 +
+        m32 * v3 * w2 + m33 * v3 * w3 + m41 * v4 * w1 + m44 * v4 * w4;
 }
 
 static real

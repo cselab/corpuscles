@@ -11,7 +11,7 @@ static const char *me = "y/c";
 #define Prefix "ico_"
 #define FMT CO_REAL_OUT
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s OFF > struct.c\n", me);
     exit(2);

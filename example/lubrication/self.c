@@ -16,7 +16,7 @@ static const char *me = "lubrication/self";
 #define FMT   CO_REAL_OUT
 
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s [-p] OFF OFF > OFF\n", me);
     exit(2);

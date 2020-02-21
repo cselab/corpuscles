@@ -10,7 +10,7 @@
 
 static const char *me = "vtk/int";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s < VTK > OFF\n", me);
     exit(2);

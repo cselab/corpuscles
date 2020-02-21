@@ -15,7 +15,7 @@
 
 static const char *me = "generation/read";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s < VTK\n", me);
     exit(2);

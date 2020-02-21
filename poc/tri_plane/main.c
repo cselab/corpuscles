@@ -10,7 +10,7 @@
 static char me[] = "poc/tri_plane";
 static const real eps = 1e-12;
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s a[xyz] b[xyz] c[xyz]\n", me);
     exit(2);

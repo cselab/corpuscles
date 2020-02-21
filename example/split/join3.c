@@ -13,7 +13,7 @@
 
 static const char *me = "split/join3";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s: [tirangle number] < OFF\n", me);
     exit(2);

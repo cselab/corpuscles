@@ -14,14 +14,11 @@
 
 static const char *me = "loop";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s OFF > OFF\n", me);
     exit(2);
 }
-
-static int t2edg(He * he, int t, int *, int *, int *);
-static int t2ver(He * he, int t, int *, int *, int *);
 
 int
 main(int argc, char **argv)
@@ -47,34 +44,4 @@ main(int argc, char **argv)
         ER("off_he_xyz_fwrite failed");
     he_fin(he);
     y_fin(he0, x, y, z);
-}
-
-static int
-t2edg(He * he, int t, int *i, int *j, int *k)
-{
-    int h, n, nn;
-
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    *i = he_edg(he, h);
-    *j = he_edg(he, n);
-    *k = he_edg(he, nn);
-
-    return CO_OK;
-}
-
-static int
-t2ver(He * he, int t, int *i, int *j, int *k)
-{
-    int h, n, nn;
-
-    h = he_hdg_tri(he, t);
-    n = he_nxt(he, h);
-    nn = he_nxt(he, n);
-    *i = he_ver(he, h);
-    *j = he_ver(he, n);
-    *k = he_ver(he, nn);
-
-    return CO_OK;
 }

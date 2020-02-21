@@ -10,7 +10,7 @@
 
 static const char *me = "rotate/one";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s: [tirangle number] < OFF\n", me);
     exit(2);

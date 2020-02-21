@@ -13,7 +13,7 @@
 
 static const char *me = "loop/middle";
 static void
-usg()
+usg(void)
 {
     fprintf(stderr, "%s OFF > OFF\n", me);
     exit(2);
