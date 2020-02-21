@@ -19,7 +19,7 @@ static char me[] = "subst/force";
 static void
 usg(void)
 {
-    fprintf(stderr, "%s -b BI -f force\n", me);
+    fprintf(stderr, "%s -b BI -f force [-l lambda] [-n iter_max] [-t tol]\n", me);
     exit(1);
 }
 
@@ -68,22 +68,30 @@ main(int argc, char **argv)
         case 'h':
             usg();
             break;
-	case 'n':
-	    argv++;
+        case 'n':
+            argv++;
             if ((name = *argv++) == NULL) {
                 fprintf(stderr, "%s: -n needs an argument\n", me);
                 exit(2);
-	    }
-	    iter_max = atoi(name);
-	    break;
-	case 'l':
-	    argv++;
+            }
+            iter_max = atoi(name);
+            break;
+        case 'l':
+            argv++;
             if ((name = *argv++) == NULL) {
                 fprintf(stderr, "%s: -l needs an argument\n", me);
                 exit(2);
-	    }
-	    lambda = atof(name);
-	    break;
+            }
+            lambda = atof(name);
+            break;
+        case 't':
+            argv++;
+            if ((name = *argv++) == NULL) {
+                fprintf(stderr, "%s: -t needs an argument\n", me);
+                exit(2);
+            }
+            tol = atof(name);
+            break;
         case 'b':
             argv++;
             if ((name = *argv++) == NULL) {

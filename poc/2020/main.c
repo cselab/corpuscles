@@ -26,10 +26,10 @@
 static const char *me = "poc/2020";
 static const real pi = 3.141592653589793115997964;
 static const real tol = 0.001;
-static const int iter_max = 10000;
+static const int iter_max = 8000;
 
 #define FMT_IN CO_REAL_IN
-#define FMT_OUT CO_REAL_OUT
+#define O CO_REAL_OUT
 static Force *Fo[20] = {
     NULL
 };
@@ -162,10 +162,15 @@ force(He * he, const real * x, const real * y, const real * z, real * fx,
       real * fy, real * fz)
 {
     int i;
+    int status;
 
     i = 0;
     while (Fo[i]) {
-	force_force(Fo[i], he, x, y, z, fx, fy, fz);
+	status = force_force(Fo[i], he, x, y, z, fx, fy, fz);
+	if (status != CO_OK) {
+	    fprintf(stderr, "%s: force '%s' failed\n", me, force_name(Fo[i]));
+	    exit(2);
+	}
 	i++;
     }
     return CO_OK;
@@ -190,15 +195,11 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
   real * vx, real * vy, real * vz, __UNUSED void *p0)
 {
     enum {X, Y, Z};
-    int i, k;
-    real coef, al, be;
-    real d;
-    real dd, ratio;
+    int i;
+    real coef, al;
 
     coef = 2 / (1 + lambda);
     al = -2 / (eta * (1 + lambda));
-    be = 2 * (1 - lambda) / (1 + lambda);
-
     array_zero3(nv, fx, fy, fz);
     force(he, x, y, z, fx, fy, fz);
     
@@ -209,6 +210,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 	vx[i] += coef * gamdot * z[i];
     bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
+    MSG("Subst.iiter: %d", subst_niter(subst));    
     if (subst_niter(subst) > iter_max) {
         MSG("Subst.iiter: %d", subst_niter(subst));
 	off_he_xyz_write(he, x, y, z, "fail.off");
@@ -219,7 +221,6 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
     array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
 
-    /*
     real Moment[3];
     real Inertia[6];
     real Omega[3];
@@ -234,7 +235,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 	vec_cross(rad, Omega, vel);
 	vec_substr(vel, i, vx, vy, vz);
     }
-    compute_moment(nv, x, y, z, vx, vy, vz, Moment); */
+    compute_moment(nv, x, y, z, vx, vy, vz, Moment);
     return CO_OK;
 }
 
@@ -260,7 +261,7 @@ main(__UNUSED int argc, char **argv)
     real M, m;
     real alpha;
 
-    //err_set_ignore();
+    err_set_ignore();
     argv++;
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
@@ -275,7 +276,7 @@ main(__UNUSED int argc, char **argv)
     fclose(fm);
 
     V0 = he_f_volume_V0(fvolume);
-    MSG("V0=%g", V0);           //
+    MSG("V0 = " O, V0);
 
     i = 0;
     A0 = -1;
@@ -303,12 +304,12 @@ main(__UNUSED int argc, char **argv)
 	ER("Failed to open '%s'", file_msg);
     }
 
-    fprintf(fm, "A0 V0 v0 = %g %g %g\n", A0, V0, v0);
-    fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", R, D,
-	    rho, eta, lambda, gamdot);
+    fprintf(fm, "A0 V0 v0 = " O " " O " " O "\n", A0, V0, v0);
+    fprintf(fm, "R D rho eta lambda gamdot = %g %g %g %g %g %g\n", (double)R, (double)D,
+	    (double)rho, (double)eta, (double)lambda, (double)gamdot);
     fprintf(fm, "Nv Nt = %i %i\n", nv, nt);
-    fprintf(fm, "M m a e reg dt = %g %g %g %g %g %g\n", M, m, a, e, reg,
-	    dt);
+    fprintf(fm, "M m a e reg dt = %g %g %g %g %g %g\n", (double)M, (double)m, (double)a, (double)e, (double)reg,
+	    (double)dt);
     fclose(fm);
 
     lin_solve_ini(3, &linsolve);
@@ -379,17 +380,17 @@ main(__UNUSED int argc, char **argv)
 	    v = reduced_volume(A, V);
 
 	    if (s % freq_stat == 0) {
-		MSG("dt s t = %g %i %g", dt, s, t);
-		MSG("A/A0 V/V0 v  = %g %g %g", A / A0, V / V0, v);
-		MSG("et ega ev eb ebl ebn es = %g %g %g %g %g %g %g", et,
+		MSG("dt s t = " O " %i  " O, dt, s, t);
+		MSG("A/A0 V/V0 v  = " O " " O " " O, A / A0, V / V0, v);
+		MSG("et ega ev eb ebl ebn es = " O " " O " " O " " O " " O " " O " " O, et,
 		    ega, ev, eb, ebl, ebn, es);
 	    }
 
 	    if ((fm = fopen(file_stat, "a")) == NULL) {
 		ER("Failed to open '%s'", file_stat);
 	    }
-	    fprintf(fm, "%g %i %g %g %g %g %g %g %g %g %g %g %g\n", dt, s,
-		    t, A / A0, V / V0, v, et, ega, ev, eb, ebl, ebn, es);
+	    fprintf(fm, O " %i " O " " O " " O " " O " " O " " O " " O " " O " " O " " O " " O"\n",
+		    dt, s, t, A / A0, V / V0, v, et, ega, ev, eb, ebl, ebn, es);
 	    fclose(fm);
 
 	}
