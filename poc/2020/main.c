@@ -210,7 +210,6 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 	vx[i] += coef * gamdot * z[i];
     bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
-    MSG("Subst.iiter: %d", subst_niter(subst));    
     if (subst_niter(subst) > iter_max) {
         MSG("Subst.iiter: %d", subst_niter(subst));
 	off_he_xyz_write(he, x, y, z, "fail.off");
