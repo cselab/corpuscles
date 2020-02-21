@@ -26,3 +26,10 @@ Rpp0 : matrix(
   [Enn, Epp, Enp, Epn]);
 
 factor(%v . Rpp . %w) - subst([Em0 = Em, Ep0 = Ep], factor(%v0 . Rpp0 . %w0));
+
+Enn0;
+
+n: length(Enn);
+for i thru n do
+for j thru n do
+print(i, j);
