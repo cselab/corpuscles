@@ -60,11 +60,30 @@ main(int argc, char **argv)
     argv++;
     bi = NULL;
     force = NULL;
+    lambda = 5;
+    iter_max = 100;
+    tol = 0.01;
     while (*argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
             usg();
             break;
+	case 'n':
+	    argv++;
+            if ((name = *argv++) == NULL) {
+                fprintf(stderr, "%s: -n needs an argument\n", me);
+                exit(2);
+	    }
+	    iter_max = atoi(name);
+	    break;
+	case 'l':
+	    argv++;
+            if ((name = *argv++) == NULL) {
+                fprintf(stderr, "%s: -l needs an argument\n", me);
+                exit(2);
+	    }
+	    lambda = atof(name);
+	    break;
         case 'b':
             argv++;
             if ((name = *argv++) == NULL) {
@@ -114,11 +133,8 @@ main(int argc, char **argv)
     MALLOC3(n, &fx, &fy, &fz);
     CALLOC3(n, &vx, &vy, &vz);
 
-    lambda = 3;
-    tol = 0.01;
     coef = 2 / (1 + lambda);
     alpha = 2 * (1 - lambda) / (1 + lambda);
-    iter_max = 100;
     subst_ini(n, alpha, tol, iter_max, &subst);
     array_zero3(n, ux, uy, uz);
     bi_update(bi, he, x, y, z);
