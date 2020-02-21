@@ -4,6 +4,7 @@ M = \
 grid\
 main\
 stress\
+stress0\
 velocity\
 velocity0\
 velocity2\

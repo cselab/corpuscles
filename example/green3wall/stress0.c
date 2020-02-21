@@ -13,11 +13,11 @@
 
 #define FMT CO_REAL_OUT
 
-static char me[] = "green3wall/stress";
+static char me[] = "green3wall/stress0";
 static void
 usg(void)
 {
-    fprintf(stderr, "%s [-w w] x0 y0 z0 nx ny nz x y z < OFF\n", me);
+    fprintf(stderr, "%s [-w w] x0 y0 z0 nx ny nz< OFF\n", me);
     exit(1);
 }
 
@@ -26,7 +26,7 @@ main(int argc, const char **argv)
 {
     He *he;
     Green3Wall *green;
-    real *x, *y, *z, a[3], b[3], n[3];
+    real *x, *y, *z, a[3], n[3];
     real w;
     Ten ten;
     USED(argc);
@@ -58,16 +58,12 @@ main(int argc, const char **argv)
         fprintf(stderr, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, b) != CO_OK) {
-        fprintf(stderr, "%s: fail to read vector\n", me);
-        exit(1);
-    }
     if (*argv != NULL) {
         fprintf(stderr, "%s: too many arguments\n", me);
         exit(1);
     }
     green3_wall_ini(he, w, &green);
-    green3_wall_t(green, a, n, b, &ten);
+    green3_wall_t0(green, a, n, &ten);
     ten_fprintf(&ten, stderr, FMT);
     green3_wall_fin(green);
     y_fin(he, x, y, z);

@@ -60,8 +60,6 @@ main(int argc, const char **argv)
     tensor3x3_ini(n, &tensor);
     green3_wall_ini(he, w, &green);
     green3_wall_apply(green, he, x, y, z, &tensor);
-
-    Ten t;
     for (i = 0; i < n; i++) {
 	for (j = 0; j < n; j++) {
 	    for (k = 0; k < 3*3; k++)
