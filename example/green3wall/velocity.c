@@ -12,13 +12,12 @@
 #include <co/y.h>
 
 #define FMT CO_REAL_OUT
-static real pi = 3.141592653589793115997964;
 
 static char me[] = "green3wall/velocity";
 static void
 usg(void)
 {
-    fprintf(stderr, "%s [-w wall] x0 y0 z0 gx gy gz x y z < OFF\n", me);
+    fprintf(stderr, "%s [-w wall] x0 y0 z0 x y z < OFF\n", me);
     exit(1);
 }
 
@@ -27,8 +26,7 @@ main(int argc, const char **argv)
 {
     He *he;
     Green3Wall *green;
-    real *x, *y, *z, a[3], b[3], g[3];
-    real u[3];
+    real *x, *y, *z, a[3], b[3];
     real w;
     Ten ten;
     enum {X, Y, Z};
@@ -59,10 +57,6 @@ main(int argc, const char **argv)
         fprintf(stderr, "%s: fail to read vector\n", me);
         exit(1);
     }
-    if (vec_argv(&argv, g) != CO_OK) {
-        fprintf(stderr, "%s: fail to read vector\n", me);
-        exit(1);
-    }
     if (vec_argv(&argv, a) != CO_OK) {
         fprintf(stderr, "%s: fail to read vector\n", me);
         exit(1);
@@ -73,9 +67,7 @@ main(int argc, const char **argv)
     }
     green3_wall_ini(he, w, &green);
     green3_wall_s(green, a, b, &ten);
-    ten_vec(&ten, g, u);
-    vec_scale(1/(8*pi), u);
-    vec_printf(u, FMT);
+    ten_fprintf(&ten, stderr, FMT);
     green3_wall_fin(green);
     y_fin(he, x, y, z);
 }
