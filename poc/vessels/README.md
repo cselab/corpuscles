@@ -1,3 +1,6 @@
+4x: 1.0(z), 1.6(xy)
+1x: 6.00(z), 6.08(xy)
+
 f () {
     for i in /v/*.tif
     do echo >&2 "$i"
