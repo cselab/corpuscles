@@ -4,7 +4,7 @@ make
 gdot=`ae 0.503733/350*775`
 export EPSABS=1e-2
 export EPSREL=1e-2
-dt=`ae 0.000285714*10`
+dt=`ae 0.000285714*10*5`
 co.run ./main \
 volume 2.6892 70000 \
 garea 12.5663706144 70000 \

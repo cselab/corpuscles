@@ -11,6 +11,8 @@
 #include "co/off.h"
 #include "co/y.h"
 
+enum {X, Y, Z};
+
 int
 y_inif(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
 {
@@ -187,3 +189,23 @@ y_tocm(He * he, real * x, real * y, real * z)
         ERR(CO_OK, "transform_tran failed, n = %d");
     return CO_OK;
 }
+
+int
+y_tocm_xy(He * he, real * x, real * y, real * z)
+{
+    int n;
+    int status;
+    real com[3];
+
+    n = he_nv(he);
+    status = transform_centroid(he, x, y, z, com);
+    if (status != CO_OK)
+        ERR(CO_NUM, "transform_centroid failed, n = %d", n);
+    vec_neg(com);
+    com[Z] = 0;
+    status = transform_tran(com, n, x, y, z);
+    if (status != CO_OK)
+        ERR(CO_OK, "transform_tran failed, n = %d");
+    return CO_OK;
+}
+

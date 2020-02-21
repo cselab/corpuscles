@@ -164,6 +164,7 @@ force(He * he, const real * x, const real * y, const real * z, real * fx,
     i = 0;
     while (Fo[i]) {
 	force_force(Fo[i], he, x, y, z, fx, fy, fz);
+	MSG("force_name: %s", force_name(F[i]));
 	i++;
     }
     return CO_OK;
@@ -431,6 +432,7 @@ main(__UNUSED int argc, char **argv)
 
 	ode3_apply_fixed(ode, &time, t, x, y, z);
 	//ode3_apply(ode, &time, t, x, y, z);
+	y_tocm_xy(he, x, y, z);
 
     }
 
