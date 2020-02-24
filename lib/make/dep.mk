@@ -173,13 +173,6 @@ co/vec.h\
 co/bi/cortez_fm.h\
 co/bi/self_circle.h\
 
-bi/cortez_null.s.o:\
-co/prec/s/real.h\
-co/bi/cortez_null.h\
-co/err.h\
-co/macro.h\
-co/memory.h\
-
 bi/cortez_zero.s.o:\
 co/prec/s/real.h\
 co/argv.h\
@@ -192,6 +185,15 @@ co/macro.h\
 co/memory.h\
 co/oseen/3zero.h\
 co/tensor.h\
+
+bi/null.s.o:\
+co/prec/s/real.h\
+co/array.h\
+co/bi/null.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
 
 bi/self_circle.s.o:\
 co/prec/s/real.h\
@@ -1630,13 +1632,6 @@ co/vec.h\
 co/bi/cortez_fm.h\
 co/bi/self_circle.h\
 
-bi/cortez_null.d.o:\
-co/prec/d/real.h\
-co/bi/cortez_null.h\
-co/err.h\
-co/macro.h\
-co/memory.h\
-
 bi/cortez_zero.d.o:\
 co/prec/d/real.h\
 co/argv.h\
@@ -1649,6 +1644,15 @@ co/macro.h\
 co/memory.h\
 co/oseen/3zero.h\
 co/tensor.h\
+
+bi/null.d.o:\
+co/prec/d/real.h\
+co/array.h\
+co/bi/null.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
 
 bi/self_circle.d.o:\
 co/prec/d/real.h\
@@ -3087,13 +3091,6 @@ co/vec.h\
 co/bi/cortez_fm.h\
 co/bi/self_circle.h\
 
-bi/cortez_null.l.o:\
-co/prec/l/real.h\
-co/bi/cortez_null.h\
-co/err.h\
-co/macro.h\
-co/memory.h\
-
 bi/cortez_zero.l.o:\
 co/prec/l/real.h\
 co/argv.h\
@@ -3106,6 +3103,15 @@ co/macro.h\
 co/memory.h\
 co/oseen/3zero.h\
 co/tensor.h\
+
+bi/null.l.o:\
+co/prec/l/real.h\
+co/array.h\
+co/bi/null.h\
+co/err.h\
+co/he.h\
+co/macro.h\
+co/memory.h\
 
 bi/self_circle.l.o:\
 co/prec/l/real.h\

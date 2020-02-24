@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include "real.h"
 #include "co/array.h"
-#include "co/bi/cortez_null.h"
+#include "co/bi/null.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/macro.h"
 #include "co/memory.h"
 
-#define T BiCortezNull
+#define T BiNull
 struct T {
 };
 
 int
-bi_cortez_null_ini(He * he, /**/ T ** pq)
+bi_null_ini(He * he, /**/ T ** pq)
 {
     T *q;
     USED(he);
@@ -22,21 +22,21 @@ bi_cortez_null_ini(He * he, /**/ T ** pq)
 }
 
 int
-bi_cortez_null_argv(char ***p, He * he, /**/ T ** pq)
+bi_null_argv(char ***p, He * he, /**/ T ** pq)
 {
     USED(p);
-    return bi_cortez_null_ini(he, pq);
+    return bi_null_ini(he, pq);
 }
 
 int
-bi_cortez_null_fin(T * q)
+bi_null_fin(T * q)
 {
     FREE(q);
     return CO_OK;
 }
 
 int
-bi_cortez_null_update(T * q, He * he, const real * x, const real * y,
+bi_null_update(T * q, He * he, const real * x, const real * y,
                       const real * z)
 {
     USED(q);
@@ -48,7 +48,7 @@ bi_cortez_null_update(T * q, He * he, const real * x, const real * y,
 }
 
 int
-bi_cortez_null_single(T * q, He * he, real al,
+bi_null_single(T * q, He * he, real al,
                       const real * x, const real * y, const real * z,
                       const real * fx, const real * fy, const real * fz,
                       /*io */ real * ux, real * uy, real * uz)
@@ -66,7 +66,7 @@ bi_cortez_null_single(T * q, He * he, real al,
 }
 
 int
-bi_cortez_null_double(T * q, He * he, real al,
+bi_null_double(T * q, He * he, real al,
                       const real * x, const real * y, const real * z,
                       const real * ux, const real * uy, const real * uz,
                       /*io */ real * wx, real * wy, real * wz)
@@ -80,7 +80,7 @@ bi_cortez_null_double(T * q, He * he, real al,
 }
 
 int
-bi_cortez_null_single_velocity(T * q, He * he,
+bi_null_single_velocity(T * q, He * he,
                                const real * x, const real * y,
                                const real * z, const real * fx,
                                const real * fy, const real * fz,
@@ -90,7 +90,7 @@ bi_cortez_null_single_velocity(T * q, He * he,
 }
 
 int
-bi_cortez_null_double_velocity(T * q, He * he,
+bi_null_double_velocity(T * q, He * he,
                                const real * x, const real * y,
                                const real * z, const real * ux,
                                const real * uy, const real * uz,
