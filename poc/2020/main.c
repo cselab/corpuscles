@@ -25,7 +25,7 @@
 
 static const char *me = "poc/2020";
 static const real pi = 3.141592653589793115997964;
-static const real tol = 0.001;
+static const real tol = 0.0001;
 static const int iter_max = 20;
 
 #define FMT_IN CO_REAL_IN
