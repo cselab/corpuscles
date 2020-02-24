@@ -1,0 +1,35 @@
+Enn : matrix([-Cp*Ep,0,0,Ap*Ep],[0,-Dp*Em,Bp*Em,0],[0,Bp*Em,-Em,0],
+             [Ap*Ep,0,0,-Ep])$
+Epp : matrix([Cm*Em,0,0,-Am*Em],[0,Dm*Ep,-Bm*Ep,0],[0,-Bm*Ep,Ep,0],
+             [-Am*Em,0,0,Em])$
+Enp : matrix([0,Em*u^2,-Am*Em,0],[Ep*u^2,0,0,-Bm*Ep],[-Ap*Ep,0,0,Ep],
+             [0,-Bp*Em,Em,0])$
+Epn : matrix([0,-Ep*u^2,Ap*Ep,0],[-Em*u^2,0,0,Bp*Em],[Am*Em,0,0,-Em],
+             [0,Bm*Ep,-Ep,0])$
+Rpp : matrix([-(2*%e^-u)/cosh(u),0,0,0],[0,-(2*%e^-u)/sinh(u),0,0],[0,0,0,0],
+  [0,0,0,0])$
+
+Rpp0 : matrix(
+  [-(2*%e^-u)/cosh(u)*exp(2*u),0,0,0],
+  [0,-(2*%e^-u)/sinh(u)*exp(2*u),0,0],
+  [0,0,0,0],
+  [0,0,0,0])$
+
+%v: [cosh(v),sinh(v),v*cosh(v),v*sinh(v)];
+%w: [cosh(w),sinh(w),w*cosh(w),w*sinh(w)];
+
+%v0: [cosh(v),sinh(v),v*cosh(v),v*sinh(v)] / exp(u);
+%w0: [cosh(w),sinh(w),w*cosh(w),w*sinh(w)] / exp(u);
+
+[Enn0, Epp0, Enp0, Epn0]: subst(
+  [Em = Em0*exp(2*u), Ep = Ep0*exp(2*u)],
+  [Enn, Epp, Enp, Epn]);
+
+factor(%v . Rpp . %w) - subst([Em0 = Em, Ep0 = Ep], factor(%v0 . Rpp0 . %w0));
+
+Enn0;
+
+n: length(Enn);
+for i thru n do
+for j thru n do
+print(i, j);

@@ -4,11 +4,12 @@
 #include "real.h"
 #include "co/err.h"
 
-#include "co/memory.h"
 #include "co/macro.h"
+#include "co/memory.h"
 #include "co/strain/3d.h"
-#include "co/util.h"
 #include "co/strain.h"
+#include "co/tri.h"
+#include "co/util.h"
 
 #define T Strain
 #define P StrainParam
@@ -199,6 +200,7 @@ strain_force(T * q,
              const real a[3], const real b[3], const real c[3], /**/
              real da[3], real db[3], real dc[3])
 {
+    int status;
     P *param;
     TypeFun F, F1, F2;
 
@@ -206,8 +208,13 @@ strain_force(T * q,
     F = q->F;
     F1 = q->F1;
     F2 = q->F2;
-    strain_force_3d((void *) param, F, F1, F2, a0, b0, c0, a, b, c, da, db,
+    status = strain_force_3d((void *) param, F, F1, F2, a0, b0, c0, a, b, c, da, db,
                     dc);
+    if (status != CO_OK) {
+	tri_off(a0, b0, c0, stderr);
+	tri_off(a, b, c, stderr);
+	ERR(CO_NUM, "strain_force failed");
+    }
     return CO_OK;
 }
 

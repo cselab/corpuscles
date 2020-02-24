@@ -3,6 +3,7 @@ include ../../conf.mk
 PREC = d
 M = \
 v2v\
+force\
 
 CO_CFLAGS = `fm.conf --cflags $(PREC)`
 CO_LDFLAGS = `fm.conf --libs $(PREC)` `alg.conf --libs $(PREC)` `co.conf --libs $(PREC)` `fm.conf --libs $(PREC)`
