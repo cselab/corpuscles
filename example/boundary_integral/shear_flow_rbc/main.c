@@ -25,7 +25,7 @@
 
 static const char *me = "rbc_shear_flow";
 static const real pi  = 3.141592653589793115997964;
-static const real tol = 0.01;
+static const real tol = 1.e-6;
 static const int iter_max=100;
   
 #define FMT_IN CO_REAL_IN
@@ -187,6 +187,8 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
   subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
   array_copy3(nv, ux, uy, uz, vx, vy, vz);
+
+  //MSG("Subst.iiter: %d", subst_niter(subst));
   if (subst_niter(subst) >= iter_max ) {
     MSG("Subst.iiter: %d", subst_niter(subst));
     off_he_xyz_write(he, x, y, z, "fail.off");
