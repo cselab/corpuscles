@@ -25,8 +25,8 @@
 
 static const char *me = "poc/2020";
 static const real pi = 3.141592653589793115997964;
-static const real tol = 0.01;
-static const int iter_max = 8000;
+static const real tol = 0.001;
+static const int iter_max = 20;
 
 #define FMT_IN CO_REAL_IN
 #define O CO_REAL_OUT
@@ -215,6 +215,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 	off_he_xyz_write(he, x, y, z, "fail.off");
 	ER("write fail.off");
     }
+    MSG("iter: %d", subst_niter(subst));
     array_copy3(nv, ux, uy, uz, vx, vy, vz);
     array_zero3(nv, Vx, Vy, Vz);
     he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);

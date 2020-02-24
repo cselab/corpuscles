@@ -61,8 +61,8 @@ apply(T * q, He * he, BI * bi,
         status = bi_double(bi, he, alpha, x, y, z, ix, iy, iz, wx, wy, wz);
         if (status != CO_OK)
             goto fail;
-        norm = array_msq_3d(n, wx, wy, wz);
-        diff = array_l2_3d(n, wx, ix, wy, iy, wz, iz);
+	norm = array_inf3(n, wx, wy, wz);
+        diff = array_diff_inf3(n, wx, wy, wz, ix, iy, iz);
         array_copy3(n, wx, wy, wz, ix, iy, iz);
         if (diff <= tol * norm)
             goto tol;
