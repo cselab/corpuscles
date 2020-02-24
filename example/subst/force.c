@@ -52,12 +52,14 @@ main(int argc, char **argv)
     Subst *subst;
 
     USED(argc);
+    argv++;
+    if (*argv != NULL && argv[0][0] == '-' && argv[0][1] == 'h')
+	usg();
     if (y_inif(stdin, &he, &x, &y, &z) != CO_OK) {
         fprintf(stderr, "%s: fail to read off file\n", me);
         exit(2);
     }
-
-    argv++;
+    
     bi = NULL;
     force = NULL;
     lambda = 5;
