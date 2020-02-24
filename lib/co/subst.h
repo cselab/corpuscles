@@ -8,6 +8,10 @@ int subst_fin(T *);
 int subst_apply(T *, He *, BI *, const real *, const real *,
                 const real *, const real *, const real *,
                 const real *, real *, real *, real *);
+int subst_apply_initial(T *, He *, BI *, const real *, const real *,
+			const real *ux, const real *, const real *,
+			const real *ix, const real *, const real *,
+			const real *, real *, real *, real *);
 int subst_status(T *);
 int subst_niter(T *);
 

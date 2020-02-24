@@ -19,7 +19,8 @@ static char me[] = "subst/force";
 static void
 usg(void)
 {
-    fprintf(stderr, "%s -b BI -f force [-l lambda] [-n iter_max] [-t tol]\n", me);
+    fprintf(stderr,
+            "%s -b BI -f force [-l lambda] [-n iter_max] [-t tol]\n", me);
     exit(1);
 }
 
@@ -49,17 +50,20 @@ main(int argc, char **argv)
     real *x;
     real *y;
     real *z;
+    real *ix;
+    real *iy;
+    real *iz;
     Subst *subst;
 
     USED(argc);
     argv++;
     if (*argv != NULL && argv[0][0] == '-' && argv[0][1] == 'h')
-	usg();
+        usg();
     if (y_inif(stdin, &he, &x, &y, &z) != CO_OK) {
         fprintf(stderr, "%s: fail to read off file\n", me);
         exit(2);
     }
-    
+
     bi = NULL;
     force = NULL;
     lambda = 5;
@@ -142,6 +146,7 @@ main(int argc, char **argv)
     MALLOC3(n, &ux, &uy, &uz);
     MALLOC3(n, &fx, &fy, &fz);
     CALLOC3(n, &vx, &vy, &vz);
+    CALLOC3(n, &ix, &iy, &iz);
 
     coef = 2 / (1 + lambda);
     alpha = 2 * (1 - lambda) / (1 + lambda);
@@ -150,8 +155,16 @@ main(int argc, char **argv)
     bi_update(bi, he, x, y, z);
     array_zero3(n, fx, fy, fz);
     force_force(force, he, x, y, z, fx, fy, fz);
-    bi_single(bi, he, -coef, x, y, z, fx, fy, fz, ux, uy, uz);
-    subst_apply(subst, he, bi, x, y, z, ux, uy, uz, /**/ vx, vy, vz);
+    bi_single(bi, he, coef, x, y, z, fx, fy, fz, ux, uy, uz);
+
+    for (i = 0; i < n; i++) {
+	ix[i] = 0;
+	iy[i] = 0;
+	iz[i] = 0;
+    }
+    subst_apply_initial(subst, he, bi, x, y, z,
+                        ux, uy, uz, ix, iy, iz, /**/ vx, vy, vz);
+
     MSG("iter: %d", subst_niter(subst));
     const real *q[] = { x, y, z, vx, vy, vz, NULL };
     puts("x y z vx vy vz");
@@ -159,7 +172,9 @@ main(int argc, char **argv)
 
     subst_fin(subst);
     y_fin(he, x, y, z);
+    force_fin(force);
     bi_fin(bi);
+    FREE3(fx, fy, fz);
     FREE3(ux, uy, uz);
     FREE3(vx, vy, vz);
 }
