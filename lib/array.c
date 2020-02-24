@@ -235,8 +235,8 @@ array_inf(int n, const real * a)
 
     mx = 0;
     for (i = 0; i < n; i++) {
-	if ((d = rabs(a[i])) > mx)
-	    mx = d;
+        if ((d = rabs(a[i])) > mx)
+            mx = d;
     }
     return mx;
 }
@@ -250,19 +250,19 @@ array_inf3(int n, const real * a, const real * b, const real * c)
 
     mx = 0;
     for (i = 0; i < n; i++) {
-	if ((d = rabs(a[i])) > mx)
-	    mx = d;
-	if ((d = rabs(b[i])) > mx)
-	    mx = d;
-	if ((d = rabs(c[i])) > mx)
-	    mx = d;	
+        if ((d = rabs(a[i])) > mx)
+            mx = d;
+        if ((d = rabs(b[i])) > mx)
+            mx = d;
+        if ((d = rabs(c[i])) > mx)
+            mx = d;
     }
     return mx;
 }
 
 real
 array_diff_inf3(int n, const real * a, const real * b, const real * c,
-		const real * u, const real * v, const real * w)
+                const real * u, const real * v, const real * w)
 {
     int i;
     real d;
@@ -270,12 +270,12 @@ array_diff_inf3(int n, const real * a, const real * b, const real * c,
 
     mx = 0;
     for (i = 0; i < n; i++) {
-	if ((d = rabs(a[i] - u[i])) > mx)
-	    mx = d;
-	if ((d = rabs(b[i] - v[i])) > mx)
-	    mx = d;
-	if ((d = rabs(c[i]- w[i])) > mx)
-	    mx = d;	
+        if ((d = rabs(a[i] - u[i])) > mx)
+            mx = d;
+        if ((d = rabs(b[i] - v[i])) > mx)
+            mx = d;
+        if ((d = rabs(c[i] - w[i])) > mx)
+            mx = d;
     }
     return mx;
 }

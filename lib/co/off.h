@@ -22,9 +22,10 @@ int off_he_xyz_fwrite(He *, const real *, const real *, const real *,
 int off_he_xyz_write(He *, const real *, const real *, const real *,
                      const char *);
 int off_lh_ver_fwrite(He *, const real *, const real *, const real *,
-                       real lo, real hi, const real *, FILE *);
+                      real lo, real hi, const real *, FILE *);
 int off_lh_ver_alpha_fwrite(He *, const real *, const real *, const real *,
-			    real lo, real hi, real alpha, const real * , /**/ FILE * );
+                            real lo, real hi, real alpha, const real *,
+                            /**/ FILE *);
 int boff_fwrite(He *, const real *, const real *, const real *, FILE *);
 int boff_lh_tri_fwrite(He *, const real *, const real *, const real *,
                        real lo, real hi, const real *, FILE *);
@@ -32,12 +33,13 @@ int boff_tri_fwrite(He *, const real *, const real *, const real *,
                     const real *, FILE *);
 int boff_lh_ver_fwrite(He *, const real *, const real *, const real *,
                        real lo, real hi, const real *, FILE *);
-int boff_lh_ver_alpha_fwrite(He *, const real *, const real *, const real *,
-			     real lo, real hi, real alpha, const real *, FILE *);
+int boff_lh_ver_alpha_fwrite(He *, const real *, const real *,
+                             const real *, real lo, real hi, real alpha,
+                             const real *, FILE *);
 int boff_ver_fwrite(He *, const real *, const real *, const real *,
                     const real *, FILE *);
 int off_ver_fwrite(He *, const real *, const real *, const real *,
-                    const real *, FILE *);
+                   const real *, FILE *);
 int boff_vect_fwrite(He *, const real *, const real *, const real *,
                      const real *, const real *, const real *, FILE *);
 int boff_lh_point_fwrite(He *, const real *, const real *, const real *,

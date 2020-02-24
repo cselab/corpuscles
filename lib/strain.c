@@ -208,12 +208,13 @@ strain_force(T * q,
     F = q->F;
     F1 = q->F1;
     F2 = q->F2;
-    status = strain_force_3d((void *) param, F, F1, F2, a0, b0, c0, a, b, c, da, db,
-                    dc);
+    status =
+        strain_force_3d((void *) param, F, F1, F2, a0, b0, c0, a, b, c, da,
+                        db, dc);
     if (status != CO_OK) {
-	tri_off(a0, b0, c0, stderr);
-	tri_off(a, b, c, stderr);
-	ERR(CO_NUM, "strain_force failed");
+        tri_off(a0, b0, c0, stderr);
+        tri_off(a, b, c, stderr);
+        ERR(CO_NUM, "strain_force failed");
     }
     return CO_OK;
 }

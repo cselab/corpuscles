@@ -518,7 +518,7 @@ boff_lh_tri_fwrite(He * he, const real * x, const real * y, const real * z,
         FWRITE(ib, n);
 
         if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
-	    ERR(CO_IO, "colormap failed");
+            ERR(CO_IO, "colormap failed");
         n = 0;
         db[n++] = red;
         db[n++] = green;
@@ -546,16 +546,18 @@ boff_tri_fwrite(He * he, const real * x, const real * y, const real * z,
 
 int
 boff_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
-			 real lo, real hi, const real * a, /**/ FILE * f)
+                   real lo, real hi, const real * a, /**/ FILE * f)
 {
     real alpha;
+
     alpha = 0.5;
     return boff_lh_ver_alpha_fwrite(he, x, y, z, lo, hi, alpha, a, f);
 }
 
 int
-boff_lh_ver_alpha_fwrite(He * he, const real * x, const real * y, const real * z,
-			 real lo, real hi, real alpha, const real * a, /**/ FILE * f)
+boff_lh_ver_alpha_fwrite(He * he, const real * x, const real * y,
+                         const real * z, real lo, real hi, real alpha,
+                         const real * a, /**/ FILE * f)
 {
     int nv, nt, ne, npv, nc, m, i, j, k;
     int ib[5], n, cnt;
@@ -578,7 +580,7 @@ boff_lh_ver_alpha_fwrite(He * he, const real * x, const real * y, const real * z
     FWRITE(ib, n);
     for (m = 0; m < nv; m++) {
         if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
-	    ERR(CO_IO, "colormap failed");
+            ERR(CO_IO, "colormap failed");
         n = 0;
         db[n++] = x[m];
         db[n++] = y[m];
@@ -606,14 +608,15 @@ boff_lh_ver_alpha_fwrite(He * he, const real * x, const real * y, const real * z
 }
 
 int
-off_lh_ver_alpha_fwrite(He * he, const real * x, const real * y, const real * z,
-			real lo, real hi, real alpha, const real * a, /**/ FILE * f)
+off_lh_ver_alpha_fwrite(He * he, const real * x, const real * y,
+                        const real * z, real lo, real hi, real alpha,
+                        const real * a, /**/ FILE * f)
 {
     int nv, nt, ne, npv, m, i, j, k;
     float red, green, blue;
 
     if (alpha < 0 && alpha > 1)
-	ERR(CO_IO, "alpha = " OUT " is not in [0, 1]", alpha);
+        ERR(CO_IO, "alpha = " OUT " is not in [0, 1]", alpha);
     if (fputs("COFF\n", f) == EOF)
         ERR(CO_IO, "fail to write");
     nv = he_nv(he);
@@ -624,22 +627,24 @@ off_lh_ver_alpha_fwrite(He * he, const real * x, const real * y, const real * z,
     fprintf(f, "%d %d %d\n", nv, nt, ne);
     for (m = 0; m < nv; m++) {
         if (colormap(a[m], lo, hi, &red, &green, &blue) != CO_OK)
-	    ERR(CO_IO, "colormap failed");
-	fprintf(f, FMT " " FMT " " FMT " %.16g %.16g %.16g " FMT "\n",
-		x[m], y[m], z[m], red, green, blue, alpha);
+            ERR(CO_IO, "colormap failed");
+        fprintf(f, FMT " " FMT " " FMT " %.16g %.16g %.16g " FMT "\n",
+                x[m], y[m], z[m], red, green, blue, alpha);
     }
     for (m = 0; m < nt; m++) {
-	if (he_tri_ijk(he, m, &i, &j, &k) != CO_OK)
-	    ERR(CO_OK, "hi_tri_ikj failed for t = %d", m);
-	fprintf(f, "%d %d %d %d\n", npv, i, j, k);
+        if (he_tri_ijk(he, m, &i, &j, &k) != CO_OK)
+            ERR(CO_OK, "hi_tri_ikj failed for t = %d", m);
+        fprintf(f, "%d %d %d %d\n", npv, i, j, k);
     }
     return CO_OK;
 }
 
 int
 off_lh_ver_fwrite(He * he, const real * x, const real * y, const real * z,
-		  real lo, real hi, const real * a, /**/ FILE * f) {
+                  real lo, real hi, const real * a, /**/ FILE * f)
+{
     real alpha;
+
     alpha = 0.5;
     return off_lh_ver_alpha_fwrite(he, x, y, z, lo, hi, alpha, a, f);
 }
@@ -781,7 +786,7 @@ boff_lh_point_fwrite(He * he, const real * x, const real * y,
     m = 0;
     for (i = 0; i < n; i++) {
         if (colormap(a[i], lo, hi, &red, &green, &blue) != CO_OK)
-	    ERR(CO_IO, "colormap failed");
+            ERR(CO_IO, "colormap failed");
         fb[m++] = red;
         fb[m++] = green;
         fb[m++] = blue;

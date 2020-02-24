@@ -11,7 +11,7 @@
 #include "co/off.h"
 #include "co/y.h"
 
-enum {X, Y, Z};
+enum { X, Y, Z };
 
 int
 y_inif(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
@@ -208,4 +208,3 @@ y_tocm_xy(He * he, real * x, real * y, real * z)
         ERR(CO_OK, "transform_tran failed, n = %d");
     return CO_OK;
 }
-

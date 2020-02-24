@@ -31,8 +31,7 @@ real array_min(int, const real[]);
 real array_msq_3d(int, const real[], const real[], const real[]);
 real array_msq(int, const real[]);
 real array_norm(int, const real[]);
-
 real array_inf(int, const real[]);
 real array_inf3(int, const real[], const real[], const real[]);
 real array_diff_inf3(int, const real[], const real[], const real[],
-    const real[], const real[], const real[]);
+                     const real[], const real[], const real[]);

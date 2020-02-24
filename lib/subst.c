@@ -41,10 +41,9 @@ subst_fin(T * q)
 
 static int
 apply(T * q, He * he, BI * bi,
-            const real * x, const real * y, const real * z,
-            const real * ux, const real * uy, const real * uz,
-	    real * ix, real * iy, real * iz,
-            real * vx0, real * vy0, real * vz0)
+      const real * x, const real * y, const real * z,
+      const real * ux, const real * uy, const real * uz,
+      real * ix, real * iy, real * iz, real * vx0, real * vy0, real * vz0)
 {
     int status, n, niter, iiter;
     real *wx, *wy, *wz, alpha, tol, diff, norm;
@@ -90,19 +89,19 @@ subst_apply(T * q, He * he, BI * bi,
             real * vx0, real * vy0, real * vz0)
 {
     return apply(q, he, bi, x, y, z, ux, uy, uz, q->vx, q->vy, q->vz,
-		 vx0, vy0, vz0);
+                 vx0, vy0, vz0);
 }
 
 int
 subst_apply_initial(T * q, He * he, BI * bi,
-		    const real * x, const real * y, const real * z,
-		    const real * ux, const real * uy, const real * uz,
-		    const real * ix, const real * iy, const real * iz,
-		    real * vx0, real * vy0, real * vz0)
+                    const real * x, const real * y, const real * z,
+                    const real * ux, const real * uy, const real * uz,
+                    const real * ix, const real * iy, const real * iz,
+                    real * vx0, real * vy0, real * vz0)
 {
     array_copy3(q->n, ix, iy, iz, q->vx, q->vy, q->vz);
     return apply(q, he, bi, x, y, z, ux, uy, uz, q->vx, q->vy, q->vz,
-		 vx0, vy0, vz0);
+                 vx0, vy0, vz0);
 }
 
 
