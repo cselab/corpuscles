@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "real.h"
+#include "co/array.h"
 #include "co/bi/cortez_null.h"
 #include "co/err.h"
+#include "co/he.h"
 #include "co/macro.h"
 #include "co/memory.h"
 
