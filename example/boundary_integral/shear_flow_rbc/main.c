@@ -187,8 +187,11 @@ static int F(__UNUSED real t, const real *x, const real *y, const real *z, real 
   bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
   subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
   array_copy3(nv, ux, uy, uz, vx, vy, vz);
-  //if (subst_niter(subst) > 1)
-  //MSG("Subst.iiter: %d", subst_niter(subst));
+  if (subst_niter(subst) >= iter_max ) {
+    MSG("Subst.iiter: %d", subst_niter(subst));
+    off_he_xyz_write(he, x, y, z, "fail.off");
+    exit(2);
+  }
   array_zero3(nv, Vx, Vy, Vz);
   he_f_volume_force(fvolume, he, x, y, z, Vx, Vy, Vz);
   array_axpy3(nv, -dt, Vx, Vy, Vz, vx, vy, vz);
@@ -369,7 +372,8 @@ int main(__UNUSED int argc, char **argv) {
     if ( s > step_end ) break;
     
     ode3_step(ode, &time, t, x, y, z);
-    y_tocm(he, x, y, z);
+    //y_tocm(he, x, y, z);
+    //y_tocm_xy(he, x, y, z);
     
   }
   
