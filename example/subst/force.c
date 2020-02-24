@@ -150,9 +150,7 @@ main(int argc, char **argv)
 
     coef = 2 / (1 + lambda);
     alpha = 2 * (1 - lambda) / (1 + lambda);
-    MSG("alpha: %g", (double)alpha);
     subst_ini(n, alpha, tol, iter_max, &subst);
-
     array_zero3(n, ux, uy, uz);
     for (i = 0; i < n; i++) {
 	ux[i] = 0;

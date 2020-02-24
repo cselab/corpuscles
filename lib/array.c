@@ -6,6 +6,8 @@
 
 #define OUT CO_REAL_OUT
 
+static real rabs(real x);
+
 real
 array_min(int n, const real a[])
 {
@@ -223,6 +225,62 @@ array_l2(int n, const real * a, const real * b)
     return sqrt(s / n);
 }
 
+
+real
+array_inf(int n, const real * a)
+{
+    int i;
+    real d;
+    real mx;
+
+    mx = 0;
+    for (i = 0; i < n; i++) {
+	if ((d = rabs(a[i])) > mx)
+	    mx = d;
+    }
+    return mx;
+}
+
+real
+array_inf3(int n, const real * a, const real * b, const real * c)
+{
+    int i;
+    real d;
+    real mx;
+
+    mx = 0;
+    for (i = 0; i < n; i++) {
+	if ((d = rabs(a[i])) > mx)
+	    mx = d;
+	if ((d = rabs(b[i])) > mx)
+	    mx = d;
+	if ((d = rabs(c[i])) > mx)
+	    mx = d;	
+    }
+    return mx;
+}
+
+real
+array_diff_inf3(int n, const real * a, const real * b, const real * c,
+		const real * u, const real * v, const real * w)
+{
+    int i;
+    real d;
+    real mx;
+
+    mx = 0;
+    for (i = 0; i < n; i++) {
+	if ((d = rabs(a[i] - u[i])) > mx)
+	    mx = d;
+	if ((d = rabs(b[i] - v[i])) > mx)
+	    mx = d;
+	if ((d = rabs(c[i]- w[i])) > mx)
+	    mx = d;	
+    }
+    return mx;
+}
+
+
 real
 array_l2_3d(int n, const real * a1, const real * a2, const real * b1,
             const real * b2, const real * c1, const real * c2)
@@ -370,4 +428,10 @@ array_fwrite(FILE * f, int n, const real * a)
             ERR(CO_IO, "fprintf failed");
     }
     return CO_OK;
+}
+
+static real
+rabs(real x)
+{
+    return x > 0 ? x : -x;
 }
