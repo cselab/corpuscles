@@ -20,7 +20,7 @@ static void
 usg(void)
 {
     fprintf(stderr,
-            "%s -b BI -f force [-l lambda] [-n iter_max] [-t tol]\n", me);
+	    "%s -b BI -f force [-l lambda] [-n iter_max] [-t tol]\n", me);
     exit(1);
 }
 
@@ -58,10 +58,10 @@ main(int argc, char **argv)
     USED(argc);
     argv++;
     if (*argv != NULL && argv[0][0] == '-' && argv[0][1] == 'h')
-        usg();
+	usg();
     if (y_inif(stdin, &he, &x, &y, &z) != CO_OK) {
-        fprintf(stderr, "%s: fail to read off file\n", me);
-        exit(2);
+	fprintf(stderr, "%s: fail to read off file\n", me);
+	exit(2);
     }
 
     bi = NULL;
@@ -70,77 +70,77 @@ main(int argc, char **argv)
     iter_max = 100;
     tol = 0.01;
     while (*argv != NULL && argv[0][0] == '-')
-        switch (argv[0][1]) {
-        case 'h':
-            usg();
-            break;
-        case 'n':
-            argv++;
-            if ((name = *argv++) == NULL) {
-                fprintf(stderr, "%s: -n needs an argument\n", me);
-                exit(2);
-            }
-            iter_max = atoi(name);
-            break;
-        case 'l':
-            argv++;
-            if ((name = *argv++) == NULL) {
-                fprintf(stderr, "%s: -l needs an argument\n", me);
-                exit(2);
-            }
-            lambda = atof(name);
-            break;
-        case 't':
-            argv++;
-            if ((name = *argv++) == NULL) {
-                fprintf(stderr, "%s: -t needs an argument\n", me);
-                exit(2);
-            }
-            tol = atof(name);
-            break;
-        case 'b':
-            argv++;
-            if ((name = *argv++) == NULL) {
-                fprintf(stderr, "%s: -b needs an argument\n", me);
-                exit(2);
-            }
-            if (!bi_good(name)) {
-                fprintf(stderr, "%s: not a bi algorithm '%s'\n", me,
-                        argv[0]);
-                fprintf(stderr, "possible values are %s\n", bi_list());
-                exit(1);
-            }
-            bi_argv(name, &argv, he, &bi);
-            break;
-        case 'f':
-            argv++;
-            if ((name = *argv++) == NULL) {
-                fprintf(stderr, "%s: -f needs an argument\n", me);
-                exit(2);
-            }
-            if (!force_good(name)) {
-                fprintf(stderr, "%s: not a force '%s'\n", me, argv[0]);
-                fprintf(stderr, "possible values are %s\n", force_list());
-                exit(1);
-            }
-            force_argv(name, &argv, he, &force);
-            break;
-        default:
-            fprintf(stderr, "%s: unknown option '%s'\n", me, *argv);
-            exit(1);
-            break;
-        }
+	switch (argv[0][1]) {
+	case 'h':
+	    usg();
+	    break;
+	case 'n':
+	    argv++;
+	    if ((name = *argv++) == NULL) {
+		fprintf(stderr, "%s: -n needs an argument\n", me);
+		exit(2);
+	    }
+	    iter_max = atoi(name);
+	    break;
+	case 'l':
+	    argv++;
+	    if ((name = *argv++) == NULL) {
+		fprintf(stderr, "%s: -l needs an argument\n", me);
+		exit(2);
+	    }
+	    lambda = atof(name);
+	    break;
+	case 't':
+	    argv++;
+	    if ((name = *argv++) == NULL) {
+		fprintf(stderr, "%s: -t needs an argument\n", me);
+		exit(2);
+	    }
+	    tol = atof(name);
+	    break;
+	case 'b':
+	    argv++;
+	    if ((name = *argv++) == NULL) {
+		fprintf(stderr, "%s: -b needs an argument\n", me);
+		exit(2);
+	    }
+	    if (!bi_good(name)) {
+		fprintf(stderr, "%s: not a bi algorithm '%s'\n", me,
+			argv[0]);
+		fprintf(stderr, "possible values are %s\n", bi_list());
+		exit(1);
+	    }
+	    bi_argv(name, &argv, he, &bi);
+	    break;
+	case 'f':
+	    argv++;
+	    if ((name = *argv++) == NULL) {
+		fprintf(stderr, "%s: -f needs an argument\n", me);
+		exit(2);
+	    }
+	    if (!force_good(name)) {
+		fprintf(stderr, "%s: not a force '%s'\n", me, argv[0]);
+		fprintf(stderr, "possible values are %s\n", force_list());
+		exit(1);
+	    }
+	    force_argv(name, &argv, he, &force);
+	    break;
+	default:
+	    fprintf(stderr, "%s: unknown option '%s'\n", me, *argv);
+	    exit(1);
+	    break;
+	}
     if (*argv != NULL) {
-        fprintf(stderr, "%s unknown argument '%s'\n", me, *argv);
-        exit(2);
+	fprintf(stderr, "%s unknown argument '%s'\n", me, *argv);
+	exit(2);
     }
     if (bi == NULL) {
-        fprintf(stderr, "%s: -b is not set\n", me);
-        exit(1);
+	fprintf(stderr, "%s: -b is not set\n", me);
+	exit(1);
     }
     if (force == NULL) {
-        fprintf(stderr, "%s: -f is not set\n", me);
-        exit(1);
+	fprintf(stderr, "%s: -f is not set\n", me);
+	exit(1);
     }
     n = he_nv(he);
     MALLOC3(n, &ux, &uy, &uz);
@@ -150,20 +150,24 @@ main(int argc, char **argv)
 
     coef = 2 / (1 + lambda);
     alpha = 2 * (1 - lambda) / (1 + lambda);
+    MSG("alpha: %g", (double)alpha);
     subst_ini(n, alpha, tol, iter_max, &subst);
+
     array_zero3(n, ux, uy, uz);
+    for (i = 0; i < n; i++) {
+	ux[i] = 0;
+    }
     bi_update(bi, he, x, y, z);
     array_zero3(n, fx, fy, fz);
     force_force(force, he, x, y, z, fx, fy, fz);
     bi_single(bi, he, coef, x, y, z, fx, fy, fz, ux, uy, uz);
-
     for (i = 0; i < n; i++) {
-	ix[i] = 1;
-	iy[i] = 2;
-	iz[i] = 3;
+	ix[i] = 0;
+	iy[i] = 0;
+	iz[i] = 0;
     }
     subst_apply_initial(subst, he, bi, x, y, z,
-                        ux, uy, uz, ix, iy, iz, /**/ vx, vy, vz);
+			ux, uy, uz, ix, iy, iz, /**/ vx, vy, vz);
 
     MSG("iter: %d", subst_niter(subst));
     const real *q[] = { x, y, z, vx, vy, vz, NULL };
@@ -174,6 +178,7 @@ main(int argc, char **argv)
     y_fin(he, x, y, z);
     force_fin(force);
     bi_fin(bi);
+    FREE3(ix, iy, iz);
     FREE3(fx, fy, fz);
     FREE3(ux, uy, uz);
     FREE3(vx, vy, vz);
