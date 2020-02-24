@@ -10,6 +10,7 @@ co/bbox.h\
 co/bending.h\
 co/bi/cortez_fm.h\
 co/bi/cortez.h\
+co/bi/cortez_null.h\
 co/bi/cortez_zero.h\
 co/bi.h\
 co/bi/self_circle.h\

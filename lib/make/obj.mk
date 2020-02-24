@@ -26,6 +26,7 @@ bending.s.o\
 bi.s.o\
 bi/cortez.s.o\
 bi/cortez_fm.s.o\
+bi/cortez_null.s.o\
 bi/cortez_zero.s.o\
 bi/self_circle.s.o\
 bi/tri.s.o\
@@ -168,6 +169,7 @@ bending.d.o\
 bi.d.o\
 bi/cortez.d.o\
 bi/cortez_fm.d.o\
+bi/cortez_null.d.o\
 bi/cortez_zero.d.o\
 bi/self_circle.d.o\
 bi/tri.d.o\
@@ -310,6 +312,7 @@ bending.l.o\
 bi.l.o\
 bi/cortez.l.o\
 bi/cortez_fm.l.o\
+bi/cortez_null.l.o\
 bi/cortez_zero.l.o\
 bi/self_circle.l.o\
 bi/tri.l.o\

@@ -173,6 +173,13 @@ co/vec.h\
 co/bi/cortez_fm.h\
 co/bi/self_circle.h\
 
+bi/cortez_null.s.o:\
+co/prec/s/real.h\
+co/bi/cortez_null.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+
 bi/cortez_zero.s.o:\
 co/prec/s/real.h\
 co/argv.h\
@@ -1382,11 +1389,12 @@ co/strain/2d.h\
 strain.s.o:\
 co/prec/s/real.h\
 co/err.h\
-co/memory.h\
 co/macro.h\
+co/memory.h\
 co/strain/3d.h\
-co/util.h\
 co/strain.h\
+co/tri.h\
+co/util.h\
 
 stretch.s.o:\
 co/prec/s/real.h\
@@ -1621,6 +1629,13 @@ co/normal.h\
 co/vec.h\
 co/bi/cortez_fm.h\
 co/bi/self_circle.h\
+
+bi/cortez_null.d.o:\
+co/prec/d/real.h\
+co/bi/cortez_null.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
 
 bi/cortez_zero.d.o:\
 co/prec/d/real.h\
@@ -2831,11 +2846,12 @@ co/strain/2d.h\
 strain.d.o:\
 co/prec/d/real.h\
 co/err.h\
-co/memory.h\
 co/macro.h\
+co/memory.h\
 co/strain/3d.h\
-co/util.h\
 co/strain.h\
+co/tri.h\
+co/util.h\
 
 stretch.d.o:\
 co/prec/d/real.h\
@@ -3070,6 +3086,13 @@ co/normal.h\
 co/vec.h\
 co/bi/cortez_fm.h\
 co/bi/self_circle.h\
+
+bi/cortez_null.l.o:\
+co/prec/l/real.h\
+co/bi/cortez_null.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
 
 bi/cortez_zero.l.o:\
 co/prec/l/real.h\
@@ -4280,11 +4303,12 @@ co/strain/2d.h\
 strain.l.o:\
 co/prec/l/real.h\
 co/err.h\
-co/memory.h\
 co/macro.h\
+co/memory.h\
 co/strain/3d.h\
-co/util.h\
 co/strain.h\
+co/tri.h\
+co/util.h\
 
 stretch.l.o:\
 co/prec/l/real.h\
