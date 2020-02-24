@@ -1,9 +1,15 @@
 .POSIX:
+.PHONY: clean test lint
+.SUFFIXES: .o .c
+
 include ../../conf.mk
-M = main
+M = \
+main\
+inf\
+
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
-CO_LDFLAGS = `co.conf --libs $(PREC)` `alg.conf --libs $(PREC)` `co.conf --libs $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 LINK = $(CC)
 
@@ -14,13 +20,8 @@ all: $M
 .c.o:
 	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
 
-.c:
 %: %.c
 
 lint:; make CFLAGS='-Wall -Wextra -g -O2'
 test: $M; atest test/*
-install:
-run: $M; @co.run ./rbc
-
-.PHONY: clean test install run lint
 clean:; rm -f $M $(M:=.o)

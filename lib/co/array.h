@@ -5,7 +5,6 @@ int array_copy3(int, const real[], const real[], const real[], real[],
                 real[], real[]);
 int array_copy(int, const real[], real[]);
 int array_fwrite(FILE *, int, const real[]);
-int array_fwrite(FILE *, int, const real[]);
 int array_multiply3(int, const real[], real[], real[], real[]);
 int array_multiply(int, const real[], real[]);
 int array_negative(int, const real[], real[]);
