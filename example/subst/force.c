@@ -158,9 +158,9 @@ main(int argc, char **argv)
     bi_single(bi, he, coef, x, y, z, fx, fy, fz, ux, uy, uz);
 
     for (i = 0; i < n; i++) {
-	ix[i] = 0;
-	iy[i] = 0;
-	iz[i] = 0;
+	ix[i] = 1;
+	iy[i] = 2;
+	iz[i] = 3;
     }
     subst_apply_initial(subst, he, bi, x, y, z,
                         ux, uy, uz, ix, iy, iz, /**/ vx, vy, vz);

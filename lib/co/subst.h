@@ -1,6 +1,7 @@
 /*
   solves for `x'
   x = u + alpha * D . x
+  where `alpha * D . x' is computed by bi_double
  */
 
 #define T Subst
