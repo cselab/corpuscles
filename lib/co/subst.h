@@ -1,3 +1,8 @@
+/*
+  solves for `x'
+  x = u + alpha * D . x
+ */
+
 #define T Subst
 typedef struct T T;
 typedef struct He He;
