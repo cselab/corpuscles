@@ -165,12 +165,13 @@ force(He * he, const real * x, const real * y, const real * z, real * fx,
 {
     int i;
     int status;
-
     i = 0;
     while (Fo[i]) {
 	status = force_force(Fo[i], he, x, y, z, fx, fy, fz);
 	if (status != CO_OK) {
-	    fprintf(stderr, "%s: force '%s' failed\n", me, force_name(Fo[i]));
+	    MSG("%s: force '%s' failed", me, force_name(Fo[i]));
+	    off_he_xyz_write(he, x, y, z, "fail.off");
+	    ER("force: write fail.off");
 	    exit(2);
 	}
 	i++;
@@ -204,7 +205,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     al = -2 / (eta * (1 + lambda));
     array_zero3(nv, fx, fy, fz);
     force(he, x, y, z, fx, fy, fz);
-    
+
     bi_update(bi, he, x, y, z);
 
     array_zero3(nv, vx, vy, vz);
@@ -214,8 +215,9 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     array_zero3(nv, ix, iy, iz);
     //subst_apply_initial(subst, he, bi, x, y, z, vx, vy, vz, ix, iy, iz, ux, uy, uz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
+    MSG("Subst.iiter: %d", subst_niter(subst));
     if (subst_niter(subst) > iter_max) {
-        MSG("Subst.iiter: %d", subst_niter(subst));
+	MSG("Subst.iiter: %d", subst_niter(subst));
 	off_he_xyz_write(he, x, y, z, "fail.off");
 	ER("write fail.off");
     }
@@ -404,9 +406,10 @@ main(__UNUSED int argc, char **argv)
 
 	if (s > end)
 	    break;
-
-	ode3_apply_fixed(ode, &time, t, x, y, z);
-	//ode3_apply(ode, &time, t, x, y, z);
+	if (ode3_apply(ode, &time, t, x, y, z) != CO_OK) {
+	    off_he_xyz_write(he, x, y, z, "fail.off");
+	    ER("ode3: write fail.off");
+	}
 	y_tocm_xy(he, x, y, z);
     }
 
@@ -420,7 +423,7 @@ main(__UNUSED int argc, char **argv)
     bi_fin(bi);
     fin();
     y_fin(he, x, y, z);
-    subst_fin(subst);    
+    subst_fin(subst);
     he_f_volume_fin(fvolume);
 
 }

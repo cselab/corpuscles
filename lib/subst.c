@@ -58,8 +58,7 @@ apply(T * q, He * he, BI * bi,
     wz = q->wz;
     for (iiter = 0; iiter < niter; iiter++) {
         array_copy3(n, ux, uy, uz, wx, wy, wz);
-        status = bi_double(bi, he, alpha, x, y, z, ix, iy, iz, wx, wy, wz);
-        if (status != CO_OK)
+        if (bi_double(bi, he, alpha, x, y, z, ix, iy, iz, wx, wy, wz) != CO_OK)
             goto fail;
 	norm = array_inf3(n, wx, wy, wz);
         diff = array_diff_inf3(n, wx, wy, wz, ix, iy, iz);
@@ -114,5 +113,5 @@ subst_status(T * q)
 int
 subst_niter(T * q)
 {
-    return q->iiter + 1;
+    return q->iiter;
 }
