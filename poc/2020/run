@@ -7,9 +7,9 @@ export EPSREL=1e-3
 dt=`ae 0.000285714*10*5`
 lambda=5
 co.run ./main \
-volume 2.6892 70 \
-garea 12.5663706144 70 \
+volume 2.6892 70000 \
+garea 12.5663706144 70000 \
 juelicher_xin 1.0 0.0 0.63662 19.9933 \
-strain ref/0.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
+strain ref/1.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
 wall -2 \
-1 0.000898798148042 1.0 129.186 $lambda $gdot $dt 0 99999999 100 1 '<' init/1.off
+1 0.000898798148042 1.0 129.186 $lambda $gdot $dt 0 99999999 1 1 '<' init/1.off
