@@ -13,7 +13,7 @@
 #include <co/tri.h>
 #include <co/y.h>
 
-static const char *me = "co.upsample";
+static const char *me = "upsample";
 static void
 usg(void)
 {
