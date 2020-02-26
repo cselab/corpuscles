@@ -216,7 +216,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     //subst_apply_initial(subst, he, bi, x, y, z, vx, vy, vz, ix, iy, iz, ux, uy, uz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
     MSG("Subst.iiter: %d", subst_niter(subst));
-    if (subst_niter(subst) > iter_max) {
+    if (subst_niter(subst) >= iter_max) {
 	MSG("Subst.iiter: %d", subst_niter(subst));
 	off_he_xyz_write(he, x, y, z, "fail.off");
 	ER("write fail.off");
