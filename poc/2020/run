@@ -7,12 +7,12 @@ export EPSREL=1e-3
 dt=`ae 0.000285714`
 lambda=5
 Kb=`ae 1.0`
-Ka=`ae 278.521`
 Kd=`ae 0.63662`
+Ka=`ae 278.521`
 mu=`ae 139.260575205`
 co.run ./main \
-volume 2.6892 0 \
-garea 12.5663706144 0 \
+volume 2.6892 70000 \
+garea 12.5663706144 70000 \
 juelicher_xin $Kb 0.0 $Kd 19.9933 \
 strain ref/0.off lim $Ka $mu -2 8 0.7 0.75 \
 wall -2 \
