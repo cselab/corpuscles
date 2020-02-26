@@ -2,13 +2,14 @@
 
 make
 gdot=`ae 0.503733/350*775`
-export EPSABS=1e-2
-export EPSREL=1e-2
+export EPSABS=1e-3
+export EPSREL=1e-3
 dt=`ae 0.000285714*10*5`
+lambda=5
 co.run ./main \
-volume 2.6892 70000 \
-garea 12.5663706144 70000 \
+volume 2.6892 70 \
+garea 12.5663706144 70 \
 juelicher_xin 1.0 0.0 0.63662 19.9933 \
 strain ref/0.off lim 278.521 139.260575205 -2 8 0.7 0.75 \
 wall -2 \
-1 0.000898798148042 1.0 129.186 5.0 $gdot $dt 0 99999999 10 100 '<' init/1.off
+1 0.000898798148042 1.0 129.186 $lambda $gdot $dt 0 99999999 100 1 '<' init/1.off

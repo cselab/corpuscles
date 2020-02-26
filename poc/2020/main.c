@@ -46,6 +46,7 @@ static real *fx, *fy, *fz;
 static real *ux, *uy, *uz;
 static real *wx, *wy, *wz;
 static real *Vx, *Vy, *Vz;
+static real *ix, *iy, *iz;
 static int nv, nt;
 char file_out[999];
 char file_stat[99] = "stat.dat";
@@ -106,6 +107,7 @@ fargv(char ***p, He * he)
     v++;
     he_f_volume_argv(&v, he, &fvolume);
     MALLOC3(nv, &Vx, &Vy, &Vz);
+    MALLOC3(nv, &ix, &iy, &iz);
 
     while (1) {
 	if (v[0] == NULL)
@@ -209,6 +211,8 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     for (i = 0; i < nv; i++)
 	vx[i] += coef * gamdot * z[i];
     bi_single(bi, he, al, x, y, z, fx, fy, fz, vx, vy, vz);
+    array_zero3(nv, ix, iy, iz);
+    //subst_apply_initial(subst, he, bi, x, y, z, vx, vy, vz, ix, iy, iz, ux, uy, uz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
     if (subst_niter(subst) > iter_max) {
         MSG("Subst.iiter: %d", subst_niter(subst));
@@ -235,7 +239,7 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
 	vec_cross(rad, Omega, vel);
 	vec_substr(vel, i, vx, vy, vz);
     }
-    compute_moment(nv, x, y, z, vx, vy, vz, Moment); */
+    compute_moment(nv, x, y, z, vx, vy, vz, Moment);*/
     return CO_OK;
 }
 
@@ -313,7 +317,7 @@ main(__UNUSED int argc, char **argv)
     fclose(fm);
 
     lin_solve_ini(3, &linsolve);
-    ode3_ini(RK4, nv, dt, F, NULL, &ode);
+    ode3_ini(RK8PD, nv, dt, F, NULL, &ode);
 
     CALLOC3(nv, &ux, &uy, &uz);
     CALLOC3(nv, &wx, &wy, &wz);
@@ -411,6 +415,7 @@ main(__UNUSED int argc, char **argv)
     FREE3(ux, uy, uz);
     FREE3(wx, wy, wz);
     FREE3(fx, fy, fz);
+    FREE3(ix, iy, iz);
     lin_solve_fin(linsolve);
     ode3_fin(ode);
     bi_fin(bi);

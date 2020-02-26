@@ -104,6 +104,7 @@ main(__UNUSED int argc, char **argv)
 	    default:
 		ER("%s: unknown option: '%s'", me, arg);
 	    }
+	    break;
 	case 'b':
 	    Center = BOX;
 	    break;
