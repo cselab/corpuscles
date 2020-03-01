@@ -1,5 +1,5 @@
 .POSIX:
-.PHONY: clean test lint
+.PHONY: clean test lint all
 .SUFFIXES: .o .c
 
 include ../../../conf.mk
