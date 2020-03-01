@@ -4,7 +4,8 @@
 
 include ../../../conf.mk
 M = \
-main\
+read\
+write\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`

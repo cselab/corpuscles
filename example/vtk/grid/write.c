@@ -7,10 +7,7 @@
 #include <co/macro.h>
 #include <co/memory.h>
 
-#define FMT  CO_REAL_OUT
-#define FMT3 FMT " " FMT " " FMT
-
-static const char *me = "vtk/grid";
+static const char *me = "vtk/write";
 static void
 usg(void)
 {
@@ -90,17 +87,13 @@ main(int argc, char **argv)
 	exit(2);
     }
 
-    MSG(FMT3, origin[X], origin[Y], origin[Z]);
-    MSG(FMT3, spacing[X], spacing[Y], spacing[Z]);    
-    MSG("%d %d %d", size[X], size[Y], size[Z]);
-
     n = size[X] * size[Y] * size[Z];
     MALLOC(n, &data);
     l = 0;
     for (k = 0; k < size[Z]; k++)
 	for (j = 0; j < size[Y]; j++)
 	    for (i = 0; i < size[X]; i++) {
-		data[l++] = j;
+		data[l++] = i + j + k;
 	    }
     if (vtk_grid_write(stdout, size, origin, spacing, data) != CO_OK) {
 	fprintf(stderr, "%s: vtk_grid_write failed\n", me);
