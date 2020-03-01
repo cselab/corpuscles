@@ -27,6 +27,9 @@ main(int argc, char **argv)
     int size[3];
     real *data;
     int i;
+    int j;
+    int k;
+    int l;
     int n;
     int OFlag;
     int SFlag;
@@ -92,7 +95,13 @@ main(int argc, char **argv)
     MSG("%d %d %d", size[X], size[Y], size[Z]);
 
     n = size[X] * size[Y] * size[Z];
-    CALLOC(n, &data);
+    MALLOC(n, &data);
+    l = 0;
+    for (k = 0; k < size[Z]; k++)
+	for (j = 0; j < size[Y]; j++)
+	    for (i = 0; i < size[X]; i++) {
+		data[l++] = j;
+	    }
     if (vtk_grid(stdout, size, origin, spacing, data) != CO_OK) {
 	fprintf(stderr, "%s: vtk_grid failed\n", me);
 	exit(2);
