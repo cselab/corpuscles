@@ -7,7 +7,7 @@
 #include <co/macro.h>
 #include <co/memory.h>
 
-const char *me = "vtk";
+const char *me = "roi";
 static const real spacing[] = { 1.6, 1.6, 1.0 };
 
 static void

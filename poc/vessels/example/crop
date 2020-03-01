@@ -1,0 +1,81 @@
+#!/bin/sh
+
+: ${AWK=awk}
+: ${CONVERT=convert}
+
+me=crop
+
+usg () {
+    cat <<EOF
+$me -r int[6] [-b] file.tif -o file
+EOF
+    exit 2
+}
+
+# [a]rithmetic [e]xpression
+ae () {
+   "$AWK" 'BEGIN { printf "%.16g\n", '"$*"'}'
+   if test $? -ne 0
+   then err 'cannot evalute: '\""$@"\"
+   fi
+}
+msg () { echo >&2 "$@" ; }
+err () { msg "$me: $@"; exit 2 ; }
+num0() { "$AWK" -v n="$1" 'BEGIN  {r = !(n + 0 == n); exit r }'; }
+num() { if ! num0 "$1"; then err "not a number '$1'"; fi; }
+
+if ! "$CONVERT" --version 2>/dev/null 1>/dev/null
+then err "$CONVERT is not found"
+fi
+
+
+Rflag=0 Oflag=0 Box=0
+while test $# -ne 0
+do case "$1" in
+   -b) shift
+       Box=1
+       ;;
+   -r) shift
+       if test $# -le 5; then err '-t needs six numbers'; fi
+       num "$1"; lx=$1; shift
+       num "$1"; ly=$1; shift
+       num "$1"; lz=$1; shift
+       num "$1"; hx=$1; shift
+       num "$1"; hy=$1; shift
+       num "$1"; hz=$1; shift
+       Rflag=1
+       ;;
+   -o) shift
+       if test $# -eq 0; then err '-o needs an argument'; fi
+       output="$1"; shift
+       Oflag=1
+       ;;
+   -h) usg
+       ;;
+   -*) err "unknown options '$1'" ;;
+   *) break ;;
+   esac
+done
+
+if test $# -eq 0; then err 'tif file is missing'; fi
+input=$1; shift
+
+if ! test -f "$input"; then err "not a file '$input'"; fi
+
+if test $Rflag -eq 0; then err '-r is not set'; fi
+if test $Oflag -eq 0; then err '-o is not set'; fi
+
+if test $hx -le $lx; then err "x-direction: $hx <= $lx"; fi
+if test $hy -le $ly; then err "y-direction: $hy <= $ly"; fi
+if test $hz -le $lz; then err "z-direction: $hz <= $lz"; fi
+
+hz0=`ae $hz - 1`
+if test $Box -eq 0
+then wx=`ae $hx - $lx`
+     wy=`ae $hy - $ly`
+    "$CONVERT" "$input"[$lz-$hz0] -crop ${wx}x${wy}+${lx}+${ly} "$output"
+else
+    "$CONVERT" "$input"[$lz-$hz0] -fill none -stroke white -strokewidth 10 \
+               -draw "rectangle $lx, $ly, $hx, $hy" "$output"
+fi
+if test $? -ne 0; then err "'$CONVERT' failded"; fi

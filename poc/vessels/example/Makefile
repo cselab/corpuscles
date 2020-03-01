@@ -11,7 +11,6 @@ CO_LDFLAGS = `co.conf --libs $(PREC)`
 M_LDFLAGS = `pkg-config --libs libtiff-4`
 M_CFLAGS = `pkg-config --cflags libtiff-4`
 
-CFLAGS = -Ofast -g
 LINK = $(CC)
 M = \
 main\
