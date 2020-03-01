@@ -8,11 +8,11 @@
 #include <co/memory.h>
 
 const char *me = "vtk";
-
+static const real spacing[] = {1.6, 1.6, 1.0};
 static void
 usg(void)
 {
-    fprintf(stderr, "%s file\n", me);
+    fprintf(stderr, "%s -r int[6] file > vtk\n", me);
     exit(2);
 }
 
@@ -36,96 +36,113 @@ main(int argc, char **argv)
     unsigned short *inptr;
     int x;
     real origin[3];
-    real spacing[3];
     tdata_t buf;
     tsize_t scanline;
     TIFF *tif;
+    int Rflag;
 
     USED(argc);
+    Rflag = 0;
     while (*++argv != NULL && argv[0][0] == '-')
-        switch (argv[0][1]) {
-        case 'h':
-            usg();
-            break;
-        default:
-            fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
-            exit(1);
-        }
+	switch (argv[0][1]) {
+	case 'h':
+	    usg();
+	    break;
+	case 'r':
+	    if (argv[1] == NULL || argv[2] == NULL || argv[3] == NULL ||
+		argv[4] == NULL || argv[5] == NULL || argv[6] == NULL) {
+		fprintf(stderr, "%s: -r needs six arguments\n", me);
+		exit(2);
+	    }
+	    lo[X] = atoi(*++argv);
+	    lo[Y] = atoi(*++argv);
+	    lo[Z] = atoi(*++argv);
+	    hi[X] = atoi(*++argv);
+	    hi[Y] = atoi(*++argv);
+	    hi[Z] = atoi(*++argv);
+	    Rflag = 1;
+	    break;
+	default:
+	    fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
+	    exit(1);
+	}
     if (argv[0] == NULL) {
-        fprintf(stderr, "%s: missing an argument\n", me);
-        exit(2);
+	fprintf(stderr, "%s: missing an argument\n", me);
+	exit(2);
+    }
+
+    if (Rflag == 0) {
+	fprintf(stderr, "%s: -r is not set\n", me);
+	exit(2);	
+    }
+
+    if (lo[X] >= hi[X]) {
+	fprintf(stderr, "%s: lo[X]=%d >= hi[X]=%d\n", me, lo[X], hi[X]);
+	exit(2);		
     }
 
     if ((tif = TIFFOpen(argv[0], "r")) == NULL) {
-        fprintf(stderr, "%s: fail to topen %s\n", me, argv[0]);
-        exit(2);
+	fprintf(stderr, "%s: fail to topen %s\n", me, argv[0]);
+	exit(2);
     }
 
     dircount = 0;
     do
-        dircount++;
+	dircount++;
     while (TIFFReadDirectory(tif));
 
     if (TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &width) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
-        exit(2);
+	fprintf(stderr, "%s: TIFFGetField failed\n", me);
+	exit(2);
     };
     if (TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &length) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
-        exit(2);
+	fprintf(stderr, "%s: TIFFGetField failed\n", me);
+	exit(2);
     };
     size[X] = width;
     size[Y] = length;
     size[Z] = dircount;
-    origin[X] = origin[Y] = origin[Z] = 0;
-    spacing[X] = spacing[Y] = 1.6;
-    spacing[Z] = 1.0;
 
-    lo[X] = lo[Y] = 974;
-    lo[Z] = 191;
-    
-    hi[X] = hi[Y] = 1074;
-    hi[Z] = 291;
-    
     roi[X] = hi[X] - lo[X];
     roi[Y] = hi[Y] - lo[Y];
     roi[Z] = hi[Z] - lo[Z];
 
+    origin[X] = lo[X] * spacing[X];
+    origin[Y] = lo[Y] * spacing[Y];
+    origin[Z] = lo[Z] * spacing[Z];
+
     n = roi[X] * roi[Y] * roi[Z];
     MALLOC(n, &data);
-    MSG("roi: %d %d %d", roi[X], roi[Y], roi[Z]);
-
     scanline = TIFFScanlineSize(tif);
     if ((buf = _TIFFmalloc(scanline)) == NULL) {
-        fprintf(stderr, "%s: _TIFFmalloc failed failed\n", me);
-        exit(2);
+	fprintf(stderr, "%s: _TIFFmalloc failed failed\n", me);
+	exit(2);
     }
-    MSG("scanline: %d", scanline);
     l = 0;
     for (k = 0; k < size[Z]; k++) {
 	if (lo[Z] > k || k >= hi[Z]) continue;
-        if (TIFFSetDirectory(tif, k) != 1) {
-            fprintf(stderr, "%s: TIFFSetDirectory(k=%d) failed\n", me, k);
-            exit(2);
-        }
-        for (j = 0; j < size[Y]; j++) {
+	if (TIFFSetDirectory(tif, k) != 1) {
+	    fprintf(stderr, "%s: TIFFSetDirectory(k=%d) failed\n", me, k);
+	    exit(2);
+	}
+	for (j = 0; j < size[Y]; j++) {
 	    if (lo[Y] > j || j >= hi[Y]) continue;
-            if (TIFFReadScanline(tif, buf, j, 0) != 1) {
-                fprintf(stderr, "%s: TIFFReadScanline failed\n", me);
-                exit(2);
-            }
-            inptr = buf;
-            for (i = 0; i < size[X]; i++) {
-		if (lo[X] > i || i >= hi[X]) continue;		
-                data[l++] = inptr[i];
-            }
-        }
+	    if (TIFFReadScanline(tif, buf, j, 0) != 1) {
+		fprintf(stderr, "%s: TIFFReadScanline failed\n", me);
+		exit(2);
+	    }
+	    inptr = buf;
+	    for (i = 0; i < size[X]; i++) {
+		if (lo[X] > i || i >= hi[X]) continue;
+		data[l++] = inptr[i];
+	    }
+	}
     }
     assert(l == n);
     _TIFFfree(buf);
-    if (vtk_grid(stdout, roi, origin, spacing, data) != CO_OK) {
-        fprintf(stderr, "%s: vtk_grid failed\n", me);
-        exit(2);
+    if (vtk_grid_write(stdout, roi, origin, spacing, data) != CO_OK) {
+	fprintf(stderr, "%s: vtk_grid_write failed\n", me);
+	exit(2);
     }
     FREE(data);
     TIFFClose(tif);

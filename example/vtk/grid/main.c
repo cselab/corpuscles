@@ -102,8 +102,8 @@ main(int argc, char **argv)
 	    for (i = 0; i < size[X]; i++) {
 		data[l++] = j;
 	    }
-    if (vtk_grid(stdout, size, origin, spacing, data) != CO_OK) {
-	fprintf(stderr, "%s: vtk_grid failed\n", me);
+    if (vtk_grid_write(stdout, size, origin, spacing, data) != CO_OK) {
+	fprintf(stderr, "%s: vtk_grid_write failed\n", me);
 	exit(2);
     }
     FREE(data);

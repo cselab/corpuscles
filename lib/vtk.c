@@ -289,7 +289,7 @@ count(const char *a[])
 
 
 int
-vtk_grid(FILE * f, int size[3], real origin[3], real spacing[3], const real *data0)
+vtk_grid_write(FILE * f, const int size[3], const real origin[3], const real spacing[3], const real *data0)
 {
     enum {X, Y, Z};
     const char *me = "co/vtk";
