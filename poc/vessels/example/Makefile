@@ -13,10 +13,11 @@ M_CFLAGS = `pkg-config --cflags libtiff-4`
 
 LINK = $(CC)
 M = \
-main\
-vtk\
-roi\
+imagej\
 info\
+main\
+roi\
+vtk\
 
 all: $M
 .o:; $(LINK) $< $(M_LDFLAGS) $(CO_LDFLAGS) $(LDFLAGS) -o $@

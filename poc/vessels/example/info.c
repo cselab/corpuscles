@@ -2,7 +2,7 @@
 #include <tiffio.h>
 #include <co/macro.h>
 
-const char *me = "main";
+const char *me = "info";
 
 static void
 usg(void)
@@ -14,8 +14,13 @@ usg(void)
 int
 main(int argc, char **argv)
 {
+    const TIFFField *field;
+    int count;
     int dircount;
+    int i;
     TIFF *tif;
+    uint32 tag;
+    void *data;
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -40,14 +45,6 @@ main(int argc, char **argv)
         dircount++;
     while (TIFFReadDirectory(tif));
     printf("dircount: %d\n", dircount);
-    //TIFFPrintDirectory(tif, stdout, TIFFPRINT_NONE);
-
-    int count;
-    uint32 tag;
-    int i;
-    void *data;
-    const TIFFField *field;
-
     count = TIFFGetTagListCount(tif);
     printf("tag count: %d\n", count);
 
