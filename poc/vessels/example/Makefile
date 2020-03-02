@@ -16,6 +16,7 @@ M = \
 main\
 vtk\
 roi\
+info\
 
 all: $M
 .o:; $(LINK) $< $(M_LDFLAGS) $(CO_LDFLAGS) $(LDFLAGS) -o $@

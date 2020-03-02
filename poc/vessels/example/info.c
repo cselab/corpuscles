@@ -14,15 +14,10 @@ usg(void)
 int
 main(int argc, char **argv)
 {
-    int length;
     int dircount;
-    int scanline;
-    int width;
-    tdata_t buf;
     TIFF *tif;
 
     USED(argc);
-
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
@@ -36,7 +31,6 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: missing an argument\n", me);
         exit(2);
     }
-
     if ((tif = TIFFOpen(argv[0], "r")) == NULL) {
         fprintf(stderr, "%s: fail to topen %s\n", me, argv[0]);
         exit(2);
@@ -45,27 +39,35 @@ main(int argc, char **argv)
     do
         dircount++;
     while (TIFFReadDirectory(tif));
+    printf("dircount: %d\n", dircount);
+    //TIFFPrintDirectory(tif, stdout, TIFFPRINT_NONE);
 
+    int count;
+    uint32 tag;
+    int i;
+    void *data;
+    const TIFFField *field;
 
-    if (TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &width) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
-        exit(2);
-    };
-    if (TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &length) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
-        exit(2);
-    };
-    scanline = TIFFScanlineSize(tif);
-    buf = _TIFFmalloc(scanline);
-    if ((buf = _TIFFmalloc(scanline)) == NULL) {
-        fprintf(stderr, "%s: _TIFFmalloc failed failed\n", me);
-        exit(2);
+    count = TIFFGetTagListCount(tif);
+    printf("tag count: %d\n", count);
+
+    for (i = 0; i < count; i++) {
+        tag = TIFFGetTagListEntry(tif, i);
+        if (TIFFGetField(tif, tag, &data) != 1) {
+            fprintf(stderr, "%s: TIFFGetField failed (tag = %d)\n", me,
+                    tag);
+            exit(2);
+        }
+        field = TIFFFieldWithTag(tif, tag);
+        if (field == NULL) {
+            fprintf(stderr, "%s: TIFFFieldWithTag failed (tag = %d)\n", me,
+                    tag);
+            exit(2);
+        }
+        printf("  tag: %d\n", tag);
+        printf("  content:\n");
+        printf("%s", (char *) data);
+        printf("\n");
     }
-
-
-    _TIFFfree(buf);
-
-    //printf("%d %ld\n", TIFFNumberOfStrips(tif), TIFFStripSize(tif));
-
     TIFFClose(tif);
 }
