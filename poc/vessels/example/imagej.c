@@ -18,11 +18,17 @@ usg(void)
 int
 main(int argc, char **argv)
 {
-    TIFF *tif;
+    char *key[999] = { NULL };
+    char *str;
+    char *token;
+    char *val[999] = { NULL };
+    char *x;
+    const char *s = "\n";
+    const TIFFField *field;
     int count;
     int i;
+    TIFF *tif;
     void *data;
-    const TIFFField *field;
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -50,15 +56,6 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: TIFFFieldWithTag failed\n", me);
         exit(2);
     }
-
-    char *key[999] = { NULL };
-    char *val[999] = { NULL };
-    char *token;
-    char *str;
-    char *x;
-
-    const char *s = "\n";
-
     str = (char *) data;
     token = strtok(str, s);
     i = 0;
@@ -72,7 +69,6 @@ main(int argc, char **argv)
     }
     for (i = 0; key[i] != NULL; i++)
         printf("%s: %s\n", key[i], val[i]);
-
     for (i = 0; key[i] != NULL; i++) {
         free(key[i]);
         free(val[i]);
