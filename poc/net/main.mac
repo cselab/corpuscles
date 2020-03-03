@@ -1,0 +1,10 @@
+/*
+
+i, j: nodes
+R[i, j]: resist
+q[i,j]: flow rate
+
+*/
+
+s(e)::=buildq([e], sum(e, j, 1, n));
+q[i] = s((p[i] - p[j])/R[i,j]);
