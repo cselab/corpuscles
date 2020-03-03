@@ -24,8 +24,6 @@ main(int argc, char **argv)
     char *val[999] = { NULL };
     char *x;
     const char *s = "\n";
-    const TIFFField *field;
-    int count;
     int i;
     TIFF *tif;
     void *data;
@@ -45,7 +43,7 @@ main(int argc, char **argv)
         exit(2);
     }
     if ((tif = TIFFOpen(argv[0], "r")) == NULL) {
-        fprintf(stderr, "%s: fail to topen %s\n", me, argv[0]);
+        fprintf(stderr, "%s: fail to open %s\n", me, argv[0]);
         exit(2);
     }
     if (TIFFGetField(tif, TAG, &data) != 1) {

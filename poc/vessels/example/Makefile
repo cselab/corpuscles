@@ -13,6 +13,7 @@ M_CFLAGS = `pkg-config --cflags libtiff-4`
 
 LINK = $(CC)
 M = \
+byte\
 dir\
 imagej\
 images\

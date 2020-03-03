@@ -20,21 +20,6 @@ main(int argc, char **argv)
 {
     enum { X, Y, Z };
     int dircount;
-    int i;
-    int j;
-    int k;
-    int l;
-    int length;
-    int n;
-    int size[3];
-    int width;
-    real *data;
-    unsigned short *inptr;
-    int x;
-    real origin[3];
-    real spacing[3];
-    tdata_t buf;
-    tsize_t scanline;
     TIFF *tif;
 
     USED(argc);
@@ -53,7 +38,7 @@ main(int argc, char **argv)
     }
 
     if ((tif = TIFFOpen(argv[0], "r")) == NULL) {
-	fprintf(stderr, "%s: fail to topen %s\n", me, argv[0]);
+	fprintf(stderr, "%s: fail to open %s\n", me, argv[0]);
 	exit(2);
     }
 
