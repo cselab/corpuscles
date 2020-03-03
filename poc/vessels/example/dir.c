@@ -24,28 +24,29 @@ main(int argc, char **argv)
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	default:
-	    fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
-	    exit(1);
-	}
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        default:
+            fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
+            exit(1);
+        }
     if (argv[0] == NULL) {
-	fprintf(stderr, "%s: missing an argument\n", me);
-	exit(2);
+        fprintf(stderr, "%s: missing an argument\n", me);
+        exit(2);
     }
 
     if ((tif = TIFFOpen(argv[0], "r")) == NULL) {
-	fprintf(stderr, "%s: fail to open %s\n", me, argv[0]);
-	exit(2);
+        fprintf(stderr, "%s: fail to open %s\n", me, argv[0]);
+        exit(2);
     }
 
     int status;
+
     dircount = 0;
     do
-	dircount++;
+        dircount++;
     while (TIFFReadDirectory(tif));
     printf("%d\n", dircount);
 
@@ -63,7 +64,7 @@ main(int argc, char **argv)
 
     status = TIFFSetDirectory(tif, 3);
     printf("status: %d\n", status);
-    printf("offset: %ld\n", TIFFCurrentDirOffset(tif));    
+    printf("offset: %ld\n", TIFFCurrentDirOffset(tif));
 
     TIFFClose(tif);
 }

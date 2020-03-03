@@ -19,7 +19,7 @@ struct Meta {
     char *key[999];
     char *val[999];
 };
-static int meta_ini(TIFF *tif, struct Meta *q);
+static int meta_ini(TIFF * tif, struct Meta *q);
 static int meta_fin(struct Meta *q);
 static int meta_get(struct Meta *q, const char *, char **);
 
@@ -54,7 +54,7 @@ main(int argc, char **argv)
     meta_get(&meta, "images", &val);
     if (val == NULL) {
         fprintf(stderr, "%s: no 'images' in meta\n", me);
-        exit(2);	
+        exit(2);
     }
     images = atoi(val);
     printf("%d\n", images);
@@ -66,6 +66,7 @@ static int
 meta_fin(struct Meta *q)
 {
     int i;
+
     for (i = 0; q->key[i] != NULL; i++) {
         free(q->key[i]);
         free(q->val[i]);
@@ -74,21 +75,22 @@ meta_fin(struct Meta *q)
 }
 
 static int
-meta_get(struct Meta *q, const char *key, char ** val)
+meta_get(struct Meta *q, const char *key, char **val)
 {
     int i;
+
     for (i = 0; q->key[i] != NULL; i++) {
-	if (!strcmp(q->key[i], key)) {
-	    *val = q->val[i];
-	    return 0;
-	}
+        if (!strcmp(q->key[i], key)) {
+            *val = q->val[i];
+            return 0;
+        }
     }
     *val = NULL;
     return 0;
 }
 
 static int
-meta_ini(TIFF *tif, struct Meta *q)
+meta_ini(TIFF * tif, struct Meta *q)
 {
     char *str;
     char *token;
@@ -96,6 +98,7 @@ meta_ini(TIFF *tif, struct Meta *q)
     const char *s = "\n";
     int i;
     void *data;
+
     if (TIFFGetField(tif, TAG, &data) != 1) {
         fprintf(stderr, "%s: TIFFGetField failed\n", me);
         exit(2);
@@ -104,7 +107,7 @@ meta_ini(TIFF *tif, struct Meta *q)
         fprintf(stderr, "%s: TIFFFieldWithTag failed\n", me);
         exit(2);
     }
-    str = (char*) data;
+    str = (char *) data;
     token = strtok(str, s);
     i = 0;
     q->val[i] = q->key[i] = NULL;
