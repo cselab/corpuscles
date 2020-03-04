@@ -21,6 +21,7 @@ info\
 main\
 tag\
 roi\
+roi2\
 vtk\
 
 all: $M
