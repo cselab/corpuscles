@@ -162,7 +162,7 @@ main(int argc, char **argv)
     NXT(&w);
     offset = to_int32(x, y, z, w);
     if (fseek(f, offset, SEEK_SET) != 0) {
-        fprintf(stderr, "%s: fseek failed for offset = %ld\n", me, offset);
+        fprintf(stderr, "%s: fseek failed for offset = %d\n", me, offset);
         exit(2);
     }
     NXT(&x);
@@ -195,7 +195,7 @@ main(int argc, char **argv)
 
         if (tag == BitsPerSample) {
             printf("offset: %d\n", entry_offset);
-            printf("count: %ld\n", entry_count);
+            printf("count: %d\n", entry_count);
             printf("type: %s\n", name);
         }
     }

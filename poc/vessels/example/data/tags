@@ -1,0 +1,74 @@
+NewSubfileType              254       FE    LONG            1
+SubfileType                 255       FF    SHORT           1
+ImageWidth                  256       100   SHORT or LONG   1
+ImageLength                 257       101   SHORT or LONG   1
+BitsPerSample               258       102   SHORT           SamplesPerPixel
+Compression                 259       103   SHORT           1
+PhotometricInterpretation   262       106   SHORT           1
+Threshholding               263       107   SHORT           1
+CellWidth                   264       108   SHORT           1
+CellLength                  265       109   SHORT           1
+FillOrder                   266       10A   SHORT           1
+DocumentName                269       10D   ASCII
+ImageDescription            270       10E   ASCII
+Make                        271       10F   ASCII
+Model                       272       110   ASCII
+StripOffsets                273       111   SHORT or LONG   StripsPerImage
+Orientation                 274       112   SHORT           1
+SamplesPerPixel             277       115   SHORT           1
+RowsPerStrip                278       116   SHORT or LONG   1
+StripByteCounts             279       117   LONG or SHORT   StripsPerImage
+MinSampleValue              280       118   SHORT           SamplesPerPixel
+MaxSampleValue              281       119   SHORT           SamplesPerPixel
+XResolution                 282       11A   RATIONAL        1
+YResolution                 283       11B   RATIONAL        1
+PlanarConfiguration         284       11C   SHORT           1
+PageName                    285       11D   ASCII
+XPosition                   286       11E   RATIONAL
+YPosition                   287       11F   RATIONAL
+FreeOffsets                 288       120   LONG
+FreeByteCounts              289       121   LONG
+GrayResponseUnit            290       122   SHORT           1
+GrayResponseCurve           291       123    SHORT           2**BitsPerSample
+T4Options                   292       124    LONG            1
+T6Options                   293       125    LONG            1
+ResolutionUnit              296           128    SHORT           1
+PageNumber                  297           129    SHORT           2
+TransferFunction            301           12D    SHORT           {1 or SamplesPerPixel}* 2** BitsPerSample
+Software                    305           131    ASCII
+DateTime                    306           132    ASCII           20
+Artist                       315           13B    ASCII
+HostComputer                 316           13C    ASCII
+Predictor                    317           13D    SHORT           1
+WhitePoint                   318           13E    RATIONAL        2
+PrimaryChromaticities        319           13F    RATIONAL        6
+ColorMap                     320           140    SHORT           3 * (2**BitsPerSample)
+HalftoneHints                321           141    SHORT           2
+TileWidth                    322           142    SHORT or LONG   1
+TileLength                   323           143    SHORT or LONG   1
+TileOffsets                  324           144    LONG            TilesPerImage
+TileByteCounts               325           145    SHORT or LONG   TilesPerImage
+InkSet                       332           14C    SHORT           1
+InkNames                     333           14D    ASCII           total number of charac ters in all ink name strings, including zeros
+NumberOfInks                 334           14E    SHORT           1
+DotRange                     336           150    BYTE or SHORT   2, or 2*NumberOfInks
+TargetPrinter                337           151    ASCII           any
+ExtraSamples                 338           152    BYTE            number of extra compo- nents per pixel
+SampleFormat                 339           153    SHORT           SamplesPerPixel
+SMinSampleValue              340           154    Any             SamplesPerPixel
+SMaxSampleValue              341           155    Any             SamplesPerPixel
+TransferRange                342           156    SHORT           6
+JPEGProc                     512           200    SHORT           1
+JPEGInterchangeFormat        513           201    LONG            1
+JPEGInterchangeFormatLngth   514           202    LONG            1
+JPEGRestartInterval          515           203    SHORT           1
+JPEGLosslessPredictors       517           205    SHORT           SamplesPerPixel
+JPEGPointTransforms          518           206    SHORT           SamplesPerPixel
+JPEGQTables                  519           207    LONG            SamplesPerPixel
+JPEGDCTables                 520           208    LONG            SamplesPerPixel
+JPEGACTables                 521           209    LONG            SamplesPerPixel
+YCbCrCoefficients            529           211    RATIONAL        3
+YCbCrSubSampling             530           212    SHORT           2
+YCbCrPositioning             531           213    SHORT           1
+ReferenceBlackWhite          532           214    LONG            2*SamplesPerPixel
+Copyright                    33432         8298   ASCII           Any
