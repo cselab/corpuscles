@@ -1,18 +1,23 @@
 #!/usr/bin/awk -f
 
 BEGIN {
-    me = "enum"
+    me = "count"
     print "static const int TagCount[] = {"
 }
 
 {
+    tag = $1
     count = $5
     if (!integerp(count))
         count = "TAG_MANY"
     else if (count == 1)
         count = "TAG_ONE"
+    else if (count == 2)
+        count = "TAG_TWO"
+    else if (count == 6)
+        count "TAG_SIX"
     else
-       err("unknown %s", count)
+        err("unknown count %s for %s", count, tag)
     printf "    %s,\n", count
 }
 

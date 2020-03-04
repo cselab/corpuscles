@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 
 BEGIN {
-    me = "enum"
+    me = "name"
     print "static const char *TagName[] = {"
 }
 

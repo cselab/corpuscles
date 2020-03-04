@@ -13,6 +13,7 @@ enum {
 };
 enum {
     TAG_ONE,
+    TAG_TWO,
     TAG_MANY,
 };
 !

@@ -19,6 +19,7 @@ imagej\
 images\
 info\
 main\
+tag\
 roi\
 vtk\
 
@@ -27,6 +28,7 @@ all: $M
 .c.o:; $(CC) $(M_CFLAGS) $(CO_CFLAGS) $(CFLAGS) $< -c
 
 byte.o: def.h
+tag.o: def.h
 
 .c:
 %: %.c

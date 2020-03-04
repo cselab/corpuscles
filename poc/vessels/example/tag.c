@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "def.h"
 
-const char *me = "byte";
+const char *me = "tag";
 
 static uint16_t to_int16l(int, int);
 static uint16_t to_int16b(int, int);
@@ -171,132 +171,73 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: fseek failed for offset = %u\n", me, offset);
         exit(2);
     }
-    NXT(&x);
-    NXT(&y);
-    count = to_int16(x, y);
-    for (i = 0; i < count; i++) {
+
+    for (;;) {
         NXT(&x);
         NXT(&y);
-        tag = to_int16(x, y);
+        count = to_int16(x, y);
+        for (i = 0; i < count; i++) {
+            NXT(&x);
+            NXT(&y);
+            tag = to_int16(x, y);
+            NXT(&x);
+            NXT(&y);
+            type = to_int16(x, y);
+            if (type2name(type, &name) != 0) {
+                fprintf(stderr, "%s: unknown type: %d\n", me, type);
+                exit(2);
+            }
+            NXT(&x);
+            NXT(&y);
+            NXT(&z);
+            NXT(&w);
+            entry_count = to_int32(x, y, z, w);
+            NXT(&x);            /* offset */
+            NXT(&y);
+            NXT(&z);
+            NXT(&w);
+            if (tag2name(tag, &name) == 0) {
+                printf("tag: %s\n", name);
+                tag2type(tag, &tag_type);
+                switch (tag_type) {
+                case TAG_ASCII:
+                    assert(type == ASCII);
+                    break;
+                case TAG_LONG:
+                    assert(type == LONG);
+                    break;
+                case TAG_SHORT:
+                    assert(type == SHORT);
+                    break;
+                case TAG_SHORT_OR_LONG:
+                    assert(type == SHORT || type == LONG);
+                    break;
+                case TAG_RATIONAL:
+                    assert(type == RATIONAL);
+                    break;		    
+                default:
+                    fprintf(stderr, "%s: unknown tag_type '%d'\n", me,
+                            tag_type);
+                    exit(2);
+                    break;
+                }
+            } else {
+                fprintf(stderr, "unknown tag: %d\n", tag);
+            }
+        }
         NXT(&x);
         NXT(&y);
-        type = to_int16(x, y);
-        if (type2name(type, &name) != 0) {
-            fprintf(stderr, "%s: unknown type: %d\n", me, type);
+        NXT(&z);
+        NXT(&w);
+        next_offset = to_int32(x, y, z, w);
+        if (next_offset == 0)
+            break;
+        if (fseek(f, next_offset, SEEK_SET) != 0) {
+            fprintf(stderr, "%s: fseek failed for next_offset = %u\n", me,
+                    offset);
             exit(2);
         }
-        NXT(&x);
-        NXT(&y);
-        NXT(&z);
-        NXT(&w);
-        entry_count = to_int32(x, y, z, w);
-        NXT(&x);                /* offset */
-        NXT(&y);
-        NXT(&z);
-        NXT(&w);
-        if (tag2name(tag, &name) == 0) {
-            printf("tag: %s\n", name);
-            tag2type(tag, &tag_type);
-            switch (tag_type) {
-            case TAG_ASCII:
-                entry_offset = to_int32(x, y, z, w);
-                position = ftell(f);
-                if (fseek(f, entry_offset, SEEK_SET) != 0) {
-                    fprintf(stderr, "%s: fseek failed, offset = %d\n", me,
-                            entry_offset);
-                    exit(2);
-                }
-                FREAD(entry_count, string);
-                printf("%s", string);
-                fseek(f, position, SEEK_SET);
-                break;
-            case TAG_LONG:
-                assert(type == LONG);
-                if (entry_count == 1) {
-                    value = to_int32(x, y, z, w);
-                    printf("value: %d\n", value);
-                }
-                break;
-            case TAG_SHORT:
-                assert(type == SHORT);
-                if (entry_count == 1) {
-                    value = to_int16(x, y);
-                    printf("value: %d\n", value);
-                }
-                break;
-            case TAG_SHORT_OR_LONG:
-                assert(type == SHORT || type == LONG);
-                if (entry_count == 1) {
-                    if (type == SHORT)
-                        value = to_int16(x, y);
-                    else
-                        value = to_int32(x, y, z, w);
-                    printf("value: %d\n", value);
-                }
-                break;
-            default:
-                fprintf(stderr, "%s: unknown tag_type '%d'\n", me,
-                        tag_type);
-                exit(2);
-                break;
-            }
-        } else {
-            fprintf(stderr, "unknown tag: %d\n", tag);
-        }
-
-        switch (tag) {
-        case ImageWidth:
-            image_width = value;
-            break;
-        case ImageLength:
-            image_length = value;
-            break;
-        case RowsPerStrip:
-            rows_per_strip = value;
-            break;
-        case StripByteCounts:
-            printf("StripByteCounts count: %d\n", entry_count);
-            strip_byte_counts = value;
-            break;
-        case StripOffsets:
-            printf("StripOffsets count: %d\n", entry_count);
-            strip_offsets = value;
-            break;
-        }
     }
-    printf("image_width: %u\n", image_width);
-    printf("image_length: %u\n", image_length);
-    strips_in_image =
-        floor((image_length + rows_per_strip - 1) / rows_per_strip);
-    printf("strips_in_image: %u\n", strips_in_image);
-    if ((image = malloc(strip_byte_counts)) == NULL) {
-        fprintf(stderr, "%s: malloc failed\n", me);
-        exit(2);
-    }
-    position = ftell(f);
-    if (fseek(f, strip_offsets + 2002 * strip_byte_counts, SEEK_SET) != 0) {
-        fprintf(stderr, "%s: fseek failed, strip_offsets = %d\n", me,
-                strip_offsets);
-        exit(2);
-    }
-    printf("%ld\n", (end_offset - strip_offsets) / strip_byte_counts);
-    exit(2);
-    FREAD(strip_byte_counts, image);
-    fseek(f, position, SEEK_SET);
-    k = 0;
-    for (j = 0; j < image_length; j++)
-        for (i = 0; i < image_width; i++) {
-            x = image[k++];
-            y = image[k++];
-            grey = to_int16(x, y);
-            //printf("%d,%d: %04X\n", i, j, y);
-        }
-    NXT(&x);                    /* offset */
-    NXT(&y);
-    NXT(&z);
-    NXT(&w);
-    next_offset = to_int32(x, y, z, w);
-    printf("next_offset: %u\n", next_offset);
     free(image);
     fclose(f);
 }
