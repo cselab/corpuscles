@@ -10,7 +10,13 @@
 #include "def.h"
 
 const char *me = "tag";
-static const real spacing[] = { 1.6, 1.6, 1.0 };
+static const real spacing0[] = { 1.6, 1.6, 1.0 };
+static void
+usg(void)
+{
+    fprintf(stderr, "%s -r int[6] -s int[3] file\n", me);
+    exit(2);
+}
 
 static uint16_t to_int16l(int, int);
 static uint16_t to_int16b(int, int);
@@ -19,7 +25,6 @@ static uint32_t to_int32b(int, int, int, int);
 static int type2name(int, const char **);
 static int type2size(int, int *);
 static int tag2name(int, const char **);
-static int tag2type(int type, int *);
 static long file_end(FILE *);
 
 #define	USED(x)		if(x);else{}
@@ -100,45 +105,38 @@ static const char *Name[] = {
     }							\
   } while(0)
 
-static void
-usg(void)
-{
-    fprintf(stderr, "%s file\n", me);
-    exit(2);
-}
-
 int
 main(int argc, char **argv)
 {
     enum { X, Y, Z };
     const char *name;
-    const char *type_name;
     FILE *f;
-    real *data;
     int entry_size;
     int hi[3];
     int i;
+    int j;
+    int k;
     int l;
     int lo[3];
     int Rflag;
     int roi[3];
-    int rows_per_strip;
+    int stride[3];
     int size[3];
-    real origin[3];
-    int tag_type;
     int w;
     int x;
     int y;
     int z;
-    long n;
     long end_offset;    
+    long n;
+    real *data;
+    real origin[3];
+    real spacing[3];
     uint16_t count;
     uint16_t magic;
     uint16_t tag;
     uint16_t(*to_int16) (int, int);
     uint16_t type;
     uint32_t entry_count;
-    uint32_t next_offset;
     uint32_t offset;
     uint32_t strip_byte_counts;    
     uint32_t strip_offsets;
@@ -147,6 +145,7 @@ main(int argc, char **argv)
 
     USED(argc);
     Rflag = 0;
+    stride[X] = stride[Y] = stride[Z] = 1;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
@@ -166,6 +165,15 @@ main(int argc, char **argv)
             hi[Z] = atoi(*++argv);
             Rflag = 1;
             break;
+        case 's':
+            if (argv[1] == NULL || argv[2] == NULL || argv[3] == NULL) {
+                fprintf(stderr, "%s: -r needs six arguments\n", me);
+                exit(2);
+            }
+            stride[X] = atoi(*++argv);
+            stride[Y] = atoi(*++argv);
+            stride[Z] = atoi(*++argv);
+            break;	    
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(1);
@@ -284,23 +292,23 @@ main(int argc, char **argv)
     }
     end_offset = file_end(f);
     size[Z] = (end_offset - strip_offsets) / strip_byte_counts;
-    roi[X] = hi[X] - lo[X];
-    roi[Y] = hi[Y] - lo[Y];
-    roi[Z] = hi[Z] - lo[Z];
-    origin[X] = lo[X] * spacing[X];
-    origin[Y] = lo[Y] * spacing[Y];
-    origin[Z] = lo[Z] * spacing[Z];
+    roi[X] = (hi[X] - lo[X])/stride[X];
+    roi[Y] = (hi[Y] - lo[Y])/stride[Y];
+    roi[Z] = (hi[Z] - lo[Z])/stride[Z];
+    spacing[X] = spacing0[X] * stride[X];
+    spacing[Y] = spacing0[Y] * stride[Y];
+    spacing[Z] = spacing0[Z] * stride[Z];    
+    origin[X] = lo[X] * spacing0[X];
+    origin[Y] = lo[Y] * spacing0[Y];
+    origin[Z] = lo[Z] * spacing0[Z];
     n = roi[X] * roi[Y] * roi[Z];
     MALLOC(n, &data);
     if (fseek(f, strip_offsets + lo[Z] * strip_byte_counts, SEEK_SET) != 0) {
         fprintf(stderr, "%s: fseek failed\n", me);
         exit(2);
     }
-    int k;
-    int j;
-    uint16_t grey;
     l = 0;
-    for (k = 0; k < roi[Z]; k++)
+    for (k = lo[Z]; k < hi[Z]; k++)
 	for (j = 0; j < size[Y]; j++)
 	    for (i = 0; i < size[X]; i++) {
 	       NXT(&x);
@@ -309,6 +317,9 @@ main(int argc, char **argv)
                     continue;
 	       if (lo[Y] > j || j >= hi[Y])
 		   continue;
+	       if (i % stride[X] != 0) continue;
+	       if (j % stride[Y] != 0) continue;
+	       if (k % stride[Z] != 0) continue;	       
 	       data[l++] = to_int16(x, y);
 	    }
     assert(l == n);
@@ -390,20 +401,6 @@ tag2name(int type, const char **p)
     return 1;
 }
 
-static int
-tag2type(int type, int *p)
-{
-    int i;
-    int n;
-
-    n = sizeof(Tag) / sizeof(Tag[0]);
-    for (i = 0; i < n; i++)
-        if (type == Tag[i]) {
-            *p = TagType[i];
-            return 0;
-        }
-    return 1;
-}
 
 static long
 file_end(FILE * f)

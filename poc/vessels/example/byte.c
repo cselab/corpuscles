@@ -106,6 +106,7 @@ main(int argc, char **argv)
     int z;
     uint16_t count;
     uint16_t grey;
+    USED(grey);
     uint16_t magic;
     uint16_t tag;
 
