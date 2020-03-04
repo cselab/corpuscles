@@ -303,8 +303,8 @@ main(int argc, char **argv)
     for (k = 0; k < roi[Z]; k++)
 	for (j = 0; j < size[Y]; j++)
 	    for (i = 0; i < size[X]; i++) {
-		NXT(&x);
-		NXT(&y);
+	       NXT(&x);
+	       NXT(&y);
                if (lo[X] > i || i >= hi[X])
                     continue;
 	       if (lo[Y] > j || j >= hi[Y])
