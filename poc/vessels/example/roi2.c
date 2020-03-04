@@ -311,7 +311,8 @@ main(int argc, char **argv)
 		   continue;
 	       data[l++] = to_int16(x, y);
 	    }
-    assert(l == n);    
+    assert(l == n);
+    fprintf(stderr, "%d %d %d\n", size[X], size[Y], size[Z]);
     if (vtk_grid_write(stdout, roi, origin, spacing, data) != CO_OK) {
         fprintf(stderr, "%s: vtk_grid_write failed\n", me);
         exit(2);
