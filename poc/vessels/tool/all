@@ -4,7 +4,21 @@ f () {
 ./filter data/list  < data/tags
 }
 
+cat <<!
+enum {
+    TAG_ASCII,
+    TAG_LONG,
+    TAG_SHORT,
+    TAG_SHORT_OR_LONG,
+};
+enum {
+    TAG_ONE,
+    TAG_MANY,
+};
+!
+
 f | ./enum
 f | ./array
 f | ./type
 f | ./name
+f | ./count

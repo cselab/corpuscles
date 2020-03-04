@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <co/err.h>
 #include <co/macro.h>
+#include "def.h"
 
 const char *me = "byte2";
 
@@ -21,13 +22,6 @@ static int tag2type(int type, int *);
 	    exit(2);						\
 	}							\
     while (0) 
-
-enum {
-    TAG_ASCII,
-    TAG_LONG,
-    TAG_SHORT,
-    TAG_SHORT_OR_LONG,
-};
 
 enum {
     BYTE = 1,
@@ -58,7 +52,6 @@ static int Type[] = {
     FLOAT,
     DOUBLE,
 };
-
 static const char *Name[] = {
     "BYTE",
     "ASCII",
@@ -72,55 +65,6 @@ static const char *Name[] = {
     "SRATIONAL",
     "FLOAT",
     "DOUBLE",
-};
-
-enum {
-    NewSubfileType = 254,
-    ImageWidth = 256,
-    ImageLength = 257,
-    BitsPerSample = 258,
-    PhotometricInterpretation = 262,
-    ImageDescription = 270,
-    StripOffsets = 273,
-    SamplesPerPixel = 277,
-    RowsPerStrip = 278,
-    StripByteCounts = 279,
-};
-static const int Tag[] = {
-    NewSubfileType,
-    ImageWidth,
-    ImageLength,
-    BitsPerSample,
-    PhotometricInterpretation,
-    ImageDescription,
-    StripOffsets,
-    SamplesPerPixel,
-    RowsPerStrip,
-    StripByteCounts,
-};
-static const int TagType[] = {
-    TAG_LONG,
-    TAG_SHORT_OR_LONG,
-    TAG_SHORT_OR_LONG,
-    TAG_SHORT,
-    TAG_SHORT,
-    TAG_ASCII,
-    TAG_SHORT_OR_LONG,
-    TAG_SHORT,
-    TAG_SHORT_OR_LONG,
-    TAG_SHORT_OR_LONG,
-};
-static const char *TagName[] = {
-    "NewSubfileType",
-    "ImageWidth",
-    "ImageLength",
-    "BitsPerSample",
-    "PhotometricInterpretation",
-    "ImageDescription",
-    "StripOffsets",
-    "SamplesPerPixel",
-    "RowsPerStrip",
-    "StripByteCounts",
 };
 
 #define NXT(c)						\
@@ -160,6 +104,7 @@ main(int argc, char **argv)
     int32_t entry_count;
     int32_t entry_offset;
     int32_t position;
+    int32_t next_offset;
     const char *name;
     char string[9999];
 
@@ -262,11 +207,9 @@ main(int argc, char **argv)
 		exit(2);
 		break;
 	    }
-	    
 	} else {
 	    fprintf(stderr, "unknown tag: %d\n", tag);	    
 	}
-	
         //entry_offset = to_int32(x, y, z, w);
 	entry_offset = to_int16(x, y);
 
@@ -276,6 +219,12 @@ main(int argc, char **argv)
             printf("type: %s\n", name);
 	    } */
     }
+    NXT(&x); /* offset */
+    NXT(&y);
+    NXT(&z);
+    NXT(&w);
+    next_offset = to_int32(x, y, z, w);
+    printf("next_offset: %d\n", next_offset);
     fclose(f);
 }
 

@@ -1,0 +1,32 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    me = "enum"
+    print "static const int TagCount[] = {"
+}
+
+{
+    count = $5
+    if (!integerp(count))
+        count = "TAG_MANY"
+    else if (count == 1)
+        count = "TAG_ONE"
+    else
+       err("unknown %s", count)
+    printf "    %s,\n", count
+}
+
+END {
+    print "};"
+}
+
+function err(a, b, c, d, e)
+{
+    printf "%s: " a "\n", me, b, c, d, e | "cat >&2"
+    exit(2)
+}
+
+function integerp(x)
+{
+    return x ~ /^[1-9][0-9]*$/
+}

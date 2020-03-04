@@ -26,6 +26,8 @@ all: $M
 .o:; $(LINK) $< $(M_LDFLAGS) $(CO_LDFLAGS) $(LDFLAGS) -o $@
 .c.o:; $(CC) $(M_CFLAGS) $(CO_CFLAGS) $(CFLAGS) $< -c
 
+byte.o: def.h
+
 .c:
 %: %.c
 
