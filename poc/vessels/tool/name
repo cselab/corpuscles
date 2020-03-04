@@ -1,0 +1,26 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    me = "enum"
+    print "static const char *TagName[] = {"
+}
+
+{
+    tag = $1
+    printf "    \"%s\",\n", tag
+}
+
+END {
+    print "};"
+}
+
+function err(a, b, c, d, e)
+{
+    printf "%s: " a "\n", me, b, c, d, e | "cat >&2"
+    exit(2)
+}
+
+function integerp(x)
+{
+    return x ~ /^[1-9][0-9]*$/
+}

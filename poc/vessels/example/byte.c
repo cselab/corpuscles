@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <co/err.h>
@@ -10,6 +11,24 @@ static int16_t to_int16b(int, int);
 static int32_t to_int32l(int, int, int, int);
 static int32_t to_int32b(int, int, int, int);
 static int type2name(int, const char **);
+static int tag2name(int, const char **);
+static int tag2type(int type, int *);
+
+#define FREAD(n, p)						\
+    do								\
+	if ((int)fread(p, sizeof(*(p)), (n), (f)) != (n)) {	\
+	    fprintf(stderr, "%s: fread failed, n = %d", me, n);	\
+	    exit(2);						\
+	}							\
+    while (0) 
+
+enum {
+    TAG_ASCII,
+    TAG_LONG,
+    TAG_SHORT,
+    TAG_SHORT_OR_LONG,
+};
+
 enum {
     BYTE = 1,
     ASCII = 2,
@@ -61,22 +80,47 @@ enum {
     ImageLength = 257,
     BitsPerSample = 258,
     PhotometricInterpretation = 262,
+    ImageDescription = 270,
+    StripOffsets = 273,
+    SamplesPerPixel = 277,
+    RowsPerStrip = 278,
+    StripByteCounts = 279,
 };
-
-static int Tag[] = {
+static const int Tag[] = {
     NewSubfileType,
     ImageWidth,
     ImageLength,
     BitsPerSample,
     PhotometricInterpretation,
+    ImageDescription,
+    StripOffsets,
+    SamplesPerPixel,
+    RowsPerStrip,
+    StripByteCounts,
 };
-
+static const int TagType[] = {
+    TAG_LONG,
+    TAG_SHORT_OR_LONG,
+    TAG_SHORT_OR_LONG,
+    TAG_SHORT,
+    TAG_SHORT,
+    TAG_ASCII,
+    TAG_SHORT_OR_LONG,
+    TAG_SHORT,
+    TAG_SHORT_OR_LONG,
+    TAG_SHORT_OR_LONG,
+};
 static const char *TagName[] = {
     "NewSubfileType",
     "ImageWidth",
     "ImageLength",
     "BitsPerSample",
     "PhotometricInterpretation",
+    "ImageDescription",
+    "StripOffsets",
+    "SamplesPerPixel",
+    "RowsPerStrip",
+    "StripByteCounts",
 };
 
 #define NXT(c)						\
@@ -111,10 +155,13 @@ main(int argc, char **argv)
     int y;
     int z;
     int16_t tag;
+    int tag_type;
     int16_t type;
     int32_t entry_count;
     int32_t entry_offset;
+    int32_t position;
     const char *name;
+    char string[9999];
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -137,11 +184,9 @@ main(int argc, char **argv)
     NXT(&x);
     NXT(&y);
     if (x == 0x4D && y == 0x4D) {
-        fprintf(stderr, "%s: big\n", me);
         to_int16 = to_int16b;
         to_int32 = to_int32b;
     } else if (x == 0x49 && y == 0x49) {
-        fprintf(stderr, "%s: little\n", me);
         to_int16 = to_int16l;
         to_int32 = to_int32l;
     } else {
@@ -172,7 +217,6 @@ main(int argc, char **argv)
         NXT(&x);
         NXT(&y);
         tag = to_int16(x, y);
-        printf("tag: %d\n", tag);
         NXT(&x);
         NXT(&y);
         type = to_int16(x, y);
@@ -180,24 +224,57 @@ main(int argc, char **argv)
             fprintf(stderr, "%s: unknown type: %d\n", me, type);
             exit(2);
         }
-        //printf("type(%d): %s\n", type, name);
         NXT(&x);
         NXT(&y);
         NXT(&z);
         NXT(&w);
         entry_count = to_int32(x, y, z, w);
-        NXT(&x);
+        NXT(&x); /* offset */
         NXT(&y);
         NXT(&z);
         NXT(&w);
+	if (tag2name(tag, &name) == 0) {
+	    printf("tag: %s\n", name);
+	    tag2type(tag, &tag_type);
+	    switch (tag_type) {
+	    case TAG_ASCII:
+		entry_offset = to_int32(x, y, z, w);
+		position = ftell(f);
+		if (fseek(f, entry_offset, SEEK_SET) != 0) {
+		    fprintf(stderr, "%s: fseek failed, offset = %d\n", me, entry_offset);
+		    exit(2);
+		}
+		FREAD(entry_count, string);
+		printf("%s", string);
+		fseek(f, position, SEEK_SET);
+		break;
+	    case TAG_LONG:
+		assert(type == LONG);
+		break;
+	    case TAG_SHORT:
+		assert(type == SHORT);		
+		break;
+	    case TAG_SHORT_OR_LONG:
+		assert(type == SHORT || type == LONG);
+		break;
+	    default:
+		fprintf(stderr, "%s: unknown tag_type '%d'\n", me, tag_type);
+		exit(2);
+		break;
+	    }
+	    
+	} else {
+	    fprintf(stderr, "unknown tag: %d\n", tag);	    
+	}
+	
         //entry_offset = to_int32(x, y, z, w);
 	entry_offset = to_int16(x, y);
 
-        if (tag == BitsPerSample) {
+        /*if (tag == BitsPerSample) {
             printf("offset: %d\n", entry_offset);
             printf("count: %d\n", entry_count);
             printf("type: %s\n", name);
-        }
+	    } */
     }
     fclose(f);
 }
@@ -236,6 +313,36 @@ type2name(int type, const char **p)
     for (i = 0; i < n; i++)
         if (type == Type[i]) {
             *p = Name[i];
+            return 0;
+        }
+    return 1;
+}
+
+static int
+tag2name(int type, const char **p)
+{
+    int i;
+    int n;
+
+    n = sizeof(Tag) / sizeof(Tag[0]);
+    for (i = 0; i < n; i++)
+        if (type == Tag[i]) {
+            *p = TagName[i];
+            return 0;
+        }
+    return 1;
+}
+
+static int
+tag2type(int type, int *p)
+{
+    int i;
+    int n;
+
+    n = sizeof(Tag) / sizeof(Tag[0]);
+    for (i = 0; i < n; i++)
+        if (type == Tag[i]) {
+            *p = TagType[i];
             return 0;
         }
     return 1;

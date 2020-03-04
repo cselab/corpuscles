@@ -1,0 +1,10 @@
+#!/bin/sh
+
+f () {
+./filter data/list  < data/tags
+}
+
+f | ./enum
+f | ./array
+f | ./type
+f | ./name

@@ -27,7 +27,6 @@ int
 main(int argc, char **argv)
 {
     struct Meta meta;
-    int i;
     int images;
     TIFF *tif;
     char *val;
@@ -66,7 +65,6 @@ static int
 meta_fin(struct Meta *q)
 {
     int i;
-
     for (i = 0; q->key[i] != NULL; i++) {
         free(q->key[i]);
         free(q->val[i]);

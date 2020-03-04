@@ -1,0 +1,20 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+      me = "filter"
+      f = ARGV[1]
+      cmd = sprintf("test -f '%s'", f)
+      if (system(cmd) != 0)
+          err("not a file '%s'", f)
+      while (getline tag < f)
+            tags[tag]
+      ARGV[1] = ""
+}
+
+($2 in tags)
+
+function err(a, b, c, d, e)
+{
+    printf "%s: " a "\n", me, b, c, d, e | "cat >&2"
+    exit(2)
+}

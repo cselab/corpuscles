@@ -1,7 +1,7 @@
 NewSubfileType              254       FE    LONG            1
 SubfileType                 255       FF    SHORT           1
-ImageWidth                  256       100   SHORT or LONG   1
-ImageLength                 257       101   SHORT or LONG   1
+ImageWidth                  256       100   SHORT_OR_LONG   1
+ImageLength                 257       101   SHORT_OR_LONG   1
 BitsPerSample               258       102   SHORT           SamplesPerPixel
 Compression                 259       103   SHORT           1
 PhotometricInterpretation   262       106   SHORT           1
@@ -13,11 +13,11 @@ DocumentName                269       10D   ASCII
 ImageDescription            270       10E   ASCII
 Make                        271       10F   ASCII
 Model                       272       110   ASCII
-StripOffsets                273       111   SHORT or LONG   StripsPerImage
+StripOffsets                273       111   SHORT_OR_LONG   StripsPerImage
 Orientation                 274       112   SHORT           1
 SamplesPerPixel             277       115   SHORT           1
-RowsPerStrip                278       116   SHORT or LONG   1
-StripByteCounts             279       117   LONG or SHORT   StripsPerImage
+RowsPerStrip                278       116   SHORT_OR_LONG   1
+StripByteCounts             279       117   SHORT_OR_LONG   StripsPerImage
 MinSampleValue              280       118   SHORT           SamplesPerPixel
 MaxSampleValue              281       119   SHORT           SamplesPerPixel
 XResolution                 282       11A   RATIONAL        1
@@ -44,10 +44,10 @@ WhitePoint                   318           13E    RATIONAL        2
 PrimaryChromaticities        319           13F    RATIONAL        6
 ColorMap                     320           140    SHORT           3 * (2**BitsPerSample)
 HalftoneHints                321           141    SHORT           2
-TileWidth                    322           142    SHORT or LONG   1
-TileLength                   323           143    SHORT or LONG   1
+TileWidth                    322           142    SHORT_OR_LONG   1
+TileLength                   323           143    SHORT_OR_LONG   1
 TileOffsets                  324           144    LONG            TilesPerImage
-TileByteCounts               325           145    SHORT or LONG   TilesPerImage
+TileByteCounts               325           145    SHORT_OR_LONG   TilesPerImage
 InkSet                       332           14C    SHORT           1
 InkNames                     333           14D    ASCII           total number of charac ters in all ink name strings, including zeros
 NumberOfInks                 334           14E    SHORT           1

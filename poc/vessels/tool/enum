@@ -1,0 +1,29 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    me = "enum"
+    print "enum {"
+}
+
+{
+    tag = $1
+    id = $2
+    if (!integerp(id))
+        err("not a number '%s'", id)
+    printf "    %s = %d,\n", tag, id
+}
+
+END {
+    print "};"
+}
+
+function err(a, b, c, d, e)
+{
+    printf "%s: " a "\n", me, b, c, d, e | "cat >&2"
+    exit(2)
+}
+
+function integerp(x)
+{
+    return x ~ /^[1-9][0-9]*$/
+}
