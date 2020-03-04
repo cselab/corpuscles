@@ -14,7 +14,6 @@ static uint32_t to_int32b(int, int, int, int);
 static int type2name(int, const char **);
 static int tag2name(int, const char **);
 static int tag2type(int type, int *);
-static long file_end(FILE *);
 
 #define	USED(x)		if(x);else{}
 #define FREAD(n, p)							\
@@ -89,39 +88,24 @@ int
 main(int argc, char **argv)
 {
     FILE *f;
-    char string[9999];
     const char *name;
+    const char *type_name;
     int i;
-    int image_length;
-    int image_width;
-    int j;
-    int k;
-    int rows_per_strip;
-    int strips_in_image;
     int tag_type;
-    int value;
     int w;
     int x;
     int y;
     int z;
     uint16_t count;
-    uint16_t grey;
     uint16_t magic;
     uint16_t tag;
 
     uint16_t(*to_int16) (int, int);
     uint16_t type;
     uint32_t entry_count;
-    uint32_t entry_offset;
     uint32_t next_offset;
     uint32_t offset;
-    uint32_t position;
-    uint32_t strip_byte_counts;
-    uint32_t strip_offsets;
-
     uint32_t(*to_int32) (int, int, int, int);
-    long end_offset;
-    unsigned char *image;
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -141,7 +125,6 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: fail to open %s\n", me, argv[0]);
         exit(2);
     }
-    end_offset = file_end(f);
     NXT(&x);
     NXT(&y);
     if (x == 0x4D && y == 0x4D) {
@@ -192,12 +175,13 @@ main(int argc, char **argv)
             NXT(&z);
             NXT(&w);
             entry_count = to_int32(x, y, z, w);
-            NXT(&x);            /* offset */
+            NXT(&x);            /* offset or value */
             NXT(&y);
             NXT(&z);
             NXT(&w);
             if (tag2name(tag, &name) == 0) {
-                printf("tag: %s\n", name);
+		type2name(type, &type_name);
+                printf("%s %s %u\n", name, type_name, entry_count);
                 tag2type(tag, &tag_type);
                 switch (tag_type) {
                 case TAG_ASCII:
@@ -238,7 +222,6 @@ main(int argc, char **argv)
             exit(2);
         }
     }
-    free(image);
     fclose(f);
 }
 
@@ -309,20 +292,4 @@ tag2type(int type, int *p)
             return 0;
         }
     return 1;
-}
-
-static long
-file_end(FILE * f)
-{
-    long ans;
-    long pos;
-
-    pos = ftell(f);
-    if (fseek(f, 0, SEEK_END) != 0) {
-        fprintf(stderr, "%s: fseek failed\n", me);
-        exit(2);
-    }
-    ans = ftell(f);
-    fseek(f, pos, SEEK_SET);
-    return ans;
 }
