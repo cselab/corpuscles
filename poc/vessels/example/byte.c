@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <co/err.h>
 #include <co/macro.h>
 #include "def.h"
@@ -93,20 +94,21 @@ main(int argc, char **argv)
     int32_t offset;
 
     int32_t(*to_int32) (int, int, int, int);
+    char string[9999];
+    const char *name;
     int i;
+    int tag_type;
+    int value;
     int w;
     int x;
     int y;
     int z;
-    int16_t tag;
-    int tag_type;
-    int16_t type;
-    int32_t entry_count;
-    int32_t entry_offset;
-    int32_t position;
-    int32_t next_offset;
-    const char *name;
-    char string[9999];
+    uint16_t tag;
+    uint16_t type;
+    uint32_t entry_count;
+    uint32_t entry_offset;
+    uint32_t next_offset;
+    uint32_t position;
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -152,7 +154,7 @@ main(int argc, char **argv)
     NXT(&w);
     offset = to_int32(x, y, z, w);
     if (fseek(f, offset, SEEK_SET) != 0) {
-        fprintf(stderr, "%s: fseek failed for offset = %d\n", me, offset);
+        fprintf(stderr, "%s: fseek failed for offset = %u\n", me, offset);
         exit(2);
     }
     NXT(&x);
@@ -195,12 +197,27 @@ main(int argc, char **argv)
 		break;
 	    case TAG_LONG:
 		assert(type == LONG);
+		if (entry_count == 1) {
+		    value = to_int32(x, y, z, w);
+		    printf("value: %d\n", value);
+		}
 		break;
 	    case TAG_SHORT:
-		assert(type == SHORT);		
+		assert(type == SHORT);
+		if (entry_count == 1) {
+		    value = to_int16(x, y);
+		    printf("value: %d\n", value);
+		}
 		break;
 	    case TAG_SHORT_OR_LONG:
 		assert(type == SHORT || type == LONG);
+		if (entry_count == 1) {
+		    if (type == SHORT)
+			value = to_int16(x, y);
+		    else
+			value = to_int32(x, y, z, w);
+		    printf("value: %d\n", value);
+		}		
 		break;
 	    default:
 		fprintf(stderr, "%s: unknown tag_type '%d'\n", me, tag_type);
@@ -224,7 +241,7 @@ main(int argc, char **argv)
     NXT(&z);
     NXT(&w);
     next_offset = to_int32(x, y, z, w);
-    printf("next_offset: %d\n", next_offset);
+    printf("next_offset: %u\n", next_offset);
     fclose(f);
 }
 
