@@ -274,7 +274,7 @@ main(int argc, char **argv)
         exit(2);
     }
     position = ftell(f);
-    if (fseek(f, strip_offsets + 2002 * strip_byte_counts, SEEK_SET) != 0) {
+    if (fseek(f, strip_offsets + 1 * strip_byte_counts, SEEK_SET) != 0) {
         fprintf(stderr, "%s: fseek failed, strip_offsets = %d\n", me,
                 strip_offsets);
         exit(2);

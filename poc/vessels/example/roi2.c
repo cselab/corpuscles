@@ -3,9 +3,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <real.h>
+#include <co/err.h>
+#include <co/memory.h>
+#include <co/vtk.h>
 #include "def.h"
 
 const char *me = "tag";
+static const real spacing[] = { 1.6, 1.6, 1.0 };
 
 static uint16_t to_int16l(int, int);
 static uint16_t to_int16b(int, int);
@@ -109,19 +114,23 @@ main(int argc, char **argv)
     const char *name;
     const char *type_name;
     FILE *f;
+    real *data;
     int entry_size;
     int hi[3];
     int i;
+    int l;
     int lo[3];
     int Rflag;
     int roi[3];
     int rows_per_strip;
     int size[3];
+    real origin[3];
     int tag_type;
     int w;
     int x;
     int y;
     int z;
+    long n;
     long end_offset;    
     uint16_t count;
     uint16_t magic;
@@ -275,7 +284,39 @@ main(int argc, char **argv)
     }
     end_offset = file_end(f);
     size[Z] = (end_offset - strip_offsets) / strip_byte_counts;
-    printf("%d %d %d\n", size[X], size[Y], size[Z]);
+    roi[X] = hi[X] - lo[X];
+    roi[Y] = hi[Y] - lo[Y];
+    roi[Z] = hi[Z] - lo[Z];
+    origin[X] = lo[X] * spacing[X];
+    origin[Y] = lo[Y] * spacing[Y];
+    origin[Z] = lo[Z] * spacing[Z];
+    n = roi[X] * roi[Y] * roi[Z];
+    MALLOC(n, &data);
+    if (fseek(f, strip_offsets + lo[Z] * strip_byte_counts, SEEK_SET) != 0) {
+        fprintf(stderr, "%s: fseek failed\n", me);
+        exit(2);
+    }
+    int k;
+    int j;
+    uint16_t grey;
+    l = 0;
+    for (k = 0; k < roi[Z]; k++)
+	for (j = 0; j < size[Y]; j++)
+	    for (i = 0; i < size[X]; i++) {
+		NXT(&x);
+		NXT(&y);
+               if (lo[X] > i || i >= hi[X])
+                    continue;
+	       if (lo[Y] > j || j >= hi[Y])
+		   continue;
+	       data[l++] = to_int16(x, y);
+	    }
+    assert(l == n);    
+    if (vtk_grid_write(stdout, roi, origin, spacing, data) != CO_OK) {
+        fprintf(stderr, "%s: vtk_grid_write failed\n", me);
+        exit(2);
+    }
+    FREE(data);    
     fclose(f);
 }
 

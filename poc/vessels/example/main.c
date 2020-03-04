@@ -62,9 +62,7 @@ main(int argc, char **argv)
         exit(2);
     }
 
-
     _TIFFfree(buf);
-
     //printf("%d %ld\n", TIFFNumberOfStrips(tif), TIFFStripSize(tif));
 
     TIFFClose(tif);
