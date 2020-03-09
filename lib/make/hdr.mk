@@ -159,6 +159,7 @@ co/tri.h\
 co/util.h\
 co/vec2.h\
 co/vec.h\
+co/viscosity/pairwise.h\
 co/volume.h\
 co/vtk2.h\
 co/vtk.h\

@@ -152,6 +152,7 @@ tri2.s.o\
 tri.s.o\
 vec2.s.o\
 vec.s.o\
+viscosity/pairwise.s.o\
 volume.s.o\
 vtk2.s.o\
 vtk.s.o\
@@ -295,6 +296,7 @@ tri2.d.o\
 tri.d.o\
 vec2.d.o\
 vec.d.o\
+viscosity/pairwise.d.o\
 volume.d.o\
 vtk2.d.o\
 vtk.d.o\
@@ -438,6 +440,7 @@ tri2.l.o\
 tri.l.o\
 vec2.l.o\
 vec.l.o\
+viscosity/pairwise.l.o\
 volume.l.o\
 vtk2.l.o\
 vtk.l.o\

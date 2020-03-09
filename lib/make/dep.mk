@@ -1493,6 +1493,14 @@ inc/def.h\
 co/err.h\
 co/vec.h\
 
+viscosity/pairwise.s.o:\
+co/prec/s/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/viscosity/pairwise.h\
+
 volume.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -1511,6 +1519,7 @@ co/endian.h\
 
 vtk.s.o:\
 co/prec/s/real.h\
+co/endian.h\
 co/err.h\
 co/he.h\
 co/memory.h\
@@ -2952,6 +2961,14 @@ inc/def.h\
 co/err.h\
 co/vec.h\
 
+viscosity/pairwise.d.o:\
+co/prec/d/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/viscosity/pairwise.h\
+
 volume.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -2970,6 +2987,7 @@ co/endian.h\
 
 vtk.d.o:\
 co/prec/d/real.h\
+co/endian.h\
 co/err.h\
 co/he.h\
 co/memory.h\
@@ -4411,6 +4429,14 @@ inc/def.h\
 co/err.h\
 co/vec.h\
 
+viscosity/pairwise.l.o:\
+co/prec/l/real.h\
+co/argv.h\
+co/memory.h\
+co/err.h\
+co/he.h\
+co/viscosity/pairwise.h\
+
 volume.l.o:\
 co/prec/l/real.h\
 co/err.h\
@@ -4429,6 +4455,7 @@ co/endian.h\
 
 vtk.l.o:\
 co/prec/l/real.h\
+co/endian.h\
 co/err.h\
 co/he.h\
 co/memory.h\

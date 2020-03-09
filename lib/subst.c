@@ -58,9 +58,10 @@ apply(T * q, He * he, BI * bi,
     wz = q->wz;
     for (iiter = 0; iiter < niter; iiter++) {
         array_copy3(n, ux, uy, uz, wx, wy, wz);
-        if (bi_double(bi, he, alpha, x, y, z, ix, iy, iz, wx, wy, wz) != CO_OK)
+        if (bi_double(bi, he, alpha, x, y, z, ix, iy, iz, wx, wy, wz) !=
+            CO_OK)
             goto fail;
-	norm = array_inf3(n, wx, wy, wz);
+        norm = array_inf3(n, wx, wy, wz);
         diff = array_diff_inf3(n, wx, wy, wz, ix, iy, iz);
         array_copy3(n, wx, wy, wz, ix, iy, iz);
         if (diff <= tol * norm)
