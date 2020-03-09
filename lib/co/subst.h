@@ -1,7 +1,7 @@
 /*
-  solves for `x'
-  x = u + D(alpha) . x
-  where `D(alpha) . x' is computed by bi_double
+  solves for `v'
+  v = u + D(alpha) . v
+  where `D(alpha) . v' is computed by bi_double
  */
 
 #define T Subst
