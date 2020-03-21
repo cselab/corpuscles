@@ -38,7 +38,13 @@ Download code from
 git clone https://github.com/bianx/fm
 git@github.com:cselab/corpuscles.git co
 https://github.com/slitvinov/alg
-
+(cd co/tool && make install)
+(cd co/m4/lib && make install)
+(cd co/lib && make hdr)
+(cd co/pkgconfig && make)
+(cd alg && make)
+(cd fm && make)
+make
 ```
 
 Adjust `conf.mk` if you want to change defaults
