@@ -32,9 +32,13 @@ Please see details in [https://cselab.github.io/corpuscles](https://cselab.githu
 Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
 requrements `gsl`, `geomview`, `atest`, `maxima`, `pandoc`.
 
+
 Download code from
 ```sh
-$ git@github.com:cselab/corpuscles.git
+git clone https://github.com/bianx/fm
+git@github.com:cselab/corpuscles.git co
+https://github.com/slitvinov/alg
+
 ```
 
 Adjust `conf.mk` if you want to change defaults
