@@ -115,8 +115,6 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: fclose(3) failed for '%s'\n", me, path_out);
         exit(2);
     }
-
-
     fprintf(stderr, "%s\n", command);
     y_fin(he, x, y, z);
 }
