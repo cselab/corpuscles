@@ -107,14 +107,13 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: fail to open '%s'\n", me, path_out);
         exit(2);
     }
-    //raise(SIGINT);
-    // TODO
-    sleep(1000);
-
+    sleep(10);
     if (fclose(f) != 0) {
         fprintf(stderr, "%s: fclose(3) failed for '%s'\n", me, path_out);
         exit(2);
     }
+    cleanup(0);
+
     fprintf(stderr, "%s\n", command);
     y_fin(he, x, y, z);
 }
