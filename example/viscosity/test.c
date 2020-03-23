@@ -18,6 +18,7 @@ static const char *me = "viscosity/pairwise";
 static char path_in[SIZE];
 static char path_out[SIZE];
 static void cleanup(int);
+static void cleanup0(void);
 
 static void
 usg(void)
@@ -104,12 +105,13 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: fail to open '%s'\n", me, path_out);
         exit(2);
     }
+    abort();
     sleep(5);
     if (fclose(f) != 0) {
         fprintf(stderr, "%s: fclose(3) failed for '%s'\n", me, path_out);
         exit(2);
     }
-    cleanup(0);
+    cleanup0();
 
     fprintf(stderr, "%s\n", command);
     y_fin(he, x, y, z);
@@ -118,9 +120,16 @@ main(int argc, char **argv)
 static void
 cleanup(int signo)
 {
-    char command[4 * SIZE];
+  USED(signo);
+  cleanup0();
+  exit(2);
+}
 
+
+static void
+cleanup0(void)
+{
+    char command[4 * SIZE];
+    fprintf(stderr, "%s: cleanup0\n", me);
     snprintf(command, 4 * SIZE, "rm -f -- '%s', '%s'", path_out, path_in);
-    fprintf(stderr, "%s: %s\n", me, command);
-    exit(2);
 }

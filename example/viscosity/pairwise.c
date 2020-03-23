@@ -11,6 +11,7 @@
 #include <co/memory.h>
 #include <co/punto.h>
 #include <co/viscosity/pairwise.h>
+#include <co/vec.h>
 #include <co/y.h>
 
 #define OUT  CO_REAL_OUT
@@ -38,6 +39,7 @@ main(int argc, char **argv)
     char command[4 * SIZE];
     char line[SIZE];
     const char *cmd;
+    const char *tok;
     const char *delimeter = " \t";
     FILE *f;
     He *he;
@@ -47,13 +49,17 @@ main(int argc, char **argv)
     real *x;
     real *y;
     real *z;
+    real *rad;
+    real *frad;
     real *vx;
     real *vy;
     real *vz;
     real *fx;
     real *fy;
     real *fz;
-    real v[3];
+    real velocity[3];
+    real radius[3];
+    real force[3];
     ViscosityPairwise *viscosity;
 
     err_set_ignore();
@@ -92,6 +98,7 @@ main(int argc, char **argv)
     nv = he_nv(he);
     MALLOC3(nv, &vx, &vy, &vz);
     CALLOC3(nv, &fx, &fy, &fz);
+    MALLOC2(nv, &rad, &frad);
     viscosity_pairwise_ini(1.0, he, &viscosity);
 
     snprintf(path_in, SIZE, "/tmp/pairwise.in.%d", getpid());
@@ -127,7 +134,7 @@ main(int argc, char **argv)
 
     i = 0;
     while (fgets(line, SIZE, f) != NULL) {
-      if (strtok(line, delimeter) == NULL) {
+      if ((tok = strtok(line, delimeter)) == NULL) {
 	fprintf(stderr, "%s: fail to parse '%s'\n", me, line);
 	exit(2);
       }
@@ -137,15 +144,15 @@ main(int argc, char **argv)
 	  fprintf(stderr, "%s: fail to parse'%s'\n", me, line);
 	  exit(2);
 	}
-	if (sscanf(line, IN, &v[dim]) != 1) {
+	if (sscanf(tok, IN, &velocity[dim]) != 1) {
 	  fprintf(stderr, "%s: fail to parse'%s'\n", me, line);
 	  exit(2);
 	}
 	dim++;
-      } while (strtok(NULL, delimeter) != NULL);
-      vx[i] = v[X];
-      vy[i] = v[Y];
-      vz[i] = v[Z];
+      } while ((tok = strtok(NULL, delimeter)) != NULL);
+      vx[i] = velocity[X];
+      vy[i] = velocity[Y];
+      vz[i] = velocity[Z];
       i++;
     }
     if (fclose(f) != 0) {
@@ -154,21 +161,28 @@ main(int argc, char **argv)
     }
     cleanup0();
     viscosity_pairwise_force(viscosity, he, x, y, z, vx, vy, vz, fx, fy, fz);
-    y_fin(he, x, y, z);
     viscosity_pairwise_fin(viscosity);
 
-
-    const real *queue[] = {x, y, z, vx, vy, vz, fx, fy, fz, NULL};
-    printf("x y z vx vy vz fx fy fz\n");
+    for (i = 0; i < nv; i++) {
+      vec_get(i, x, y, z, /**/ radius);
+      vec_get(i, fx, fy, fz, /**/ force);
+      rad[i] = vec_cylindrical_r(radius);
+      frad[i] = vec_cylindrical_r(force);
+    }
+    const real *queue[] = {x, y, z, rad, vx, vy, vz, fx, fy, fz, frad, NULL};
+    printf("x y z r vx vy vz fx fy fz fr\n");
     punto_fwrite(nv, queue, stdout);
-    
+
     FREE3(vx, vy, vz);
     FREE3(fx, fy, fz);
+    FREE2(rad, frad);
+    y_fin(he, x, y, z);
 }
 
 static void
 cleanup(int signo)
 {
+  USED(signo);
   cleanup0();
   exit(2);
 }

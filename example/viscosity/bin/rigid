@@ -1,0 +1,15 @@
+#!/bin/sh
+
+awk '
+{
+    if (NF != 3) {
+	printf "bin/rigid: unexpected line '\''%s'\''\n", $0 | "cat >&2"
+	exit(2)
+    }
+    u = 1
+    v = 2
+    w = 3
+    x = $1; y = $2; z = $3
+    print v*z - w*y, w*x - u*z, u*y - v*x
+}
+'

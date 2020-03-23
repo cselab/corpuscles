@@ -18,7 +18,7 @@ punto_fwrite(int n, const real * queue[], /**/ FILE * f)
 
     for (i = 0; i < n; i++) {
         q = queue;
-        for (;;) {
+	while (*q != NULL) {
             r = fprintf(f, FMT_OUT, (*q)[i]);
             q++;
             if (r < 0)
