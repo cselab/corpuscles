@@ -91,18 +91,15 @@ main(int argc, char **argv)
                     path_in);
             exit(2);
         }
-
     if (fclose(f) != 0) {
         fprintf(stderr, "%s: fclose(3) failed for '%s'\n", me, path_in);
         exit(2);
     }
-
     snprintf(command, 4 * SIZE, "<%s %s >%s", path_in, cmd, path_out);
     if (system(command) != 0) {
         fprintf(stderr, "%s: command '%s' failed\n", me, command);
         exit(2);
     }
-
     if ((f = fopen(path_out, "r")) == NULL) {
         fprintf(stderr, "%s: fail to open '%s'\n", me, path_out);
         exit(2);
