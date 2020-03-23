@@ -1,10 +1,11 @@
 .POSIX:
-.PHONY: clean test lint all
+.PHONY: clean lint all
 .SUFFIXES: .o .c
 
 include ../../conf.mk
 M = \
 pairwise\
+test\
 
 PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
@@ -22,6 +23,5 @@ all: $M
 %: %.c
 
 lint:; make CFLAGS='-Wall -Wextra -g -O2'
-test: $M; atest test/*
 install:
 clean:; rm -f $M $(M:=.o)

@@ -14,7 +14,7 @@
 #define FMT3 FMT " " FMT " " FMT "\n"
 enum { SIZE = 9999 };
 
-static const char *me = "viscosity/pairwise";
+static const char *me = "viscosity/test";
 static char path_in[SIZE];
 static char path_out[SIZE];
 static void cleanup(int);
