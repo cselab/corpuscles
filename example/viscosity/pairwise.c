@@ -1,23 +1,28 @@
-#include <assert.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
+
 #include <real.h>
-#include <signal.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
 #include <co/memory.h>
+#include <co/viscosity/pairwise.h>
 #include <co/y.h>
 
-#define FMT  CO_REAL_OUT
-#define FMT3 FMT " " FMT " " FMT "\n"
+#define OUT  CO_REAL_OUT
+#define IN  CO_REAL_IN
+#define OUT3 OUT " " OUT " " OUT "\n"
 enum { SIZE = 9999 };
+enum { X, Y, Z };
 
 static const char *me = "viscosity/test";
 static char path_in[SIZE];
 static char path_out[SIZE];
 static void cleanup(int);
+static void cleanup0(void);
 
 static void
 usg(void)
@@ -29,15 +34,22 @@ usg(void)
 int
 main(int argc, char **argv)
 {
+    char command[4 * SIZE];
+    char line[SIZE];
+    const char *cmd;
+    const char *delimeter = " \t";
+    FILE *f;
     He *he;
+    int i;
+    int nv;
+    int dim;
     real *x;
     real *y;
     real *z;
-    char command[4 * SIZE];
-    const char *cmd;
-    FILE *f;
-    int i;
-    int nv;
+    real *vx;
+    real *vy;
+    real *vz;
+    real v[3];
 
     err_set_ignore();
     USED(argc);
@@ -72,6 +84,8 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: option -c is not set\n", me);
         exit(2);
     }
+    nv = he_nv(he);
+    MALLOC3(nv, &vx, &vy, &vz);
 
     snprintf(path_in, SIZE, "/tmp/pairwise.in.%d", getpid());
     snprintf(path_out, SIZE, "/tmp/pairwise.out.%d", getpid());
@@ -84,9 +98,8 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: fail to open '%s'\n", me, path_in);
         exit(2);
     }
-    nv = he_nv(he);
     for (i = 0; i < nv; i++)
-        if (fprintf(f, FMT3, x[i], y[i], z[i]) < 0) {
+        if (fprintf(f, OUT3, x[i], y[i], z[i]) < 0) {
             fprintf(stderr, "%s: fprintf(3) failed for '%s'\n", me,
                     path_in);
             exit(2);
@@ -104,23 +117,51 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: fail to open '%s'\n", me, path_out);
         exit(2);
     }
-    sleep(10);
+
+    i = 0;
+    while (fgets(line, SIZE, f) != NULL) {
+      if (strtok(line, delimeter) == NULL) {
+	fprintf(stderr, "%s: fail to parse '%s'\n", me, line);
+	exit(2);
+      }
+      dim = 0;
+      do {
+	if (dim == 3) {
+	  fprintf(stderr, "%s: fail to parse'%s'\n", me, line);
+	  exit(2);
+	}
+	if (sscanf(line, IN, &v[dim]) != 1) {
+	  fprintf(stderr, "%s: fail to parse'%s'\n", me, line);
+	  exit(2);	  
+	}
+	dim++;
+      } while (strtok(NULL, delimeter) != NULL);
+      vx[i] = v[X];
+      vy[i] = v[Y];
+      vz[i] = v[Z];
+      i++;
+    }
+    
     if (fclose(f) != 0) {
         fprintf(stderr, "%s: fclose(3) failed for '%s'\n", me, path_out);
         exit(2);
     }
-    cleanup(0);
-
-    fprintf(stderr, "%s\n", command);
+    cleanup0();
     y_fin(he, x, y, z);
+    FREE3(vx, vy, vz);
 }
 
 static void
 cleanup(int signo)
 {
-    char command[4 * SIZE];
+  cleanup0();
+  exit(2);
+}
 
+
+static void
+cleanup0(void)
+{
+    char command[4 * SIZE];
     snprintf(command, 4 * SIZE, "rm -f -- '%s', '%s'", path_out, path_in);
-    fprintf(stderr, "%s: %s\n", me, command);
-    exit(2);
 }
