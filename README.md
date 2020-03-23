@@ -37,7 +37,7 @@ Download code from
 ```sh
 git clone https://github.com/bianx/fm
 git clone git@github.com:cselab/corpuscles.git co
-git clone https://github.com/slitvinov/alg
+git clone git@gitlab.ethz.ch:mavt-cse/alg
 (cd co/tool && make install)
 (cd co/m4/lib && make install)
 (cd co/lib && make hdr)
