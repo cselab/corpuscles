@@ -10,6 +10,6 @@ awk '
     v = 2
     w = 3
     x = $1; y = $2; z = $3
-    print v*z - w*y, w*x - u*z, u*y - v*x
+    print v*z-w*y, w*x-u*z, u*y-v*x
 }
 '
