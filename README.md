@@ -29,9 +29,9 @@ and Juelicher scheme for the bending model of spontaneous curvature.
 Please see details in [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
 # Install
-Minimal requirements `pkg-config`, `make`, `gcc-c`, `gsl`,
-`gfortran`. Optional requrements , `geomview`, `atest`, `maxima`,
-`pandoc`.
+Add `$HOME/bin` to `PATH'. Minimal requirements `pkg-config`, `make`,
+`gcc-c`, `gsl`, `gfortran`. Optional requrements , `geomview`,
+`atest`, `maxima`, `pandoc`.
 
 Download code from
 ```sh
