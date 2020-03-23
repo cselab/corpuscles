@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <real.h>
+#include <signal.h>
 #include <co/err.h>
 #include <co/he.h>
 #include <co/macro.h>
@@ -14,6 +15,10 @@
 enum { SIZE = 9999 };
 
 static const char *me = "viscosity/pairwise";
+static char path_in[SIZE];
+static char path_out[SIZE];
+static void cleanup(int);
+
 static void
 usg(void)
 {
@@ -28,11 +33,7 @@ main(int argc, char **argv)
     real *x;
     real *y;
     real *z;
-    int fd;
-    long pid;
-    char path_in[SIZE];
-    char path_out[SIZE];
-    char command[SIZE];
+    char command[4 * SIZE];
     const char *cmd;
     FILE *f;
     int i;
@@ -49,7 +50,7 @@ main(int argc, char **argv)
         case 'c':
             argv++;
             if (argv[0] == NULL) {
-                fprintf(stderr, "%s: -c needs an argumen'%s'\n", me);
+                fprintf(stderr, "%s: -c needs an argumen\n", me);
                 exit(2);
             }
             cmd = argv[0];
@@ -72,8 +73,12 @@ main(int argc, char **argv)
         exit(2);
     }
 
-    snprintf(path_in, SIZE, "/tmp/pairwise.in.%ld", getpid());
-    snprintf(path_out, SIZE, "/tmp/pairwise.out.%ld", getpid());
+    snprintf(path_in, SIZE, "/tmp/pairwise.in.%d", getpid());
+    snprintf(path_out, SIZE, "/tmp/pairwise.out.%d", getpid());
+    if (signal(SIGINT, cleanup) == SIG_ERR) {
+        fprintf(stderr, "%s: signal(3) failed", me);
+        exit(2);
+    }
 
     if ((f = fopen(path_in, "w")) == NULL) {
         fprintf(stderr, "%s: fail to open '%s'\n", me, path_in);
@@ -92,12 +97,36 @@ main(int argc, char **argv)
         exit(2);
     }
 
-    snprintf(command, SIZE, "<%s %s >%s", path_in, cmd, path_out);
+    snprintf(command, 4 * SIZE, "<%s %s >%s", path_in, cmd, path_out);
     if (system(command) != 0) {
         fprintf(stderr, "%s: command '%s' failed\n", me, command);
         exit(2);
     }
 
+    if ((f = fopen(path_out, "r")) == NULL) {
+        fprintf(stderr, "%s: fail to open '%s'\n", me, path_out);
+        exit(2);
+    }
+    //raise(SIGINT);
+    // TODO
+    sleep(1000);
+
+    if (fclose(f) != 0) {
+        fprintf(stderr, "%s: fclose(3) failed for '%s'\n", me, path_out);
+        exit(2);
+    }
+
+
     fprintf(stderr, "%s\n", command);
     y_fin(he, x, y, z);
+}
+
+static void
+cleanup(int signo)
+{
+    char command[4 * SIZE];
+
+    snprintf(command, 4 * SIZE, "rm -f -- '%s', '%s'", path_out, path_in);
+    fprintf(stderr, "%s: %s\n", me, command);
+    exit(2);
 }
