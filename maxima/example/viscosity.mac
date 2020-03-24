@@ -6,8 +6,10 @@ ratprint: false $
 (X: 1, Y: 2, Z: 3) $
 assume(sin(u) > 0) $
 
-eq_rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q], 'a*q + 'b*q^3 + 'c*q^5)]$
-eq_sph: ['v = 0, 'F = lambda([q], q)] $
+rbc: ['v = 0, 'a  = 0.54353,  'b  = 0.121435,  'c  = -0.561365, 'F = lambda([q], 'a*q + 'b*q^3 + 'c*q^5)]$
+sph: ['v = 0, 'F = lambda([q], q)] $
+vel: ['x, 'y, 'z];
+rad: ['x, 'y, 'z];
 
 si(e):=trigsimp(e) $ /* simplify */
 cross(a, b):=express(a ~ b)$
@@ -28,3 +30,13 @@ G: matrix([guu, guv], [guv, gvv]) $
 g  : si(determinant(G)) $
 
 n  : si(cross(ru, rv) / sqrt(g))$
+
+v: [vx, vy, vz];
+
+P(i,j):= kron_delta(i, j) - n[i] * n[j];
+v(i,j):= diff(vel[i], rad[j]);
+
+sumi(e)::=buildq([e], sum(e, i, 1, 3));
+sumj(e)::=buildq([e], sum(e, j, 1, 3));
+
+theta: sumj(sumi(P(i, j) * v(i, j)));
