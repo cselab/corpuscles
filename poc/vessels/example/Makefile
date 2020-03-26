@@ -19,7 +19,6 @@ images\
 info\
 main\
 nifti\
-nifti2\
 roi\
 roi2\
 tag\
