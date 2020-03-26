@@ -11,6 +11,7 @@
 
 const char *me = "tag";
 static const real spacing0[] = { 1.6, 1.6, 1.0 };
+
 static void
 usg(void)
 {
@@ -126,7 +127,7 @@ main(int argc, char **argv)
     int x;
     int y;
     int z;
-    long end_offset;    
+    long end_offset;
     long n;
     real *data;
     real origin[3];
@@ -134,12 +135,14 @@ main(int argc, char **argv)
     uint16_t count;
     uint16_t magic;
     uint16_t tag;
+
     uint16_t(*to_int16) (int, int);
     uint16_t type;
     uint32_t entry_count;
     uint32_t offset;
-    uint32_t strip_byte_counts;    
+    uint32_t strip_byte_counts;
     uint32_t strip_offsets;
+
     uint32_t(*to_int32) (int, int, int, int);
     uint32_t value;
 
@@ -173,7 +176,7 @@ main(int argc, char **argv)
             stride[X] = atoi(*++argv);
             stride[Y] = atoi(*++argv);
             stride[Z] = atoi(*++argv);
-            break;	    
+            break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
             exit(1);
@@ -266,38 +269,38 @@ main(int argc, char **argv)
         } else {
             fprintf(stderr, "unknown tag: %d\n", tag);
         }
-	switch (tag) {
-	case ImageWidth:
-	    size[X] = value;
-	    break;
-	case ImageLength:
-	    size[Y] = value;
-	    break;
-	case StripOffsets:
-	    strip_offsets = value;
-	    break;
-	case StripByteCounts:
-	    strip_byte_counts = value;
-	    break;
-	case BitsPerSample:
-	    assert(value == 16);
-	    break;
-	case NewSubfileType:
-	    assert(value == 0);
-	    break;
-	case PhotometricInterpretation:
-	    assert(value == 1);
-	    break;
-	}
+        switch (tag) {
+        case ImageWidth:
+            size[X] = value;
+            break;
+        case ImageLength:
+            size[Y] = value;
+            break;
+        case StripOffsets:
+            strip_offsets = value;
+            break;
+        case StripByteCounts:
+            strip_byte_counts = value;
+            break;
+        case BitsPerSample:
+            assert(value == 16);
+            break;
+        case NewSubfileType:
+            assert(value == 0);
+            break;
+        case PhotometricInterpretation:
+            assert(value == 1);
+            break;
+        }
     }
     end_offset = file_end(f);
     size[Z] = (end_offset - strip_offsets) / strip_byte_counts;
-    roi[X] = (hi[X] - lo[X])/stride[X];
-    roi[Y] = (hi[Y] - lo[Y])/stride[Y];
-    roi[Z] = (hi[Z] - lo[Z])/stride[Z];
+    roi[X] = (hi[X] - lo[X]) / stride[X];
+    roi[Y] = (hi[Y] - lo[Y]) / stride[Y];
+    roi[Z] = (hi[Z] - lo[Z]) / stride[Z];
     spacing[X] = spacing0[X] * stride[X];
     spacing[Y] = spacing0[Y] * stride[Y];
-    spacing[Z] = spacing0[Z] * stride[Z];    
+    spacing[Z] = spacing0[Z] * stride[Z];
     origin[X] = lo[X] * spacing0[X];
     origin[Y] = lo[Y] * spacing0[Y];
     origin[Z] = lo[Z] * spacing0[Z];
@@ -309,26 +312,29 @@ main(int argc, char **argv)
     }
     l = 0;
     for (k = lo[Z]; k < hi[Z]; k++)
-	for (j = 0; j < size[Y]; j++)
-	    for (i = 0; i < size[X]; i++) {
-	       NXT(&x);
-	       NXT(&y);
-               if (lo[X] > i || i >= hi[X])
+        for (j = 0; j < size[Y]; j++)
+            for (i = 0; i < size[X]; i++) {
+                NXT(&x);
+                NXT(&y);
+                if (lo[X] > i || i >= hi[X])
                     continue;
-	       if (lo[Y] > j || j >= hi[Y])
-		   continue;
-	       if (i % stride[X] != 0) continue;
-	       if (j % stride[Y] != 0) continue;
-	       if (k % stride[Z] != 0) continue;	       
-	       data[l++] = to_int16(x, y);
-	    }
+                if (lo[Y] > j || j >= hi[Y])
+                    continue;
+                if (i % stride[X] != 0)
+                    continue;
+                if (j % stride[Y] != 0)
+                    continue;
+                if (k % stride[Z] != 0)
+                    continue;
+                data[l++] = to_int16(x, y);
+            }
     assert(l == n);
     fprintf(stderr, "%d %d %d\n", size[X], size[Y], size[Z]);
     if (vtk_grid_write(stdout, roi, origin, spacing, data) != CO_OK) {
         fprintf(stderr, "%s: vtk_grid_write failed\n", me);
         exit(2);
     }
-    FREE(data);    
+    FREE(data);
     fclose(f);
 }
 
