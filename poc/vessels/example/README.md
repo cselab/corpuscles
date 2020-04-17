@@ -6,3 +6,7 @@
      ./crop -r 974 974 191  1074 1074 192 -o crop.tif /u/a.tif
      ./crop -r 974 1174 191  1074 1274 192 -b -o box.tif /u/a.tif
      ./roi -r 974 1174 170  1074 1274 220  /u/a.tif >box.vtk
+
+# nifti
+
+https://brainder.org/2012/09/23/the-nifti-file-format
