@@ -32,6 +32,7 @@ main(int argc, char **argv)
     uint32 width;
     int x;
     uint16 bitspersample;
+    uint16 samplesperpixel;
     uint16 compression;
     uint16 photometric;
     real *data;
@@ -77,6 +78,10 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: TIFFGetField failed\n", me);
         exit(2);
     };
+    if (TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &samplesperpixel) != 1) {
+        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        exit(2);
+    };
     if (TIFFGetField(tif, TIFFTAG_COMPRESSION, &compression) != 1) {
         fprintf(stderr, "%s: TIFFGetField failed\n", me);
         exit(2);
@@ -85,20 +90,23 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: TIFFGetField failed\n", me);
         exit(2);
     }
-    
     if (compression != 1) {
-        fprintf(stderr, "%s: compression = %d is not supported\n", me, compression);
+        fprintf(stderr, "%s: compression = %d is not supported\n", me,
+                compression);
         exit(2);
     }
     if (bitspersample != 8 * sizeof *inptr) {
-        fprintf(stderr, "%s: bitspersample=%d\n", me, bitspersample);
+        fprintf(stderr, "%s: bitspersample = %d\n", me, bitspersample);
+        exit(2);
+    }
+    if (samplesperpixel != 1) {
+        fprintf(stderr, "%s: bitspersample = %d\n", me, samplesperpixel);
         exit(2);
     }
     if (photometric != 1) {
-        fprintf(stderr, "%s: photometric=%d\n", me, photometric);
+        fprintf(stderr, "%s: photometric = %d\n", me, photometric);
         exit(2);
-    }    
-    
+    }
     size[X] = width;
     size[Y] = length;
     size[Z] = dircount;
@@ -132,6 +140,7 @@ main(int argc, char **argv)
     assert(n == l);
 
     real mi, ma;
+
     mi = ma = data[0];
     for (i = 0; i < n; i++) {
         if (data[i] > ma)
