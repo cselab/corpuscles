@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <tiffio.h>
 #include <real.h>
@@ -6,7 +7,8 @@
 #include <co/macro.h>
 #include <co/memory.h>
 
-const char *me = "vtk";
+static const char *me = "vtk";
+static const real spacing[] = { 1.6, 1.6, 1.0 };
 
 static void
 usg(void)
@@ -24,18 +26,21 @@ main(int argc, char **argv)
     int j;
     int k;
     int l;
-    int length;
+    uint32 length;
     int n;
     int size[3];
-    int width;
-    real *data;
-    unsigned short *inptr;
+    uint32 width;
     int x;
+    uint16 bitspersample;
+    uint16 compression;
+    uint16 photometric;
+    real *data;
     real origin[3];
-    real spacing[3];
     tdata_t buf;
-    tsize_t scanline;
     TIFF *tif;
+    tsize_t scanline;
+    unsigned char *inptr;
+    char *hostcomputer;
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -51,12 +56,10 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: missing an argument\n", me);
         exit(2);
     }
-
     if ((tif = TIFFOpen(argv[0], "r")) == NULL) {
         fprintf(stderr, "%s: fail to open %s\n", me, argv[0]);
         exit(2);
     }
-
     dircount = 0;
     do
         dircount++;
@@ -70,19 +73,41 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: TIFFGetField failed\n", me);
         exit(2);
     };
-    MSG("%d %d %d", dircount, width, length);
+    if (TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bitspersample) != 1) {
+        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        exit(2);
+    };
+    if (TIFFGetField(tif, TIFFTAG_COMPRESSION, &compression) != 1) {
+        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        exit(2);
+    }
+    if (TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photometric) != 1) {
+        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        exit(2);
+    }
+    
+    if (compression != 1) {
+        fprintf(stderr, "%s: compression = %d is not supported\n", me, compression);
+        exit(2);
+    }
+    if (bitspersample != 8 * sizeof *inptr) {
+        fprintf(stderr, "%s: bitspersample=%d\n", me, bitspersample);
+        exit(2);
+    }
+    if (photometric != 1) {
+        fprintf(stderr, "%s: photometric=%d\n", me, photometric);
+        exit(2);
+    }    
+    
     size[X] = width;
     size[Y] = length;
     size[Z] = dircount;
     origin[X] = origin[Y] = origin[Z] = 0;
-    spacing[X] = spacing[Y] = 1.6;
-    spacing[Z] = 1.0;
-
     n = size[X] * size[Y] * size[Z];
     MALLOC(n, &data);
     scanline = TIFFScanlineSize(tif);
-    if ((buf = _TIFFmalloc(scanline)) == NULL) {
-        fprintf(stderr, "%s: _TIFFmalloc failed failed\n", me);
+    if ((buf = _TIFFmalloc(scanline * sizeof *buf)) == NULL) {
+        fprintf(stderr, "%s: _TIFFmalloc failed\n", me);
         exit(2);
     }
     MSG("scanline: %d", scanline);
@@ -104,6 +129,18 @@ main(int argc, char **argv)
             }
         }
     }
+    assert(n == l);
+
+    real mi, ma;
+    mi = ma = data[0];
+    for (i = 0; i < n; i++) {
+        if (data[i] > ma)
+            ma = data[i];
+        if (data[i] < mi)
+            mi = data[i];
+    }
+    MSG("mi, ma: %g %g", mi, ma);
+
     _TIFFfree(buf);
     MSG("size: %d %d %d", size[X], size[Y], size[Z]);
     if (vtk_grid_write(stdout, size, origin, spacing, data) != CO_OK) {
