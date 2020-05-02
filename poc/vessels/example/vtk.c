@@ -21,27 +21,27 @@ int
 main(int argc, char **argv)
 {
     enum { X, Y, Z };
+    char *hostcomputer;
     int dircount;
     int i;
     int j;
     int k;
     int l;
-    uint32 length;
     int n;
     int size[3];
-    uint32 width;
     int x;
-    uint16 bitspersample;
-    uint16 samplesperpixel;
-    uint16 compression;
-    uint16 photometric;
     real *data;
     real origin[3];
     tdata_t buf;
     TIFF *tif;
     tsize_t scanline;
+    uint16 bitspersample;
+    uint16 compression;
+    uint16 photometric;
+    uint16 samplesperpixel;
+    uint32 length;
+    uint32 width;
     unsigned char *inptr;
-    char *hostcomputer;
 
     USED(argc);
     while (*++argv != NULL && argv[0][0] == '-')
@@ -65,29 +65,34 @@ main(int argc, char **argv)
     do
         dircount++;
     while (TIFFReadDirectory(tif));
-
     if (TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &width) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        fprintf(stderr, "%s:%d: TIFFGetField failed\n", __FILE__,
+                __LINE__);
         exit(2);
     };
     if (TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &length) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        fprintf(stderr, "%s:%d: TIFFGetField failed\n", __FILE__,
+                __LINE__);
         exit(2);
     };
     if (TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bitspersample) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        fprintf(stderr, "%s:%d: TIFFGetField failed\n", __FILE__,
+                __LINE__);
         exit(2);
     };
     if (TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &samplesperpixel) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        fprintf(stderr, "%s:%d: TIFFGetField failed\n", __FILE__,
+                __LINE__);
         exit(2);
     };
     if (TIFFGetField(tif, TIFFTAG_COMPRESSION, &compression) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        fprintf(stderr, "%s:%d: TIFFGetField failed\n", __FILE__,
+                __LINE__);
         exit(2);
     }
     if (TIFFGetField(tif, TIFFTAG_PHOTOMETRIC, &photometric) != 1) {
-        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        fprintf(stderr, "%s:%d: TIFFGetField failed\n", __FILE__,
+                __LINE__);
         exit(2);
     }
     if (compression != 1) {
