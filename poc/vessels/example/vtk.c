@@ -9,11 +9,23 @@
 
 static const char *me = "vtk";
 static const real spacing[] = { 1.6, 1.6, 1.0 };
+static const real origin[] = {0, 0, 0};
+static const real delta[][3] = {
+    {-1, -1, -1},
+    {-1, -1,  1},
+    {-1,  1, -1},
+    {-1,  1,  1},
+    {1, -1, -1},
+    {1, -1,  1},
+    {1,  1, -1},
+    {1,  1,  1},
+};
+static const int n_per_cell = sizeof delta / sizeof *delta;
 
 static void
 usg(void)
 {
-    fprintf(stderr, "%s file\n", me);
+    fprintf(stderr, "%s [-v] [-s] file\n", me);
     exit(2);
 }
 
@@ -22,16 +34,25 @@ main(int argc, char **argv)
 {
     enum { X, Y, Z };
     char *hostcomputer;
+    double *ver;
     int dircount;
     int i;
     int j;
     int k;
     int l;
+    int m;
     int n;
     int size[3];
-    int x;
+    int Sparse;
+    int Verbose;
+    long *cells;
+    long cnt;
+    long *types;
     real *data;
     real origin[3];
+    real x;
+    real y;
+    real z;
     tdata_t buf;
     TIFF *tif;
     tsize_t scanline;
@@ -44,10 +65,17 @@ main(int argc, char **argv)
     unsigned char *inptr;
 
     USED(argc);
+    Verbose = Sparse = 0;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
             usg();
+            break;
+        case 'v':
+            Verbose = 1;
+            break;
+        case 's':
+            Sparse = 1;
             break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
@@ -115,7 +143,6 @@ main(int argc, char **argv)
     size[X] = width;
     size[Y] = length;
     size[Z] = dircount;
-    origin[X] = origin[Y] = origin[Z] = 0;
     n = size[X] * size[Y] * size[Z];
     MALLOC(n, &data);
     scanline = TIFFScanlineSize(tif);
@@ -123,7 +150,6 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: _TIFFmalloc failed\n", me);
         exit(2);
     }
-    MSG("scanline: %d", scanline);
     l = 0;
     for (k = 0; k < dircount; k++) {
         if (TIFFSetDirectory(tif, k) != 1) {
@@ -136,31 +162,56 @@ main(int argc, char **argv)
                 exit(2);
             }
             inptr = buf;
-            for (i = 0; i < size[X]; i++) {
-                x = *inptr++;
-                data[l++] = x;
-            }
+            for (i = 0; i < size[X]; i++)
+                data[l++] = *inptr++;
         }
     }
     assert(n == l);
-
-    real mi, ma;
-
-    mi = ma = data[0];
-    for (i = 0; i < n; i++) {
-        if (data[i] > ma)
-            ma = data[i];
-        if (data[i] < mi)
-            mi = data[i];
-    }
-    MSG("mi, ma: %g %g", mi, ma);
-
     _TIFFfree(buf);
-    MSG("size: %d %d %d", size[X], size[Y], size[Z]);
-    if (vtk_grid_write(stdout, size, origin, spacing, data) != CO_OK) {
-        fprintf(stderr, "%s: vtk_grid_write failed\n", me);
-        exit(2);
-    }
+    if (Verbose)
+        fprintf(stderr, "size: %d %d %d\n", size[X], size[Y], size[Z]);
+
+    if (Sparse) {
+        cnt = 0;
+        for (i = 0; i < n; i++) {
+            if (data[i] > 0)
+                cnt++;
+        }
+        if ((ver = malloc(3 * n_per_cell * cnt * sizeof *ver)) == NULL) {
+            fprintf(stderr, "%s:%d: malloc failed\n", __FILE__, __LINE__);
+            exit(2);
+        }
+        if ((cells = malloc(8 * n_per_cell * sizeof *cells)) == NULL) {
+            fprintf(stderr, "%s:%d: malloc failed\n", __FILE__, __LINE__);
+            exit(2);
+        }
+        if ((types = malloc(cnt * sizeof *types)) == NULL) {
+            fprintf(stderr, "%s:%d: malloc failed\n", __FILE__, __LINE__);
+            exit(2);
+        }
+
+        m = 0;
+        for (k = 0; k < size[Z]; k++)
+            for (j = 0; j < size[Y]; j++)
+                for (i = 0; i < size[X]; i++)
+                    if (data[i] > 0) {
+                        x = origin[X] + spacing[X] * (i + 0.5);
+                        y = origin[Y] + spacing[Y] * (j + 0.5);
+                        z = origin[Z] + spacing[Z] * (k + 0.5);
+                        for (l = 0; l < n_per_cell; l++) {
+                            ver[m++] = x + delta[l][X] * spacing[X];
+                            ver[m++] = y + delta[l][Y] * spacing[Y];
+                            ver[m++] = y + delta[l][Z] * spacing[Z];
+                        }
+                    }
+        fprintf(stderr, "%d/%d\n", cnt, n);
+        fprintf(stderr, "%d\n", n_per_cell);
+
+    } else
+        if (vtk_grid_write(stdout, size, origin, spacing, data) != CO_OK) {
+            fprintf(stderr, "%s: vtk_grid_write failed\n", me);
+            exit(2);
+        }
     FREE(data);
     TIFFClose(tif);
 }
