@@ -18,6 +18,7 @@ main(int argc, char **argv)
     int dircount;
     int scanline;
     int width;
+    int bitspersample;
     tdata_t buf;
     TIFF *tif;
 
@@ -55,6 +56,11 @@ main(int argc, char **argv)
         fprintf(stderr, "%s: TIFFGetField failed\n", me);
         exit(2);
     };
+    if (TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &bitspersample) != 1) {
+        fprintf(stderr, "%s: TIFFGetField failed\n", me);
+        exit(2);
+    };
+    fprintf(stderr, "bitspersample: %d\n", bitspersample);
     scanline = TIFFScanlineSize(tif);
     buf = _TIFFmalloc(scanline);
     if ((buf = _TIFFmalloc(scanline)) == NULL) {

@@ -29,12 +29,22 @@ and Juelicher scheme for the bending model of spontaneous curvature.
 Please see details in [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
 # Install
-Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
-requrements `gsl`, `geomview`, `atest`, `maxima`, `pandoc`.
+Add `$HOME/bin` to `PATH'. Minimal requirements `pkg-config`, `make`,
+`gcc-c`, `gsl`, `gfortran`. Optional requrements , `geomview`,
+`atest`, `maxima`, `pandoc`.
 
 Download code from
 ```sh
-$ git@github.com:cselab/corpuscles.git
+git clone https://github.com/bianx/fm
+git clone git@github.com:cselab/corpuscles.git co
+git clone git@gitlab.ethz.ch:mavt-cse/alg
+(cd co/tool && make install)
+(cd co/m4/lib && make install)
+(cd co/lib && make hdr)
+(cd co/pkgconfig && make)
+(cd alg && make)
+(cd fm && make)
+(cd co && make)
 ```
 
 Adjust `conf.mk` if you want to change defaults

@@ -39,7 +39,7 @@ main(int argc, char **argv)
     tdata_t buf;
     TIFF *tif;
     tsize_t scanline;
-    unsigned short *inptr;
+    unsigned char *inptr;
 
     USED(argc);
     Rflag = 0;

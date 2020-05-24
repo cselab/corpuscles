@@ -6,7 +6,7 @@ prog=co.m4
 usg () {
 cat >&2 <<EOF
 $prog [-o output] [M4 OPTION]... [FILE]...
-he m4 wrapper
+corpuscles m4 wrapper
 EOF
     exit
 }
@@ -16,7 +16,7 @@ if test $# -ne 0 && test "$1" = -h; then usg; fi
 include="%include%"
 
 if ! test -d "$include"
-then msg "no '$include' dierecoty"
+then msg "no '$include' directory"
 fi
 
 inc () { expr $1 + 1; }
