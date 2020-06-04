@@ -215,7 +215,6 @@ F(__UNUSED real t, const real * x, const real * y, const real * z,
     array_zero3(nv, ix, iy, iz);
     //subst_apply_initial(subst, he, bi, x, y, z, vx, vy, vz, ix, iy, iz, ux, uy, uz);
     subst_apply(subst, he, bi, x, y, z, vx, vy, vz, ux, uy, uz);
-    MSG("Subst.iiter: %d", subst_niter(subst));
     if (subst_niter(subst) >= iter_max) {
 	MSG("Subst.iiter: %d", subst_niter(subst));
 	off_he_xyz_write(he, x, y, z, "fail.off");
@@ -318,7 +317,7 @@ main(__UNUSED int argc, char **argv)
     fclose(fm);
 
     lin_solve_ini(3, &linsolve);
-    ode3_ini(RK8PD, nv, dt, F, NULL, &ode);
+    ode3_ini(RKF45, nv, dt, F, NULL, &ode);
 
     CALLOC3(nv, &ux, &uy, &uz);
     CALLOC3(nv, &wx, &wy, &wz);

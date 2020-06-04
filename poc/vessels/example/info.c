@@ -18,15 +18,20 @@ main(int argc, char **argv)
     int count;
     int dircount;
     int i;
+    int Verbose;
     TIFF *tif;
     uint32 tag;
     void *data;
 
     USED(argc);
+    Verbose = 0;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
             usg();
+            break;
+        case 'v':
+            Verbose = 1;
             break;
         default:
             fprintf(stderr, "%s: unknown option '%s'\n", me, argv[0]);
@@ -41,13 +46,13 @@ main(int argc, char **argv)
         exit(2);
     }
     dircount = 0;
-    do
+    do {
         dircount++;
-    while (TIFFReadDirectory(tif));
+        if (Verbose)
+            fprintf(stderr, "%s: %d\n", me, dircount);
+    } while (TIFFReadDirectory(tif));
     printf("dircount: %d\n", dircount);
     count = TIFFGetTagListCount(tif);
-    printf("tag count: %d\n", count);
-
     for (i = 0; i < count; i++) {
         tag = TIFFGetTagListEntry(tif, i);
         if (TIFFGetField(tif, tag, &data) != 1) {
