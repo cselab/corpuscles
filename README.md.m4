@@ -4,13 +4,11 @@ r_geomview(dnl
 <<-p 'co.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
 <<img/rbc/sde/Da-0.358.png>>,
 red cell)
-\
-h_changequote(,)
 # Introduction
-Corpuscles is a C library to resolve the elastic energy and force
-of a membrane surface, which is represented by an unstructured triangulated mesh.
-It also simulates transformations between different configurations/shapes
-of a closed membrane by a minimization procedure
+Corpuscles is a C library to resolve the elastic energy and force of a
+membrane surface, which is represented by an unstructured triangulated
+mesh.  It also simulates transformations between different
+configurations/shapes of a closed membrane by a minimization procedure
 under various constraints.
 
 Various components can be switched on/off at will, such as<br>
@@ -21,15 +19,15 @@ D. Thermal fluctuations of lipid membrane.<br>
 E. Constraint of reduced volume of a closed membrane surface.<br>
 F. Constraint of total area of a closed membrane surface.<br>
 G. Constratin of total volume of a closed membrane surface.<br>
-H.  Constratin of area difference between outer- and inner-surface.<br>
+H. Constratin of area difference between outer- and inner-surface.<br>
 
-For different components, variations of model/law can be selected
-such as Helfrich/spontaneous curvature model for bending elasticity
-and Skalak law for strain elasticity.
+For different components, variations of model/law can be selected such
+as Helfrich/spontaneous curvature model for bending elasticity and
+Skalak law for strain elasticity.
 
-For different models/laws, variations of schemes impelemented
-can also be choosen such as Gompper&Kroll scheme
-and Juelicher scheme for the bending model of spontaneous curvature.
+For different models/laws, variations of schemes impelemented can also
+be choosen such as Gompper&Kroll scheme and Juelicher scheme for the
+bending model of spontaneous curvature.
 
 Please see details in r_link(https://cselab.github.io/corpuscles)
 
@@ -230,3 +228,10 @@ make html
 ```
 
 requires [pandoc](http://pandoc.org).
+
+# Publication
+
+Bian, X., Litvinov, S., & Koumoutsakos, P. (2020). Bending models of
+lipid bilayer membranes: Spontaneous curvature and area-difference
+elasticity. Computer Methods in Applied Mechanics and Engineering,
+359, 112758. r_link(https://doi.org/10.1016/j.cma.2019.112758)
