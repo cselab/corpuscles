@@ -101,7 +101,6 @@ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
 <<img/area.png>>,
 mesh colored by triangle area)dnl
-\
 
 # Visualization
 
