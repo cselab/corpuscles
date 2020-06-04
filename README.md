@@ -1,4 +1,4 @@
-![red cell](img/rbc/sde/Da-0.358.png)
+<p align="center"><img src="img/rbc/sde/Da-0.358.png"/></p>
 \
 
 # Introduction
@@ -177,7 +177,7 @@ int main(void) {
 ```sh
 co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 ```
-![mesh colored by triangle area](img/area.png)\
+<p align="center"><img src="img/area.png"/></p>\
 
 # Visualization
 
