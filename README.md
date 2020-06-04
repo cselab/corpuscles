@@ -1,4 +1,6 @@
-![red cell](img/rbc/sde/Da-0.358.png)
+include(m4/util.m4)r_geomview(<<-p 'co.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
+<<img/rbc/sde/Da-0.358.png>>,
+red cell)
 \
 
 # Introduction
@@ -26,40 +28,21 @@ For different models/laws, variations of schemes impelemented
 can also be choosen such as Gompper&Kroll scheme
 and Juelicher scheme for the bending model of spontaneous curvature.
 
-Please see details in [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
+Please see details in r_link(https://cselab.github.io/corpuscles)
 
 # Install
-Add `$HOME/bin` to `PATH'. Minimal requirements `pkg-config`, `make`,
-`gcc-c`, `gsl`, `gfortran`. Optional requrements , `geomview`,
-`atest`, `maxima`, `pandoc`.
+Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
+requrements `gsl`, `geomview`, `atest`, `maxima`, `pandoc`.
 
 Download code from
 ```sh
-git clone https://github.com/bianx/fm
-git clone git@github.com:cselab/corpuscles.git co
-git clone git@gitlab.ethz.ch:mavt-cse/alg
-(cd co/tool && make install)
-(cd co/m4/lib && make install)
-(cd co/lib && make hdr)
-(cd co/pkgconfig && make)
-(cd alg && make)
-(cd fm && make)
-(cd co && make)
+$ git@github.com:cselab/corpuscles.git
 ```
 
 Adjust `conf.mk` if you want to change defaults
 
 ```makefile
-CC = c99
-CFLAGS = -O2 -g -fopenmp
-LDFLAGS = -fopenmp
-PREFIX = $(HOME)
-DATAPATH = $(HOME)/.co
-MAXIMA_HOME = $(HOME)/.maxima
-
-# prefix
-P = co
-```
+r_file(conf.mk)```
 
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
@@ -76,109 +59,33 @@ $ make test
 
 ## hello world
 
-A simple example is in [example/hello](https://github.com/cselab/corpuscles/blob/master/example/hello/)
+A simple example is in r_dir(example/hello)
 
 ```c
 $ cat main.c
-#include <stdio.h>
-
-#include <real.h>
-#include <co/tri.h>
-
-#define FMT CO_REAL_OUT
-
-int main(void) {
-    enum {X, Y, Z};
-    real a[3], b[3], c[3], A;
-
-    a[X] = 0; a[Y] = 0; a[Z] = 0;
-    b[X] = 1; b[Y] = 0; b[Z] = 0;
-    c[X] = 0; c[Y] = 1; c[Z] = 0;
-
-    A = tri_area(a, b, c);
-    printf("Area is " FMT "\n", A);
-}
-
+r_file(example/hello/main.c)
 ```
 
 ```make
 $ cat Makefile
-include ../../conf.mk
-PREC = d
-CO_CFLAGS = `co.conf --cflags $(PREC)`
-CO_LDFLAGS = `co.conf --libs $(PREC)`
-
-main: main.c
-	$(CC) main.c $(CFLAGS) $(CO_CFLAGS) $(LDFLAGS) $(CO_LDFLAGS) -o main
-test:
-install:
-
-.PHONY: clean test install doc
-clean:; rm -f main
-
+r_file(example/hello/Makefile)
 ```
 
 ## read off file
 
-An example is in [example/off/read](https://github.com/cselab/corpuscles/blob/master/example/off/read/)
+An example is in r_dir(example/off/read)
 
 ```c
 $ cat main.c
-#include <stdio.h>
-
-#include <real.h>
-#include <co/array.h>
-#include <co/he.h>
-#include <co/y.h>
-
-#define FMT CO_REAL_OUT
-
-int main(void) {
-    real *x, *y, *z;
-    real hi, lo;
-    He *he;
-    int nv;
-
-    y_inif(stdin, &he, &x, &y, &z);
-    nv = he_nv(he);
-    hi = array_max(nv, x);
-    lo = array_min(nv, x);
-
-    printf("number of vertices is %d\n", nv);
-    printf(FMT " " FMT "\n", hi, lo);
-    y_fin(he, x, y, z);
-}
-
+r_file(example/off/read/main.c)
 ```
 
 ## write off file
 
-Read off, compute area fro every triangle, and output off file with colors ([example/off/write/area](https://github.com/cselab/corpuscles/blob/master/example/off/write/area/))
+Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))
 
 ```c
-#include <stdio.h>
-
-#include <real.h>
-#include <co/area.h>
-#include <co/err.h>
-#include <co/off.h>
-#include <co/he.h>
-#include <co/memory.h>
-#include <co/y.h>
-
-int main(void) {
-    int nt;
-    real *x, *y, *z, *a;
-    He *he;
-    y_inif(stdin, &he, &x, &y, &z);
-    nt = he_nt(he);
-    CALLOC(nt, &a);
-    he_area_tri(he, x, y, z, a);
-    boff_tri_fwrite(he, x, y, z, a, stdout);
-    y_fin(he, x, y, z);
-    FREE(a);
-}
-
+r_file(example/off/write/area/main.c)
 ```
 ```sh
 ./main < $(co.path)/rbc/laplace/0.off > out.off
@@ -187,7 +94,9 @@ int main(void) {
 ```sh
 co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 ```
-![mesh colored by triangle area](img/area.png)\
+r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
+<<img/area.png>>,
+mesh colored by triangle area)\
 
 # Visualization
 
@@ -195,149 +104,114 @@ We use a wrapper to [geomview](http://geomview.org).
 
 ```sh
 $ co.geomview -h
-co.geomview [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..
-he geomview wrapper
--t x y z      translation
--r x y z      rotation in degree
--f zoom       field of view (default is 40)
--a APPEARANCE load appearance from a file
--o FILE       write FILE and exit
--O            write all PPM files and exit
--OO           write all oogl files and exit
--format	ppmscreen|ppm|ps|ppmosmesa|ppmosglx
--p command    process every off file by running 'command' < IN.off > OUT.off
--n none|each|all|keep normalization status (see geomview manual)
--c command    run command on every file and write output to stderr, %f is replaced by a file name
--i command    run command on every image, %i replaced by input; %o -- by output; %b --- by basename
-
-Keys:
-    q: quit
-    s: save snap.ppm
-    S: save every snapshot
-    p: panel
-    j/k: switch between off files
-    J: dump file name
-    [SPC]: dump orientation and field of view
-
-Environment variables:
-WX, WY: resolution of the snapshot (default: 800x600)
-BACKGROUND: default ('1 1 1')
-
-Examples:
-co.geomview -t 0.25 0.25 0     data/rbc.off
-co.geomview -a data/appearance data/rbc.off
-co.geomview -o snap.ppm        data/rbc.off
-co.geomview                    data/rbc.off data/sph.off
-co.geomview -p co.orient       data/rbc.off data/sph.off
-co.geomview -c off.volume      data/rbc.off data/sph.off
-
+r_cmd(<<co.geomview -h>>)
 ```
 
 # Lib
 
 ## Floating point precision
 
-[prec/s/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/s/real.h), [prec/d/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/d/real.h), [prec/l/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/l/real.h)
+r_header(prec/s/real.h), r_header(prec/d/real.h), r_header(prec/l/real.h)
 :   single, double, long double
 
 ## Math
 
-[vec.h](https://github.com/cselab/corpuscles/blob/master/lib/co/vec.h), [edg.h](https://github.com/cselab/corpuscles/blob/master/lib/co/edg.h), [tri.h](https://github.com/cselab/corpuscles/blob/master/lib/co/tri.h), [dih.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dih.h), [ten.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ten.h)
+r_header(vec.h), r_header(edg.h), r_header(tri.h), r_header(dih.h), r_header(ten.h)
 : vector, edges, triangels, dihidrals, tensors
 
-[dvec.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dvec.h), [dedg.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dedg.h), [dtri.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dtri.h), [ddih.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ddih.h)
+r_header(dvec.h), r_header(dedg.h), r_header(dtri.h), r_header(ddih.h)
 : derivatives of vector edges, triagels, dihidrals
 
-[ring.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ring.h)
+r_header(ring.h)
 : operation on the first ring of neighbors
 
 ## Utility
 
-[array.h](https://github.com/cselab/corpuscles/blob/master/lib/co/array.h)
+r_header(array.h)
 :  array related functions
 
-[argv.h](https://github.com/cselab/corpuscles/blob/master/lib/co/argv.h)
+r_header(argv.h)
 :  read from `argv` and shift
 
-[err.h](https://github.com/cselab/corpuscles/blob/master/lib/co/err.h)
+r_header(err.h)
 :   error handling
 
-[endian.h](https://github.com/cselab/corpuscles/blob/master/lib/co/endian.h)
+r_header(endian.h)
 :   deal with endianess
 
-[macro.h](https://github.com/cselab/corpuscles/blob/master/lib/co/macro.h)
+r_header(macro.h)
 :   macros
 
-[sum.h](https://github.com/cselab/corpuscles/blob/master/lib/co/sum.h)
+r_header(sum.h)
 :   [Kahan summation](en.wikipedia.org/wiki/Kahan_summation_algorithm)
 
-[memory.h](https://github.com/cselab/corpuscles/blob/master/lib/co/memory.h)
+r_header(memory.h)
 :   memory related
 
-[util.h](https://github.com/cselab/corpuscles/blob/master/lib/co/util.h)
+r_header(util.h)
 :   uncategorazed
 
 ## Surface properties
 
-[area.h](https://github.com/cselab/corpuscles/blob/master/lib/co/area.h)
+r_header(area.h)
 :   area
 
-[volume.h](https://github.com/cselab/corpuscles/blob/master/lib/co/volume.h)
+r_header(volume.h)
 :   volume
 
-[laplace.h](https://github.com/cselab/corpuscles/blob/master/lib/co/laplace.h)
+r_header(laplace.h)
 :   Laplace operator of coordinates
 
-[normal.h](https://github.com/cselab/corpuscles/blob/master/lib/co/normal.h)
+r_header(normal.h)
 :   normal
 
 ## "Forces"
 
-[bending.h](https://github.com/cselab/corpuscles/blob/master/lib/co/bending.h)
+r_header(bending.h)
 :   generic interface to several bending forces
 
-[forces.h](https://github.com/cselab/corpuscles/blob/master/lib/co/forces.h)
+r_header(forces.h)
 :   generic interface to forces
 
-[stretch.h](https://github.com/cselab/corpuscles/blob/master/lib/co/stretch.h)
+r_header(stretch.h)
 :   stretching force
 
 ## Surface transformation
 
-[equiangulate.h](https://github.com/cselab/corpuscles/blob/master/lib/co/equiangulate.h)
+r_header(equiangulate.h)
 :   equlatirate triangles
 
-[orient.h](https://github.com/cselab/corpuscles/blob/master/lib/co/orient.h)
+r_header(orient.h)
 :   orient surface in a direction of eigen values of momentum tensor
 
-[restore.h](https://github.com/cselab/corpuscles/blob/master/lib/co/restore.h)
+r_header(restore.h)
 :  restore a volume of the surface
 
-[transformation.h](https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h)
+r_header(transformation.h)
 :  translate, rotate, and and scale surface
 
 ## Half-edg related
 
-[read.h](https://github.com/cselab/corpuscles/blob/master/lib/co/read.h)
+r_header(read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize half-edg
 
-[he.h](https://github.com/cselab/corpuscles/blob/master/lib/co/he.h)
+r_header(he.h)
 :   half edg data structure (provides half-edg API)
 
-[hash.h](https://github.com/cselab/corpuscles/blob/master/lib/co/hash.h)
+r_header(hash.h)
 :   stores an integer for a pair of integers
 
 ## IO
 
-[off.h](https://github.com/cselab/corpuscles/blob/master/lib/co/off.h), [punto.h](https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h), [vtk.h](https://github.com/cselab/corpuscles/blob/master/lib/co/vtk.h), [gts.h](https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h), [ply.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h), [obj.h](https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h)
+r_header(off.h), r_header(punto.h), r_header(vtk.h), r_header(gts.h), r_header(ply.h), r_header(obj.h)
 :   read/write off files, punto, vtk, gts, ply, obj files
 
 ## X and Y
 
-[x.h](https://github.com/cselab/corpuscles/blob/master/lib/co/x.h)
+r_header(x.h)
 :   simple interface for one surface
 
-[y.h](https://github.com/cselab/corpuscles/blob/master/lib/co/y.h)
+r_header(y.h)
 :   not so simple interface
 
 # Documentation
