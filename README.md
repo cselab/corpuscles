@@ -1,7 +1,6 @@
 <p align="center"><img src="img/rbc/sde/Da-0.358.png"/></p>
 
 # Introduction
-
 Corpuscles is a C library to resolve the elastic energy and force of a
 membrane surface, which is represented by an unstructured triangulated
 mesh.  It also simulates transformations between different
@@ -178,8 +177,8 @@ int main(void) {
 co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 ```
 <p align="center"><img src="img/area.png"/></p>
-# Visualization
 
+# Visualization
 We use a wrapper to [geomview](http://geomview.org).
 
 ```sh
