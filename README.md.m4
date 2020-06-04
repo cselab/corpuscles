@@ -1,5 +1,5 @@
 include(`co.m4')dnl
-include(`m4/util.m4')dnl
+h_include(`m4/util.m4')dnl
 r_geomview(dnl
 <<-p 'co.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
 <<img/rbc/sde/Da-0.358.png>>,
