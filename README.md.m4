@@ -4,7 +4,9 @@ r_geomview(dnl
 <<-p 'co.q al img/rbc/ref.off <' -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off>>,
 <<img/rbc/sde/Da-0.358.png>>,
 red cell)
+
 # Introduction
+
 Corpuscles is a C library to resolve the elastic energy and force of a
 membrane surface, which is represented by an unstructured triangulated
 mesh.  It also simulates transformations between different
