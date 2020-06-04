@@ -10,15 +10,15 @@ It also simulates transformations between different configurations/shapes
 of a closed membrane by a minimization procedure
 under various constraints.
 
-Various components can be switched on/off at will, such as
-A. Bending elasticity of lipip bilayer.
-B. Strain (both shear and strecth) elasticity of cytoskeleton.
-C. Viscosity of lipid membrane.
-D. Thermal fluctuations of lipid membrane.
-E. Constraint of reduced volume of a closed membrane surface.
-F. Constraint of total area of a closed membrane surface.
-G. Constratin of total volume of a closed membrane surface.
-H.  Constratin of area difference between outer- and inner-surface.
+Various components can be switched on/off at will, such as<br>
+A. Bending elasticity of lipip bilayer.<br>
+B. Strain (both shear and strecth) elasticity of cytoskeleton.<br>
+C. Viscosity of lipid membrane.<br>
+D. Thermal fluctuations of lipid membrane.<br>
+E. Constraint of reduced volume of a closed membrane surface.<br>
+F. Constraint of total area of a closed membrane surface.<br>
+G. Constratin of total volume of a closed membrane surface.<br>
+H.  Constratin of area difference between outer- and inner-surface.<br>
 
 For different components, variations of model/law can be selected
 such as Helfrich/spontaneous curvature model for bending elasticity
