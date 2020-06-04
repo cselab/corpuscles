@@ -9,11 +9,13 @@ enum {
     TAG_ASCII,
     TAG_LONG,
     TAG_SHORT,
+    TAG_RATIONAL,
     TAG_SHORT_OR_LONG,
 };
 enum {
     TAG_ONE,
     TAG_TWO,
+    TAG_SIX,
     TAG_MANY,
 };
 !

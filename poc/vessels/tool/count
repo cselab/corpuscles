@@ -15,7 +15,7 @@ BEGIN {
     else if (count == 2)
         count = "TAG_TWO"
     else if (count == 6)
-        count "TAG_SIX"
+        count = "TAG_SIX"
     else
         err("unknown count %s for %s", count, tag)
     printf "    %s,\n", count
