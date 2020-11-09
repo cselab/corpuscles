@@ -1,4 +1,5 @@
-set -eu
+. co.util
+
 pi=3.141592653589793115997964
 A=12.5663706144
 a3=-2
@@ -11,14 +12,14 @@ Da1=0.143
 Kb=1.0
 mub=139.260575205
 
-alpha=$(echo $pi | gawk '{print 2.0/$1}')
-Kad=$(echo $Kb $alpha | gawk '{print $1*$2}')
-Ka=$(echo $mub | awk '{print $1*2}')
+alpha=$(ae 2.0/$pi)
+Kad=$(ae $Kb*$alpha)
+Ka=$(ae 2*$mub)
 
-Kad=$(echo $Kb $alpha | gawk '{print $1*$2}')
-Da0=$(echo $Da1 | awk '{print $1/100}')
-DA0=$(echo $Kb $C0 $Kad $Da0 $D $pi $A | awk '{print $4*$7}')
-DA0D=$(echo $DA0 $D | awk '{print $1/$2}')
+Kad=$(ae $Kb*$alpha)
+Da0=$(ae $Da1/100)
+DA0=$(ae $Da0*$A)
+DA0D=$(ae $DA0/$D)
 
 co.eng juelicher_xin $Kb $C0 $Kad $DA0D < ini.off
 co.eng strain ref.off lim $Ka $mub $a3 $a4 $b1 $b2 < ini.off
