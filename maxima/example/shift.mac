@@ -1,0 +1,9 @@
+load("co/vec.mac") $
+load("co/edg.mac") $
+load("co/tri.mac") $
+
+a: [0, 0, 0];
+b: [1, 0, 0];
+c: [0, 1, 0];
+tri_beta(a, b, c, a, b, c);
+tri_beta(a, b, c, c, a, b);

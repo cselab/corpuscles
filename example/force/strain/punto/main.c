@@ -53,9 +53,6 @@ main0()
 
     puts("x y z fx fy fz eng area area0 al be");
     punto_fwrite(nv, sc, stdout);
-
-    MSG(FMT " " FMT " " FMT, e, ea, eb);
-
     he_f_strain_fin(strain);
 
     return CO_OK;

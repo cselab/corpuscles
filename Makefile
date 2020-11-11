@@ -50,7 +50,7 @@ clean: dir
 lib: bin/m4 m4/lib
 
 include make/dir.mk
-TAGS:; etags `find lib -name '*.c' -or -name '*.h' -or -name '*.m4'`
+TAGS:; etags `find lib -name '*.c' -or -name '*.h' -or -name '*.m4' -or -name '*.inc'`
 
 README.md: m4/util.m4
 html: README.md

@@ -1,7 +1,8 @@
 import numpy as np
 import trimesh
 import argparse
-
+import sys
+import math
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
@@ -13,11 +14,11 @@ def angle_between(vec1, vec2):
     """
     angles = np.zeros(len(vec1))
     for i, v1, v2 in zip(range(len(vec1)), vec1, vec2):
-        v1_u = unit_vector(v1)
-        v2_u = unit_vector(v2)
-        angles[i] = np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+        n = np.cross(v1, v2)
+        y = np.sqrt(np.dot(n, n))
+        x = np.dot(v1, v2)
+        angles[i] = math.atan2(y, x)
     return angles
-
 
 def compute_magnitude(vec):
     mag = np.zeros(len(vec))
@@ -25,6 +26,18 @@ def compute_magnitude(vec):
         mag[i] = np.sqrt( v.dot(v) )
     return mag
 
+def compute_shear(b1, b2, ai, bi):
+    ai2 = ai  * ai
+    ai3 = ai2 * ai
+    ai4 = ai2 * ai2
+    bi2 = bi  * bi
+    return bi  + b1*ai*bi + b2*bi2
+
+def compute_area(a3, a4, ai):
+    ai2 = ai  * ai
+    ai3 = ai2 * ai
+    ai4 = ai2 * ai2
+    return 0.5*(ai2 + a3*ai3   + a4*ai4)
 
 def compute_invariants(DAi, DA0i, tri, tri0):
 
@@ -66,57 +79,49 @@ def compute_invariants(DAi, DA0i, tri, tri0):
 
     return alpha, beta
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--files',  type=str, required=True, nargs='+', help="rbc mesh files")
+    parser.add_argument('--ref',    type=str, required=True, help="stress-free mesh file")
+    parser.add_argument('--mu',     type=float, default=2.5e-6, help="shear modulus")
+    parser.add_argument('--b1',     type=float, default=0.7,    help="non-linear shear coefficients")
+    parser.add_argument('--b2',     type=float, default=0.75,   help="non-linear shear coefficients")
+    parser.add_argument('--ka',     type=float, default=5.0e-6, help="stretch modulus")
+    parser.add_argument('--a3',     type=float, default=-2,     help="non-linear stretch coefficients")
+    parser.add_argument('--a4',     type=float, default=8,      help="non-linear stretch coefficients")
+    args = parser.parse_args()
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--files',  type=str, required=True, nargs='+', help="rbc mesh files")
-parser.add_argument('--ref',    type=str, required=True, help="stress-free mesh file")
-parser.add_argument('--L_UNIT', type=float, required=True, help="length unit, m")
-
-parser.add_argument('--mu',     type=float, default=2.5e-6, help="shear modulus")
-parser.add_argument('--b1',     type=float, default=0.7,    help="non-linear shear coefficients")
-parser.add_argument('--b2',     type=float, default=0.75,   help="non-linear shear coefficients")
-parser.add_argument('--ka',     type=float, default=5.0e-6, help="stretch modulus")
-parser.add_argument('--a3',     type=float, default=-2,     help="non-linear stretch coefficients")
-parser.add_argument('--a4',     type=float, default=8,      help="non-linear stretch coefficients")
-args = parser.parse_args()
-
-
-ref = trimesh.load(args.ref, process=False)
-triangles_ref = ref.triangles
-DA0i = trimesh.triangles.area(triangles=triangles_ref)
-Area_ref = ref.area
-RA = np.sqrt(Area_ref/4/np.pi)
-
-Nv = len(ref.vertices)
-triangle_list = ref.vertex_faces  # face indices that correspond to each vertex
+    ref = trimesh.load(args.ref, process=False)
+    triangles_ref = ref.triangles
+    DA0i = trimesh.triangles.area(triangles=triangles_ref)
+    Area_ref = ref.area
+    Nv = len(ref.vertices)
+    triangle_list = ref.vertex_faces  # face indices that correspond to each vertex
 
 
 
-for i, file_ in enumerate(args.files):
-    print(file_)
+    for i, file_ in enumerate(args.files):
+        # Mesh info:
+        mesh = trimesh.load(file_, process=False)
+        triangles_mesh = mesh.triangles
+        DAi = trimesh.triangles.area(triangles=triangles_mesh)
+        Area_mesh = mesh.area
 
-    # Mesh info:
-    mesh = trimesh.load(file_, process=False)
-    triangles_mesh = mesh.triangles
-    DAi = trimesh.triangles.area(triangles=triangles_mesh)
-    Area_mesh = mesh.area
+        # strain energy
+        ai, bi = compute_invariants(DAi, DA0i, triangles_mesh, triangles_ref)
 
-    assert(Area_ref<=1.005*Area_mesh and Area_ref>=0.995*Area_mesh)
+        ai2 = ai  * ai
+        ai3 = ai2 * ai
+        ai4 = ai2 * ai2
+        bi2 = bi  * bi
 
-
-    # strain energy
-    ai, bi = compute_invariants(DAi, DA0i, triangles_mesh, triangles_ref)
-
-    ai2 = ai  * ai
-    ai3 = ai2 * ai
-    ai4 = ai2 * ai2
-    bi2 = bi  * bi
-
-    Estretch = (args.L_UNIT**2) * np.sum( DA0i * ( 0.5*args.ka * (ai2 + args.a3*ai3   + args.a4*ai4) ))   # sum over all triangles
-    Eshear   = (args.L_UNIT**2) * np.sum( DA0i * (     args.mu * (bi  + args.b1*ai*bi + args.b2*bi2) ))
-    Ems      = Estretch + Eshear
-
-    print(Eshear, Estretch, Ems)
-
-
+        Estretch = DA0i * ( 0.5*args.ka * (ai2 + args.a3*ai3   + args.a4*ai4) )   # sum over all triangles
+        Eshear   = DA0i * (     args.mu * (bi  + args.b1*ai*bi + args.b2*bi2) )
+        E = np.zeros(Nv)
+        for k, (t0, t1, t2) in enumerate(mesh.faces):
+            E0 = (Eshear[k] + Estretch[k])/3.0
+            E[t0] += E0
+            E[t1] += E0
+            E[t2] += E0
+        np.savetxt(sys.stdout, E, fmt = "%g")
