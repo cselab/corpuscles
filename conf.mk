@@ -2,7 +2,7 @@ CC = gcc
 FC = gfortran
 
 FCFLAGS = -Ofast  -g
-#FXFLAGS =  -fallow-argument-mismatch
+FXFLAGS =  -fallow-argument-mismatch
 
 CFLAGS = -Ofast  -g
 LDFLAGS =
