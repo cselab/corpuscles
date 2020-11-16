@@ -1,17 +1,17 @@
 .POSIX:
 M = main
 PREC = s
-ALG_CFLAGS = `alg.conf --cflags $(PREC)`
-ALG_LDFLAGS = `alg.conf --libs $(PREC)`
+CO_CFLAGS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 LINK = $(CC)
 
 all: $M
 .o:
-	$(LINK) $< $(LDFLAGS) $(ALG_LDFLAGS) -o $@
+	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
 
 .c.o:
-	$(CC) $(CFLAGS) $(ALG_CFLAGS) $< -c -o $@
+	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
 
 .c:
 %: %.c

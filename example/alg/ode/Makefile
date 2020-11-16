@@ -1,14 +1,14 @@
 M = main
 PREC = d
-ALG_CFLGAS = `alg.conf --cflags $(PREC)`
-ALG_LDFLAGS = `alg.conf --libs $(PREC)`
+CO_CFLGAS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 LINK = $(CC)
 all:  $M
 .c.o:
-	$(CC) $(CFLAGS) $(ALG_CFLGAS) $< -c -o $@
+	$(CC) $(CFLAGS) $(CO_CFLGAS) $< -c -o $@
 .o:
-	$(LINK) $<$(LDFLAGS)  $(ALG_LDFLAGS) -o $@
+	$(LINK) $<$(LDFLAGS)  $(CO_LDFLAGS) -o $@
 .c:
 %: %.c
 

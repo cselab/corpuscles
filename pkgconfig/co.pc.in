@@ -5,6 +5,7 @@ includedir=${prefix}/include
 
 Name: co_@PREC@
 Version: 0.1
+Requires: gsl
 Description: corpuscles libraries
 Libs: -L${libdir} -lco_@PREC@ -lm
 Cflags: -I${includedir} -I${includedir}/co/prec/@PREC@

@@ -1,10 +1,10 @@
 M = main
 PREC = d
-ALG_CFLGAS = `alg.conf --cflags $(PREC)`
-ALG_LDFLAGS = `alg.conf --libs $(PREC)`
+CO_CFLGAS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
-$M: $M.o; $(CC) $< $(LDFLAGS) $(ALG_LDFLAGS) -o $@
-$M.o: $M.c; $(CC) $(CFLGAS) $(ALG_CFLGAS) $< -c -o $@
+$M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
+$M.o: $M.c; $(CC) $(CFLGAS) $(CO_CFLGAS) $< -c -o $@
 
 test: $M; atest test/*
 install:
