@@ -10,7 +10,7 @@
 #include "co/ten.h"
 #include "co/tri.h"
 #include "co/vec.h"
-#include <alg/eig.h>
+#include "alg/eig.h"
 
 #define T    Eigen
 

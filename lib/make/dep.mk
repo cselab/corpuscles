@@ -1,3 +1,20 @@
+alg/linsolve.o:\
+co/err.h\
+co/macro.h\
+co/matrix.h\
+co/memory.h\
+co/real.h\
+alg/linsolve.h\
+
+alg/special.o:\
+alg/special.h\
+
+alg/x.o:\
+co/err.h\
+co/macro.h\
+alg/min.h\
+alg/x.h\
+
 endian.o:\
 
 err.o:\
@@ -70,11 +87,74 @@ co/err.h\
 co/util.h\
 inc/def.h\
 
+alg/eig.s.o:\
+co/prec/s/real.h\
+co/err.h\
+alg/eig.h\
+
+alg/integration2.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/integration.h\
+alg/integration2.h\
+
+alg/integration.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/integration.h\
+
+alg/min.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+co/real.h\
+co/macro.h\
+alg/min.h\
+
+alg/ode.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/ode.h\
+
+alg/pinv.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+alg/pinv.h\
+
+alg/rng.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+alg/rng.h\
+
+alg/root.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+alg/root.h\
+
+alg/spline.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+co/real.h\
+alg/spline.h\
+
 arc.s.o:\
 co/prec/s/real.h\
 co/memory.h\
 co/err.h\
 co/arc.h\
+alg/root.h\
+alg/integration.h\
 
 area2.s.o:\
 co/prec/s/real.h\
@@ -161,6 +241,7 @@ co/bi/cortez.h\
 
 bi/cortez_fm.s.o:\
 co/prec/s/real.h\
+fm/fm.h\
 co/area.h\
 co/array.h\
 co/err.h\
@@ -413,6 +494,7 @@ co/sum.h\
 co/ten.h\
 co/tri.h\
 co/vec.h\
+alg/eig.h\
 
 equiangulate.s.o:\
 co/prec/s/real.h\
@@ -753,6 +835,13 @@ co/memory.h\
 co/tri.h\
 co/vec.h\
 
+fm/cubtri_c.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+co/tri.h\
+fm/cubtri.h\
+
 meyer.s.o:\
 co/prec/s/real.h\
 co/ddih.h\
@@ -779,6 +868,20 @@ co/sum.h\
 co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
+
+fm/fm.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+fm/fm.h\
+fm/stfmm3.h\
+
+fm/fmm3.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/memory.h\
+fm/fm.h\
+fm/stfmm3.h\
 
 force2.s.o:\
 co/prec/s/real.h\
@@ -915,6 +1018,8 @@ co/generation.h\
 
 green/3wall2.s.o:\
 co/prec/s/real.h\
+alg/integration.h\
+alg/special.h\
 co/err.h\
 co/green/3wall2.h\
 co/he.h\
@@ -966,6 +1071,7 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/circle_line.h\
+alg/integration.h\
 
 integral/quad.s.o:\
 co/prec/s/real.h\
@@ -989,9 +1095,12 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/sph_plane.h\
+alg/integration.h\
 
 integral/tri.s.o:\
 co/prec/s/real.h\
+alg/integration.h\
+alg/integration2.h\
 co/err.h\
 co/macro.h\
 co/memory.h\
@@ -1115,6 +1224,7 @@ co/obj.h\
 
 ode/2.s.o:\
 co/prec/s/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/force2.h\
@@ -1125,6 +1235,7 @@ co/skel.h\
 
 ode/2v.s.o:\
 co/prec/s/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -1134,6 +1245,7 @@ co/skel.h\
 
 ode/3.s.o:\
 co/prec/s/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -1143,6 +1255,7 @@ co/skel.h\
 
 ode/3v.s.o:\
 co/prec/s/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -1171,6 +1284,7 @@ co/vec.h\
 co/sum.h\
 co/ten.h\
 co/orient.h\
+alg/eig.h\
 
 oseen/2.s.o:\
 co/prec/s/real.h\
@@ -1265,6 +1379,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/cons.h\
+alg/spline.h\
 
 pre/density.s.o:\
 co/prec/s/real.h\
@@ -1276,6 +1391,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/density.h\
+alg/spline.h\
 
 predicate.s.o:\
 co/prec/s/real.h\
@@ -1293,6 +1409,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/visc.h\
+alg/spline.h\
 
 punto.s.o:\
 co/prec/s/real.h\
@@ -1337,6 +1454,7 @@ co/ring.h\
 co/tri.h\
 co/vec.h\
 inc/def.h\
+alg/pinv.h\
 
 segement.s.o:\
 co/prec/s/real.h\
@@ -1497,7 +1615,9 @@ viscosity/pairwise.s.o:\
 co/prec/s/real.h\
 co/argv.h\
 co/memory.h\
+co/macro.h\
 co/err.h\
+co/vec.h\
 co/he.h\
 co/viscosity/pairwise.h\
 
@@ -1538,11 +1658,74 @@ co/vec.h\
 co/off.h\
 co/y.h\
 
+alg/eig.d.o:\
+co/prec/d/real.h\
+co/err.h\
+alg/eig.h\
+
+alg/integration2.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/integration.h\
+alg/integration2.h\
+
+alg/integration.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/integration.h\
+
+alg/min.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+co/real.h\
+co/macro.h\
+alg/min.h\
+
+alg/ode.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/ode.h\
+
+alg/pinv.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+alg/pinv.h\
+
+alg/rng.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+alg/rng.h\
+
+alg/root.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+alg/root.h\
+
+alg/spline.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+co/real.h\
+alg/spline.h\
+
 arc.d.o:\
 co/prec/d/real.h\
 co/memory.h\
 co/err.h\
 co/arc.h\
+alg/root.h\
+alg/integration.h\
 
 area2.d.o:\
 co/prec/d/real.h\
@@ -1629,6 +1812,7 @@ co/bi/cortez.h\
 
 bi/cortez_fm.d.o:\
 co/prec/d/real.h\
+fm/fm.h\
 co/area.h\
 co/array.h\
 co/err.h\
@@ -1881,6 +2065,7 @@ co/sum.h\
 co/ten.h\
 co/tri.h\
 co/vec.h\
+alg/eig.h\
 
 equiangulate.d.o:\
 co/prec/d/real.h\
@@ -2221,6 +2406,13 @@ co/memory.h\
 co/tri.h\
 co/vec.h\
 
+fm/cubtri_c.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+co/tri.h\
+fm/cubtri.h\
+
 meyer.d.o:\
 co/prec/d/real.h\
 co/ddih.h\
@@ -2247,6 +2439,20 @@ co/sum.h\
 co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
+
+fm/fm.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+fm/fm.h\
+fm/stfmm3.h\
+
+fm/fmm3.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/memory.h\
+fm/fm.h\
+fm/stfmm3.h\
 
 force2.d.o:\
 co/prec/d/real.h\
@@ -2383,6 +2589,8 @@ co/generation.h\
 
 green/3wall2.d.o:\
 co/prec/d/real.h\
+alg/integration.h\
+alg/special.h\
 co/err.h\
 co/green/3wall2.h\
 co/he.h\
@@ -2434,6 +2642,7 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/circle_line.h\
+alg/integration.h\
 
 integral/quad.d.o:\
 co/prec/d/real.h\
@@ -2457,9 +2666,12 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/sph_plane.h\
+alg/integration.h\
 
 integral/tri.d.o:\
 co/prec/d/real.h\
+alg/integration.h\
+alg/integration2.h\
 co/err.h\
 co/macro.h\
 co/memory.h\
@@ -2583,6 +2795,7 @@ co/obj.h\
 
 ode/2.d.o:\
 co/prec/d/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/force2.h\
@@ -2593,6 +2806,7 @@ co/skel.h\
 
 ode/2v.d.o:\
 co/prec/d/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -2602,6 +2816,7 @@ co/skel.h\
 
 ode/3.d.o:\
 co/prec/d/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -2611,6 +2826,7 @@ co/skel.h\
 
 ode/3v.d.o:\
 co/prec/d/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -2639,6 +2855,7 @@ co/vec.h\
 co/sum.h\
 co/ten.h\
 co/orient.h\
+alg/eig.h\
 
 oseen/2.d.o:\
 co/prec/d/real.h\
@@ -2733,6 +2950,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/cons.h\
+alg/spline.h\
 
 pre/density.d.o:\
 co/prec/d/real.h\
@@ -2744,6 +2962,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/density.h\
+alg/spline.h\
 
 predicate.d.o:\
 co/prec/d/real.h\
@@ -2761,6 +2980,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/visc.h\
+alg/spline.h\
 
 punto.d.o:\
 co/prec/d/real.h\
@@ -2805,6 +3025,7 @@ co/ring.h\
 co/tri.h\
 co/vec.h\
 inc/def.h\
+alg/pinv.h\
 
 segement.d.o:\
 co/prec/d/real.h\
@@ -2965,7 +3186,9 @@ viscosity/pairwise.d.o:\
 co/prec/d/real.h\
 co/argv.h\
 co/memory.h\
+co/macro.h\
 co/err.h\
+co/vec.h\
 co/he.h\
 co/viscosity/pairwise.h\
 
@@ -3006,11 +3229,74 @@ co/vec.h\
 co/off.h\
 co/y.h\
 
+alg/eig.l.o:\
+co/prec/l/real.h\
+co/err.h\
+alg/eig.h\
+
+alg/integration2.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/integration.h\
+alg/integration2.h\
+
+alg/integration.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/integration.h\
+
+alg/min.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+co/real.h\
+co/macro.h\
+alg/min.h\
+
+alg/ode.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+co/macro.h\
+alg/ode.h\
+
+alg/pinv.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+alg/pinv.h\
+
+alg/rng.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+alg/rng.h\
+
+alg/root.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/macro.h\
+co/memory.h\
+alg/root.h\
+
+alg/spline.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+co/real.h\
+alg/spline.h\
+
 arc.l.o:\
 co/prec/l/real.h\
 co/memory.h\
 co/err.h\
 co/arc.h\
+alg/root.h\
+alg/integration.h\
 
 area2.l.o:\
 co/prec/l/real.h\
@@ -3097,6 +3383,7 @@ co/bi/cortez.h\
 
 bi/cortez_fm.l.o:\
 co/prec/l/real.h\
+fm/fm.h\
 co/area.h\
 co/array.h\
 co/err.h\
@@ -3349,6 +3636,7 @@ co/sum.h\
 co/ten.h\
 co/tri.h\
 co/vec.h\
+alg/eig.h\
 
 equiangulate.l.o:\
 co/prec/l/real.h\
@@ -3689,6 +3977,13 @@ co/memory.h\
 co/tri.h\
 co/vec.h\
 
+fm/cubtri_c.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+co/tri.h\
+fm/cubtri.h\
+
 meyer.l.o:\
 co/prec/l/real.h\
 co/ddih.h\
@@ -3715,6 +4010,20 @@ co/sum.h\
 co/normal.h\
 co/macro.h\
 co/f/meyer_xin.h\
+
+fm/fm.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+fm/fm.h\
+fm/stfmm3.h\
+
+fm/fmm3.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/memory.h\
+fm/fm.h\
+fm/stfmm3.h\
 
 force2.l.o:\
 co/prec/l/real.h\
@@ -3851,6 +4160,8 @@ co/generation.h\
 
 green/3wall2.l.o:\
 co/prec/l/real.h\
+alg/integration.h\
+alg/special.h\
 co/err.h\
 co/green/3wall2.h\
 co/he.h\
@@ -3902,6 +4213,7 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/circle_line.h\
+alg/integration.h\
 
 integral/quad.l.o:\
 co/prec/l/real.h\
@@ -3925,9 +4237,12 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/integral/sph_plane.h\
+alg/integration.h\
 
 integral/tri.l.o:\
 co/prec/l/real.h\
+alg/integration.h\
+alg/integration2.h\
 co/err.h\
 co/macro.h\
 co/memory.h\
@@ -4051,6 +4366,7 @@ co/obj.h\
 
 ode/2.l.o:\
 co/prec/l/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/force2.h\
@@ -4061,6 +4377,7 @@ co/skel.h\
 
 ode/2v.l.o:\
 co/prec/l/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -4070,6 +4387,7 @@ co/skel.h\
 
 ode/3.l.o:\
 co/prec/l/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -4079,6 +4397,7 @@ co/skel.h\
 
 ode/3v.l.o:\
 co/prec/l/real.h\
+alg/ode.h\
 co/array.h\
 co/err.h\
 co/macro.h\
@@ -4107,6 +4426,7 @@ co/vec.h\
 co/sum.h\
 co/ten.h\
 co/orient.h\
+alg/eig.h\
 
 oseen/2.l.o:\
 co/prec/l/real.h\
@@ -4201,6 +4521,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/cons.h\
+alg/spline.h\
 
 pre/density.l.o:\
 co/prec/l/real.h\
@@ -4212,6 +4533,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/density.h\
+alg/spline.h\
 
 predicate.l.o:\
 co/prec/l/real.h\
@@ -4229,6 +4551,7 @@ co/macro.h\
 co/memory.h\
 co/vec.h\
 co/pre/visc.h\
+alg/spline.h\
 
 punto.l.o:\
 co/prec/l/real.h\
@@ -4273,6 +4596,7 @@ co/ring.h\
 co/tri.h\
 co/vec.h\
 inc/def.h\
+alg/pinv.h\
 
 segement.l.o:\
 co/prec/l/real.h\
@@ -4433,7 +4757,9 @@ viscosity/pairwise.l.o:\
 co/prec/l/real.h\
 co/argv.h\
 co/memory.h\
+co/macro.h\
 co/err.h\
+co/vec.h\
 co/he.h\
 co/viscosity/pairwise.h\
 

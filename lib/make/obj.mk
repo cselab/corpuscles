@@ -1,4 +1,7 @@
 O = \
+alg/linsolve.o\
+alg/special.o\
+alg/x.o\
 endian.o\
 err.o\
 hash.o\
@@ -15,6 +18,15 @@ read.o\
 util.o\
 
 O_S = \
+alg/eig.s.o\
+alg/integration2.s.o\
+alg/integration.s.o\
+alg/min.s.o\
+alg/ode.s.o\
+alg/pinv.s.o\
+alg/rng.s.o\
+alg/root.s.o\
+alg/spline.s.o\
 arc.s.o\
 area2.s.o\
 area.s.o\
@@ -80,8 +92,11 @@ f/harmonic_ref.s.o\
 filter.s.o\
 f/juelicher_xin.s.o\
 f/kantor.s.o\
+fm/cubtri_c.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
+fm/fm.s.o\
+fm/fmm3.s.o\
 force2.s.o\
 force.s.o\
 f/repel.s.o\
@@ -159,6 +174,15 @@ vtk.s.o\
 y.s.o\
 
 O_D = \
+alg/eig.d.o\
+alg/integration2.d.o\
+alg/integration.d.o\
+alg/min.d.o\
+alg/ode.d.o\
+alg/pinv.d.o\
+alg/rng.d.o\
+alg/root.d.o\
+alg/spline.d.o\
 arc.d.o\
 area2.d.o\
 area.d.o\
@@ -224,8 +248,11 @@ f/harmonic_ref.d.o\
 filter.d.o\
 f/juelicher_xin.d.o\
 f/kantor.d.o\
+fm/cubtri_c.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
+fm/fm.d.o\
+fm/fmm3.d.o\
 force2.d.o\
 force.d.o\
 f/repel.d.o\
@@ -303,6 +330,15 @@ vtk.d.o\
 y.d.o\
 
 O_L = \
+alg/eig.l.o\
+alg/integration2.l.o\
+alg/integration.l.o\
+alg/min.l.o\
+alg/ode.l.o\
+alg/pinv.l.o\
+alg/rng.l.o\
+alg/root.l.o\
+alg/spline.l.o\
 arc.l.o\
 area2.l.o\
 area.l.o\
@@ -368,8 +404,11 @@ f/harmonic_ref.l.o\
 filter.l.o\
 f/juelicher_xin.l.o\
 f/kantor.l.o\
+fm/cubtri_c.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
+fm/fm.l.o\
+fm/fmm3.l.o\
 force2.l.o\
 force.l.o\
 f/repel.l.o\

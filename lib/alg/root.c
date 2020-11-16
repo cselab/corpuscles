@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <gsl/gsl_roots.h>
 #include <gsl/gsl_errno.h>
-#include <real.h>
-#include <co/err.h>
-#include <co/macro.h>
-#include <co/memory.h>
+#include "real.h"
+#include "co/err.h"
+#include "co/macro.h"
+#include "co/memory.h"
 #include "alg/root.h"
 
 static const double EPSABS = 1e-10;

@@ -1,10 +1,9 @@
 #include <stdlib.h>
-#include <real.h>
-#include <co/err.h>
-#include <co/memory.h>
-
-#include "fm.h"
-#include "stfmm3.h"
+#include "real.h"
+#include "co/err.h"
+#include "co/memory.h"
+#include "fm/fm.h"
+#include "fm/stfmm3.h"
 
 static real pi = 3.141592653589793;
 

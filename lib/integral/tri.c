@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "real.h"
-#include <alg/integration.h>
-#include <alg/integration2.h>
+#include "alg/integration.h"
+#include "alg/integration2.h"
 #include "co/err.h"
 #include "co/macro.h"
 #include "co/memory.h"

@@ -5,8 +5,8 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
 
-#include <real.h>
-#include <co/err.h>
+#include "real.h"
+#include "co/err.h"
 
 #include "alg/eig.h"
 

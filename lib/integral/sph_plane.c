@@ -5,7 +5,7 @@
 #include "co/macro.h"
 #include "co/memory.h"
 #include "co/integral/sph_plane.h"
-#include <alg/integration.h>
+#include "alg/integration.h"
 
 enum {
     TYPE = GAUSS31

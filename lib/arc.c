@@ -5,9 +5,8 @@
 #include "co/memory.h"
 #include "co/err.h"
 #include "co/arc.h"
-
-#include <alg/root.h>
-#include <alg/integration.h>
+#include "alg/root.h"
+#include "alg/integration.h"
 
 #define T Arc
 #define FMT CO_REAL_OUT

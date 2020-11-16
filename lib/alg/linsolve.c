@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <gsl/gsl_linalg.h>
 #include <real.h>
-#include <co/err.h>
-#include <co/macro.h>
-#include <co/matrix.h>
-#include <co/memory.h>
-#include <co/real.h>
+#include "co/err.h"
+#include "co/macro.h"
+#include "co/matrix.h"
+#include "co/memory.h"
+#include "co/real.h"
 #include "alg/linsolve.h"
 
 #define T LinSolve

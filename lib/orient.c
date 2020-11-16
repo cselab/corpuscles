@@ -9,7 +9,7 @@
 #include "co/sum.h"
 #include "co/ten.h"
 #include "co/orient.h"
-#include <alg/eig.h>
+#include "alg/eig.h"
 
 #define T Orient
 

@@ -4,8 +4,8 @@
 #include <omp.h>
 #endif
 #include "real.h"
-#include <alg/integration.h>
-#include <alg/special.h>
+#include "alg/integration.h"
+#include "alg/special.h"
 #include "co/err.h"
 #include "co/green/3wall2.h"
 #include "co/he.h"

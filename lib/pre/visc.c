@@ -11,7 +11,7 @@
 #include "co/memory.h"
 #include "co/vec.h"
 #include "co/pre/visc.h"
-#include <alg/spline.h>
+#include "alg/spline.h"
 
 #define T PreVisc
 #define FMT CO_REAL_OUT

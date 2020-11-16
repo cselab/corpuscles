@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_odeiv2.h>
-#include <real.h>
-#include <co/err.h>
-#include <co/memory.h>
-#include <co/macro.h>
+#include "real.h"
+#include "co/err.h"
+#include "co/memory.h"
+#include "co/macro.h"
 #include "alg/ode.h"
 
 #define FMT CO_REAL_OUT

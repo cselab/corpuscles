@@ -12,7 +12,7 @@
 #include "co/tri.h"
 #include "co/vec.h"
 #include "inc/def.h"
-#include <alg/pinv.h>
+#include "alg/pinv.h"
 
 #define T Ring
 #define N (RANK_MAX + 1)

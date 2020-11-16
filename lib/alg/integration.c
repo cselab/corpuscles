@@ -3,12 +3,12 @@
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_errno.h>
 
-#include <real.h>
-#include <co/err.h>
-#include <co/memory.h>
-#include <co/macro.h>
-
+#include "real.h"
+#include "co/err.h"
+#include "co/memory.h"
+#include "co/macro.h"
 #include "alg/integration.h"
+
 static const char *String[] =
     { "gauss15", "gauss21", "gauss31", "gauss61", "qng", "qags" };
 

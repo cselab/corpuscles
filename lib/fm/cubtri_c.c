@@ -1,11 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <real.h>
-#include <co/err.h>
-#include <co/memory.h>
-#include <co/tri.h>
+#include "real.h"
+#include "co/err.h"
+#include "co/memory.h"
+#include "co/tri.h"
+#include "fm/cubtri.h"
 
-#include "cubtri.h"
 #define T Cubtri
 #define NW (5000)
 static double eps = 1e-4;

@@ -11,7 +11,7 @@
 #include "co/memory.h"
 #include "co/vec.h"
 #include "co/pre/density.h"
-#include <alg/spline.h>
+#include "alg/spline.h"
 
 #define T PreDensity
 #define FMT CO_REAL_OUT

@@ -2,10 +2,10 @@
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
 
-#include <real.h>
+#include "real.h"
 
-#include <co/err.h>
-#include <co/memory.h>
+#include "co/err.h"
+#include "co/memory.h"
 
 #include "alg/pinv.h"
 

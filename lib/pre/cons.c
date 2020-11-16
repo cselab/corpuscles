@@ -11,7 +11,7 @@
 #include "co/memory.h"
 #include "co/vec.h"
 #include "co/pre/cons.h"
-#include <alg/spline.h>
+#include "alg/spline.h"
 
 #define T PreCons
 

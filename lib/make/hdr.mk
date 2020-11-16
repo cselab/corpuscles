@@ -1,4 +1,16 @@
 H = \
+alg/eig.h\
+alg/integration2.h\
+alg/integration.h\
+alg/linsolve.h\
+alg/min.h\
+alg/ode.h\
+alg/pinv.h\
+alg/rng.h\
+alg/root.h\
+alg/special.h\
+alg/spline.h\
+alg/x.h\
 co/arc.h\
 co/area2.h\
 co/area.h\
@@ -164,5 +176,8 @@ co/volume.h\
 co/vtk2.h\
 co/vtk.h\
 co/y.h\
+fm/cubtri.h\
+fm/fm.h\
+fm/stfmm3.h\
 inc/def.h\
 

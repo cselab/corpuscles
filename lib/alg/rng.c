@@ -2,10 +2,9 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-#include <real.h>
-#include <co/err.h>
-#include <co/memory.h>
-
+#include "real.h"
+#include "co/err.h"
+#include "co/memory.h"
 #include "alg/rng.h"
 
 #define T AlgRng
