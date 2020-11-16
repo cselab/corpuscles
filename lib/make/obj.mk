@@ -35,6 +35,8 @@ array.s.o\
 bbox2.s.o\
 bbox.s.o\
 bending.s.o\
+bending.s.o\
+bi.s.o\
 bi.s.o\
 bi/cortez.s.o\
 bi/cortez_fm.s.o\
@@ -96,7 +98,7 @@ fm/cubtri_c.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
 fm/fm.s.o\
-fm/fmm3.s.o\
+force2.s.o\
 force2.s.o\
 force.s.o\
 f/repel.s.o\
@@ -191,6 +193,8 @@ array.d.o\
 bbox2.d.o\
 bbox.d.o\
 bending.d.o\
+bending.d.o\
+bi.d.o\
 bi.d.o\
 bi/cortez.d.o\
 bi/cortez_fm.d.o\
@@ -252,7 +256,7 @@ fm/cubtri_c.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
 fm/fm.d.o\
-fm/fmm3.d.o\
+force2.d.o\
 force2.d.o\
 force.d.o\
 f/repel.d.o\
@@ -347,6 +351,8 @@ array.l.o\
 bbox2.l.o\
 bbox.l.o\
 bending.l.o\
+bending.l.o\
+bi.l.o\
 bi.l.o\
 bi/cortez.l.o\
 bi/cortez_fm.l.o\
@@ -408,7 +414,7 @@ fm/cubtri_c.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
 fm/fm.l.o\
-fm/fmm3.l.o\
+force2.l.o\
 force2.l.o\
 force.l.o\
 f/repel.l.o\
