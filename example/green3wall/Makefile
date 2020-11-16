@@ -10,11 +10,11 @@ velocity0\
 velocity2\
 
 PREC = d
-CO_CFLAGS = \
+CO_CFLAGS = `co.conf --cflags $(PREC)`
 `co.conf --cflags $(PREC)`\
 `alg.conf --cflags $(PREC)`\
 
-CO_LDFLAGS = \
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 `co.conf --libs $(PREC)`\
 `alg.conf --libs $(PREC)`\
 

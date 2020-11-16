@@ -1,8 +1,8 @@
 include ../../../conf.mk
 M = main
 PREC = d
-CO_CFLAGS = -O0 -g `alg.conf --cflags $(PREC)`
-CO_LDFLAGS = `alg.conf --libs $(PREC)`
+CO_CFLAGS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
 $M.o: $M.c; $(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@

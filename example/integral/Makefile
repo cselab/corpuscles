@@ -17,8 +17,8 @@ visc2\
 visc2d\
 
 PREC = d
-CO_CFLAGS = `alg.conf --cflags $(PREC)`
-CO_LDFLAGS = `co.conf --libs $(PREC)`  `alg.conf --libs $(PREC)` 
+CO_CFLAGS = `co.conf --cflags $(PREC)`
+CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 LINK = $(CC)
 

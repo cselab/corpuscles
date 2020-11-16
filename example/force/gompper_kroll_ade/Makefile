@@ -1,6 +1,6 @@
 M = main
 PREC = d
-CO_CFLAGS = -Wall -Wextra -O2 -g `co.conf --cflags $(PREC)`
+CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`
 
 $M: $M.o; $(CC) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
