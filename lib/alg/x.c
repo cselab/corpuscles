@@ -1,10 +1,8 @@
 #include <stdio.h>
-#include <real.h>
-
+#include "real.h"
 #include "co/err.h"
 #include "co/macro.h"
 #include "alg/min.h"
-
 #include "alg/x.h"
 
 extern int NV;

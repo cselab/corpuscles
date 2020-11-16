@@ -37,15 +37,18 @@ format () {
 
 name () {
     s=$1; shift
-    sed -e "s,\.c$,.$s,1" -e "s,\.c\.m4$,.$s,1"
+    sed -e "s,\.c$,.$s,1" \
+        -e "s,\.c\.m4$,.$s,1" \
+        -e "s,\.f$,.$s,1" \
+        -e "s,\.f90$,.$s,1"
 }
 hname () { sed -e 's,\.h\.m4$,.h,1'; }
-
+ftn () { find . -name '*.f' -or -name '*.f90' | sort ; }
 src () { find . -name '*.c' -or -name '*.c.m4' | sort ; }
 hdr () { find . -name '*.h' -or -name '*.h.m4' | sort ; }
 
 hdr | norm         | hname    | format H     > make/hdr.mk
-src | norm | nreal | name o   | format O     > make/obj.mk
+(src | norm | nreal ; ftn | norm) | name o   | format O  > make/obj.mk
 src | norm |  real | name s.o | format O_S  >> make/obj.mk
 src | norm |  real | name d.o | format O_D  >> make/obj.mk
 src | norm |  real | name l.o | format O_L  >> make/obj.mk

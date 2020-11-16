@@ -1,7 +1,4 @@
 O = \
-alg/linsolve.o\
-alg/special.o\
-alg/x.o\
 endian.o\
 err.o\
 hash.o\
@@ -16,17 +13,38 @@ omp.o\
 predicate/main.o\
 read.o\
 util.o\
+fm/cubtri.o\
+fm/cubtri_lib.o\
+fm/d3mtreeplot.o\
+fm/d3tstrcr.o\
+fm/l3dterms.o\
+fm/l3dtrans.o\
+fm/laprouts3d.o\
+fm/legeexps.o\
+fm/lfmm3dparthess.o\
+fm/lfmm3dparthess_tf.o\
+fm/lfmm3drouts.o\
+fm/main.o\
+fm/prini.o\
+fm/rotviarecur3.o\
+fm/st3green.o\
+fm/st3routs.o\
+fm/stfmm3dpart.o\
+fm/yrecursion.o\
 
 O_S = \
 alg/eig.s.o\
 alg/integration2.s.o\
 alg/integration.s.o\
+alg/linsolve.s.o\
 alg/min.s.o\
 alg/ode.s.o\
 alg/pinv.s.o\
 alg/rng.s.o\
 alg/root.s.o\
+alg/special.s.o\
 alg/spline.s.o\
+alg/x.s.o\
 arc.s.o\
 area2.s.o\
 area.s.o\
@@ -35,8 +53,6 @@ array.s.o\
 bbox2.s.o\
 bbox.s.o\
 bending.s.o\
-bending.s.o\
-bi.s.o\
 bi.s.o\
 bi/cortez.s.o\
 bi/cortez_fm.s.o\
@@ -98,7 +114,6 @@ fm/cubtri_c.s.o\
 f/meyer.s.o\
 f/meyer_xin.s.o\
 fm/fm.s.o\
-force2.s.o\
 force2.s.o\
 force.s.o\
 f/repel.s.o\
@@ -179,12 +194,15 @@ O_D = \
 alg/eig.d.o\
 alg/integration2.d.o\
 alg/integration.d.o\
+alg/linsolve.d.o\
 alg/min.d.o\
 alg/ode.d.o\
 alg/pinv.d.o\
 alg/rng.d.o\
 alg/root.d.o\
+alg/special.d.o\
 alg/spline.d.o\
+alg/x.d.o\
 arc.d.o\
 area2.d.o\
 area.d.o\
@@ -193,8 +211,6 @@ array.d.o\
 bbox2.d.o\
 bbox.d.o\
 bending.d.o\
-bending.d.o\
-bi.d.o\
 bi.d.o\
 bi/cortez.d.o\
 bi/cortez_fm.d.o\
@@ -256,7 +272,6 @@ fm/cubtri_c.d.o\
 f/meyer.d.o\
 f/meyer_xin.d.o\
 fm/fm.d.o\
-force2.d.o\
 force2.d.o\
 force.d.o\
 f/repel.d.o\
@@ -337,12 +352,15 @@ O_L = \
 alg/eig.l.o\
 alg/integration2.l.o\
 alg/integration.l.o\
+alg/linsolve.l.o\
 alg/min.l.o\
 alg/ode.l.o\
 alg/pinv.l.o\
 alg/rng.l.o\
 alg/root.l.o\
+alg/special.l.o\
 alg/spline.l.o\
+alg/x.l.o\
 arc.l.o\
 area2.l.o\
 area.l.o\
@@ -351,8 +369,6 @@ array.l.o\
 bbox2.l.o\
 bbox.l.o\
 bending.l.o\
-bending.l.o\
-bi.l.o\
 bi.l.o\
 bi/cortez.l.o\
 bi/cortez_fm.l.o\
@@ -414,7 +430,6 @@ fm/cubtri_c.l.o\
 f/meyer.l.o\
 f/meyer_xin.l.o\
 fm/fm.l.o\
-force2.l.o\
 force2.l.o\
 force.l.o\
 f/repel.l.o\

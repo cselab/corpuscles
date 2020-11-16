@@ -1,6 +1,6 @@
 #include <gsl/gsl_sf_bessel.h>
 
-#include <real.h>
+#include "real.h"
 #include "alg/special.h"
 
 real
