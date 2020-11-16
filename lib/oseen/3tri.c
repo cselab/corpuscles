@@ -4,7 +4,7 @@
 #include <omp.h>
 #endif
 #include "real.h"
-#include <cubtri.h>
+#include "fm/cubtri.h"
 #include "co/err.h"
 #include "co/he.h"
 #include "co/macro.h"

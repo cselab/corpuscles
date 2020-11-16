@@ -1308,6 +1308,7 @@ co/i/area.h\
 
 oseen/3tri.s.o:\
 co/prec/s/real.h\
+fm/cubtri.h\
 co/err.h\
 co/he.h\
 co/macro.h\
@@ -2892,6 +2893,7 @@ co/i/area.h\
 
 oseen/3tri.d.o:\
 co/prec/d/real.h\
+fm/cubtri.h\
 co/err.h\
 co/he.h\
 co/macro.h\
@@ -4476,6 +4478,7 @@ co/i/area.h\
 
 oseen/3tri.l.o:\
 co/prec/l/real.h\
+fm/cubtri.h\
 co/err.h\
 co/he.h\
 co/macro.h\

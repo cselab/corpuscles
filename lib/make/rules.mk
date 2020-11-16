@@ -8,12 +8,12 @@ lib$(P)_l.a: $O $(O_L); ar r $@ $O $(O_L) && ranlib $@
 
 .c.m4.c:; co.m4 -s -o $@ $<
 .h.m4.h:; co.m4 -s -o $@ $<
-.f.o:;   $(FC) $< $(FCFLAGS) -o $@
-.f90.o:; $(FC) $< $(FCFLAGS) -o $@
-.c.o:;   $(CC) $< -I. $(CFLAGS) $(CO_CFLAGS) -c -o $@
-.c.s.o:; $(CC) $< -I$P/prec/s -Iinc/s -I. $(CFLAGS) $(CO_CFLAGS) -c -o $@
-.c.d.o:; $(CC) $< -I$P/prec/d -Iinc/d -I. $(CFLAGS) $(CO_CFLAGS) -c -o $@
-.c.l.o:; $(CC) $< -I$P/prec/l -Iinc/l -I. $(CFLAGS) $(CO_CFLAGS) -c -o $@
+.f.o:;   $(FC) $< -c $(FCFLAGS) -o $@
+.f90.o:; $(FC) $< -c $(FCFLAGS) -o $@
+.c.o:;   $(CC) $< -c -I. $(CFLAGS) $(CO_CFLAGS) -o $@
+.c.s.o:; $(CC) $< -c -I$P/prec/s -Iinc/s -I. $(CFLAGS) $(CO_CFLAGS) -o $@
+.c.d.o:; $(CC) $< -c -I$P/prec/d -Iinc/d -I. $(CFLAGS) $(CO_CFLAGS) -o $@
+.c.l.o:; $(CC) $< -c -I$P/prec/l -Iinc/l -I. $(CFLAGS) $(CO_CFLAGS) -o $@
 
 clean:; rm -f $O $(O_S) $(O_D) $(O_L) $L
 test:
