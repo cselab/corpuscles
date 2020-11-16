@@ -1,6 +1,6 @@
 CC = gcc
 FC = gfortran
-FCFLAGS = -Ofast  -g
+FCFLAGS = -Ofast  -g  -fallow-argument-mismatch
 CFLAGS = -Ofast  -g
 LDFLAGS =
 PREFIX = $(HOME)/.local
