@@ -14,7 +14,6 @@ real bending_energy(T *, He *, const real *, const real *, const real *);
 int bending_energy_ver(T *, /**/ real **);
 int bending_area_ver(T *, /**/ real **);
 int bending_curva_mean_ver(T *, /**/ real **);
-int bending_norm_ver(T *, /**/ real **, real **, real **);
 int bending_laplace_ver(T *, /**/ real **, real **, real **);
 real bending_energy_bend(T *);
 real bending_energy_ad(T *);

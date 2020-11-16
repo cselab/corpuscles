@@ -20,11 +20,15 @@ then err "$PKG_CONFIG is not found"
 fi
 
 if test $# -eq 0; then err 'expecting --libs or --cflags'; fi
-a="$1"; shift
-case "$a" in
-    --libs|--cflags) ;;
-    *) err "unknown argument '$a'" ;;
-esac
+a=
+for i
+do case "$i" in
+       --libs|--cflags) a="$a $i"
+                        shift
+                        ;;
+       *) break ;;
+   esac
+done
 
 if test $# -eq 0; then err 'expecting precision s, d, l'; fi
 p="$1"; shift
