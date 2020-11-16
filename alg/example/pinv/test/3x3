@@ -1,2 +1,0 @@
-# nTEST: 3x3
-co.run ./main < data/3x3 > main.out.txt
