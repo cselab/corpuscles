@@ -198,19 +198,19 @@ main(int argc, char **a)
     switch (Map) {
     case LIN:
         for (i = 0; i < n; i++)
-            c[i] = (u[i] - min) / d;
+            c[i] = (v[i] - min) / d;
         break;
     case ABS:
         for (i = 0; i < n; i++)
-            c[i] = fabs(u[i]) / max;
+            c[i] = fabs(v[i]) / max;
         break;
     case NABS:
         for (i = 0; i < n; i++)
-            c[i] = (max - fabs(u[i])) / max;
+            c[i] = (max - fabs(v[i])) / max;
         break;
     case BIN:
         for (i = 0; i < n; i++) {
-            if (fabs(u[i]) >= 0.6)
+            if (fabs(v[i]) >= 0.6)
                 c[i] = 0;
             else
                 c[i] = 1;
