@@ -1,0 +1,2 @@
+# nTEST: 1x1
+co.run ./main < data/1x1 > main.out.txt

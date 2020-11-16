@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: fm_@PREC@
+Version: 0.1
+Requires: co_@PREC@
+Description: fast multipole
+Libs: -L${libdir} -lfm_@PREC@ -lgfortran -lm
+Cflags: -I${includedir}

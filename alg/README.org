@@ -1,0 +1,16 @@
+* GSL wrappers for co
+
+- corpuscles :: https://cselab.github.io/corpuscles
+- GSL :: http://www.gnu.org/software/gsl
+
+* Install GSL
+
+wget http://mirror.easyname.at/gnu/gsl/gsl-2.5.tar.gz
+tar zxvf gsl-2.5.tar.gz
+cd gsl-2.5
+./configure '--prefix='$HOME && make && make install
+
+* euler
+
+env2lmod
+module load gsl

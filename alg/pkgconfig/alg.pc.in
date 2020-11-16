@@ -1,0 +1,11 @@
+prefix=@PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: alg_@PREC@
+Version: 0.1
+Requires: co_@PREC@ gsl
+Description: corpuscles gsl wrapper
+Libs: -L${libdir} -lalg_@PREC@
+Cflags: -I${includedir}
