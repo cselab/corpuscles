@@ -1,4 +1,6 @@
 .POSIX:
+.SUFFIXES:
+.SUFFIXES: .c
 include ../../conf.mk
 M = \
 join3\
@@ -7,25 +9,8 @@ split3\
 tri\
 
 PREC = d
-CO_CFLAGS = `co.conf --cflags $(PREC)`
-CO_LDFLAGS = `co.conf --libs $(PREC)`
-
-LINK = $(CC)
+CO_FLAGS = `co.conf --cflags --libs $(PREC)`
 
 all: $M
-.o:
-	$(LINK) $< $(LDFLAGS) $(CO_LDFLAGS) -o $@
-
-.c.o:
-	$(CC) $(CFLAGS) $(CO_CFLAGS) $< -c -o $@
-
-.c:
-%: %.c
-
-lint:; make CFLAGS='-Wall -Wextra -g -O2'
-test: $M; atest test/*
-install:
-run: $M; @co.run ./rbc
-
-.PHONY: clean test install run lint
+.c:; $(CC) $< $(CFLAGS) $(CO_FLAGS) -o $@
 clean:; rm -f $M $(M:=.o)
