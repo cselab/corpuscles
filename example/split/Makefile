@@ -3,6 +3,7 @@
 .SUFFIXES: .c
 include ../../conf.mk
 M = \
+big\
 join3\
 one\
 split3\
