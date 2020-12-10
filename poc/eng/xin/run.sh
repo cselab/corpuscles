@@ -1,4 +1,10 @@
+#!/bin/sh
+
+set -eu
 . co.util
+
+ref=$1; shift
+ini=$1; shift
 
 pi=3.141592653589793115997964
 A=12.5663706144
@@ -21,6 +27,6 @@ Da0=$(ae $Da1/100)
 DA0=$(ae $Da0*$A)
 DA0D=$(ae $DA0/$D)
 
-co.eng juelicher_xin $Kb 0 0 0 < ini.off
-co.eng juelicher_xin $Kb $C0 $Kad $DA0D < ini.off
-co.eng strain ref.off lim $Ka $mub $a3 $a4 $b1 $b2 < ini.off
+co.eng juelicher_xin $Kb 0 0 0 < "$ini"
+co.eng juelicher_xin $Kb $C0 $Kad $DA0D < "$ini"
+co.eng strain "$ref" lim $Ka $mub $a3 $a4 $b1 $b2 < "$ini"
