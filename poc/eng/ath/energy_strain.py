@@ -102,9 +102,6 @@ if __name__ == "__main__":
     parser.add_argument('--ka',         type=float, default=5.0e-6, help="stretch modulus")
     parser.add_argument('--a3',         type=float, default=-2,     help="non-linear stretch coefficients")
     parser.add_argument('--a4',         type=float, default=8,      help="non-linear stretch coefficients")
-    parser.add_argument('--kb',         type=float, default=2.e-19, help="bending modulus")
-    parser.add_argument('--m0bar',      type=float, default=10,     help="dimensionless effective spontaneous curvature")
-    parser.add_argument('--kade',       type=float, default=1.27e-19, help="area difference modulus")
     parser.add_argument('--A0',         type=float, default=140e-12, help="area of rbc")
     args = parser.parse_args()
     
