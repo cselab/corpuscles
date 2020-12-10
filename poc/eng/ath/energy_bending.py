@@ -5,7 +5,6 @@ import trimesh
 import argparse
 import matplotlib.pyplot as plt
 
-from color_by_inimesh import export_colored_faces
 
 
 def vec_cross(a, b):
