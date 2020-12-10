@@ -281,11 +281,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--f', type=str, required=True, nargs='+', help="mesh files")
 
+    parser.add_argument('--L_UNIT',     type=float, default=3.33779e-6, help="length unit, m")
     parser.add_argument('--kb',         type=float, default=2.e-19, help="bending modulus")
     parser.add_argument('--m0bar',      type=float, default=10,     help="dimensionless effective spontaneous curvature")
     parser.add_argument('--kade',       type=float, default=1.27e-19, help="area difference modulus")
     parser.add_argument('--A0',         type=float, default=140e-12, help="area of rbc")
-    parser.add_argument('--L_UNIT',     type=float, default=5.5629843151e-7, help="length unit, m")
     args = parser.parse_args()
 
 

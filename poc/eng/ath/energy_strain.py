@@ -95,7 +95,7 @@ if __name__ == "__main__":
     parser.add_argument('--ref',        type=str,   required=True,  help="stress-free mesh file")
     parser.add_argument('--f',      type=str,   required=True,  nargs='+', help="rbc mesh files")
 
-    parser.add_argument('--L_UNIT',     type=float, default=5.5629843151e-7, help="length unit, m")
+    parser.add_argument('--L_UNIT',     type=float, default=3.33779e-6, help="length unit, m")
     parser.add_argument('--mu',         type=float, default=2.5e-6, help="shear modulus")
     parser.add_argument('--b1',         type=float, default=0.7,    help="non-linear shear coefficients")
     parser.add_argument('--b2',         type=float, default=0.75,   help="non-linear shear coefficients")
