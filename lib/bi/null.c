@@ -15,6 +15,7 @@ int
 bi_null_ini(He * he, /**/ T ** pq)
 {
     T *q;
+
     USED(he);
     MALLOC(1, &q);
     *pq = q;
@@ -37,25 +38,25 @@ bi_null_fin(T * q)
 
 int
 bi_null_update(T * q, He * he, const real * x, const real * y,
-                      const real * z)
+               const real * z)
 {
     USED(q);
     USED(he);
     USED(x);
     USED(y);
-    USED(z);    
+    USED(z);
     return CO_OK;
 }
 
 int
 bi_null_single(T * q, He * he, real al,
-                      const real * x, const real * y, const real * z,
-                      const real * fx, const real * fy, const real * fz,
-                      /*io */ real * ux, real * uy, real * uz)
+               const real * x, const real * y, const real * z,
+               const real * fx, const real * fy, const real * fz,
+               /*io */ real * ux, real * uy, real * uz)
 {
     USED(q);
     USED(he);
-    USED(al);    
+    USED(al);
     USED(x);
     USED(y);
     USED(z);
@@ -67,34 +68,35 @@ bi_null_single(T * q, He * he, real al,
 
 int
 bi_null_double(T * q, He * he, real al,
-                      const real * x, const real * y, const real * z,
-                      const real * ux, const real * uy, const real * uz,
-                      /*io */ real * wx, real * wy, real * wz)
+               const real * x, const real * y, const real * z,
+               const real * ux, const real * uy, const real * uz,
+               /*io */ real * wx, real * wy, real * wz)
 {
     USED(x);
     USED(y);
     USED(z);
     int n;
+
     n = he_nv(he);
     return array_axpy3(n, al, ux, uy, uz, wx, wy, wz);
 }
 
 int
 bi_null_single_velocity(T * q, He * he,
-                               const real * x, const real * y,
-                               const real * z, const real * fx,
-                               const real * fy, const real * fz,
-                               const real r[3], /**/ real v[3])
+                        const real * x, const real * y,
+                        const real * z, const real * fx,
+                        const real * fy, const real * fz,
+                        const real r[3], /**/ real v[3])
 {
     ERR(CO_NUM, "not implimented");
 }
 
 int
 bi_null_double_velocity(T * q, He * he,
-                               const real * x, const real * y,
-                               const real * z, const real * ux,
-                               const real * uy, const real * uz,
-                               const real r[3], /**/ real v[3])
+                        const real * x, const real * y,
+                        const real * z, const real * ux,
+                        const real * uy, const real * uz,
+                        const real r[3], /**/ real v[3])
 {
     ERR(CO_NUM, "not implimented");
 }

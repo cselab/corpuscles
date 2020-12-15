@@ -989,7 +989,7 @@ sq(real x)
 }
 
 static
-    real
+ real
 xcoth(real x)
 {                               /* x*coth(x) */
     return fabs(x) > 0.25 ? x / tanh(x) : 1 + sq(x) / 3;

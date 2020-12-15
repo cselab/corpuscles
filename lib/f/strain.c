@@ -195,10 +195,10 @@ he_f_strain_force(T * q, __UNUSED He * he0, const real * x, const real * y,
         ERR(CO_INDEX, "nt=%d != he_nt(he0)=%d", nt, he_nt(he0));
 
     BEGIN {
-        status = strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
-	if (status != CO_OK)
-            ERR(CO_NUM, "strain_force failed: %d [%d %d %d]", t, i, j,
-                k);
+        status =
+            strain_force(q->strain, a0, b0, c0, a, b, c, /**/ da, db, dc);
+        if (status != CO_OK)
+            ERR(CO_NUM, "strain_force failed: %d [%d %d %d]", t, i, j, k);
         if (!assert_force(a, b, c, da, db, dc))
             ERR(CO_NUM, "bad forces in triangle: %d [%d %d %d]", t, i, j,
                 k);
