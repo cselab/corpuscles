@@ -85,7 +85,6 @@ ply_fread(FILE * f, T ** pq)
     MATCH("property float x");
     MATCH("property float y");
     MATCH("property float z");
-
     NXT();
     if (util_eq(line, "property float u")) {
         nvar = 6;
@@ -95,14 +94,12 @@ ply_fread(FILE * f, T ** pq)
     } else {
         nvar = 3;
     }
-
     if (sscanf(line, "element face %d", &nt) != 1)
         ERR(CO_IO, "fail to parse: '%s'", line);
     if (nt < 0)
         ERR(CO_IO, "nt=%d < 0", nt);
     MATCH("property list int int vertex_index");
     MATCH("end_header");
-
     MALLOC(6 * nv, &q->w.ver);
     MALLOC(4 * nt, &q->w.tri);
     MALLOC(nv, &q->w.scalar);
@@ -439,7 +436,9 @@ ply_he_ini(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
     if (!util_eq(line, "ply"))
         ERR(CO_IO, "not a ply file");
     MATCH("format binary_little_endian 1.0");
-    do NXT(); while (strncmp(line, "comment", 7) == 0);
+    do
+        NXT();
+    while (strncmp(line, "comment", 7) == 0);
     if (sscanf(line, "element vertex %d", &nv) != 1)
         ERR(CO_IO, "fail to parse: '%s'", line);
     if (nv < 0)
