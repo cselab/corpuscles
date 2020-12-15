@@ -439,8 +439,7 @@ ply_he_ini(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
     if (!util_eq(line, "ply"))
         ERR(CO_IO, "not a ply file");
     MATCH("format binary_little_endian 1.0");
-
-    NXT();
+    do NXT(); while (strncmp(line, "comment", 8) == 0);
     if (sscanf(line, "element vertex %d", &nv) != 1)
         ERR(CO_IO, "fail to parse: '%s'", line);
     if (nv < 0)
@@ -448,7 +447,6 @@ ply_he_ini(FILE * f, /**/ He ** phe, real ** px, real ** py, real ** pz)
     MATCH("property float x");
     MATCH("property float y");
     MATCH("property float z");
-
     NXT();
     if (util_eq(line, "property float u")) {
         nvar = 6;
