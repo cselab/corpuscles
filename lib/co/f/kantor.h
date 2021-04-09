@@ -10,6 +10,8 @@ int he_f_kantor_force(T *, He *, const real *, const real *, const real *,
                       /**/ real *, real *, real *);
 real he_f_kantor_energy(T *, He *, const real *, const real *,
                         const real *);
+int he_f_kantor_area_ver(T *, /**/ real **);
+int he_f_kantor_curva_mean_ver(T *, /**/ real **);
 int he_f_kantor_energy_ver(T *, /**/ real **);
 int he_f_kantor_cos(T *, /**/ real **);
 real he_f_kantor_energy_ad(T *);
