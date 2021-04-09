@@ -55,7 +55,7 @@ P = co
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
 ```sh
-$ make
+$ MAKEFLAGS=-j4 ./install.sh
 ```
 
 If you have `atest` installed you can run
