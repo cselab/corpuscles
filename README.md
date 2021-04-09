@@ -28,8 +28,9 @@ bending model of spontaneous curvature.
 Please see details in [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
 # Install
-Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
-requrements `gsl`, `geomview`, `atest`, `maxima`, `pandoc`.
+Minimal requirements `gcc-c`, `gsl`, `make`, `pkg-config`.
+Optional
+requrements `geomview`, `atest`, `maxima`, `pandoc`.
 
 Download code from
 ```sh
