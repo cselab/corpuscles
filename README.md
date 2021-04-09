@@ -52,6 +52,13 @@ MAXIMA_HOME = $(HOME)/.maxima
 P = co
 ```
 
+`PREFIX/bin` should be on the path, for example
+
+```
+$ cat ~/.bashrc
+PATH="$HOME/.local/bin:$PATH"
+```
+
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
 ```sh
