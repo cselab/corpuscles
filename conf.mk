@@ -4,7 +4,7 @@ FC = gfortran
 FCFLAGS = -Ofast  -g
 FXFLAGS =  -fallow-argument-mismatch
 
-CFLAGS = -Ofast  -g -fopenmp
+CFLAGS = -Ofast  -g
 LDFLAGS =
 PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
