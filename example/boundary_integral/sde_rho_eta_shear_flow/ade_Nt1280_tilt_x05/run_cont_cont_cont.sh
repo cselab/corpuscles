@@ -12,8 +12,8 @@ Kc0=20000
 
 Kb=1.0
 C0=0.0
-alpha=$(echo $pi | gawk '{print 2.0/$1}')
-Kad=$(echo $Kb $alpha | gawk '{print $1*$2}')
+alpha=$(echo $pi | awk '{print 2.0/$1}')
+Kad=$(echo $Kb $alpha | awk '{print $1*$2}')
 D=0.000898798148042
 
 mub=139.260575205
