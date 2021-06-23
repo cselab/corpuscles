@@ -11,7 +11,7 @@ case x"$1" in
     xl) i=init/lubrication.off r=ref/1280.off ;;
     xl2) i=init/lubrication2.off r=ref/lubrication2.off ;;
     xa) i=init/amr.off r=ref/amr.off ;;
-    *) echo >&2 "$0: unknown level: $1"
+    *) printf >&2 "$0: unknown level: '$1'\n"
     exit 2
     ;;
 esac
