@@ -9,7 +9,7 @@ PREC = d
 CO_CFLAGS = `co.conf --cflags $(PREC)`
 CO_LDFLAGS = `co.conf --libs $(PREC)`
 
-LINK = $(CC)
+LINK = $(FC)
 
 all: $M
 .o:
