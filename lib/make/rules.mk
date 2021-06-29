@@ -10,10 +10,10 @@ lib$(P)_l.a: $O $(O_L); ar r $@ $O $(O_L) && ranlib $@
 .h.m4.h:; co.m4 -s -o $@ $<
 .f.o:;   $(FC) $< -c $(FCFLAGS) $(FXFLAGS) -o $@
 .f90.o:; $(FC) $< -c $(FCFLAGS) $(FXFLAGS) -o $@
-.c.o:;   $(CC) $< -c -I. $(CFLAGS) $(CO_CFLAGS) -o $@
-.c.s.o:; $(CC) $< -c -I$P/prec/s -Iinc/s -I. $(CFLAGS) $(CO_CFLAGS) -o $@
-.c.d.o:; $(CC) $< -c -I$P/prec/d -Iinc/d -I. $(CFLAGS) $(CO_CFLAGS) -o $@
-.c.l.o:; $(CC) $< -c -I$P/prec/l -Iinc/l -I. $(CFLAGS) $(CO_CFLAGS) -o $@
+.c.o:;   $(CC) $< -c -I. $(CFLAGS) $(GSL_CFLAGS) -o $@
+.c.s.o:; $(CC) $< -c -I$P/prec/s -Iinc/s -I. $(CFLAGS) $(GSL_CFLAGS) -o $@
+.c.d.o:; $(CC) $< -c -I$P/prec/d -Iinc/d -I. $(CFLAGS) $(GSL_CFLAGS) -o $@
+.c.l.o:; $(CC) $< -c -I$P/prec/l -Iinc/l -I. $(CFLAGS) $(GSL_CFLAGS) -o $@
 
 clean:; rm -f $O $(O_S) $(O_D) $(O_L) $L
 test:
