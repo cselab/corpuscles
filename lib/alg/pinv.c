@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
 
