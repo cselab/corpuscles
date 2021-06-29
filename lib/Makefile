@@ -1,3 +1,4 @@
+.POSIX:
 .SUFFIXES:
 .SUFFIXES: .c .c.m4 .d.o .f .f90 .h .h.m4 .l.o .o .s.o
 include ../conf.mk
