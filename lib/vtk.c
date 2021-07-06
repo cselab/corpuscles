@@ -61,7 +61,7 @@ vtk_write(He * he, const real * x, const real * y, const real * z,
     r = fprintf(f, "# vtk DataFile Version 2.0\n");
     if (r <= 0)
         ERR(CO_IO, "fail to write");
-    fprintf(f, "created with he\n");
+    fprintf(f, "created with cselab/corpuscles\n");
     fprintf(f, "ASCII\n");
     fprintf(f, "DATASET POLYDATA\n");
     fprintf(f, "POINTS %d double\n", nv);
@@ -240,7 +240,7 @@ tri_write(He * he, const real * x, const real * y, const real * z,
     r = fprintf(f, "# vtk DataFile Version 2.0\n");
     if (r <= 0)
         ERR(CO_IO, "fail to write");
-    fprintf(f, "created with he\n");
+    fprintf(f, "created with cselab/corpuscles\n");
     fprintf(f, "ASCII\n");
     fprintf(f, "DATASET POLYDATA\n");
     fprintf(f, "POINTS %d double\n", nv);

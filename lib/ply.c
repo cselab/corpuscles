@@ -333,7 +333,7 @@ ply_vtk_txt(T * q, FILE * f, int *b, real * scalar)
 
     n = nv * onm;
     fprintf(f, "# vtk DataFile Version 2.0\n"
-            "created with he\n"
+            "created with cselab/corpuscles\n"
             "ASCII\n" "DATASET POLYDATA\n" "POINTS %d double\n", nv * onm);
     for (i = 0; i < n; i++, ver += q->nvar)
         fprintf(f, FLT " " FLT " " FLT "\n", ver[X], ver[Y], ver[Z]);
@@ -385,7 +385,7 @@ ply_vtk_bin(T * q, FILE * f, int *b, real * scalar)
 
     n = nv * onm;
     fprintf(f, "# vtk DataFile Version 2.0\n"
-            "created with he\n"
+            "created with cselab/corpuscles\n"
             "BINARY\n" "DATASET POLYDATA\n" "POINTS %d float\n", nv * onm);
     for (i = j = k = 0; i < n; i++, j += q->nvar) {
         ver[k++] = ver[j + X];
