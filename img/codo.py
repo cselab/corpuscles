@@ -1,18 +1,52 @@
+import os
+import tempfile
 from paraview.simple import *
 paraview.simple._DisableFirstRenderCameraReset()
-SamplesPerPixel = 50
+SamplesPerPixel = 20
+resx = 200
+resy = 200
+Intensity = 50
+diffuse = 1.0
+transmission = 1.0
+transmissionDepth = 0.05
+
+file = tempfile.NamedTemporaryFile(delete=False)
+file.write(b"""\
+{
+  "family" : "OSPRay",
+  "version" : "0.0",
+  "materials" : {
+    "codo": {
+      "type": "Principled",
+      "doubles" : {
+          "baseColor" : [1, 1, 1],
+          "ior" : [1.0],
+          "transmissionColor" : [0.69, 0.48, 0.72],
+          "transmission" : [%g],
+          "transmissionDepth" : [%g],
+          "diffuse" : [%g]
+      }
+    }
+  }
+}
+""" % (transmission, transmissionDepth, diffuse))
+file.close()
+print(file.name)
 
 mtl = GetMaterialLibrary()
-mtl.LoadMaterials = "codo.json"
+mtl.LoadMaterials = file.name
+os.unlink(file.name)
 
 light = CreateLight()
 light.Coords = 'Ambient'
+light.Intensity = Intensity
 
 render = CreateView('RenderView')
-render.ViewSize = [1053, 836]
+render.ViewSize = [resx, resy]
 render.AxesGrid = 'GridAxes3DActor'
 render.OrientationAxesVisibility = 0
 render.CenterOfRotation = [-1.9761497265236017e-06, 9.267043574512357e-06, -0.11117156609963116]
+
 render.UseLight = 0
 render.StereoType = 'Crystal Eyes'
 render.CameraPosition = [-1.9761497265236017e-06, 9.267043574512357e-06, 6.816658013599184]
@@ -26,30 +60,15 @@ render.AdditionalLights = light
 render.OSPRayMaterialLibrary = mtl
 SetActiveView(None)
 
-layout = CreateLayout(name='Layout #1')
-layout.AssignView(0, render)
-layout.SetSize(1053, 836)
-
 SetActiveView(render)
 vtk = LegacyVTKReader(registrationName='codo.vtk', FileNames=['codo.vtk'])
-
-# create a new 'Plane'
 plane = Plane(registrationName='Plane')
 plane.Origin = [-2.0, -2.0, -0.5]
 plane.Point1 = [2.0, -2.0, -0.5]
 plane.Point2 = [-2.0, 2.0, -0.5]
 
-# create a new 'Generate Surface Normals'
 generateSurfaceNormals1 = GenerateSurfaceNormals(registrationName='GenerateSurfaceNormals1', Input=vtk)
-
-# ----------------------------------------------------------------
-# setup the visualization in view 'render'
-# ----------------------------------------------------------------
-
-# show data from plane
 planeDisplay = Show(plane, render, 'GeometryRepresentation')
-
-# trace defaults for the display properties.
 planeDisplay.Representation = 'Surface'
 planeDisplay.ColorArrayName = [None, '']
 planeDisplay.SelectTCoordArray = 'TextureCoordinates'
