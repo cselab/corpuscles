@@ -1,0 +1,18 @@
+{
+  "family" : "OSPRay",
+  "version" : "0.0",
+  "materials" : {
+    "codo": {
+      "type": "Principled",
+      "doubles" : {
+          "baseColor" : [1, 1, 1],
+          "ior" : [1.0],
+          "transmissionColor" : [0.69, 0.48, 0.72],
+          "transmission" : [0.9],
+          "transmissionDepth" : [0.6],
+          "specular" : [1],
+          "diffuse" : [1]
+      }
+    }
+  }
+}
