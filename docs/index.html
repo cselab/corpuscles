@@ -55,19 +55,19 @@ Install
 </H2>
 <p>Minimal dependencies are C and Force 90 compilers, <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>, and <a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.</p>
 <p>Optional dependencies <a href="http://geomview.org">geomview</a>, <a href="https://maxima.sourceforge.io">maxima</a>, and <a href="https://pandoc.org">pandoc</a>.</p>
-<p>Adjust <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/conf.mk">conf.mk</a> if you want to change defaults</p>
+<p>Adjust <a href="https://github.com/cselab/corpuscles/blob/master/conf.mk">conf.mk</a> if you want to change defaults</p>
 <pre>
 $ cat conf.mk
 CC = gcc
 FC = gfortran
 
-FCFLAGS = -Ofast  -g
+FCFLAGS = -O2 -g
 FXFLAGS = -fallow-argument-mismatch
 
 GSL_CFLAGS = " `gsl-config --cflags `"
 GSL_LDFLAGS = " `gsl-config --libs `"
 
-CFLAGS = -Ofast  -g
+CFLAGS = -O2 -g
 LDFLAGS =
 PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
@@ -89,17 +89,14 @@ If you have <a href=https://github.io/slitvinov/atest>atest</a> you can run
 <pre>
 $ make test
 </pre>
+<p>You can also use a <a href="https://github.com/cselab/corpuscles/blob/master/Dockerfile">docker containter</a>.</p>
 <H2>
 Examples
 </H2>
 <H3>
-hello world
+Hello world
 </H3>
-<dl>
-<dt><a href="https://github.com/cselab/corpuscles/blob/master/example/hello/">example/hello</a></dt>
-<dd>compute area of a triangle
-</dd>
-</dl>
+<p>A program in <a href="https://github.com/cselab/corpuscles/blob/master/example/hello/">example/hello</a> computes area of a triangle.</p>
 <pre>
 $ cat main.c
 #include &lt;stdio.h&gt;
@@ -128,9 +125,13 @@ clean:; rm -f main
 
 </pre>
 <H3>
-read off file
+Read mesh file
 </H3>
-<p>An example is in <a href="https://github.com/cselab/corpuscles/blob/master/example/off/read/">example/off/read</a></p>
+<p>Corpuscles reads <a href="https://en.wikipedia.org/wiki/OFF_(file_format)">OFF files</a>. Here is <a href="https://github.com/cselab/corpuscles/blob/master/data/regular/tetra.off">a file with triangular pyramid</a>.</p>
+<p align="center">
+<img src="img/tetra.png"/>
+</p>
+<p>This program reads an OFF file from an input stream:</p>
 <pre>
 $ cat main.c
 #include &lt;stdio.h&gt;
@@ -143,24 +144,32 @@ $ cat main.c
 #define FMT CO_REAL_OUT
 
 int main(void) {
-    real *x, *y, *z;
-    real hi, lo;
+  real *x, *y, *z, hi;
     He *he;
-    int nv;
+    int nv, nt;
 
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
+    nt = he_nt(he);
     hi = array_max(nv, x);
-    lo = array_min(nv, x);
 
     printf("number of vertices is %d\n", nv);
-    printf(FMT " " FMT "\n", hi, lo);
+    printf("number of triangles is %d\n", nt);
+    printf("maximum x coordinate: " FMT "\n", hi);
     y_fin(he, x, y, z);
 }
 
 </pre>
+<pre>
+$ make
+$ ./main < `co.path`/regular/tetra.off
+number of vertices is 4
+number of triangles is 4
+maximum x coordinate: 1
+
+</pre>
 <H3>
-write off file
+Write mesh file
 </H3>
 <p>Read off, compute area fro every triangle, and output off file with colors (<a href="https://github.com/cselab/corpuscles/blob/master/example/off/write/area/">example/off/write/area</a>)</p>
 <pre>

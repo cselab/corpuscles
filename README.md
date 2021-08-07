@@ -40,20 +40,20 @@ Optional dependencies
 and
 <a href="https://pandoc.org">pandoc</a>.
 
-Adjust [conf.mk](https://github.com/cselab/corpuscles/blob/master/lib/co/conf.mk) if you want to change defaults
+Adjust <a href="https://github.com/cselab/corpuscles/blob/master/conf.mk">conf.mk</a> if you want to change defaults
 
 <pre>
 $ cat conf.mk
 CC = gcc
 FC = gfortran
 
-FCFLAGS = -Ofast  -g
+FCFLAGS = -O2 -g
 FXFLAGS = -fallow-argument-mismatch
 
 GSL_CFLAGS = " `gsl-config --cflags `"
 GSL_LDFLAGS = " `gsl-config --libs `"
 
-CFLAGS = -Ofast  -g
+CFLAGS = -O2 -g
 LDFLAGS =
 PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
@@ -82,12 +82,14 @@ you can run
 $ make test
 </pre>
 
+You can also use a <a href="https://github.com/cselab/corpuscles/blob/master/Dockerfile">docker containter</a>.
+
+
 <H2>Examples</H2>
 
-<H3>hello world</H3>
+<H3>Hello world</H3>
 
-[example/hello](https://github.com/cselab/corpuscles/blob/master/example/hello/)
-: compute area of a triangle
+A program in [example/hello](https://github.com/cselab/corpuscles/blob/master/example/hello/) computes area of a triangle.
 
 <pre>
 $ cat main.c
@@ -118,9 +120,15 @@ clean:; rm -f main
 
 </pre>
 
-<H3>read off file</H3>
+<H3>Read mesh file</H3>
 
-An example is in [example/off/read](https://github.com/cselab/corpuscles/blob/master/example/off/read/)
+Corpuscles reads
+<a href="https://en.wikipedia.org/wiki/OFF_(file_format)">OFF files</a>.
+Here is <a href="https://github.com/cselab/corpuscles/blob/master/data/regular/tetra.off">a file with triangular pyramid</a>.
+
+<p align="center"><img src="img/tetra.png"/></p>
+
+This program reads an OFF file from an input stream:
 
 <pre>
 $ cat main.c
@@ -134,25 +142,33 @@ $ cat main.c
 #define FMT CO_REAL_OUT
 
 int main(void) {
-    real *x, *y, *z;
-    real hi, lo;
+  real *x, *y, *z, hi;
     He *he;
-    int nv;
+    int nv, nt;
 
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
+    nt = he_nt(he);
     hi = array_max(nv, x);
-    lo = array_min(nv, x);
 
     printf("number of vertices is %d\n", nv);
-    printf(FMT " " FMT "\n", hi, lo);
+    printf("number of triangles is %d\n", nt);
+    printf("maximum x coordinate: " FMT "\n", hi);
     y_fin(he, x, y, z);
 }
 
 </pre>
 
+<pre>
+$ make
+$ ./main < `co.path`/regular/tetra.off
+number of vertices is 4
+number of triangles is 4
+maximum x coordinate: 1
 
-<H3>write off file</H3>
+</pre>
+
+<H3>Write mesh file</H3>
 
 Read off, compute area fro every triangle, and output off file with colors ([example/off/write/area](https://github.com/cselab/corpuscles/blob/master/example/off/write/area/))
 
@@ -247,107 +263,107 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 
 <H3>Floating point precision</H3>
 
-[prec/s/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/s/real.h), [prec/d/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/d/real.h), [prec/l/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/l/real.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/s/real.h">prec/s/real.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/d/real.h">prec/d/real.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/l/real.h">prec/l/real.h</a>
 :   single, double, long double
 
 <H3>Math</H3>
 
-[vec.h](https://github.com/cselab/corpuscles/blob/master/lib/co/vec.h), [edg.h](https://github.com/cselab/corpuscles/blob/master/lib/co/edg.h), [tri.h](https://github.com/cselab/corpuscles/blob/master/lib/co/tri.h), [dih.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dih.h), [ten.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ten.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vec.h">vec.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/edg.h">edg.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/tri.h">tri.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dih.h">dih.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ten.h">ten.h</a>
 : vector, edges, triangels, dihidrals, tensors
 
-[dvec.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dvec.h), [dedg.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dedg.h), [dtri.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dtri.h), [ddih.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ddih.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dvec.h">dvec.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dedg.h">dedg.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dtri.h">dtri.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ddih.h">ddih.h</a>
 : derivatives of vector edges, triagels, dihidrals
 
-[ring.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ring.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ring.h">ring.h</a>
 : operation on the first ring of neighbors
 
 <H3>Utility</H3>
 
-[array.h](https://github.com/cselab/corpuscles/blob/master/lib/co/array.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/array.h">array.h</a>
 :  array related functions
 
-[argv.h](https://github.com/cselab/corpuscles/blob/master/lib/co/argv.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/argv.h">argv.h</a>
 :  read from `argv` and shift
 
-[err.h](https://github.com/cselab/corpuscles/blob/master/lib/co/err.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/err.h">err.h</a>
 :   error handling
 
-[endian.h](https://github.com/cselab/corpuscles/blob/master/lib/co/endian.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/endian.h">endian.h</a>
 :   deal with endianess
 
-[macro.h](https://github.com/cselab/corpuscles/blob/master/lib/co/macro.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/macro.h">macro.h</a>
 :   macros
 
-[sum.h](https://github.com/cselab/corpuscles/blob/master/lib/co/sum.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/sum.h">sum.h</a>
 :   [Kahan summation](en.wikipedia.org/wiki/Kahan_summation_algorithm)
 
-[memory.h](https://github.com/cselab/corpuscles/blob/master/lib/co/memory.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/memory.h">memory.h</a>
 :   memory related
 
-[util.h](https://github.com/cselab/corpuscles/blob/master/lib/co/util.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/util.h">util.h</a>
 :   uncategorazed
 
 <H3>Surface properties</H3>
 
-[area.h](https://github.com/cselab/corpuscles/blob/master/lib/co/area.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/area.h">area.h</a>
 :   area
 
-[volume.h](https://github.com/cselab/corpuscles/blob/master/lib/co/volume.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/volume.h">volume.h</a>
 :   volume
 
-[laplace.h](https://github.com/cselab/corpuscles/blob/master/lib/co/laplace.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/laplace.h">laplace.h</a>
 :   Laplace operator of coordinates
 
-[normal.h](https://github.com/cselab/corpuscles/blob/master/lib/co/normal.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/normal.h">normal.h</a>
 :   normal
 
 <H3>"Forces"</H3>
 
-[bending.h](https://github.com/cselab/corpuscles/blob/master/lib/co/bending.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/bending.h">bending.h</a>
 :   generic interface to several bending forces
 
-[forces.h](https://github.com/cselab/corpuscles/blob/master/lib/co/forces.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/forces.h">forces.h</a>
 :   generic interface to forces
 
-[stretch.h](https://github.com/cselab/corpuscles/blob/master/lib/co/stretch.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stretch.h">stretch.h</a>
 :   stretching force
 
 ## Surface transformation
 
-[equiangulate.h](https://github.com/cselab/corpuscles/blob/master/lib/co/equiangulate.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/equiangulate.h">equiangulate.h</a>
 :   equlatirate triangles
 
-[orient.h](https://github.com/cselab/corpuscles/blob/master/lib/co/orient.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/orient.h">orient.h</a>
 :   orient surface in a direction of eigen values of momentum tensor
 
-[restore.h](https://github.com/cselab/corpuscles/blob/master/lib/co/restore.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/restore.h">restore.h</a>
 :  restore a volume of the surface
 
-[transformation.h](https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h">transformation.h</a>
 :  translate, rotate, and and scale surface
 
 <H3>Half-edg related</H3>
 
-[read.h](https://github.com/cselab/corpuscles/blob/master/lib/co/read.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/read.h">read.h</a>
 :   read half-edg to intermediate structure HeRead, used to initialize half-edg
 
-[he.h](https://github.com/cselab/corpuscles/blob/master/lib/co/he.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/he.h">he.h</a>
 :   half edg data structure (provides half-edg API)
 
-[hash.h](https://github.com/cselab/corpuscles/blob/master/lib/co/hash.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/hash.h">hash.h</a>
 :   stores an integer for a pair of integers
 
 <H3>IO</H3>
 
-[off.h](https://github.com/cselab/corpuscles/blob/master/lib/co/off.h), [punto.h](https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h), [vtk.h](https://github.com/cselab/corpuscles/blob/master/lib/co/vtk.h), [gts.h](https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h), [ply.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h), [obj.h](https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/off.h">off.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h">punto.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vtk.h">vtk.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h">gts.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h">ply.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h">obj.h</a>
 :   read/write off files, punto, vtk, gts, ply, obj files
 
 <H3>X and Y</H3>
 
-[x.h](https://github.com/cselab/corpuscles/blob/master/lib/co/x.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/x.h">x.h</a>
 :   simple interface for one surface
 
-[y.h](https://github.com/cselab/corpuscles/blob/master/lib/co/y.h)
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/y.h">y.h</a>
 :   not so simple interface
 
 <H2>Documentation</H2>

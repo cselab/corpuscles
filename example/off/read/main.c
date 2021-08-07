@@ -8,17 +8,17 @@
 #define FMT CO_REAL_OUT
 
 int main(void) {
-    real *x, *y, *z;
-    real hi, lo;
+  real *x, *y, *z, hi;
     He *he;
-    int nv;
+    int nv, nt;
 
     y_inif(stdin, &he, &x, &y, &z);
     nv = he_nv(he);
+    nt = he_nt(he);
     hi = array_max(nv, x);
-    lo = array_min(nv, x);
 
     printf("number of vertices is %d\n", nv);
-    printf(FMT " " FMT "\n", hi, lo);
+    printf("number of triangles is %d\n", nt);
+    printf("maximum x coordinate: " FMT "\n", hi);
     y_fin(he, x, y, z);
 }

@@ -71,12 +71,14 @@ you can run
 $ make test
 </pre>
 
+You can also use a r_source2(Dockerfile,docker containter).
+
+
 <H2>Examples</H2>
 
-<H3>hello world</H3>
+<H3>Hello world</H3>
 
-r_dir(example/hello)
-: compute area of a triangle
+A program in r_dir(example/hello) computes area of a triangle.
 
 <pre>
 $ cat main.c
@@ -88,17 +90,31 @@ $ cat Makefile
 r_file(example/hello/Makefile)
 </pre>
 
-<H3>read off file</H3>
+<H3>Read mesh file</H3>
 
-An example is in r_dir(example/off/read)
+Corpuscles reads
+<a href="https://en.wikipedia.org/wiki/OFF_(file_format)">OFF files</a>.
+Here is r_source2(data/regular/tetra.off,a file with triangular pyramid).
+
+r_geomview(dnl
+<<-r -45 -20 0 $(co.path)/regular/tetra.off>>,
+<<img/tetra.png>>,
+triangular pyramid)
+
+This program reads an OFF file from an input stream:
 
 <pre>
 $ cat main.c
 r_file(example/off/read/main.c)
 </pre>
 
+<pre>
+$ make
+$ ./main < `co.path`/regular/tetra.off
+r_cmd(<<cd example/off/read && make main > /dev/null && ./main < $(co.path)/regular/tetra.off>>)
+</pre>
 
-<H3>write off file</H3>
+<H3>Write mesh file</H3>
 
 Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))
 
