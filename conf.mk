@@ -1,13 +1,13 @@
 CC = gcc
 FC = gfortran
 
-FCFLAGS = -Ofast  -g
+FCFLAGS = -O2 -g
 FXFLAGS = -fallow-argument-mismatch
 
 GSL_CFLAGS = "`gsl-config --cflags`"
 GSL_LDFLAGS = "`gsl-config --libs`"
 
-CFLAGS = -Ofast  -g
+CFLAGS = -O2 -g
 LDFLAGS =
 PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
