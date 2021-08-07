@@ -86,7 +86,8 @@ $ make test
 
 <H3>hello world</H3>
 
-A simple example is in [example/hello](https://github.com/cselab/corpuscles/blob/master/example/hello/)
+[example/hello](https://github.com/cselab/corpuscles/blob/master/example/hello/)
+: compute area of a triangle
 
 <pre>
 $ cat main.c

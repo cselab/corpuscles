@@ -75,7 +75,8 @@ $ make test
 
 <H3>hello world</H3>
 
-A simple example is in r_dir(example/hello)
+r_dir(example/hello)
+: compute area of a triangle
 
 <pre>
 $ cat main.c
