@@ -14,3 +14,4 @@ SHELL ["/bin/bash", "-l", "-c"]
 RUN GIT_SSL_NO_VERIFY=1 git clone --quiet --single-branch --depth 1 https://github.com/cselab/corpuscles
 RUN echo 'PATH=$HOME/.local/bin:$PATH' >> $HOME/.profile
 RUN cd corpuscles && MAKEFLAGS=-j4 ./install.sh
+RUN cd corpuscles/example/hello && make && ./main
