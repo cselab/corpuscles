@@ -1,5 +1,4 @@
 FROM ubuntu:21.04
-RUN echo $PATH | sed 's,:,\n,g'
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install --yes --no-install-recommends \
 gcc \
