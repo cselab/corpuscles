@@ -29,16 +29,18 @@ the bending model of spontaneous curvature. See more details in
 [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
 <H2>Install</H2>
-Minimal dependencies C compiler, Fortran 90 compiler,
+Minimal dependencies are C and Force 90 compilers,
 <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>,
+and
 <a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.
 
 Optional dependencies
 <a href="http://geomview.org">geomview</a>,
 <a href="https://maxima.sourceforge.io">maxima</a>,
+and
 <a href="https://pandoc.org">pandoc</a>.
 
-Adjust <a href="conf.mk">conf.mk</a> if you want to change defaults
+Adjust [conf.mk](https://github.com/cselab/corpuscles/blob/master/lib/co/conf.mk) if you want to change defaults
 
 <pre>
 $ cat conf.mk
@@ -57,7 +59,7 @@ PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
 MAXIMA_HOME = $(HOME)/.maxima
 
-# prefix
+# prefix for commands
 P = co
 </pre>
 
@@ -68,13 +70,14 @@ $ cat $HOME/.bashrc
 PATH="$HOME/.local/bin:$PATH"
 </pre>
 
-Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
-`PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
+Library is installed under the path `PREFIX`. Run
 <pre>
 $ MAKEFLAGS=-j4 ./install.sh
 </pre>
 
-If you have `atest` installed you can run
+If you have
+<a href=https://github.io/slitvinov/atest>atest</a>
+you can run
 <pre>
 $ make test
 </pre>

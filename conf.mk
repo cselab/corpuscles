@@ -13,5 +13,5 @@ PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
 MAXIMA_HOME = $(HOME)/.maxima
 
-# prefix
+# prefix for commands
 P = co

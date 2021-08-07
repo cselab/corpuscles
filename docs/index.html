@@ -53,9 +53,9 @@ Constratin of area difference between outer- and inner-surface
 <H2>
 Install
 </H2>
-<p>Minimal dependencies C compiler, Fortran 90 compiler, <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>, <a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.</p>
-<p>Optional dependencies <a href="http://geomview.org">geomview</a>, <a href="https://maxima.sourceforge.io">maxima</a>, <a href="https://pandoc.org">pandoc</a>.</p>
-<p>Adjust <a href="conf.mk">conf.mk</a> if you want to change defaults</p>
+<p>Minimal dependencies are C and Force 90 compilers, <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>, and <a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.</p>
+<p>Optional dependencies <a href="http://geomview.org">geomview</a>, <a href="https://maxima.sourceforge.io">maxima</a>, and <a href="https://pandoc.org">pandoc</a>.</p>
+<p>Adjust <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/conf.mk">conf.mk</a> if you want to change defaults</p>
 <pre>
 $ cat conf.mk
 CC = gcc
@@ -73,7 +73,7 @@ PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
 MAXIMA_HOME = $(HOME)/.maxima
 
-# prefix
+# prefix for commands
 P = co
 </pre>
 <p><code>PREFIX/bin</code> should be on the path, for example</p>
@@ -81,11 +81,11 @@ P = co
 $ cat $HOME/.bashrc
 PATH="$HOME/.local/bin:$PATH"
 </pre>
-Library is installed under the path <code>PREFIX</code>. Add <code>PREFIX/bin</code> and <code>PREFIX/man</code> to envariament variables <code>PATH</code> and <code>MANPATH</code>. Run
+Library is installed under the path <code>PREFIX</code>. Run
 <pre>
 $ MAKEFLAGS=-j4 ./install.sh
 </pre>
-If you have <code>atest</code> installed you can run
+If you have <a href=https://github.io/slitvinov/atest>atest</a> you can run
 <pre>
 $ make test
 </pre>
