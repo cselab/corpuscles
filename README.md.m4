@@ -5,7 +5,7 @@ r_geomview(dnl
 <<img/rbc/sde/Da-0.358.png>>,
 red cell)
 
-# Introduction
+<H2>Introduction</H2>
 Corpuscles is a C library to resolve the elastic energy and force of a
 membrane surface, which is represented by an unstructured triangulated
 mesh.  It also simulates transformations between different
@@ -13,110 +13,125 @@ configurations/shapes of a closed membrane by a minimization procedure
 under various constraints.
 
 Various components can be switched on/off at will, such as<br>
-A. Bending elasticity of lipip bilayer.<br>
-B. Strain (both shear and strecth) elasticity of cytoskeleton.<br>
-C. Viscosity of lipid membrane.<br>
-D. Thermal fluctuations of lipid membrane.<br>
-E. Constraint of reduced volume of a closed membrane surface.<br>
-F. Constraint of total area of a closed membrane surface.<br>
-G. Constratin of total volume of a closed membrane surface.<br>
-H. Constratin of area difference between outer- and inner-surface.<br>
+<ol>
+<li>Bending elasticity of lipip bilayer</li>
+<li>Strain (both shear and strecth) elasticity of cytoskeleton</li>
+<li>Viscosity of lipid membrane</li>
+<li>Thermal fluctuations of lipid membrane</li>
+<li>Constraint of reduced volume of a closed membrane surface</li>
+<li>Constraint of total area of a closed membrane surface</li>
+<li>Constratin of total volume of a closed membrane surface</li>
+<li>Constratin of area difference between outer- and inner-surface</li>
+</ol>
 
 For different components, variations of model/law can be selected such
 as Helfrich/spontaneous curvature model for bending elasticity and
 Skalak law for strain elasticity.
 
 For different models/laws, variations of schemes impelemented can also
-be choosen such as Gompper&Kroll scheme and Juelicher scheme for the
-bending model of spontaneous curvature.
+be choosen such as Gompper and Kroll scheme and Juelicher scheme for
+the bending model of spontaneous curvature. See more details in
+[https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
-Please see details in r_link(https://cselab.github.io/corpuscles)
+<H2>Install</H2>
+Minimal dependencies C compiler, Fortran 90 compiler,
+<a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>,
+<a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.
 
-# Install
-Minimal requirements `pkg-config`, `make`, `gcc-c`. Optional
-requrements `gsl`, `geomview`, `atest`, `maxima`, `pandoc`.
+Optional dependencies
+<a href="http://geomview.org">geomview</a>,
+<a href="https://maxima.sourceforge.io">maxima</a>,
+<a href="https://pandoc.org">pandoc</a>.
 
-Download code from
-```sh
-$ git@github.com:cselab/corpuscles.git
-```
+Adjust <a href="conf.mk">conf.mk</a> if you want to change defaults
 
-Adjust `conf.mk` if you want to change defaults
-
-```makefile
+<pre>
+$ cat conf.mk
 r_file(conf.mk)dnl
-```
+</pre>
+
+`PREFIX/bin` should be on the path, for example
+
+<pre>
+$ cat $HOME/.bashrc
+PATH="$HOME/.local/bin:$PATH"
+</pre>
 
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
-```sh
-$ make
-```
+<pre>
+$ MAKEFLAGS=-j4 ./install.sh
+</pre>
 
 If you have `atest` installed you can run
-```sh
+<pre>
 $ make test
-```
+</pre>
 
-# Examples
+<H2>Examples</H2>
 
-## hello world
+<H3>hello world</H3>
 
 A simple example is in r_dir(example/hello)
 
-```c
+<pre>
 $ cat main.c
 r_file(example/hello/main.c)
-```
+</pre>
 
-```make
+<pre>
 $ cat Makefile
 r_file(example/hello/Makefile)
-```
+</pre>
 
-## read off file
+<H3>read off file</H3>
 
 An example is in r_dir(example/off/read)
 
-```c
+<pre>
 $ cat main.c
 r_file(example/off/read/main.c)
-```
+</pre>
 
-## write off file
+
+<H3>write off file</H3>
 
 Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))
 
-```c
+<pre>
+$ cat main.c
 r_file(example/off/write/area/main.c)
-```
-```sh
-./main < $(co.path)/rbc/laplace/0.off > out.off
-```
+</pre>
 
-```sh
-co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
-```
+<pre>
+$ ./main < $(co.path)/rbc/laplace/0.off > out.off
+</pre>
+
+To see the results
+
+<pre>
+$ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
+</pre>
 r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
 <<img/area.png>>,
 mesh colored by triangle area)
 
-# Visualization
+<H2>Visualization</H2>
 We use a wrapper to [geomview](http://geomview.org).
 
-```sh
+<pre>
 $ co.geomview -h
-r_cmd(<<co.geomview -h>>)
-```
+r_cmd(<<co.geomview -h | m4/cat>>)
+</pre>
 
-# Lib
+<H2>Library</H2>
 
-## Floating point precision
+<H3>Floating point precision</H3>
 
 r_header(prec/s/real.h), r_header(prec/d/real.h), r_header(prec/l/real.h)
 :   single, double, long double
 
-## Math
+<H3>Math</H3>
 
 r_header(vec.h), r_header(edg.h), r_header(tri.h), r_header(dih.h), r_header(ten.h)
 : vector, edges, triangels, dihidrals, tensors
@@ -127,7 +142,7 @@ r_header(dvec.h), r_header(dedg.h), r_header(dtri.h), r_header(ddih.h)
 r_header(ring.h)
 : operation on the first ring of neighbors
 
-## Utility
+<H3>Utility</H3>
 
 r_header(array.h)
 :  array related functions
@@ -153,7 +168,7 @@ r_header(memory.h)
 r_header(util.h)
 :   uncategorazed
 
-## Surface properties
+<H3>Surface properties</H3>
 
 r_header(area.h)
 :   area
@@ -167,7 +182,7 @@ r_header(laplace.h)
 r_header(normal.h)
 :   normal
 
-## "Forces"
+<H3>"Forces"</H3>
 
 r_header(bending.h)
 :   generic interface to several bending forces
@@ -192,7 +207,7 @@ r_header(restore.h)
 r_header(transformation.h)
 :  translate, rotate, and and scale surface
 
-## Half-edg related
+<H3>Half-edg related</H3>
 
 r_header(read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize half-edg
@@ -203,12 +218,12 @@ r_header(he.h)
 r_header(hash.h)
 :   stores an integer for a pair of integers
 
-## IO
+<H3>IO</H3>
 
 r_header(off.h), r_header(punto.h), r_header(vtk.h), r_header(gts.h), r_header(ply.h), r_header(obj.h)
 :   read/write off files, punto, vtk, gts, ply, obj files
 
-## X and Y
+<H3>X and Y</H3>
 
 r_header(x.h)
 :   simple interface for one surface
@@ -216,21 +231,22 @@ r_header(x.h)
 r_header(y.h)
 :   not so simple interface
 
-# Documentation
+<H2>Documentation</H2>
 
 [git pages](https://cselab.github.io/corpuscles)
 [docs/index.html](docs/index.html) is generated from
 [README.md.m4](README.md.m4). To update run
 
-``` sh
-make html
-```
+<pre>
+$ make html
+</pre>
 
 requires [pandoc](http://pandoc.org).
 
-# Publication
+<H2>Publications</H2>
 
 Bian, X., Litvinov, S., & Koumoutsakos, P. (2020). Bending models of
 lipid bilayer membranes: Spontaneous curvature and area-difference
 elasticity. Computer Methods in Applied Mechanics and Engineering,
-359, 112758. r_link(https://doi.org/10.1016/j.cma.2019.112758)
+359, 112758.
+<a href="https://doi.org/10.1016/j.cma.2019.112758">doi:10.1016/j.cma.2019.112758</a>

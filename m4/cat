@@ -1,0 +1,9 @@
+#!/usr/bin/awk -f
+
+{
+    gsub(/[<]/, "\\&lt;")
+    gsub(/[>]/, "\\&gt;")
+    gsub(/`/, " h_backtick()")
+    gsub(/'/, " h_qsingle()")
+    print
+}

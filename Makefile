@@ -54,7 +54,7 @@ TAGS:; etags `find lib -name '*.c' -or -name '*.h' -or -name '*.m4' -or -name '*
 
 README.md: m4/util.m4
 html: README.md
-	$(PANDOC) --css=css/swiss.css --standalone README.md --resource-path=docs --metadata pagetitle=corpuscles --output=docs/index.html
+	$(PANDOC) --css=css/empty.css --standalone README.md --resource-path=docs --metadata pagetitle=corpuscles --output=docs/index.html
 
 .PHONY: tool bin/m4 m4/lib lib test install clean
 

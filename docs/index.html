@@ -11,230 +11,391 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
-  <link rel="stylesheet" href="css/swiss.css" />
+  <link rel="stylesheet" href="css/empty.css" />
 </head>
 <body>
-<p>include(m4/util.m4)r_geomview(&lt;&lt;-p ‘co.q al img/rbc/ref.off &lt;’ -t -0.06 -0.013 0 -r -64 -32 9.5 -f 25 img/rbc/sde/Da-0.358.off&gt;&gt;, &lt;&lt;img/rbc/sde/Da-0.358.png&gt;&gt;, red cell)<br />
+<p align="center">
+<img src="img/rbc/sde/Da-0.358.png"/>
 </p>
-<h1 id="introduction">Introduction</h1>
+<H2>
+Introduction
+</H2>
 <p>Corpuscles is a C library to resolve the elastic energy and force of a membrane surface, which is represented by an unstructured triangulated mesh. It also simulates transformations between different configurations/shapes of a closed membrane by a minimization procedure under various constraints.</p>
-<p>Various components can be switched on/off at will, such as<br> A. Bending elasticity of lipip bilayer.<br> B. Strain (both shear and strecth) elasticity of cytoskeleton.<br> C. Viscosity of lipid membrane.<br> D. Thermal fluctuations of lipid membrane.<br> E. Constraint of reduced volume of a closed membrane surface.<br> F. Constraint of total area of a closed membrane surface.<br> G. Constratin of total volume of a closed membrane surface.<br> H. Constratin of area difference between outer- and inner-surface.<br></p>
+Various components can be switched on/off at will, such as<br>
+<ol>
+<li>
+Bending elasticity of lipip bilayer
+</li>
+<li>
+Strain (both shear and strecth) elasticity of cytoskeleton
+</li>
+<li>
+Viscosity of lipid membrane
+</li>
+<li>
+Thermal fluctuations of lipid membrane
+</li>
+<li>
+Constraint of reduced volume of a closed membrane surface
+</li>
+<li>
+Constraint of total area of a closed membrane surface
+</li>
+<li>
+Constratin of total volume of a closed membrane surface
+</li>
+<li>
+Constratin of area difference between outer- and inner-surface
+</li>
+</ol>
 <p>For different components, variations of model/law can be selected such as Helfrich/spontaneous curvature model for bending elasticity and Skalak law for strain elasticity.</p>
-<p>For different models/laws, variations of schemes impelemented can also be choosen such as Gompper&amp;Kroll scheme and Juelicher scheme for the bending model of spontaneous curvature.</p>
-<p>Please see details in r_link(https://cselab.github.io/corpuscles)</p>
-<h1 id="install">Install</h1>
-<p>Minimal requirements <code>pkg-config</code>, <code>make</code>, <code>gcc-c</code>. Optional requrements <code>gsl</code>, <code>geomview</code>, <code>atest</code>, <code>maxima</code>, <code>pandoc</code>.</p>
-<p>Download code from</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1">$ <span class="ex">git@github.com</span>:cselab/corpuscles.git</a></code></pre></div>
-<p>Adjust <code>conf.mk</code> if you want to change defaults</p>
-<p><code>makefile r_file(conf.mk)</code></p>
-<p>Library is installed under the path <code>PREFIX</code>. Add <code>PREFIX/bin</code> and <code>PREFIX/man</code> to envariament variables <code>PATH</code> and <code>MANPATH</code>. Run</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1">$ <span class="fu">make</span></a></code></pre></div>
-<p>If you have <code>atest</code> installed you can run</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1">$ <span class="fu">make</span> test</a></code></pre></div>
-<h1 id="examples">Examples</h1>
-<h2 id="hello-world">hello world</h2>
-<p>A simple example is in r_dir(example/hello)</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb4-1" title="1">$ cat main.c</a>
-<a class="sourceLine" id="cb4-2" title="2">r_file(example/hello/main.c)</a></code></pre></div>
-<pre class="make"><code>$ cat Makefile
-r_file(example/hello/Makefile)</code></pre>
-<h2 id="read-off-file">read off file</h2>
-<p>An example is in r_dir(example/off/read)</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb6-1" title="1">$ cat main.c</a>
-<a class="sourceLine" id="cb6-2" title="2">r_file(example/off/read/main.c)</a></code></pre></div>
-<h2 id="write-off-file">write off file</h2>
-<p>Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode c"><code class="sourceCode c"><a class="sourceLine" id="cb7-1" title="1">r_file(example/off/write/area/main.c)</a></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb8-1" title="1"><span class="ex">./main</span> <span class="op">&lt;</span> <span class="va">$(</span><span class="ex">co.path</span><span class="va">)</span>/rbc/laplace/0.off <span class="op">&gt;</span> out.off</a></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1"><span class="ex">co.geomview</span> -r 55.9195 -13.672 8.69021 -f 25.0389 out.off</a></code></pre></div>
-<p>r_geomview(&lt;&lt;-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off&gt;&gt;, &lt;&lt;img/area.png&gt;&gt;, mesh colored by triangle area)<br />
+<p>For different models/laws, variations of schemes impelemented can also be choosen such as Gompper and Kroll scheme and Juelicher scheme for the bending model of spontaneous curvature. See more details in <a href="https://cselab.github.io/corpuscles">https://cselab.github.io/corpuscles</a></p>
+<H2>
+Install
+</H2>
+<p>Minimal dependencies C compiler, Fortran 90 compiler, <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>, <a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.</p>
+<p>Optional dependencies <a href="http://geomview.org">geomview</a>, <a href="https://maxima.sourceforge.io">maxima</a>, <a href="https://pandoc.org">pandoc</a>.</p>
+<p>Adjust <a href="conf.mk">conf.mk</a> if you want to change defaults</p>
+<pre>
+$ cat conf.mk
+CC = gcc
+FC = gfortran
+
+FCFLAGS = -Ofast  -g
+FXFLAGS = -fallow-argument-mismatch
+
+GSL_CFLAGS = " `gsl-config --cflags `"
+GSL_LDFLAGS = " `gsl-config --libs `"
+
+CFLAGS = -Ofast  -g
+LDFLAGS =
+PREFIX = $(HOME)/.local
+DATAPATH = $(HOME)/.co
+MAXIMA_HOME = $(HOME)/.maxima
+
+# prefix
+P = co
+</pre>
+<p><code>PREFIX/bin</code> should be on the path, for example</p>
+<pre>
+$ cat $HOME/.bashrc
+PATH="$HOME/.local/bin:$PATH"
+</pre>
+Library is installed under the path <code>PREFIX</code>. Add <code>PREFIX/bin</code> and <code>PREFIX/man</code> to envariament variables <code>PATH</code> and <code>MANPATH</code>. Run
+<pre>
+$ MAKEFLAGS=-j4 ./install.sh
+</pre>
+If you have <code>atest</code> installed you can run
+<pre>
+$ make test
+</pre>
+<H2>
+Examples
+</H2>
+<H3>
+hello world
+</H3>
+<p>A simple example is in <a href="https://github.com/cselab/corpuscles/blob/master/example/hello/">example/hello</a></p>
+<pre>
+$ cat main.c
+#include &lt;stdio.h&gt;
+
+#include &lt;real.h&gt;
+#include &lt;co/tri.h&gt;
+
+#define FMT CO_REAL_OUT
+
+int main(void) {
+    enum {X, Y, Z};
+    real a[3], b[3], c[3], A;
+
+    a[X] = 0; a[Y] = 0; a[Z] = 0;
+    b[X] = 1; b[Y] = 0; b[Z] = 0;
+    c[X] = 0; c[Y] = 1; c[Z] = 0;
+
+    A = tri_area(a, b, c);
+    printf("Area is " FMT "\n", A);
+}
+
+</pre>
+<pre>
+$ cat Makefile
+include ../../conf.mk
+PREC = d
+CO_CFLAGS =  `co.conf --cflags $(PREC) `
+CO_LDFLAGS =  `co.conf --libs $(PREC) `
+
+main: main.c
+    $(CC) main.c $(CFLAGS) $(CO_CFLAGS) $(LDFLAGS) $(CO_LDFLAGS) -o main
+
+.PHONY: clean
+clean:; rm -f main
+
+</pre>
+<H3>
+read off file
+</H3>
+<p>An example is in <a href="https://github.com/cselab/corpuscles/blob/master/example/off/read/">example/off/read</a></p>
+<pre>
+$ cat main.c
+#include &lt;stdio.h&gt;
+
+#include &lt;real.h&gt;
+#include &lt;co/array.h&gt;
+#include &lt;co/he.h&gt;
+#include &lt;co/y.h&gt;
+
+#define FMT CO_REAL_OUT
+
+int main(void) {
+    real *x, *y, *z;
+    real hi, lo;
+    He *he;
+    int nv;
+
+    y_inif(stdin, &he, &x, &y, &z);
+    nv = he_nv(he);
+    hi = array_max(nv, x);
+    lo = array_min(nv, x);
+
+    printf("number of vertices is %d\n", nv);
+    printf(FMT " " FMT "\n", hi, lo);
+    y_fin(he, x, y, z);
+}
+
+</pre>
+<H3>
+write off file
+</H3>
+<p>Read off, compute area fro every triangle, and output off file with colors (<a href="https://github.com/cselab/corpuscles/blob/master/example/off/write/area/">example/off/write/area</a>)</p>
+<pre>
+$ cat main.c
+#include &lt;stdio.h&gt;
+
+#include &lt;real.h&gt;
+#include &lt;co/area.h&gt;
+#include &lt;co/err.h&gt;
+#include &lt;co/off.h&gt;
+#include &lt;co/he.h&gt;
+#include &lt;co/memory.h&gt;
+#include &lt;co/y.h&gt;
+
+int main(void) {
+    int nt;
+    real *x, *y, *z, *a;
+    He *he;
+    y_inif(stdin, &he, &x, &y, &z);
+    nt = he_nt(he);
+    CALLOC(nt, &a);
+    he_area_tri(he, x, y, z, a);
+    boff_tri_fwrite(he, x, y, z, a, stdout);
+    y_fin(he, x, y, z);
+    FREE(a);
+}
+
+</pre>
+<pre>
+$ ./main < $(co.path)/rbc/laplace/0.off > out.off
+</pre>
+<p>To see the results</p>
+<pre>
+$ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
+</pre>
+<p align="center">
+<img src="img/area.png"/>
 </p>
-<h1 id="visualization">Visualization</h1>
+<H2>
+Visualization
+</H2>
 <p>We use a wrapper to <a href="http://geomview.org">geomview</a>.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1">$ <span class="ex">co.geomview</span> -h</a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="ex">r_cmd</span>(<span class="op">&lt;&lt;co.geomview</span> <span class="ex">-h</span><span class="op">&gt;&gt;</span>)</a></code></pre></div>
-<h1 id="lib">Lib</h1>
-<h2 id="floating-point-precision">Floating point precision</h2>
+<pre>
+$ co.geomview -h
+co.geomview [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..
+he geomview wrapper
+-t x y z      translation
+-r x y z      rotation in degree
+-f zoom       field of view (default is 40)
+-a APPEARANCE load appearance from a file
+-o FILE       write FILE and exit
+-O            write all PPM files and exit
+-OO           write all oogl files and exit
+-format ppmscreen|ppm|ps|ppmosmesa|ppmosglx
+-p command    process every off file by running  'command ' &lt; IN.off &gt; OUT.off
+-n none|each|all|keep normalization status (see geomview manual)
+-c command    run command on every file and write output to stderr, %f is replaced by a file name
+-e command    if keys  'e ' is pressed runs
+               '&lt;OFF command -t x y z -r x y z -f zoom -i [index of a file] -n  [number of files]  ' or
+               '&lt;OFF command ' if -e  '|command ' is passed
+-i command    run command on every image, %i replaced by input; %o -- by output; %b --- by basename
+
+Keys:
+    q: quit
+    s: save snap.ppm
+    S: save every snapshot
+    e: run command on OFF file (see -e option)
+    p: panel
+    j/k: switch between off files
+    J: dump file name
+    [SPC]: dump orientation and field of view
+
+Environment variables:
+WX, WY: resolution of the snapshot (default: 800x600)
+BACKGROUND: default ( '1 1 1 ')
+GEOMVIEW_ARGS: pass to geomview
+
+Examples:
+co.geomview -t 0.25 0.25 0     data/rbc.off
+co.geomview -a data/appearance data/rbc.off
+co.geomview -o snap.ppm        data/rbc.off
+co.geomview                    data/rbc.off data/sph.off
+co.geomview -p co.orient       data/rbc.off data/sph.off
+co.geomview -c off.volume      data/rbc.off data/sph.off
+
+</pre>
+<H2>
+Library
+</H2>
+<H3>
+Floating point precision
+</H3>
 <dl>
-<dt>r_header(prec/s/real.h), r_header(prec/d/real.h), r_header(prec/l/real.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/s/real.h">prec/s/real.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/d/real.h">prec/d/real.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/l/real.h">prec/l/real.h</a></dt>
 <dd>single, double, long double
 </dd>
 </dl>
-<h2 id="math">Math</h2>
+<H3>
+Math
+</H3>
 <dl>
-<dt>r_header(vec.h), r_header(edg.h), r_header(tri.h), r_header(dih.h), r_header(ten.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vec.h">vec.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/edg.h">edg.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/tri.h">tri.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dih.h">dih.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ten.h">ten.h</a></dt>
 <dd>vector, edges, triangels, dihidrals, tensors
 </dd>
-<dt>r_header(dvec.h), r_header(dedg.h), r_header(dtri.h), r_header(ddih.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dvec.h">dvec.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dedg.h">dedg.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dtri.h">dtri.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ddih.h">ddih.h</a></dt>
 <dd>derivatives of vector edges, triagels, dihidrals
 </dd>
-<dt>r_header(ring.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ring.h">ring.h</a></dt>
 <dd>operation on the first ring of neighbors
 </dd>
 </dl>
-<h2 id="utility">Utility</h2>
+<H3>
+Utility
+</H3>
 <dl>
-<dt>r_header(array.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/array.h">array.h</a></dt>
 <dd>array related functions
 </dd>
-<dt>r_header(argv.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/argv.h">argv.h</a></dt>
 <dd>read from <code>argv</code> and shift
 </dd>
-<dt>r_header(err.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/err.h">err.h</a></dt>
 <dd>error handling
 </dd>
-<dt>r_header(endian.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/endian.h">endian.h</a></dt>
 <dd>deal with endianess
 </dd>
-<dt>r_header(macro.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/macro.h">macro.h</a></dt>
 <dd>macros
 </dd>
-<dt>r_header(sum.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/sum.h">sum.h</a></dt>
 <dd><a href="en.wikipedia.org/wiki/Kahan_summation_algorithm">Kahan summation</a>
 </dd>
-<dt>r_header(memory.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/memory.h">memory.h</a></dt>
 <dd>memory related
 </dd>
-<dt>r_header(util.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/util.h">util.h</a></dt>
 <dd>uncategorazed
 </dd>
 </dl>
-<h2 id="surface-properties">Surface properties</h2>
+<H3>
+Surface properties
+</H3>
 <dl>
-<dt>r_header(area.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/area.h">area.h</a></dt>
 <dd>area
 </dd>
-<dt>r_header(volume.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/volume.h">volume.h</a></dt>
 <dd>volume
 </dd>
-<dt>r_header(laplace.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/laplace.h">laplace.h</a></dt>
 <dd>Laplace operator of coordinates
 </dd>
-<dt>r_header(normal.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/normal.h">normal.h</a></dt>
 <dd>normal
 </dd>
 </dl>
-<h2 id="forces">“Forces”</h2>
+<H3>
+“Forces”
+</H3>
 <dl>
-<dt>r_header(bending.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/bending.h">bending.h</a></dt>
 <dd>generic interface to several bending forces
 </dd>
-<dt>r_header(forces.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/forces.h">forces.h</a></dt>
 <dd>generic interface to forces
 </dd>
-<dt>r_header(stretch.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stretch.h">stretch.h</a></dt>
 <dd>stretching force
 </dd>
 </dl>
 <h2 id="surface-transformation">Surface transformation</h2>
 <dl>
-<dt>r_header(equiangulate.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/equiangulate.h">equiangulate.h</a></dt>
 <dd>equlatirate triangles
 </dd>
-<dt>r_header(orient.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/orient.h">orient.h</a></dt>
 <dd>orient surface in a direction of eigen values of momentum tensor
 </dd>
-<dt>r_header(restore.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/restore.h">restore.h</a></dt>
 <dd>restore a volume of the surface
 </dd>
-<dt>r_header(transformation.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h">transformation.h</a></dt>
 <dd>translate, rotate, and and scale surface
 </dd>
 </dl>
-<h2 id="half-edg-related">Half-edg related</h2>
+<H3>
+Half-edg related
+</H3>
 <dl>
-<dt>r_header(read.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/read.h">read.h</a></dt>
 <dd>read half-edg to intermediate structure HeRead, used to initialize half-edg
 </dd>
-<dt>r_header(he.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/he.h">he.h</a></dt>
 <dd>half edg data structure (provides half-edg API)
 </dd>
-<dt>r_header(hash.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/hash.h">hash.h</a></dt>
 <dd>stores an integer for a pair of integers
 </dd>
 </dl>
-<h2 id="io">IO</h2>
+<H3>
+IO
+</H3>
 <dl>
-<dt>r_header(off.h), r_header(punto.h), r_header(vtk.h), r_header(gts.h), r_header(ply.h), r_header(obj.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/off.h">off.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h">punto.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vtk.h">vtk.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h">gts.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h">ply.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h">obj.h</a></dt>
 <dd>read/write off files, punto, vtk, gts, ply, obj files
 </dd>
 </dl>
-<h2 id="x-and-y">X and Y</h2>
+<H3>
+X and Y
+</H3>
 <dl>
-<dt>r_header(x.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/x.h">x.h</a></dt>
 <dd>simple interface for one surface
 </dd>
-<dt>r_header(y.h)</dt>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/y.h">y.h</a></dt>
 <dd>not so simple interface
 </dd>
 </dl>
-<h1 id="documentation">Documentation</h1>
-<p><a href="https://cselab.github.io/corpuscles">git pages</a> <a href="docs/index.html" class="uri">docs/index.html</a> is generated from <a href="README.md.m4" class="uri">README.md.m4</a>. To update run</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1"><span class="fu">make</span> html</a></code></pre></div>
+<H2>
+Documentation
+</H2>
+<p><a href="https://cselab.github.io/corpuscles">git pages</a> <a href="docs/index.html">docs/index.html</a> is generated from <a href="README.md.m4">README.md.m4</a>. To update run</p>
+<pre>
+$ make html
+</pre>
 <p>requires <a href="http://pandoc.org">pandoc</a>.</p>
+<H2>
+Publications
+</H2>
+<p>Bian, X., Litvinov, S., &amp; Koumoutsakos, P. (2020). Bending models of lipid bilayer membranes: Spontaneous curvature and area-difference elasticity. Computer Methods in Applied Mechanics and Engineering, 359, 112758. <a href="https://doi.org/10.1016/j.cma.2019.112758">doi:10.1016/j.cma.2019.112758</a></p>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <p align="center"><img src="img/rbc/sde/Da-0.358.png"/></p>
 
-# Introduction
+<H2>Introduction</H2>
 Corpuscles is a C library to resolve the elastic energy and force of a
 membrane surface, which is represented by an unstructured triangulated
 mesh.  It also simulates transformations between different
@@ -8,80 +8,89 @@ configurations/shapes of a closed membrane by a minimization procedure
 under various constraints.
 
 Various components can be switched on/off at will, such as<br>
-A. Bending elasticity of lipip bilayer.<br>
-B. Strain (both shear and strecth) elasticity of cytoskeleton.<br>
-C. Viscosity of lipid membrane.<br>
-D. Thermal fluctuations of lipid membrane.<br>
-E. Constraint of reduced volume of a closed membrane surface.<br>
-F. Constraint of total area of a closed membrane surface.<br>
-G. Constratin of total volume of a closed membrane surface.<br>
-H. Constratin of area difference between outer- and inner-surface.<br>
+<ol>
+<li>Bending elasticity of lipip bilayer</li>
+<li>Strain (both shear and strecth) elasticity of cytoskeleton</li>
+<li>Viscosity of lipid membrane</li>
+<li>Thermal fluctuations of lipid membrane</li>
+<li>Constraint of reduced volume of a closed membrane surface</li>
+<li>Constraint of total area of a closed membrane surface</li>
+<li>Constratin of total volume of a closed membrane surface</li>
+<li>Constratin of area difference between outer- and inner-surface</li>
+</ol>
 
 For different components, variations of model/law can be selected such
 as Helfrich/spontaneous curvature model for bending elasticity and
 Skalak law for strain elasticity.
 
 For different models/laws, variations of schemes impelemented can also
-be choosen such as Gompper&Kroll scheme and Juelicher scheme for the
-bending model of spontaneous curvature.
+be choosen such as Gompper and Kroll scheme and Juelicher scheme for
+the bending model of spontaneous curvature. See more details in
+[https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
-Please see details in [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
+<H2>Install</H2>
+Minimal dependencies C compiler, Fortran 90 compiler,
+<a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>,
+<a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.
 
-# Install
-Minimal requirements `gcc-c`, `gsl`, `make`, `pkg-config`. Optional
-requrements `geomview`, `atest`, `maxima`, `pandoc`.
+Optional dependencies
+<a href="http://geomview.org">geomview</a>,
+<a href="https://maxima.sourceforge.io">maxima</a>,
+<a href="https://pandoc.org">pandoc</a>.
 
-Download code from
-```sh
-$ git@github.com:cselab/corpuscles.git
-```
+Adjust <a href="conf.mk">conf.mk</a> if you want to change defaults
 
-Adjust `conf.mk` if you want to change defaults
-
-```makefile
+<pre>
+$ cat conf.mk
 CC = gcc
 FC = gfortran
+
 FCFLAGS = -Ofast  -g
+FXFLAGS = -fallow-argument-mismatch
+
+GSL_CFLAGS = " `gsl-config --cflags `"
+GSL_LDFLAGS = " `gsl-config --libs `"
+
 CFLAGS = -Ofast  -g
 LDFLAGS =
-PREFIX = $(HOME)
+PREFIX = $(HOME)/.local
 DATAPATH = $(HOME)/.co
 MAXIMA_HOME = $(HOME)/.maxima
 
 # prefix
 P = co
-```
+</pre>
 
 `PREFIX/bin` should be on the path, for example
 
-```
-$ cat ~/.bashrc
+<pre>
+$ cat $HOME/.bashrc
 PATH="$HOME/.local/bin:$PATH"
-```
+</pre>
 
 Library is installed under the path `PREFIX`. Add `PREFIX/bin` and
 `PREFIX/man` to envariament variables `PATH` and `MANPATH`. Run
-```sh
+<pre>
 $ MAKEFLAGS=-j4 ./install.sh
-```
+</pre>
 
 If you have `atest` installed you can run
-```sh
+<pre>
 $ make test
-```
+</pre>
 
-# Examples
+<H2>Examples</H2>
 
-## hello world
+<H3>hello world</H3>
 
 A simple example is in [example/hello](https://github.com/cselab/corpuscles/blob/master/example/hello/)
 
-```c
+<pre>
 $ cat main.c
-#include <stdio.h>
+#include &lt;stdio.h&gt;
 
-#include <real.h>
-#include <co/tri.h>
+#include &lt;real.h&gt;
+#include &lt;co/tri.h&gt;
 
 #define FMT CO_REAL_OUT
 
@@ -97,14 +106,14 @@ int main(void) {
     printf("Area is " FMT "\n", A);
 }
 
-```
+</pre>
 
-```make
+<pre>
 $ cat Makefile
 include ../../conf.mk
 PREC = d
-CO_CFLAGS = $(co.conf --cflags $(PREC))
-CO_LDFLAGS = $(co.conf --libs $(PREC))
+CO_CFLAGS =  `co.conf --cflags $(PREC) `
+CO_LDFLAGS =  `co.conf --libs $(PREC) `
 
 main: main.c
 	$(CC) main.c $(CFLAGS) $(CO_CFLAGS) $(LDFLAGS) $(CO_LDFLAGS) -o main
@@ -112,20 +121,20 @@ main: main.c
 .PHONY: clean
 clean:; rm -f main
 
-```
+</pre>
 
-## read off file
+<H3>read off file</H3>
 
 An example is in [example/off/read](https://github.com/cselab/corpuscles/blob/master/example/off/read/)
 
-```c
+<pre>
 $ cat main.c
-#include <stdio.h>
+#include &lt;stdio.h&gt;
 
-#include <real.h>
-#include <co/array.h>
-#include <co/he.h>
-#include <co/y.h>
+#include &lt;real.h&gt;
+#include &lt;co/array.h&gt;
+#include &lt;co/he.h&gt;
+#include &lt;co/y.h&gt;
 
 #define FMT CO_REAL_OUT
 
@@ -145,22 +154,24 @@ int main(void) {
     y_fin(he, x, y, z);
 }
 
-```
+</pre>
 
-## write off file
+
+<H3>write off file</H3>
 
 Read off, compute area fro every triangle, and output off file with colors ([example/off/write/area](https://github.com/cselab/corpuscles/blob/master/example/off/write/area/))
 
-```c
-#include <stdio.h>
+<pre>
+$ cat main.c
+#include &lt;stdio.h&gt;
 
-#include <real.h>
-#include <co/area.h>
-#include <co/err.h>
-#include <co/off.h>
-#include <co/he.h>
-#include <co/memory.h>
-#include <co/y.h>
+#include &lt;real.h&gt;
+#include &lt;co/area.h&gt;
+#include &lt;co/err.h&gt;
+#include &lt;co/off.h&gt;
+#include &lt;co/he.h&gt;
+#include &lt;co/memory.h&gt;
+#include &lt;co/y.h&gt;
 
 int main(void) {
     int nt;
@@ -175,20 +186,23 @@ int main(void) {
     FREE(a);
 }
 
-```
-```sh
-./main < $(co.path)/rbc/laplace/0.off > out.off
-```
+</pre>
 
-```sh
-co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
-```
+<pre>
+$ ./main < $(co.path)/rbc/laplace/0.off > out.off
+</pre>
+
+To see the results
+
+<pre>
+$ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
+</pre>
 <p align="center"><img src="img/area.png"/></p>
 
-# Visualization
+<H2>Visualization</H2>
 We use a wrapper to [geomview](http://geomview.org).
 
-```sh
+<pre>
 $ co.geomview -h
 co.geomview [-t x y z] [-r x y z] [-a APPEARANCE] [-o FILE] [OFF]..
 he geomview wrapper
@@ -200,12 +214,12 @@ he geomview wrapper
 -O            write all PPM files and exit
 -OO           write all oogl files and exit
 -format	ppmscreen|ppm|ps|ppmosmesa|ppmosglx
--p command    process every off file by running 'command' < IN.off > OUT.off
+-p command    process every off file by running  'command ' &lt; IN.off &gt; OUT.off
 -n none|each|all|keep normalization status (see geomview manual)
 -c command    run command on every file and write output to stderr, %f is replaced by a file name
--e command    if keys 'e' is pressed runs
-              '<OFF command -t x y z -r x y z -f zoom -i [index of a file] -n  [number of files] ' or
-              '<OFF command' if -e '|command' is passed
+-e command    if keys  'e ' is pressed runs
+               '&lt;OFF command -t x y z -r x y z -f zoom -i [index of a file] -n  [number of files]  ' or
+               '&lt;OFF command ' if -e  '|command ' is passed
 -i command    run command on every image, %i replaced by input; %o -- by output; %b --- by basename
 
 Keys:
@@ -220,7 +234,7 @@ Keys:
 
 Environment variables:
 WX, WY: resolution of the snapshot (default: 800x600)
-BACKGROUND: default ('1 1 1')
+BACKGROUND: default ( '1 1 1 ')
 GEOMVIEW_ARGS: pass to geomview
 
 Examples:
@@ -231,16 +245,16 @@ co.geomview                    data/rbc.off data/sph.off
 co.geomview -p co.orient       data/rbc.off data/sph.off
 co.geomview -c off.volume      data/rbc.off data/sph.off
 
-```
+</pre>
 
-# Lib
+<H2>Library</H2>
 
-## Floating point precision
+<H3>Floating point precision</H3>
 
 [prec/s/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/s/real.h), [prec/d/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/d/real.h), [prec/l/real.h](https://github.com/cselab/corpuscles/blob/master/lib/co/prec/l/real.h)
 :   single, double, long double
 
-## Math
+<H3>Math</H3>
 
 [vec.h](https://github.com/cselab/corpuscles/blob/master/lib/co/vec.h), [edg.h](https://github.com/cselab/corpuscles/blob/master/lib/co/edg.h), [tri.h](https://github.com/cselab/corpuscles/blob/master/lib/co/tri.h), [dih.h](https://github.com/cselab/corpuscles/blob/master/lib/co/dih.h), [ten.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ten.h)
 : vector, edges, triangels, dihidrals, tensors
@@ -251,7 +265,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [ring.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ring.h)
 : operation on the first ring of neighbors
 
-## Utility
+<H3>Utility</H3>
 
 [array.h](https://github.com/cselab/corpuscles/blob/master/lib/co/array.h)
 :  array related functions
@@ -277,7 +291,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [util.h](https://github.com/cselab/corpuscles/blob/master/lib/co/util.h)
 :   uncategorazed
 
-## Surface properties
+<H3>Surface properties</H3>
 
 [area.h](https://github.com/cselab/corpuscles/blob/master/lib/co/area.h)
 :   area
@@ -291,7 +305,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [normal.h](https://github.com/cselab/corpuscles/blob/master/lib/co/normal.h)
 :   normal
 
-## "Forces"
+<H3>"Forces"</H3>
 
 [bending.h](https://github.com/cselab/corpuscles/blob/master/lib/co/bending.h)
 :   generic interface to several bending forces
@@ -316,7 +330,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [transformation.h](https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h)
 :  translate, rotate, and and scale surface
 
-## Half-edg related
+<H3>Half-edg related</H3>
 
 [read.h](https://github.com/cselab/corpuscles/blob/master/lib/co/read.h)
 :   read half-edg to intermediate structure HeRead, used to initialize half-edg
@@ -327,12 +341,12 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [hash.h](https://github.com/cselab/corpuscles/blob/master/lib/co/hash.h)
 :   stores an integer for a pair of integers
 
-## IO
+<H3>IO</H3>
 
 [off.h](https://github.com/cselab/corpuscles/blob/master/lib/co/off.h), [punto.h](https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h), [vtk.h](https://github.com/cselab/corpuscles/blob/master/lib/co/vtk.h), [gts.h](https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h), [ply.h](https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h), [obj.h](https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h)
 :   read/write off files, punto, vtk, gts, ply, obj files
 
-## X and Y
+<H3>X and Y</H3>
 
 [x.h](https://github.com/cselab/corpuscles/blob/master/lib/co/x.h)
 :   simple interface for one surface
@@ -340,21 +354,22 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 [y.h](https://github.com/cselab/corpuscles/blob/master/lib/co/y.h)
 :   not so simple interface
 
-# Documentation
+<H2>Documentation</H2>
 
 [git pages](https://cselab.github.io/corpuscles)
 [docs/index.html](docs/index.html) is generated from
 [README.md.m4](README.md.m4). To update run
 
-``` sh
-make html
-```
+<pre>
+$ make html
+</pre>
 
 requires [pandoc](http://pandoc.org).
 
-# Publication
+<H2>Publications</H2>
 
 Bian, X., Litvinov, S., & Koumoutsakos, P. (2020). Bending models of
 lipid bilayer membranes: Spontaneous curvature and area-difference
 elasticity. Computer Methods in Applied Mechanics and Engineering,
-359, 112758. [https://doi.org/10.1016/j.cma.2019.112758](https://doi.org/10.1016/j.cma.2019.112758)
+359, 112758.
+<a href="https://doi.org/10.1016/j.cma.2019.112758">doi:10.1016/j.cma.2019.112758</a>
