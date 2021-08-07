@@ -97,16 +97,12 @@ $ cat main.c
 
 #define FMT CO_REAL_OUT
 
-int main(void) {
-    enum {X, Y, Z};
-    real a[3], b[3], c[3], A;
-
-    a[X] = 0; a[Y] = 0; a[Z] = 0;
-    b[X] = 1; b[Y] = 0; b[Z] = 0;
-    c[X] = 0; c[Y] = 1; c[Z] = 0;
-
+int
+main(void)
+{
+    real A, a[] = { 0, 0, 0 }, b[] = { 2, 0, 0 }, c[] = { 0, 1, 0 };
     A = tri_area(a, b, c);
-    printf("Area is " FMT "\n", A);
+    printf("Area is of triangle: " FMT "\n", A);
 }
 
 </pre>
@@ -115,13 +111,8 @@ int main(void) {
 $ cat Makefile
 include ../../conf.mk
 PREC = d
-CO_CFLAGS =  `co.conf --cflags $(PREC) `
-CO_LDFLAGS =  `co.conf --libs $(PREC) `
-
 main: main.c
-	$(CC) main.c $(CFLAGS) $(CO_CFLAGS) $(LDFLAGS) $(CO_LDFLAGS) -o main
-
-.PHONY: clean
+	$(CC) main.c $(CFLAGS)  `co.conf --cflags --libs $(PREC) ` $(LDFLAGS) -o $@
 clean:; rm -f main
 
 </pre>
@@ -203,7 +194,8 @@ $ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 <p align="center"><img src="img/area.png"/></p>
 
 <H2>Visualization</H2>
-We use a wrapper to [geomview](http://geomview.org).
+We use a wrapper to
+<a href="http://geomview.org">geomview</a>.
 
 <pre>
 $ co.geomview -h

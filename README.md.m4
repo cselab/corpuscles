@@ -120,7 +120,8 @@ r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
 mesh colored by triangle area)
 
 <H2>Visualization</H2>
-We use a wrapper to [geomview](http://geomview.org).
+We use a wrapper to
+<a href="http://geomview.org">geomview</a>.
 
 <pre>
 $ co.geomview -h
