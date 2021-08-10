@@ -1,3 +1,8 @@
-body	{
-	max-width: 60em;
+body {
+    max-width: 60em;
 }
+
+img {
+    max-width: 100%;
+}
+
