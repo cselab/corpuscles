@@ -1,4 +1,4 @@
-<p align="center"><img src="img/rbc/sde/Da-0.358.png"/></p>
+<p align="center"><img src="img/rbc/sde/Da-0.358.png" alt="red cell"/></p>
 
 <H2>Introduction</H2>
 Corpuscles is a C library to resolve the elastic energy and force of a
@@ -126,7 +126,7 @@ Corpuscles reads
 <a href="https://en.wikipedia.org/wiki/OFF_(file_format)">OFF files</a>.
 Here is <a href="https://github.com/cselab/corpuscles/blob/master/data/regular/tetra.off">a file with triangular pyramid</a>.
 
-<p align="center"><img src="img/tetra.png"/></p>
+<p align="center"><img src="img/tetra.png" alt="triangular pyramid"/></p>
 
 This program reads an OFF file from an input stream:
 
@@ -208,7 +208,7 @@ To see the results
 <pre>
 $ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 </pre>
-<p align="center"><img src="img/area.png"/></p>
+<p align="center"><img src="img/area.png" alt="mesh colored by triangle area"/></p>
 
 <H2>Visualization</H2>
 We use a wrapper to
