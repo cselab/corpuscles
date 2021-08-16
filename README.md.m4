@@ -52,14 +52,14 @@ $ cat conf.mk
 r_file(conf.mk)dnl
 </pre>
 
-`PREFIX/bin` should be on the path, for example
+<tt>PREFIX/bin</tt> should be on the path, for example
 
 <pre>
 $ cat $HOME/.bashrc
 PATH="$HOME/.local/bin:$PATH"
 </pre>
 
-Library is installed under the path `PREFIX`. Run
+Library is installed under the path <tt>PREFIX</tt>. Run
 <pre>
 $ MAKEFLAGS=-j4 ./install.sh
 </pre>
@@ -169,7 +169,7 @@ r_header(array.h)
 :  array related functions
 
 r_header(argv.h)
-:  read from `argv` and shift
+:  read from <tt>argv</tt> and shift
 
 r_header(err.h)
 :   error handling

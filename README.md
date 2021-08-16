@@ -63,14 +63,14 @@ MAXIMA_HOME = $(HOME)/.maxima
 P = co
 </pre>
 
-`PREFIX/bin` should be on the path, for example
+<tt>PREFIX/bin</tt> should be on the path, for example
 
 <pre>
 $ cat $HOME/.bashrc
 PATH="$HOME/.local/bin:$PATH"
 </pre>
 
-Library is installed under the path `PREFIX`. Run
+Library is installed under the path <tt>PREFIX</tt>. Run
 <pre>
 $ MAKEFLAGS=-j4 ./install.sh
 </pre>
@@ -283,7 +283,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 :  array related functions
 
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/argv.h">argv.h</a>
-:  read from `argv` and shift
+:  read from <tt>argv</tt> and shift
 
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/err.h">err.h</a>
 :   error handling
