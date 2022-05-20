@@ -156,6 +156,7 @@ co/restore.h\
 co/ring.h\
 co/segment.h\
 co/skel.h\
+co/stl.h\
 co/strain/2d.h\
 co/strain/3d.h\
 co/strain.h\
