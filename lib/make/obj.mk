@@ -169,6 +169,7 @@ segement.s.o\
 skel.s.o\
 skel/ellipse.s.o\
 skel/rbc.s.o\
+stl.s.o\
 strain/2d.s.o\
 strain/3d.s.o\
 strain.s.o\
@@ -327,6 +328,7 @@ segement.d.o\
 skel.d.o\
 skel/ellipse.d.o\
 skel/rbc.d.o\
+stl.d.o\
 strain/2d.d.o\
 strain/3d.d.o\
 strain.d.o\
@@ -485,6 +487,7 @@ segement.l.o\
 skel.l.o\
 skel/ellipse.l.o\
 skel/rbc.l.o\
+stl.l.o\
 strain/2d.l.o\
 strain/3d.l.o\
 strain.l.o\

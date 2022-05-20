@@ -93,6 +93,7 @@ co/f/volume_normal.h\
 co/f/wlc.h\
 co/generation.h\
 co/git.h\
+co/git.h\
 co/green/3wall2.h\
 co/green/3wall.h\
 co/gts.h\

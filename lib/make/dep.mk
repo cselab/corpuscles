@@ -1488,6 +1488,16 @@ co/macro.h\
 co/memory.h\
 co/skel.h\
 
+stl.s.o:\
+co/prec/s/real.h\
+co/endian.h\
+co/err.h\
+co/he.h\
+co/memory.h\
+co/util.h\
+co/vtk.h\
+inc/def.h\
+
 strain/2d.s.o:\
 co/prec/s/real.h\
 co/err.h\
@@ -3073,6 +3083,16 @@ co/macro.h\
 co/memory.h\
 co/skel.h\
 
+stl.d.o:\
+co/prec/d/real.h\
+co/endian.h\
+co/err.h\
+co/he.h\
+co/memory.h\
+co/util.h\
+co/vtk.h\
+inc/def.h\
+
 strain/2d.d.o:\
 co/prec/d/real.h\
 co/err.h\
@@ -4657,6 +4677,16 @@ co/err.h\
 co/macro.h\
 co/memory.h\
 co/skel.h\
+
+stl.l.o:\
+co/prec/l/real.h\
+co/endian.h\
+co/err.h\
+co/he.h\
+co/memory.h\
+co/util.h\
+co/vtk.h\
+inc/def.h\
 
 strain/2d.l.o:\
 co/prec/l/real.h\
