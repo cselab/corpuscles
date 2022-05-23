@@ -170,7 +170,8 @@ maximum x coordinate: 1
 
 <H3>Write mesh file</H3>
 
-Read off, compute area fro every triangle, and output off file with colors ([example/off/write/area](https://github.com/cselab/corpuscles/blob/master/example/off/write/area/))
+Read off, compute area of every triangle, and output off file with
+colors ([example/off/write/area](https://github.com/cselab/corpuscles/blob/master/example/off/write/area/))
 
 <pre>
 $ cat main.c

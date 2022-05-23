@@ -116,7 +116,8 @@ r_cmd(<<cd example/off/read && make main > /dev/null && ./main < $(co.path)/regu
 
 <H3>Write mesh file</H3>
 
-Read off, compute area fro every triangle, and output off file with colors (r_dir(example/off/write/area))
+Read off, compute area of every triangle, and output off file with
+colors (r_dir(example/off/write/area))
 
 <pre>
 $ cat main.c
