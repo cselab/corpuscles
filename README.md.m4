@@ -241,8 +241,14 @@ r_header(hash.h)
 
 <H3>IO</H3>
 
-r_header(off.h), r_header(punto.h), r_header(vtk.h), r_header(gts.h), r_header(ply.h), r_header(obj.h)
-:   read/write off files, punto, vtk, gts, ply, obj files
+r_header(gts.h),
+r_header(obj.h),
+r_header(off.h),
+r_header(ply.h),
+r_header(punto.h),
+r_header(stl.h),
+r_header(vtk.h)
+:   read/write gts, obj, OFF, ply, punto, STL, and VTK files
 
 <H3>X and Y</H3>
 
