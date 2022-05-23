@@ -34,7 +34,7 @@ the bending model of spontaneous curvature. See more details in
 [https://cselab.github.io/corpuscles](https://cselab.github.io/corpuscles)
 
 <H2>Install</H2>
-Minimal dependencies are C and Force 90 compilers,
+Minimal dependencies are C and Fortran 90 compilers,
 <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>,
 and
 <a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.
