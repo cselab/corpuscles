@@ -95,7 +95,7 @@ he_f_volume_normal_energy(T * q, He * he,
     G(v0);
     G(K);
 
-    V = he_volume_tri(he, x, y, z);
+    V = volume_tri(he, x, y, z);
     d = V - v0;
     C = K / v0;
     return C * d * d;
@@ -127,7 +127,7 @@ he_f_volume_normal_force(T * q, He * he,
     dh_area(dh, &area);
     dh_norm(dh, &nx, &ny, &nz);
 
-    V = he_volume_tri(he, x, y, z);
+    V = volume_tri(he, x, y, z);
     d = V - v0;
     C = -2 * (K / v0) * d;      /* TODO: invert nomral */
     axypz(nv, C, area, nx, fx);

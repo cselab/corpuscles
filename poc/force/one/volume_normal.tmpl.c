@@ -83,7 +83,7 @@ real he_f_%name%_energy(T *q, He *he,
 
     G(v0); G(K);
 
-    V = he_volume_tri(he, x, y, z);
+    V = volume_tri(he, x, y, z);
     d = V - v0;
     C = K/v0;
     return C*d*d;
@@ -112,7 +112,7 @@ int he_f_%name%_force(T *q, He *he,
     dh_area(dh, &area);
     dh_norm(dh, &nx, &ny, &nz);
 
-    V = he_volume_tri(he, x, y, z);
+    V = volume_tri(he, x, y, z);
     d = V - v0;
     C = -2*(K/v0)*d; /* TODO: invert nomral */
     axypz(nv, C, area, nx, fx);

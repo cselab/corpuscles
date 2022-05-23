@@ -254,7 +254,7 @@ static void main0() {
       ek = Kin(vx, vy, vz);
       et = et + ek;
       A = he_area(he, XX, YY, ZZ);
-      V = he_volume_tri(he, XX, YY, ZZ);
+      V = volume_tri(he, XX, YY, ZZ);
       Vr=reduced_volume(A,V);
       MSG("eng: %g %g %g %g %g %g %g", et, eb, ea, ega, ev, ek, ee); 
       MSG("dt: %g", dt);
@@ -304,7 +304,7 @@ int main(int __UNUSED argc, const char *v[]) {
   e0 = eq_tri_edg(a0);
 
   A = A0;
-  V = he_volume_tri(he, XX, YY, ZZ);
+  V = volume_tri(he, XX, YY, ZZ);
   Vr= reduced_volume(A, V);
   
   MSG("Targeted Area, Volume: %g %g", A0, V0);

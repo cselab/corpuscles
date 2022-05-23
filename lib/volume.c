@@ -25,7 +25,7 @@ get(int t, He * he,
 }
 
 real
-he_volume_tri(He * he, const real * x, const real * y, const real * z)
+volume_tri(He * he, const real * x, const real * y, const real * z)
 {
     int n, m;
     real v, V;
