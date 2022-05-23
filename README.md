@@ -355,8 +355,14 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 
 <H3>IO</H3>
 
-<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/off.h">off.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h">punto.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vtk.h">vtk.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h">gts.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h">ply.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h">obj.h</a>
-:   read/write off files, punto, vtk, gts, ply, obj files
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h">gts.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h">obj.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/off.h">off.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h">ply.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h">punto.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stl.h">stl.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vtk.h">vtk.h</a>
+:   read/write gts, obj, OFF, ply, punto, STL, and VTK files
 
 <H3>X and Y</H3>
 
