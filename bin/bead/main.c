@@ -23,8 +23,7 @@ static void
 usg(void)
 {
     fprintf(stderr,
-            "%s [-x|-y|-z] -b bead.off -r reference.off > C.off\n",
-            me);
+            "%s [-x|-y|-z] -b bead.off -r reference.off > C.off\n", me);
     exit(2);
 }
 

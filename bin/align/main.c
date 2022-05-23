@@ -20,12 +20,15 @@
 const char *me = "co.align";
 
 const static int perms[][3] = {
-    {0, 0, 0}, {0, 0, 1},
-    {0, 1, 0}, {0, 1, 1},
-    {1, 0, 0}, {1, 0, 1},
-    {1, 1, 0}, {1, 1, 1}};
+    { 0, 0, 0 }, { 0, 0, 1 },
+    { 0, 1, 0 }, { 0, 1, 1 },
+    { 1, 0, 0 }, { 1, 0, 1 },
+    { 1, 1, 0 }, { 1, 1, 1 }
+};
 
-static void usg(void) {
+static void
+usg(void)
+{
     fprintf(stderr, "%s A.off B.off > C.off\n", me);
     fprintf(stderr, "align B.off with A.off\n");
     exit(2);
@@ -43,11 +46,14 @@ struct Obj {
 
 typedef struct Obj Obj;
 static Obj a, b;
-static real *xb, *yb, *zb; /* backup */
+static real *xb, *yb, *zb;      /* backup */
 
-static int invert(const Ten *t, int n, real *x, real *y, real *z) {
+static int
+invert(const Ten * t, int n, real * x, real * y, real * z)
+{
     int i;
     real v[3], u[3];
+
     for (i = 0; i < n; i++) {
         vec_get(i, x, y, z, v);
         ten_vec(t, v, u);
@@ -56,8 +62,11 @@ static int invert(const Ten *t, int n, real *x, real *y, real *z) {
     return CO_OK;
 }
 
-static int push(void) {
+static int
+push(void)
+{
     int i;
+
     for (i = 0; i < b.n; i++) {
         xb[i] = b.x[i];
         yb[i] = b.y[i];
@@ -66,8 +75,11 @@ static int push(void) {
     return CO_OK;
 }
 
-static int pop(void) {
+static int
+pop(void)
+{
     int i;
+
     for (i = 0; i < b.n; i++) {
         b.x[i] = xb[i];
         b.y[i] = yb[i];
@@ -76,38 +88,57 @@ static int pop(void) {
     return CO_OK;
 }
 
-static real sq(real x) { return x*x; };
-static real dist(void) {
+static real
+sq(real x)
+{
+    return x * x;
+};
+
+static real
+dist(void)
+{
     int i, j;
     real d, s, m;
+
     s = m = 0;
     for (i = 0; i < a.n; i++) {
         m = 1e32;
         for (j = 0; j < b.n; j++) {
             d = sq(a.x[i] - b.x[j]) +
-                sq(a.y[i] - b.y[j]) +
-                sq(a.z[i] - b.z[j]);
-            if (d < m) m = d;
+                sq(a.y[i] - b.y[j]) + sq(a.z[i] - b.z[j]);
+            if (d < m)
+                m = d;
         }
         s += m;
     }
     return s;
 }
 
-static int flip0(int n, real *x) {
+static int
+flip0(int n, real * x)
+{
     int i;
+
     for (i = 0; i < n; i++)
         x[i] = -x[i];
 }
 
-static int flip(const int perm[3]) {
-    enum {X, Y, Z};
-    if (perm[X]) flip0(b.n, b.x);
-    if (perm[Y]) flip0(b.n, b.y);
-    if (perm[Z]) flip0(b.n, b.z);
+static int
+flip(const int perm[3])
+{
+    enum { X, Y, Z };
+
+    if (perm[X])
+        flip0(b.n, b.x);
+    if (perm[Y])
+        flip0(b.n, b.y);
+    if (perm[Z])
+        flip0(b.n, b.z);
 }
 
-static int str(/**/ char *p) {
+static int
+str( /**/ char *p)
+{
     if (*argv == NULL)
         ER("not enough arguments");
     strncpy(p, *argv, 4047);
@@ -115,20 +146,27 @@ static int str(/**/ char *p) {
     return CO_OK;
 }
 
-static int arg() {
+static int
+arg()
+{
     str(a.file);
     str(b.file);
 }
 
-static int eq(const char **a, const char *b) {
+static int
+eq(const char **a, const char *b)
+{
     return (*a != NULL) && util_eq(*a, b);
 };
 
-int main(__UNUSED int argc, const char **v) {
+int
+main(__UNUSED int argc, const char **v)
+{
     int i, j, n;
     real d, m;
 
-    argv = v; argv++;
+    argv = v;
+    argv++;
     if (argv && eq(argv, "-h"))
         usg();
     arg();
@@ -152,7 +190,7 @@ int main(__UNUSED int argc, const char **v) {
     orient_transform(b.orient, &b.t);
 
     m = 1e32;
-    n = sizeof(perms)/sizeof(perms[0]);
+    n = sizeof(perms) / sizeof(perms[0]);
 
     push();
     for (j = i = 0; i < n; i++) {
@@ -173,7 +211,9 @@ int main(__UNUSED int argc, const char **v) {
 
     y_fin(a.he, a.x, a.y, a.z);
     y_fin(b.he, b.x, b.y, b.z);
-    FREE(xb); FREE(yb); FREE(zb);
+    FREE(xb);
+    FREE(yb);
+    FREE(zb);
 
     return 0;
 }

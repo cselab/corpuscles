@@ -15,7 +15,8 @@ const char me[] = "co.eigenvector";
 const real pi = 3.141592653589793;
 
 static int mult(const real[3 * 3], real *, real *, real *);
-static int eigen_vector_point(Eigen *, He *, real *, real *, real *, real *);
+static int eigen_vector_point(Eigen *, He *, real *, real *, real *,
+                              real *);
 
 static void
 usg(void)
@@ -48,33 +49,33 @@ main(__UNUSED int argc, char **argv)
     Alg = eigen_vector_point;
     Report = VECTOR;
     while (*argv != NULL) {
-	arg = argv++[0];
-	if (arg[0] != '-')
-	    break;
-	switch (arg[1]) {
-	case 'h':
-	    usg();
-	    break;
-	case 's':
-	    Alg = eigen_vector_surface;
-	    break;
-	case 'p':
-	    Alg = eigen_vector_point;
-	    break;
-	case 't':
-	    Alg = eigen_vector_tri;
-	    break;
-	case 'a':
-	    Report = VALUE;
-	    break;
-	case 'i':
-	    Report = SHAPE;
-	    if ((shape = *argv++) == NULL)
-		ER("-i requires an argument");
-	    break;
-	default:
-	    ER("%s: unknown option '%s'", me, arg);
-	}
+        arg = argv++[0];
+        if (arg[0] != '-')
+            break;
+        switch (arg[1]) {
+        case 'h':
+            usg();
+            break;
+        case 's':
+            Alg = eigen_vector_surface;
+            break;
+        case 'p':
+            Alg = eigen_vector_point;
+            break;
+        case 't':
+            Alg = eigen_vector_tri;
+            break;
+        case 'a':
+            Report = VALUE;
+            break;
+        case 'i':
+            Report = SHAPE;
+            if ((shape = *argv++) == NULL)
+                ER("-i requires an argument");
+            break;
+        default:
+            ER("%s: unknown option '%s'", me, arg);
+        }
     }
 
     y_inif(stdin, &he, &x, &y, &z);
@@ -84,34 +85,34 @@ main(__UNUSED int argc, char **argv)
 
     switch (Report) {
     case VECTOR:
-	printf(FMT " " FMT " " FMT "\n", vec[0], vec[3], vec[6]);
-	break;
+        printf(FMT " " FMT " " FMT "\n", vec[0], vec[3], vec[6]);
+        break;
     case VALUE:
-	vec_printf(val, FMT);
-	break;
+        vec_printf(val, FMT);
+        break;
     case SHAPE:
-	y_ini(shape, &she, &u, &v, &w);
-	A = val[X];
-	B = val[Y];
-	C = val[Z];
-	a = C + B - A;
-	b = C - B + A;
-	c = - (C - B - A);
+        y_ini(shape, &she, &u, &v, &w);
+        A = val[X];
+        B = val[Y];
+        C = val[Z];
+        a = C + B - A;
+        b = C - B + A;
+        c = -(C - B - A);
 
-	a = sqrt(a);
-	b = sqrt(b);
-	c = sqrt(c);
+        a = sqrt(a);
+        b = sqrt(b);
+        c = sqrt(c);
 
-	MSG("ABC: %g %g %g", a, b, c);
-	n = he_nv(she);
-	transform_scalx(a, n, u, v, w);
-	transform_scaly(b, n, u, v, w);
-	transform_scalz(c, n, u, v, w);
-	for (i = 0; i < n; i++)
-	    mult(vec, &u[i], &v[i], &w[i]);
-	off_he_xyz_fwrite(she, u, v, w, stdout);
-	y_fin(she, u, v, w);
-	break;
+        MSG("ABC: %g %g %g", a, b, c);
+        n = he_nv(she);
+        transform_scalx(a, n, u, v, w);
+        transform_scaly(b, n, u, v, w);
+        transform_scalz(c, n, u, v, w);
+        for (i = 0; i < n; i++)
+            mult(vec, &u[i], &v[i], &w[i]);
+        off_he_xyz_fwrite(she, u, v, w, stdout);
+        y_fin(she, u, v, w);
+        break;
     }
     eigen_fin(eigen);
     y_fin(he, x, y, z);
@@ -140,7 +141,7 @@ mult(const real m[3 * 3], real * px, real * py, real * pz)
 
 static int
 eigen_vector_point(Eigen * q, He * he, real * x, real * y, real * z,
-		   real * v)
+                   real * v)
 {
     USED(he);
     return eigen_vector(q, x, y, z, v);

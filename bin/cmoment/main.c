@@ -26,18 +26,29 @@ static Bending *bending;
 static BendingParam param;
 static const char *me = "co.cmoment";
 
-static void usg(void) {
+static void
+usg(void)
+{
     const char *list;
+
     list = bending_list();
     fprintf(stderr, "%s %s < OFF \n", me, list);
     fprintf(stderr, "print bending moments:\n");
     fprintf(stderr, "sum(a) sum(H*a) sum(H^a)\n");
-    fprintf(stderr, "where `a' is a vertice area, `H' is a mean curvature\n");
+    fprintf(stderr,
+            "where `a' is a vertice area, `H' is a mean curvature\n");
     exit(2);
 }
 
-static int eq(const char *a, const char *b) { return util_eq(a, b); }
-static int scl(/**/ real *p) {
+static int
+eq(const char *a, const char *b)
+{
+    return util_eq(a, b);
+}
+
+static int
+scl( /**/ real * p)
+{
     if (*argv == NULL) {
         usg();
         ER("not enough args");
@@ -47,7 +58,10 @@ static int scl(/**/ real *p) {
     argv++;
     return CO_OK;
 }
-static int str(/**/ char *p) {
+
+static int
+str( /**/ char *p)
+{
     if (*argv == NULL) {
         usg();
         ER("not enough args");
@@ -56,7 +70,10 @@ static int str(/**/ char *p) {
     argv++;
     return CO_OK;
 }
-static void arg() {
+
+static void
+arg()
+{
     if (*argv != NULL && eq(*argv, "-h")) {
         usg();
         exit(0);
@@ -64,40 +81,48 @@ static void arg() {
     str(name);
 }
 
-int main(int __UNUSED argc, const char *v[]) {
+int
+main(int __UNUSED argc, const char *v[])
+{
 
-  int *tri;
-  int i;
-  real e;
-  real H0, H1, H2;
-  const char path[] = "/dev/stdin";
-  argv = v; argv++;
-  arg();
+    int *tri;
+    int i;
+    real e;
+    real H0, H1, H2;
+    const char path[] = "/dev/stdin";
 
-  y_ini(path, &he, &xx, &yy, &zz);
-  
-  nv = he_nv(he);
-  CALLOC(nv, &fx); CALLOC(nv, &fy); CALLOC(nv, &fz);
-  CALLOC(nv, &H); 
-  CALLOC(nv, &area); 
-  
-  bending_ini(name, param, he,  &bending);
-  e = bending_energy(bending, he, xx, yy, zz);
-  
-  bending_curva_mean_ver(bending, &H);
-  bending_area_ver(bending, &area);
+    argv = v;
+    argv++;
+    arg();
 
-  H0 = H1 = H2 = 0;
-  for (i = 0; i < nv; i++) {
-    H0 += area[i];
-    H1 += H[i]*area[i];
-    H2 += H[i]*H[i]*area[i];
-  }
-  printf("%.16g %.16g %.16g\n", H0, H1, H2);
-  
-  FREE(fx); FREE(fy); FREE(fz);
-  FREE(H);
-  FREE(area);
+    y_ini(path, &he, &xx, &yy, &zz);
 
-  y_fin(he, xx, yy, zz);
+    nv = he_nv(he);
+    CALLOC(nv, &fx);
+    CALLOC(nv, &fy);
+    CALLOC(nv, &fz);
+    CALLOC(nv, &H);
+    CALLOC(nv, &area);
+
+    bending_ini(name, param, he, &bending);
+    e = bending_energy(bending, he, xx, yy, zz);
+
+    bending_curva_mean_ver(bending, &H);
+    bending_area_ver(bending, &area);
+
+    H0 = H1 = H2 = 0;
+    for (i = 0; i < nv; i++) {
+        H0 += area[i];
+        H1 += H[i] * area[i];
+        H2 += H[i] * H[i] * area[i];
+    }
+    printf("%.16g %.16g %.16g\n", H0, H1, H2);
+
+    FREE(fx);
+    FREE(fy);
+    FREE(fz);
+    FREE(H);
+    FREE(area);
+
+    y_fin(he, xx, yy, zz);
 }

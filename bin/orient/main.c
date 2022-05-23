@@ -18,26 +18,35 @@ static Orient *orient;
 
 static const char *me = "co.orient";
 
-static void usg(void) {
+static void
+usg(void)
+{
     fprintf(stderr, "%s < IN.off > OUT.off\n", me);
     fprintf(stderr, "%s   IN.off > OUT.off\n", me);
     fputs("put mesh in a center of mass frame, orient axis\n", stderr);
     exit(2);
 }
 
-static int eq(const char **a, const char *b) {
+static int
+eq(const char **a, const char *b)
+{
     return (*a != NULL) && util_eq(*a, b);
 };
 
-static void main0() {
-    real *queue[] = {x, y, z, NULL};
+static void
+main0()
+{
+    real *queue[] = { x, y, z, NULL };
     orient_apply(orient, x, y, z);
     off_he_xyz_fwrite(he, x, y, z, stdout);
 }
 
-int main(__UNUSED int c, const char **v) {
+int
+main(__UNUSED int c, const char **v)
+{
     const char *f;
     const char *stream = "/dev/stdin";
+
     v++;
     if (eq(v, "-h"))
         usg();

@@ -11,8 +11,8 @@ static const char *me = "co.obj";
 static void
 usg(void)
 {
-  fprintf(stderr, "%s < OFF > OBJ\n", me);
-  exit(2);
+    fprintf(stderr, "%s < OFF > OBJ\n", me);
+    exit(2);
 }
 
 int
@@ -22,14 +22,15 @@ main(int argc, char **argv)
     real *x;
     real *y;
     real *z;
+
     while (*++argv != NULL && argv[0][0] == '-')
-	switch (argv[0][1]) {
-	case 'h':
-	    usg();
-	    break;
-	default:
-	    ER("unknown option '%s'", argv[0]);
-	}
+        switch (argv[0][1]) {
+        case 'h':
+            usg();
+            break;
+        default:
+            ER("unknown option '%s'", argv[0]);
+        }
     y_inif(stdin, &he, &x, &y, &z);
     obj_fwrite(he, x, y, z, stdout);
     y_fin(he, x, y, z);

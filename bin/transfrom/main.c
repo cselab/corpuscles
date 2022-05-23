@@ -17,7 +17,7 @@
 #define FMT CO_REAL_OUT
 static const char *me = "co.transform";
 static const real FV = 40;      /* default field of view  */
-enum {X, Y, Z};
+enum { X, Y, Z };
 
 static int t_gamma(real, int, real *, real *, real *);
 static real radian(real);
@@ -26,8 +26,8 @@ static void
 usg(void)
 {
     fprintf(stderr,
-	    "%s [-c|-b] [-l] [-g gamma] [-t x y z] [-r ox oy oz] [-s sx sy sz] [-f field of view] < IN.off > OUT.off\n",
-	    me);
+            "%s [-c|-b] [-l] [-g gamma] [-t x y z] [-r ox oy oz] [-s sx sy sz] [-f field of view] < IN.off > OUT.off\n",
+            me);
     fprintf(stderr, "-c move to the center of the mass\n");
     fprintf(stderr, "-b move to the center of the bounding box\n");
     fprintf(stderr, "-g float stretch x += gamma*z\n");
@@ -78,98 +78,98 @@ main(__UNUSED int argc, char **argv)
     Log = 0;
     Gamma = 0;
     while (*argv != NULL) {
-	arg = argv++[0];
-	if (arg[0] != '-')
-	    break;
-	switch (arg[1]) {
-	case 'h':
-	    usg();
-	    break;
-	case 'g':
-	    if (argv_real(&argv, &gamma) != CO_OK)
-		ER("wrong -g option");
-	    Gamma = 1;
-	    break;
-	case 'l':
-	    Log = 1;
-	    break;
-	case 'c':
-	    switch (arg[2]) {
-	    case '\0': 
-		Center = COM;
-		break;
-	    case 'z':
-		Center = COM_Z;
-		break;
-	    default:
-		ER("%s: unknown option: '%s'", me, arg);
-	    }
-	    break;
-	case 'b':
-	    Center = BOX;
-	    break;
-	case 't':
-	    if (argv_real(&argv, &tx) != CO_OK)
-		ER("wrong -t option");
-	    if (argv_real(&argv, &ty) != CO_OK)
-		ER("wrong -t option");
-	    if (argv_real(&argv, &tz) != CO_OK)
-		ER("wrong -t option");
-	    break;
-	case 's':
-	    if (argv_real(&argv, &sx) != CO_OK)
-		ER("wrong -s option");
-	    if (argv_real(&argv, &sy) != CO_OK)
-		ER("wrong -s option");
-	    if (argv_real(&argv, &sz) != CO_OK)
-		ER("wrong -s option");
-	    break;
-	case 'r':
-	    if (argv_real(&argv, &rx) != CO_OK)
-		ER("wrong -r option");
-	    if (argv_real(&argv, &ry) != CO_OK)
-		ER("wrong -r option");
-	    if (argv_real(&argv, &rz) != CO_OK)
-		ER("wrong -r option");
-	    break;
-	case 'f':
-	    if (argv_real(&argv, &f) != CO_OK)
-		ER("wrong -f option");
-	    break;
-	case 'i':
-	    if (argv_int(&argv, &i) != CO_OK)
-		ER("wrong -i option");
-	    break;
-	case 'n':
-	    if (argv_int(&argv, &n) != CO_OK)
-		ER("wrong -n option");
-	    break;
-	default:
-	    ER("%s: unknown option: '%s'", me, arg);
-	}
+        arg = argv++[0];
+        if (arg[0] != '-')
+            break;
+        switch (arg[1]) {
+        case 'h':
+            usg();
+            break;
+        case 'g':
+            if (argv_real(&argv, &gamma) != CO_OK)
+                ER("wrong -g option");
+            Gamma = 1;
+            break;
+        case 'l':
+            Log = 1;
+            break;
+        case 'c':
+            switch (arg[2]) {
+            case '\0':
+                Center = COM;
+                break;
+            case 'z':
+                Center = COM_Z;
+                break;
+            default:
+                ER("%s: unknown option: '%s'", me, arg);
+            }
+            break;
+        case 'b':
+            Center = BOX;
+            break;
+        case 't':
+            if (argv_real(&argv, &tx) != CO_OK)
+                ER("wrong -t option");
+            if (argv_real(&argv, &ty) != CO_OK)
+                ER("wrong -t option");
+            if (argv_real(&argv, &tz) != CO_OK)
+                ER("wrong -t option");
+            break;
+        case 's':
+            if (argv_real(&argv, &sx) != CO_OK)
+                ER("wrong -s option");
+            if (argv_real(&argv, &sy) != CO_OK)
+                ER("wrong -s option");
+            if (argv_real(&argv, &sz) != CO_OK)
+                ER("wrong -s option");
+            break;
+        case 'r':
+            if (argv_real(&argv, &rx) != CO_OK)
+                ER("wrong -r option");
+            if (argv_real(&argv, &ry) != CO_OK)
+                ER("wrong -r option");
+            if (argv_real(&argv, &rz) != CO_OK)
+                ER("wrong -r option");
+            break;
+        case 'f':
+            if (argv_real(&argv, &f) != CO_OK)
+                ER("wrong -f option");
+            break;
+        case 'i':
+            if (argv_int(&argv, &i) != CO_OK)
+                ER("wrong -i option");
+            break;
+        case 'n':
+            if (argv_int(&argv, &n) != CO_OK)
+                ER("wrong -n option");
+            break;
+        default:
+            ER("%s: unknown option: '%s'", me, arg);
+        }
     }
     if (y_inif(stdin, &he, &x, &y, &z) != CO_OK)
-	ER("fail to open input file");
+        ER("fail to open input file");
     n = he_nv(he);
 
     Bbox *box;
 
     switch (Center) {
     case COM:
-	transform_centroid(he, x, y, z, com);
-	if (Log)
-	    vec_fprintf(com, stderr, FMT);
-	vec_neg(com);
-	transform_tran(com, n, x, y, z);
-	break;
+        transform_centroid(he, x, y, z, com);
+        if (Log)
+            vec_fprintf(com, stderr, FMT);
+        vec_neg(com);
+        transform_tran(com, n, x, y, z);
+        break;
     case COM_Z:
-	transform_centroid(he, x, y, z, com);
-	if (Log)
-	    vec_fprintf(com, stderr, FMT);
-	vec_neg(com);
-	com[Z] = 0;
-	transform_tran(com, n, x, y, z);
-	break;	
+        transform_centroid(he, x, y, z, com);
+        if (Log)
+            vec_fprintf(com, stderr, FMT);
+        vec_neg(com);
+        com[Z] = 0;
+        transform_tran(com, n, x, y, z);
+        break;
     case BOX:
         bbox_ini(&box);
         bbox_update(box, n, x, y, z);

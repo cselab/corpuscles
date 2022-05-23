@@ -87,10 +87,11 @@ main(int argc, char **argv)
     int h;
     int a;
     int b;
+
     h = he_hdg_ver(he, start);
     a = he_tri(he, h);
     b = he_tri(he, he_nxt(he, h));
-    
+
     y_fin(he, x, y, z);
 }
 
