@@ -1,32 +1,21 @@
 #include <stdio.h>
+#include <math.h>
 
 #include <real.h>
-#include <co/err.h>
-#include <co/x.h>
-#include <co/vec.h>
-#include <co/tri.h>
+#include <co/he.h>
+#include <co/y.h>
+#include <co/volume.h>
 
-void get3(int i, int j, int k, /**/ real a[3], real b[3], real c[3]) {
-    vec_get(i, XX, YY, ZZ, a);
-    vec_get(j, XX, YY, ZZ, b);
-    vec_get(k, XX, YY, ZZ, c);
-}
-
-void main0() {
-    int m, i, j, k;
-    real V, a[3], b[3], c[3];
-    V = 0;
-    for (m = 0; m < NT; m++) {
-        i = T0[m]; j = T1[m]; k = T2[m];
-        get3(i, j, k, a, b, c);
-        V += tri_volume(a, b, c);
-    }
-    printf("NT = %i, %g\n", NT, V);
-}
-
-int main() {
-    ini("/dev/stdin");
-    main0();
-    fin();
-    return CO_OK;
+int main(void) {
+  real *x, *y, *z, V;
+  double a;
+  double Vtetra;
+  He *he;
+  y_inif(stdin, &he, &x, &y, &z);
+  a = sqrt(2*2 + 2*2);
+  Vtetra = a*a*a/(6 * sqrt(2));
+  printf(CO_REAL_OUT "\n"
+	 "%.16g\n",
+	 volume_tri(he, x, y, z), Vtetra);
+  y_fin(he, x, y, z);
 }
