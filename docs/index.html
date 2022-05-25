@@ -214,6 +214,7 @@ $ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 <H3>
 Refine mesh
 </H3>
+Using sqrt(3)-subdivision scheme
 <pre>
 $ co.geomview -r 60 -40 10 -f 22 `co.path`/rbc/icosahedron/0.off
 $ co.sqrt3 < `co.path`/rbc/icosahedron/0.off > a.off
@@ -358,7 +359,9 @@ Surface properties
 <dd>stretching force
 </dd>
 </dl>
-<h2 id="surface-transformation">Surface transformation</h2>
+<H3>
+Surface transformation
+</H3>
 <dl>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/equiangulate.h">equiangulate.h</a></dt>
 <dd>equlatirate triangles
@@ -371,6 +374,9 @@ Surface properties
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h">transformation.h</a></dt>
 <dd>translate, rotate, and and scale surface
+</dd>
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/remesh.h">remesh.h</a></dt>
+<dd>“edit” surfaces
 </dd>
 </dl>
 <H3>

@@ -342,7 +342,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stretch.h">stretch.h</a>
 :   stretching force
 
-## Surface transformation
+<H3>Surface transformation</H3>
 
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/equiangulate.h">equiangulate.h</a>
 :   equlatirate triangles
@@ -355,6 +355,9 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h">transformation.h</a>
 :  translate, rotate, and and scale surface
+
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/remesh.h">remesh.h</a>
+: "edit" surfaces
 
 <H3>Half-edg related</H3>
 
