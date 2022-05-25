@@ -137,6 +137,21 @@ r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
 <<img/area.png>>,
 mesh colored by triangle area)
 
+<H3>Refine mesh</H3>
+<pre>
+$ co.geomview -r 60 -40 10 -f 22 `co.path`/rbc/icosahedron/0.off
+$ co.sqrt3 < `co.path`/rbc/icosahedron/0.off > a.off
+$ co.geomview -r 60 -40 10 -f 22 a.off
+</pre>
+
+r_geomview(<<-r 60 -40 10 -f 22 $(co.path)/rbc/icosahedron/0.off>>,
+<<img/0.png>>,
+red cell with 1280 trianglles)
+
+r_geomview(<<-r 60 -40 10 -f 22 img/1.off>>,
+<<img/1.png>>,
+red cell with 3840 trianglles)
+
 <H2>Visualization</H2>
 We use a wrapper to
 <a href="http://geomview.org">geomview</a>.

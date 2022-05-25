@@ -211,6 +211,17 @@ $ co.geomview -r 55.9195 -13.672 8.69021 -f 25.0389 out.off
 </pre>
 <p align="center"><img src="img/area.png" alt="mesh colored by triangle area"/></p>
 
+<H3>Refine mesh</H3>
+<pre>
+$ co.geomview -r 60 -40 10 -f 22 `co.path`/rbc/icosahedron/0.off
+$ co.sqrt3 < `co.path`/rbc/icosahedron/0.off > a.off
+$ co.geomview -r 60 -40 10 -f 22 a.off
+</pre>
+
+<p align="center"><img src="img/0.png" alt="red cell with 1280 trianglles"/></p>
+
+<p align="center"><img src="img/1.png" alt="red cell with 3840 trianglles"/></p>
+
 <H2>Visualization</H2>
 We use a wrapper to
 <a href="http://geomview.org">geomview</a>.
