@@ -232,7 +232,7 @@ r_header(forces.h)
 r_header(stretch.h)
 :   stretching force
 
-## Surface transformation
+<H3>Surface transformation</H3>
 
 r_header(equiangulate.h)
 :   equlatirate triangles
@@ -245,6 +245,9 @@ r_header(restore.h)
 
 r_header(transformation.h)
 :  translate, rotate, and and scale surface
+
+r_header(remesh.h)
+: "edit" surfaces
 
 <H3>Half-edg related</H3>
 
