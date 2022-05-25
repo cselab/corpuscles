@@ -138,6 +138,8 @@ r_geomview(<<-r 55.9195 -13.672 8.69021 -f 25.0389 img/area.off>>,
 mesh colored by triangle area)
 
 <H3>Refine mesh</H3>
+
+Using sqrt(3)-subdivision scheme
 <pre>
 $ co.geomview -r 60 -40 10 -f 22 `co.path`/rbc/icosahedron/0.off
 $ co.sqrt3 < `co.path`/rbc/icosahedron/0.off > a.off
