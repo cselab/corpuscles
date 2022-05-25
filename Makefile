@@ -9,6 +9,7 @@ lib\
 bin/app\
 bin/bead\
 bin/2vtk\
+bin/2obj\
 bin/2stl\
 bin/eigenvector\
 bin/eng\
