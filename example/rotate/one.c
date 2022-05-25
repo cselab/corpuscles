@@ -12,23 +12,38 @@ static const char *me = "rotate/one";
 static void
 usg(void)
 {
-    fprintf(stderr, "%s -e int  < OFF\n", me);
+    fprintf(stderr, "%s -e int [-c] < OFF\n", me);
     exit(2);
 }
 
 int
 main(int __UNUSED argc, const char **argv)
 {
-    He *he;
-    real *x, *y, *z, *color;
     const char *arg;
-    int e, i, j, h, f, ne, nt, Eflag, status;
+    He *he;
+    int Cflag;
+    int e;
+    int Eflag;
+    int f;
+    int h;
+    int i;
+    int j;
+    int ne;
+    int nt;
+    real *color;
+    real *x;
+    real *y;
+    real *z;
 
+    Cflag = 0;
     Eflag = 0;
     while (*++argv != NULL && argv[0][0] == '-')
         switch (argv[0][1]) {
         case 'h':
             usg();
+            break;
+        case 'c':
+            Cflag = 1;
             break;
         case 'e':
             argv++;
@@ -54,16 +69,19 @@ main(int __UNUSED argc, const char **argv)
         fprintf(stderr, "%s: e=%d >= ne=%d\n", me, e, ne);
         exit(2);
     }
-    status = he_edg_rotate(he, e);
-    if (status != CO_OK)
+    if (he_edg_rotate(he, e) != CO_OK)
         ER("he_edg_rotate failed");
-    CALLOC(nt, &color);
-    h = he_hdg_edg(he, e);
-    f = he_flp(he, h);
-    i = he_tri(he, h);
-    j = he_tri(he, f);
-    color[i] = color[j] = 1;
-    boff_tri_fwrite(he, x, y, z, color, stdout);
-    FREE(color);
+
+    if (Cflag) {
+        CALLOC(nt, &color);
+        h = he_hdg_edg(he, e);
+        f = he_flp(he, h);
+        i = he_tri(he, h);
+        j = he_tri(he, f);
+        color[i] = color[j] = 1;
+        boff_tri_fwrite(he, x, y, z, color, stdout);
+        FREE(color);
+    } else
+        boff_fwrite(he, x, y, z, stdout);
     y_fin(he, x, y, z);
 }
