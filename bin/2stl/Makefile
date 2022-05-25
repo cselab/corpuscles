@@ -9,6 +9,5 @@ all: $M
 install: $M
 	mkdir -p $(PREFIX)/bin
 	cp main $(PREFIX)/bin/co.2stl
-all: $M
 .c:; $(CC) $< $(CFLAGS) $(CO_FLAGS) -o $@
 clean:; rm -f $M
