@@ -12,7 +12,7 @@ static const char *me = "rotate/one";
 static void
 usg(void)
 {
-    fprintf(stderr, "%s: [tirangle number] < OFF\n", me);
+    fprintf(stderr, "%s -e int  < OFF\n", me);
     exit(2);
 }
 
@@ -33,7 +33,7 @@ main(int __UNUSED argc, const char **argv)
         case 'e':
             argv++;
             if ((arg = *argv) == NULL) {
-                fprintf(stderr, "%s: -t needs an argument\n", me);
+                fprintf(stderr, "%s: -e needs an argument\n", me);
                 exit(2);
             }
             Eflag = 1;
