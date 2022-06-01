@@ -379,7 +379,7 @@ co.geomview -c off.volume      data/rbc.off data/sph.off
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h">punto.h</a>,
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stl.h">stl.h</a>,
 <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stl.h">stl.h</a>,
-<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/xmf.h">xmf.h</a>
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/xdmf.h">xdmf.h</a>
 :   read/write GTS, OBJ, OFF, PLY, punto, STL, VTK, and XDMF files.
 
 <H3>X and Y</H3>
