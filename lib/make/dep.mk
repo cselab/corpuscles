@@ -1493,6 +1493,8 @@ co/prec/s/real.h\
 co/err.h\
 co/he.h\
 co/stl.h\
+co/vec.h\
+co/tri.h\
 
 strain/2d.s.o:\
 co/prec/s/real.h\
@@ -1649,6 +1651,12 @@ co/memory.h\
 co/util.h\
 co/vtk.h\
 inc/def.h\
+
+xdmf.s.o:\
+co/prec/s/real.h\
+co/err.h\
+co/he.h\
+co/xdmf.h\
 
 y.s.o:\
 co/prec/s/real.h\
@@ -3084,6 +3092,8 @@ co/prec/d/real.h\
 co/err.h\
 co/he.h\
 co/stl.h\
+co/vec.h\
+co/tri.h\
 
 strain/2d.d.o:\
 co/prec/d/real.h\
@@ -3240,6 +3250,12 @@ co/memory.h\
 co/util.h\
 co/vtk.h\
 inc/def.h\
+
+xdmf.d.o:\
+co/prec/d/real.h\
+co/err.h\
+co/he.h\
+co/xdmf.h\
 
 y.d.o:\
 co/prec/d/real.h\
@@ -4675,6 +4691,8 @@ co/prec/l/real.h\
 co/err.h\
 co/he.h\
 co/stl.h\
+co/vec.h\
+co/tri.h\
 
 strain/2d.l.o:\
 co/prec/l/real.h\
@@ -4831,6 +4849,12 @@ co/memory.h\
 co/util.h\
 co/vtk.h\
 inc/def.h\
+
+xdmf.l.o:\
+co/prec/l/real.h\
+co/err.h\
+co/he.h\
+co/xdmf.h\
 
 y.l.o:\
 co/prec/l/real.h\

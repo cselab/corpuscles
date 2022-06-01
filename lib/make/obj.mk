@@ -189,6 +189,7 @@ viscosity/pairwise.s.o\
 volume.s.o\
 vtk2.s.o\
 vtk.s.o\
+xdmf.s.o\
 y.s.o\
 
 O_D = \
@@ -348,6 +349,7 @@ viscosity/pairwise.d.o\
 volume.d.o\
 vtk2.d.o\
 vtk.d.o\
+xdmf.d.o\
 y.d.o\
 
 O_L = \
@@ -507,5 +509,6 @@ viscosity/pairwise.l.o\
 volume.l.o\
 vtk2.l.o\
 vtk.l.o\
+xdmf.l.o\
 y.l.o\
 
