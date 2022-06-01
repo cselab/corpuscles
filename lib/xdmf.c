@@ -16,14 +16,14 @@ xdmf_write(He * he, const real * x, const real * y, const real * z,
            const char *xmf, const char *ijk, const char *xyz)
 {
     FILE *file;
-    long cnt;
-    int nv;
-    int nt;
     int i;
     int j;
     int k;
+    int nt;
+    int nv;
     int t;
     int v;
+    long cnt;
 
     nv = he_nv(he);
     nt = he_nt(he);
@@ -58,6 +58,55 @@ xdmf_write(He * he, const real * x, const real * y, const real * z,
     }
     if (fclose(file) != 0)
         ERR(CO_IO, "fail to close '%s'", ijk);
+
+    if ((file = fopen(xyz, "w")) == NULL)
+        ERR(CO_IO, "fail to open '%s'", xyz);
+    for (v = 0; v < nt; v++) {
+        FWRITE(&x[v], sizeof x[v]);
+        FWRITE(&y[v], sizeof y[v]);
+        FWRITE(&z[v], sizeof z[v]);
+    }
+    if (fclose(file) != 0)
+        ERR(CO_IO, "fail to close '%s'", xyz);
+
+    return CO_OK;
+}
+
+int
+xdmf_xwrite(He * he, const real * x, const real * y, const real * z,
+            const char *xmf, const char *ijk, const char *xyz)
+{
+    FILE *file;
+    int i;
+    int j;
+    int k;
+    int nv;
+    int nt;
+    int t;
+    int v;
+    long cnt;
+
+    nv = he_nv(he);
+    nt = he_nt(he);
+    if ((file = fopen(xmf, "w")) == NULL)
+        ERR(CO_IO, "fail to open '%s'", xmf);
+
+    fprintf(file,
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<Xdmf Version=\"3.0\">\n"
+            "   <Domain>\n"
+            "      <Grid Name=\"Grid\">\n"
+            "         <Geometry GeometryType=\"XYZ\">\n"
+            "            <DataItem DataType=\"Float\" Dimensions=\"%d 3\" Format=\"Binary\" Precision=\"%ld\">%s</DataItem>\n"
+            "         </Geometry>\n"
+            "         <Topology TopologyType=\"Triangle\" NumberOfElements=\"%d\" NodesPerElement=\"3\">\n"
+            "            <DataItem DataType=\"Int\" Dimensions=\"%d 3\" Format=\"Binary\">%s</DataItem>\n"
+            "         </Topology>\n"
+            "      </Grid>\n" "   </Domain>\n" "</Xdmf>\n", nv,
+            sizeof(real), xyz, nt, nt, ijk);
+
+    if (fclose(file) != 0)
+        ERR(CO_IO, "fail to close '%s'", xmf);
 
     if ((file = fopen(xyz, "w")) == NULL)
         ERR(CO_IO, "fail to open '%s'", xyz);
