@@ -268,8 +268,9 @@ r_header(off.h),
 r_header(ply.h),
 r_header(punto.h),
 r_header(stl.h),
-r_header(vtk.h)
-:   read/write gts, obj, OFF, ply, punto, STL, and VTK files
+r_header(stl.h),
+r_header(xmf.h)
+:   read/write GTS, OBJ, OFF, PLY, punto, STL, VTK, and XDMF files.
 
 <H3>X and Y</H3>
 
