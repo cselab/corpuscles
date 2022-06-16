@@ -1,3 +1,4 @@
+.POSIX:
 include conf.mk
 PANDOC = pandoc
 
@@ -56,10 +57,12 @@ include make/dir.mk
 TAGS:; etags `find lib -name '*.c' -or -name '*.h' -or -name '*.m4' -or -name '*.inc'`
 
 README.md: m4/util.m4
-html: README.md
-	$(PANDOC) --css=css/empty.css --standalone README.md --resource-path=docs -V lang=en-US --metadata pagetitle='Corpuscles documentation' --output=docs/index.html
-
-.PHONY: tool bin/m4 m4/lib lib test install clean
+html: docs/index.html
+pdf: corpuscles.pdf
+docs/index.html: README.md
+	$(PANDOC) --css=css/empty.css --standalone $< --resource-path=docs -V lang=en-US --metadata pagetitle='Corpuscles documentation' --metadata author='Sergey Litvinov' -o $@
+corpuscles.pdf: docs/index.html
+	$(PANDOC) $< -t context -V papersize:letter -o $@
 
 .md.m4.md:; co.m4 -o $@ $<
 .SUFFIXES: .md.m4 .md
