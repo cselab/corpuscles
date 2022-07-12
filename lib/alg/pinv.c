@@ -12,6 +12,10 @@
 
 #define T AlgPinv
 
+#ifndef GSL_DBL_EPSILON
+#define GSL_DBL_EPSILON (2.2204460492503131e-16)
+#endif
+
 typedef struct T T;
 struct T {
     int dim;
