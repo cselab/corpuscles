@@ -13,6 +13,7 @@ bin/2vtk\
 bin/2xdmf\
 bin/app\
 bin/bead\
+bin/components\
 bin/eigenvector\
 bin/eng\
 bin/ffmpeg\
