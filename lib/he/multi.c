@@ -4,24 +4,23 @@
 #include "co/memory.h"
 #include "co/he/multi.h"
 
-static void u_make(int);
-static int u_find(int);
-static void u_union(int, int);
-static int *u_root;
+static int u_find(int*, int);
+static void u_union(int*, int, int);
 
 int
 he_multi_label(He * he, int *pnl, int *lbl)
 {
 #define UNION(t, i)				\
   if (!he_bnd(he, i))				\
-    u_union(t, he_tri(he, he_flp(he, i)))
+    u_union(root, t, he_tri(he, he_flp(he, i)))
 
     int nt, nl, t, i, j, k;
+    int *root;
 
     nt = he_nt(he);
-    MALLOC(nt, &u_root);
+    MALLOC(nt, &root);
     for (t = 0; t < nt; t++) {
-        u_make(t);
+        root[t] = t;
         lbl[t] = -1;
     }
     for (t = 0; t < nt; t++) {
@@ -35,35 +34,30 @@ he_multi_label(He * he, int *pnl, int *lbl)
 
     nl = 0;
     for (t = 0; t < nt; t++) {
-        i = u_find(t);
+      i = u_find(root, t);
         if (lbl[i] == -1)
             lbl[i] = nl++;
         lbl[t] = lbl[i];
     }
-    FREE(u_root);
+    FREE(root);
     *pnl = nl;
     return CO_OK;
 }
 
-static void
-u_make(int v)
-{
-    u_root[v] = v;
-}
 
 static int
-u_find(int v)
+u_find(int *root, int v)
 {
-    if (v == u_root[v])
+    if (v == root[v])
         return v;
-    return u_root[v] = u_find(u_root[v]);
+    return root[v] = u_find(root, root[v]);
 }
 
 static void
-u_union(int a, int b)
+u_union(int *root, int a, int b)
 {
-    a = u_find(a);
-    b = u_find(b);
+    a = u_find(root, a);
+    b = u_find(root, b);
     if (a != b)
-        u_root[b] = a;
+        root[b] = a;
 }
