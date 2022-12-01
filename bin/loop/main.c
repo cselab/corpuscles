@@ -7,17 +7,15 @@
 #include <co/memory.h>
 #include <co/remesh.h>
 #include <co/off.h>
-#include <co/vec.h>
-#include <co/edg.h>
-#include <co/tri.h>
 #include <co/y.h>
 
-static const char *me = "loop";
+static const char *me = "co.loop";
 static void
 usg(void)
 {
-    fprintf(stderr, "%s OFF > OFF\n", me);
-    exit(2);
+    fprintf(stderr, "Loop's subdivision scheme\n"
+	  "%s OFF > OFF\n", me);
+    exit(1);
 }
 
 int
