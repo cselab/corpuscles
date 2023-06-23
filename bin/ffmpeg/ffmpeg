@@ -1,6 +1,12 @@
-. co.util
-
 prog=co.ffmpeg
+msg () { echo >&2 "$@" ; }
+err () { msg "$prog: $@"; exit 2 ; }
+e   () {
+    if test "$LOG" != 0
+    then msg ": $@"
+    fi
+    eval "$@"
+}
 
 usg () {
     msg "$prog -o OUTPUT.mp4 IMAGES.."
