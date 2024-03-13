@@ -199,7 +199,7 @@ static void main0(real *vx, real *vy, real *vz,
   int cnt, i, j;
   real dt, dt_max, h, mu, rnd;
   real A, V, Vr;
-  real *queue[] = {XX, YY, ZZ, NULL};
+  const real *queue[] = {XX, YY, ZZ, NULL};
   int nsub;
   real et, eb, ek;
   

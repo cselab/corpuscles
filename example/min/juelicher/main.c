@@ -3,17 +3,18 @@
 #include <math.h>
 
 #include <real.h>
-#include <co/err.h>
-#include <co/util.h>
-#include <co/x.h>
-#include <co/vec.h>
 #include <co/ddih.h>
-#include <co/tri.h>
-#include <co/dtri.h>
-#include <co/memory.h>
-#include <co/macro.h>
-#include <co/punto.h>
 #include <co/dedg.h>
+#include <co/dih.h>
+#include <co/dtri.h>
+#include <co/err.h>
+#include <co/macro.h>
+#include <co/memory.h>
+#include <co/punto.h>
+#include <co/tri.h>
+#include <co/util.h>
+#include <co/vec.h>
+#include <co/x.h>
 
 #include <alg/x.h>
 #include <alg/min.h>
@@ -80,7 +81,7 @@ static real energy(const real *xx, const real *yy, const real *zz) {
         if ( bnd(h) ) continue;
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        theta = tri_dih(a, b, c, d);
+        theta = dih_angle(a, b, c, d);
         vec_minus(b, c, u);
         len = vec_abs(u);
         cur = len*theta/4;
@@ -126,7 +127,7 @@ static void force(const real *xx, const real *yy, const real *zz,
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
         vec_minus(c, b, u);
-        lentheta0    = vec_abs(u) * tri_dih(a, b, c, d);
+        lentheta0    = vec_abs(u) * dih_angle(a, b, c, d);
         lentheta[j] += lentheta0;
         lentheta[k] += lentheta0;
     }
@@ -141,7 +142,7 @@ static void force(const real *xx, const real *yy, const real *zz,
     for (e = 0; e < NE; e++) {
         i = D0[e]; j = D1[e]; k = D2[e]; l = D3[e];
         get4(xx, yy, zz, i, j, k, l, /**/ a, b, c, d);
-        theta0 = tri_dih(a, b, c, d);
+        theta0 = dih_angle(a, b, c, d);
         dedg_abs(c, b, /**/ dc, db);
         coef = -(lentheta[j]/AREA[j] + lentheta[k]/AREA[k])/4.0*theta0*Kb;
         vec_scalar_append(db, coef, j, fx, fy, fz);
@@ -244,7 +245,7 @@ int main(int __UNUSED argc, const char *v[]) {
     f_area_ini(a0, Ka);
     f_garea_ini(A0, Kga);
     f_harmonic_ref_ini(Ke, XX, YY, ZZ);
-    real *queue[] = {XX, YY, ZZ, NULL};
+    const real *queue[] = {XX, YY, ZZ, NULL};
 
     min_ini(CONJUGATE_PR);
 
