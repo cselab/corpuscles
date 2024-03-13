@@ -25,7 +25,7 @@ usg(void)
     fprintf(stderr, "  -t   use triangles\n");
     fprintf(stderr, "  -s   use surface\n");
     fprintf(stderr, "  -p   use points (default)\n");
-    fprintf(stderr, "  -a   print eigenvalues (default: eigenvector)");
+    fprintf(stderr, "  -a   print eigenvalues (default: eigenvector)\n");
     exit(2);
 }
 
