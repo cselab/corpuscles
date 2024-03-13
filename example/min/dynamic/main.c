@@ -45,7 +45,7 @@ static void usg(void) {
 
 static int mkdir0(const char *path) {
     int rc;
-    char cmd[4048];
+    char cmd[8192];
     sprintf(cmd, "mkdir -p \"%s\"", path);
     rc = system(cmd);
     if (rc != 0)

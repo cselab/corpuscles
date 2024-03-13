@@ -14,7 +14,7 @@
 
 #define FMT_IN   CO_REAL_IN
 
-static real Ka, Kv, Ke, Kb;
+static real Ka, Kv, Ke, Kb, C0, Kad, DA0D;
 static real A0, V0;
 static const char **argv;
 static const char *me = "min/gompper";
@@ -98,7 +98,8 @@ int main(int __UNUSED argc, const char *v[]) {
     f_volume_ini(V0, Kv);
     f_garea_ini(A0, Ka);
     f_harmonic_ini(e0, Ke);
-    f_gompper_ini(Kb);
+    C0 = 0; Kad = 0; DA0D = 0;
+    f_gompper_ini(Kb, C0, Kad, DA0D);
 
     min_ini(VECTOR_BFGS2);
 
