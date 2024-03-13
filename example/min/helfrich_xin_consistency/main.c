@@ -18,7 +18,7 @@
 #include <co/ddih.h>
 #include <co/dtri.h>
 #include <co/bending.h>
-#include <co/x.h>
+/* #include <co/x.h> */
 #include <alg/x.h>
 #include <alg/min.h>
 

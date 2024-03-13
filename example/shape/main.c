@@ -4,7 +4,7 @@
 
 #include <real.h>
 #include <co/err.h>
-#include <co/x.h>
+/* #include <co/x.h> */
 #include <co/vec.h>
 #include <co/ten.h>
 #include <co/tri.h>

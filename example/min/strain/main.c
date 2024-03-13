@@ -20,7 +20,7 @@
 #include <co/he.h>
 #include <co/bending.h>
 #include <co/force.h>
-#include <co/x.h>
+/* #include <co/x.h> */
 
 #define FMT_IN   CO_REAL_IN
 

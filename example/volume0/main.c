@@ -2,7 +2,7 @@
 
 #include <real.h>
 #include <co/err.h>
-#include <co/x.h>
+/* #include <co/x.h> */
 
 int main() {
     ini("/dev/stdin");

@@ -5,7 +5,7 @@
 #include <co/f/area.h>
 #include <co/memory.h>
 #include <co/punto.h>
-#include <co/x.h>
+/* #include <co/x.h> */
 
 static real *FX, *FY, *FZ;
 
