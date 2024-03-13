@@ -7,7 +7,7 @@
 #include <co/err.h>
 #include <co/macro.h>
 #include <co/util.h>
-/* #include <co/x.h> */
+#include <co/x.h>
 
 #include <alg/x.h>
 #include <alg/min.h>

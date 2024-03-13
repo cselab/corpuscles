@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <real.h>
 #include <co/err.h>
-/* #include <co/x.h> */
+#include <co/x.h>
 
 int main() {
     int v, v0, e, e0, t, t0;

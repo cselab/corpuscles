@@ -12,7 +12,7 @@
 #include <co/err.h>
 #include <co/macro.h>
 #include <co/util.h>
-/* #include <co/x.h> */
+#include <co/x.h>
 
 #define FMT_IN   CO_REAL_IN
 

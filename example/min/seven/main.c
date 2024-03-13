@@ -18,7 +18,7 @@
 #include <co/ddih.h>
 #include <co/dtri.h>
 #include <co/bending.h>
-/* #include <co/x.h> */
+#include <co/x.h>
 
 #define FMT_IN   CO_REAL_IN
 

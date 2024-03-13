@@ -7,7 +7,7 @@
 #include <co/vec.h>
 #include <co/punto.h>
 
-/* #include <co/x.h> */
+#include <co/x.h>
 #include <alg/min.h>
 #include <alg/x.h>
 
