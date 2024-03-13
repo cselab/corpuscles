@@ -200,6 +200,7 @@ static void main0(real *vx, real *vy, real *vz) {
   char off[4048], vtk[4048];
   real f[3], g[3];
   He *he;
+  FILE *vtk_file;
 
   dt_max = 1.0;
   mu     = 100.0;
@@ -242,7 +243,13 @@ static void main0(real *vx, real *vy, real *vz) {
         off_write(XX, YY, ZZ, off);
         const real *scalars[] = {fx, fy, fz, fm, gm, NULL};
         const char *names[]   = {"fx", "fy", "fz", "fm", "gm", NULL};
-        vtk_write(he, XX, YY, ZZ, scalars, names, vtk);
+
+	if ((vtk_file = fopen(vtk, "w")) == NULL) {
+	  fprintf(stderr, "main.c: error: fail to open '%s'\n", vtk);
+	  exit(1);
+	}
+        vtk_write(he, XX, YY, ZZ, scalars, names, vtk_file);
+	fclose(vtk_file);
     }
 
     j = 0;
