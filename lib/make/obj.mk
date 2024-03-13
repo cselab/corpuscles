@@ -189,6 +189,7 @@ viscosity/pairwise.s.o\
 volume.s.o\
 vtk2.s.o\
 vtk.s.o\
+x.s.o\
 xdmf.s.o\
 y.s.o\
 
@@ -349,6 +350,7 @@ viscosity/pairwise.d.o\
 volume.d.o\
 vtk2.d.o\
 vtk.d.o\
+x.d.o\
 xdmf.d.o\
 y.d.o\
 
@@ -509,6 +511,7 @@ viscosity/pairwise.l.o\
 volume.l.o\
 vtk2.l.o\
 vtk.l.o\
+x.l.o\
 xdmf.l.o\
 y.l.o\
 

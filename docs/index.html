@@ -6,13 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Sergey Litvinov" />
   <title>Corpuscles documentation</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="css/empty.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 <p align="center">
@@ -24,7 +35,11 @@ Corpuscles
 <H2>
 Introduction
 </H2>
-<p>Corpuscles is a C library to resolve the elastic energy and force of a membrane surface, which is represented by an unstructured triangulated mesh. It also simulates transformations between different configurations/shapes of a closed membrane by a minimization procedure under various constraints.</p>
+<p>Corpuscles is a C library to resolve the elastic energy and force of
+a membrane surface, which is represented by an unstructured triangulated
+mesh. It also simulates transformations between different
+configurations/shapes of a closed membrane by a minimization procedure
+under various constraints.</p>
 Various components can be switched on/off at will, such as<br>
 <ol>
 <li>
@@ -52,14 +67,26 @@ Constratin of total volume of a closed membrane surface
 Constratin of area difference between outer- and inner-surface
 </li>
 </ol>
-<p>For different components, variations of model/law can be selected such as Helfrich/spontaneous curvature model for bending elasticity and Skalak law for strain elasticity.</p>
-<p>For different models/laws, variations of schemes impelemented can also be choosen such as Gompper and Kroll scheme and Juelicher scheme for the bending model of spontaneous curvature. See more details in <a href="https://cselab.github.io/corpuscles">https://cselab.github.io/corpuscles</a></p>
+<p>For different components, variations of model/law can be selected
+such as Helfrich/spontaneous curvature model for bending elasticity and
+Skalak law for strain elasticity.</p>
+<p>For different models/laws, variations of schemes impelemented can
+also be choosen such as Gompper and Kroll scheme and Juelicher scheme
+for the bending model of spontaneous curvature. See more details in <a
+href="https://cselab.github.io/corpuscles">https://cselab.github.io/corpuscles</a></p>
 <H2>
 Install
 </H2>
-<p>Minimal dependencies are C and Fortran 90 compilers, <a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>, and <a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.</p>
-<p>Optional dependencies <a href="http://geomview.org">geomview</a>, <a href="https://maxima.sourceforge.io">maxima</a>, and <a href="https://pandoc.org">pandoc</a>.</p>
-<p>Adjust <a href="https://github.com/cselab/corpuscles/blob/master/conf.mk">conf.mk</a> if you want to change defaults</p>
+<p>Minimal dependencies are C and Fortran 90 compilers,
+<a href="https://www.gnu.org/software/gsl">GNU Scientific Library</a>,
+and
+<a href="https://www.freedesktop.org/wiki/Software/pkg-config">pkg-config</a>.</p>
+<p>Optional dependencies <a href="http://geomview.org">geomview</a>,
+<a href="https://maxima.sourceforge.io">maxima</a>, and
+<a href="https://pandoc.org">pandoc</a>.</p>
+<p>Adjust
+<a href="https://github.com/cselab/corpuscles/blob/master/conf.mk">conf.mk</a>
+if you want to change defaults</p>
 <pre>
 $ cat conf.mk
 CC = gcc
@@ -89,18 +116,23 @@ Library is installed under the path <tt>PREFIX</tt>. Run
 <pre>
 $ MAKEFLAGS=-j4 ./install.sh
 </pre>
-If you have <a href=https://github.io/slitvinov/atest>atest</a> you can run
+If you have <a href=https://github.io/slitvinov/atest>atest</a> you can
+run
 <pre>
 $ make test
 </pre>
-<p>You can also use a <a href="https://github.com/cselab/corpuscles/blob/master/Dockerfile">docker containter</a>.</p>
+<p>You can also use a
+<a href="https://github.com/cselab/corpuscles/blob/master/Dockerfile">docker
+containter</a>.</p>
 <H2>
 Examples
 </H2>
 <H3>
 Hello world
 </H3>
-<p>A program in <a href="https://github.com/cselab/corpuscles/blob/master/example/hello/">example/hello</a> computes area of a triangle.</p>
+<p>A program in <a
+href="https://github.com/cselab/corpuscles/blob/master/example/hello/">example/hello</a>
+computes area of a triangle.</p>
 <pre>
 $ cat main.c
 #include &lt;stdio.h&gt;
@@ -131,7 +163,11 @@ clean:; rm -f main
 <H3>
 Read mesh file
 </H3>
-<p>Corpuscles reads <a href="https://en.wikipedia.org/wiki/OFF_(file_format)">OFF files</a>. Here is <a href="https://github.com/cselab/corpuscles/blob/master/data/regular/tetra.off">a file with triangular pyramid</a>.</p>
+<p>Corpuscles reads
+<a href="https://en.wikipedia.org/wiki/OFF_(file_format)">OFF files</a>.
+Here is
+<a href="https://github.com/cselab/corpuscles/blob/master/data/regular/tetra.off">a
+file with triangular pyramid</a>.</p>
 <p align="center">
 <img src="img/tetra.png" alt="triangular pyramid"/>
 </p>
@@ -174,7 +210,9 @@ maximum x coordinate is 1
 <H3>
 Write mesh file
 </H3>
-<p>Read off, compute area of every triangle, and output off file with colors (<a href="https://github.com/cselab/corpuscles/blob/master/example/off/write/area/">example/off/write/area</a>)</p>
+<p>Read off, compute area of every triangle, and output off file with
+colors (<a
+href="https://github.com/cselab/corpuscles/blob/master/example/off/write/area/">example/off/write/area</a>)</p>
 <pre>
 $ cat main.c
 #include &lt;stdio.h&gt;
@@ -281,22 +319,35 @@ Library
 Floating point precision
 </H3>
 <dl>
-<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/s/real.h">prec/s/real.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/d/real.h">prec/d/real.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/l/real.h">prec/l/real.h</a></dt>
-<dd>single, double, long double
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/s/real.h">prec/s/real.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/d/real.h">prec/d/real.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/prec/l/real.h">prec/l/real.h</a></dt>
+<dd>
+single, double, long double
 </dd>
 </dl>
 <H3>
 Math
 </H3>
 <dl>
-<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vec.h">vec.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/edg.h">edg.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/tri.h">tri.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dih.h">dih.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ten.h">ten.h</a></dt>
-<dd>vector, edges, triangels, dihidrals, tensors
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/vec.h">vec.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/edg.h">edg.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/tri.h">tri.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dih.h">dih.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ten.h">ten.h</a></dt>
+<dd>
+vector, edges, triangels, dihidrals, tensors
 </dd>
-<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dvec.h">dvec.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dedg.h">dedg.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dtri.h">dtri.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ddih.h">ddih.h</a></dt>
-<dd>derivatives of vector edges, triagels, dihidrals
+<dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dvec.h">dvec.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dedg.h">dedg.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/dtri.h">dtri.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ddih.h">ddih.h</a></dt>
+<dd>
+derivatives of vector edges, triagels, dihidrals
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ring.h">ring.h</a></dt>
-<dd>operation on the first ring of neighbors
+<dd>
+operation on the first ring of neighbors
 </dd>
 </dl>
 <H3>
@@ -304,28 +355,37 @@ Utility
 </H3>
 <dl>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/array.h">array.h</a></dt>
-<dd>array related functions
+<dd>
+array related functions
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/argv.h">argv.h</a></dt>
-<dd>read from <tt>argv</tt> and shift
+<dd>
+read from <tt>argv</tt> and shift
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/err.h">err.h</a></dt>
-<dd>error handling
+<dd>
+error handling
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/endian.h">endian.h</a></dt>
-<dd>deal with endianess
+<dd>
+deal with endianess
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/macro.h">macro.h</a></dt>
-<dd>macros
+<dd>
+macros
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/sum.h">sum.h</a></dt>
-<dd><a href="en.wikipedia.org/wiki/Kahan_summation_algorithm">Kahan summation</a>
+<dd>
+<a href="en.wikipedia.org/wiki/Kahan_summation_algorithm">Kahan
+summation</a>
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/memory.h">memory.h</a></dt>
-<dd>memory related
+<dd>
+memory related
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/util.h">util.h</a></dt>
-<dd>uncategorazed
+<dd>
+uncategorazed
 </dd>
 </dl>
 <H3>
@@ -333,16 +393,20 @@ Surface properties
 </H3>
 <dl>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/area.h">area.h</a></dt>
-<dd>area
+<dd>
+area
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/volume.h">volume.h</a></dt>
-<dd>volume
+<dd>
+volume
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/laplace.h">laplace.h</a></dt>
-<dd>Laplace operator of coordinates
+<dd>
+Laplace operator of coordinates
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/normal.h">normal.h</a></dt>
-<dd>normal
+<dd>
+normal
 </dd>
 </dl>
 <H3>
@@ -350,13 +414,16 @@ Surface properties
 </H3>
 <dl>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/bending.h">bending.h</a></dt>
-<dd>generic interface to several bending forces
+<dd>
+generic interface to several bending forces
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/forces.h">forces.h</a></dt>
-<dd>generic interface to forces
+<dd>
+generic interface to forces
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stretch.h">stretch.h</a></dt>
-<dd>stretching force
+<dd>
+stretching force
 </dd>
 </dl>
 <H3>
@@ -364,19 +431,24 @@ Surface transformation
 </H3>
 <dl>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/equiangulate.h">equiangulate.h</a></dt>
-<dd>equlatirate triangles
+<dd>
+equlatirate triangles
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/orient.h">orient.h</a></dt>
-<dd>orient surface in a direction of eigen values of momentum tensor
+<dd>
+orient surface in a direction of eigen values of momentum tensor
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/restore.h">restore.h</a></dt>
-<dd>restore a volume of the surface
+<dd>
+restore a volume of the surface
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/transformation.h">transformation.h</a></dt>
-<dd>translate, rotate, and and scale surface
+<dd>
+translate, rotate, and and scale surface
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/remesh.h">remesh.h</a></dt>
-<dd>“edit” surfaces
+<dd>
+“edit” surfaces
 </dd>
 </dl>
 <H3>
@@ -384,41 +456,69 @@ Half-edg related
 </H3>
 <dl>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/read.h">read.h</a></dt>
-<dd>read half-edg to intermediate structure HeRead, used to initialize half-edg
+<dd>
+read half-edg to intermediate structure HeRead, used to initialize
+half-edg
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/he.h">he.h</a></dt>
-<dd>half edg data structure (provides half-edg API)
+<dd>
+half edg data structure (provides half-edg API)
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/hash.h">hash.h</a></dt>
-<dd>stores an integer for a pair of integers
+<dd>
+stores an integer for a pair of integers
 </dd>
 </dl>
 <H3>
 IO
 </H3>
-<p><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h">gts.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h">obj.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/off.h">off.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h">ply.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h">punto.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stl.h">stl.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stl.h">stl.h</a>, <a href="https://github.com/cselab/corpuscles/blob/master/lib/co/xdmf.h">xdmf.h</a> : read/write GTS, OBJ, OFF, PLY, punto, STL, VTK, and XDMF files.</p>
+<p><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/gts.h">gts.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/obj.h">obj.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/off.h">off.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/ply.h">ply.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/punto.h">punto.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stl.h">stl.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/stl.h">stl.h</a>,
+<a href="https://github.com/cselab/corpuscles/blob/master/lib/co/xdmf.h">xdmf.h</a>
+: read/write GTS, OBJ, OFF, PLY, punto, STL, VTK, and XDMF files.</p>
 <H3>
 X and Y
 </H3>
 <dl>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/x.h">x.h</a></dt>
-<dd>simple interface for one surface
+<dd>
+simple interface for one surface
 </dd>
 <dt><a href="https://github.com/cselab/corpuscles/blob/master/lib/co/y.h">y.h</a></dt>
-<dd>not so simple interface
+<dd>
+not so simple interface
 </dd>
 </dl>
 <H2>
 Documentation
 </H2>
-<p><a href="https://cselab.github.io/corpuscles">git pages</a> <a href="docs/index.html">docs/index.html</a> is generated from <a href="README.md.m4">README.md.m4</a>. To update run</p>
+<p><a href="https://cselab.github.io/corpuscles">git pages</a> <a
+href="docs/index.html">docs/index.html</a> is generated from <a
+href="README.md.m4">README.md.m4</a>. To update run</p>
 <pre>
 $ make html
 </pre>
 <p>requires <a href="http://pandoc.org">pandoc</a>.</p>
 <H2>
+Hacking
+</H2>
+<p>After adding new files to <a href="lib/">lib</a> update
+depdendencies:</p>
+<pre>
+$ (cd lib && ./bootstrap)
+</pre>
+<H2>
 Publications
 </H2>
-<p>Bian, X., Litvinov, S., &amp; Koumoutsakos, P. (2020). Bending models of lipid bilayer membranes: Spontaneous curvature and area-difference elasticity. Computer Methods in Applied Mechanics and Engineering, 359, 112758. <a href="https://doi.org/10.1016/j.cma.2019.112758">doi:10.1016/j.cma.2019.112758</a></p>
+<p>Bian, X., Litvinov, S., &amp; Koumoutsakos, P. (2020). Bending models
+of lipid bilayer membranes: Spontaneous curvature and area-difference
+elasticity. Computer Methods in Applied Mechanics and Engineering, 359,
+112758.
+<a href="https://doi.org/10.1016/j.cma.2019.112758">doi:10.1016/j.cma.2019.112758</a></p>
 </body>
 </html>

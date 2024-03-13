@@ -292,6 +292,14 @@ $ make html
 
 requires [pandoc](http://pandoc.org).
 
+<H2>Hacking</H2>
+
+After adding new files to [lib](lib/) update depdendencies:
+
+<pre>
+$ (cd lib && ./bootstrap)
+</pre>
+
 <H2>Publications</H2>
 
 Bian, X., Litvinov, S., & Koumoutsakos, P. (2020). Bending models of
