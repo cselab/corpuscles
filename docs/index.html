@@ -114,7 +114,7 @@ PATH="$HOME/.local/bin:$PATH"
 </pre>
 Library is installed under the path <tt>PREFIX</tt>. Run
 <pre>
-$ make
+$ MAKEFLAGS=-j4 make
 </pre>
 If you have <a href=https://github.io/slitvinov/atest>atest</a> you can
 run
@@ -159,6 +159,10 @@ main: main.c
     $(CC) main.c $(CFLAGS)  `co.conf --cflags --libs $(PREC) ` $(LDFLAGS) -o $@
 clean:; rm -f main
 
+</pre>
+<pre>
+$ ./main
+Area of a triangle is : 0.9999999999999999
 </pre>
 <H3>
 Read mesh file
