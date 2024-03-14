@@ -11,3 +11,4 @@ install: $M
 	cp main $(PREFIX)/bin/co.2stl
 .c:; $(CC) $< $(CFLAGS) $(CO_FLAGS) -o $@
 clean:; rm -f $M
+test:

@@ -72,7 +72,7 @@ PATH="$HOME/.local/bin:$PATH"
 
 Library is installed under the path <tt>PREFIX</tt>. Run
 <pre>
-$ MAKEFLAGS=-j4 ./install.sh
+$ make
 </pre>
 
 If you have
@@ -105,7 +105,7 @@ main(void)
 {
     real A, a[] = { 0, 0, 0 }, b[] = { 2, 0, 0 }, c[] = { 0, 1, 0 };
     A = tri_area(a, b, c);
-    printf("Area is of triangle: " FMT "\n", A);
+    printf("Area of a triangle is : " FMT "\n", A);
 }
 
 </pre>
@@ -403,7 +403,7 @@ requires [pandoc](http://pandoc.org).
 
 <H2>Hacking</H2>
 
-After adding new files to <a href="https://github.com/cselab/corpuscles/blob/master/lib/">lib/</a> update depdendencies:
+After adding new files to [lib](https://github.com/cselab/corpuscles/blob/master/lib/) update depdendencies:
 
 <pre>
 $ (cd lib && ./bootstrap)
