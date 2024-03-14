@@ -403,7 +403,7 @@ requires [pandoc](http://pandoc.org).
 
 <H2>Hacking</H2>
 
-After adding new files to [lib](lib/) update depdendencies:
+After adding new files to <a href="https://github.com/cselab/corpuscles/blob/master/lib/">lib/</a> update depdendencies:
 
 <pre>
 $ (cd lib && ./bootstrap)
