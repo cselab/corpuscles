@@ -72,7 +72,7 @@ PATH="$HOME/.local/bin:$PATH"
 
 Library is installed under the path <tt>PREFIX</tt>. Run
 <pre>
-$ make
+$ MAKEFLAGS=-j4 make
 </pre>
 
 If you have
