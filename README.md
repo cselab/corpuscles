@@ -120,6 +120,11 @@ clean:; rm -f main
 
 </pre>
 
+<pre>
+$ ./main
+Area of a triangle is : 0.9999999999999999
+</pre>
+
 <H3>Read mesh file</H3>
 
 Corpuscles reads

@@ -90,6 +90,11 @@ $ cat Makefile
 r_file(example/hello/Makefile)
 </pre>
 
+<pre>
+$ ./main
+r_cmd(<<cd example/hello && make main > /dev/null && ./main>>)dnl
+</pre>
+
 <H3>Read mesh file</H3>
 
 Corpuscles reads
