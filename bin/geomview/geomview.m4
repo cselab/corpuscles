@@ -21,7 +21,7 @@ he geomview wrapper
 -O            write all PPM files and exit
 -OO           write all oogl files and exit
 -format	ppmscreen|ppm|ps|ppmosmesa|ppmosglx
--p command    process every off file by running 'command' < IN.off > OUT.off
+-p command    process every off file by running 'command' IN.off > OUT.off
 -n none|each|all|keep normalization status (see geomview manual)
 -c command    run command on every file and write output to stderr, %f is replaced by a file name
 -e command    if keys 'e' is pressed runs
