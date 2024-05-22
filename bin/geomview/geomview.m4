@@ -111,53 +111,53 @@ while test $# -ne 0
 do case "$1" in
        -t) shift
            if test $# -le 2; then err '-t needs three numbers'; fi
-           num "$1"; tx="$1"; shift
-           num "$1"; ty="$1"; shift
-           num "$1"; tz="$1"; shift
+           num "$1"; tx=$1; shift
+           num "$1"; ty=$1; shift
+           num "$1"; tz=$1; shift
            ;;
        -r) shift
            if test $# -le 2; then err '-r needs three numbers'; fi
-           num "$1"; rx="$1"; shift
-           num "$1"; ry="$1"; shift
-           num "$1"; rz="$1"; shift
+           num "$1"; rx=$1; shift
+           num "$1"; ry=$1; shift
+           num "$1"; rz=$1; shift
            ;;
        -n) shift
            if test $# -eq 0; then err '-n needs an argument'; fi
-           normalizationp "$1"; normalization="$1"; shift
+           normalizationp "$1"; normalization=$1; shift
            ;;
        -format) shift
            if test $# -eq 0; then err '-p needs an argument'; fi
-           formatp "$1"; format="$1"; shift
+           formatp "$1"; format=$1; shift
            ;;
        -f) shift
            if test $# -eq 0; then err '-f needs a number'; fi
-           num "$1"; nonzero "$1"; fov="$1"; shift
+           num "$1"; nonzero "$1"; fov=$1; shift
            ;;
        -a) shift
            if test $# -eq 0; then err '-o needs a file'; fi
-           filep "$1"; appearance="$1"; shift
+           filep "$1"; appearance=$1; shift
            ;;
        -o) shift
            if test $# -eq 0; then err '-o needs a file'; fi
-           output="$1"; shift
+           output=$1; shift
            ;;
        -OO) shift; output=-OO ;;
        -O) shift; output=-O ;;
        -p) shift
            if test $# -eq 0; then err '-p needs a command'; fi
-           process="$1"; shift
+           process=$1; shift
            ;;
        -c) shift
            if test $# -eq 0; then err '-c needs a command'; fi
-           command="$1"; shift
+           command=$1; shift
            ;;
        -e) shift
            if test $# -eq 0; then err '-e needs a command'; fi
-           ecommand="$1"; shift
+           ecommand=$1; shift
            ;;
        -i) shift
            if test $# -eq 0; then err '-i needs a command'; fi
-           icommand="$1"; shift
+           icommand=$1; shift
            ;;
        -*) err "unknown option '$1'" ;;
         *) break
