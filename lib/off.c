@@ -114,8 +114,8 @@ read_binary(T * q, int Color, FILE * f)
     for (i = j = 0; i < nt; i++) {
         FREAD(1, &np);
         big_endian_int(1, &np);
-        if (np != 3)
-            ERR(CO_IO, "np=%d != 3");
+	if (np != 3)
+	  ERR(CO_IO, "np=%d != 3", np);
         FREAD(3, ibuf);
         big_endian_int(3, ibuf);
         tri[j++] = ibuf[0];
